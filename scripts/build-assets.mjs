@@ -34,7 +34,7 @@ async function copyFrontendFonts() {
 }
 
 async function copyFrontendTablerIcons() {
-	await fs.cp('./packages/frontend/node_modules/@tabler/icons-webfont/dist', './built/_frontend_dist_/tabler-icons', {
+	await fs.cp('./packages/frontend/node_modules/@phosphor-icons/web/src', './built/_frontend_dist_/phosphor-icons', {
 		dereference: true,
 		recursive: true
 	});
