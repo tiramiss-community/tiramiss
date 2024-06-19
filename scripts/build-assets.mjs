@@ -38,6 +38,20 @@ async function copyFrontendTablerIcons() {
 		dereference: true,
 		recursive: true
 	});
+
+	for (const file of [
+		'./built/_frontend_dist_/phosphor-icons/bold/style.css',
+		'./built/_frontend_dist_/phosphor-icons/duotone/style.css',
+		'./built/_frontend_dist_/phosphor-icons/fill/style.css',
+		'./built/_frontend_dist_/phosphor-icons/light/style.css',
+		'./built/_frontend_dist_/phosphor-icons/regular/style.css',
+		'./built/_frontend_dist_/phosphor-icons/thin/style.css',
+	]) {
+		let source = await fs.readFile(file, {encoding: 'utf-8'});
+		source = source.replaceAll(/(url\(.+?Phosphor.+?\.(?:[a-zA-Z0-9]+))/g, `$1?version=${meta.version}`);
+		await fs.writeFile(file, source);
+	}
+
 }
 
 async function copyFrontendLocales() {
