@@ -176,6 +176,7 @@ export function pluginReplaceIcons() {
 					'ti ti-cake': 'ph-cake ph-bold ph-lg',
 					'ti ti-calendar': 'ph-calendar ph-bold ph-lg',
 					'ti ti-calendar-time': 'ph-calendar ph-bold ph-lg',
+					'ti ti-calendar-event': 'ph-calendar-star ph-bold ph-lg',
 					'ti ti-camera': 'ph-camera ph-bold ph-lg',
 					'ti ti-carousel-horizontal': 'ph-split-horizontal ph-bold ph-lg',
 					'ti ti-carousel-vertical': 'ph-split-vertical ph-bold ph-lg',
