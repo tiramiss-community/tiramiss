@@ -37,6 +37,7 @@ export function pluginReplaceIcons() {
 				},
 				include: [
 					'**/pages/**',
+					'**/components/MkAuthConfirm.*',
 				],
 			}),
 			iconsReplace({
@@ -340,6 +341,8 @@ export function pluginReplaceIcons() {
 					'ti ti-shield-lock': 'ph-shield ph-bold ph-lg',
 					'ti ti-slash': 'ph-check-fat ph-bold ph-lg',
 					'ti ti-snowflake': 'ph-snowflake ph-bold ph-lg',
+					'ti ti-sort-ascending-letters': 'ph-sort-ascending ph-bold ph-lg',
+					'ti ti-sort-descending-letters': 'ph-sort-descending ph-bold ph-lg',
 					'ti ti-sparkles': 'ph-sparkle ph-bold ph-lg',
 					'ti ti-speakerphone': 'ph-megaphone ph-bold ph-lg',
 					'ti ti-stack-2': 'ph-stack ph-bold ph-lg',
