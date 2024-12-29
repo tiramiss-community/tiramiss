@@ -3,8 +3,7 @@ name: Check the description in CHANGELOG.md
 on:
   pull_request:
     branches:
-      - master
-      - develop
+      - tiramiss
 
 jobs:
   check-changelog:
