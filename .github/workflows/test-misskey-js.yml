@@ -5,12 +5,12 @@ name: Test (misskey.js)
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ tiramiss ]
     paths:
       - packages/misskey-js/**
       - .github/workflows/test-misskey-js.yml
   pull_request:
-    branches: [ develop ]
+    branches: [ tiramiss ]
     paths:
       - packages/misskey-js/**
       - .github/workflows/test-misskey-js.yml
