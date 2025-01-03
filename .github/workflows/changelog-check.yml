@@ -23,12 +23,12 @@ jobs:
           cp -r .git _base/.git
           cd _base
           git fetch --depth 1 origin ${{ github.base_ref }}
-          git checkout origin/${{ github.base_ref }} CHANGELOG.md
+          git checkout origin/${{ github.base_ref }} CHANGELOG.tiramiss.md
 
       - name: Copy to Checker directory for CHANGELOG-base.md
-        run: cp _base/CHANGELOG.md scripts/changelog-checker/CHANGELOG-base.md
+        run: cp _base/CHANGELOG.tiramiss.md scripts/changelog-checker/CHANGELOG-base.md
       - name: Copy to Checker directory for CHANGELOG-head.md
-        run: cp CHANGELOG.md scripts/changelog-checker/CHANGELOG-head.md
+        run: cp CHANGELOG.tiramiss.md scripts/changelog-checker/CHANGELOG-head.md
       - name: diff
         continue-on-error: true
         run: diff -u CHANGELOG-base.md CHANGELOG-head.md
