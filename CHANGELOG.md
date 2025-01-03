@@ -1,5 +1,11 @@
 ## 2024.11.1
 
+### Note
+- [重要] ノート検索プロバイダの追加に伴い、configファイル（default.ymlなど）の構成が少し変わります.
+	- 新しい設定項目"fulltextSearch.provider"が追加されました. sqlLike, sqlPgroonga, meilisearchのいずれかを設定出来ます.
+	- すでにMeilisearchをお使いの場合、 **"fulltextSearch.provider"を"meilisearch"に設定する必要** があります.
+	- 詳細は #14730 および `.config/example.yml` または `.config/docker_example.yml`の'Fulltext search configuration'をご参照願います.
+
 ### General
 - Feat: カスタム絵文字管理画面をリニューアル #10996
 	* β版として公開のため、旧画面も引き続き利用可能です
@@ -16,6 +22,7 @@
 - Fix: 絵文字管理画面で一部の絵文字が表示されない問題を修正
 
 ### Server
+- Enhance: ノート検索の選択肢としてpgroongaに対応 ( #14730 )
 - Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
 - Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
