@@ -9,6 +9,7 @@
 ### General
 - Feat: カスタム絵文字管理画面をリニューアル #10996
 	* β版として公開のため、旧画面も引き続き利用可能です
+- Fix: tabler-iconsからphosphor-iconsへの移行 ( #2 )
 
 ### Server
 - Enhance: ノート検索の選択肢としてpgroongaに対応 ( #14730 )

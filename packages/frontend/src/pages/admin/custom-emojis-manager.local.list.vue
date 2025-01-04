@@ -274,9 +274,9 @@ function setupGrid(): GridSetting {
 			},
 		},
 		cols: [
-			{ bindTo: 'checked', icon: 'ti-trash', type: 'boolean', editable: true, width: 34 },
+			{ bindTo: 'checked', icon: 'ti ti-trash', type: 'boolean', editable: true, width: 34 },
 			{
-				bindTo: 'url', icon: 'ti-icons', type: 'image', editable: true, width: 'auto', validators: [required],
+				bindTo: 'url', icon: 'ti ti-icons', type: 'image', editable: true, width: 'auto', validators: [required],
 				async customValueEditor(row, col, value, cellElement) {
 					const file = await selectFile(cellElement);
 					gridItems.value[row.index].url = file.url;
@@ -713,8 +713,8 @@ onMounted(async () => {
 	background-color: var(--MI_THEME-bg);
 
 	position: sticky;
-	left:0;
-	bottom:0;
+	left: 0;
+	bottom: 0;
 	z-index: 1;
 	// stickyで追従させる都合上、フッター自身でpaddingを持つ必要があるため、親要素で画一的に指定している分をネガティブマージンで相殺している
 	margin-top: calc(var(--MI-margin) * -1);
