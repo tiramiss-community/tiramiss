@@ -5,15 +5,15 @@
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import {fileURLToPath} from 'node:url';
 import cssnano from 'cssnano';
 import * as yaml from 'js-yaml';
 import postcss from 'postcss';
 import * as terser from 'terser';
 
-import { build as buildLocales } from '../locales/index.js';
+import {build as buildLocales} from '../locales/index.js';
 import generateDTS from '../locales/generateDTS.js';
-import meta from '../package.json' with { type: "json" };
+import meta from '../package.json' with {type: 'json'};
 import buildTarball from './tarball.mjs';
 
 const configDir = fileURLToPath(new URL('../.config', import.meta.url));
@@ -33,8 +33,11 @@ async function copyFrontendFonts() {
   await fs.cp('./packages/frontend/node_modules/three/examples/fonts', './built/_frontend_dist_/fonts', { dereference: true, recursive: true });
 }
 
-async function copyFrontendPhosphorIcons() {
-  await fs.cp('./packages/frontend/node_modules/@phosphor-icons/web/src/regular', './built/_frontend_dist_/phosphor-icons', { dereference: true, recursive: true });
+async function copyFrontendTablerIcons() {
+	await fs.cp('./packages/frontend/node_modules/@tabler/icons-webfont/dist', './built/_frontend_dist_/tabler-icons', {
+		dereference: true,
+		recursive: true
+	});
 }
 
 async function copyFrontendLocales() {
@@ -88,7 +91,7 @@ async function buildBackendStyle() {
 async function build() {
   await Promise.all([
     copyFrontendFonts(),
-    copyFrontendPhosphorIcons(),
+		copyFrontendTablerIcons(),
     copyFrontendLocales(),
     copyBackendViews(),
     buildBackendScript(),
