@@ -129,6 +129,9 @@ export function pluginReplaceIcons() {
 			}),
 			iconsReplace({
 				values: {
+					// -- add tiramiss start
+					'ti ti-icons': 'ph-images ph-bold ph-lg',
+					// -- add tiramiss end
 					'icon ti ti-brand-youtube': 'icon ph-youtube-logo ph-bold ph-lg',
 					'ti ti ti-folder-symlink': 'ph-folder-dashed ph-bold ph-lg',
 					'ti ti-123': 'ph-numpad ph-bold ph-lg',

@@ -37,13 +37,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 
-import { computed, ref, toRefs } from 'vue';
-import { i18n } from '@/i18n.js';
-import { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
+import {computed, ref, toRefs} from 'vue';
+import {i18n} from '@/i18n.js';
+import {RequestLogItem} from '@/pages/admin/custom-emojis-manager.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { GridSetting } from '@/components/grid/grid.js';
-import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
+import {GridSetting} from '@/components/grid/grid.js';
+import {copyGridDataToClipboard} from '@/components/grid/grid-utils.js';
 import MkFolder from '@/components/MkFolder.vue';
 
 function setupGrid(): GridSetting {
@@ -64,7 +64,7 @@ function setupGrid(): GridSetting {
 		},
 		cols: [
 			{ bindTo: 'failed', title: 'failed', type: 'boolean', editable: false, width: 50 },
-			{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto' },
+			{bindTo: 'url', icon: 'ti ti-icons', type: 'image', editable: false, width: 'auto'},
 			{ bindTo: 'name', title: 'name', type: 'text', editable: false, width: 140 },
 			{ bindTo: 'error', title: 'log', type: 'text', editable: false, width: 'auto' },
 		],

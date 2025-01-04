@@ -6,11 +6,9 @@
 // https://vitejs.dev/config/build-options.html#build-modulepreload
 import 'vite/modulepreload-polyfill';
 
-import '@phosphor-icons/web/regular/style.css';
-
 import '@/style.scss';
-import { mainBoot } from '@/boot/main-boot.js';
-import { subBoot } from '@/boot/sub-boot.js';
+import {mainBoot} from '@/boot/main-boot.js';
+import {subBoot} from '@/boot/sub-boot.js';
 
 const subBootPaths = ['/share', '/auth', '/miauth', '/oauth', '/signup-complete'];
 
