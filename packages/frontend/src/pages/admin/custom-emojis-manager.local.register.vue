@@ -43,8 +43,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<ul>
 			<li>{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList1 }}</li>
-			<li><a @click.prevent="onFileSelectClicked">{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList2 }}</a></li>
-			<li><a @click.prevent="onDriveSelectClicked">{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList3 }}</a></li>
+			<li>
+				<a @click.prevent="onFileSelectClicked">{{
+					i18n.ts._customEmojisManager._local._register.emojiInputAreaList2
+				}}</a>
+			</li>
+			<li>
+				<a @click.prevent="onDriveSelectClicked">{{
+					i18n.ts._customEmojisManager._local._register.emojiInputAreaList3
+				}}</a>
+			</li>
 		</ul>
 	</div>
 
@@ -70,8 +78,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import * as Misskey from 'misskey-js';
-import {onMounted, ref, useCssModule} from 'vue';
-import {misskeyApi} from '@/scripts/misskey-api.js';
+import { onMounted, ref, useCssModule } from 'vue';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import {
 	emptyStrToEmptyArray,
 	emptyStrToNull,
@@ -79,22 +87,22 @@ import {
 	roleIdsParser,
 } from '@/pages/admin/custom-emojis-manager.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
-import {i18n} from '@/i18n.js';
+import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import {defaultStore} from '@/store.js';
+import { defaultStore } from '@/store.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import {validators} from '@/components/grid/cell-validators.js';
-import {chooseFileFromDrive, chooseFileFromPc} from '@/scripts/select-file.js';
-import {uploadFile} from '@/scripts/upload.js';
-import {GridCellValidationEvent, GridCellValueChangeEvent, GridEvent} from '@/components/grid/grid-event.js';
-import {DroppedFile, extractDroppedItems, flattenDroppedFiles} from '@/scripts/file-drop.js';
+import { validators } from '@/components/grid/cell-validators.js';
+import { chooseFileFromDrive, chooseFileFromPc } from '@/scripts/select-file.js';
+import { uploadFile } from '@/scripts/upload.js';
+import { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
+import { DroppedFile, extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js';
 import XRegisterLogsFolder from '@/pages/admin/custom-emojis-manager.logs-folder.vue';
-import {GridSetting} from '@/components/grid/grid.js';
-import {copyGridDataToClipboard} from '@/components/grid/grid-utils.js';
-import {GridRow} from '@/components/grid/row.js';
+import { GridSetting } from '@/components/grid/grid.js';
+import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
+import { GridRow } from '@/components/grid/row.js';
 
 const MAXIMUM_EMOJI_REGISTER_COUNT = 100;
 
@@ -165,7 +173,7 @@ function setupGrid(): GridSetting {
 			},
 		},
 		cols: [
-			{bindTo: 'url', icon: 'ti ti-icons', type: 'image', editable: false, width: 'auto', validators: [required]},
+			{ bindTo: 'url', icon: 'ti ti-icons', type: 'image', editable: false, width: 'auto', validators: [required] },
 			{
 				bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140,
 				validators: [required, regex, unique],
@@ -460,8 +468,8 @@ onMounted(async () => {
 	background-color: var(--MI_THEME-bg);
 
 	position: sticky;
-	left:0;
-	bottom:0;
+	left: 0;
+	bottom: 0;
 	z-index: 1;
 	// stickyで追従させる都合上、フッター自身でpaddingを持つ必要があるため、親要素で画一的に指定している分をネガティブマージンで相殺している
 	margin-top: calc(var(--MI-margin) * -1);

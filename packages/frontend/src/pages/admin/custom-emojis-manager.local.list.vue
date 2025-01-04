@@ -170,7 +170,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, ref, useCssModule} from 'vue';
+import { computed, onMounted, ref, useCssModule } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import {
@@ -183,22 +183,22 @@ import {
 	roleIdsParser,
 } from '@/pages/admin/custom-emojis-manager.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
-import {i18n} from '@/i18n.js';
+import { i18n } from '@/i18n.js';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
-import {validators} from '@/components/grid/cell-validators.js';
-import {GridCellValidationEvent, GridCellValueChangeEvent, GridEvent} from '@/components/grid/grid-event.js';
-import {misskeyApi} from '@/scripts/misskey-api.js';
+import { validators } from '@/components/grid/cell-validators.js';
+import { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
 import XRegisterLogsFolder from '@/pages/admin/custom-emojis-manager.logs-folder.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import {deviceKind} from '@/scripts/device-kind.js';
-import {GridSetting} from '@/components/grid/grid.js';
-import {selectFile} from '@/scripts/select-file.js';
-import {copyGridDataToClipboard, removeDataFromGrid} from '@/components/grid/grid-utils.js';
+import { deviceKind } from '@/scripts/device-kind.js';
+import { GridSetting } from '@/components/grid/grid.js';
+import { selectFile } from '@/scripts/select-file.js';
+import { copyGridDataToClipboard, removeDataFromGrid } from '@/components/grid/grid-utils.js';
 import MkSortOrderEditor from '@/components/MkSortOrderEditor.vue';
-import {SortOrder} from '@/components/MkSortOrderEditor.define.js';
+import { SortOrder } from '@/components/MkSortOrderEditor.define.js';
 
 type GridItem = {
 	checked: boolean;
@@ -274,7 +274,7 @@ function setupGrid(): GridSetting {
 			},
 		},
 		cols: [
-			{bindTo: 'checked', icon: 'ti ti-trash', type: 'boolean', editable: true, width: 34},
+			{ bindTo: 'checked', icon: 'ti ti-trash', type: 'boolean', editable: true, width: 34 },
 			{
 				bindTo: 'url', icon: 'ti ti-icons', type: 'image', editable: true, width: 'auto', validators: [required],
 				async customValueEditor(row, col, value, cellElement) {
@@ -713,8 +713,8 @@ onMounted(async () => {
 	background-color: var(--MI_THEME-bg);
 
 	position: sticky;
-	left:0;
-	bottom:0;
+	left: 0;
+	bottom: 0;
 	z-index: 1;
 	// stickyで追従させる都合上、フッター自身でpaddingを持つ必要があるため、親要素で画一的に指定している分をネガティブマージンで相殺している
 	margin-top: calc(var(--MI-margin) * -1);
