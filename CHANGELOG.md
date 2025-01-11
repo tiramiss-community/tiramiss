@@ -4,7 +4,7 @@
 - Enhance: 特定ロールポリシーによる運営アクティビティの検知範囲拡大に対応( #13437 )
 - Feat: チャンネルミュート機能の実装 #10649
 	- チャンネルの概要画面の右上からミュートできます（リンクコピー、共有、設定と同列）
-		testfff56545
+		testfff565454
 ### Client
 - Enhance: PC画面でチャンネルが複数列で表示されるように  
   (Cherry-picked from https://github.com/Otaku-Social/maniakey/pull/13)
