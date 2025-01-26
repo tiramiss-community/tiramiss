@@ -51,13 +51,13 @@
 			]
 		},
 		{
-			"groupName": "[devcontainer] Update dependencies",
+			"groupName": "[Node.js] Update dependencies",
 			"matchPaths": [
-				".devcontainer/**"
+				".node-version"
 			]
 		},
 		{
-			"groupName": "[docker] Update dependencies",
+			"groupName": "[Docker] Update dependencies",
 			"matchPaths": [
 				"compose.local-db.yml",
 				"compose_example.yml",
@@ -66,12 +66,20 @@
 			]
 		},
 		{
+			"groupName": "[devcontainer] Update dependencies",
+			"matchPaths": [
+				".devcontainer/**"
+			]
+		},
+		{
+			// メジャーアップデートの場合、破壊的変更のリスクがあるのでダッシュボードへの通知のみに留める
 			"matchUpdateTypes": [
 				"major"
 			],
 			"dependencyDashboardApproval": true
 		},
 		{
+			// dependenciesにあるものは優先度高め
 			"matchUpdateTypes": [
 				"minor",
 				"patch"
