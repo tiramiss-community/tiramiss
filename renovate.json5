@@ -51,14 +51,14 @@
 			"matchDepTypes": [
 				"dependencies"
 			],
-			"priority": 10
+			"prPriority": 10
 		},
 		{
 			"matchUpdateTypes": [
 				"minor",
 				"patch"
 			],
-			"priority": 0
+			"prPriority": 0
 		}
 	]
 }
