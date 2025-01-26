@@ -21,13 +21,13 @@
 				"packages/frontend-shared/**",
 				"packages/misskey-bubble-game/**",
 				"packages/misskey-reversi/**",
-				"packages/sw/**",
+				"packages/sw/**"
 			]
 		},
 		{
 			"groupName": "misskey-js Updates",
 			"matchPaths": [
-				"packages/misskey-js/**",
+				"packages/misskey-js/**"
 			]
 		},
 		{
@@ -36,14 +36,12 @@
 				"packages/frontend/**"
 			]
 		},
-		// メジャーアップデートは手動承認
 		{
 			"matchUpdateTypes": [
 				"major"
 			],
 			"dependencyDashboardApproval": true
 		},
-		// セキュリティアップデートを優先
 		{
 			"matchUpdateTypes": [
 				"minor",
@@ -52,15 +50,14 @@
 			"matchDepTypes": [
 				"dependencies"
 			],
-			"priority": 10,
+			"priority": 10
 		},
-		// バグフィックスは優先度を下げる
 		{
 			"matchUpdateTypes": [
 				"minor",
 				"patch"
 			],
-			"priority": 0,
-		},
+			"priority": 0
+		}
 	]
 }
