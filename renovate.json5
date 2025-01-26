@@ -12,24 +12,24 @@
 		{
 			"groupName": "[Backend] Update dependencies",
 			"matchPaths": [
-				"packages/backend/**"
+				"packages/backend/**/package.json"
 			]
 		},
 		{
 			"groupName": "[Frontend] Update dependencies",
 			"matchPaths": [
-				"packages/frontend/**",
-				"packages/frontend-embed/**",
-				"packages/frontend-shared/**",
-				"packages/misskey-bubble-game/**",
-				"packages/misskey-reversi/**",
-				"packages/sw/**"
+				"packages/frontend/**/package.json",
+				"packages/frontend-embed/**/package.json",
+				"packages/frontend-shared/**/package.json",
+				"packages/misskey-bubble-game/**/package.json",
+				"packages/misskey-reversi/**/package.json",
+				"packages/sw/**/package.json"
 			]
 		},
 		{
 			"groupName": "[misskey-js] Update dependencies",
 			"matchPaths": [
-				"packages/misskey-js/**"
+				"packages/misskey-js/**/package.json"
 			]
 		},
 		{
@@ -41,13 +41,28 @@
 		{
 			"groupName": "[Tools] Update dependencies",
 			"matchPaths": [
-				"scripts/**"
+				"scripts/**/package.json"
 			]
 		},
 		{
 			"groupName": "[GitHub Actions] Update dependencies",
 			"matchPaths": [
-				".github/workflows/**"
+				".github/workflows/**/*.yml"
+			]
+		},
+		{
+			"groupName": "[devcontainer] Update dependencies",
+			"matchPaths": [
+				".devcontainer/**"
+			]
+		},
+		{
+			"groupName": "[docker] Update dependencies",
+			"matchPaths": [
+				"compose.local-db.yml",
+				"compose_example.yml",
+				"packages/backend/test-federation/*.yml",
+				"Dockerfile"
 			]
 		},
 		{
