@@ -10,13 +10,13 @@
 	"prHourlyLimit": 5,
 	"packageRules": [
 		{
-			"groupName": "Backend Updates",
+			"groupName": "[Backend] Update dependencies",
 			"matchPaths": [
 				"packages/backend/**"
 			]
 		},
 		{
-			"groupName": "Frontend Updates",
+			"groupName": "[Frontend] Update dependencies",
 			"matchPaths": [
 				"packages/frontend/**",
 				"packages/frontend-embed/**",
@@ -27,15 +27,27 @@
 			]
 		},
 		{
-			"groupName": "misskey-js Updates",
+			"groupName": "[misskey-js] Update dependencies",
 			"matchPaths": [
 				"packages/misskey-js/**"
 			]
 		},
 		{
-			"groupName": "RepositoryRoot Updates",
+			"groupName": "[Root] Update dependencies",
 			"matchPaths": [
 				"package.json"
+			]
+		},
+		{
+			"groupName": "[Tools] Update dependencies",
+			"matchPaths": [
+				"scripts/**"
+			]
+		},
+		{
+			"groupName": "[GitHub Actions] Update dependencies",
+			"matchPaths": [
+				".github/workflows/**"
 			]
 		},
 		{
