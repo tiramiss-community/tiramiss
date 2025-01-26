@@ -4,7 +4,7 @@
 	],
 	"timezone": "Asia/Tokyo",
 	"schedule": [
-		"before 3am on Monday"
+		"* 0 * * *"
 	],
 	"packageRules": [
 		{
