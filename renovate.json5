@@ -8,6 +8,8 @@
 		"* 0 * * *"
 	],
 	"prHourlyLimit": 5,
+	"dependencyDashboardApproval": true,
+	"dependencyDashboardAutoclose": true,
 	"packageRules": [
 		{
 			"groupName": "[Backend] Update dependencies",
@@ -70,31 +72,6 @@
 			"matchPaths": [
 				".devcontainer/**"
 			]
-		},
-		{
-			// メジャーアップデートの場合、破壊的変更のリスクがあるのでダッシュボードへの通知のみに留める
-			"matchUpdateTypes": [
-				"major"
-			],
-			"dependencyDashboardApproval": true
-		},
-		{
-			// dependenciesにあるものは優先度高め
-			"matchUpdateTypes": [
-				"minor",
-				"patch"
-			],
-			"matchDepTypes": [
-				"dependencies"
-			],
-			"prPriority": 10
-		},
-		{
-			"matchUpdateTypes": [
-				"minor",
-				"patch"
-			],
-			"prPriority": 0
 		}
 	]
 }
