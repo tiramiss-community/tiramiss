@@ -10,6 +10,8 @@
 	"prHourlyLimit": 5,
 	"dependencyDashboardApproval": true,
 	"dependencyDashboardAutoclose": true,
+	"osvVulnerabilityAlerts": true,
+	"dependencyDashboardOSVVulnerabilitySummary": "unresolved",
 	"packageRules": [
 		{
 			"groupName": "[Backend] Update dependencies",
