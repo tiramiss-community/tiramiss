@@ -1,0 +1,66 @@
+{
+	"extends": [
+		"config:base"
+	],
+	"timezone": "Asia/Tokyo",
+	"schedule": [
+		"before 3am on Monday"
+	],
+	"packageRules": [
+		{
+			"groupName": "Backend Updates",
+			"matchPaths": [
+				"packages/backend/**"
+			]
+		},
+		{
+			"groupName": "Frontend Updates",
+			"matchPaths": [
+				"packages/frontend/**",
+				"packages/frontend-embed/**",
+				"packages/frontend-shared/**",
+				"packages/misskey-bubble-game/**",
+				"packages/misskey-reversi/**",
+				"packages/sw/**",
+			]
+		},
+		{
+			"groupName": "misskey-js Updates",
+			"matchPaths": [
+				"packages/misskey-js/**",
+			]
+		},
+		{
+			"groupName": "Frontend Updates",
+			"matchPaths": [
+				"packages/frontend/**"
+			]
+		},
+		// メジャーアップデートは手動承認
+		{
+			"matchUpdateTypes": [
+				"major"
+			],
+			"dependencyDashboardApproval": true
+		},
+		// セキュリティアップデートを優先
+		{
+			"matchUpdateTypes": [
+				"minor",
+				"patch"
+			],
+			"matchDepTypes": [
+				"dependencies"
+			],
+			"priority": 10,
+		},
+		// バグフィックスは優先度を下げる
+		{
+			"matchUpdateTypes": [
+				"minor",
+				"patch"
+			],
+			"priority": 0,
+		},
+	]
+}
