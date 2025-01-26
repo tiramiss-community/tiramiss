@@ -32,9 +32,9 @@
 			]
 		},
 		{
-			"groupName": "Frontend Updates",
+			"groupName": "RepositoryRoot Updates",
 			"matchPaths": [
-				"packages/frontend/**"
+				"package.json"
 			]
 		},
 		{
