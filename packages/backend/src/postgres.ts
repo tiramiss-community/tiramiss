@@ -22,7 +22,7 @@ import { MiAuthSession } from '@/models/AuthSession.js';
 import { MiBlocking } from '@/models/Blocking.js';
 import { MiChannelFollowing } from '@/models/ChannelFollowing.js';
 import { MiChannelFavorite } from '@/models/ChannelFavorite.js';
-import { MiChannelMuting } from "@/models/ChannelMuting.js";
+import { MiChannelMuting } from '@/models/ChannelMuting.js';
 import { MiClip } from '@/models/Clip.js';
 import { MiClipNote } from '@/models/ClipNote.js';
 import { MiClipFavorite } from '@/models/ClipFavorite.js';
@@ -107,11 +107,7 @@ function truncateSql(sql: string) {
 }
 
 function printReplicationMode(sql: string, queryRunner?: QueryRunner) {
-	if (this.printReplicationMode && queryRunner) {
-		return `[${queryRunner.getReplicationMode()}] ${sql}`;
-	} else {
-		return message;
-	}
+	return queryRunner ? `[${queryRunner.getReplicationMode()}] ${sql}` : sql;
 }
 
 function stringifyParameter(param: any) {
