@@ -90,43 +90,79 @@ export const dbLogger = new MisskeyLogger('db');
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray');
 
+export type LoggerProps = {
+	disableQueryTruncation?: boolean;
+	enableQueryParamLogging?: boolean;
+	printReplicationMode?: boolean,
+}
+
+function highlightSql(sql: string) {
+	return highlight.highlight(sql, {
+		language: 'sql', ignoreIllegals: true,
+	});
+}
+
+function truncateSql(sql: string) {
+	return sql.length > 100 ? `${sql.substring(0, 100)}...` : sql;
+}
+
+function printReplicationMode(sql: string, queryRunner?: QueryRunner) {
+	if (this.printReplicationMode && queryRunner) {
+		return `[${queryRunner.getReplicationMode()}] ${sql}`;
+	} else {
+		return message;
+	}
+}
+
+function stringifyParameter(param: any) {
+	if (param instanceof Date) {
+		return param.toISOString();
+	} else {
+		return param;
+	}
+}
+
 class MyCustomLogger implements Logger {
-	constructor(
-		private printReplicationMode?: boolean,
-	) {
+	constructor(private props: LoggerProps = {}) {
 	}
 
 	@bindThis
-	private highlight(sql: string) {
-		return highlight.highlight(sql, {
-			language: 'sql', ignoreIllegals: true,
-		});
-	}
+	private transformQueryLog(sql: string, opts?: { queryRunner?: QueryRunner }) {
+		let modded = sql;
 
-	@bindThis
-	private appendPrefixIfNeeded(message: string, opts?: {
-		queryRunner?: QueryRunner;
-	}): string {
-		if (this.printReplicationMode && opts?.queryRunner) {
-			return `[${opts.queryRunner.getReplicationMode()}] ${message}`;
-		} else {
-			return message;
+		if (this.props.printReplicationMode) {
+			modded = printReplicationMode(modded, opts?.queryRunner);
 		}
+
+		if (!this.props.disableQueryTruncation) {
+			modded = truncateSql(modded);
+		}
+
+		return highlightSql(modded);
+	}
+
+	@bindThis
+	private transformParameters(parameters?: any[]) {
+		if (this.props.enableQueryParamLogging && parameters && parameters.length > 0) {
+			return parameters.map(stringifyParameter);
+		}
+
+		return undefined;
 	}
 
 	@bindThis
 	public logQuery(query: string, parameters?: any[], queryRunner?: QueryRunner) {
-		sqlLogger.info(this.appendPrefixIfNeeded(this.highlight(query).substring(0, 100), { queryRunner }));
+		sqlLogger.info(this.transformQueryLog(query, { queryRunner }), this.transformParameters(parameters));
 	}
 
 	@bindThis
 	public logQueryError(error: string, query: string, parameters?: any[], queryRunner?: QueryRunner) {
-		sqlLogger.error(this.appendPrefixIfNeeded(this.highlight(query), { queryRunner }));
+		sqlLogger.error(this.transformQueryLog(query, { queryRunner }), this.transformParameters(parameters));
 	}
 
 	@bindThis
 	public logQuerySlow(time: number, query: string, parameters?: any[], queryRunner?: QueryRunner) {
-		sqlLogger.warn(this.appendPrefixIfNeeded(this.highlight(query), { queryRunner }));
+		sqlLogger.warn(this.transformQueryLog(query, { queryRunner }), this.transformParameters(parameters));
 	}
 
 	@bindThis
@@ -265,7 +301,13 @@ export function createPostgresDataSource(config: Config) {
 			},
 		} : false,
 		logging: log,
-		logger: log ? new MyCustomLogger(config.dbReplications) : undefined,
+		logger: log
+			? new MyCustomLogger({
+				disableQueryTruncation: config.logging?.sql?.disableQueryTruncation,
+				enableQueryParamLogging: config.logging?.sql?.enableQueryParamLogging,
+				printReplicationMode: config.dbReplications,
+			})
+			: undefined,
 		maxQueryExecutionTime: 300,
 		entities: entities,
 		migrations: ['../../migration/*.js'],
