@@ -1,3 +1,15 @@
+## Unreleased
+
+### General
+-
+
+### Client
+-
+
+### Server
+
+- 1つのMisskeyで複数のHTTPサーバプロセスを起動できるように ( #13662 )
+
 ## 2025.2.0
 
 ### General
