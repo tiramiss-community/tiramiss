@@ -120,6 +120,8 @@ import type {
 	AdminUnsuspendUserRequest,
 	AdminUpdateAbuseUserReportRequest,
 	AdminUpdateMetaRequest,
+	AdminUpdateProxyAccountRequest,
+	AdminUpdateProxyAccountResponse,
 	AdminUpdateUserNoteRequest,
 	AnnouncementsRequest,
 	AnnouncementsResponse,
@@ -679,6 +681,7 @@ export type Endpoints = {
 	'admin/unsuspend-user': { req: AdminUnsuspendUserRequest; res: EmptyResponse };
 	'admin/update-abuse-user-report': { req: AdminUpdateAbuseUserReportRequest; res: EmptyResponse };
 	'admin/update-meta': { req: AdminUpdateMetaRequest; res: EmptyResponse };
+	'admin/update-proxy-account': { req: AdminUpdateProxyAccountRequest; res: AdminUpdateProxyAccountResponse };
 	'admin/update-user-note': { req: AdminUpdateUserNoteRequest; res: EmptyResponse };
 	'announcements': { req: AnnouncementsRequest; res: AnnouncementsResponse };
 	'announcements/show': { req: AnnouncementsShowRequest; res: AnnouncementsShowResponse };
@@ -979,7 +982,7 @@ export type Endpoints = {
 	'users/show': { req: UsersShowRequest; res: UsersShowResponse };
 	'users/update-memo': { req: UsersUpdateMemoRequest; res: EmptyResponse };
 	'v2/admin/emoji/list': { req: V2AdminEmojiListRequest; res: V2AdminEmojiListResponse };
-}
+};
 
 /**
  * NOTE: The content-type for all endpoints not listed here is application/json.
