@@ -225,7 +225,7 @@ export type ClusterWorker = {
 	name?: string;
 	instances: number;
 	type: ClusterWorkerType[];
-}
+};
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
