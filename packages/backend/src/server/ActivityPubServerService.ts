@@ -8,12 +8,22 @@ import { IncomingMessage } from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import fastifyAccepts from '@fastify/accepts';
 import httpSignature from '@peertube/http-signature';
-import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
+import { Brackets, IsNull, LessThan, Not } from 'typeorm';
 import accepts from 'accepts';
 import vary from 'vary';
 import secureJson from 'secure-json-parse';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository, FollowRequestsRepository, MiMeta } from '@/models/_.js';
+import type {
+	EmojisRepository,
+	FollowingsRepository,
+	FollowRequestsRepository,
+	MiMeta,
+	NoteReactionsRepository,
+	NotesRepository,
+	UserNotePiningsRepository,
+	UserProfilesRepository,
+	UsersRepository,
+} from '@/models/_.js';
 import * as url from '@/misc/prelude/url.js';
 import type { Config } from '@/config.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -30,15 +40,20 @@ import { bindThis } from '@/decorators.js';
 import { IActivity } from '@/core/activitypub/type.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
 import * as Acct from '@/misc/acct.js';
-import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
-import type { FindOptionsWhere } from 'typeorm';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
+import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import Logger from '@/logger.js';
+import type { FindOptionsWhere } from 'typeorm';
+import type { FastifyBodyParser, FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
 const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
 
 @Injectable()
 export class ActivityPubServerService {
+	private logger: Logger;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -73,12 +88,15 @@ export class ActivityPubServerService {
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
 		private apRendererService: ApRendererService,
+		private apDbResolverService: ApDbResolverService,
 		private queueService: QueueService,
 		private userKeypairService: UserKeypairService,
 		private queryService: QueryService,
 		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
+		private loggerService: LoggerService,
 	) {
 		//this.createServer = this.createServer.bind(this);
+		this.logger = this.loggerService.getLogger('ap-server');
 	}
 
 	@bindThis
@@ -637,6 +655,70 @@ export class ActivityPubServerService {
 		fastify.post('/users/:user/inbox', { config: { rawBody: true }, bodyLimit: 1024 * 64 }, async (request, reply) => await this.inbox(request, reply));
 
 		// note
+		const resolveNoteInternal = async (noteId: string, requestRaw: IncomingMessage): Promise<MiNote | null> => {
+			const note = await this.notesRepository.findOneBy({
+				id: noteId,
+				localOnly: false,
+			});
+
+			if (note == null) {
+				// ノートが存在しない
+				return null;
+			}
+
+			if (['public', 'home'].includes(note.visibility)) {
+				// 公開ノートなので閲覧可能
+				return note;
+			} else if (note.visibility === 'followers') {
+				// 署名検証によるフォロワー判定 (Authorized Fetch)
+				try {
+					const signature = httpSignature.parseRequest(requestRaw, {
+						headers: ['(request-target)', 'host', 'date'],
+						authorizationHeaderName: 'signature',
+					});
+
+					// keyIdからユーザーを特定 (DBに公開鍵情報がある既知のユーザーのみ対応)
+					const keyId = signature.params.keyId;
+					const keyAuthResult = await this.apDbResolverService.getAuthUserFromKeyId(keyId);
+					if (keyAuthResult == null) {
+						// 公開鍵がDBに存在しない場合は閲覧不可
+						return null;
+					}
+
+					const { user, key } = keyAuthResult;
+					if (!httpSignature.verifySignature(signature, key.keyPem)) {
+						// 署名検証失敗
+						return null;
+					}
+
+					if (user.id === note.userId) {
+						// 自分のノートなので閲覧可能
+						return note;
+					} else {
+						// フォロワーチェック
+						const following = await this.followingsRepository.findOneBy({
+							followeeId: note.userId,
+							followerId: user.id,
+						});
+						if (!following) {
+							// フォロワーでないので閲覧不可
+							return null;
+						}
+
+						// フォロワーなので閲覧可能
+						return note;
+					}
+				} catch (e) {
+					// 署名がない、または検証失敗時は閲覧不可
+					this.logger.warn('Authorized fetch failed for followers-only note', { noteId, error: e });
+					return null;
+				}
+			} else {
+				// 非公開ノートなので閲覧不可
+				return null;
+			}
+		};
+
 		fastify.get<{ Params: { note: string; } }>('/notes/:note', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
 			vary(reply.raw, 'Accept');
 
@@ -645,11 +727,7 @@ export class ActivityPubServerService {
 				return;
 			}
 
-			const note = await this.notesRepository.findOneBy({
-				id: request.params.note,
-				visibility: In(['public', 'home']),
-				localOnly: false,
-			});
+			const note = await resolveNoteInternal(request.params.note, request.raw);
 
 			if (note == null) {
 				reply.code(404);
@@ -680,12 +758,7 @@ export class ActivityPubServerService {
 				return;
 			}
 
-			const note = await this.notesRepository.findOneBy({
-				id: request.params.note,
-				userHost: IsNull(),
-				visibility: In(['public', 'home']),
-				localOnly: false,
-			});
+			const note = await resolveNoteInternal(request.params.note, request.raw);
 
 			if (note == null) {
 				reply.code(404);
