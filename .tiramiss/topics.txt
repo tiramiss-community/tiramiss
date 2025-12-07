@@ -1,0 +1,7 @@
+# Auto-generated from GitHub Issue
+# repo: tiramiss-community/tiramiss
+# issue: #47
+# required labels (any): 先行実装, 独自機能
+feat/remove-unused-upstream-workflows
+feat/version
+feat/support-multiple-http-worker
