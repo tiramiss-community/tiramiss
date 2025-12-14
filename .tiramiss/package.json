@@ -1,0 +1,27 @@
+{
+  "name": "make-tiramiss",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "rebase-working": "vite-node ./src/rebase-working-branch.ts",
+    "issue-to-topics": "vite-node ./src/issue-to-topics.ts",
+    "apply-topics": "vite-node ./src/apply-topics.ts",
+    "bundle-topics": "vite-node ./src/bundle-topics.ts",
+    "sync-upstream": "vite-node ./src/sync-upstream.ts",
+    "typecheck": "tsc --noEmit",
+    "format:fix": "pnpm exec -- biome format --fix"
+  },
+  "dependencies": {
+    "glob": "11.0.3",
+    "octokit": "5.0.5",
+    "typescript": "5.9.3",
+    "yargs": "18.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.4",
+    "@types/node": "24.10.0",
+    "@types/yargs": "17.0.34",
+    "vite-node": "5.0.0"
+  }
+}
