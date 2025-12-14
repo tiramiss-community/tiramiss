@@ -1,0 +1,7 @@
+# Auto-generated from GitHub Issue
+# repo: tiramiss-community/tiramiss
+# issue: #47
+# bundle definitions: 2
+# format: <bundle-branch> <topic1> <topic2> ...
+bundle/version tiramiss-develop feat/version
+bundle/support-multiple-http-worker tiramiss-develop feat/support-multiple-http-worker
