@@ -4,9 +4,10 @@
  */
 
 import { URL } from 'node:url';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { InboxQueue } from '@/core/QueueModule.js';
+import { QueueService } from '@/core/QueueService.js';
+import { QUEUE } from '@/queue/const.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -47,10 +48,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject('queue:inbox') public inboxQueue: InboxQueue,
+		private queueService: QueueService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const jobs = await this.inboxQueue.getJobs(['delayed']);
+			const queue = this.queueService.getQueue(QUEUE.INBOX);
+			const jobs = await queue.getJobs(['delayed']);
 
 			const counts = new Map<string, number>();
 

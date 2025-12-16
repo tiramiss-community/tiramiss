@@ -151,7 +151,7 @@ import { ApMentionService } from './activitypub/models/ApMentionService.js';
 import { ApNoteService } from './activitypub/models/ApNoteService.js';
 import { ApPersonService } from './activitypub/models/ApPersonService.js';
 import { ApQuestionService } from './activitypub/models/ApQuestionService.js';
-import { QueueModule } from './QueueModule.js';
+
 import { QueueService } from './QueueService.js';
 import { LoggerService } from './LoggerService.js';
 import type { Provider } from '@nestjs/common';
@@ -307,7 +307,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 
 @Module({
 	imports: [
-		QueueModule,
 	],
 	providers: [
 		LoggerService,
@@ -609,7 +608,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		//#endregion
 	],
 	exports: [
-		QueueModule,
 		LoggerService,
 		AbuseReportService,
 		AbuseReportNotificationService,

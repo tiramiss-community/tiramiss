@@ -5,7 +5,7 @@
 
 import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable } from '@nestjs/common';
-import { DataSource, IsNull, LessThan, QueryFailedError, Not } from 'typeorm';
+import { DataSource, IsNull, LessThan, Not, QueryFailedError } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiMeta, MiNote, NotesRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
@@ -44,13 +44,7 @@ export class CleanRemoteNotesProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<Record<string, unknown>>): Promise<{
-		deletedCount: number;
-		oldest: number | null;
-		newest: number | null;
-		skipped: boolean;
-		transientErrors: number;
-	}> {
+	public async process(job: Bull.Job<Record<string, unknown>>) {
 		const getConfig = () => {
 			return {
 				enabled: this.meta.enableRemoteNotesCleaning,

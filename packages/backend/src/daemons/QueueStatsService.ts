@@ -10,7 +10,8 @@ import { QueueService } from '@/core/QueueService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { QUEUE, baseQueueOptions } from '@/queue/const.js';
+import { QUEUE } from '@/queue/const.js';
+import { baseQueueOptions } from '@/queue/helper.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 const ev = new Xev();
@@ -55,8 +56,10 @@ export class QueueStatsService implements OnApplicationShutdown {
 		});
 
 		const tick = async () => {
-			const deliverJobCounts = await this.queueService.deliverQueue.getJobCounts();
-			const inboxJobCounts = await this.queueService.inboxQueue.getJobCounts();
+			const deliverQueue = this.queueService.getQueue(QUEUE.DELIVER);
+			const inboxQueue = this.queueService.getQueue(QUEUE.INBOX);
+			const deliverJobCounts = await deliverQueue.getJobCounts();
+			const inboxJobCounts = await inboxQueue.getJobCounts();
 
 			const stats = {
 				deliver: {
