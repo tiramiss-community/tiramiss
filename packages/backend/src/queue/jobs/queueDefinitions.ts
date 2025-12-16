@@ -11,7 +11,9 @@ import { endedPollNotificationQueue, postScheduledNoteQueue } from '@/queue/jobs
 import { dbQueue } from '@/queue/jobs/definitions/db.js';
 import { relationshipQueue } from '@/queue/jobs/definitions/relationship.js';
 import { objectStorageQueue } from '@/queue/jobs/definitions/objectStorage.js';
-import { userWebhookDeliverQueue, systemWebhookDeliverQueue } from '@/queue/jobs/definitions/webhook.js';
+import { systemWebhookDeliverQueue, userWebhookDeliverQueue } from '@/queue/jobs/definitions/webhook.js';
+import { notePostQueue } from '@/queue/jobs/definitions/note.js';
+import { noteDeleteQueue } from '@/queue/jobs/definitions/noteDelete.js';
 import type { QueueDefinition } from '@mokurokujs/core';
 
 const definitionsByType: Record<QueueType, QueueDefinition> = {
@@ -25,9 +27,10 @@ const definitionsByType: Record<QueueType, QueueDefinition> = {
 	[QUEUE.OBJECT_STORAGE]: objectStorageQueue,
 	[QUEUE.USER_WEBHOOK_DELIVER]: userWebhookDeliverQueue,
 	[QUEUE.SYSTEM_WEBHOOK_DELIVER]: systemWebhookDeliverQueue,
+	[QUEUE.NOTE_POST]: notePostQueue,
+	[QUEUE.NOTE_DELETE]: noteDeleteQueue,
 };
 
 export function queueDefinitionFromType(queueType: QueueType): QueueDefinition {
 	return definitionsByType[queueType];
 }
-

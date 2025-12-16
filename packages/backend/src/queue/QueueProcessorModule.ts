@@ -12,6 +12,9 @@ import { DeliverProcessorService } from './processors/DeliverProcessorService.js
 import { EndedPollNotificationProcessorService } from './processors/EndedPollNotificationProcessorService.js';
 import { PostScheduledNoteProcessorService } from './processors/PostScheduledNoteProcessorService.js';
 import { InboxProcessorService } from './processors/InboxProcessorService.js';
+import { NoteProcessorService } from './processors/NoteProcessorService.js';
+import { NoteDeleteProcessorService } from './processors/NoteDeleteProcessorService.js';
+import { UpdateUserNotesCountProcessorService } from './processors/UpdateUserNotesCountProcessorService.js';
 import { UserWebhookDeliverProcessorService } from './processors/UserWebhookDeliverProcessorService.js';
 import { SystemWebhookDeliverProcessorService } from './processors/SystemWebhookDeliverProcessorService.js';
 import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMutingsProcessorService.js';
@@ -83,6 +86,9 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		PostScheduledNoteProcessorService,
 		DeliverProcessorService,
 		InboxProcessorService,
+		NoteProcessorService,
+		NoteDeleteProcessorService,
+		UpdateUserNotesCountProcessorService,
 		AggregateRetentionProcessorService,
 		CheckExpiredMutingsProcessorService,
 		CheckModeratorsActivityProcessorService,

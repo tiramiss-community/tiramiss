@@ -42,6 +42,13 @@ import {
 	postScheduledNoteJob,
 } from '@/queue/jobs/definitions/misc.js';
 import {
+	notePostJob,
+	updateUserNotesCountJob,
+} from '@/queue/jobs/definitions/note.js';
+import {
+	noteDeleteJob,
+} from '@/queue/jobs/definitions/noteDelete.js';
+import {
 	cleanRemoteFilesJob,
 	deleteFileJob,
 } from '@/queue/jobs/definitions/objectStorage.js';
@@ -96,6 +103,9 @@ import { ImportFollowingProcessorService } from './processors/ImportFollowingPro
 import { ImportMutingProcessorService } from './processors/ImportMutingProcessorService.js';
 import { ImportUserListsProcessorService } from './processors/ImportUserListsProcessorService.js';
 import { InboxProcessorService } from './processors/InboxProcessorService.js';
+import { NoteProcessorService } from './processors/NoteProcessorService.js';
+import { NoteDeleteProcessorService } from './processors/NoteDeleteProcessorService.js';
+import { UpdateUserNotesCountProcessorService } from './processors/UpdateUserNotesCountProcessorService.js';
 import { PostScheduledNoteProcessorService } from './processors/PostScheduledNoteProcessorService.js';
 import { RelationshipProcessorService } from './processors/RelationshipProcessorService.js';
 import { ResyncChartsProcessorService } from './processors/ResyncChartsProcessorService.js';
@@ -133,6 +143,9 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private systemWebhookDeliverProcessorService: SystemWebhookDeliverProcessorService,
 		private endedPollNotificationProcessorService: EndedPollNotificationProcessorService,
 		private postScheduledNoteProcessorService: PostScheduledNoteProcessorService,
+		private noteProcessorService: NoteProcessorService,
+		private noteDeleteProcessorService: NoteDeleteProcessorService,
+		private updateUserNotesCountProcessorService: UpdateUserNotesCountProcessorService,
 		private deliverProcessorService: DeliverProcessorService,
 		private inboxProcessorService: InboxProcessorService,
 		private deleteDriveFilesProcessorService: DeleteDriveFilesProcessorService,
@@ -355,6 +368,23 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			const hooks = makeHooks(logger, 'ObjectStorage', 'debug');
 			jobRuntime.handle(deleteFileJob, wrapProcessor((job) => this.deleteFileProcessorService.process(job)), { hooks });
 			jobRuntime.handle(cleanRemoteFilesJob, wrapProcessor((job) => this.cleanRemoteFilesProcessorService.process(job)), { hooks });
+		}
+		//#endregion
+
+		//#region note post
+		{
+			const logger = this.logger.createSubLogger('note-post');
+			const hooks = makeHooks(logger, 'NotePost', 'debug');
+			jobRuntime.handle(notePostJob, wrapProcessor((job) => this.noteProcessorService.process(job)), { hooks });
+			jobRuntime.handle(updateUserNotesCountJob, wrapProcessor((job) => this.updateUserNotesCountProcessorService.process(job)), { hooks });
+		}
+		//#endregion
+
+		//#region note delete
+		{
+			const logger = this.logger.createSubLogger('note-delete');
+			const hooks = makeHooks(logger, 'NoteDelete', 'debug');
+			jobRuntime.handle(noteDeleteJob, wrapProcessor((job) => this.noteDeleteProcessorService.process(job)), { hooks });
 		}
 		//#endregion
 
