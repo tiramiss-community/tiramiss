@@ -11,13 +11,12 @@ import type { MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUserNotePining } from '@/models/UserNotePining.js';
-import { RelayService } from '@/core/RelayService.js';
 import type { Config } from '@/config.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
+import { QueueService } from '@/core/QueueService.js';
 
 @Injectable()
 export class NotePiningService {
@@ -37,9 +36,8 @@ export class NotePiningService {
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private roleService: RoleService,
-		private relayService: RelayService,
-		private apDeliverManagerService: ApDeliverManagerService,
 		private apRendererService: ApRendererService,
+		private queueService: QueueService,
 	) {
 	}
 
@@ -121,7 +119,11 @@ export class NotePiningService {
 		const item = `${this.config.url}/notes/${noteId}`;
 		const content = this.apRendererService.addContext(isAddition ? this.apRendererService.renderAdd(user, target, item) : this.apRendererService.renderRemove(user, target, item));
 
-		this.apDeliverManagerService.deliverToFollowers(user, content);
-		this.relayService.deliverToRelays(user, content);
+		this.queueService.notePiningDeliver({
+			noteId,
+			userSnapshot: { id: user.id },
+			apContent: content,
+			isAddition,
+		});
 	}
 }
