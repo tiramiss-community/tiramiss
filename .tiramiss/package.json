@@ -6,7 +6,7 @@
   "scripts": {
     "rebase-working": "vite-node ./src/rebase-working-branch.ts",
     "issue-to-topics": "vite-node ./src/issue-to-topics.ts",
-    "apply-topics": "vite-node ./src/apply-topics.ts",
+    "apply-topics": "vite-node ./src/apply-topics.ts --mode merge",
     "bundle-topics": "vite-node ./src/bundle-topics.ts",
     "sync-upstream": "vite-node ./src/sync-upstream.ts",
     "typecheck": "tsc --noEmit",
