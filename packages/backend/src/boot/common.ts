@@ -7,6 +7,7 @@ import { NestFactory } from '@nestjs/core';
 import { init } from 'slacc';
 import { NestLogger } from '@/NestLogger.js';
 import type { Config } from '@/config.js';
+import { registerShutdownTask } from './shutdown.js';
 
 let slaccInitialized = false;
 
@@ -26,6 +27,10 @@ export async function server() {
 
 	const app = await NestFactory.createApplicationContext(MainModule, {
 		logger: new NestLogger(),
+	});
+
+	registerShutdownTask(async () => {
+		await app.close();
 	});
 
 	const serverService = app.get(ServerService);
@@ -51,6 +56,10 @@ export async function jobQueue() {
 
 	const jobQueue = await NestFactory.createApplicationContext(QueueProcessorModule, {
 		logger: new NestLogger(),
+	});
+
+	registerShutdownTask(async () => {
+		await jobQueue.close();
 	});
 
 	jobQueue.get(QueueProcessorService).start();
