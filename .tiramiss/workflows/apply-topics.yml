@@ -1,0 +1,67 @@
+name: apply-topics
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure admin actor
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const actor = context.actor;
+            const { data } = await github.rest.repos.getCollaboratorPermissionLevel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              username: actor,
+            });
+            if (data.permission !== "admin") {
+              core.setFailed(`このワークフローはリポジトリ管理者のみ実行できます (権限: ${data.permission}).`);
+            }
+
+      # 通常のGITHUB_TOKENではワークフローの更新ができないため、専用のGitHubAppトークンを使用する
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        env:
+          APP_ID: ${{ secrets.WORKFLOW_APP_ID }}
+          APP_PRIVATE_KEY: ${{ secrets.WORKFLOW_APP_KEY }}
+        with:
+          app-id: ${{ env.APP_ID }}
+          private-key: ${{ env.APP_PRIVATE_KEY }}
+          repositories: tiramiss
+
+      - name: Checkout develop-working
+        uses: actions/checkout@v4
+        with:
+          ref: develop-working
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.2.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        working-directory: .tiramiss
+        run: pnpm install --frozen-lockfile
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Rebuild tiramiss branch
+        working-directory: .tiramiss
+        env:
+          CI: true
+        run: pnpm run apply-topics
