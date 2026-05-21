@@ -128,6 +128,37 @@ export type NoteDeleteJobData = {
 	isRemote: boolean;
 };
 
+export type ReactionDeliverJobData = {
+	noteId: string;
+	userSnapshot: { id: string };
+	apContent: any | null;
+	apRecipientIds: string[];
+	isUndo: boolean;
+	/** addFollowersRecipe を呼ぶかどうか (HTTP 側で visibility / undo から判定して渡す) */
+	deliverToFollowers: boolean;
+};
+
+export type NotePiningDeliverJobData = {
+	noteId: string;
+	userSnapshot: { id: string };
+	apContent: any | null;
+	isAddition: boolean;
+};
+
+/**
+ * リモートインスタンスの follow/follower カウンタおよび instance chart を更新するジョブのペイロード。
+ *
+ * - direction: 'following' を指定すると `instances.followingCount` を、'followers' を指定すると `followersCount` を更新する。
+ * - isAdditional: true で increment / false で decrement。
+ * - updateChart: enqueue 時点で `meta.enableChartsForFederatedInstances` を判定して保持する。
+ */
+export type InstanceFollowStatsUpdateJobData = {
+	host: string;
+	direction: 'following' | 'followers';
+	isAdditional: boolean;
+	updateChart: boolean;
+};
+
 export type UpdateUserNotesCountJobData = {
 	userId: string;
 };

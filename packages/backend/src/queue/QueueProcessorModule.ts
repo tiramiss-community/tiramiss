@@ -14,6 +14,9 @@ import { PostScheduledNoteProcessorService } from './processors/PostScheduledNot
 import { InboxProcessorService } from './processors/InboxProcessorService.js';
 import { NoteProcessorService } from './processors/NoteProcessorService.js';
 import { NoteDeleteProcessorService } from './processors/NoteDeleteProcessorService.js';
+import { ReactionDeliverProcessorService } from './processors/ReactionDeliverProcessorService.js';
+import { NotePiningDeliverProcessorService } from './processors/NotePiningDeliverProcessorService.js';
+import { InstanceFollowStatsUpdateProcessorService } from './processors/InstanceFollowStatsUpdateProcessorService.js';
 import { UpdateUserNotesCountProcessorService } from './processors/UpdateUserNotesCountProcessorService.js';
 import { UserWebhookDeliverProcessorService } from './processors/UserWebhookDeliverProcessorService.js';
 import { SystemWebhookDeliverProcessorService } from './processors/SystemWebhookDeliverProcessorService.js';
@@ -88,6 +91,9 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		InboxProcessorService,
 		NoteProcessorService,
 		NoteDeleteProcessorService,
+		ReactionDeliverProcessorService,
+		NotePiningDeliverProcessorService,
+		InstanceFollowStatsUpdateProcessorService,
 		UpdateUserNotesCountProcessorService,
 		AggregateRetentionProcessorService,
 		CheckExpiredMutingsProcessorService,

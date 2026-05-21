@@ -49,6 +49,15 @@ import {
 	noteDeleteJob,
 } from '@/queue/jobs/definitions/noteDelete.js';
 import {
+	reactionDeliverJob,
+} from '@/queue/jobs/definitions/reactionDeliver.js';
+import {
+	notePiningDeliverJob,
+} from '@/queue/jobs/definitions/notePiningDeliver.js';
+import {
+	instanceFollowStatsUpdateJob,
+} from '@/queue/jobs/definitions/instanceFollowStatsUpdate.js';
+import {
 	cleanRemoteFilesJob,
 	deleteFileJob,
 } from '@/queue/jobs/definitions/objectStorage.js';
@@ -105,6 +114,9 @@ import { ImportUserListsProcessorService } from './processors/ImportUserListsPro
 import { InboxProcessorService } from './processors/InboxProcessorService.js';
 import { NoteProcessorService } from './processors/NoteProcessorService.js';
 import { NoteDeleteProcessorService } from './processors/NoteDeleteProcessorService.js';
+import { ReactionDeliverProcessorService } from './processors/ReactionDeliverProcessorService.js';
+import { NotePiningDeliverProcessorService } from './processors/NotePiningDeliverProcessorService.js';
+import { InstanceFollowStatsUpdateProcessorService } from './processors/InstanceFollowStatsUpdateProcessorService.js';
 import { UpdateUserNotesCountProcessorService } from './processors/UpdateUserNotesCountProcessorService.js';
 import { PostScheduledNoteProcessorService } from './processors/PostScheduledNoteProcessorService.js';
 import { RelationshipProcessorService } from './processors/RelationshipProcessorService.js';
@@ -145,6 +157,9 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private postScheduledNoteProcessorService: PostScheduledNoteProcessorService,
 		private noteProcessorService: NoteProcessorService,
 		private noteDeleteProcessorService: NoteDeleteProcessorService,
+		private reactionDeliverProcessorService: ReactionDeliverProcessorService,
+		private notePiningDeliverProcessorService: NotePiningDeliverProcessorService,
+		private instanceFollowStatsUpdateProcessorService: InstanceFollowStatsUpdateProcessorService,
 		private updateUserNotesCountProcessorService: UpdateUserNotesCountProcessorService,
 		private deliverProcessorService: DeliverProcessorService,
 		private inboxProcessorService: InboxProcessorService,
@@ -385,6 +400,30 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			const logger = this.logger.createSubLogger('note-delete');
 			const hooks = makeHooks(logger, 'NoteDelete', 'debug');
 			jobRuntime.handle(noteDeleteJob, wrapProcessor((job) => this.noteDeleteProcessorService.process(job)), { hooks });
+		}
+		//#endregion
+
+		//#region reaction deliver
+		{
+			const logger = this.logger.createSubLogger('reaction-deliver');
+			const hooks = makeHooks(logger, 'ReactionDeliver', 'debug');
+			jobRuntime.handle(reactionDeliverJob, wrapProcessor((job) => this.reactionDeliverProcessorService.process(job)), { hooks });
+		}
+		//#endregion
+
+		//#region note pining deliver
+		{
+			const logger = this.logger.createSubLogger('note-pining-deliver');
+			const hooks = makeHooks(logger, 'NotePiningDeliver', 'debug');
+			jobRuntime.handle(notePiningDeliverJob, wrapProcessor((job) => this.notePiningDeliverProcessorService.process(job)), { hooks });
+		}
+		//#endregion
+
+		//#region instance follow stats update
+		{
+			const logger = this.logger.createSubLogger('instance-follow-stats-update');
+			const hooks = makeHooks(logger, 'InstanceFollowStatsUpdate', 'debug');
+			jobRuntime.handle(instanceFollowStatsUpdateJob, wrapProcessor((job) => this.instanceFollowStatsUpdateProcessorService.process(job)), { hooks });
 		}
 		//#endregion
 
