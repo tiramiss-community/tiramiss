@@ -47,12 +47,15 @@ import { systemWebhookDeliverJob, userWebhookDeliverJob } from '@/queue/jobs/def
 import { QueueRuntimeService } from '@/queue/QueueRuntimeService.js';
 import { endedPollNotificationJob } from '@/queue/jobs/definitions/misc.js';
 import { queueDefinitionFromType } from '@/queue/jobs/queueDefinitions.js';
+import { notePostJob, updateUserNotesCountJob } from '@/queue/jobs/definitions/note.js';
+import { noteDeleteJob } from '@/queue/jobs/definitions/noteDelete.js';
 import { type UserWebhookPayload } from './UserWebhookService.js';
 import type * as Bull from 'bullmq';
 import type httpSignature from '@peertube/http-signature';
 import type {
 	DeliverJobData,
 	SystemWebhookDeliverJobData,
+	NoteDeleteJobData,
 	ThinUser,
 	UserWebhookDeliverJobData,
 } from '../queue/types.js';
@@ -425,6 +428,25 @@ export class QueueService {
 
 	public async endedPollNotification(noteId: string, delay: number) {
 		return this.jobRuntime.enqueue(endedPollNotificationJob, { noteId }, { delay });
+	}
+
+	@bindThis
+	public notePost(noteId: string, silent: boolean) {
+		return this.jobRuntime.enqueue(notePostJob, { noteId, silent }, { jobId: `notePost-${noteId}` });
+	}
+
+	@bindThis
+	public noteDelete(data: NoteDeleteJobData) {
+		return this.jobRuntime.enqueue(noteDeleteJob, data, { jobId: `noteDelete-${data.noteId}` });
+	}
+
+	@bindThis
+	public updateUserNotesCount(userId: string) {
+		// 5 分以内の同一 userId 再 enqueue は BullMQ が既存 delayed ジョブを温存するため 1 回しか発火しない
+		return this.jobRuntime.enqueue(updateUserNotesCountJob, { userId }, {
+			jobId: `notesCount-${userId}`,
+			delay: 5 * 60 * 1000,
+		});
 	}
 
 	@bindThis

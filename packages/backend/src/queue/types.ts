@@ -113,6 +113,25 @@ export type PostScheduledNoteJobData = {
 	noteDraftId: string;
 };
 
+export type NotePostJobData = {
+	noteId: MiNote['id'];
+	silent: boolean;
+};
+
+export type NoteDeleteJobData = {
+	noteId: string;
+	quiet: boolean;
+	userSnapshot: { id: string; uri: string | null; host: string | null; isBot: boolean };
+	noteSnapshot: Pick<MiNote, 'id' | 'userId' | 'userHost' | 'visibility' | 'localOnly' | 'channelId' | 'replyId' | 'renoteId' | 'fileIds'>;
+	apContent: any | null;
+	apRecipientIds: string[];
+	isRemote: boolean;
+};
+
+export type UpdateUserNotesCountJobData = {
+	userId: string;
+};
+
 export type SystemWebhookDeliverJobData<T extends SystemWebhookEventType = SystemWebhookEventType> = {
 	type: T;
 	content: SystemWebhookPayload<T>;
