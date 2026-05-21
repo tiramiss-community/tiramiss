@@ -99,6 +99,7 @@ import { notesSearchAvailable } from '@/utility/check-permissions.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { useRouter } from '@/router.js';
 import { Paginator } from '@/utility/paginator.js';
+import { openPastTimelineWindow } from '@/ui/deck/past-timeline-window.js';
 
 const router = useRouter();
 
@@ -161,6 +162,16 @@ function edit() {
 function openPostForm() {
 	os.post({
 		channel: channel.value,
+	});
+}
+
+function openPastTimeline() {
+	if (!channel.value) return;
+
+	void openPastTimelineWindow({
+		src: 'channel',
+		title: channel.value.name,
+		channel: channel.value.id,
 	});
 }
 
@@ -270,6 +281,12 @@ const headerActions = computed(() => {
 				}
 				copyToClipboard(`${url}/channels/${channel.value.id}`);
 			},
+		});
+
+		headerItems.push({
+			icon: 'ti ti-calendar-time',
+			text: i18n.ts.jumpToSpecifiedDate,
+			handler: openPastTimeline,
 		});
 
 		if (isSupportShare()) {

@@ -33,6 +33,7 @@ import { favoritedChannelsCache } from '@/cache.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
+import { openPastTimelineWindow } from '@/ui/deck/past-timeline-window.js';
 
 const props = defineProps<{
 	column: Column;
@@ -86,6 +87,16 @@ async function post() {
 	});
 }
 
+function openPastTimeline() {
+	if (props.column.channelId == null) return;
+
+	void openPastTimelineWindow({
+		src: 'channel',
+		title: props.column.name || props.column.timelineNameCache || i18n.ts._deck._columns.channel,
+		channel: props.column.channelId,
+	});
+}
+
 const menu: MenuItem[] = [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.selectChannel,
@@ -94,5 +105,9 @@ const menu: MenuItem[] = [{
 	icon: 'ti ti-bell',
 	text: i18n.ts._deck.newNoteNotificationSettings,
 	action: () => soundSettingsButton(soundSetting),
+}, {
+	icon: 'ti ti-calendar-time',
+	text: i18n.ts.jumpToSpecifiedDate,
+	action: openPastTimeline,
 }];
 </script>
