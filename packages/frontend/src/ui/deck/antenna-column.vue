@@ -27,6 +27,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { antennasCache } from '@/cache.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
+import { openPastTimelineWindow } from '@/ui/deck/past-timeline-window.js';
 
 const props = defineProps<{
 	column: Column;
@@ -96,6 +97,16 @@ function editAntenna() {
 	os.pageWindow('/my/antennas/' + props.column.antennaId);
 }
 
+function openPastTimeline() {
+	if (props.column.antennaId == null) return;
+
+	void openPastTimelineWindow({
+		src: 'antenna',
+		title: props.column.name || props.column.timelineNameCache || i18n.ts._deck._columns.antenna,
+		antenna: props.column.antennaId,
+	});
+}
+
 const menu: MenuItem[] = [
 	{
 		icon: 'ti ti-pencil',
@@ -111,6 +122,11 @@ const menu: MenuItem[] = [
 		icon: 'ti ti-bell',
 		text: i18n.ts._deck.newNoteNotificationSettings,
 		action: () => soundSettingsButton(soundSetting),
+	},
+	{
+		icon: 'ti ti-calendar-time',
+		text: i18n.ts.jumpToSpecifiedDate,
+		action: openPastTimeline,
 	},
 ];
 

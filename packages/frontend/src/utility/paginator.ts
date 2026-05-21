@@ -249,6 +249,10 @@ export class Paginator<
 			}
 		}
 
+		if ((this.initialId || this.initialDate) && this.initialDirection === 'older' && !this.noPaging) {
+			this.canFetchNewer.value = apiRes.length > 0;
+		}
+
 		this.error.value = false;
 		this.fetching.value = false;
 	}

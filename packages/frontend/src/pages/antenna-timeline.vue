@@ -27,6 +27,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
+import { openPastTimelineWindow } from '@/ui/deck/past-timeline-window.js';
 
 const router = useRouter();
 
@@ -45,6 +46,14 @@ function settings() {
 	});
 }
 
+function openPastTimeline() {
+	void openPastTimelineWindow({
+		src: 'antenna',
+		title: antenna.value?.name ?? i18n.ts.antennas,
+		antenna: props.antennaId,
+	});
+}
+
 watch(() => props.antennaId, async () => {
 	antenna.value = await misskeyApi('antennas/show', {
 		antennaId: props.antennaId,
@@ -55,6 +64,10 @@ const headerActions = computed(() => antenna.value ? [{
 	icon: 'ti ti-settings',
 	text: i18n.ts.settings,
 	handler: settings,
+}, {
+	icon: 'ti ti-calendar-time',
+	text: i18n.ts.jumpToSpecifiedDate,
+	handler: openPastTimeline,
 }] : []);
 
 const headerTabs = computed(() => []);

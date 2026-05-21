@@ -26,6 +26,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
+import { openPastTimelineWindow } from '@/ui/deck/past-timeline-window.js';
 
 const router = useRouter();
 
@@ -49,10 +50,22 @@ function settings() {
 	});
 }
 
+function openPastTimeline() {
+	void openPastTimelineWindow({
+		src: 'list',
+		title: list.value?.name ?? i18n.ts.lists,
+		list: props.listId,
+	});
+}
+
 const headerActions = computed(() => list.value ? [{
 	icon: 'ti ti-settings',
 	text: i18n.ts.settings,
 	handler: settings,
+}, {
+	icon: 'ti ti-calendar-time',
+	text: i18n.ts.jumpToSpecifiedDate,
+	handler: openPastTimeline,
 }] : []);
 
 const headerTabs = computed(() => []);
