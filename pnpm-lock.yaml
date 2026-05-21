@@ -129,6 +129,12 @@ importers:
       '@misskey-dev/summaly':
         specifier: 5.3.0
         version: 5.3.0
+      '@mokurokujs/bullmq-adapter':
+        specifier: 0.1.0
+        version: 0.1.0(bullmq@5.76.6)
+      '@mokurokujs/core':
+        specifier: 0.1.0
+        version: 0.1.0
       '@napi-rs/canvas':
         specifier: 1.0.0
         version: 1.0.0
@@ -2543,6 +2549,14 @@ packages:
 
   '@misskey-dev/summaly@5.3.0':
     resolution: {integrity: sha512-s3AoGKywk/pNdUtRF/XJGMRDPoFlmcBfk6KxQsdwghQyQeAGDJPw255lMheMMWd00I1pjng14+Yq9yg4V0K4IQ==}
+
+  '@mokurokujs/bullmq-adapter@0.1.0':
+    resolution: {integrity: sha512-j4GaPJll76IaL/ley4/B0wd3leJnrwiM+AQKwCkrHeUf355bu1Nj+aUERSc+kReEZ9EwZj/aFB4Iox3Bu2DOaQ==}
+    peerDependencies:
+      bullmq: ^5.16.0
+
+  '@mokurokujs/core@0.1.0':
+    resolution: {integrity: sha512-KQ/fD5rxwkfrjhBk48p7JcnlkTMdnB0E8v77gY88giGVpCA7eXo6NZximXA7T8JY4xI8praCs1Al3QdAXk0ZtQ==}
 
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.3':
     resolution: {integrity: sha512-QZHtlVgbAdy2zAqNA9Gu1UpIuI8Xvsd1v8ic6B2pZmeFnFcMWiPLfWXh7TVw4eGEZ/C9TH281KwhVoeQUKbyjw==}
@@ -10459,6 +10473,9 @@ packages:
     resolution: {integrity: sha512-zK7YHHz4ZXpW89AHXUPbQVGKI7uvkd3hzusTdotCg1UxyaVtg0zFJSTfW/Dq5f7OBBVnq6cZIaC8Ti4hb6dtCA==}
     engines: {node: '>= 14'}
 
+  zod@4.4.3:
+    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
+
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
@@ -11838,6 +11855,14 @@ snapshots:
       ipaddr.js: 2.3.0
     optionalDependencies:
       fastify: 5.8.5
+
+  '@mokurokujs/bullmq-adapter@0.1.0(bullmq@5.76.6)':
+    dependencies:
+      '@mokurokujs/core': 0.1.0
+      bullmq: 5.76.6
+      zod: 4.4.3
+
+  '@mokurokujs/core@0.1.0': {}
 
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.3':
     optional: true
@@ -20622,5 +20647,7 @@ snapshots:
       archiver-utils: 5.0.2
       compress-commons: 6.0.2
       readable-stream: 4.7.0
+
+  zod@4.4.3: {}
 
   zwitch@2.0.4: {}

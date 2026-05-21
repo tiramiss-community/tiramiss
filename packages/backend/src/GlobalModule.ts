@@ -8,12 +8,15 @@ import * as Redis from 'ioredis';
 import { DataSource } from 'typeorm';
 import { Meilisearch } from 'meilisearch';
 import { MiMeta } from '@/models/Meta.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { QueueRuntimeService } from '@/queue/QueueRuntimeService.js';
 import { DI } from './di-symbols.js';
-import { Config, loadConfig } from './config.js';
+import { loadConfig } from './config.js';
 import { createPostgresDataSource } from './postgres.js';
 import { RepositoryModule } from './models/RepositoryModule.js';
 import { allSettled } from './misc/promise-tracker.js';
 import { GlobalEvents } from './core/GlobalEventService.js';
+import type { Config } from './config.js';
 import type { Provider, OnApplicationShutdown } from '@nestjs/common';
 
 const $config: Provider = {
@@ -157,11 +160,12 @@ const $meta: Provider = {
 @Global()
 @Module({
 	imports: [RepositoryModule],
-	providers: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions],
-	exports: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions, RepositoryModule],
+	providers: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions, LoggerService, QueueRuntimeService],
+	exports: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions, LoggerService, QueueRuntimeService, RepositoryModule],
 })
 export class GlobalModule implements OnApplicationShutdown {
 	constructor(
+		private queueRuntimeService: QueueRuntimeService,
 		@Inject(DI.db) private db: DataSource,
 		@Inject(DI.redis) private redisClient: Redis.Redis,
 		@Inject(DI.redisForPub) private redisForPub: Redis.Redis,
@@ -171,10 +175,11 @@ export class GlobalModule implements OnApplicationShutdown {
 	) { }
 
 	public async dispose(): Promise<void> {
-		// Wait for all potential DB queries
+		// Wait for all potential queue jobs and DB queries
 		await allSettled();
-		// And then disconnect from DB
+		// Close all queues and workers, then disconnect from DB and Redis
 		await Promise.all([
+			this.queueRuntimeService.dispose(),
 			this.db.destroy(),
 			this.redisClient.disconnect(),
 			this.redisForPub.disconnect(),
