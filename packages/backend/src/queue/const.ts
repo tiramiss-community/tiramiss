@@ -14,6 +14,8 @@ export const QUEUE = {
 	OBJECT_STORAGE: 'objectStorage',
 	USER_WEBHOOK_DELIVER: 'userWebhookDeliver',
 	SYSTEM_WEBHOOK_DELIVER: 'systemWebhookDeliver',
+	NOTE_POST: 'notePost',
+	NOTE_DELETE: 'noteDelete',
 } as const;
 
 export const QUEUE_TYPES = Object.values(QUEUE);
