@@ -45,6 +45,7 @@ import { deepMerge } from '@/utility/merge.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { prefer } from '@/preferences.js';
+import { openPastTimelineWindow } from '@/ui/deck/past-timeline-window.js';
 
 const tlComponent = useTemplateRef('tlComponent');
 
@@ -197,6 +198,33 @@ function switchTlIfNeeded() {
 	}
 }
 
+function openPastTimeline() {
+	const currentSrc = src.value;
+
+	if (isBasicTimeline(currentSrc)) {
+		void openPastTimelineWindow({
+			src: currentSrc,
+			title: i18n.ts._timelines[currentSrc],
+			withRenotes: withRenotes.value,
+			withReplies: withReplies.value,
+			withSensitive: withSensitive.value,
+			withLocalOnly: withLocalOnly.value,
+			onlyFiles: onlyFiles.value,
+		});
+	} else if (currentSrc.startsWith('list:')) {
+		const listId = currentSrc.substring('list:'.length);
+		const list = prefer.r.pinnedUserLists.value.find(x => x.id === listId);
+		void openPastTimelineWindow({
+			src: 'list',
+			title: list?.name ?? i18n.ts.lists,
+			list: listId,
+			withRenotes: withRenotes.value,
+			withSensitive: withSensitive.value,
+			onlyFiles: onlyFiles.value,
+		});
+	}
+}
+
 onMounted(() => {
 	switchTlIfNeeded();
 });
@@ -260,6 +288,12 @@ const headerActions = computed<PageHeaderItem[]>(() => {
 			},
 		});
 	}
+
+	items.unshift({
+		icon: 'ti ti-calendar-time',
+		text: i18n.ts.jumpToSpecifiedDate,
+		handler: openPastTimeline,
+	});
 
 	return items;
 });

@@ -27,6 +27,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { userListsCache } from '@/cache.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
+import { openPastTimelineWindow } from '@/ui/deck/past-timeline-window.js';
 
 const props = defineProps<{
 	column: Column;
@@ -101,6 +102,17 @@ function editList() {
 	os.pageWindow('/my/lists/' + props.column.listId);
 }
 
+function openPastTimeline() {
+	if (props.column.listId == null) return;
+
+	void openPastTimelineWindow({
+		src: 'list',
+		title: props.column.name || props.column.timelineNameCache || i18n.ts._deck._columns.list,
+		list: props.column.listId,
+		withRenotes: withRenotes.value,
+	});
+}
+
 const menu: MenuItem[] = [
 	{
 		icon: 'ti ti-pencil',
@@ -121,6 +133,11 @@ const menu: MenuItem[] = [
 		icon: 'ti ti-bell',
 		text: i18n.ts._deck.newNoteNotificationSettings,
 		action: () => soundSettingsButton(soundSetting),
+	},
+	{
+		icon: 'ti ti-calendar-time',
+		text: i18n.ts.jumpToSpecifiedDate,
+		action: openPastTimeline,
 	},
 ];
 </script>
