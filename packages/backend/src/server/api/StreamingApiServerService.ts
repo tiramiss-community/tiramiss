@@ -22,6 +22,9 @@ export class StreamingApiServerService {
 	#wss: WebSocket.WebSocketServer;
 	#connections = new Map<WebSocket.WebSocket, number>();
 	#cleanConnectionsIntervalId: NodeJS.Timeout | null = null;
+	#server: http.Server | null = null;
+	#onUpgrade: ((request: http.IncomingMessage, socket: any, head: Buffer) => void) | null = null;
+	#onRedisMessage: ((_: string, data: string) => void) | null = null;
 
 	constructor(
 		@Inject(DI.redisForSub)
@@ -35,11 +38,12 @@ export class StreamingApiServerService {
 
 	@bindThis
 	public attach(server: http.Server): void {
+		this.#server = server;
 		this.#wss = new WebSocket.WebSocketServer({
 			noServer: true,
 		});
 
-		server.on('upgrade', async (request, socket, head) => {
+		this.#onUpgrade = async (request, socket, head) => {
 			if (request.url == null) {
 				socket.write('HTTP/1.1 400 Bad Request\r\n\r\n');
 				socket.destroy();
@@ -97,14 +101,16 @@ export class StreamingApiServerService {
 					stream, user, app,
 				});
 			});
-		});
+		};
+		server.on('upgrade', this.#onUpgrade);
 
 		const globalEv = new EventEmitter();
 
-		this.redisForSub.on('message', (_: string, data: string) => {
+		this.#onRedisMessage = (_: string, data: string) => {
 			const parsed = JSON.parse(data);
 			globalEv.emit('message', parsed);
-		});
+		};
+		this.redisForSub.on('message', this.#onRedisMessage);
 
 		this.#wss.on('connection', async (connection: WebSocket.WebSocket, request: http.IncomingMessage, ctx: {
 			stream: MainStreamConnection,
@@ -165,8 +171,38 @@ export class StreamingApiServerService {
 			clearInterval(this.#cleanConnectionsIntervalId);
 			this.#cleanConnectionsIntervalId = null;
 		}
+
+		if (this.#server && this.#onUpgrade) {
+			this.#server.off('upgrade', this.#onUpgrade);
+			this.#onUpgrade = null;
+		}
+		this.#server = null;
+
+		if (this.#onRedisMessage) {
+			this.redisForSub.off('message', this.#onRedisMessage);
+			this.#onRedisMessage = null;
+		}
+
+		// Ensure server.close callback does not wait forever for clients.
+		try {
+			for (const ws of this.#wss.clients) {
+				ws.terminate();
+			}
+		} catch { }
+		try {
+			for (const [ws] of this.#connections) {
+				ws.terminate();
+			}
+			this.#connections.clear();
+		} catch { }
+
 		return new Promise((resolve) => {
-			this.#wss.close(() => resolve());
+			const timer = setTimeout(() => resolve(), 2_000);
+			timer.unref?.();
+			this.#wss.close(() => {
+				clearTimeout(timer);
+				resolve();
+			});
 		});
 	}
 }
