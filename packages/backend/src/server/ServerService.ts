@@ -77,6 +77,8 @@ export class ServerService implements OnApplicationShutdown {
 		const fastify = Fastify({
 			trustProxy: this.config.trustProxy,
 			logger: false,
+			// Ensure SIGINT shutdown does not hang waiting for keep-alive sockets.
+			forceCloseConnections: true,
 		});
 		this.#fastify = fastify;
 
@@ -282,6 +284,12 @@ export class ServerService implements OnApplicationShutdown {
 	@bindThis
 	public async dispose(): Promise<void> {
 		await this.streamingApiServerService.detach();
+		try {
+			this.#fastify.server.closeIdleConnections();
+			this.#fastify.server.closeAllConnections();
+		} catch {
+			// NOP
+		}
 		await this.#fastify.close();
 	}
 

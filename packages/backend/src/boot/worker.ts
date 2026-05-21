@@ -47,6 +47,6 @@ export async function workerMain() {
 
 	if (cluster.isWorker) {
 		// Send a 'ready' message to parent process
-		process.send!('ready');
+		process.send?.('ready');
 	}
 }
