@@ -68,8 +68,8 @@ export async function jobQueue() {
 		await jobQueue.close();
 	});
 
-	jobQueue.get(QueueProcessorService).start();
-	jobQueue.get(ChartManagementService).start();
+	await jobQueue.get(QueueProcessorService).start();
+	await jobQueue.get(ChartManagementService).start();
 
 	return jobQueue;
 }

@@ -41,6 +41,7 @@ const promises = Array
 		config.redis,
 		config.redisForPubsub,
 		config.redisForJobQueue,
+		...(config.redisForJobQueueByQueue ? Object.values(config.redisForJobQueueByQueue) : []),
 		config.redisForTimelines,
 		config.redisForReactions,
 	]))

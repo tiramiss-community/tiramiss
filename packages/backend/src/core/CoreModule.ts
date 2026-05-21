@@ -151,9 +151,10 @@ import { ApMentionService } from './activitypub/models/ApMentionService.js';
 import { ApNoteService } from './activitypub/models/ApNoteService.js';
 import { ApPersonService } from './activitypub/models/ApPersonService.js';
 import { ApQuestionService } from './activitypub/models/ApQuestionService.js';
-import { QueueModule } from './QueueModule.js';
+
 import { QueueService } from './QueueService.js';
 import { LoggerService } from './LoggerService.js';
+import { NoteNotificationManagerService } from './NoteNotificationManagerService.js';
 import type { Provider } from '@nestjs/common';
 
 //#region 文字列ベースでのinjection用(循環参照対応のため)
@@ -186,6 +187,7 @@ const $MfmService: Provider = { provide: 'MfmService', useExisting: MfmService }
 const $ModerationLogService: Provider = { provide: 'ModerationLogService', useExisting: ModerationLogService };
 const $NoteCreateService: Provider = { provide: 'NoteCreateService', useExisting: NoteCreateService };
 const $NoteDeleteService: Provider = { provide: 'NoteDeleteService', useExisting: NoteDeleteService };
+const $NoteNotificationManagerService: Provider = { provide: 'NoteNotificationManagerService', useExisting: NoteNotificationManagerService };
 const $NotePiningService: Provider = { provide: 'NotePiningService', useExisting: NotePiningService };
 const $NoteDraftService: Provider = { provide: 'NoteDraftService', useExisting: NoteDraftService };
 const $NotificationService: Provider = { provide: 'NotificationService', useExisting: NotificationService };
@@ -307,7 +309,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 
 @Module({
 	imports: [
-		QueueModule,
 	],
 	providers: [
 		LoggerService,
@@ -339,6 +340,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ModerationLogService,
 		NoteCreateService,
 		NoteDeleteService,
+		NoteNotificationManagerService,
 		NotePiningService,
 		NoteDraftService,
 		NotificationService,
@@ -489,6 +491,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ModerationLogService,
 		$NoteCreateService,
 		$NoteDeleteService,
+		$NoteNotificationManagerService,
 		$NotePiningService,
 		$NoteDraftService,
 		$NotificationService,
@@ -609,7 +612,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		//#endregion
 	],
 	exports: [
-		QueueModule,
 		LoggerService,
 		AbuseReportService,
 		AbuseReportNotificationService,
@@ -639,6 +641,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ModerationLogService,
 		NoteCreateService,
 		NoteDeleteService,
+		NoteNotificationManagerService,
 		NotePiningService,
 		NoteDraftService,
 		NotificationService,
@@ -788,6 +791,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ModerationLogService,
 		$NoteCreateService,
 		$NoteDeleteService,
+		$NoteNotificationManagerService,
 		$NotePiningService,
 		$NoteDraftService,
 		$NotificationService,

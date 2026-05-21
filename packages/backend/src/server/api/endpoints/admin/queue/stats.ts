@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, PostScheduledNoteQueue, InboxQueue, ObjectStorageQueue, SystemQueue, UserWebhookDeliverQueue, SystemWebhookDeliverQueue } from '@/core/QueueModule.js';
+import { QueueService } from '@/core/QueueService.js';
+import { QUEUE } from '@/queue/const.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -47,21 +48,18 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject('queue:system') public systemQueue: SystemQueue,
-		@Inject('queue:endedPollNotification') public endedPollNotificationQueue: EndedPollNotificationQueue,
-		@Inject('queue:postScheduledNote') public postScheduledNoteQueue: PostScheduledNoteQueue,
-		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
-		@Inject('queue:inbox') public inboxQueue: InboxQueue,
-		@Inject('queue:db') public dbQueue: DbQueue,
-		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
-		@Inject('queue:userWebhookDeliver') public userWebhookDeliverQueue: UserWebhookDeliverQueue,
-		@Inject('queue:systemWebhookDeliver') public systemWebhookDeliverQueue: SystemWebhookDeliverQueue,
+		private queueService: QueueService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const deliverJobCounts = await this.deliverQueue.getJobCounts();
-			const inboxJobCounts = await this.inboxQueue.getJobCounts();
-			const dbJobCounts = await this.dbQueue.getJobCounts();
-			const objectStorageJobCounts = await this.objectStorageQueue.getJobCounts();
+			const deliver = this.queueService.getQueue(QUEUE.DELIVER);
+			const inbox = this.queueService.getQueue(QUEUE.INBOX);
+			const db = this.queueService.getQueue(QUEUE.DB);
+			const objectStorage = this.queueService.getQueue(QUEUE.OBJECT_STORAGE);
+
+			const deliverJobCounts = await deliver.getJobCounts();
+			const inboxJobCounts = await inbox.getJobCounts();
+			const dbJobCounts = await db.getJobCounts();
+			const objectStorageJobCounts = await objectStorage.getJobCounts();
 
 			return {
 				deliver: deliverJobCounts,

@@ -6,6 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
+import { QUEUE } from '@/queue/const.js';
 import type { MiNoteDraft, NoteDraftsRepository, MiNote, MiDriveFile, MiChannel, UsersRepository, DriveFilesRepository, NotesRepository, BlockingsRepository, ChannelsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -311,25 +312,14 @@ export class NoteDraftService {
 		if (draft.scheduledAt.getTime() <= Date.now()) return;
 
 		const delay = draft.scheduledAt.getTime() - Date.now();
-		this.queueService.postScheduledNoteQueue.add(draft.id, {
-			noteDraftId: draft.id,
-		}, {
-			delay,
-			removeOnComplete: {
-				age: 3600 * 24 * 7, // keep up to 7 days
-				count: 30,
-			},
-			removeOnFail: {
-				age: 3600 * 24 * 7, // keep up to 7 days
-				count: 100,
-			},
-		});
+		this.queueService.postScheduledNote(draft.id, delay);
 	}
 
 	@bindThis
 	public async clearSchedule(draftId: MiNoteDraft['id']): Promise<void> {
 		// TODO: 線形探索なのをどうにかする
-		const jobs = await this.queueService.postScheduledNoteQueue.getJobs(['delayed', 'waiting', 'active']);
+		const queue = this.queueService.getQueue(QUEUE.POST_SCHEDULED_NOTE);
+		const jobs = await queue.getJobs(['delayed', 'waiting', 'active']);
 		for (const job of jobs) {
 			if (job.data.noteDraftId === draftId) {
 				await job.remove();

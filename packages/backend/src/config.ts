@@ -51,6 +51,7 @@ type Source = {
 	redis: RedisOptionsSource;
 	redisForPubsub?: RedisOptionsSource;
 	redisForJobQueue?: RedisOptionsSource;
+	redisForJobQueueByQueue?: Record<string, RedisOptionsSource>;
 	redisForTimelines?: RedisOptionsSource;
 	redisForReactions?: RedisOptionsSource;
 	fulltextSearch?: {
@@ -205,6 +206,7 @@ export type Config = {
 	redis: RedisOptions & RedisOptionsSource;
 	redisForPubsub: RedisOptions & RedisOptionsSource;
 	redisForJobQueue: RedisOptions & RedisOptionsSource;
+	redisForJobQueueByQueue: Record<string, RedisOptions & RedisOptionsSource> | undefined;
 	redisForTimelines: RedisOptions & RedisOptionsSource;
 	redisForReactions: RedisOptions & RedisOptionsSource;
 	sentryForBackend: { options: Partial<Sentry.NodeOptions>; enableNodeProfiling: boolean; } | undefined;
@@ -254,7 +256,16 @@ export const compiledConfigFilePath = fs.existsSync(compiledConfigFilePathForTes
 	? compiledConfigFilePathForTest
 	: resolve(projectBuiltDir, '.config.json');
 
+let cachedConfig: Config | null = null;
 export function loadConfig(): Config {
+	if (cachedConfig) {
+		return cachedConfig;
+	}
+	cachedConfig = loadConfigInternal();
+	return cachedConfig;
+}
+
+function loadConfigInternal(): Config {
 	if (!fs.existsSync(compiledConfigFilePath)) {
 		throw new Error('Compiled configuration file not found. Try running \'pnpm compile-config\'.');
 	}
@@ -282,6 +293,12 @@ export function loadConfig(): Config {
 		: null;
 	const internalMediaProxy = `${scheme}://${host}/proxy`;
 	const redis = convertRedisOptions(config.redis, host);
+	const redisForJobQueue = config.redisForJobQueue ? convertRedisOptions(config.redisForJobQueue, host) : redis;
+	const redisForJobQueueByQueue = config.redisForJobQueueByQueue
+		? Object.fromEntries(Object.entries(config.redisForJobQueueByQueue).map(([queueName, options]) => {
+			return [queueName, convertRedisOptions(options, host)] as const;
+		}))
+		: undefined;
 
 	return {
 		version,
@@ -316,7 +333,8 @@ export function loadConfig(): Config {
 		meilisearch: config.meilisearch,
 		redis,
 		redisForPubsub: config.redisForPubsub ? convertRedisOptions(config.redisForPubsub, host) : redis,
-		redisForJobQueue: config.redisForJobQueue ? convertRedisOptions(config.redisForJobQueue, host) : redis,
+		redisForJobQueue: redisForJobQueue,
+		redisForJobQueueByQueue: redisForJobQueueByQueue,
 		redisForTimelines: config.redisForTimelines ? convertRedisOptions(config.redisForTimelines, host) : redis,
 		redisForReactions: config.redisForReactions ? convertRedisOptions(config.redisForReactions, host) : redis,
 		sentryForBackend: config.sentryForBackend,

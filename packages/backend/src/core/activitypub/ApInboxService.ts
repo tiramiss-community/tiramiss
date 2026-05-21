@@ -526,7 +526,7 @@ export class ApInboxService {
 
 		this.globalEventService.publishInternalEvent('remoteUserUpdated', { id: actor.id });
 
-		return `ok: queued ${job.name} ${job.id}`;
+		return `ok: queued ${job.name} ${job.jobId}`;
 	}
 
 	@bindThis

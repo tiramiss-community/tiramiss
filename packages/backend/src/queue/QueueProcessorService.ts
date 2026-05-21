@@ -4,98 +4,163 @@
  */
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import * as Bull from 'bullmq';
+import { WorkerHooks } from '@mokurokujs/core';
 import type { Config } from '@/config.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
-import { bindThis } from '@/decorators.js';
+import { wrapProcessor } from '@/queue/jobs/compat.js';
+import {
+	deleteAccountJob,
+	deleteDriveFilesJob,
+	exportAntennasJob,
+	exportBlockingJob,
+	exportClipsJob,
+	exportCustomEmojisJob,
+	exportFavoritesJob,
+	exportFollowingJob,
+	exportMutingJob,
+	exportNotesJob,
+	exportUserListsJob,
+	importAntennasJob,
+	importBlockingJob,
+	importBlockingToDbJob,
+	importCustomEmojisJob,
+	importFollowingJob,
+	importFollowingToDbJob,
+	importMutingJob,
+	importUserListsJob,
+} from '@/queue/jobs/definitions/db.js';
+import {
+	deliverJob,
+} from '@/queue/jobs/definitions/deliver.js';
+import {
+	inboxJob,
+} from '@/queue/jobs/definitions/inbox.js';
+import {
+	endedPollNotificationJob,
+	postScheduledNoteJob,
+} from '@/queue/jobs/definitions/misc.js';
+import {
+	notePostJob,
+	updateUserNotesCountJob,
+} from '@/queue/jobs/definitions/note.js';
+import {
+	noteDeleteJob,
+} from '@/queue/jobs/definitions/noteDelete.js';
+import {
+	reactionDeliverJob,
+} from '@/queue/jobs/definitions/reactionDeliver.js';
+import {
+	notePiningDeliverJob,
+} from '@/queue/jobs/definitions/notePiningDeliver.js';
+import {
+	instanceFollowStatsUpdateJob,
+} from '@/queue/jobs/definitions/instanceFollowStatsUpdate.js';
+import {
+	cleanRemoteFilesJob,
+	deleteFileJob,
+} from '@/queue/jobs/definitions/objectStorage.js';
+import {
+	blockJob,
+	followJob,
+	unblockJob,
+	unfollowJob,
+} from '@/queue/jobs/definitions/relationship.js';
+import {
+	aggregateRetentionJob,
+	bakeBufferedReactionsJob,
+	checkExpiredMutingsJob,
+	checkModeratorsActivityJob,
+	cleanChartsJob,
+	cleanJob,
+	cleanRemoteNotesJob,
+	resyncChartsJob,
+	tickChartsJob,
+} from '@/queue/jobs/definitions/system.js';
+import {
+	systemWebhookDeliverJob,
+	userWebhookDeliverJob,
+} from '@/queue/jobs/definitions/webhook.js';
 import { CheckModeratorsActivityProcessorService } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
-import { UserWebhookDeliverProcessorService } from './processors/UserWebhookDeliverProcessorService.js';
-import { SystemWebhookDeliverProcessorService } from './processors/SystemWebhookDeliverProcessorService.js';
-import { EndedPollNotificationProcessorService } from './processors/EndedPollNotificationProcessorService.js';
-import { PostScheduledNoteProcessorService } from './processors/PostScheduledNoteProcessorService.js';
-import { DeliverProcessorService } from './processors/DeliverProcessorService.js';
-import { InboxProcessorService } from './processors/InboxProcessorService.js';
+import { QueueRuntimeService } from './QueueRuntimeService.js';
+import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
+import { BakeBufferedReactionsProcessorService } from './processors/BakeBufferedReactionsProcessorService.js';
+import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMutingsProcessorService.js';
+import { CleanChartsProcessorService } from './processors/CleanChartsProcessorService.js';
+import { CleanProcessorService } from './processors/CleanProcessorService.js';
+import { CleanRemoteFilesProcessorService } from './processors/CleanRemoteFilesProcessorService.js';
+import { CleanRemoteNotesProcessorService } from './processors/CleanRemoteNotesProcessorService.js';
+import { DeleteAccountProcessorService } from './processors/DeleteAccountProcessorService.js';
 import { DeleteDriveFilesProcessorService } from './processors/DeleteDriveFilesProcessorService.js';
-import { ExportCustomEmojisProcessorService } from './processors/ExportCustomEmojisProcessorService.js';
-import { ExportNotesProcessorService } from './processors/ExportNotesProcessorService.js';
+import { DeleteFileProcessorService } from './processors/DeleteFileProcessorService.js';
+import { DeliverProcessorService } from './processors/DeliverProcessorService.js';
+import { EndedPollNotificationProcessorService } from './processors/EndedPollNotificationProcessorService.js';
+import { ExportAntennasProcessorService } from './processors/ExportAntennasProcessorService.js';
+import { ExportBlockingProcessorService } from './processors/ExportBlockingProcessorService.js';
 import { ExportClipsProcessorService } from './processors/ExportClipsProcessorService.js';
+import { ExportCustomEmojisProcessorService } from './processors/ExportCustomEmojisProcessorService.js';
+import { ExportFavoritesProcessorService } from './processors/ExportFavoritesProcessorService.js';
 import { ExportFollowingProcessorService } from './processors/ExportFollowingProcessorService.js';
 import { ExportMutingProcessorService } from './processors/ExportMutingProcessorService.js';
-import { ExportBlockingProcessorService } from './processors/ExportBlockingProcessorService.js';
+import { ExportNotesProcessorService } from './processors/ExportNotesProcessorService.js';
 import { ExportUserListsProcessorService } from './processors/ExportUserListsProcessorService.js';
-import { ExportAntennasProcessorService } from './processors/ExportAntennasProcessorService.js';
+import { ImportAntennasProcessorService } from './processors/ImportAntennasProcessorService.js';
+import { ImportBlockingProcessorService } from './processors/ImportBlockingProcessorService.js';
+import { ImportCustomEmojisProcessorService } from './processors/ImportCustomEmojisProcessorService.js';
 import { ImportFollowingProcessorService } from './processors/ImportFollowingProcessorService.js';
 import { ImportMutingProcessorService } from './processors/ImportMutingProcessorService.js';
-import { ImportBlockingProcessorService } from './processors/ImportBlockingProcessorService.js';
 import { ImportUserListsProcessorService } from './processors/ImportUserListsProcessorService.js';
-import { ImportCustomEmojisProcessorService } from './processors/ImportCustomEmojisProcessorService.js';
-import { ImportAntennasProcessorService } from './processors/ImportAntennasProcessorService.js';
-import { DeleteAccountProcessorService } from './processors/DeleteAccountProcessorService.js';
-import { ExportFavoritesProcessorService } from './processors/ExportFavoritesProcessorService.js';
-import { CleanRemoteFilesProcessorService } from './processors/CleanRemoteFilesProcessorService.js';
-import { DeleteFileProcessorService } from './processors/DeleteFileProcessorService.js';
+import { InboxProcessorService } from './processors/InboxProcessorService.js';
+import { NoteProcessorService } from './processors/NoteProcessorService.js';
+import { NoteDeleteProcessorService } from './processors/NoteDeleteProcessorService.js';
+import { ReactionDeliverProcessorService } from './processors/ReactionDeliverProcessorService.js';
+import { NotePiningDeliverProcessorService } from './processors/NotePiningDeliverProcessorService.js';
+import { InstanceFollowStatsUpdateProcessorService } from './processors/InstanceFollowStatsUpdateProcessorService.js';
+import { UpdateUserNotesCountProcessorService } from './processors/UpdateUserNotesCountProcessorService.js';
+import { PostScheduledNoteProcessorService } from './processors/PostScheduledNoteProcessorService.js';
 import { RelationshipProcessorService } from './processors/RelationshipProcessorService.js';
-import { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
 import { ResyncChartsProcessorService } from './processors/ResyncChartsProcessorService.js';
-import { CleanChartsProcessorService } from './processors/CleanChartsProcessorService.js';
-import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMutingsProcessorService.js';
-import { BakeBufferedReactionsProcessorService } from './processors/BakeBufferedReactionsProcessorService.js';
-import { CleanProcessorService } from './processors/CleanProcessorService.js';
-import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
-import { CleanRemoteNotesProcessorService } from './processors/CleanRemoteNotesProcessorService.js';
+import { SystemWebhookDeliverProcessorService } from './processors/SystemWebhookDeliverProcessorService.js';
+import { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
+import { UserWebhookDeliverProcessorService } from './processors/UserWebhookDeliverProcessorService.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
-import { QUEUE, baseWorkerOptions } from './const.js';
 
-// ref. https://github.com/misskey-dev/misskey/pull/7635#issue-971097019
-function httpRelatedBackoff(attemptsMade: number) {
-	const baseDelay = 60 * 1000;	// 1min
-	const maxBackoff = 8 * 60 * 60 * 1000;	// 8hours
-	let backoff = (Math.pow(2, attemptsMade) - 1) * baseDelay;
-	backoff = Math.min(backoff, maxBackoff);
-	backoff += Math.round(backoff * Math.random() * 0.2);
-	return backoff;
-}
+function renderError(e?: Error) {
+	// 何故かeがundefinedで来ることがある
+	if (!e) return '?';
 
-function getJobInfo(job: Bull.Job | undefined, increment = false): string {
-	if (job == null) return '-';
+	if (e.name === 'UnrecoverableError' || e.name === 'AbortError') {
+		return `${e.name}: ${e.message}`;
+	}
 
-	const age = Date.now() - job.timestamp;
-
-	const formated = age > 60000 ? `${Math.floor(age / 1000 / 60)}m`
-		: age > 10000 ? `${Math.floor(age / 1000)}s`
-		: `${age}ms`;
-
-	// onActiveとかonCompletedのattemptsMadeがなぜか0始まりなのでインクリメントする
-	const currentAttempts = job.attemptsMade + (increment ? 1 : 0);
-	const maxAttempts = job.opts.attempts ?? 0;
-
-	return `id=${job.id} attempts=${currentAttempts}/${maxAttempts} age=${formated}`;
+	return {
+		stack: e.stack,
+		message: e.message,
+		name: e.name,
+	};
 }
 
 @Injectable()
 export class QueueProcessorService implements OnApplicationShutdown {
 	private logger: Logger;
-	private systemQueueWorker: Bull.Worker;
-	private dbQueueWorker: Bull.Worker;
-	private deliverQueueWorker: Bull.Worker;
-	private inboxQueueWorker: Bull.Worker;
-	private userWebhookDeliverQueueWorker: Bull.Worker;
-	private systemWebhookDeliverQueueWorker: Bull.Worker;
-	private relationshipQueueWorker: Bull.Worker;
-	private objectStorageQueueWorker: Bull.Worker;
-	private endedPollNotificationQueueWorker: Bull.Worker;
-	private postScheduledNoteQueueWorker: Bull.Worker;
 
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
 
+		private queueRuntimeService: QueueRuntimeService,
 		private queueLoggerService: QueueLoggerService,
 		private userWebhookDeliverProcessorService: UserWebhookDeliverProcessorService,
 		private systemWebhookDeliverProcessorService: SystemWebhookDeliverProcessorService,
 		private endedPollNotificationProcessorService: EndedPollNotificationProcessorService,
 		private postScheduledNoteProcessorService: PostScheduledNoteProcessorService,
+		private noteProcessorService: NoteProcessorService,
+		private noteDeleteProcessorService: NoteDeleteProcessorService,
+		private reactionDeliverProcessorService: ReactionDeliverProcessorService,
+		private notePiningDeliverProcessorService: NotePiningDeliverProcessorService,
+		private instanceFollowStatsUpdateProcessorService: InstanceFollowStatsUpdateProcessorService,
+		private updateUserNotesCountProcessorService: UpdateUserNotesCountProcessorService,
 		private deliverProcessorService: DeliverProcessorService,
 		private inboxProcessorService: InboxProcessorService,
 		private deleteDriveFilesProcessorService: DeleteDriveFilesProcessorService,
@@ -128,33 +193,10 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private cleanProcessorService: CleanProcessorService,
 		private cleanRemoteNotesProcessorService: CleanRemoteNotesProcessorService,
 	) {
+		const jobRuntime = this.queueRuntimeService.jobRuntime;
+		const schedulerRuntime = this.queueRuntimeService.schedulerRuntime;
+
 		this.logger = this.queueLoggerService.logger;
-
-		function renderError(e?: Error) {
-			// 何故かeがundefinedで来ることがある
-			if (!e) return '?';
-
-			if (e instanceof Bull.UnrecoverableError || e.name === 'AbortError') {
-				return `${e.name}: ${e.message}`;
-			}
-
-			return {
-				stack: e.stack,
-				message: e.message,
-				name: e.name,
-			};
-		}
-
-		function renderJob(job?: Bull.Job) {
-			if (!job) return '?';
-
-			return {
-				name: job.name || undefined,
-				info: getJobInfo(job),
-				failedReason: job.failedReason || undefined,
-				data: job.data,
-			};
-		}
 
 		let Sentry: typeof import('@sentry/node') | undefined;
 		if (this.config.sentryForBackend) {
@@ -163,419 +205,249 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			});
 		}
 
-		//#region system
-		{
-			const processer = (job: Bull.Job) => {
-				switch (job.name) {
-					case 'tickCharts': return this.tickChartsProcessorService.process();
-					case 'resyncCharts': return this.resyncChartsProcessorService.process();
-					case 'cleanCharts': return this.cleanChartsProcessorService.process();
-					case 'aggregateRetention': return this.aggregateRetentionProcessorService.process();
-					case 'checkExpiredMutings': return this.checkExpiredMutingsProcessorService.process();
-					case 'bakeBufferedReactions': return this.bakeBufferedReactionsProcessorService.process();
-					case 'checkModeratorsActivity': return this.checkModeratorsActivityProcessorService.process();
-					case 'clean': return this.cleanProcessorService.process();
-					case 'cleanRemoteNotes': return this.cleanRemoteNotesProcessorService.process(job);
-					default: throw new Error(`unrecognized job type ${job.name} for system`);
-				}
-			};
+		// 共通の WorkerHooks ファクトリ（コンストラクタ内限定）
+		const makeHooks = (
+			logger: Logger,
+			label: string,
+			level: 'debug' | 'info',
+			overrides?: Partial<WorkerHooks>,
+		): WorkerHooks => {
+			const logStart = (msg: string) => (level === 'info' ? logger.info(msg) : logger.debug(msg));
+			const logSuccess = (msg: string) => (level === 'info' ? logger.info(msg) : logger.debug(msg));
 
-			this.systemQueueWorker = new Bull.Worker(QUEUE.SYSTEM, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: System: ' + job.name }, () => processer(job));
-				} else {
-					return processer(job);
-				}
-			}, {
-				...baseWorkerOptions(this.config, QUEUE.SYSTEM),
-				autorun: false,
-			});
-
-			const logger = this.logger.createSubLogger('system');
-
-			this.systemQueueWorker
-				.on('active', (job) => logger.debug(`active id=${job.id}`))
-				.on('completed', (job, result) => logger.debug(`completed(${result}) id=${job.id}`))
-				.on('failed', (job, err: Error) => {
-					logger.error(`failed(${err.name}: ${err.message}) id=${job?.id ?? '?'}`, { job: renderJob(job), e: renderError(err) });
+			const defaultHooks: WorkerHooks = {
+				onStart: (ctx) => logStart(`active id=${ctx.jobId}`),
+				onSuccess: (ctx) => logSuccess(`completed id=${ctx.jobId}`),
+				onFailure: (ctx, err) => {
+					const errName = err instanceof Error ? err.name : 'Error';
+					const errMsg = err instanceof Error ? err.message : String(err);
+					logger.error(`failed(${errName}: ${errMsg}) id=${ctx.jobId}`, {
+						job: { name: ctx.jobName, id: ctx.jobId, attempt: ctx.attempt },
+						e: renderError(err instanceof Error ? err : undefined),
+					});
 					if (Sentry != null) {
-						Sentry.captureMessage(`Queue: System: ${job?.name ?? '?'}: ${err.name}: ${err.message}`, {
+						Sentry.captureMessage(`Queue: ${label}: ${ctx.jobName}: ${errName}: ${errMsg}`, {
 							level: 'error',
-							extra: { job, err },
+							extra: { job: { name: ctx.jobName, id: ctx.jobId }, err },
 						});
 					}
-				})
-				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
-				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
+				},
+			};
+
+			return { ...defaultHooks, ...overrides };
+		};
+
+		//#region system
+		{
+			const logger = this.logger.createSubLogger('system');
+			const createSystemHooks = () => makeHooks(logger, 'System', 'info', {
+				onRetry: (ctx, err, remainingAttempts) => {
+					const errName = err instanceof Error ? err.name : 'Error';
+					const errMsg = err instanceof Error ? err.message : String(err);
+					logger.warn(`retrying(${errName}: ${errMsg}) id=${ctx.jobId} remainingAttempts=${remainingAttempts}`, {
+						job: { name: ctx.jobName, id: ctx.jobId, attempt: ctx.attempt },
+						e: renderError(err instanceof Error ? err : undefined),
+					});
+				},
+			});
+
+			const scheduleOptions = {
+				immediately: false,
+				// 期限ではなくcountで設定したいが、ジョブごとではなくキュー全体でカウントされるため、高頻度で実行されるジョブによって低頻度で実行されるジョブのログが消えることになる
+				removeOnCompleteAfterSec: 3600 * 24 * 7, // keep up to 7 days,
+				removeOnFailAfterSec: 3600 * 24 * 7, // keep up to 7 days,
+			};
+
+			// 引数なしのProcessorServiceを使うジョブ
+			jobRuntime.handle(tickChartsJob, () => this.tickChartsProcessorService.process(), { hooks: createSystemHooks() });
+			schedulerRuntime.upsert(tickChartsJob, { pattern: '55 * * * *', ...scheduleOptions });
+
+			jobRuntime.handle(resyncChartsJob, () => this.resyncChartsProcessorService.process(), { hooks: createSystemHooks() });
+			schedulerRuntime.upsert(resyncChartsJob, { pattern: '0 0 * * *', ...scheduleOptions });
+
+			jobRuntime.handle(cleanChartsJob, () => this.cleanChartsProcessorService.process(), { hooks: createSystemHooks() });
+			schedulerRuntime.upsert(cleanChartsJob, { pattern: '0 0 * * *', ...scheduleOptions });
+
+			jobRuntime.handle(aggregateRetentionJob, () => this.aggregateRetentionProcessorService.process(), { hooks: createSystemHooks() });
+			schedulerRuntime.upsert(aggregateRetentionJob, { pattern: '0 0 * * *', ...scheduleOptions });
+
+			jobRuntime.handle(cleanJob, () => this.cleanProcessorService.process(), { hooks: createSystemHooks() });
+			schedulerRuntime.upsert(cleanJob, { pattern: '0 0 * * *', ...scheduleOptions });
+
+			jobRuntime.handle(checkExpiredMutingsJob, () => this.checkExpiredMutingsProcessorService.process(), { hooks: createSystemHooks() });
+			schedulerRuntime.upsert(checkExpiredMutingsJob, { pattern: '*/5 * * * *', ...scheduleOptions });
+
+			jobRuntime.handle(bakeBufferedReactionsJob, () => this.bakeBufferedReactionsProcessorService.process(), { hooks: createSystemHooks() });
+			schedulerRuntime.upsert(bakeBufferedReactionsJob, { pattern: '0 0 * * *', ...scheduleOptions });
+
+			// 毎時30分に起動
+			jobRuntime.handle(checkModeratorsActivityJob, () => this.checkModeratorsActivityProcessorService.process(), { hooks: createSystemHooks() });
+			schedulerRuntime.upsert(checkModeratorsActivityJob, { pattern: '30 * * * *', ...scheduleOptions });
+
+			// Bull.Jobを受け取るProcessorServiceを使うジョブ（毎日午前4時に起動 - 最も人の少ない時間帯）
+			jobRuntime.handle(cleanRemoteNotesJob, wrapProcessor((job) => this.cleanRemoteNotesProcessorService.process(job)), { hooks: createSystemHooks() });
+			schedulerRuntime.upsert(cleanRemoteNotesJob, { pattern: '0 4 * * *', ...scheduleOptions });
 		}
 		//#endregion
 
 		//#region db
 		{
-			const processer = (job: Bull.Job) => {
-				switch (job.name) {
-					case 'deleteDriveFiles': return this.deleteDriveFilesProcessorService.process(job);
-					case 'exportCustomEmojis': return this.exportCustomEmojisProcessorService.process(job);
-					case 'exportNotes': return this.exportNotesProcessorService.process(job);
-					case 'exportClips': return this.exportClipsProcessorService.process(job);
-					case 'exportFavorites': return this.exportFavoritesProcessorService.process(job);
-					case 'exportFollowing': return this.exportFollowingProcessorService.process(job);
-					case 'exportMuting': return this.exportMutingProcessorService.process(job);
-					case 'exportBlocking': return this.exportBlockingProcessorService.process(job);
-					case 'exportUserLists': return this.exportUserListsProcessorService.process(job);
-					case 'exportAntennas': return this.exportAntennasProcessorService.process(job);
-					case 'importFollowing': return this.importFollowingProcessorService.process(job);
-					case 'importFollowingToDb': return this.importFollowingProcessorService.processDb(job);
-					case 'importMuting': return this.importMutingProcessorService.process(job);
-					case 'importBlocking': return this.importBlockingProcessorService.process(job);
-					case 'importBlockingToDb': return this.importBlockingProcessorService.processDb(job);
-					case 'importUserLists': return this.importUserListsProcessorService.process(job);
-					case 'importCustomEmojis': return this.importCustomEmojisProcessorService.process(job);
-					case 'importAntennas': return this.importAntennasProcessorService.process(job);
-					case 'deleteAccount': return this.deleteAccountProcessorService.process(job);
-					default: throw new Error(`unrecognized job type ${job.name} for db`);
-				}
-			};
-
-			this.dbQueueWorker = new Bull.Worker(QUEUE.DB, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: DB: ' + job.name }, () => processer(job));
-				} else {
-					return processer(job);
-				}
-			}, {
-				...baseWorkerOptions(this.config, QUEUE.DB),
-				autorun: false,
-			});
-
 			const logger = this.logger.createSubLogger('db');
+			const hooks = makeHooks(logger, 'DB', 'debug');
 
-			this.dbQueueWorker
-				.on('active', (job) => logger.debug(`active id=${job.id}`))
-				.on('completed', (job, result) => logger.debug(`completed(${result}) id=${job.id}`))
-				.on('failed', (job, err) => {
-					logger.error(`failed(${err.name}: ${err.message}) id=${job?.id ?? '?'}`, { job: renderJob(job), e: renderError(err) });
-					if (Sentry != null) {
-						Sentry.captureMessage(`Queue: DB: ${job?.name ?? '?'}: ${err.name}: ${err.message}`, {
-							level: 'error',
-							extra: { job, err },
-						});
-					}
-				})
-				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
-				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
+			// DB キューのジョブハンドラーを登録
+			jobRuntime.handle(deleteDriveFilesJob, wrapProcessor((job) => this.deleteDriveFilesProcessorService.process(job)), { hooks });
+			jobRuntime.handle(deleteAccountJob, wrapProcessor((job) => this.deleteAccountProcessorService.process(job)), { hooks });
+			jobRuntime.handle(exportCustomEmojisJob, wrapProcessor((job) => this.exportCustomEmojisProcessorService.process(job)), { hooks });
+			jobRuntime.handle(exportNotesJob, wrapProcessor((job) => this.exportNotesProcessorService.process(job)), { hooks });
+			jobRuntime.handle(exportClipsJob, wrapProcessor((job) => this.exportClipsProcessorService.process(job)), { hooks });
+			jobRuntime.handle(exportFavoritesJob, wrapProcessor((job) => this.exportFavoritesProcessorService.process(job)), { hooks });
+			jobRuntime.handle(exportFollowingJob, wrapProcessor((job) => this.exportFollowingProcessorService.process(job)), { hooks });
+			jobRuntime.handle(exportMutingJob, wrapProcessor((job) => this.exportMutingProcessorService.process(job)), { hooks });
+			jobRuntime.handle(exportBlockingJob, wrapProcessor((job) => this.exportBlockingProcessorService.process(job)), { hooks });
+			jobRuntime.handle(exportUserListsJob, wrapProcessor((job) => this.exportUserListsProcessorService.process(job)), { hooks });
+			jobRuntime.handle(exportAntennasJob, wrapProcessor((job) => this.exportAntennasProcessorService.process(job)), { hooks });
+			jobRuntime.handle(importFollowingJob, wrapProcessor((job) => this.importFollowingProcessorService.process(job)), { hooks });
+			jobRuntime.handle(importFollowingToDbJob, wrapProcessor((job) => this.importFollowingProcessorService.processDb(job)), { hooks });
+			jobRuntime.handle(importMutingJob, wrapProcessor((job) => this.importMutingProcessorService.process(job)), { hooks });
+			jobRuntime.handle(importBlockingJob, wrapProcessor((job) => this.importBlockingProcessorService.process(job)), { hooks });
+			jobRuntime.handle(importBlockingToDbJob, wrapProcessor((job) => this.importBlockingProcessorService.processDb(job)), { hooks });
+			jobRuntime.handle(importUserListsJob, wrapProcessor((job) => this.importUserListsProcessorService.process(job)), { hooks });
+			jobRuntime.handle(importCustomEmojisJob, wrapProcessor((job) => this.importCustomEmojisProcessorService.process(job)), { hooks });
+			jobRuntime.handle(importAntennasJob, wrapProcessor((job) => this.importAntennasProcessorService.process(job)), { hooks });
 		}
 		//#endregion
 
 		//#region deliver
 		{
-			this.deliverQueueWorker = new Bull.Worker(QUEUE.DELIVER, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: Deliver' }, () => this.deliverProcessorService.process(job));
-				} else {
-					return this.deliverProcessorService.process(job);
-				}
-			}, {
-				...baseWorkerOptions(this.config, QUEUE.DELIVER),
-				autorun: false,
-				concurrency: this.config.deliverJobConcurrency ?? 128,
-				limiter: {
-					max: this.config.deliverJobPerSec ?? 128,
-					duration: 1000,
-				},
-				settings: {
-					backoffStrategy: httpRelatedBackoff,
-				},
-			});
-
 			const logger = this.logger.createSubLogger('deliver');
-
-			this.deliverQueueWorker
-				.on('active', (job) => logger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
-				.on('completed', (job, result) => logger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
-				.on('failed', (job, err) => {
-					logger.error(`failed(${err.name}: ${err.message}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`);
-					if (Sentry != null) {
-						Sentry.captureMessage(`Queue: Deliver: ${err.name}: ${err.message}`, {
-							level: 'error',
-							extra: { job, err },
-						});
-					}
-				})
-				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
-				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
+			const hooks = makeHooks(logger, 'Deliver', 'debug');
+			jobRuntime.handle(deliverJob, wrapProcessor((job) => this.deliverProcessorService.process(job)), { hooks });
 		}
 		//#endregion
 
 		//#region inbox
 		{
-			this.inboxQueueWorker = new Bull.Worker(QUEUE.INBOX, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: Inbox' }, () => this.inboxProcessorService.process(job));
-				} else {
-					return this.inboxProcessorService.process(job);
-				}
-			}, {
-				...baseWorkerOptions(this.config, QUEUE.INBOX),
-				autorun: false,
-				concurrency: this.config.inboxJobConcurrency ?? 16,
-				limiter: {
-					max: this.config.inboxJobPerSec ?? 32,
-					duration: 1000,
-				},
-				settings: {
-					backoffStrategy: httpRelatedBackoff,
-				},
-			});
-
 			const logger = this.logger.createSubLogger('inbox');
-
-			this.inboxQueueWorker
-				.on('active', (job) => logger.debug(`active ${getJobInfo(job, true)}`))
-				.on('completed', (job, result) => logger.debug(`completed(${result}) ${getJobInfo(job, true)}`))
-				.on('failed', (job, err) => {
-					logger.error(`failed(${err.name}: ${err.message}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`, { job: renderJob(job), e: renderError(err) });
+			const hooks = makeHooks(logger, 'Inbox', 'debug', {
+				onFailure: (ctx, err) => {
+					const errName = err instanceof Error ? err.name : 'Error';
+					const errMsg = err instanceof Error ? err.message : String(err);
+					logger.error(`failed(${errName}: ${errMsg}) id=${ctx.jobId}`, {
+						job: { name: ctx.jobName, id: ctx.jobId, attempt: ctx.attempt },
+						e: renderError(err instanceof Error ? err : undefined),
+					});
 					if (Sentry != null) {
-						Sentry.captureMessage(`Queue: Inbox: ${err.name}: ${err.message}`, {
+						// inbox は jobName を含めない
+						Sentry.captureMessage(`Queue: Inbox: ${errName}: ${errMsg}`, {
 							level: 'error',
-							extra: { job, err },
+							extra: { job: { name: ctx.jobName, id: ctx.jobId }, err },
 						});
 					}
-				})
-				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
-				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
+				},
+			});
+			jobRuntime.handle(inboxJob, wrapProcessor((job) => this.inboxProcessorService.process(job)), { hooks });
 		}
 		//#endregion
 
 		//#region user-webhook deliver
 		{
-			this.userWebhookDeliverQueueWorker = new Bull.Worker(QUEUE.USER_WEBHOOK_DELIVER, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: UserWebhookDeliver' }, () => this.userWebhookDeliverProcessorService.process(job));
-				} else {
-					return this.userWebhookDeliverProcessorService.process(job);
-				}
-			}, {
-				...baseWorkerOptions(this.config, QUEUE.USER_WEBHOOK_DELIVER),
-				autorun: false,
-				concurrency: 64,
-				limiter: {
-					max: 64,
-					duration: 1000,
-				},
-				settings: {
-					backoffStrategy: httpRelatedBackoff,
-				},
-			});
-
 			const logger = this.logger.createSubLogger('user-webhook');
-
-			this.userWebhookDeliverQueueWorker
-				.on('active', (job) => logger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
-				.on('completed', (job, result) => logger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
-				.on('failed', (job, err) => {
-					logger.error(`failed(${err.name}: ${err.message}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`);
-					if (Sentry != null) {
-						Sentry.captureMessage(`Queue: UserWebhookDeliver: ${err.name}: ${err.message}`, {
-							level: 'error',
-							extra: { job, err },
-						});
-					}
-				})
-				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
-				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
+			const hooks = makeHooks(logger, 'UserWebhookDeliver', 'debug');
+			jobRuntime.handle(userWebhookDeliverJob, wrapProcessor((job) => this.userWebhookDeliverProcessorService.process(job)), { hooks });
 		}
 		//#endregion
 
 		//#region system-webhook deliver
 		{
-			this.systemWebhookDeliverQueueWorker = new Bull.Worker(QUEUE.SYSTEM_WEBHOOK_DELIVER, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: SystemWebhookDeliver' }, () => this.systemWebhookDeliverProcessorService.process(job));
-				} else {
-					return this.systemWebhookDeliverProcessorService.process(job);
-				}
-			}, {
-				...baseWorkerOptions(this.config, QUEUE.SYSTEM_WEBHOOK_DELIVER),
-				autorun: false,
-				concurrency: 16,
-				limiter: {
-					max: 16,
-					duration: 1000,
-				},
-				settings: {
-					backoffStrategy: httpRelatedBackoff,
-				},
-			});
-
 			const logger = this.logger.createSubLogger('system-webhook');
-
-			this.systemWebhookDeliverQueueWorker
-				.on('active', (job) => logger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
-				.on('completed', (job, result) => logger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
-				.on('failed', (job, err) => {
-					logger.error(`failed(${err.name}: ${err.message}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`);
-					if (Sentry != null) {
-						Sentry.captureMessage(`Queue: SystemWebhookDeliver: ${err.name}: ${err.message}`, {
-							level: 'error',
-							extra: { job, err },
-						});
-					}
-				})
-				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
-				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
+			const hooks = makeHooks(logger, 'SystemWebhookDeliver', 'debug');
+			jobRuntime.handle(systemWebhookDeliverJob, wrapProcessor((job) => this.systemWebhookDeliverProcessorService.process(job)), { hooks });
 		}
 		//#endregion
 
 		//#region relationship
 		{
-			const processer = (job: Bull.Job) => {
-				switch (job.name) {
-					case 'follow': return this.relationshipProcessorService.processFollow(job);
-					case 'unfollow': return this.relationshipProcessorService.processUnfollow(job);
-					case 'block': return this.relationshipProcessorService.processBlock(job);
-					case 'unblock': return this.relationshipProcessorService.processUnblock(job);
-					default: throw new Error(`unrecognized job type ${job.name} for relationship`);
-				}
-			};
-
-			this.relationshipQueueWorker = new Bull.Worker(QUEUE.RELATIONSHIP, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: Relationship: ' + job.name }, () => processer(job));
-				} else {
-					return processer(job);
-				}
-			}, {
-				...baseWorkerOptions(this.config, QUEUE.RELATIONSHIP),
-				autorun: false,
-				concurrency: this.config.relationshipJobConcurrency ?? 16,
-				limiter: {
-					max: this.config.relationshipJobPerSec ?? 64,
-					duration: 1000,
-				},
-			});
-
 			const logger = this.logger.createSubLogger('relationship');
-
-			this.relationshipQueueWorker
-				.on('active', (job) => logger.debug(`active id=${job.id}`))
-				.on('completed', (job, result) => logger.debug(`completed(${result}) id=${job.id}`))
-				.on('failed', (job, err) => {
-					logger.error(`failed(${err.name}: ${err.message}) id=${job?.id ?? '?'}`, { job: renderJob(job), e: renderError(err) });
-					if (Sentry != null) {
-						Sentry.captureMessage(`Queue: Relationship: ${job?.name ?? '?'}: ${err.name}: ${err.message}`, {
-							level: 'error',
-							extra: { job, err },
-						});
-					}
-				})
-				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
-				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
+			const hooks = makeHooks(logger, 'Relationship', 'debug');
+			jobRuntime.handle(followJob, wrapProcessor((job) => this.relationshipProcessorService.processFollow(job)), { hooks });
+			jobRuntime.handle(unfollowJob, wrapProcessor((job) => this.relationshipProcessorService.processUnfollow(job)), { hooks });
+			jobRuntime.handle(blockJob, wrapProcessor((job) => this.relationshipProcessorService.processBlock(job)), { hooks });
+			jobRuntime.handle(unblockJob, wrapProcessor((job) => this.relationshipProcessorService.processUnblock(job)), { hooks });
 		}
 		//#endregion
 
 		//#region object storage
 		{
-			const processer = (job: Bull.Job) => {
-				switch (job.name) {
-					case 'deleteFile': return this.deleteFileProcessorService.process(job);
-					case 'cleanRemoteFiles': return this.cleanRemoteFilesProcessorService.process(job);
-					default: throw new Error(`unrecognized job type ${job.name} for objectStorage`);
-				}
-			};
-
-			this.objectStorageQueueWorker = new Bull.Worker(QUEUE.OBJECT_STORAGE, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: ObjectStorage: ' + job.name }, () => processer(job));
-				} else {
-					return processer(job);
-				}
-			}, {
-				...baseWorkerOptions(this.config, QUEUE.OBJECT_STORAGE),
-				autorun: false,
-				concurrency: 16,
-			});
-
 			const logger = this.logger.createSubLogger('objectStorage');
+			const hooks = makeHooks(logger, 'ObjectStorage', 'debug');
+			jobRuntime.handle(deleteFileJob, wrapProcessor((job) => this.deleteFileProcessorService.process(job)), { hooks });
+			jobRuntime.handle(cleanRemoteFilesJob, wrapProcessor((job) => this.cleanRemoteFilesProcessorService.process(job)), { hooks });
+		}
+		//#endregion
 
-			this.objectStorageQueueWorker
-				.on('active', (job) => logger.debug(`active id=${job.id}`))
-				.on('completed', (job, result) => logger.debug(`completed(${result}) id=${job.id}`))
-				.on('failed', (job, err) => {
-					logger.error(`failed(${err.name}: ${err.message}) id=${job?.id ?? '?'}`, { job: renderJob(job), e: renderError(err) });
-					if (Sentry != null) {
-						Sentry.captureMessage(`Queue: ObjectStorage: ${job?.name ?? '?'}: ${err.name}: ${err.message}`, {
-							level: 'error',
-							extra: { job, err },
-						});
-					}
-				})
-				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
-				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
+		//#region note post
+		{
+			const logger = this.logger.createSubLogger('note-post');
+			const hooks = makeHooks(logger, 'NotePost', 'debug');
+			jobRuntime.handle(notePostJob, wrapProcessor((job) => this.noteProcessorService.process(job)), { hooks });
+			jobRuntime.handle(updateUserNotesCountJob, wrapProcessor((job) => this.updateUserNotesCountProcessorService.process(job)), { hooks });
+		}
+		//#endregion
+
+		//#region note delete
+		{
+			const logger = this.logger.createSubLogger('note-delete');
+			const hooks = makeHooks(logger, 'NoteDelete', 'debug');
+			jobRuntime.handle(noteDeleteJob, wrapProcessor((job) => this.noteDeleteProcessorService.process(job)), { hooks });
+		}
+		//#endregion
+
+		//#region reaction deliver
+		{
+			const logger = this.logger.createSubLogger('reaction-deliver');
+			const hooks = makeHooks(logger, 'ReactionDeliver', 'debug');
+			jobRuntime.handle(reactionDeliverJob, wrapProcessor((job) => this.reactionDeliverProcessorService.process(job)), { hooks });
+		}
+		//#endregion
+
+		//#region note pining deliver
+		{
+			const logger = this.logger.createSubLogger('note-pining-deliver');
+			const hooks = makeHooks(logger, 'NotePiningDeliver', 'debug');
+			jobRuntime.handle(notePiningDeliverJob, wrapProcessor((job) => this.notePiningDeliverProcessorService.process(job)), { hooks });
+		}
+		//#endregion
+
+		//#region instance follow stats update
+		{
+			const logger = this.logger.createSubLogger('instance-follow-stats-update');
+			const hooks = makeHooks(logger, 'InstanceFollowStatsUpdate', 'debug');
+			jobRuntime.handle(instanceFollowStatsUpdateJob, wrapProcessor((job) => this.instanceFollowStatsUpdateProcessorService.process(job)), { hooks });
 		}
 		//#endregion
 
 		//#region ended poll notification
 		{
-			this.endedPollNotificationQueueWorker = new Bull.Worker(QUEUE.ENDED_POLL_NOTIFICATION, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: EndedPollNotification' }, () => this.endedPollNotificationProcessorService.process(job));
-				} else {
-					return this.endedPollNotificationProcessorService.process(job);
-				}
-			}, {
-				...baseWorkerOptions(this.config, QUEUE.ENDED_POLL_NOTIFICATION),
-				autorun: false,
-			});
+			jobRuntime.handle(endedPollNotificationJob, wrapProcessor((job) => this.endedPollNotificationProcessorService.process(job)));
 		}
 		//#endregion
 
 		//#region post scheduled note
 		{
-			this.postScheduledNoteQueueWorker = new Bull.Worker(QUEUE.POST_SCHEDULED_NOTE, async (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: PostScheduledNote' }, () => this.postScheduledNoteProcessorService.process(job));
-				} else {
-					return this.postScheduledNoteProcessorService.process(job);
-				}
-			}, {
-				...baseWorkerOptions(this.config, QUEUE.POST_SCHEDULED_NOTE),
-				autorun: false,
-			});
+			jobRuntime.handle(postScheduledNoteJob, wrapProcessor((job) => this.postScheduledNoteProcessorService.process(job)));
 		}
 		//#endregion
 	}
 
 	@bindThis
 	public async start(): Promise<void> {
-		await Promise.all([
-			this.systemQueueWorker.run(),
-			this.dbQueueWorker.run(),
-			this.deliverQueueWorker.run(),
-			this.inboxQueueWorker.run(),
-			this.userWebhookDeliverQueueWorker.run(),
-			this.systemWebhookDeliverQueueWorker.run(),
-			this.relationshipQueueWorker.run(),
-			this.objectStorageQueueWorker.run(),
-			this.endedPollNotificationQueueWorker.run(),
-			this.postScheduledNoteQueueWorker.run(),
-		]);
+		await this.queueRuntimeService.jobRuntime.start();
 	}
 
 	@bindThis
 	public async stop(): Promise<void> {
-		await Promise.all([
-			this.systemQueueWorker.close(),
-			this.dbQueueWorker.close(),
-			this.deliverQueueWorker.close(),
-			this.inboxQueueWorker.close(),
-			this.userWebhookDeliverQueueWorker.close(),
-			this.systemWebhookDeliverQueueWorker.close(),
-			this.relationshipQueueWorker.close(),
-			this.objectStorageQueueWorker.close(),
-			this.endedPollNotificationQueueWorker.close(),
-			this.postScheduledNoteQueueWorker.close(),
-		]);
+		await this.queueRuntimeService.jobRuntime.stop({ timeout: 10_000 });
 	}
 
 	@bindThis

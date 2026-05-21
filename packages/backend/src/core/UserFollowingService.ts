@@ -13,12 +13,10 @@ import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import InstanceChart from '@/core/chart/charts/instance.js';
-import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { UserWebhookService } from '@/core/UserWebhookService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, FollowRequestsRepository, InstancesRepository, MiMeta, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { FollowingsRepository, FollowRequestsRepository, MiMeta, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { bindThis } from '@/decorators.js';
@@ -70,9 +68,6 @@ export class UserFollowingService implements OnModuleInit {
 		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: FollowRequestsRepository,
 
-		@Inject(DI.instancesRepository)
-		private instancesRepository: InstancesRepository,
-
 		private cacheService: CacheService,
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
@@ -80,12 +75,10 @@ export class UserFollowingService implements OnModuleInit {
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
 		private notificationService: NotificationService,
-		private federatedInstanceService: FederatedInstanceService,
 		private webhookService: UserWebhookService,
 		private apRendererService: ApRendererService,
 		private accountMoveService: AccountMoveService,
 		private perUserFollowingChart: PerUserFollowingChart,
-		private instanceChart: InstanceChart,
 	) {
 	}
 
@@ -306,19 +299,20 @@ export class UserFollowingService implements OnModuleInit {
 
 			//#region Update instance stats
 			if (this.meta.enableStatsForFederatedInstances) {
+				const updateChart = this.meta.enableChartsForFederatedInstances;
 				if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-					this.federatedInstanceService.fetchOrRegister(follower.host).then(async i => {
-						this.instancesRepository.increment({ id: i.id }, 'followingCount', 1);
-						if (this.meta.enableChartsForFederatedInstances) {
-							this.instanceChart.updateFollowing(i.host, true);
-						}
+					this.queueService.instanceFollowStatsUpdate({
+						host: follower.host,
+						direction: 'following',
+						isAdditional: true,
+						updateChart,
 					});
 				} else if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-					this.federatedInstanceService.fetchOrRegister(followee.host).then(async i => {
-						this.instancesRepository.increment({ id: i.id }, 'followersCount', 1);
-						if (this.meta.enableChartsForFederatedInstances) {
-							this.instanceChart.updateFollowers(i.host, true);
-						}
+					this.queueService.instanceFollowStatsUpdate({
+						host: followee.host,
+						direction: 'followers',
+						isAdditional: true,
+						updateChart,
 					});
 				}
 			}
@@ -422,19 +416,20 @@ export class UserFollowingService implements OnModuleInit {
 
 			//#region Update instance stats
 			if (this.meta.enableStatsForFederatedInstances) {
+				const updateChart = this.meta.enableChartsForFederatedInstances;
 				if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-					this.federatedInstanceService.fetchOrRegister(follower.host).then(async i => {
-						this.instancesRepository.decrement({ id: i.id }, 'followingCount', 1);
-						if (this.meta.enableChartsForFederatedInstances) {
-							this.instanceChart.updateFollowing(i.host, false);
-						}
+					this.queueService.instanceFollowStatsUpdate({
+						host: follower.host,
+						direction: 'following',
+						isAdditional: false,
+						updateChart,
 					});
 				} else if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-					this.federatedInstanceService.fetchOrRegister(followee.host).then(async i => {
-						this.instancesRepository.decrement({ id: i.id }, 'followersCount', 1);
-						if (this.meta.enableChartsForFederatedInstances) {
-							this.instanceChart.updateFollowers(i.host, false);
-						}
+					this.queueService.instanceFollowStatsUpdate({
+						host: followee.host,
+						direction: 'followers',
+						isAdditional: false,
+						updateChart,
 					});
 				}
 			}

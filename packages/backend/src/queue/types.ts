@@ -113,6 +113,56 @@ export type PostScheduledNoteJobData = {
 	noteDraftId: string;
 };
 
+export type NotePostJobData = {
+	noteId: MiNote['id'];
+	silent: boolean;
+};
+
+export type NoteDeleteJobData = {
+	noteId: string;
+	quiet: boolean;
+	userSnapshot: { id: string; uri: string | null; host: string | null; isBot: boolean };
+	noteSnapshot: Pick<MiNote, 'id' | 'userId' | 'userHost' | 'visibility' | 'localOnly' | 'channelId' | 'replyId' | 'renoteId' | 'fileIds'>;
+	apContent: any | null;
+	apRecipientIds: string[];
+	isRemote: boolean;
+};
+
+export type ReactionDeliverJobData = {
+	noteId: string;
+	userSnapshot: { id: string };
+	apContent: any | null;
+	apRecipientIds: string[];
+	isUndo: boolean;
+	/** addFollowersRecipe を呼ぶかどうか (HTTP 側で visibility / undo から判定して渡す) */
+	deliverToFollowers: boolean;
+};
+
+export type NotePiningDeliverJobData = {
+	noteId: string;
+	userSnapshot: { id: string };
+	apContent: any | null;
+	isAddition: boolean;
+};
+
+/**
+ * リモートインスタンスの follow/follower カウンタおよび instance chart を更新するジョブのペイロード。
+ *
+ * - direction: 'following' を指定すると `instances.followingCount` を、'followers' を指定すると `followersCount` を更新する。
+ * - isAdditional: true で increment / false で decrement。
+ * - updateChart: enqueue 時点で `meta.enableChartsForFederatedInstances` を判定して保持する。
+ */
+export type InstanceFollowStatsUpdateJobData = {
+	host: string;
+	direction: 'following' | 'followers';
+	isAdditional: boolean;
+	updateChart: boolean;
+};
+
+export type UpdateUserNotesCountJobData = {
+	userId: string;
+};
+
 export type SystemWebhookDeliverJobData<T extends SystemWebhookEventType = SystemWebhookEventType> = {
 	type: T;
 	content: SystemWebhookPayload<T>;
