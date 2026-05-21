@@ -1,0 +1,11 @@
+# Auto-generated from GitHub Issue
+# repo: tiramiss-community/tiramiss
+# issue: #47
+# required labels (any): 先行実装, 独自機能
+# topics: 5
+# resolved PR topics: 0
+tiramiss-develop
+bundle/version
+bundle/past-timeline-window
+bundle/support-multiple-http-worker
+bundle/modify-job-queue

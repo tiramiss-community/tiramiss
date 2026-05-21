@@ -1,0 +1,9 @@
+# Auto-generated from GitHub Issue
+# repo: tiramiss-community/tiramiss
+# issue: #47
+# bundle definitions: 4
+# format: <bundle-branch> <topic1> <topic2> ...
+bundle/version tiramiss-develop feat/version
+bundle/past-timeline-window tiramiss-develop feat/past-timeline-window
+bundle/support-multiple-http-worker tiramiss-develop feat/support-multiple-http-worker
+bundle/modify-job-queue tiramiss-develop feat/migrate-to-mokuroku feat/post-note-to-job-queue feat/misc-jobqueue-process
