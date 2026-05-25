@@ -49,13 +49,19 @@ import { endedPollNotificationJob } from '@/queue/jobs/definitions/misc.js';
 import { queueDefinitionFromType } from '@/queue/jobs/queueDefinitions.js';
 import { notePostJob, updateUserNotesCountJob } from '@/queue/jobs/definitions/note.js';
 import { noteDeleteJob } from '@/queue/jobs/definitions/noteDelete.js';
+import { reactionDeliverJob } from '@/queue/jobs/definitions/reactionDeliver.js';
+import { notePiningDeliverJob } from '@/queue/jobs/definitions/notePiningDeliver.js';
+import { instanceFollowStatsUpdateJob } from '@/queue/jobs/definitions/instanceFollowStatsUpdate.js';
 import { type UserWebhookPayload } from './UserWebhookService.js';
 import type * as Bull from 'bullmq';
 import type httpSignature from '@peertube/http-signature';
 import type {
 	DeliverJobData,
+	InstanceFollowStatsUpdateJobData,
 	SystemWebhookDeliverJobData,
 	NoteDeleteJobData,
+	NotePiningDeliverJobData,
+	ReactionDeliverJobData,
 	ThinUser,
 	UserWebhookDeliverJobData,
 } from '../queue/types.js';
@@ -441,6 +447,31 @@ export class QueueService {
 	}
 
 	@bindThis
+	public reactionDeliver(data: ReactionDeliverJobData) {
+		const suffix = data.isUndo ? 'undo' : 'create';
+		return this.jobRuntime.enqueue(
+			reactionDeliverJob,
+			data,
+			{ jobId: `reactionDeliver-${data.noteId}-${data.userSnapshot.id}-${suffix}` },
+		);
+	}
+
+	@bindThis
+	public notePiningDeliver(data: NotePiningDeliverJobData) {
+		const suffix = data.isAddition ? 'add' : 'remove';
+		return this.jobRuntime.enqueue(
+			notePiningDeliverJob,
+			data,
+			{ jobId: `notePiningDeliver-${data.noteId}-${data.userSnapshot.id}-${suffix}` },
+		);
+	}
+
+	@bindThis
+	public instanceFollowStatsUpdate(data: InstanceFollowStatsUpdateJobData) {
+		return this.jobRuntime.enqueue(instanceFollowStatsUpdateJob, data);
+	}
+
+	@bindThis
 	public updateUserNotesCount(userId: string) {
 		// 5 分以内の同一 userId 再 enqueue は BullMQ が既存 delayed ジョブを温存するため 1 回しか発火しない
 		return this.jobRuntime.enqueue(updateUserNotesCountJob, { userId }, {
@@ -507,7 +538,6 @@ export class QueueService {
 
 	@bindThis
 	private packJobData(job: Bull.Job): Packed<'QueueJob'> {
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		const stacktrace = job.stacktrace ? job.stacktrace.filter(Boolean) : [];
 		stacktrace.reverse();
 
