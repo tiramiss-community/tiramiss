@@ -62,6 +62,8 @@ minimumReleaseAgeExclude:
   - launder # 脆弱性対応。そのうち消す
   # Renovate security update: ws@8.20.1
   - ws@8.20.1
+  # Renovate security update: esbuild@0.28.1
+  - esbuild@0.28.1
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
