@@ -130,7 +130,7 @@
 		"otpauth": "9.5.1",
 		"pg": "8.20.0",
 		"pkce-challenge": "6.0.0",
-		"probe-image-size": "7.3.0",
+		"probe-image-size": "7.4.0",
 		"promise-limit": "2.7.0",
 		"qrcode": "1.5.4",
 		"random-seed": "0.3.0",
