@@ -10,6 +10,22 @@
 
 ---
 
+## 新バックエンドを扱うとき
+
+このリポジトリでは、旧 `packages/backend` を本家追従・互換性確認の参照実装として維持し、新バックエンドを別パッケージで実装する。既存fork固有機能は移植対象にしない。
+
+| 対象 | 作業前に読む運用ルール |
+| --- | --- |
+| 新しい業務処理・HTTP・ワーカー・永続化アダプタ | [packages/backend-next/AGENTS.md](packages/backend-next/AGENTS.md) |
+| 本家Entity・migrationの複製、同期スクリプト、公開入口 | [packages/backend-upstream/AGENTS.md](packages/backend-upstream/AGENTS.md) |
+
+- 新パッケージを調査・変更する前に、対象の運用ルールを読む。複製対象・依存関係を変更する場合は両方を読む。
+- 実装計画の入口は [全体Issue #114](https://github.com/tiramiss-community/tiramiss/issues/114)。対象Issueだけでなく、親Issueの対応順・先行依存と関連する設計書を確認する。
+- `backend-upstream` の `src/`・`migration/`・`exports/`・`.managed-files.json` を手編集しない。本家との差分の移植と、定義の機械的な同期を混同しない。
+- 以下の `backend` 向けコマンドを新パッケージの検証の代用にしない。新パッケージには個別のビルド・テスト・migration検査があり、対象のガイドに従う。ルートの共通チェックも維持する。
+
+---
+
 ## 絶対にやってはいけない事
 
 違反すると CI 失敗 / 本番事故 / 共有環境破壊 になる。順守すること。

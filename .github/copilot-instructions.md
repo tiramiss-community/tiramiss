@@ -4,6 +4,19 @@
 
 リポジトリは Misskey の pnpm workspace モノレポ。主要な実装は `packages/backend` (NestJS / TypeORM) と `packages/frontend` (Vue 3) にある。より詳しいガイドはリポジトリルートの `AGENTS.md` を参照してよいが、このファイルの要件を省略してそちらへの参照だけで済ませないこと。
 
+## 新バックエンドの調査・変更
+
+- リニューアルは `packages/backend-next` で進める。旧 `packages/backend` は本家追従・互換性確認用に維持し、リニューアルのために変更しない。既存fork固有機能は移植対象にしない。
+- `packages/backend-next/AGENTS.md` と、複製を扱う場合は `packages/backend-upstream/AGENTS.md` を作業前に読む。全体計画は [Issue #114](https://github.com/tiramiss-community/tiramiss/issues/114)。対象Issue・親の対応順・先行依存・関連設計書を確認する。
+- `backend-upstream` の `src/`・`migration/` は本家の固定SHAからの無改変複製、`exports/`・`.managed-files.json` は同期生成物。直接編集せず、manifestと同期スクリプトを通す。同期成功だけで業務動作の移植完了にはしない。
+- 新実装はworkspace依存の `backend-upstream/entities`・`backend-upstream/migrations` から定義を利用する。旧backendのソース・ビルドや、他パッケージ内部への相対importに依存しない。
+- UseCase間呼び出しと循環を作らず、業務コードへHono・TypeORM・BullMQの型やDIコンテナを公開しない。独自の永続状態は `backend_internal` と独立した履歴へ置く。
+- 新パッケージは `pnpm --filter backend-next... build` で依存順にビルドし、担当箇所の単体・実DB/Redis結合・実プロセステストを選ぶ。旧backend向けコマンドだけを新実装の検証の代用にしない。
+- 新実装の通常起動でmigrationを自動適用しない。適用は完全停止下で本家→独自の順。Redisは必須とし、DBへの縮退運転を設けない。
+- テストには専用のDB・Redis・Composeプロジェクトを使う。ユーザー用の `misskey-infra` を使用・停止・削除しない。
+- 独自コードでは意味のあるまとまりごとに空行を置き、条件分岐・ループの本文を中括弧で囲んで別行に置く。Howはコード、Whatはテスト、Whyはコミット、Why notはコメントへ残す。
+- 子Issueの追加・分割では親の対応順も更新する。引き継ぎにはIssue・ブランチ・実装済み範囲・残作業・検証結果・次の着手点を示す。外部送信は下記の許可ルールに従う。
+
 ## 絶対にやってはいけない事
 
 違反すると CI 失敗 / 本番事故 になる。
