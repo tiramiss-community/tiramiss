@@ -77,6 +77,7 @@ export function runSupervisor(config: RuntimeConfig, overrides: Partial<Supervis
 				children.push(state);
 				child.on('error', (error) => {
 					dependencies.logger.error('child.error', { role, error });
+					// spawn 自体の失敗では exit が来ないため、終了イベントだけを待つと停止できない。
 					if (!child.pid) state.exited = true;
 					stop(true);
 				});
@@ -84,6 +85,7 @@ export function runSupervisor(config: RuntimeConfig, overrides: Partial<Supervis
 					state.exited = true;
 					if (code !== null && code !== 0) failed = true;
 					if (!stopping) {
+						// 正常終了コードでも役割の欠落になる。部分稼働や独自の再起動ループを避け、全体を止める。
 						dependencies.logger.error('child.unexpected_exit', { role, code, signal });
 						stop(true);
 					} else finish();
@@ -91,6 +93,7 @@ export function runSupervisor(config: RuntimeConfig, overrides: Partial<Supervis
 				child.on('message', (message) => {
 					if (stopping || state.exited || !isReadyMessage(message, role)) return;
 					state.ready = true;
+					// spawn 成功だけでは依存先に接続できたとは言えず、全役割の準備前に ready を通知しない。
 					if (!announced && children.length === roles.length && children.every((item) => item.ready && !item.exited)) {
 						announced = true;
 						clearTimeout(startupTimer);

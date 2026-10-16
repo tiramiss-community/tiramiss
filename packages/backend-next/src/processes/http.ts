@@ -23,7 +23,7 @@ export async function listenHttp(app: Hono, config: RuntimeConfig['http']): Prom
 			return;
 		}
 		response.once('finish', () => {
-			// A response can become keep-alive idle after close() starts.
+			// finish の時点ではまだ idle 扱いでないことがある。即時に閉じるだけでは keep-alive が残る。
 			if (state.draining) setImmediate(() => {
 					server.closeIdleConnections();
 				});
@@ -70,7 +70,8 @@ export async function closeHttp(server: Server): Promise<void> {
 			});
 			server.closeIdleConnections();
 		}),
-		// Client disconnect does not imply that the accepted operation has finished.
+		// 切断しても受理済みの処理は続くため、ソケットだけを待つと処理中に DB を閉じてしまう。
+		// 一件の失敗で他の処理の待機まで打ち切らないよう、all ではなく allSettled を使う。
 		Promise.allSettled([...state.active]),
 	]);
 }

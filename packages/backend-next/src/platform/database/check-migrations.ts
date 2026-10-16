@@ -11,7 +11,7 @@ export async function assertMigrationsApplied(config: DatabaseConfig): Promise<v
 		try {
 			await source.initialize();
 			const schema = kind === 'upstream' ? 'public' : 'backend_internal';
-			// Unlike ORM migration status helpers, these queries cannot create history.
+			// showMigrations() は履歴テーブルを作り得るため、DB を変更できない通常起動では使わない。
 			const [table] = await source.query('SELECT to_regclass($1) AS name', [`${schema}.migrations`]);
 			if (!table.name) throw new DiagnosticError('MIGRATION_HISTORY_MISSING', { scope: kind, table: `${schema}.migrations` });
 			const rows: { name: string; timestamp: string | number }[] = await source.query(

@@ -10,6 +10,8 @@ export interface Logger {
 }
 
 function sanitize(value: unknown): unknown {
+	// 外部ライブラリの message / stack には接続情報が入り得るため、そのまま出力しない。
+	// 診断に必要な値は、発生箇所で安全な項目を選んだ DiagnosticError に限って残す。
 	if (value instanceof DiagnosticError) return { name: value.name, code: value.code, details: sanitize(value.details) };
 	if (value instanceof Error) return { name: value.name, code: 'code' in value ? value.code : undefined };
 	if (Array.isArray(value)) return value.map(sanitize);

@@ -10,6 +10,7 @@ export class ResourceScope {
 		this.cleanups.push(cleanup);
 	}
 	close(): Promise<void> {
+		// 停止要求が重なっても二重解放しない。失敗時も同じ結果を返し、解放処理を再実行しない。
 		this.closing ??= this.cleanup();
 		return this.closing;
 	}
@@ -19,6 +20,7 @@ export class ResourceScope {
 			try {
 				await close();
 			} catch (error) {
+				// 最初の失敗で抜けると、残りの接続やサーバーが解放されず停止を妨げる。
 				errors.push(error);
 			}
 		}

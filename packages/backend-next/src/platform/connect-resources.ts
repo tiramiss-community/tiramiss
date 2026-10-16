@@ -21,7 +21,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		try {
 			await dataSource.initialize();
 		} finally {
-			// If initialization settles after the deadline, don't leave a late pool alive.
+			// Promise.race は接続作成を中断しない。期限後に完成したプールもここで解放する必要がある。
 			if (cancelled && dataSource.isInitialized) await dataSource.destroy();
 		}
 		if (cancelled) throw timeout;
@@ -29,6 +29,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			...config.redis,
 			lazyConnect: true,
 			connectTimeout: config.processes.startupTimeoutMs,
+			// Redis は必須なので、再接続で起動失敗を先送りせず運用側へ失敗を返す。
 			retryStrategy: () => null,
 			maxRetriesPerRequest: 0,
 			disconnectTimeout: 0,
@@ -50,6 +51,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		return { dataSource, redis, logger, close: () => scope.close() };
 	};
 	try {
+		// Redis の connectTimeout は TCP 接続後の応答待ちを覆わないため、それだけには頼らない。
 		return await Promise.race([
 			initialize(),
 			new Promise<never>((_, reject) => {

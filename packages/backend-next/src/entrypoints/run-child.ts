@@ -46,6 +46,7 @@ export async function runChild(
 	};
 	const stop = (failure: boolean) => {
 		failed ||= failure;
+		// シグナルを受けるたびに停止期限を延ばすと、停止できないプロセスが残り続ける。
 		if (stopping) return;
 		stopping = true;
 		clearTimeout(startup);
@@ -59,6 +60,7 @@ export async function runChild(
 		stop(false);
 	};
 	const onDisconnect = () => {
+		// 親を失った子が単独でリクエストやジョブを受け続けないよう、IPC 切断も停止理由にする。
 		stop(true);
 	};
 	process.on('SIGTERM', onSignal);
@@ -78,6 +80,7 @@ export async function runChild(
 		}, config.processes.startupTimeoutMs);
 		running = await start(config);
 		clearTimeout(startup);
+		// 起動中の停止要求でも start 自体は中断できない。返ってきたリソースを閉じ、ready は出さない。
 		if (stopping) await finish();
 		else {
 			logger.info('process.ready');

@@ -26,6 +26,7 @@ export async function sync({ repository, destination, check = false }) {
 		manifest.migrationDirectory !== 'migration'
 	) throw new Error('Invalid sync manifest');
 	const git = (...args) => execFileSync('git', args, { cwd: repository, maxBuffer: 32 * 1024 * 1024 });
+	// 作業ツリーからコピーすると未コミットの変更まで混ざるため、固定 SHA の Git オブジェクトを読む。
 	const migrationFiles = git('ls-tree', '-r', '--name-only', manifest.commit, '--', 'packages/backend/migration')
 		.toString()
 		.trim()
@@ -42,8 +43,8 @@ export async function sync({ repository, destination, check = false }) {
 	const allowed = new Set(files);
 	for (const [file, content] of expected) {
 		const source = content.toString();
-		// The tracked scope uses literal ESM imports only. Reject new dependency edges,
-		// rather than expanding the copied scope to services or framework modules.
+		// 対象はリテラル指定の import を使うソースに限る。依存を自動追跡して旧サービス層まで
+		// 取り込まないよう、対象の追加は manifest で明示するまで拒否する。
 		const imports = [...source.matchAll(/(?:\bfrom\s*|\bimport\s*(?:\(\s*)?|\brequire\s*\(\s*)['"]([^'"]+)['"]/g)].map(
 			(m) => m[1],
 		);
@@ -64,6 +65,7 @@ export async function sync({ repository, destination, check = false }) {
 		}
 	}
 	const entityImports = [];
+	// 一つの入口にまとめると、Entity の利用だけでも migration 側のネイティブ依存をロードしてしまう。
 	const entityNames = [];
 	for (const file of manifest.files) {
 		const name = expected
@@ -128,6 +130,7 @@ export async function sync({ repository, destination, check = false }) {
 		if (mismatches.length || obsolete.length || inventory !== priorInventory) throw new Error(`out of sync: ${[...mismatches, ...obsolete].join(', ')}`);
 		return;
 	}
+	// ディレクトリごと消すと手書きファイルまで失うため、前回の管理対象だけを削除する。
 	for (const file of obsolete) await rm(resolve(destination, file), { force: true });
 	for (const [file, content] of expected) {
 		const output = resolve(destination, file);
