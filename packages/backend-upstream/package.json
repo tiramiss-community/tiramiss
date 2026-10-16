@@ -1,0 +1,37 @@
+{
+	"private": true,
+	"type": "module",
+	"engines": {
+		"node": "^22.22.2 || ^24.17.0 || ^26.4.0"
+	},
+	"name": "backend-upstream",
+	"exports": {
+		"./entities": {
+			"types": "./built/exports/entities.d.ts",
+			"import": "./built/exports/entities.js"
+		},
+		"./migrations": {
+			"types": "./built/exports/migrations.d.ts",
+			"import": "./built/exports/migrations.js"
+		}
+	},
+	"scripts": {
+		"sync": "node scripts/sync.mjs",
+		"sync:check": "node scripts/sync.mjs --check",
+		"build": "tsc -p tsconfig.json",
+		"typecheck": "tsc -p tsconfig.json --noEmit",
+		"lint": "eslint --quiet scripts",
+		"test": "node --test scripts/sync.test.mjs"
+	},
+	"dependencies": {
+		"typeorm": "1.1.1",
+		"re2": "1.27.0",
+		"tinycolor2": "1.6.0",
+		"reflect-metadata": "0.2.2"
+	},
+	"devDependencies": {
+		"@types/node": "26.6.4",
+		"typescript": "npm:@typescript/typescript6@6.0.2",
+		"eslint": "9.39.5"
+	}
+}

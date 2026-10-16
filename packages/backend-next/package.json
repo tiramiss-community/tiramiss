@@ -1,0 +1,41 @@
+{
+	"private": true,
+	"type": "module",
+	"engines": {
+		"node": "^22.22.2 || ^24.17.0 || ^26.4.0"
+	},
+	"name": "backend-next",
+	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json --noEmit",
+		"lint": "eslint --quiet src test *.ts",
+		"test": "vitest run --config vitest.config.ts",
+		"test:integration": "vitest run --config vitest.integration.config.ts",
+		"test:process": "vitest run --config vitest.process.config.ts",
+		"migrate": "node built/entrypoints/migrate.js",
+		"check-migrations": "node built/entrypoints/check-migrations.js",
+		"check-schema": "node built/entrypoints/check-schema.js",
+		"start:http": "node built/entrypoints/http.js",
+		"start:worker": "node built/entrypoints/worker.js",
+		"start": "node built/entrypoints/supervisor.js"
+	},
+	"dependencies": {
+		"backend-upstream": "workspace:*",
+		"typeorm": "1.1.1",
+		"pg": "8.23.1",
+		"ioredis": "5.11.1",
+		"reflect-metadata": "0.2.2",
+		"js-yaml": "5.4.2",
+		"hono": "4.13.13",
+		"@hono/node-server": "2.1.4",
+		"inversify": "8.2.3"
+	},
+	"devDependencies": {
+		"@types/node": "26.6.4",
+		"typescript": "npm:@typescript/typescript6@6.0.2",
+		"eslint": "9.39.5",
+		"@typescript-eslint/parser": "8.71.0",
+		"vitest": "5.0.3",
+		"@types/js-yaml": "4.0.9"
+	}
+}
