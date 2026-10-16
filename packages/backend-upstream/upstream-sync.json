@@ -1,0 +1,28 @@
+{
+	"commit": "8e07cf085adf7009583d234a208e30436f020e26",
+	"files": [
+		"src/models/Role.ts",
+		"src/models/RoleAssignment.ts",
+		"src/models/User.ts",
+		"src/models/Meta.ts",
+		"src/models/ModerationLog.ts",
+		"src/models/AccessToken.ts",
+		"src/models/App.ts",
+		"src/models/DriveFile.ts",
+		"src/models/DriveFolder.ts",
+		"src/models/util/id.ts"
+	],
+	"migrationDirectory": "migration",
+	"externalDependencies": [
+		"typeorm",
+		"re2",
+		"tinycolor2"
+	],
+	"generatorVersion": 1,
+	"build": {
+		"compiler": "tsc",
+		"module": "NodeNext",
+		"outDir": "built",
+		"declaration": true
+	}
+}

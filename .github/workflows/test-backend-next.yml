@@ -1,0 +1,65 @@
+name: Test (backend-next)
+
+on:
+  push:
+    branches: [master, develop]
+    paths:
+      - 'packages/backend-next/**'
+      - 'packages/backend-upstream/**'
+      - 'packages/shared/eslint.config.js'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
+      - 'pnpm-lock.yaml'
+      - '.node-version'
+      - '.github/workflows/test-backend-next.yml'
+  pull_request:
+    paths:
+      - 'packages/backend-next/**'
+      - 'packages/backend-upstream/**'
+      - 'packages/shared/eslint.config.js'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
+      - 'pnpm-lock.yaml'
+      - '.node-version'
+      - '.github/workflows/test-backend-next.yml'
+  workflow_dispatch:
+
+jobs:
+  foundation:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: foundation-test-only
+          POSTGRES_DB: backend_next_test
+        ports: ['55432:5432']
+        options: >-
+          --health-cmd 'pg_isready -U postgres -d backend_next_test'
+          --health-interval 1s --health-timeout 3s --health-retries 30
+      redis:
+        image: redis:8
+        ports: ['56379:6379']
+        options: >-
+          --health-cmd 'redis-cli ping'
+          --health-interval 1s --health-timeout 3s --health-retries 30
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6.0.10
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --filter backend-next...
+      - run: git diff --exit-code pnpm-lock.yaml
+      - run: pnpm --filter backend-upstream sync:check
+      - run: pnpm --filter backend-next... build
+      - run: pnpm --filter backend-next... typecheck
+      - run: pnpm --filter backend-next... lint
+      - run: pnpm --filter backend-upstream test
+      - run: pnpm --filter backend-next test
+      - run: pnpm --filter backend-next test:integration
+      - run: pnpm --filter backend-next test:process

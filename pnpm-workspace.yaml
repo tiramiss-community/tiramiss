@@ -1,5 +1,7 @@
 packages:
   - packages/backend
+  - packages/backend-upstream
+  - packages/backend-next
   - packages/frontend-shared
   - packages/frontend
   - packages/frontend-builder

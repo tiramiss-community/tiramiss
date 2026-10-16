@@ -27,6 +27,8 @@ import { execaSync } from 'execa';
 import { DEFAULT_INTEGRATION_REFS, findClosestMergeBase, gitLines, gitMergeBase, gitPaths } from './lib/git.mjs';
 
 const LINT_TARGETS = [
+	{ root: 'packages/backend-next', pattern: /^packages\/backend-next\/.*\.(ts|js|mjs|cjs)$/ },
+	{ root: 'packages/backend-upstream', pattern: /^packages\/backend-upstream\/(scripts\/.*\.mjs|eslint\.config\.js)$/ },
 	{ root: 'packages/backend', pattern: /^packages\/backend\/(src|test-federation)\/.*\.ts$/ },
 	{ root: 'packages/frontend', pattern: /^packages\/frontend\/src\/.*\.(ts|vue)$/ },
 	{ root: 'packages/frontend-embed', pattern: /^packages\/frontend-embed\/src\/.*\.(ts|vue)$/ },
