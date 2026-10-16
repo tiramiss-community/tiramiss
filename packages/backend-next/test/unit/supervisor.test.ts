@@ -92,7 +92,9 @@ test('stops normally during startup and recovers partially spawned children on f
 			signals,
 			logger,
 			spawn: () => {
-				if (count++) throw new Error('spawn failed');
+				if (count++) {
+					throw new Error('spawn failed');
+				}
 				return first as unknown as ChildProcess;
 			},
 		}),

@@ -9,11 +9,15 @@ try {
 	const config = await loadConfig();
 	process.exitCode = await runSupervisor(config, {
 		onReady(children) {
-			if (process.send) process.send({ type: 'ready', role: 'supervisor', children });
+			if (process.send) {
+				process.send({ type: 'ready', role: 'supervisor', children });
+			}
 		},
 	});
 } catch (error) {
 	createLogger('supervisor').error('startup.failed', { error });
 	process.exitCode = 1;
 }
-if (process.connected) process.disconnect?.();
+if (process.connected) {
+	process.disconnect?.();
+}

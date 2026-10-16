@@ -18,16 +18,22 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 	const initialize = async () => {
 		const dataSource = createDataSource(config.database, config.processes.startupTimeoutMs);
 		scope.defer(async () => {
-			if (dataSource.isInitialized) await dataSource.destroy();
+			if (dataSource.isInitialized) {
+				await dataSource.destroy();
+			}
 		});
 
 		try {
 			await dataSource.initialize();
 		} finally {
 			// Promise.race は接続作成を中断しない。期限後に完成したプールもここで解放する必要がある。
-			if (cancelled && dataSource.isInitialized) await dataSource.destroy();
+			if (cancelled && dataSource.isInitialized) {
+				await dataSource.destroy();
+			}
 		}
-		if (cancelled) throw timeout;
+		if (cancelled) {
+			throw timeout;
+		}
 
 		const redis = new Redis({
 			...config.redis,
@@ -42,7 +48,9 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			logger.error('redis.error', { error });
 		});
 		scope.defer(async () => {
-			if (redis.status === 'end') return;
+			if (redis.status === 'end') {
+				return;
+			}
 			await new Promise<void>((resolve) => {
 				redis.once('end', resolve);
 				redis.disconnect();
@@ -50,9 +58,13 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		});
 
 		await redis.connect();
-		if (cancelled) throw timeout;
+		if (cancelled) {
+			throw timeout;
+		}
 		await redis.ping();
-		if (cancelled) throw timeout;
+		if (cancelled) {
+			throw timeout;
+		}
 
 		return { dataSource, redis, logger, close: () => scope.close() };
 	};

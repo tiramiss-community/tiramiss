@@ -12,7 +12,9 @@ export async function migrateDatabase(config: DatabaseConfig): Promise<void> {
 		await upstream.initialize();
 		await upstream.runMigrations();
 	} finally {
-		if (upstream.isInitialized) await upstream.destroy();
+		if (upstream.isInitialized) {
+			await upstream.destroy();
+		}
 	}
 
 	try {
@@ -21,6 +23,8 @@ export async function migrateDatabase(config: DatabaseConfig): Promise<void> {
 		await internal.query('CREATE SCHEMA IF NOT EXISTS backend_internal');
 		await internal.runMigrations();
 	} finally {
-		if (internal.isInitialized) await internal.destroy();
+		if (internal.isInitialized) {
+			await internal.destroy();
+		}
 	}
 }

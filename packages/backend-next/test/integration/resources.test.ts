@@ -83,7 +83,9 @@ test('rejects and cleans up before startup deadline when Redis accepts TCP but n
 		).toBe(1);
 		await check.close();
 	} finally {
-		for (const socket of sockets) socket.destroy();
+		for (const socket of sockets) {
+			socket.destroy();
+		}
 		await new Promise<void>((resolve) => {
 			server.close(() => {
 				resolve();

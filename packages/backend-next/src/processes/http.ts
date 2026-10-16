@@ -29,9 +29,11 @@ export async function listenHttp(app: Hono, config: RuntimeConfig['http']): Prom
 
 		response.once('finish', () => {
 			// finish の時点ではまだ idle 扱いでないことがある。即時に閉じるだけでは keep-alive が残る。
-			if (state.draining) setImmediate(() => {
+			if (state.draining) {
+				setImmediate(() => {
 					server.closeIdleConnections();
 				});
+			}
 		});
 
 		const handling = Promise.resolve(listener(request, response));
@@ -54,12 +56,17 @@ export async function listenHttp(app: Hono, config: RuntimeConfig['http']): Prom
 			server.off('error', reject);
 			resolve();
 		};
-		if (config.socket) server.listen(config.socket, ready);
-		else server.listen(config.port ?? 3000, ready);
+		if (config.socket) {
+			server.listen(config.socket, ready);
+		} else {
+			server.listen(config.port ?? 3000, ready);
+		}
 	});
 
 	try {
-		if (config.socket && config.chmodSocket) await chmod(config.socket, parseInt(config.chmodSocket, 8));
+		if (config.socket && config.chmodSocket) {
+			await chmod(config.socket, parseInt(config.chmodSocket, 8));
+		}
 	} catch (error) {
 		await closeHttp(server);
 		throw error;
@@ -70,14 +77,19 @@ export async function listenHttp(app: Hono, config: RuntimeConfig['http']): Prom
 
 export async function closeHttp(server: Server): Promise<void> {
 	const state = states.get(server);
-	if (!state) throw new Error('HTTP server not managed');
+	if (!state) {
+		throw new Error('HTTP server not managed');
+	}
 
 	state.draining = true;
 	await Promise.all([
 		new Promise<void>((resolve, reject) => {
 			server.close((error) => {
-				if (error) reject(error);
-				else resolve();
+				if (error) {
+					reject(error);
+				} else {
+					resolve();
+				}
 			});
 			server.closeIdleConnections();
 		}),

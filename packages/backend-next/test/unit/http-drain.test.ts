@@ -43,6 +43,8 @@ test('waits for an accepted handler after its HTTP client has disconnected', asy
 	} finally {
 		release();
 		req.destroy();
-		if (server.listening) await closeHttp(server);
+		if (server.listening) {
+			await closeHttp(server);
+		}
 	}
 });

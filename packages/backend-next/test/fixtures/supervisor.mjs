@@ -14,4 +14,6 @@ process.exitCode = await runSupervisor(await loadConfig(), {
 		}),
 	onReady: (children) => process.send?.({ type: 'ready', role: 'supervisor', children }),
 });
-if (process.connected) process.disconnect();
+if (process.connected) {
+	process.disconnect();
+}

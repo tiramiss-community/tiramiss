@@ -30,7 +30,9 @@ export async function runChild(
 	}, 30000);
 
 	const finish = async () => {
-		if (finishing) return;
+		if (finishing) {
+			return;
+		}
 		finishing = true;
 
 		try {
@@ -45,7 +47,9 @@ export async function runChild(
 		process.off('SIGTERM', onSignal);
 		process.off('SIGINT', onSignal);
 		process.off('disconnect', onDisconnect);
-		if (process.connected) process.disconnect?.();
+		if (process.connected) {
+			process.disconnect?.();
+		}
 		process.exitCode = failed ? 1 : 0;
 		done();
 	};
@@ -53,7 +57,9 @@ export async function runChild(
 	const stop = (failure: boolean) => {
 		failed ||= failure;
 		// シグナルを受けるたびに停止期限を延ばすと、停止できないプロセスが残り続ける。
-		if (stopping) return;
+		if (stopping) {
+			return;
+		}
 
 		stopping = true;
 		clearTimeout(startup);
@@ -61,7 +67,9 @@ export async function runChild(
 			logger.error('shutdown.timeout');
 			process.exit(1);
 		}, shutdownMs);
-		if (running) void finish();
+		if (running) {
+			void finish();
+		}
 	};
 
 	const onSignal = () => {
@@ -93,15 +101,21 @@ export async function runChild(
 		running = await start(config);
 		clearTimeout(startup);
 		// 起動中の停止要求でも start 自体は中断できない。返ってきたリソースを閉じ、ready は出さない。
-		if (stopping) await finish();
-		else {
+		if (stopping) {
+			await finish();
+		} else {
 			logger.info('process.ready');
-			if (process.send) await new Promise<void>((resolve, reject) => {
+			if (process.send) {
+				await new Promise<void>((resolve, reject) => {
 					process.send!({ type: 'ready', role }, (error) => {
-						if (error) reject(error);
-						else resolve();
+						if (error) {
+							reject(error);
+						} else {
+							resolve();
+						}
 					});
 				});
+			}
 		}
 	} catch (error) {
 		failed = true;

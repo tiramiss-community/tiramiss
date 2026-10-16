@@ -36,7 +36,9 @@ export function runSupervisor(config: RuntimeConfig, overrides: Partial<Supervis
 		let forceTimer: NodeJS.Timeout | undefined;
 
 		const finish = () => {
-			if (!stopping || children.some((child) => !child.exited)) return;
+			if (!stopping || children.some((child) => !child.exited)) {
+				return;
+			}
 
 			clearTimeout(startupTimer);
 			clearTimeout(forceTimer);
@@ -57,10 +59,18 @@ export function runSupervisor(config: RuntimeConfig, overrides: Partial<Supervis
 			clearTimeout(startupTimer);
 			forceTimer = setTimeout(() => {
 				failed = true;
-				for (const state of children) if (!state.exited) state.child.kill('SIGKILL');
+				for (const state of children) {
+					if (!state.exited) {
+						state.child.kill('SIGKILL');
+					}
+				}
 				finish();
 			}, config.processes.shutdownTimeoutMs);
-			for (const state of children) if (!state.exited) state.child.kill('SIGTERM');
+			for (const state of children) {
+				if (!state.exited) {
+					state.child.kill('SIGTERM');
+				}
+			}
 			finish();
 		};
 
@@ -81,7 +91,9 @@ export function runSupervisor(config: RuntimeConfig, overrides: Partial<Supervis
 
 		try {
 			for (const role of roles) {
-				if (stopping) break;
+				if (stopping) {
+					break;
+				}
 
 				const child = dependencies.spawn(role);
 				const state = { child, role, ready: false, exited: false };
@@ -90,22 +102,30 @@ export function runSupervisor(config: RuntimeConfig, overrides: Partial<Supervis
 				child.on('error', (error) => {
 					dependencies.logger.error('child.error', { role, error });
 					// spawn 自体の失敗では exit が来ないため、終了イベントだけを待つと停止できない。
-					if (!child.pid) state.exited = true;
+					if (!child.pid) {
+						state.exited = true;
+					}
 					stop(true);
 				});
 
 				child.once('exit', (code, signal) => {
 					state.exited = true;
-					if (code !== null && code !== 0) failed = true;
+					if (code !== null && code !== 0) {
+						failed = true;
+					}
 					if (!stopping) {
 						// 正常終了コードでも役割の欠落になる。部分稼働や独自の再起動ループを避け、全体を止める。
 						dependencies.logger.error('child.unexpected_exit', { role, code, signal });
 						stop(true);
-					} else finish();
+					} else {
+						finish();
+					}
 				});
 
 				child.on('message', (message) => {
-					if (stopping || state.exited || !isReadyMessage(message, role)) return;
+					if (stopping || state.exited || !isReadyMessage(message, role)) {
+						return;
+					}
 					state.ready = true;
 					// spawn 成功だけでは依存先に接続できたとは言えず、全役割の準備前に ready を通知しない。
 					if (!announced && children.length === roles.length && children.every((item) => item.ready && !item.exited)) {

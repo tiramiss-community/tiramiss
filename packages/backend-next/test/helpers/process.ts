@@ -92,7 +92,9 @@ export function launch(entrypoint: string, configPath: string, extraEnv: NodeJS.
 		messages,
 		output: () => output,
 		async close() {
-			if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL');
+			if (child.exitCode === null && child.signalCode === null) {
+				child.kill('SIGKILL');
+			}
 			await exit;
 		},
 	};

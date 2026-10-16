@@ -21,7 +21,9 @@ export async function assertSchemaMatches(config: DatabaseConfig): Promise<void>
 				});
 			}
 		} finally {
-			if (source.isInitialized) await source.destroy();
+			if (source.isInitialized) {
+				await source.destroy();
+			}
 		}
 	}
 }

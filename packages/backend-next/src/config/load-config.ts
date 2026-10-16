@@ -12,17 +12,23 @@ import type { RedisConfig, RuntimeConfig } from './types.js';
 type ObjectValue = Record<string, unknown>;
 
 function object(value: unknown, name: string): ObjectValue {
-	if (!value || typeof value !== 'object' || Array.isArray(value)) throw new DiagnosticError('INVALID_CONFIG', { field: name });
+	if (!value || typeof value !== 'object' || Array.isArray(value)) {
+		throw new DiagnosticError('INVALID_CONFIG', { field: name });
+	}
 	return value as ObjectValue;
 }
 
 function text(value: unknown, name: string, empty = false): string {
-	if (typeof value !== 'string' || (!empty && !value)) throw new DiagnosticError('INVALID_CONFIG', { field: name });
+	if (typeof value !== 'string' || (!empty && !value)) {
+		throw new DiagnosticError('INVALID_CONFIG', { field: name });
+	}
 	return value;
 }
 
 function positive(value: unknown, name: string, max = Number.MAX_SAFE_INTEGER): number {
-	if (!Number.isSafeInteger(value) || (value as number) <= 0 || (value as number) > max) throw new DiagnosticError('INVALID_CONFIG', { field: name });
+	if (!Number.isSafeInteger(value) || (value as number) <= 0 || (value as number) > max) {
+		throw new DiagnosticError('INVALID_CONFIG', { field: name });
+	}
 	return value as number;
 }
 
@@ -31,7 +37,9 @@ function redis(value: unknown, host: string): RedisConfig {
 	const prefix = text(source.prefix ?? host, 'redis.prefix');
 	const db = source.db ?? 0;
 
-	if (!Number.isSafeInteger(db) || (db as number) < 0) throw new DiagnosticError('INVALID_CONFIG', { field: 'redis.db' });
+	if (!Number.isSafeInteger(db) || (db as number) < 0) {
+		throw new DiagnosticError('INVALID_CONFIG', { field: 'redis.db' });
+	}
 
 	return {
 		...source,
@@ -61,7 +69,9 @@ export async function loadConfig(
 	} catch {
 		throw new DiagnosticError('INVALID_CONFIG', { field: 'url' });
 	}
-	if (!['http:', 'https:'].includes(url.protocol)) throw new DiagnosticError('INVALID_CONFIG', { field: 'url' });
+	if (!['http:', 'https:'].includes(url.protocol)) {
+		throw new DiagnosticError('INVALID_CONFIG', { field: 'url' });
+	}
 
 	const db = object(source.db, 'db');
 	const specific = source.backendNext === undefined ? {} : object(source.backendNext, 'backendNext');

@@ -7,7 +7,9 @@ export class ResourceScope {
 	private closing?: Promise<void>;
 
 	defer(cleanup: () => Promise<void>): void {
-		if (this.closing) throw new Error('Resource scope already closing');
+		if (this.closing) {
+			throw new Error('Resource scope already closing');
+		}
 		this.cleanups.push(cleanup);
 	}
 
@@ -28,6 +30,8 @@ export class ResourceScope {
 			}
 		}
 
-		if (errors.length) throw new AggregateError(errors, 'Resource cleanup failed');
+		if (errors.length) {
+			throw new AggregateError(errors, 'Resource cleanup failed');
+		}
 	}
 }

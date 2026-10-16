@@ -27,10 +27,15 @@ test.each(['normal', 'http', 'worker'])('supervises a real process tree through 
 		children = (supervisor.messages.find((m: any) => m.role === 'supervisor') as { children: typeof children })
 			.children;
 		expect(children.map((c) => c.role)).toEqual(['http', 'worker', 'worker']);
-		if (mode === 'normal') supervisor.child.kill('SIGTERM');
-		else process.kill(children.find((c) => c.role === mode)!.pid, 'SIGKILL');
+		if (mode === 'normal') {
+			supervisor.child.kill('SIGTERM');
+		} else {
+			process.kill(children.find((c) => c.role === mode)!.pid, 'SIGKILL');
+		}
 		expect((await supervisor.exit).code).toBe(mode === 'normal' ? 0 : 1);
-		for (const child of children) expect(() => process.kill(child.pid, 0)).toThrow();
+		for (const child of children) {
+			expect(() => process.kill(child.pid, 0)).toThrow();
+		}
 	} finally {
 		await supervisor.close();
 		for (const child of children) {

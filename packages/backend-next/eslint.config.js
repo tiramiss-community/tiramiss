@@ -5,4 +5,26 @@
 import parser from '@typescript-eslint/parser';
 import globals from 'globals';
 import shared from '../shared/eslint.config.js';
-export default [...shared, { languageOptions: { globals: globals.node } }, { ignores: ['built/**'] }, { files: ['**/*.ts'], languageOptions: { parser, globals: globals.node, parserOptions: { project: './tsconfig.test.json', tsconfigRootDir: import.meta.dirname } } }];
+
+export default [
+	...shared,
+	{ languageOptions: { globals: globals.node } },
+	{ ignores: ['built/**'] },
+	{
+		files: ['**/*.ts'],
+		languageOptions: {
+			parser,
+			globals: globals.node,
+			parserOptions: {
+				project: './tsconfig.test.json',
+				tsconfigRootDir: import.meta.dirname,
+			},
+		},
+	},
+	{
+		rules: {
+			curly: ['error', 'all'],
+			'@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: false }],
+		},
+	},
+];

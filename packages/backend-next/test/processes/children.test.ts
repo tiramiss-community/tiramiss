@@ -95,7 +95,9 @@ test.each([false, true])('waits for in-flight requests with bounded shutdown (fo
 		await child.ready;
 		const started = new Promise<void>((done) => {
 			child.child.on('message', (message: any) => {
-				if (message.type === 'request-started') done();
+				if (message.type === 'request-started') {
+					done();
+				}
 			});
 		});
 		const response = fetch(`http://127.0.0.1:${port}/`)
@@ -126,7 +128,9 @@ test.each([false, true])('drains disconnected handlers with bounded shutdown (fo
 		req.on('error', () => {});
 		const started = new Promise<void>((done) => {
 			child.child.on('message', (message: unknown) => {
-				if (message && typeof message === 'object' && 'type' in message && message.type === 'request-started') done();
+				if (message && typeof message === 'object' && 'type' in message && message.type === 'request-started') {
+					done();
+				}
 			});
 		});
 		req.end();
