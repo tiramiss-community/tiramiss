@@ -36,13 +36,13 @@ jobs:
           POSTGRES_DB: backend_next_test
         ports: ['55432:5432']
         options: >-
-          --health-cmd 'pg_isready -U postgres -d backend_next_test'
+          --health-cmd "pg_isready -U postgres -d backend_next_test"
           --health-interval 1s --health-timeout 3s --health-retries 30
       redis:
         image: redis:8
         ports: ['56379:6379']
         options: >-
-          --health-cmd 'redis-cli ping'
+          --health-cmd "redis-cli ping"
           --health-interval 1s --health-timeout 3s --health-retries 30
     steps:
       - uses: actions/checkout@v7.0.1
