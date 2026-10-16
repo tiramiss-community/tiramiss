@@ -30,7 +30,9 @@ function redis(value: unknown, host: string): RedisConfig {
 	const source = object(value, 'redis');
 	const prefix = text(source.prefix ?? host, 'redis.prefix');
 	const db = source.db ?? 0;
+
 	if (!Number.isSafeInteger(db) || (db as number) < 0) throw new DiagnosticError('INVALID_CONFIG', { field: 'redis.db' });
+
 	return {
 		...source,
 		host: text(source.host, 'redis.host'),
@@ -52,6 +54,7 @@ export async function loadConfig(
 		options.configFile ??
 		resolve(configDir, env.MISSKEY_CONFIG_YML ?? (env.NODE_ENV === 'test' ? 'test.yml' : 'default.yml'));
 	const source = object(load(await readFile(path, 'utf8')), 'configuration');
+
 	let url: URL;
 	try {
 		url = new URL(text(source.url ?? env.MISSKEY_URL, 'url'));
@@ -59,11 +62,13 @@ export async function loadConfig(
 		throw new DiagnosticError('INVALID_CONFIG', { field: 'url' });
 	}
 	if (!['http:', 'https:'].includes(url.protocol)) throw new DiagnosticError('INVALID_CONFIG', { field: 'url' });
+
 	const db = object(source.db, 'db');
 	const specific = source.backendNext === undefined ? {} : object(source.backendNext, 'backendNext');
 	const baseRedis = redis(source.redis, url.host);
 	const socket = source.socket === undefined ? undefined : text(source.socket, 'socket');
 	const port = source.port ?? (env.PORT === undefined ? undefined : Number(env.PORT));
+
 	return {
 		url: url.origin,
 		database: {

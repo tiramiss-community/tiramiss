@@ -6,6 +6,7 @@ import 'reflect-metadata';
 import { DataSource, type DataSourceOptions } from 'typeorm';
 import { entities } from 'backend-upstream/entities';
 import type { DatabaseConfig } from '../../config/types.js';
+
 export function databaseOptions(
 	config: DatabaseConfig,
 	timeoutMs = 30000,

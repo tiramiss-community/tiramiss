@@ -8,12 +8,14 @@ import { createLogger, type Logger } from '../platform/logger.js';
 import { isReadyMessage, type ProcessRole } from './protocol.js';
 import type { EventEmitter } from 'node:events';
 import type { RuntimeConfig } from '../config/types.js';
+
 interface SupervisorDependencies {
 	spawn(role: ProcessRole): ChildProcess;
 	signals: Pick<EventEmitter, 'on' | 'off'>;
 	logger: Logger;
 	onReady(children: readonly { role: ProcessRole; pid: number | undefined }[]): void;
 }
+
 export function runSupervisor(config: RuntimeConfig, overrides: Partial<SupervisorDependencies> = {}): Promise<number> {
 	const dependencies: SupervisorDependencies = {
 		spawn: (role) =>
@@ -25,14 +27,17 @@ export function runSupervisor(config: RuntimeConfig, overrides: Partial<Supervis
 		onReady: () => {},
 		...overrides,
 	};
+
 	return new Promise<number>((resolve) => {
 		const children: { child: ChildProcess; role: ProcessRole; ready: boolean; exited: boolean }[] = [];
 		let stopping = false;
 		let failed = false;
 		let announced = false;
 		let forceTimer: NodeJS.Timeout | undefined;
+
 		const finish = () => {
 			if (!stopping || children.some((child) => !child.exited)) return;
+
 			clearTimeout(startupTimer);
 			clearTimeout(forceTimer);
 			dependencies.signals.off('SIGTERM', onSignal);
@@ -40,12 +45,14 @@ export function runSupervisor(config: RuntimeConfig, overrides: Partial<Supervis
 			dependencies.logger.info('supervisor.stopped', { failed });
 			resolve(failed ? 1 : 0);
 		};
+
 		const stop = (failure: boolean) => {
 			failed ||= failure;
 			if (stopping) {
 				finish();
 				return;
 			}
+
 			stopping = true;
 			clearTimeout(startupTimer);
 			forceTimer = setTimeout(() => {
@@ -56,6 +63,7 @@ export function runSupervisor(config: RuntimeConfig, overrides: Partial<Supervis
 			for (const state of children) if (!state.exited) state.child.kill('SIGTERM');
 			finish();
 		};
+
 		const onSignal = () => {
 			stop(false);
 		};
@@ -65,22 +73,27 @@ export function runSupervisor(config: RuntimeConfig, overrides: Partial<Supervis
 		}, config.processes.startupTimeoutMs);
 		dependencies.signals.on('SIGTERM', onSignal);
 		dependencies.signals.on('SIGINT', onSignal);
+
 		const roles: ProcessRole[] = [
 			'http',
 			...Array.from({ length: config.processes.workerCount }, (): ProcessRole => 'worker'),
 		];
+
 		try {
 			for (const role of roles) {
 				if (stopping) break;
+
 				const child = dependencies.spawn(role);
 				const state = { child, role, ready: false, exited: false };
 				children.push(state);
+
 				child.on('error', (error) => {
 					dependencies.logger.error('child.error', { role, error });
 					// spawn 自体の失敗では exit が来ないため、終了イベントだけを待つと停止できない。
 					if (!child.pid) state.exited = true;
 					stop(true);
 				});
+
 				child.once('exit', (code, signal) => {
 					state.exited = true;
 					if (code !== null && code !== 0) failed = true;
@@ -90,6 +103,7 @@ export function runSupervisor(config: RuntimeConfig, overrides: Partial<Supervis
 						stop(true);
 					} else finish();
 				});
+
 				child.on('message', (message) => {
 					if (stopping || state.exited || !isReadyMessage(message, role)) return;
 					state.ready = true;

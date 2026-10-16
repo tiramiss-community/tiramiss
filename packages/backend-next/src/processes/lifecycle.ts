@@ -6,9 +6,11 @@ import { createRuntime, type RuntimeResources } from '../composition/create-runt
 import { assertMigrationsApplied } from '../platform/database/check-migrations.js';
 import { ResourceScope } from '../platform/resource-scope.js';
 import type { RuntimeConfig } from '../config/types.js';
+
 export interface RunningProcess {
 	stop(): Promise<void>;
 }
+
 export async function startManagedProcess(
 	role: 'http' | 'worker',
 	config: RuntimeConfig,
@@ -17,6 +19,7 @@ export async function startManagedProcess(
 	const resources = await createRuntime(config, role);
 	const scope = new ResourceScope();
 	scope.defer(resources.close);
+
 	try {
 		await assertMigrationsApplied(config.database);
 		scope.defer(await start(resources));
@@ -27,6 +30,7 @@ export async function startManagedProcess(
 		} catch (cleanupError) {
 			resources.logger.error('cleanup.failed', { error: cleanupError });
 		}
+
 		throw error;
 	}
 }

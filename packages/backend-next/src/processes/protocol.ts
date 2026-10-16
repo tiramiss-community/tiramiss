@@ -7,6 +7,7 @@ export interface ReadyMessage {
 	type: 'ready';
 	role: ProcessRole;
 }
+
 export function isReadyMessage(value: unknown, role: ProcessRole): value is ReadyMessage {
 	return (
 		!!value &&

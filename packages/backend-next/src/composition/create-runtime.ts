@@ -6,6 +6,7 @@ import { Container } from 'inversify';
 import { connectResources } from '../platform/connect-resources.js';
 import { createLogger } from '../platform/logger.js';
 import type { RuntimeConfig } from '../config/types.js';
+
 export type RuntimeResources = Awaited<ReturnType<typeof connectResources>>;
 export async function createRuntime(
 	config: RuntimeConfig,

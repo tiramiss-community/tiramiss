@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import type { RedisOptions } from 'ioredis';
+
 export interface DatabaseConfig {
 	host: string;
 	port: number;
@@ -11,9 +12,11 @@ export interface DatabaseConfig {
 	password: string;
 	extra: Record<string, unknown>;
 }
+
 export interface RedisConfig extends RedisOptions {
 	prefix: string;
 }
+
 export interface RuntimeConfig {
 	url: string;
 	database: DatabaseConfig;

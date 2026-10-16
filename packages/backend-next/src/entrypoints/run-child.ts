@@ -7,6 +7,7 @@ import { createLogger } from '../platform/logger.js';
 import type { RuntimeConfig } from '../config/types.js';
 import type { RunningProcess } from '../processes/lifecycle.js';
 import type { ProcessRole } from '../processes/protocol.js';
+
 export async function runChild(
 	role: ProcessRole,
 	start: (config: RuntimeConfig) => Promise<RunningProcess>,
@@ -18,6 +19,7 @@ export async function runChild(
 	let finishing = false;
 	let shutdownMs = 30000;
 	let forced: NodeJS.Timeout | undefined;
+
 	let done!: () => void;
 	const completed = new Promise<void>((resolve) => {
 		done = resolve;
@@ -26,15 +28,18 @@ export async function runChild(
 		logger.error('startup.timeout');
 		process.exit(1);
 	}, 30000);
+
 	const finish = async () => {
 		if (finishing) return;
 		finishing = true;
+
 		try {
 			await running?.stop();
 		} catch (error) {
 			failed = true;
 			logger.error('shutdown.failed', { error });
 		}
+
 		clearTimeout(forced);
 		clearTimeout(startup);
 		process.off('SIGTERM', onSignal);
@@ -44,10 +49,12 @@ export async function runChild(
 		process.exitCode = failed ? 1 : 0;
 		done();
 	};
+
 	const stop = (failure: boolean) => {
 		failed ||= failure;
 		// シグナルを受けるたびに停止期限を延ばすと、停止できないプロセスが残り続ける。
 		if (stopping) return;
+
 		stopping = true;
 		clearTimeout(startup);
 		forced = setTimeout(() => {
@@ -56,6 +63,7 @@ export async function runChild(
 		}, shutdownMs);
 		if (running) void finish();
 	};
+
 	const onSignal = () => {
 		stop(false);
 	};
@@ -63,9 +71,11 @@ export async function runChild(
 		// 親を失った子が単独でリクエストやジョブを受け続けないよう、IPC 切断も停止理由にする。
 		stop(true);
 	};
+
 	process.on('SIGTERM', onSignal);
 	process.on('SIGINT', onSignal);
 	process.on('disconnect', onDisconnect);
+
 	try {
 		const config = await loadConfig();
 		shutdownMs = config.processes.shutdownTimeoutMs;
@@ -73,11 +83,13 @@ export async function runChild(
 			await finish();
 			return;
 		}
+
 		clearTimeout(startup);
 		startup = setTimeout(() => {
 			logger.error('startup.timeout');
 			process.exit(1);
 		}, config.processes.startupTimeoutMs);
+
 		running = await start(config);
 		clearTimeout(startup);
 		// 起動中の停止要求でも start 自体は中断できない。返ってきたリソースを閉じ、ready は出さない。
@@ -97,5 +109,6 @@ export async function runChild(
 		stop(true);
 		await finish();
 	}
+
 	await completed;
 }

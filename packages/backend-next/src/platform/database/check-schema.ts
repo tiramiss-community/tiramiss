@@ -5,6 +5,7 @@
 import { DiagnosticError } from '../diagnostic-error.js';
 import { migrationSources } from './migration-sources.js';
 import type { DatabaseConfig } from '../../config/types.js';
+
 export async function assertSchemaMatches(config: DatabaseConfig): Promise<void> {
 	for (const [kind, source] of Object.entries(migrationSources(config))) {
 		try {

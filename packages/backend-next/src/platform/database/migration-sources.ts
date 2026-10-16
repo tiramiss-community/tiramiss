@@ -6,6 +6,7 @@ import { DataSource } from 'typeorm';
 import { migrations } from 'backend-upstream/migrations';
 import { databaseOptions } from './data-source.js';
 import type { DatabaseConfig } from '../../config/types.js';
+
 export const internalMigrations = [];
 export function migrationSources(config: DatabaseConfig) {
 	const options = databaseOptions(config);

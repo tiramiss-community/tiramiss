@@ -4,6 +4,7 @@
  */
 import type { DataSource, EntityManager } from 'typeorm';
 import type { TransactionRunner } from '../../application/transaction.js';
+
 export function createTransactionRunner<Scope>(
 	source: DataSource,
 	bind: (manager: EntityManager) => Scope,
