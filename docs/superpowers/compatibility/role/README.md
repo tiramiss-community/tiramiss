@@ -38,7 +38,7 @@ TypeScript probeは固定コミットの本家を調査・再実行するため�
 
 ## 再実行
 
-リポジトリ指定のNode.jsとpnpmを用いる。既存checkoutのnode_modulesを流用するとバージョンが一致しない場合があるため、参照側でlockfile通りに導入する。
+リポジトリ指定のNode.jsとpnpmを用い、参照側でlockfile通りに依存を導入する。
 
 1. repo rootから固定コミットを新しい一時ディレクトリへ展開し、probeだけを追加する。`ROLE_PROBE_ROOT` は以降の同じシェルで使う。
 
@@ -131,8 +131,6 @@ TypeScript probeは固定コミットの本家を調査・再実行するため�
 | 追加 `RoleContract.ts` | PASS、36件 |
 | 追加HTTP `role-contract.ts` | PASS、33件（HTTPケース28件と補足5件） |
 | probeのESLint | PASS。参照package rootから変更probe2ファイルへ `eslint --quiet` |
-
-実行時はpnpmを `/tmp/tiramiss-role-116-tools` へ導入した。既存環境はlockfileと依存バージョンが一致しなかったため使用しなかった。スクリプト内のpnpmがホスト側の別バージョンを選ぶ問題を避けるため、設定変換とvitestは参照側の `node scripts/compile_config.js`、`node_modules/.bin/vitest` も使用した。製品ソースの改変によるビルド回避はしていない。
 
 記録する期待値はJSONとprobeのassertion。認証情報・生成トークンや一時的な実行時間を含む生ログはコミットしない。本家は監査保存完了を待たないため、HTTP204の直後に監査が存在することは要求せず、到達をpollしてスナップショットを確認する。
 
