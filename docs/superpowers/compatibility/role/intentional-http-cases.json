@@ -1,0 +1,18 @@
+[
+	{
+		"name": "non-string credential returns a completed 400",
+		"endpoints": [
+			"show",
+			"update"
+		],
+		"params": {
+			"i": 123
+		},
+		"upstreamObservation": "No completed response before the 500ms client timeout; reply.code(400) without send in ApiCallService",
+		"nextExpected": {
+			"status": 400,
+			"bodyText": ""
+		},
+		"approved": "2026-10-17"
+	}
+]

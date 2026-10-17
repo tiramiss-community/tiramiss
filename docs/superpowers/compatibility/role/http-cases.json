@@ -1,0 +1,296 @@
+[
+	{
+		"name": "show anonymous",
+		"endpoint": "show",
+		"actor": "anonymous",
+		"status": 401,
+		"code": "CREDENTIAL_REQUIRED",
+		"id": "1384574d-a912-4b81-8601-c7b1c4085df1",
+		"message": "Credential required.",
+		"kind": "client",
+		"wwwAuthenticate": "Bearer realm=\"Misskey\""
+	},
+	{
+		"name": "show invalid token",
+		"endpoint": "show",
+		"actor": "invalid",
+		"status": 401,
+		"code": "AUTHENTICATION_FAILED",
+		"id": "b0a7f5f8-dc2f-4171-b91f-de88ad238e14",
+		"message": "Authentication failed. Please ensure your token is correct.",
+		"kind": "client",
+		"wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_token\", error_description=\"Authentication failed. Please ensure your token is correct.\""
+	},
+	{
+		"name": "show ordinary",
+		"endpoint": "show",
+		"actor": "ordinary",
+		"status": 403,
+		"code": "ROLE_PERMISSION_DENIED",
+		"id": "d33d5333-db36-423d-a8f9-1a2b9549da41",
+		"message": "You are not assigned to a moderator role.",
+		"kind": "permission"
+	},
+	{
+		"name": "show moderator",
+		"endpoint": "show",
+		"actor": "moderator",
+		"status": 200
+	},
+	{
+		"name": "show administrator",
+		"endpoint": "show",
+		"actor": "administrator",
+		"status": 200
+	},
+	{
+		"name": "show root",
+		"endpoint": "show",
+		"actor": "root",
+		"status": 200
+	},
+	{
+		"name": "show suspended administrator",
+		"endpoint": "show",
+		"actor": "suspended",
+		"status": 403,
+		"code": "YOUR_ACCOUNT_SUSPENDED",
+		"id": "a8c724b3-6e9c-4b46-b1a8-bc3ed6258370",
+		"message": "Your account has been suspended.",
+		"kind": "permission"
+	},
+	{
+		"name": "show expired administrator",
+		"endpoint": "show",
+		"actor": "expired",
+		"status": 403,
+		"code": "ROLE_PERMISSION_DENIED",
+		"id": "d33d5333-db36-423d-a8f9-1a2b9549da41",
+		"message": "You are not assigned to a moderator role.",
+		"kind": "permission"
+	},
+	{
+		"name": "show scoped token",
+		"endpoint": "show",
+		"actor": "readScope",
+		"status": 200
+	},
+	{
+		"name": "show wrong scope",
+		"endpoint": "show",
+		"actor": "writeScope",
+		"status": 403,
+		"code": "PERMISSION_DENIED",
+		"id": "1370e5b7-d4eb-4566-bb1d-7748ee6a1838",
+		"message": "Your app does not have the necessary permissions to use this endpoint.",
+		"kind": "permission",
+		"wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"insufficient_scope\", error_description=\"Your app does not have the necessary permissions to use this endpoint.\""
+	},
+	{
+		"name": "show nonexistent",
+		"endpoint": "show",
+		"actor": "root",
+		"params": {
+			"roleId": "MissingRole116"
+		},
+		"status": 400,
+		"code": "NO_SUCH_ROLE",
+		"id": "07dc7d34-c0d8-49b7-96c6-db3ce64ee0b3",
+		"message": "No such role.",
+		"kind": "client",
+		"wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"No such role.\""
+	},
+	{
+		"name": "show invalid id",
+		"endpoint": "show",
+		"actor": "root",
+		"params": {
+			"roleId": "!"
+		},
+		"status": 400,
+		"code": "INVALID_PARAM",
+		"id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+		"message": "Invalid param.",
+		"kind": "client",
+		"wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\"",
+		"info": {
+			"param": "#/properties/roleId/format",
+			"reason": "must match format \"misskey:id\""
+		}
+	},
+	{
+		"name": "show null id",
+		"endpoint": "show",
+		"actor": "root",
+		"params": {
+			"roleId": null
+		},
+		"status": 400,
+		"code": "INVALID_PARAM",
+		"id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+		"message": "Invalid param.",
+		"kind": "client",
+		"wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\"",
+		"info": {
+			"param": "#/properties/roleId/type",
+			"reason": "must be string"
+		}
+	},
+	{
+		"name": "update anonymous",
+		"endpoint": "update",
+		"actor": "anonymous",
+		"status": 401,
+		"code": "CREDENTIAL_REQUIRED",
+		"id": "1384574d-a912-4b81-8601-c7b1c4085df1",
+		"message": "Credential required.",
+		"kind": "client",
+		"wwwAuthenticate": "Bearer realm=\"Misskey\""
+	},
+	{
+		"name": "update ordinary",
+		"endpoint": "update",
+		"actor": "ordinary",
+		"status": 403,
+		"code": "ROLE_PERMISSION_DENIED",
+		"id": "c3d38592-54c0-429d-be96-5636b0431a61",
+		"message": "You are not assigned to an administrator role.",
+		"kind": "permission"
+	},
+	{
+		"name": "update moderator",
+		"endpoint": "update",
+		"actor": "moderator",
+		"status": 403,
+		"code": "ROLE_PERMISSION_DENIED",
+		"id": "c3d38592-54c0-429d-be96-5636b0431a61",
+		"message": "You are not assigned to an administrator role.",
+		"kind": "permission"
+	},
+	{
+		"name": "update administrator",
+		"endpoint": "update",
+		"actor": "administrator",
+		"status": 204
+	},
+	{
+		"name": "update root",
+		"endpoint": "update",
+		"actor": "root",
+		"status": 204
+	},
+	{
+		"name": "update scoped token",
+		"endpoint": "update",
+		"actor": "writeScope",
+		"status": 204
+	},
+	{
+		"name": "update wrong scope",
+		"endpoint": "update",
+		"actor": "readScope",
+		"status": 403,
+		"code": "PERMISSION_DENIED",
+		"id": "1370e5b7-d4eb-4566-bb1d-7748ee6a1838",
+		"message": "Your app does not have the necessary permissions to use this endpoint.",
+		"kind": "permission",
+		"wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"insufficient_scope\", error_description=\"Your app does not have the necessary permissions to use this endpoint.\""
+	},
+	{
+		"name": "update nonexistent",
+		"endpoint": "update",
+		"actor": "root",
+		"params": {
+			"roleId": "MissingRole116"
+		},
+		"status": 400,
+		"code": "NO_SUCH_ROLE",
+		"id": "cd23ef55-09ad-428a-ac61-95a45e124b32",
+		"message": "No such role.",
+		"kind": "client",
+		"wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"No such role.\""
+	},
+	{
+		"name": "update invalid target",
+		"endpoint": "update",
+		"actor": "root",
+		"params": {
+			"target": "other"
+		},
+		"status": 400,
+		"code": "INVALID_PARAM",
+		"id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+		"message": "Invalid param.",
+		"kind": "client",
+		"wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\"",
+		"info": {
+			"param": "#/properties/target/enum",
+			"reason": "must be equal to one of the allowed values"
+		}
+	},
+	{
+		"name": "update null name",
+		"endpoint": "update",
+		"actor": "root",
+		"params": {
+			"name": null
+		},
+		"status": 400,
+		"code": "INVALID_PARAM",
+		"id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+		"message": "Invalid param.",
+		"kind": "client",
+		"wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\"",
+		"info": {
+			"param": "#/properties/name/type",
+			"reason": "must be string"
+		}
+	},
+	{
+		"name": "update nullable fields",
+		"endpoint": "update",
+		"actor": "root",
+		"params": {
+			"color": null,
+			"iconUrl": null
+		},
+		"status": 204
+	},
+	{
+		"name": "show App hash uses app scope",
+		"endpoint": "show",
+		"actor": "appRead",
+		"status": 200
+	},
+	{
+		"name": "update App ignores token scope",
+		"endpoint": "update",
+		"actor": "appRead",
+		"status": 403,
+		"code": "PERMISSION_DENIED",
+		"id": "1370e5b7-d4eb-4566-bb1d-7748ee6a1838",
+		"message": "Your app does not have the necessary permissions to use this endpoint.",
+		"kind": "permission",
+		"wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"insufficient_scope\", error_description=\"Your app does not have the necessary permissions to use this endpoint.\""
+	},
+	{
+		"name": "show qualification before scope",
+		"endpoint": "show",
+		"actor": "ordinaryNoScope",
+		"status": 403,
+		"code": "ROLE_PERMISSION_DENIED",
+		"id": "d33d5333-db36-423d-a8f9-1a2b9549da41",
+		"message": "You are not assigned to a moderator role.",
+		"kind": "permission"
+	},
+	{
+		"name": "update qualification before scope",
+		"endpoint": "update",
+		"actor": "ordinaryNoScope",
+		"status": 403,
+		"code": "ROLE_PERMISSION_DENIED",
+		"id": "c3d38592-54c0-429d-be96-5636b0431a61",
+		"message": "You are not assigned to an administrator role.",
+		"kind": "permission"
+	}
+]

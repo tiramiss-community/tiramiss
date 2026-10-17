@@ -8,6 +8,8 @@
 2. [バックエンド再設計の基本方針](../../docs/superpowers/specs/2026-10-15-misskey-backend-redesign-design.md) と、担当機能の詳細設計。Roleは [ロールのポリシー更新と反映](../../docs/superpowers/specs/2026-10-16-role-policy-update-design.md) を読む。
 3. [README](README.md) の設定・起動・テスト手順と、変更対象のコード・テスト。
 
+Roleの後続作業（#117–#121）は、#116で確定した[互換性契約](../../docs/superpowers/specs/2026-10-17-role-compatibility-contract.md)と[比較資料の引き継ぎ表](../../docs/superpowers/compatibility/role/README.md#後続issueでの利用と更新)も着手前に読む。後者にJSON期待値・本家用TypeScript probeの所在、各Issueで新実装のテストへ接続する内容、再調査・期待値更新が必要な条件をまとめている。これらは後続実装の入力であり、Role実装済み・新旧一致検証済みを示すものではない。
+
 最小実行基盤は [PR #113](https://github.com/tiramiss-community/tiramiss/pull/113) で導入済み。基盤の存在だけでRole API・認証・実ジョブなどの業務機能も完成したとは扱わず、現在のコード・Issue・検証結果を確認する。
 
 Issueは作業の範囲・順序・完了条件、設計書は合意した契約、READMEは実行手順を示す。食い違いがあれば既存コードだけを正解として仕様を変更せず、差異を整理する。合意済みの方針を実装上の都合で黙って変更しない。
