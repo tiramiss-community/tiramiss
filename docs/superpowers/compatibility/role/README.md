@@ -88,7 +88,7 @@ TypeScript probeは固定コミットの本家を調査・再実行するため�
    proxyRemoteFiles: true
    ```
 
-4. 参照rootへ移動し、依存導入・ビルド・設定変換を行う。probe内でも上記のDB・Redis・HTTP設定を検査する。元ソース・manifest・lockfileは変更しない。
+4. 参照rootへ移動し、依存導入・ビルド・設定変換を行う。元ソース・manifest・lockfileは変更しない。
 
    ```sh
    cd "$ROLE_PROBE_ROOT"
@@ -99,14 +99,40 @@ TypeScript probeは固定コミットの本家を調査・再実行するため�
    pnpm --filter backend build:e2e
    ```
 
-5. 以下を**順番に**実行する。同一の専用DBを使う本家テストを並行起動しない。
+5. 以下のブロックを**まとめて**実行する。最初に本家の `loadConfig()` で実際に使われるコンパイル済み設定を読み、専用の接続先か検査する。検査失敗時はサブシェルの `set -e` によりmigration・Vitestを起動しない。本家のglobal setupもDBのschemaを削除するため、probe本体の検査だけでは遅い。
+
+   migrationは、手順2で新規作成した空の専用DBへ、テストを起動する前に全履歴を適用する。`exec typeorm` を使用し、検査後に設定を再コンパイルしない。その後の本家テストはschemaを削除・再作成するので、テスト後にmigrationを再実行する場合は専用Composeを終了し、手順2から空のDBを作り直す。同一の専用DBを使う本家テストを並行起動しない。
 
    ```sh
-   NODE_ENV=test pnpm --filter backend exec vitest run --config vitest.config.unit.ts test/unit/RoleService.ts
-   NODE_ENV=test pnpm --filter backend exec vitest run --config vitest.config.unit.ts test/unit/RoleContract.ts
-   NODE_ENV=test pnpm --filter backend exec vitest run --config vitest.config.e2e.ts test/e2e/role-contract.ts
+   (
+   set -e
+   export NODE_ENV=test
+   node --input-type=module <<'JS'
+   import { loadConfig } from './packages/backend/built/config.js';
+
+   const config = loadConfig();
+   if (
+     config.db.host !== '127.0.0.1' ||
+     config.db.port !== 55116 ||
+     config.db.db !== 'backend_next_test' ||
+     config.dbReplications ||
+     config.redis.host !== '127.0.0.1' ||
+     config.redis.port !== 56116 ||
+     config.port !== 61116
+   ) {
+     throw new Error('Refusing to run outside the dedicated role-116 test configuration.');
+   }
+   console.log('Reference probe configuration: PASS');
+   JS
+   pnpm --filter backend exec typeorm migration:run -d ormconfig.js
+   pnpm --filter backend exec vitest run --config vitest.config.unit.ts test/unit/RoleService.ts
+   pnpm --filter backend exec vitest run --config vitest.config.unit.ts test/unit/RoleContract.ts
+   pnpm --filter backend exec vitest run --config vitest.config.e2e.ts test/e2e/role-contract.ts
    pnpm --filter backend exec eslint --quiet test/e2e/role-contract.ts test/unit/RoleContract.ts
+   )
    ```
+
+   検査後は設定ファイルを変更・再コンパイルせずに実行する。probe本体の設定検査は補助であり、Vitest起動前の検査の代わりにしない。
 
    `role-contract.ts` の初期データをSQLで投入した後、本家形式の `roleCreated` / `userRoleAssigned` を専用Redisへ送る。本家のキャッシュが既に温まっている場合にも投入状態を反映するため。これを新実装の更新通知の契約と混同しない。ロール作成・割り当てAPI全体を今回の検証対象へ広げない。
 
