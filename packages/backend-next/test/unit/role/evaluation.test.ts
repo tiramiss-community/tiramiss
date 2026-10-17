@@ -225,3 +225,18 @@ test('closing a session during a read blocks late uncommitted values and preserv
 	expect(() => evaluation.openSession(db, 100)).toThrow(EvaluationClosed);
 	expect(() => evaluation.invalidate({ kind: 'roles' })).toThrow(EvaluationClosed);
 });
+
+test('direct DB authorization shares the lazy reference time with memoized evaluation', async () => {
+	let now = atMs;
+	const reader = new MemoryReader();
+	reader.assignments[0].expiresAtMs = atMs + 1;
+	const evaluation = createRequestEvaluation(() => now);
+	expect(evaluation.atMs).toBe(atMs);
+	now += 2;
+	const session = evaluation.openSession(reader, 0);
+	expect((await session.getPrivileges('user')).isAdministrator).toBe(true);
+	evaluation.invalidate({ kind: 'roles' });
+	expect(evaluation.atMs).toBe(atMs);
+	evaluation.close();
+	expect(() => evaluation.atMs).toThrow(EvaluationClosed);
+});
