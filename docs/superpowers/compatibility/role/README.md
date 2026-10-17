@@ -36,6 +36,39 @@ TypeScript probeは固定コミットの本家を調査・再実行するため�
 
 `/tmp`の参照checkoutや実行ログは再利用の前提にしない。必要なソースは固定SHAから、手順は本資料から再構成する。通常の新実装CIは記録した期待値を使い、本家環境の再構築は初回比較・対象契約の変更・追加調査が必要な場合に行う。
 
+## #117 評価処理と操作内メモの接続
+
+新実装の公開入口は [`packages/backend-next/src/modules/role/public.ts`](../../../../packages/backend-next/src/modules/role/public.ts)。[評価設計](../../specs/2026-10-17-role-evaluation-design.md)に沿って、次のテストを通常のbackend-next単体テストへ接続した。
+
+| 新テスト（`packages/backend-next/test/unit/role/`） | 接続した期待値 |
+| --- | --- |
+| `conditions.test.ts` | unit probeの条件全種類・空and/or・壊れた条件、作成日時と割り当て期限の等号、非連鎖、条件付きロールの既存割り当て |
+| `policies.test.ts` | `policy-defaults.json`全39件、unit probeの優先順位・基本値・boolean/number/chat/ファイル型集約、匿名の上限免除、rootの通常ポリシー |
+| `privileges.test.ts` | unit probeの未認証・root・管理者・モデレーター資格 |
+| `evaluation-memo.test.ts` | 新設計の並行取得集約・失敗後の取得・依存単位の無効化・旧取得の遅い成功/失敗・終了・値の変更隔離 |
+| `evaluation.test.ts` | 新設計の基準時刻・試行境界・材料共有・ユーザーと参照条件の分離・全材料の変更反映・取得中の無効化・終了後の未確定値の非公開 |
+
+新たにコード読解で照合した異常値の範囲: priorityは厳密な1/2のみを特別扱いし、boolean候補は厳密なtrueのみ、数値候補はJavaScriptの数値変換を通す。欠けた/nullのentryは基本値の候補だが、entryが空objectなら数値はNaNになり得る。policies自体のnull、ファイル型配列の非文字列要素は例外になる。これらは固定SHAの `getUserPolicies` の読解に基づく新実装の回帰テストであり、本家で追加probeを再実行した結果とは区別する。未知の基本ポリシーキーは匿名の結果には残り、ログイン済みの集約結果には含まれない。
+
+後続で使う際は、一つの操作に評価境界を作る。通常参照・トランザクションDB参照にはそれぞれ専用セッションを作り、同条件の再利用では同じセッションを渡す。各セッションは作成時の取得窓口へ固定される。トランザクション内のセッションはコールバックのfinally、境界は操作のfinallyでcloseする。許容できる通常参照メモは、トランザクションを開始しても破棄されない。
+
+自操作で材料を変更したら、境界の `invalidate` に `roles` / `assignments`とuserId / `user`とuserId / `instance` を渡す。取得中に依存材料が変わると `EvaluationInvalidated`、終了後の取得には `EvaluationClosed` が返る。評価側からDB操作を自動再試行しない。必要な再評価は同じ境界・同じ基準時刻で明示的に行う。commit後の材料キャッシュ無効化は#118・#119で接続する。
+
+検証環境: Node.js `v24.20.0`、pnpm `12.9.1`。2026-10-17の実行結果:
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter backend-upstream sync:check` | PASS |
+| `pnpm --filter backend-next... build` | PASS |
+| `pnpm --filter backend-next... typecheck` | PASS |
+| `pnpm --filter backend-next test` | PASS、101件（新Role 84件、既存17件） |
+| `node scripts/check-shipping.mjs` | PASS。変更TS15件のlint、SPDX、locale safety |
+| 独立した読み取り専用レビュー | Critical / Importantなし。Role単体84件を再実行してPASS。既存の未接続表記と#117接続記録の矛盾を修正 |
+
+今回の新テストはHTTP・DI・DB・Redisなしで実行する。既存の全体単体テストにはbackend-upstreamのビルドが必要なため、上記の依存順ビルドを先に行う。通常CIの既存 `test/unit/**/*.test.ts` に含まれる。
+
+未接続: 本家HTTP期待値、認証・保存・監査、実DBトランザクション、材料キャッシュ・Redis通知、通知欠落の回復、新旧双方の統合比較。#118・#119、次に#120、#121で検証する。新実装の純粋評価・操作内メモの通過をRole初期実装全体の完了とは扱わない。
+
 ## 再実行
 
 リポジトリ指定のNode.jsとpnpmを用い、参照側でlockfile通りに依存を導入する。
@@ -162,6 +195,6 @@ TypeScript probeは固定コミットの本家を調査・再実行するため�
 
 ## 後続の判定
 
-本家側の期待値を固定した段階。新実装は未接続であり、新旧一致をPASSとはしていない。#117から評価の期待値を移し、#120で同じHTTPケースと保存確認、#121で新旧比較と意図的な差異の障害・競合検証を揃える。
+本家側の期待値を固定し、#117の純粋評価・操作内メモの単体検証へ接続した段階。Role全体の新旧一致をPASSとはしていない。次は#118・#119を実装し、#120で同じHTTPケースと保存確認、#121で新旧比較と意図的な差異の障害・競合検証を揃える。
 
 本家の監査FK削除連鎖など、コード読解のみの確認は仕様書で区別する。追加probeの通過を全API・全異常データの網羅的な検証とは扱わない。非文字列トークンは500msのクライアント打ち切りまで応答しないことを確認し、400を完了させる新実装の期待値とは別にする。
