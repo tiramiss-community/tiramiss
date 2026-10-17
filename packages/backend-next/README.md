@@ -3,6 +3,12 @@
 Misskeyバックエンド再設計の最小基盤。HTTP・ワーカーの起動枠までを提供する。
 現在のHTTP応答は404で、Role API・認証・業務ジョブは後続の実装範囲。
 
+## Role実装に着手するとき
+
+#116の成果物は[Role互換性契約](../../docs/superpowers/specs/2026-10-17-role-compatibility-contract.md)と[本家比較資料](../../docs/superpowers/compatibility/role/README.md)にある。比較資料にはJSONの期待値、再実行できるTypeScript probe、固定した本家コミットと実行結果を保存している。
+
+#117–#121では[後続Issueでの利用と更新](../../docs/superpowers/compatibility/role/README.md#後続issueでの利用と更新)に従い、担当する期待値を新実装のテストへ接続する。本家probeの通過は本家側の確認結果であり、新実装のテスト成功とは扱わない。
+
 ## ビルドと起動
 
 リポジトリが指定するNode.jsとpnpmを用いる。

@@ -16,6 +16,26 @@ probeは参照checkoutの `packages/backend/test/` へコピーして実行す�
 
 追加unit probeは取得済み材料を仮実装で渡す。本家の計算処理は実物を呼び、計算結果のコピーを実行しない。HTTP probeは実トークンを認証し、サーバーと別接続で保存行・監査を読む。日時・生成ID・tokenをgolden値にせず、形式・関係・期待する結果をassertする。
 
+## 後続Issueでの利用と更新
+
+新しいセッションは[backend-nextの開発ガイド](../../../../packages/backend-next/AGENTS.md)から本資料へ到達できる。#116の調査を最初から繰り返す前に、[仕様書](../../specs/2026-10-17-role-compatibility-contract.md)と次の担当範囲を確認する。
+
+| 後続Issue | 参照する資料 | 実装時に接続・検証すること |
+| --- | --- | --- |
+| [#117](https://github.com/tiramiss-community/tiramiss/issues/117) 評価・メモ化 | 仕様書§3–5、`policy-defaults.json`、`reference-role.unit.ts` | 既定値・期限・条件・集約・資格の入力と期待結果を新しい純粋関数の単体テストへ移す。固定時刻・メモ境界・更新後の無効化も検証する |
+| [#118](https://github.com/tiramiss-community/tiramiss/issues/118) 更新・認可・監査 | 仕様書§2・5–7、`reference-role.e2e.ts`の部分更新・監査確認 | 保存パッチ、認可とscopeの拒否順、監査スナップショットをUseCase・実DBテストへ接続する。同時確定・rollback・並行更新は新設計の期待値で追加する |
+| [#119](https://github.com/tiramiss-community/tiramiss/issues/119) 材料キャッシュ | 仕様書§5.4・7、Role詳細設計§6.2 | TTL・通知欠落・取得中の無効化・再接続・操作内メモとの接続を検証する。本家probeに新キャッシュ方式の検証があるとは扱わない |
+| [#120](https://github.com/tiramiss-community/tiramiss/issues/120) 認証・HTTP | 仕様書§2・5・7、`http-cases.json`、`intentional-http-cases.json`、`reference-role.e2e.ts` | actorを新実装のテストデータへ対応付け、API名・roleIdを変換して同じ期待値でHTTPと保存結果を検証する。補足5件のassertionも引き継ぐ |
+| [#121](https://github.com/tiramiss-community/tiramiss/issues/121) 総合検証 | 上記すべて、仕様書§7–8 | 同じ初期状態・操作で新旧を比較する。本家互換と意図的な差異を分け、障害・競合の検証結果とCI接続先を記録する |
+
+JSONは本家側の既定値・応答と承認済みの差異を保持する共通の期待値。新実装のテストからファイルとして読み込めるようにし、実装ごとに値を手で複製して別々に更新しない。`http-cases.json`のactor名はprobeの初期データに対応する論理名であり、APIへ渡す値ではない。
+
+TypeScript probeは固定コミットの本家を調査・再実行するためのもの。新実装へ本家Service・NestJS・ORM型のimportを持ち込まず、入力とassertionを新しい公開契約に対応付ける。後続Issueの成果物には、接続した新テストのファイル・コマンド・結果と、まだ接続していないケースを残す。本家用probeを置いただけで新実装の検証完了にはしない。
+
+新実装と期待値が食い違ったら、まず固定コミットと仕様書を確認する。コード読解だけの事項や未収録ケースは必要な範囲を追加調査し、実行確認と区別して記録する。単に新実装を通すために期待値を書き換えない。本家の比較コミットを更新する場合は、#134の追従方針に沿って影響する期待値・probeを再確認し、対象SHA・実行結果・意図的な差異の採否を一緒に更新する。
+
+`/tmp`の参照checkoutや実行ログは再利用の前提にしない。必要なソースは固定SHAから、手順は本資料から再構成する。通常の新実装CIは記録した期待値を使い、本家環境の再構築は初回比較・対象契約の変更・追加調査が必要な場合に行う。
+
 ## 再実行
 
 リポジトリ指定のNode.jsとpnpmを用いる。既存checkoutのnode_modulesを流用するとバージョンが一致しない場合があるため、参照側でlockfile通りに導入する。
