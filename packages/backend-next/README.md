@@ -112,3 +112,7 @@ showはロールと有効な手動割り当て人数を取得した後、DBに�
 本家設定 `id`（`aid` / `aidx` / `meid` / `meidg` / `ulid` / `objectid`）をIDの日時復元と監査ID生成へ渡す。大文字小文字は正規化し、未知の方式は起動時に拒否する。未指定時は `aidx`。移行先では既存DBと同じ方式を設定する。
 
 受け入れ比較の固定期待値は[Role比較資料](../../docs/superpowers/compatibility/role/README.md)を参照。`test:acceptance` は実トークンHTTP・保存/監査・次操作のポリシー評価・通知前停止とTTL回復を検証する。既存の `test:integration` はDB/Redisの障害・競合、`test:process` は起動停止・切断を担い、3つとも専用CIの必須step。固定期待値の変更もCIを起動する。本家比較と意図的差異・検証範囲は比較資料の#121受け入れ表を参照。
+
+## 投稿フローの後続設計
+
+Role の次は [投稿フロー詳細設計](../../docs/superpowers/specs/2026-10-21-note-flow-design.md)（#126）を参照する。作成・取得・削除・配送の所有範囲、比較ケース、#123/#124 へ渡す実ジョブ条件、#127 の実装分割をまとめている。設計の存在は投稿 API・実ジョブの実装完了を意味しない。
