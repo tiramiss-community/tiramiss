@@ -37,6 +37,7 @@ export async function configuration(config: RuntimeConfig) {
 				pass: config.database.password,
 			},
 			redis: config.redis,
+			redisForPubsub: config.redisForPubsub,
 			backendNext: config.processes,
 		}),
 	);

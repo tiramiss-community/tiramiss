@@ -268,3 +268,49 @@ test('does not cancel an already authorized operation when another operation rev
 	expect((await stored()).name).toBe('authorized');
 	expect(await logs()).toHaveLength(1);
 });
+
+test('committed update invalidates real local/remote material caches and the operation memo', async () => {
+	const { Redis } = await import('ioredis');
+	const { openRoleMaterials } = await import('../../src/platform/role-materials.js');
+	const { createRoleMaterialReader } = await import('../../src/platform/database/role-materials.js');
+	const { user } = await import('../unit/role/fixtures.js');
+	const publisher = new Redis({ ...database.config.redis, retryStrategy: () => null });
+	await new Promise<void>(resolve => publisher.once('ready', resolve));
+	const options = {
+		source: createRoleMaterialReader(source.manager), publisher,
+		subscriberConfig: { ...database.config.redis, prefix: `role119-${database.config.database}` },
+		config: { rolesTtlMs: 30000, assignmentsTtlMs: 30000, assignmentsMaxEntries: 10 },
+	};
+	const a = await openRoleMaterials(options);
+	const b = await openRoleMaterials(options);
+	const evaluation = createAttemptEvaluation(atMs);
+	try {
+		await source.getRepository(MiRoleAssignment).insert({ id: newId(atMs), userId: actorId, roleId, expiresAt: null });
+		const reader = {
+			...a,
+			readUserRoleFacts: async () => user({ userId: actorId }),
+			readInstanceRoleFacts: async () => ({ rootUserId: null, basePolicies: {} }),
+		};
+		const session = evaluation.openSession(reader, 100);
+		expect((await session.getPrivileges(actorId)).isAdministrator).toBe(false);
+		await b.readRoles();
+		await createUpdateRole({ transactions, clock: () => atMs, changes: a.changes })
+			.updateRole(actor, roleId, { isAdministrator: true }, evaluation);
+		expect((await session.getPrivileges(actorId)).isAdministrator).toBe(true);
+		await vi.waitFor(async () => {
+			expect((await b.readRoles())[0].isAdministrator).toBe(true);
+		});
+
+		publisher.disconnect();
+		await vi.waitFor(() => expect(publisher.status).toBe('end'));
+		await createUpdateRole({ transactions, clock: () => atMs, changes: a.changes })
+			.updateRole(actor, roleId, { name: 'committed despite Redis loss' }, evaluation);
+		expect((await stored()).name).toBe('committed despite Redis loss');
+		expect(await source.getRepository(MiModerationLog).count()).toBe(2);
+	} finally {
+		evaluation.close();
+		await a.close();
+		await b.close();
+		publisher.disconnect();
+	}
+});

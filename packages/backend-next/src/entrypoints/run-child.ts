@@ -99,6 +99,12 @@ export async function runChild(
 		}, config.processes.startupTimeoutMs);
 
 		running = await start(config);
+		void running.failure?.then(error => {
+			logger.error('runtime.failed', { error });
+			stop(true);
+		});
+		// 起動中に発生済みの障害も、readyを通知する前に停止経路へ渡す。
+		await Promise.resolve();
 		clearTimeout(startup);
 		// 起動中の停止要求でも start 自体は中断できない。返ってきたリソースを閉じ、ready は出さない。
 		if (stopping) {

@@ -17,7 +17,14 @@ export interface RedisConfig extends RedisOptions {
 	prefix: string;
 }
 
+export interface RoleCacheConfig {
+	rolesTtlMs: number;
+	assignmentsTtlMs: number;
+	assignmentsMaxEntries: number;
+}
+
 export interface RuntimeConfig {
+	roleCache: RoleCacheConfig;
 	url: string;
 	database: DatabaseConfig;
 	redis: RedisConfig;

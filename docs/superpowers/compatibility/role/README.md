@@ -230,6 +230,39 @@ BASELINE: migration実行時のpg非推奨警告は、スタックトレース�
 
 ## 後続の判定
 
-本家側の期待値を固定し、#117の純粋評価・操作内メモの単体検証へ接続した段階。Role全体の新旧一致をPASSとはしていない。#118の更新・認可・監査は上記の実装・検証へ接続した。次は#119のキャッシュと#120のHTTP接続、#121の新旧比較と意図的な差異の総合検証を揃える。
+本家側の期待値を固定し、#117の純粋評価・操作内メモの単体検証へ接続した段階。Role全体の新旧一致をPASSとはしていない。#118の更新・認可・監査は上記の実装・検証へ接続した。#119の材料キャッシュ・Redis通知も下記の実装・検証へ接続した。次は#120のHTTP接続、#121の新旧比較と意図的な差異の総合検証を揃える。
 
 本家の監査FK削除連鎖など、コード読解のみの確認は仕様書で区別する。追加probeの通過を全API・全異常データの網羅的な検証とは扱わない。非文字列トークンは500msのクライアント打ち切りまで応答しないことを確認し、400を完了させる新実装の期待値とは別にする。
+
+## #119 材料キャッシュとRedis通知の接続
+
+[実装計画](../../plans/2026-10-20-role-material-cache.md)に沿って `RoleMaterialCache`、`openRoleMaterials`、実DB材料アダプタを追加し、runtimeの接続・終了へ組み込んだ。設定と後続への組み立て手順は[backend-next README](../../../../packages/backend-next/README.md#role材料キャッシュ119)を参照。
+
+| テスト | 新設計の期待値 |
+| --- | --- |
+| `unit/role/material-cache.test.ts` | DB取得開始からのTTL、参照/遅い完了による非延長、並行取得集約、返却値の変更隔離、ユーザー別LRU、取得中の追い出し、旧取得の遅い成功/失敗による再登録防止 |
+| `unit/config.test.ts` | TTLと件数の既定値/設定値、非正数・非有限値・非整数の拒否 |
+| `integration/role-materials.test.ts` | 独立した実Redis接続によるプロセス相当の通知、通知欠落後TTL回復、業務上の割り当て期限の独立評価、取得中の通知、再接続時の両キャッシュ破棄、prefix分離、Redis障害/終了時の参照拒否 |
+| 同テストのACK競合 | 実Redisのsubscribe応答を呼出側へ返す時点だけ遅延注入し、確認前の参照拒否・close後の遅延完了を検証。実ネットワークの応答パケット遅延試験とは区別する |
+| `integration/role-update.test.ts`追加 | 実DB commit後のローカル材料/操作内メモ/別接続への反映、実Redis発行接続喪失でも更新と監査が保存されること |
+| `integration/resources.test.ts`追加 | 専用pubsub発行接続、半開きで応答しないTCP接続でも起動期限後の解放待ちを引き延ばさないこと |
+
+#119は本家と意図的に異なるキャッシュ方式を検証しており、本家HTTP probeの再実行で同方式が検証されたとは扱わない。#120では通常参照のRoleFactsReaderへruntime材料を渡し、Role更新UseCaseへ `roleMaterials.changes` を接続する。ユーザー/設定の材料取得・ID codec・HTTP認証/エラー変換は後続。#121でHTTPから全体をつなぎ、本家期待値と意図的な差異を総合検証する。
+
+2026-10-20、Node.js v24.20.0 / pnpm 12.9.1での検証結果:
+
+| 検証 | 結果 |
+| --- | --- |
+| `pnpm --filter backend-upstream sync:check` | PASS |
+| `pnpm --filter backend-next... build` / `typecheck` | PASS |
+| `pnpm --filter backend-next test` | PASS、130件 |
+| `pnpm --filter backend-next test:integration` | PASS、38件 |
+| `pnpm --filter backend-next test:process` | PASS、15件 |
+| `node scripts/check-shipping.mjs --base develop` | PASS、変更TS12件のlint・SPDX・locale safety |
+| 別エージェントの独立レビュー2回 | 起動期限超過1件と文書2件を修正し再レビュー。Critical / Important / Minorの未解消指摘0件。レビュアーも単体20件・結合28件を独立実行してPASS |
+
+DB/Redisは専用Composeプロジェクト `role-119-test`、公開ポート55119/56119を使用。本家migration由来のpg並行query非推奨警告は#118でも記録した既存の警告で、管理対象migrationは変更していない。API/schema変更なしのためmisskey-js再生成・migration/schema差分検査は対象外。
+
+PR #143のレビュー指摘 `r4324504002` への追加検証: 稼働後の発行用Redis接続を `CLIENT KILL` で終了し、子プロセスの異常終了からSupervisorが全体停止することを実プロセステストで確認した（修正前RED→修正後GREEN）。障害をrunChildの既存停止経路へ通知し、受理済み処理を期限付きで待つ。通常のclose・SIGTERMだけでは異常終了へ変換しない。稼働中とSIGTERM待機中の切断でも処理中HTTP応答が完了し、終了コード1になることを検証する。単純なprocess.exit(1)は待機を迂回するため採用しない。
+
+追加修正の最終結果: build/typecheck、単体130件、関連結合28件、起動停止18件、変更TS17件lint・SPDX・locale safetyはPASS。別エージェントが直接exitによるdrain迂回を指摘したため修正・再レビューし、未解消Critical/Important/Minorは0件。独立実行でも起動停止18件・結合21件・単体16件がPASS。
