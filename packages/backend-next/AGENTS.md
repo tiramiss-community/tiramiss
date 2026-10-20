@@ -54,6 +54,7 @@ pnpm --filter backend-next... typecheck
 | --- | --- |
 | Policy・UseCaseなど | `pnpm --filter backend-next test`。対象テストを絞り、HTTP・DIなしで振る舞いを確認する |
 | DB・Redis・トランザクション・キャッシュ | 実際の依存先を使う `pnpm --filter backend-next test:integration` |
+| Roleの実トークンHTTP・互換性・保存から次操作への反映 | `pnpm --filter backend-next test:acceptance`。Role HTTP/acceptanceの2ファイルを結合テストから分離 |
 | 起動・停止・Supervisor・HTTP接続の寿命 | ビルド後に `pnpm --filter backend-next test:process` |
 | 同期・生成処理 | `pnpm --filter backend-upstream test` と `sync:check` |
 | schema・migration | 専用の検証用DBで `migrate` → `check-migrations` → `check-schema` と、該当の結合テスト |

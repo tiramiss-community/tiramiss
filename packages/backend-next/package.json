@@ -11,6 +11,7 @@
 		"lint": "eslint --quiet src test *.ts",
 		"test": "vitest run --config vitest.config.ts",
 		"test:integration": "vitest run --config vitest.integration.config.ts",
+		"test:acceptance": "vitest run --config vitest.acceptance.config.ts",
 		"test:process": "vitest run --config vitest.process.config.ts",
 		"migrate": "node built/entrypoints/migrate.js",
 		"check-migrations": "node built/entrypoints/check-migrations.js",

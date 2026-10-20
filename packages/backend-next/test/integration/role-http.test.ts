@@ -17,6 +17,8 @@ import type { Server } from 'node:http';
 
 interface HttpCase { name: string; endpoint: 'show' | 'update'; actor: string; params?: object; status: number; code?: string; id?: string; message?: string; kind?: string; info?: object; wwwAuthenticate?: string }
 const cases: HttpCase[] = JSON.parse(readFileSync(new URL('../../../../docs/superpowers/compatibility/role/http-cases.json', import.meta.url), 'utf8'));
+const intentional: { name: string; endpoints: string[]; params: object; nextExpected: { status: number; bodyText: string } }[] = JSON.parse(readFileSync(new URL('../../../../docs/superpowers/compatibility/role/intentional-http-cases.json', import.meta.url), 'utf8'));
+
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 let resources: Awaited<ReturnType<typeof connectResources>>;
 let seeded: Awaited<ReturnType<typeof seedRoleHttp>>;
@@ -73,7 +75,12 @@ test('Bearer overrides body without fallback, while non-Bearer uses body', async
 	expect((await call('show', {}, seeded.actors.root.token, `Bearer ${seeded.actors.invalid.token}`)).status).toBe(401);
 	expect((await call('show', {}, seeded.actors.root.token, 'bearer invalid')).status).toBe(200);
 });
-test.each([123, false, {}, []])('completes non-string credential %j as 400 empty', async token => {
+test.each(intentional.flatMap(entry => entry.endpoints.map(endpoint => ({ ...entry, endpoint }))))('$endpoint: $name matches approved intentional fixture', async entry => {
+	const response = await fetch(`${base}/api/admin/roles/${entry.endpoint}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ roleId: seeded.roleId, ...entry.params }) });
+	expect(response.status).toBe(entry.nextExpected.status);
+	expect(await response.text()).toBe(entry.nextExpected.bodyText);
+});
+test.each([false, {}, []])('completes other non-string credential %j as 400 empty', async token => {
 	const response = await call('show', {}, token);
 	expect(response.status).toBe(400);
 	expect(await response.text()).toBe('');
