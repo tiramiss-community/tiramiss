@@ -8,3 +8,8 @@ export class ModeratorRequired extends Error {}
 export class AdministratorRequired extends Error {}
 export class CredentialScopeDenied extends Error {}
 export class RoleNotFound extends Error {}
+export class RoleInputInvalid extends Error {
+	constructor(readonly param: string, readonly reason: string) {
+		super('Invalid role input');
+	}
+}

@@ -27,6 +27,7 @@ export async function configuration(config: RuntimeConfig) {
 		path,
 		dump({
 			url: config.url,
+			id: config.id,
 			port: config.http.port,
 			socket: config.http.socket,
 			db: {

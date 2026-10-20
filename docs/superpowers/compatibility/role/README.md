@@ -266,3 +266,34 @@ DB/Redisは専用Composeプロジェクト `role-119-test`、公開ポート5511
 PR #143のレビュー指摘 `r4324504002` への追加検証: 稼働後の発行用Redis接続を `CLIENT KILL` で終了し、子プロセスの異常終了からSupervisorが全体停止することを実プロセステストで確認した（修正前RED→修正後GREEN）。障害をrunChildの既存停止経路へ通知し、受理済み処理を期限付きで待つ。通常のclose・SIGTERMだけでは異常終了へ変換しない。稼働中とSIGTERM待機中の切断でも処理中HTTP応答が完了し、終了コード1になることを検証する。単純なprocess.exit(1)は待機を迂回するため採用しない。
 
 追加修正の最終結果: build/typecheck、単体130件、関連結合28件、起動停止18件、変更TS17件lint・SPDX・locale safetyはPASS。別エージェントが直接exitによるdrain迂回を指摘したため修正・再レビューし、未解消Critical/Important/Minorは0件。独立実行でも起動停止18件・結合21件・単体16件がPASS。
+
+
+## #120 認証・HTTP APIの接続
+
+[実装計画](../../plans/2026-10-20-role-http.md)に従い、Honoの実HTTP起動へshow/updateとDB認証を接続した。`http-cases.json` の28件を新実装の `test/integration/role-http.test.ts` で同じcode/id/message/kind/info/WWW-Authenticateと照合し、拒否時の保存・監査の非変更、成功時の保存・監査を確認する。本家probeの部分更新・全置換JSON・null・no-op・表示人数も接続した。
+
+- UseCaseの `updateRole(actor, input, evaluation)` / `showRole(actor, input, evaluation)` はHTTP型を持たない入力を受け、サスペンド→資格→credentialGrant→入力→対象の順に確認する。#118で使ったroleId/patchの別引数を入力objectへまとめ、HTTPによる先行検証や認可の二重化を避けた。既存の更新・競合・rollbackテストは同じassertionを維持して接続し直した。
+- showの資格材料はDBから読む。updateの資格材料は引き続き同じtxのDBから取得し、温まった材料キャッシュに資格が残っていても剥奪済みの更新を拒否する。showのロールと人数を取得してから純粋な変換へ渡す。updateは保存後の再取得やレスポンス生成用の追加DB参照を行わず204を返す。
+- native token、AccessToken hash（小文字へ正規化）/token、App scopeを実DBから解決する。AccessTokenのlastUsedAt更新は完了を待つが、その更新だけの失敗はログへ記録して認証・業務結果を変えない。本家のfire-and-forgetから待機方式を変え、終了処理に未追跡のDB処理を残さない。
+- ID方式6種類は独自の小さなcodecをcompositionから渡す。同期範囲や本家コードのコピーを追加せず、日時復元・生成形式を単体検証する。`id` 未指定はaidx、未知値は起動時に拒否する。
+- 非文字列tokenは合意済みの `intentional-http-cases.json` と同じ400・空本文。GETは405空本文、PUTも共通の認証・入力処理へ通す。#120ではJSONのHTTP契約を扱い、multipart等の全プロトコル互換性を検証済みとは扱わない。
+- `test/processes/role-http.test.ts` は実HTTP子プロセスの更新をDBの行ロックで待機させ、実際の接続切断とSIGTERM後にも、期限内に更新と監査が一度だけ確定することを確認する。初回は旧ビルドの404でRED、実起動への接続後は2件PASS。
+
+検証には専用Compose `role-120-test`（DB55120・Redis56120）とランダム名の専用DBを使用する。本家全migrationを適用し、既存のユーザー用infraへは接続しない。新旧の総合比較、HTTP更新から別操作の実効ポリシー反映・通知障害までの受け入れ条件とCI整理は#121で引き続き扱う。
+
+
+### #120 の最終検証（2026-10-21）
+
+| 検査 | 結果 |
+| --- | --- |
+| `pnpm --filter backend-upstream sync:check` | PASS |
+| `pnpm --filter backend-next... build` / `typecheck` | PASS |
+| `pnpm --filter backend-next test` | PASS、158件 |
+| `pnpm --filter backend-next test:integration` | PASS、95件（Role HTTP57件を含む） |
+| `pnpm --filter backend-next test:process` | PASS、20件（実Role HTTPの切断・drain2件を含む） |
+| `node scripts/check-shipping.mjs --base develop` | PASS、変更TS27件のlint、SPDX、locale safety |
+| 独立レビューと再レビュー | 初回Important2件を修正し、未解消Critical/Important/Minorは0件。独立実行でも関連単体34件・実TCP HTTP57件はPASS |
+
+追加の回帰確認: 固定本家が設ける1 MiBの本文上限をHonoへ接続し、Content-Length付き/分割送信の超過を413で拒否する。1 MiBちょうどは受理。認証・保存・監査の前に拒否し、超過応答ではConnection:closeを指定する。深さ5000の未知JSONを含む入力でも認可順と正常応答を維持する。既知項目のコピー失敗も認可より先へ返さない。どちらも修正前の失敗と修正後の通過を確認した。
+
+BASELINE: 本家migration由来のpg並行query非推奨警告は#118/#119と同じ。SKIPPED: 旧backendのAPI型生成・migration/schema差分検査（対象の定義に変更なし）。今回の通常CIは既存のunit/integration/processのglobへ追加テストを含める。

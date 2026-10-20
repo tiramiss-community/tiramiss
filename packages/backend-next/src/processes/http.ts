@@ -4,9 +4,10 @@
  */
 import { createServer, type Server } from 'node:http';
 import { chmod } from 'node:fs/promises';
-import { Hono } from 'hono';
 import { getRequestListener } from '@hono/node-server';
+import { createRoleHttpApp } from '../composition/role-http.js';
 import { startManagedProcess } from './lifecycle.js';
+import type { Hono } from 'hono';
 import type { RuntimeConfig } from '../config/types.js';
 
 interface HttpState {
@@ -100,8 +101,8 @@ export async function closeHttp(server: Server): Promise<void> {
 }
 
 export function startHttp(config: RuntimeConfig) {
-	return startManagedProcess('http', config, async () => {
-		const server = await listenHttp(new Hono(), config.http);
+	return startManagedProcess('http', config, async resources => {
+		const server = await listenHttp(createRoleHttpApp(resources, config), config.http);
 		return () => closeHttp(server);
 	});
 }

@@ -6,6 +6,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { load } from 'js-yaml';
+import { idMethods, type IdMethod } from '../platform/id-codec.js';
 import { DiagnosticError } from '../platform/diagnostic-error.js';
 import type { RedisConfig, RuntimeConfig } from './types.js';
 
@@ -80,7 +81,13 @@ export async function loadConfig(
 	const socket = source.socket === undefined ? undefined : text(source.socket, 'socket');
 	const port = source.port ?? (env.PORT === undefined ? undefined : Number(env.PORT));
 
+	const id = text(source.id ?? 'aidx', 'id').toLowerCase() as IdMethod;
+	if (!idMethods.includes(id)) {
+		throw new DiagnosticError('INVALID_CONFIG', { field: 'id' });
+	}
+
 	return {
+		id,
 		url: url.origin,
 		roleCache: {
 			rolesTtlMs: positive(cache.rolesTtlMs ?? 30000, 'roleCache.rolesTtlMs'),
