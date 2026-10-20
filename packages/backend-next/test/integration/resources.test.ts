@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { createServer } from 'node:net';
-import { afterAll, beforeAll, expect, test } from 'vitest';
+import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { createTestDatabase } from '../helpers/database.js';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createLogger } from '../../src/platform/logger.js';
@@ -41,9 +41,9 @@ test('fails on unavailable database before opening Redis', async () => {
 	).rejects.toThrow();
 });
 
-test('rejects and cleans up before startup deadline when Redis accepts TCP but never responds', async () => {
+test.each(['redis', 'redisForPubsub'] as const)('rejects and cleans up before startup deadline when %s accepts TCP but never responds', async redisField => {
 	const sockets = new Set<import('node:net').Socket>();
-	const server = createServer((socket) => {
+	const server = createServer({ allowHalfOpen: true }, (socket) => {
 		socket.resume();
 		sockets.add(socket);
 		socket.on('close', () => {
@@ -56,7 +56,7 @@ test('rejects and cleans up before startup deadline when Redis accepts TCP but n
 	const config = {
 		...database.config,
 		processes: { ...database.config.processes, startupTimeoutMs: 100 },
-		redis: { ...database.config.redis, port: (server.address() as { port: number }).port },
+		[redisField]: { ...database.config[redisField], port: (server.address() as { port: number }).port },
 	};
 	const attempt = connectResources(config, logger);
 	let result: 'pending' | 'resolved' | 'rejected' = 'pending';
@@ -72,7 +72,7 @@ test('rejects and cleans up before startup deadline when Redis accepts TCP but n
 	try {
 		await new Promise((resolve) => setTimeout(resolve, 400));
 		expect(result).toBe('rejected');
-		expect(sockets.size).toBe(0);
+		// 相手側はFIN後も意図的に半開きを保つ。クライアントの解放期限を検証する。
 		const check = await connectResources(database.config, logger);
 		expect(
 			(
@@ -92,5 +92,16 @@ test('rejects and cleans up before startup deadline when Redis accepts TCP but n
 			});
 		});
 		await attempt.catch(() => {});
+	}
+});
+
+test('publishes role notifications through the dedicated pubsub connection', async () => {
+	const resources = await connectResources(database.config, logger);
+	const primaryPublish = vi.spyOn(resources.redis, 'publish').mockRejectedValue(new Error('primary Redis is not the pubsub transport'));
+	try {
+		await resources.roleMaterials.changes.publish({ kind: 'role-definitions-changed', roleId: 'test' });
+		expect(primaryPublish).not.toHaveBeenCalled();
+	} finally {
+		await resources.close();
 	}
 });

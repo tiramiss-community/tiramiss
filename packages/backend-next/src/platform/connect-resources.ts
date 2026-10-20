@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Redis } from 'ioredis';
+import { openRoleMaterials } from './role-materials.js';
+import { createRoleMaterialReader } from './database/role-materials.js';
 import { ResourceScope } from './resource-scope.js';
 import { DiagnosticError } from './diagnostic-error.js';
 import { createDataSource } from './database/data-source.js';
@@ -66,7 +68,43 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 
-		return { dataSource, redis, logger, close: () => scope.close() };
+		const rolePublisher = new Redis({
+			...config.redisForPubsub,
+			disconnectTimeout: 0,
+			lazyConnect: true,
+			enableOfflineQueue: false,
+			connectTimeout: config.processes.startupTimeoutMs,
+			retryStrategy: () => null,
+			maxRetriesPerRequest: 0,
+		});
+		rolePublisher.on('error', error => logger.error('role-pubsub.error', { error }));
+		scope.defer(async () => {
+			if (rolePublisher.status !== 'end') {
+				await new Promise<void>(resolve => {
+					rolePublisher.once('end', resolve);
+					rolePublisher.disconnect();
+				});
+			}
+		});
+		await rolePublisher.connect();
+		await rolePublisher.ping();
+		if (cancelled) {
+			throw timeout;
+		}
+
+		const roleMaterials = await openRoleMaterials({
+			source: createRoleMaterialReader(dataSource.manager),
+			publisher: rolePublisher,
+			subscriberConfig: { ...config.redisForPubsub, connectTimeout: config.processes.startupTimeoutMs },
+			config: config.roleCache,
+			registerCleanup: cleanup => scope.defer(cleanup),
+		});
+		if (cancelled) {
+			await roleMaterials.close();
+			throw timeout;
+		}
+
+		return { dataSource, redis, roleMaterials, logger, close: () => scope.close() };
 	};
 
 	try {

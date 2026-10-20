@@ -75,12 +75,18 @@ export async function loadConfig(
 
 	const db = object(source.db, 'db');
 	const specific = source.backendNext === undefined ? {} : object(source.backendNext, 'backendNext');
+	const cache = specific.roleCache === undefined ? {} : object(specific.roleCache, 'backendNext.roleCache');
 	const baseRedis = redis(source.redis, url.host);
 	const socket = source.socket === undefined ? undefined : text(source.socket, 'socket');
 	const port = source.port ?? (env.PORT === undefined ? undefined : Number(env.PORT));
 
 	return {
 		url: url.origin,
+		roleCache: {
+			rolesTtlMs: positive(cache.rolesTtlMs ?? 30000, 'roleCache.rolesTtlMs'),
+			assignmentsTtlMs: positive(cache.assignmentsTtlMs ?? 30000, 'roleCache.assignmentsTtlMs'),
+			assignmentsMaxEntries: positive(cache.assignmentsMaxEntries ?? 10000, 'roleCache.assignmentsMaxEntries'),
+		},
 		database: {
 			host: text(db.host, 'db.host'),
 			port: positive(db.port, 'db.port', 65535),

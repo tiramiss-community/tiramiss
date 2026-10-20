@@ -62,3 +62,20 @@ backendNext: {workerCount: 2}`);
 	expect(value.redisForJobQueue.prefix).toBe('queue-prefix');
 	expect(value.processes.workerCount).toBe(2);
 });
+
+test('loads bounded role material cache defaults and overrides', async () => {
+	const env = { DATABASE_DB: 'test', DATABASE_USER: 'tester' };
+	const defaults = await loadConfig({ configFile: await config('{}'), env });
+	expect(defaults.roleCache).toEqual({ rolesTtlMs: 30000, assignmentsTtlMs: 30000, assignmentsMaxEntries: 10000 });
+	const configured = await loadConfig({ configFile: await config('backendNext: {roleCache: {rolesTtlMs: 500, assignmentsTtlMs: 1000, assignmentsMaxEntries: 5}}'), env });
+	expect(configured.roleCache).toEqual({ rolesTtlMs: 500, assignmentsTtlMs: 1000, assignmentsMaxEntries: 5 });
+});
+
+test.each(['rolesTtlMs: 0', 'assignmentsTtlMs: -1', 'assignmentsMaxEntries: 0', 'rolesTtlMs: .inf', 'assignmentsMaxEntries: 1.5'])(
+	'rejects invalid material cache settings: %s', async setting => {
+		await expect(loadConfig({
+			configFile: await config(`backendNext: {roleCache: {${setting}}}`),
+			env: { DATABASE_DB: 'test', DATABASE_USER: 'tester' },
+		})).rejects.toThrow();
+	},
+);
