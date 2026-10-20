@@ -14,6 +14,16 @@ import type { Logger } from './logger.js';
 export async function connectResources(config: RuntimeConfig, logger: Logger) {
 	const scope = new ResourceScope();
 	let cancelled = false;
+	let active = false;
+	let reportFailure!: (error: Error) => void;
+	const failure = new Promise<Error>(resolve => {
+		reportFailure = resolve;
+	});
+	let closing = false;
+	const close = () => {
+		closing = true;
+		return scope.close();
+	};
 	let timer: NodeJS.Timeout | undefined;
 	const timeout = new DiagnosticError('STARTUP_TIMEOUT', { timeoutMs: config.processes.startupTimeoutMs });
 
@@ -78,6 +88,12 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			maxRetriesPerRequest: 0,
 		});
 		rolePublisher.on('error', error => logger.error('role-pubsub.error', { error }));
+		rolePublisher.on('end', () => {
+			if (active && !closing) {
+				// 再接続しない必須接続を失った子を残すと、Supervisorは障害を検知できない。
+				reportFailure(new DiagnosticError('ROLE_PUBLISHER_ENDED', {}));
+			}
+		});
 		scope.defer(async () => {
 			if (rolePublisher.status !== 'end') {
 				await new Promise<void>(resolve => {
@@ -104,7 +120,8 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 
-		return { dataSource, redis, roleMaterials, logger, close: () => scope.close() };
+		active = true;
+		return { dataSource, redis, roleMaterials, logger, close, failure };
 	};
 
 	try {
@@ -121,7 +138,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 	} catch (error) {
 		cancelled = true;
 		try {
-			await scope.close();
+			await close();
 		} catch (cleanupError) {
 			logger.error('cleanup.failed', { error: cleanupError });
 		}

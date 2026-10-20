@@ -262,3 +262,7 @@ BASELINE: migration実行時のpg非推奨警告は、スタックトレース�
 | 別エージェントの独立レビュー2回 | 起動期限超過1件と文書2件を修正し再レビュー。Critical / Important / Minorの未解消指摘0件。レビュアーも単体20件・結合28件を独立実行してPASS |
 
 DB/Redisは専用Composeプロジェクト `role-119-test`、公開ポート55119/56119を使用。本家migration由来のpg並行query非推奨警告は#118でも記録した既存の警告で、管理対象migrationは変更していない。API/schema変更なしのためmisskey-js再生成・migration/schema差分検査は対象外。
+
+PR #143のレビュー指摘 `r4324504002` への追加検証: 稼働後の発行用Redis接続を `CLIENT KILL` で終了し、子プロセスの異常終了からSupervisorが全体停止することを実プロセステストで確認した（修正前RED→修正後GREEN）。障害をrunChildの既存停止経路へ通知し、受理済み処理を期限付きで待つ。通常のclose・SIGTERMだけでは異常終了へ変換しない。稼働中とSIGTERM待機中の切断でも処理中HTTP応答が完了し、終了コード1になることを検証する。単純なprocess.exit(1)は待機を迂回するため採用しない。
+
+追加修正の最終結果: build/typecheck、単体130件、関連結合28件、起動停止18件、変更TS17件lint・SPDX・locale safetyはPASS。別エージェントが直接exitによるdrain迂回を指摘したため修正・再レビューし、未解消Critical/Important/Minorは0件。独立実行でも起動停止18件・結合21件・単体16件がPASS。

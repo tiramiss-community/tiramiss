@@ -8,6 +8,7 @@ import { ResourceScope } from '../platform/resource-scope.js';
 import type { RuntimeConfig } from '../config/types.js';
 
 export interface RunningProcess {
+	failure?: Promise<Error>;
 	stop(): Promise<void>;
 }
 
@@ -23,7 +24,7 @@ export async function startManagedProcess(
 	try {
 		await assertMigrationsApplied(config.database);
 		scope.defer(await start(resources));
-		return { stop: () => scope.close() };
+		return { stop: () => scope.close(), failure: resources.failure };
 	} catch (error) {
 		try {
 			await scope.close();

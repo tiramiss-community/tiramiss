@@ -150,3 +150,43 @@ test.each([false, true])('drains disconnected handlers with bounded shutdown (fo
 		await config.close();
 	}
 });
+
+test.each([false, true])('drains accepted requests before failing on publisher loss (alreadyStopping=%s)', async alreadyStopping => {
+	const { Redis } = await import('ioredis');
+	const { randomUUID } = await import('node:crypto');
+	const connectionName = `role-publisher-${randomUUID()}`;
+	const port = await freePort();
+	const config = await configuration({
+		...database.config,
+		redisForPubsub: { ...database.config.redisForPubsub, connectionName },
+		http: { port },
+		processes: { ...database.config.processes, shutdownTimeoutMs: 2000 },
+	});
+	const control = new Redis(database.config.redis);
+	const child = launch('test/fixtures/slow-http.mjs', config.path, { FIXTURE_REQUEST_MS: '500' });
+	try {
+		await child.ready;
+		const started = new Promise<void>(resolve => {
+			child.child.on('message', (message: any) => {
+				if (message.type === 'request-started') {
+					resolve();
+				}
+			});
+		});
+		const response = fetch(`http://127.0.0.1:${port}/`).then(value => value.text()).catch(() => 'disconnected');
+		await started;
+		if (alreadyStopping) {
+			child.child.kill('SIGTERM');
+		}
+		const clients = String(await control.client('LIST'));
+		const publisher = clients.split('\n').find(line => line.includes(`name=${connectionName} `) && line.includes('flags=N '));
+		expect(publisher).toBeDefined();
+		await control.client('KILL', 'ID', publisher!.match(/^id=(\d+)/)![1]);
+		expect(await response).toBe('completed');
+		expect((await child.exit).code, child.output()).toBe(1);
+	} finally {
+		control.disconnect();
+		await child.close();
+		await config.close();
+	}
+});

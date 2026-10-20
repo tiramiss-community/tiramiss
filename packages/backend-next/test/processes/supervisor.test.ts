@@ -65,3 +65,35 @@ test.each(['startup-stall', 'shutdown-stall'])('bounds real child process %s', a
 		await config.close();
 	}
 });
+
+test('stops the process tree abnormally when a running Role publisher connection ends', async () => {
+	const { Redis } = await import('ioredis');
+	const { randomUUID } = await import('node:crypto');
+	const { vi } = await import('vitest');
+	const connectionName = `role-publisher-${randomUUID()}`;
+	const config = await configuration({
+		...database.config,
+		redisForPubsub: { ...database.config.redisForPubsub, connectionName },
+		http: { port: await freePort() },
+	});
+	const control = new Redis(database.config.redis);
+	const supervisor = launch('built/entrypoints/supervisor.js', config.path);
+	let children: { role: string; pid: number }[] = [];
+	try {
+		await supervisor.ready;
+		children = (supervisor.messages.find((message: any) => message.role === 'supervisor') as { children: typeof children }).children;
+		const clients = String(await control.client('LIST'));
+		const publisher = clients.split('\n').find(line => line.includes(`name=${connectionName} `) && line.includes('flags=N '));
+		expect(publisher).toBeDefined();
+		await control.client('KILL', 'ID', publisher!.match(/^id=(\d+)/)![1]);
+		await vi.waitFor(() => expect(supervisor.child.exitCode, supervisor.output()).toBe(1), { timeout: 2000 });
+		expect((await supervisor.exit).code).toBe(1);
+		for (const child of children) {
+			expect(() => process.kill(child.pid, 0)).toThrow();
+		}
+	} finally {
+		control.disconnect();
+		await supervisor.close();
+		await config.close();
+	}
+});
