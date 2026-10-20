@@ -4,6 +4,7 @@ on:
   push:
     branches: [master, develop]
     paths:
+      - 'docs/superpowers/compatibility/role/**'
       - 'packages/backend-next/**'
       - 'packages/backend-upstream/**'
       - 'packages/shared/eslint.config.js'
@@ -14,6 +15,7 @@ on:
       - '.github/workflows/test-backend-next.yml'
   pull_request:
     paths:
+      - 'docs/superpowers/compatibility/role/**'
       - 'packages/backend-next/**'
       - 'packages/backend-upstream/**'
       - 'packages/shared/eslint.config.js'
@@ -62,4 +64,6 @@ jobs:
       - run: pnpm --filter backend-upstream test
       - run: pnpm --filter backend-next test
       - run: pnpm --filter backend-next test:integration
+      - name: Role HTTP compatibility and failure acceptance
+        run: pnpm --filter backend-next test:acceptance
       - run: pnpm --filter backend-next test:process

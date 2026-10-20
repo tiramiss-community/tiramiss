@@ -14,7 +14,9 @@ import { MiModerationLog } from '@/models/ModerationLog.js';
 import { MiApp } from '@/models/App.js';
 import { MiAccessToken } from '@/models/AccessToken.js';
 import { genAidx } from '@/misc/id/aidx.js';
-import { DEFAULT_POLICIES } from '@/core/RoleService.js';
+import { RoleService, DEFAULT_POLICIES } from '@/core/RoleService.js';
+import { MiMeta } from '@/models/Meta.js';
+import { parseAidx } from '@/misc/id/aidx.js';
 import { loadConfig } from '@/config.js';
 import { Redis } from 'ioredis';
 import type { DataSource } from 'typeorm';
@@ -159,5 +161,30 @@ describe('pinned upstream Role HTTP contract', () => {
 		const show = await api('admin/roles/show', { roleId }, actors.root);
 		expect(show.status).toBe(200);
 		expect(show.body.usersCount).toBe(1);
+	});
+	test('HTTP policy updates match the shared flow with real DB materials and upstream evaluation', async () => {
+		const flow = JSON.parse(readFileSync(new URL('./role-policy-flow-cases.json', import.meta.url), 'utf8'));
+		await db.query('UPDATE meta SET policies = $1', [JSON.stringify({ canInvite: false, driveCapacityMb: 55 })]);
+		await db.getRepository(MiRole).update(roleId, { target: 'manual', name: 'target', description: 'keep' });
+		await db.query('UPDATE role SET policies = $1 WHERE id = $2', [JSON.stringify({}), roleId]);
+		await db.getRepository(MiRoleAssignment).delete({ roleId });
+		await db.getRepository(MiRoleAssignment).insert({ id: genAidx(Date.now()), roleId, userId: actors.ordinary!.id!, expiresAt: null });
+		const context = {
+			rolesCache: { fetch: () => db.getRepository(MiRole).find() },
+			roleAssignmentByUserIdCache: { fetch: (userId: string) => db.getRepository(MiRoleAssignment).findBy({ userId }) },
+			cacheService: { findUserById: (id: string) => db.getRepository(MiUser).findOneByOrFail({ id }) },
+			userEntityService: { isLocalUser: (user: MiUser) => user.host === null, isRemoteUser: (user: MiUser) => user.host !== null },
+			idService: { parse: parseAidx },
+			config: { maxFileSize: 20 * 1024 * 1024 },
+			meta: await db.getRepository(MiMeta).findOneByOrFail({}),
+			evalCond: RoleService.prototype['evalCond'],
+			getUserRoles: RoleService.prototype.getUserRoles,
+			getUserAssigns: RoleService.prototype.getUserAssigns,
+		};
+		expect(await RoleService.prototype.getUserPolicies.call(context as never, actors.ordinary!.id!)).toMatchObject({ canInvite: false, driveCapacityMb: 55 });
+		for (const entry of flow) {
+			expect((await api('admin/roles/update', { roleId, ...entry.patch }, actors.root)).status, entry.name).toBe(204);
+			expect(await RoleService.prototype.getUserPolicies.call(context as never, actors.ordinary!.id!)).toMatchObject(entry.expected);
+		}
 	});
 });

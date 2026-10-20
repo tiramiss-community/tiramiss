@@ -1,0 +1,5 @@
+[
+  { "name": "override", "patch": { "policies": { "canInvite": { "value": true, "priority": 1 }, "driveCapacityMb": { "value": 200, "priority": 2 } } }, "expected": { "canInvite": true, "driveCapacityMb": 200 } },
+  { "name": "use instance default", "patch": { "policies": { "canInvite": { "value": true, "useDefault": true, "priority": 2 }, "driveCapacityMb": { "value": 999, "useDefault": true, "priority": 2 } } }, "expected": { "canInvite": false, "driveCapacityMb": 55 } },
+  { "name": "whole object replacement", "patch": { "policies": { "canInvite": { "value": true, "priority": 1 } } }, "expected": { "canInvite": true, "driveCapacityMb": 55 } }
+]

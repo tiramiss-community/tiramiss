@@ -8,6 +8,7 @@
 | --- | --- |
 | `http-cases.json` | actor・対象API・入力差分・HTTP status・error code/id/message/kind・認証ヘッダー・入力エラーinfo。roleIdは投入した対象ロールのIDへ置換 |
 | `intentional-http-cases.json` | 承認済みの仕様修正。本家での観測と新実装の期待値を区別 |
+| `policy-flow-cases.json` | HTTPから順次更新する入力と、次操作の実効ポリシーの共通期待値（#121） |
 | `policy-defaults.json` | 本家の全39ポリシーのコード既定値。時間式は分の数値に展開 |
 | `reference-role.e2e.ts` | 実HTTP・DB・Redisによる上記ケース、部分更新、監査before/after、無変更更新、Bearer優先の確認 |
 | `reference-role.unit.ts` | 固定時刻・固定材料で本家の評価メソッドを実行する追加probe |
@@ -115,6 +116,7 @@ BASELINE: migration実行時のpg非推奨警告は、スタックトレース�
    git archive 8e07cf085adf7009583d234a208e30436f020e26 | tar -x -C "$ROLE_PROBE_ROOT"
    cp docs/superpowers/compatibility/role/reference-role.e2e.ts "$ROLE_PROBE_ROOT/packages/backend/test/e2e/role-contract.ts"
    cp docs/superpowers/compatibility/role/http-cases.json "$ROLE_PROBE_ROOT/packages/backend/test/e2e/role-http-cases.json"
+   cp docs/superpowers/compatibility/role/policy-flow-cases.json "$ROLE_PROBE_ROOT/packages/backend/test/e2e/role-policy-flow-cases.json"
    cp docs/superpowers/compatibility/role/reference-role.unit.ts "$ROLE_PROBE_ROOT/packages/backend/test/unit/RoleContract.ts"
    cp docs/superpowers/compatibility/role/policy-defaults.json "$ROLE_PROBE_ROOT/packages/backend/test/unit/role-policy-defaults.json"
    ```
@@ -297,3 +299,62 @@ PR #143のレビュー指摘 `r4324504002` への追加検証: 稼働後の発�
 追加の回帰確認: 固定本家が設ける1 MiBの本文上限をHonoへ接続し、Content-Length付き/分割送信の超過を413で拒否する。1 MiBちょうどは受理。認証・保存・監査の前に拒否し、超過応答ではConnection:closeを指定する。深さ5000の未知JSONを含む入力でも認可順と正常応答を維持する。既知項目のコピー失敗も認可より先へ返さない。どちらも修正前の失敗と修正後の通過を確認した。
 
 BASELINE: 本家migration由来のpg並行query非推奨警告は#118/#119と同じ。SKIPPED: 旧backendのAPI型生成・migration/schema差分検査（対象の定義に変更なし）。今回の通常CIは既存のunit/integration/processのglobへ追加テストを含める。
+
+## #121 総合受け入れ
+
+HTTPから別操作の評価までを `test/integration/role-acceptance.test.ts` へ接続した。通常CIの `test:acceptance` はこの5件と `role-http.test.ts` の58件を実行する。`test:integration` からこの2ファイルを除外して二重実行を避け、DB/Redisの障害・競合とmigration検査は従来のテストに残す。比較資料だけの変更も専用workflowのpathへ含める。
+
+### 契約とCIの対応
+
+パスは `packages/backend-next/test/` からの相対値。
+
+| 受け入れ条件 | CI / テスト | 観測する契約 |
+| --- | --- | --- |
+| 実トークン認証・HTTP互換・保存結果 | acceptance / `integration/role-http.test.ts` | 共通 `http-cases.json` の28件、本文/認証ヘッダー、部分更新・全置換JSON・人数・保存済み監査 |
+| 承認済み非文字列tokenの修正 | acceptance / 同上 | `intentional-http-cases.json` を直接読み、指定されたshow/update両方で400空本文。本家の500ms打切りを成功応答へ読み替えない |
+| HTTP更新→保存/監査→次操作の実効ポリシー | acceptance / `integration/role-acceptance.test.ts` | 共通 `policy-flow-cases.json` の順次更新、実DBのUser/Meta・production材料アダプタ、ローカル/独立接続の温まったキャッシュ。通知前の操作メモは維持し新操作は更新値 |
+| 保存または監査失敗時の同時rollback | integration / `integration/role-update.test.ts`、acceptance | 実CHECK制約失敗でrole/audit両方非確定。HTTPの監査失敗も500、保存・ポリシーは更新前 |
+| 同項目・異項目の並行更新 | integration / `integration/role-update.test.ts` | 実行中の行ロックとpg_stat_activityで重なりを確認。後勝ち、未指定列保持、実際のbefore/after連鎖 |
+| 古い資格・自己昇格拒否 | unit / `unit/role/update-role.test.ts`、integration / `integration/role-update.test.ts`、acceptance | 温まった資格メモや今回入力を許可根拠へ使わない。実トークンHTTPでも資格剥奪/自己昇格を拒否 |
+| COMMIT結果不明 | unit / `unit/transaction-runner.test.ts`、integration / `integration/role-update.test.ts` | commit後にアダプタで応答喪失を模した例外を注入し、自動再試行も通知もせず、確定済み行を確認。実パケット切断試験ではない |
+| commit後・通知前停止、通知欠落、有限TTL | acceptance、integration / `integration/role-materials.test.ts` | テスト子の実TCP HTTPがcommit後publishへ入った時点でIPCゲート停止しSIGKILL。保存/監査が残り、別接続の旧材料は取得開始+TTL直前まで残る。期限ちょうどの新操作はDBを再取得、既存操作メモは維持 |
+| 取得中無効化・再接続 | unit / `unit/role/material-cache.test.ts`・`evaluation*.test.ts`、integration / `integration/role-materials.test.ts` | 遅い旧取得を再投入しない。実Redis切断/再購読ACK前の参照拒否と両材料破棄。結合の材料source/遅延ACKは制御用アダプタで、実DB読取中のパケット障害とは区別 |
+| 割り当ての期限跨ぎ・操作内メモ | unit / Role評価、acceptance | 実DBの期限付き割り当てと温まった材料を使い、同一操作の時刻固定・次操作の等号失効・行の非削除を確認。自操作の無効化は更新UseCaseの既存単体/結合で確認 |
+| HTTP切断・終了・必須Redis障害 | process / `processes/role-http.test.ts`・`children.test.ts`・`supervisor.test.ts` | 受理済み更新/監査は切断後も一度確定、期限付きdrain。発行接続喪失は子→Supervisorの全体停止、正常closeは非障害 |
+| 同期・migration・schema | backend-upstream sync:check/test、integration / `migrations.test.ts` | 固定本家の機械的一致、二系統履歴、pending履歴と登録済みEntityのschema差分を維持 |
+
+### 固定本家との再比較（2026-10-21）
+
+本家SHA `8e07cf085adf7009583d234a208e30436f020e26` のsrc/migration/manifest/lockfile計1328ファイルをGit内容と照合した専用checkoutで、上記再実行手順を実行した。新規追加した `policy-flow-cases.json` は本家probeと新実装の双方が直接読み、同じ順番でRoleのpoliciesをHTTP更新して同じ実効ポリシーを得る。本家側の初期actorはsignup、新実装側は専用DB投入であり、生成ID・token・時刻そのものは比較しない。意味上同じ初期ロール/割り当てと基本ポリシーを用いる。
+
+本家のポリシー検査は `RoleService` の実メソッド（getUserPolicies/getUserRoles/getUserAssigns）を実DB読み取りアダプタで呼ぶ。サーバー内DIや本家キャッシュ経由の評価ではない。HTTPの認証と更新は実サーバー・実トークンを使用する。新実装は通常参照の共有キャッシュも含む。これにより本家の計算と保存の互換性、新設計の通知方式を区別して確認する。
+
+- 本家全migration適用: PASS。
+- 本家既存RoleService単体47件・追加unit probe36件: PASS。
+- 本家HTTP probe34件（共有flowを含む）: PASS。
+- 本家probeのchanged-file lint: PASS。
+
+本家側Composeは `role-116-reference`（55116/56116、HTTP61116/62116）、新実装は `role-121-test`（55121/56121）。専用DB・Redisを共有せず、ユーザー用misskey-infraは使用しない。通常CIではこの本家環境を再構築せず共通JSONを読む。
+
+注入の限界: 停止時点はテスト専用子のpublish窓口で制御し、その後OSのSIGKILLで実停止する。Redisの実送信パケット欠落やCOMMIT応答パケット切断まで試したとは扱わない。全API・multipart等の全通信形式・全異常データの一致証明ではない。今回製品コード/公開API/Entity/migrationは変更していない。
+
+次は全体Issue #114の推奨順に従い、#126の投稿フロー詳細設計へ進める。Roleの作成/削除/付与/解除など初期範囲外のAPIは未実装のままであり、Role初期範囲の受け入れ完了と区別する。
+
+### 新実装の最終検証（2026-10-21）
+
+Node.js v24.20.0 / pnpm 12.9.1 / PostgreSQL 18 / Redis 8。
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter backend-upstream sync:check` / `test` | PASS（同期テスト3件） |
+| `pnpm --filter backend-next... build` / `typecheck` | PASS |
+| `pnpm --filter backend-next test` | PASS、158件 |
+| `pnpm --filter backend-next test:integration` | PASS、38件（HTTPをacceptanceへ移動） |
+| `pnpm --filter backend-next test:acceptance` | PASS、63件（HTTP58件+縦断5件） |
+| `pnpm --filter backend-next test:process` | PASS、20件 |
+| `node scripts/check-shipping.mjs --base develop` | PASS、変更TS/JS6件のlint、SPDX、locale safety |
+
+BASELINE: 本家migrationの同一接続上の並行queryによるpg非推奨警告は従来どおり。本家の既存Vitest設定にはVite将来設定の警告が出るが、本家ソース/設定を変更していない。SKIPPED: 旧backendのAPI型再生成、スキーマ変更用の追加migration検査（製品API/Entity/migration変更なし）。既存の新パッケージmigration/schema結合検証は通過している。
+
+独立レビュー初回で、本家probe末尾の空行によるlint失敗と成功記録の不一致を1件修正。修正後に本家HTTP34件とprobe lintを再実行してexit0を確認した。共通flowは初期ロール/割り当てを自身で投入し、両実装で更新前のfalse/55も確認する。新実装acceptance63件とshippingも再実行PASS。
+再レビューで未解消Critical/Important/Minorは0件。レビュアーの独立実行もacceptance63件・本家probe lintはPASS、共有fixture/probeと参照checkoutの複製一致を確認。
