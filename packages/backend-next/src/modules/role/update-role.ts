@@ -2,12 +2,13 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import type { TransactionRunner } from '../../application/transaction.js';
-import type { RoleEvaluation } from './evaluation.js';
-import type { RoleActor, RoleChanges, RoleDefinitionsChanged, RolePatch, RoleUpdateScope } from './update-contract.js';
 import { selectApplicableRoles } from './applicable-roles.js';
 import { ActorSuspended, AdministratorRequired, CredentialScopeDenied, RoleNotFound } from './errors.js';
+import { prepareRoleInput } from './input.js';
 import { evaluatePrivileges } from './privileges.js';
+import type { RoleActor, RoleChanges, RoleDefinitionsChanged, RoleUpdateScope } from './update-contract.js';
+import type { RoleEvaluation } from './evaluation.js';
+import type { TransactionRunner } from '../../application/transaction.js';
 
 export function createUpdateRole(dependencies: {
 	transactions: TransactionRunner<RoleUpdateScope>;
@@ -15,10 +16,10 @@ export function createUpdateRole(dependencies: {
 	clock: () => number;
 }) {
 	return {
-		async updateRole(actor: RoleActor, roleId: string, patch: RolePatch, evaluation: RoleEvaluation): Promise<void> {
+		async updateRole(actor: RoleActor, rawInput: unknown, evaluation: RoleEvaluation): Promise<void> {
 			// 呼び出し元による入力の変更を、ロック待機中の操作へ混ぜない。
-			const input = structuredClone(patch);
-			await dependencies.transactions.run(async (tx) => {
+			const readInput = prepareRoleInput(rawInput, 'update');
+			const changedRoleId = await dependencies.transactions.run(async (tx) => {
 				const facts = await tx.authorizationFacts.read(actor.userId);
 				if (facts.user.isSuspended) {
 					throw new ActorSuspended();
@@ -32,16 +33,18 @@ export function createUpdateRole(dependencies: {
 					throw new CredentialScopeDenied();
 				}
 
+				const { roleId, patch } = readInput();
 				const before = await tx.roles.getForUpdate(roleId);
 				if (before === null) {
 					throw new RoleNotFound();
 				}
 				const occurredAtMs = dependencies.clock();
-				const after = await tx.roles.savePatch(roleId, input, occurredAtMs);
+				const after = await tx.roles.savePatch(roleId, patch, occurredAtMs);
 				await tx.auditLogs.appendRoleUpdate({ actorId: actor.userId, roleId, before, after, occurredAtMs });
+				return roleId;
 			});
 
-			const change: RoleDefinitionsChanged = { kind: 'role-definitions-changed', roleId };
+			const change: RoleDefinitionsChanged = { kind: 'role-definitions-changed', roleId: changedRoleId };
 			// commit済みの更新は、メモの終了や通知障害で失敗へ戻せない。
 			try {
 				evaluation.invalidate({ kind: 'roles' });

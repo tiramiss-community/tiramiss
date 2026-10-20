@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import type { IdMethod } from '../platform/id-codec.js';
 import type { RedisOptions } from 'ioredis';
 
 export interface DatabaseConfig {
@@ -24,6 +25,7 @@ export interface RoleCacheConfig {
 }
 
 export interface RuntimeConfig {
+	id: IdMethod;
 	roleCache: RoleCacheConfig;
 	url: string;
 	database: DatabaseConfig;

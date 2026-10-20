@@ -79,3 +79,11 @@ test.each(['rolesTtlMs: 0', 'assignmentsTtlMs: -1', 'assignmentsMaxEntries: 0', 
 		})).rejects.toThrow();
 	},
 );
+
+test.each(['aid', 'aidx', 'meid', 'meidg', 'ulid', 'objectid', 'AIDX'])('accepts upstream id method %s', async id => {
+	const value = await loadConfig({ configFile: await config(`id: ${id}`), env: { DATABASE_DB: 'test', DATABASE_USER: 'tester' } });
+	expect(value.id).toBe(id.toLowerCase());
+});
+test('rejects unknown ID methods at startup', async () => {
+	await expect(loadConfig({ configFile: await config('id: unknown'), env: { DATABASE_DB: 'test', DATABASE_USER: 'tester' } })).rejects.toThrow();
+});

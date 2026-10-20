@@ -14,3 +14,5 @@ export { EvaluationClosed, EvaluationInvalidated } from './evaluation-memo.js';
 export { createUpdateRole } from './update-role.js';
 export type { RoleActor, RoleDefinition, RolePatch, RoleAuthorizationFacts, RoleUpdateScope, RoleChanges, RoleDefinitionsChanged } from './update-contract.js';
 export { ActorSuspended, ActorNotFound, ModeratorRequired, AdministratorRequired, CredentialScopeDenied, RoleNotFound } from './errors.js';
+export { createShowRole, type RoleShowData } from './show-role.js';
+export { RoleInputInvalid } from './errors.js';

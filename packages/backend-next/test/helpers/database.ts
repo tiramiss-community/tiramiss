@@ -15,6 +15,7 @@ export function testConfig(): RuntimeConfig {
 	};
 	return {
 		url: 'http://example.test',
+		id: 'aidx',
 		roleCache: { rolesTtlMs: 30000, assignmentsTtlMs: 30000, assignmentsMaxEntries: 10000 },
 		database: {
 			host: '127.0.0.1',
