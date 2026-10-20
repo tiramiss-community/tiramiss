@@ -69,6 +69,41 @@ TypeScript probeは固定コミットの本家を調査・再実行するため�
 
 未接続: 本家HTTP期待値、認証・保存・監査、実DBトランザクション、材料キャッシュ・Redis通知、通知欠落の回復、新旧双方の統合比較。#118・#119、次に#120、#121で検証する。新実装の純粋評価・操作内メモの通過をRole初期実装全体の完了とは扱わない。
 
+## #118 更新・認可・監査の接続
+
+[実装計画](../../plans/2026-10-17-role-update.md)に沿って、Role公開入口の `createUpdateRole` と永続化アダプタ `createRoleUpdateTransactions` を追加した。既存の `TransactionRunner` に `roles`・`authorizationFacts`・`auditLogs` だけを束ねる。ロールと監査は本家テーブルへ保存し、Entity・migration・同期範囲は変更していない。
+
+| 新テスト（`packages/backend-next/test/`） | 接続した期待値 |
+| --- | --- |
+| `unit/role/update-role.test.ts`（14件） | サスペンド→管理者資格→scope→対象の拒否順、自己昇格の拒否、条件付き管理者と期限等号、保存・監査・commit失敗時の非通知、commit後の無効化と通知失敗、操作内メモの破棄 |
+| `unit/role/evaluation.test.ts`追加1件 | DB認可が使う `evaluation.atMs` とメモ化評価の時刻共有、破棄後の参照拒否 |
+| `integration/role-update.test.ts`（14件） | 本家HTTP probeの部分更新・JSON全置換・明示null・無変更更新・全保存行の監査スナップショット。新設計の実DB CHECK失敗による同時rollback、行ロック待機下の異項目保持・同項目後勝ち・監査before/after連鎖、古い資格メモの不使用、条件付き資格・自己剥奪、終了したtx窓口の拒否、通知失敗後の保存維持 |
+
+COMMIT結果不明の検証は二段階で行う。単体では既存TransactionRunnerのエラー伝播・非再試行を確認する。結合では実DBに更新と監査をcommitした後、実行窓口で応答喪失を模した例外を注入し、成功・確定rollbackのどちらにも読み替えず、再試行や通知を行わないことを確認する。実ネットワークのCOMMIT応答パケットを切断した試験とは区別する。
+
+後続#119/#120の組み立てでは、次の契約を使う。
+
+- `createUpdateRole({ transactions, changes, clock }).updateRole(actor, roleId, patch, evaluation)`。認可材料はtx内DBから都度取得し、純粋な評価へ `evaluation.atMs` を渡す。認可用の材料を通常参照メモへ登録しない。
+- `RoleChanges.invalidateLocal({ kind: 'role-definitions-changed', roleId })` と `publish(event)`。UseCaseはcommit正常完了後に評価メモ、ローカル材料、他プロセス通知の順に無効化を依頼する。それぞれの失敗で確定済み更新を失敗へ戻さない。具体的な有限TTL、Redis購読・通知、通知障害の観測は#119で接続する。
+- `createRoleUpdateTransactions(source, { createdAtFromId, newAuditId })`。ユーザーの条件評価日時と監査IDには、設定したID方式のcodecをcompositionから注入する。今回のテストは時刻を保持するaidx形式を注入し、全ID方式の実装・設定接続を済ませたとは扱わない。
+- 入力検証・実トークン認証・HTTPエラー変換は#120。RolePatchアダプタは許可項目だけを保存し、未指定・undefinedを保持する。入力JSONの内部構造を正規化せず、監査にも保存した形を残す。
+
+検証環境: Node.js `v24.20.0`、pnpm `12.9.1`、PostgreSQL `18`、Redis `8`。Compose project `role-118-test`、DB `55118`・Redis `56118`、ランダム名の専用DBへ本家全migrationを適用した。実行結果:
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter backend-upstream sync:check` | PASS |
+| `pnpm --filter backend-next... build` / `typecheck` | PASS |
+| `pnpm --filter backend-next test` | PASS、116件 |
+| `BACKEND_NEXT_TEST_DB_PORT=55118 BACKEND_NEXT_TEST_REDIS_PORT=56118 pnpm --filter backend-next test:integration` | PASS、28件（Role更新14件を含む）。既存のmigration履歴・schema検査も含む |
+| `node scripts/check-shipping.mjs --base HEAD` / `git diff --check` | PASS、変更TS13件のlint、SPDX、locale safety |
+
+独立した読み取り専用レビューでImportant/Criticalなし。任意の追加テスト候補2点（ローカル無効化失敗後のpublish継続の明示assert、評価境界がtx中に閉じられた場合の成功維持）は[計画の実行結果](../../plans/2026-10-17-role-update.md#実行結果)に記録した。
+
+BASELINE: migration実行時のpg非推奨警告は、スタックトレースから本家 `1651224615271-foreign-key.js` の同一接続上の `Promise.all` に由来すると確認した。同期対象は手編集していない。
+
+未接続: 実HTTPの本家互換期待値、Redisの通知・TTL回復、ID方式の設定接続、新旧双方の総合比較。次は#119と#120、最後に#121で統合する。資格剥奪が認可後に行われた進行中操作を必ず取り消す保証は加えていない。結合テストでも、DB認可後に別接続から割り当てを削除した操作は成立することを確認している。
+
 ## 再実行
 
 リポジトリ指定のNode.jsとpnpmを用い、参照側でlockfile通りに依存を導入する。
@@ -195,6 +230,6 @@ TypeScript probeは固定コミットの本家を調査・再実行するため�
 
 ## 後続の判定
 
-本家側の期待値を固定し、#117の純粋評価・操作内メモの単体検証へ接続した段階。Role全体の新旧一致をPASSとはしていない。次は#118・#119を実装し、#120で同じHTTPケースと保存確認、#121で新旧比較と意図的な差異の障害・競合検証を揃える。
+本家側の期待値を固定し、#117の純粋評価・操作内メモの単体検証へ接続した段階。Role全体の新旧一致をPASSとはしていない。#118の更新・認可・監査は上記の実装・検証へ接続した。次は#119のキャッシュと#120のHTTP接続、#121の新旧比較と意図的な差異の総合検証を揃える。
 
 本家の監査FK削除連鎖など、コード読解のみの確認は仕様書で区別する。追加probeの通過を全API・全異常データの網羅的な検証とは扱わない。非文字列トークンは500msのクライアント打ち切りまで応答しないことを確認し、400を完了させる新実装の期待値とは別にする。

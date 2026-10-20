@@ -29,6 +29,7 @@ export interface RoleEvaluationSession {
 }
 
 export interface RoleEvaluation {
+	readonly atMs: number;
 	openSession(reader: RoleFactsReader, uploadLimitBytes: number): RoleEvaluationSession;
 	invalidate(change: RoleFactsChange): void;
 	close(): void;
@@ -47,11 +48,15 @@ function key(kind: string, userId: string | null): string {
 }
 
 class EvaluationBoundary implements RoleEvaluation {
-	private atMs: number | undefined;
+	private referenceTimeMs: number | undefined;
 	private closed = false;
 	private readonly sessions = new Set<ReferenceSession>();
 
 	constructor(private readonly clock: () => number) {}
+
+	get atMs(): number {
+		return this.time();
+	}
 
 	openSession(reader: RoleFactsReader, uploadLimitBytes: number): RoleEvaluationSession {
 		this.assertOpen();
@@ -78,8 +83,8 @@ class EvaluationBoundary implements RoleEvaluation {
 
 	private time(): number {
 		this.assertOpen();
-		this.atMs ??= this.clock();
-		return this.atMs;
+		this.referenceTimeMs ??= this.clock();
+		return this.referenceTimeMs;
 	}
 
 	private assertOpen(): void {
