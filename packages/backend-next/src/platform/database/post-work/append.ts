@@ -109,19 +109,6 @@ async function append(manager: EntityManager, prepared: Prepared): Promise<{ req
 			charged_bytes: chargedBytes(1536, workId + request.requestId + item.kind + item.targetKey + payload),
 		};
 	});
-	const rows = insertedNote.length + 1 + items.length;
-	const bytes = insertedNote.length * noteCharge + requestCharge + items.reduce((sum, item) => sum + item.charged_bytes, 0);
-	const fraction = deleting ? 1 : 0.9;
-	const reserved: { capacity_key: string }[] = await manager.query(`
-		WITH reserved AS (
-			UPDATE backend_internal.work_capacity SET reserved_rows=reserved_rows+$1,reserved_bytes=reserved_bytes+$2
-			WHERE capacity_key='global' AND capacity_formula_version=$3
-			AND reserved_rows+$1 <= $4 AND reserved_bytes+$2 <= $5 RETURNING capacity_key
-		) SELECT capacity_key FROM reserved`, [rows, bytes, workCapacity.formulaVersion, workCapacity.rows * fraction, Math.floor(workCapacity.bytes * fraction)]);
-	if (reserved.length !== 1) {
-		throw new WorkCapacityExceeded('The durable work capacity is full or requires reconciliation');
-	}
-
 	for (let offset = 0; offset < items.length; offset += 100) {
 		await manager.query(`
 			INSERT INTO backend_internal.work_item
@@ -134,6 +121,20 @@ async function append(manager: EntityManager, prepared: Prepared): Promise<{ req
 		]);
 	}
 	await manager.query('UPDATE backend_internal.note_work_state SET last_dependency_at=GREATEST(last_dependency_at,$2) WHERE note_id=$1', [request.noteId, new Date(request.occurredAtMs)]);
+
+	// Reserve shared capacity after item writes so unrelated inserts do not wait on this counter.
+	const rows = insertedNote.length + 1 + items.length;
+	const bytes = insertedNote.length * noteCharge + requestCharge + items.reduce((sum, item) => sum + item.charged_bytes, 0);
+	const fraction = deleting ? 1 : 0.9;
+	const reserved: { capacity_key: string }[] = await manager.query(`
+		WITH reserved AS (
+			UPDATE backend_internal.work_capacity SET reserved_rows=reserved_rows+$1,reserved_bytes=reserved_bytes+$2
+			WHERE capacity_key='global' AND capacity_formula_version=$3
+			AND reserved_rows+$1 <= $4 AND reserved_bytes+$2 <= $5 RETURNING capacity_key
+		) SELECT capacity_key FROM reserved`, [rows, bytes, workCapacity.formulaVersion, workCapacity.rows * fraction, Math.floor(workCapacity.bytes * fraction)]);
+	if (reserved.length !== 1) {
+		throw new WorkCapacityExceeded('The durable work capacity is full or requires reconciliation');
+	}
 	return { requestId: request.requestId };
 }
 
