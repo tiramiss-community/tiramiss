@@ -121,6 +121,19 @@ async function append(manager: EntityManager, prepared: Prepared): Promise<{ req
 			charged_bytes: chargedBytes(1536, workId + request.requestId + item.kind + item.targetKey + payload),
 		};
 	});
+	for (let offset = 0; offset < items.length; offset += 100) {
+		await manager.createQueryBuilder().insert().into('backend_internal.work_item')
+			.values(items.slice(offset, offset + 100).map(item => ({
+				...item, request_id: request.requestId, schema_version: request.schemaVersion,
+				next_attempt_at: new Date(request.notBeforeMs), deadline_at: new Date(deadlineAtMs),
+			}))).execute();
+	}
+	await manager.createQueryBuilder().update('backend_internal.note_work_state')
+		.set({ last_dependency_at: () => 'GREATEST(last_dependency_at, :occurredAt)' })
+		.where('note_id=:noteId', { noteId: request.noteId })
+		.setParameter('occurredAt', new Date(request.occurredAtMs)).execute();
+
+	// Reserve shared capacity after item writes so unrelated inserts do not wait on this counter.
 	const rows = insertedNote.raw.length + 1 + items.length;
 	const bytes = insertedNote.raw.length * noteCharge + requestCharge + items.reduce((sum, item) => sum + item.charged_bytes, 0);
 	const fraction = deleting ? 1 : 0.9;
@@ -135,18 +148,6 @@ async function append(manager: EntityManager, prepared: Prepared): Promise<{ req
 	if (reserved.affected !== 1) {
 		throw new WorkCapacityExceeded('The durable work capacity is full or requires reconciliation');
 	}
-
-	for (let offset = 0; offset < items.length; offset += 100) {
-		await manager.createQueryBuilder().insert().into('backend_internal.work_item')
-			.values(items.slice(offset, offset + 100).map(item => ({
-				...item, request_id: request.requestId, schema_version: request.schemaVersion,
-				next_attempt_at: new Date(request.notBeforeMs), deadline_at: new Date(deadlineAtMs),
-			}))).execute();
-	}
-	await manager.createQueryBuilder().update('backend_internal.note_work_state')
-		.set({ last_dependency_at: () => 'GREATEST(last_dependency_at, :occurredAt)' })
-		.where('note_id=:noteId', { noteId: request.noteId })
-		.setParameter('occurredAt', new Date(request.occurredAtMs)).execute();
 	return { requestId: request.requestId };
 }
 

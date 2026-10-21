@@ -282,18 +282,18 @@ test('resolves notification targets under the canonical request and rejects cros
 	expect(await capacity()).toEqual(initial);
 });
 
-test('database failure after reservation rolls back the business update, request, initial items and reserved counters', async () => {
+test.each(['work_item', 'work_capacity'])('database failure in %s rolls back business data and all work state', async table => {
 	const initial = await capacity();
 	await source.query(`CREATE FUNCTION backend_internal.reject_item_for_test() RETURNS trigger LANGUAGE plpgsql AS $$
 		BEGIN RAISE EXCEPTION 'injected item failure'; END $$`);
-	await source.query('CREATE TRIGGER reject_item_for_test BEFORE INSERT ON backend_internal.work_item FOR EACH ROW EXECUTE FUNCTION backend_internal.reject_item_for_test()');
+	await source.query(`CREATE TRIGGER reject_item_for_test BEFORE ${table === 'work_item' ? 'INSERT' : 'UPDATE'} ON backend_internal.${table} FOR EACH ROW EXECUTE FUNCTION backend_internal.reject_item_for_test()`);
 	try {
 		await expect(source.transaction(manager => withPostWorkRequests(manager, async work => {
 			await manager.getRepository(MiUser).increment({ id: 'actor' }, 'notesCount', 1);
 			await work.append(apRequest());
 		}))).rejects.toThrow('injected item failure');
 	} finally {
-		await source.query('DROP TRIGGER reject_item_for_test ON backend_internal.work_item');
+		await source.query(`DROP TRIGGER reject_item_for_test ON backend_internal.${table}`);
 		await source.query('DROP FUNCTION backend_internal.reject_item_for_test()');
 	}
 	expect(await count('note_work_state')).toBe(0);
@@ -316,6 +316,45 @@ test('database constraints reject invalid counters, owners, UTF-8 widths and dup
 		SELECT 'duplicate',request_id,kind,target_key,schema_version,payload,payload_hash,next_attempt_at,deadline_at,charged_bytes
 		FROM backend_internal.work_item`))).rejects.toMatchObject({ driverError: { code: '23505' } });
 	expect(await count('work_item')).toBe(1);
+});
+
+test('allows unrelated work to commit while another request is still inserting its items', async () => {
+	const gate = source.createQueryRunner();
+	await gate.connect();
+	await gate.query('SELECT pg_advisory_lock(763148)');
+	await source.query(`CREATE FUNCTION backend_internal.block_slow_item_for_test() RETURNS trigger LANGUAGE plpgsql AS $$
+		BEGIN
+			IF NEW.request_id='notificationslow' THEN PERFORM pg_advisory_xact_lock(763148); END IF;
+			RETURN NEW;
+		END $$`);
+	await source.query('CREATE TRIGGER block_slow_item_for_test BEFORE INSERT ON backend_internal.work_item FOR EACH ROW EXECUTE FUNCTION backend_internal.block_slow_item_for_test()');
+	const request = notificationRequest('slow');
+	const slow = Promise.allSettled([append({ ...request, payload: {
+		candidates: Array.from({ length: 201 }, (_, i) => ({ recipientId: `recipient-${i}`, type: 'mention' as const })),
+	} })]);
+	let fast: Promise<PromiseSettledResult<{ requestId: string }>[]> | undefined;
+	try {
+		await expect.poll(async () => {
+			const [result] = await source.query("SELECT EXISTS (SELECT 1 FROM pg_locks WHERE locktype='advisory' AND objid=763148 AND NOT granted) AS waiting");
+			return result.waiting;
+		}, { timeout: 5000 }).toBe(true);
+		let committed = false;
+		fast = Promise.allSettled([append(apRequest('fast')).then(result => {
+			committed = true;
+			return result;
+		})]);
+		await expect.poll(() => committed, { timeout: 5000 }).toBe(true);
+	} finally {
+		await gate.query('SELECT pg_advisory_unlock(763148)');
+		await Promise.all([slow, fast]);
+		await source.query('DROP TRIGGER block_slow_item_for_test ON backend_internal.work_item');
+		await source.query('DROP FUNCTION backend_internal.block_slow_item_for_test()');
+		await gate.release();
+	}
+	expect((await slow)[0].status).toBe('fulfilled');
+	expect((await fast!)[0].status).toBe('fulfilled');
+	expect(await count('work_request')).toBe(2);
+	expect(await count('work_item')).toBe(202);
 });
 
 test('persists all notification targets across a partial final batch with exact payloads and shared deadlines', async () => {
