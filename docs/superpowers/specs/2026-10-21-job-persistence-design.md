@@ -60,14 +60,14 @@ request.state は open/settled/needs_attention。初期 item の作成は依頼 
 
 ### 4.1 業務成立と COMMIT 結果不明
 
-投稿 transaction は Note と依頼/初期 item/容量予約/取消世代を同じ接続で書く。commit 前の失敗は全 rollback。commit 応答喪失時は requestId を構造化ログに残し、別接続で結果を照会できるが、不在という一回の読みによって rollback 確定とはしない。HTTP 切断でも投稿を再実行しない。確定済み依頼は走査が見つける。クライアントの別 HTTP 投稿に独自の同内容統合はしない。
+投稿 transaction は Note と依頼/初期 item/容量予約/取消世代を同じ接続で書く。commit 前の失敗は全 rollback。commit 応答喪失時は requestId を構造化ログに残し、別接続で結果を照会できるが、不在という一回の読みによって rollback 確定とはしない。HTTP 切断でも投稿を再実行しない。確定済み依頼は走査が見つける。クライアントの別 HTTP 投稿に独自の同内容統合はしない。ここで禁止する再実行は、同じHTTP操作の途中やworker回復から投稿作成transactionを自動でやり直すこと。クライアントが応答を受け取れず同じ内容を別HTTPリクエストとして再送した場合も、新しいeventIdの別操作になる。最初のcommitが成立していれば投稿は2件になり得る。requestId/eventIdは内部の後続依頼を識別する値で、クライアント再送を元の投稿へ接続するidempotencyKeyではない。投稿設計§4のとおり、独自の冪等API・再送キーの受付/照合/保持は今回の範囲に追加しない。
 
 ### 4.2 再走査と投入 claim
 
 各 worker の実行基盤は起動時と通常5秒ごとに走査する。これは永続依頼を回収する処理で、業務の定期ジョブではない。Supervisor に同じ走査スケジュールを重ねて登録しない。複数 scanner が動いても DB claim で分担する。
 
-1. `next_attempt_at <= DB時刻 < deadline_at` で実行 claim が無い/期限切れの未終端 item を、索引順に最大100件選ぶ。さらに投入claimが無い、または `dispatch_until <= DB時刻` であることを選択条件と条件付きUPDATEの双方に含め、queue制御と合わせてtransaction内で再確認する。`FOR UPDATE SKIP LOCKED` と条件付き更新で dispatch_owner、until=現在+30秒、epoch+1、dispatch_seq+1 を確定する。同じitemの有効な投入claimを上書きせず、競合するscannerの一つだけがこの更新と次項の容量予約を確定できる。
-2. 同じtransactionで `(workId, dispatchSeq)` の queue_dispatch と容量予約を作る。transaction を閉じ、queue には workId・kind/schemaVersion・dispatchSeq・queue世代だけを渡す。BullMQ jobId は workId と dispatchSeq の安定した符号化。1回の投入操作の再送では同じ値を使う。内容は PostgreSQL から読む。
+1. 1回の走査で最大100候補を処理するが、**itemごとの短いtransaction** に分け、100件の予約を一括成立条件にしない。`next_attempt_at <= DB時刻 < deadline_at` で実行 claim が無い/期限切れの未終端 item を索引順に1件選ぶ。さらに投入claimが無い、または `dispatch_until <= DB時刻` であることを選択条件と条件付きUPDATEの双方に含め、queue制御と合わせてtransaction内で再確認する。`FOR UPDATE SKIP LOCKED` と条件付き更新で dispatch_owner、until=現在+30秒、epoch+1、dispatch_seq+1 を確定し、次項の予約と同時commitする。同じitemの有効な投入claimを上書きせず、競合するscannerの一つだけがclaimと容量予約を確定できる。
+2. 同じtransactionで `(workId, dispatchSeq)` の queue_dispatch と容量予約を作る。必要量が残容量に収まらなければclaim/seq更新・dispatch生成・容量加算を一切確定せず、そのitemを理由capacity_waitのretry_waitとし、`next_attempt_at=min(DB時刻+30秒, deadline_at)` だけを設定してcommitする。attempt_countやdeadlineは変えない。予約失敗は条件付き更新の不成立として扱い、先頭itemを待たせた後も走査の残り候補を処理する。これにより後続の小さいitemや別queueのitemは容量があれば投入できる。実装が先にclaimを書いた場合はsavepoint等でその変更を戻してから待機更新を確定し、claimだけを残さない。予約が取れた場合はtransactionを閉じ、queue には workId・kind/schemaVersion・dispatchSeq・queue世代だけを渡す。BullMQ jobId は workId と dispatchSeq の安定した符号化。1回の投入操作の再送では同じ値を使う。内容は PostgreSQL から読む。
 3. enqueue 後は dispatch epoch/owner に条件付けて時刻を記録し投入 claim を解放する。実行中へは変えない。enqueue 後・DB 保存前の停止なら次回は別 dispatchSeq で重複し得る。
 4. 投入済みでも開始確認が無い item は60秒後に再投入候補とする。別seqを発行する場合も既存seqの予約を推測解放せず、追加予約を必要とする。Redis 消失・削除・完了 entry の残存を正本にしない。有効な実行 claim 中は再投入せず、投入/queue entry の数は業務試行数へ加算しない。
 
@@ -159,6 +159,8 @@ base_bytesは固定列とライフサイクル中の進捗・理由・所有者�
 
 物理容量は論理枠と別に、DB volumeの空きbytes/全体bytesとDB・対象relationの実サイズを60秒ごとに監視する。空きが `max(2 GiB, volume全体の10%)` 未満、または空き情報が120秒以上不明なら、新規業務受付と容量を増やす展開/生成を止め、清掃・既存状態の照会は続ける。閾値回復を確認して再開し、実DBの書込み失敗は従来どおりrollback/結果不明で扱う。publicのModerationLogはジョブの20 GiB/100万行枠から外し、既存の監査保持方針とこの物理容量監視に含める。WAL・他のpublicテーブル・bloat・backupの使用量はこの論理枠に含まれないため、4倍係数や20 GiBだけを物理ディスク安全性の判定にしない。監視値の供給と専用環境での閾値検証は#124、配布環境への接続は#137の必須条件とする。
 
+物理容量の閾値未満/監視不能による受付停止には **投稿の削除・取消も含む**。これらは依頼・取消世代・監査の書込みを伴うため、論理枠の10%予約だけを根拠に継続しない。成立前ならWorkCapacityExceeded/503としてtransaction全体を失敗させ、ローカル削除だけを確定しない。既にcommitした削除/取消は取り消さず、その依頼を保持する。清掃は既存の保持・依存条件を満たす終端行/本文だけを小さなtransactionで削除し、未完了依頼や宛先台帳を期限前に捨てて空きを作らない。削除SQLにもWAL等の空きが必要であり、論理bytesの解放だけではvolumeの空きが直ちに戻るとは扱わない。清掃が書込み不能、または物理空きが回復しなければ、運用側でDB volumeの拡張、DB外の期限済みログ/backupの退避、監視情報の復旧を行う。監視が復旧して物理閾値以上の空きを確認し、論理容量枠も満たしてから受付を再開する。この停止/回復手順は#124で注入検証し、#137の運用手順へ渡す。
+
 全容量の10%は削除・取消依頼とその宛先に予約し、通常作成から利用しない。通常受付が90%に達したら投稿成立前に受理制限する。展開容量が後から不足した場合は依頼を retry_wait に残すが、24時間で exhausted として必要な仕事の未完了を確認対象にする。本文上限/容量に達しても成功済みの仕事を切り詰めたり黙って捨てたりしない。削除用枠も満杯なら、削除と依頼の transaction 全体を失敗させる。ローカル削除だけを成功扱いにしない。
 
 一時的な容量不足は業務例外 `WorkCapacityExceeded` を HTTP adapter で **503、code=`BACKEND_BUSY`、id=`3ba27d7e-a4eb-4ae9-89ad-152bc40aad2d`、message=`The server is temporarily busy. Please try again later.`** とする提案。2 MiB超過は別の `WorkPayloadTooLarge` とし、**413、code=`WORK_PAYLOAD_TOO_LARGE`、id=`5cde2882-f54c-4e85-b0e4-9294ba269a6b`、message=`The work payload exceeds the size limit.`** を返す。同じ入力の再送では直らない非再試行エラーで、Retry-Afterを付けない。認証/認可・本家の入力検証の後、確定payloadのサイズ検証、容量予約の順に判定する。両条件に該当するときは413。commit後に初めて生成した本文が上限超過なら当該itemをfailed_permanent/理由payload_too_largeとし、既存投稿のHTTP応答を変更せず確認対象にする。本家との差異として N0/N2/N5 で413/503のJSON・検証順・失敗時保存0件を固定比較する。commit 後の容量不足で503を返し直さない。容量を解放するまで受理制限が続くことは、有限保存の代償として運用に明示する。
@@ -234,7 +236,8 @@ remove/clear は観測履歴だけの除去と、未完了仕事の明示的取�
 
 | ケース | 必須の観測 |
 | --- | --- |
-| 業務保存前/依頼insert時/commit応答喪失 | rollback時は業務・依頼0、不明時は投稿再作成なし。確定依頼を同じIDで検出 |
+| 業務保存前/依頼insert時/commit応答喪失 | rollback時は業務・依頼0。不明時に同じHTTP操作内/worker回復から投稿を自動再作成しない。確定依頼を元のIDで検出 |
+| 最初のcommit応答喪失後、クライアントが同内容を別HTTPで再送 | 初回がcommit済みなら投稿2件を許容し、別eventId/requestIdで各依頼を処理。初回rollbackなら再送分の1件。本文一致による統合や独自idempotencyKeyは無い |
 | commit後queue前、enqueue後DB前、queue全消失 | 再走査で進行し、重複entryでも通知1件・固定activity ID。廃棄済みIDは副作用0 |
 | 二つのscanner/worker、lease切れ旧worker遅延 | 対象一意、同じitemの投入claim/seq/容量予約を確定できるscannerは一つ。有効投入claimを上書きせず、期限切れ回収後の旧epoch確定は0。owner/epochを失ったDB確定は0。queue重複終了で正本を成功にしない |
 | 外部受信直後応答喪失/結果保存応答喪失 | unknownと固定本文の再送を観測。fake inboxの複数受信をDB内成立と区別 |
@@ -243,6 +246,8 @@ remove/clear は観測履歴だけの除去と、未完了仕事の明示的取�
 | 別eventIdで同内容、同eventId/kind/世代で別requestId、同キーで別payload | 別eventIdは別仕事。同じ業務キーは既存requestIdへ解決し通知1件、本文廃棄後のappendは拒否して照会のみ、異kindは別依頼。不一致payload/hashは生成transaction全体をrollback。終端/成立記録の上書き0 |
 | host停止、host枠不足/Delete前件待ち、410、429、5xx、timeout、上限試行直前停止 | 資源/前件待ちだけではattempt増加0。実行claim後停止は1消費。分類・backoff・累積回数・deadlineを維持。1hostが全資源枠を占有しない |
 | 容量予約の並行確保、共有payload、本文/行の清掃、サイズ超過と混雑の同時発生 | 共有分は1件課金、保存したformula版/charged_bytesによる差分/削除の一度だけ解放、係数変更時の停止下再見積り、rollbackで予約残0、論理bytesの上限と物理閾値を別検証。両条件該当は413、容量不足だけなら503、いずれも成立前失敗は保存0 |
+| 先頭itemの予約量が残容量を超え、後続の小さいitem/別queueには空きがある | 先頭はcapacity_wait・次回時刻だけを更新し、claim/seq/予約/attemptの消費0。後続は同じ走査または次回走査で投入。先頭の予算・期限は延長せず、全100候補の一括rollbackで後続を止めない |
+| 物理閾値未満/監視不能での削除・取消と回復 | 成立前は503/全rollback、commit済み依頼は保持、照会・保持条件内の清掃は継続。清掃不能時はvolume拡張等で回復し、監視・物理閾値・論理枠の確認前に受付再開しない |
 | 管理照会/変更の資格・scope・queue・表示・頻度・監査 | 通常ユーザー/不足scope/別queue対象の拒否、inbox path/受信者/本文の非返却、ページ上限/429、状態変更と監査の同時rollback。Redis調停失敗を同操作IDで照会可能 |
 | enqueue応答喪失、遅れた投入、重複終了、Redis全消失 | seq単位の予約が一度だけ解放、失効後の遅延token初期化とtoken廃棄後enqueueは0、新世代開始前の照合、上限超過0。予約待ちでDBの必要な依頼を失わない |
 | pause/remove/clear/retry、期限超過/容量満杯 | 独立queueの制御、取消の非復活、予算迂回0、原子的受理制限。終端理由を照会可能 |
