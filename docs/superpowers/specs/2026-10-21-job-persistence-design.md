@@ -75,7 +75,7 @@ request.state は open/settled/needs_attention。初期 item の作成は依頼 
 
 worker は DB の item を読み、payload と版を検証する。終端/欠落なら副作用をせず終了。未来の実行時刻・pause・有効な別実行所有者なら同じく副作用をせず、その queue entry の終了だけを記録する。DB の未完了状態は残り、適切な時刻に再走査される。
 
-pause・not_before・削除の前件待ち・host枠不足は実処理を開始しない待機であり、next_attempt_at だけを更新して試行を消費しない。前件が未終端のDeleteをFIFO順だけで開始しない。実行可能なら共通ロック順で前件/世代とhost枠を確認し、必要なhost枠のlease取得、execution_owner/until/epoch の条件付き更新、attempt_count の1増加を一つの短いtransactionで行う。いずれかが取れなければ全rollbackし、無消費の待機に戻す。claim 直後停止も1試行として数える。期限切れ回収でも回数・最初の期限をリセットしない。DB 時刻を権威とし、実行 lease は60秒、10秒ごとに条件付き更新する。各処理段階で新しい現在時刻と最新の必要条件を評価する。
+pause・not_before・削除の前件待ち・host枠不足は実処理を開始しない待機であり、next_attempt_at だけを更新して試行を消費しない。前件が未終端のDeleteをFIFO順だけで開始しない。実行可能なら共通ロック順で前件/世代とhost枠を確認し、必要なhost枠のlease取得、execution_owner/until/epoch の条件付き更新、attempt_count の1増加を一つの短いtransactionで行う。いずれかが取れなければ全rollbackし、無消費の待機に戻す。claim 直後停止も1試行として数える。期限切れ回収でも回数・最初の期限をリセットしない。DB 時刻を権威とし、実行 lease は60秒、10秒ごとに条件付き更新する。管理操作で再開したitemもこの通常の実行claimを通し、lease取得とattempt_countの加算をclaim成功時に1回だけ行う。管理操作自体は実行権を与えず、claim/leaseを取得できなければ実処理を始めない。各処理段階で新しい現在時刻と最新の必要条件を評価する。
 
 通知の場合は **note_work_state → item 行の順にロック → owner/epoch/lease・取消・通知条件の確認 → 通知と notification_effect を insert → item 成功** を一つの transaction にする。同じ item の旧 worker による確定は owner/epoch/有効期限の条件で拒否し、通知も rollback する。commit 応答喪失なら次の処理は成立記録を照会し、同じ通知を作り直さない。通知がその後ユーザーに削除されても、成立記録から再作成しない。
 
@@ -183,7 +183,7 @@ base_bytesは固定列とライフサイクル中の進捗・理由・所有者�
 
 管理者は requestId/workId/eventId/noteId、state、attempt、次回時刻、deadline、reason、unknown有無、coverage を照会できる。本文・inbox・受信者IDを通常ログへ無制限に出さない。構造化ログの保持上限は既存基盤/運用側で設定し、業務テーブルをログの代用にしない。期限/容量/unknown/隔離/台帳消失は件数と最古待機時間を観測する。
 
-手動再実行は **元の requestId/workId・固定本文・試行回数・deadline を維持** する。retry_wait は次回を現在へ早められるが、上限超過、期限切れ、succeeded/cancelled、形式未対応、本文廃棄後は拒否。failed_permanent は原因解消を明示した管理操作で、残り予算がある場合だけ再開できる。unknown は重複リスクの表示を必須にする。予算をリセットする「再試行」や、別requestIdによる自動複製は用意しない。打ち切り後は結果確認や N6 の派生再構築、#137 の個別復旧判断へ渡す。
+手動再実行は **元の requestId/workId・固定本文・試行回数・deadline を維持** する。retry_wait は次回を現在へ早められるが、上限超過、期限切れ、succeeded/cancelled、形式未対応、本文廃棄後は拒否。failed_permanent は原因解消を明示した管理操作で、残り予算がある場合だけretry_waitへ遷移して再開できる。管理操作はitemをロックして資格・状態・予算・本文保持を再確認し、状態変更と監査を同時確定する。next_attempt_atをDB時刻に設定するが、attempt_count・deadline・所有世代はリセットせず、runningへ直接遷移させない。通常の再走査→投入claim→実行claim/lease取得を経て実行し、attempt_countは§4.3の実行claim成功時に1回だけ増やす。管理操作とworkerの両方で加算しない。unknown は重複リスクの表示を必須にする。予算をリセットする「再試行」や、別requestIdによる自動複製は用意しない。打ち切り後は結果確認や N6 の派生再構築、#137 の個別復旧判断へ渡す。
 
 ### 7.1 管理操作の認証・対象・監査
 
@@ -219,6 +219,12 @@ remove/clear は観測履歴だけの除去と、未完了仕事の明示的取�
 
 事前変換はバックアップ・dry-run件数/hash照合の後、最大100件/transaction、request/item の型と参照を揃えて行う。ID・出来事・recipient集合・回数・期限・結果は維持する。意味を保存できない変換は quarantine とし、成功扱いにしない。送信済み/unknown の本文・activity/event ID は変換で変えない。新形式で再送本文の互換を保てなければ、その残仕事を処理/打ち切り確認するまで切り替えない。
 
+移行コマンドの再開位置は、メモリ上のcursorや「batchを開始した」というログではなく、**kindごとの移行元schemaVersionかつquarantinedではない保存行** から求める。request/itemと変換対象の参照先を安定したID順で最大100行ずつ選び、ロックして版・状態を再確認する。変換したpayload・参照・hashと移行先schemaVersionを同じtransactionで更新し、変換成功時だけ新版を確定する。commit済みの新版行は次回の旧版条件に一致せず再処理しない。参照を含む変換単位を100行以内で閉じられない場合は途中まで書き換えずコマンドを停止し、その形式変更PRで両版から参照可能な段階変換等の手順を定めてから再開する。旧新版の保存行が混在する移行途中でも、参照先を含め対応readerが正しく解釈できる状態を各commitで維持する。
+
+意味を保存できないことを検出した行は、理由と元の版を残してquarantinedへ移し、その行のschemaVersionを成功版へ進めない。予期しない変換例外やcommit前の停止はbatch全体をrollbackし、同じ選択条件から再試行する。自動の再試行は一つのコマンド実行で同一batchにつき最大3回とし、解消しなければ非0終了してサービスを停止したまま原因・対象IDを確認する。障害を理由に対象行を飛ばしたり成功扱いにしたりしない。commit応答不明はrollback確定とせず、再接続後の保存済みschemaVersion/参照の照合と旧版選択条件で成立を判定する。仕事のattempt_count・deadlineを移行コマンドの再試行回数に流用しない。
+
+進捗はkind/版ごとに「旧版かつ非隔離の残数」「理由別quarantine数」「新版の確定数」を別に集計する。残数0だけで移行完了とせず、quarantineと参照先を含む全保存形式が対応readerで読めるかを照合する。旧新版を読める移行用コードへの切り替え・旧コードへ戻す判断にはこの全件集計を使い、隔離行を除外してrollback可能と判定しない。これは完全停止下の保存形式の混在であり、旧新バックエンドを並行稼働する要件ではない。
+
 旧コードへ戻すには全プロセス停止、新writer停止、残っているrequest/子itemと参照先の版を集計し、旧readerがすべて解釈可能でschema互換もあることを確認する。不可逆変換・新形式残存時は単なるbinary rollbackを禁止し、readerを残した修正版で回復する。DB backupへの復元は外部送信済み事実を巻き戻せないため、配送の再発行を伴う個別復旧判断になる。Redisは保存したIDから再投入できるが、旧backendの既存queueの移行/破棄判断は #137 で別に決める。新基盤が旧queueを無条件に消費しない。
 
 ## 9. #124 以降の実装単位と受け入れ
@@ -252,6 +258,8 @@ remove/clear は観測履歴だけの除去と、未完了仕事の明示的取�
 | enqueue応答喪失、遅れた投入、重複終了、Redis全消失 | seq単位の予約が一度だけ解放、失効後の遅延token初期化とtoken廃棄後enqueueは0、新世代開始前の照合、上限超過0。予約待ちでDBの必要な依頼を失わない |
 | pause/remove/clear/retry、期限超過/容量満杯 | 独立queueの制御、取消の非復活、予算迂回0、原子的受理制限。終端理由を照会可能 |
 | 版不明/破損payload、v1→v2、旧readerへ戻す検査 | 副作用0/隔離、意味とIDを保持した変換、未対応残数があるrollback拒否 |
+| 移行batchのcommit前停止/commit応答喪失、変換例外、意味を保存できない行 | 旧版/非隔離をID順で再選択、新版commit済み行の再変換0、参照整合を維持。例外はbatch全rollback/最大3回後停止、quarantineは理由・旧版を保持。残数/隔離/新版を分け、隔離を除いた残数0だけでrollback可能としない |
+| failed_permanentの手動再開とworker取得の競合 | 管理操作は監査とretry_wait/次回DB時刻だけを確定しattempt加算0。通常の実行claim成功時だけ1加算、claim/leaseを取得できなければ実処理0。ID・期限・累積回数を維持しrunningへ直行しない |
 | 本文7日/成立30日/宛先90日、遠いpoll | 廃棄後再生成0、台帳消失の非public削除を確認対象にする。pollを前倒し/期限延長しない |
 | shutdown/強制終了/Redis障害 | 取得・走査停止→受理済み待機→接続解放。既存終了期限内に終わらなければ不明として回収。DBへの縮退なし |
 
