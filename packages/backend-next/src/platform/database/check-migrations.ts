@@ -19,9 +19,10 @@ export async function assertMigrationsApplied(config: DatabaseConfig): Promise<v
 				throw new DiagnosticError('MIGRATION_HISTORY_MISSING', { scope: kind, table: `${schema}.migrations` });
 			}
 
-			const rows: { name: string; timestamp: string | number }[] = await source.query(
-				`SELECT name, timestamp FROM ${schema}.migrations`,
-			);
+			const rows = await source.createQueryBuilder()
+				.select(['history.name AS name', 'history.timestamp AS timestamp'])
+				.from(`${schema}.migrations`, 'history')
+				.getRawMany<{ name: string; timestamp: string | number }>();
 			const applied = new Set(rows.map((row) => `${row.name}:${row.timestamp}`));
 			const missing = source.migrations.filter((migration) => {
 				const name = migration.name ?? migration.constructor.name;

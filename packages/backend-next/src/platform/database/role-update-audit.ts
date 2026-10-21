@@ -20,6 +20,7 @@ export async function appendRoleUpdateAudit(
 	record: RoleUpdateAudit,
 	newId: (occurredAtMs: number) => string,
 ): Promise<void> {
+	// QueryDeepPartialEntity cannot represent the upstream Record<string, any> JSONB field; bind only that value as SQL.
 	await manager.getRepository(MiModerationLog).createQueryBuilder().insert().values({
 		id: newId(record.occurredAtMs), userId: record.actorId, type: 'updateRole',
 		info: () => 'CAST(:info AS jsonb)',

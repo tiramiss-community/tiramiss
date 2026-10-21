@@ -317,3 +317,22 @@ test('database constraints reject invalid counters, owners, UTF-8 widths and dup
 		FROM backend_internal.work_item`))).rejects.toMatchObject({ driverError: { code: '23505' } });
 	expect(await count('work_item')).toBe(1);
 });
+
+test('persists all notification targets across a partial final batch with exact payloads and shared deadlines', async () => {
+	const request = notificationRequest('batch');
+	const candidates = Array.from({ length: 101 }, (_, i) => ({ recipientId: `受信者'${i}:[]`, type: 'mention' as const }));
+	await append({ ...request, payload: { candidates } });
+	const rows: { target_key: string; payload: string; next_attempt_at: Date; deadline_at: Date; attempt_count: number; state: string }[] = await source.query(
+		'SELECT target_key,payload,next_attempt_at,deadline_at,attempt_count,state FROM backend_internal.work_item WHERE request_id=$1', [request.requestId],
+	);
+	expect(rows).toHaveLength(candidates.length);
+	expect(new Set(rows.map(row => row.target_key))).toEqual(new Set(candidates.map(candidate => JSON.stringify([candidate.recipientId, candidate.type]))));
+	for (const row of rows) {
+		const payload = JSON.parse(row.payload);
+		expect(JSON.parse(row.target_key)).toEqual([payload.recipientId, payload.type]);
+		expect(row.next_attempt_at.getTime()).toBe(request.notBeforeMs);
+		expect(row.deadline_at.getTime()).toBe(request.notBeforeMs + 86400000);
+		expect(row.state).toBe('ready');
+		expect(row.attempt_count).toBe(0);
+	}
+});
