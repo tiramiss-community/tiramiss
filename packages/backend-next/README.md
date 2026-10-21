@@ -41,7 +41,7 @@ pnpm --filter backend-next start
 ```
 
 `migrate`は本家の`public.migrations`を引き継ぎ、全履歴の未適用分を実行した後、
-`backend_internal`とその独立した履歴テーブルを初期化する。内部の業務用テーブルはまだない。
+`backend_internal`とその独立した履歴、投稿の依頼・初期仕事・取消世代・論理容量テーブルを初期化する。
 本家の`MISSKEY_MIGRATION_CREATE_INDEX_CONCURRENTLY=1`指定も引き継ぐ。
 起動時は適用状況を確認するだけで、履歴やschemaを自動作成しない。
 
@@ -118,3 +118,42 @@ showはロールと有効な手動割り当て人数を取得した後、DBに�
 Role の次は [投稿フロー詳細設計](../../docs/superpowers/specs/2026-10-21-note-flow-design.md)（#126）を参照する。作成・取得・削除・配送の所有範囲、比較ケース、#123/#124 へ渡す実ジョブ条件、#127 の実装分割をまとめている。設計の存在は投稿 API・実ジョブの実装完了を意味しない。
 
 [実ジョブの保存・再開・形式変更の契約](../../docs/superpowers/specs/2026-10-21-job-persistence-design.md)（#123）は、AP 配送とローカル通知を題材に、PostgreSQL の正本、投入/実行 claim、削除との競合、有限な試行・保持・容量、形式移行と #124 の受け入れ条件を定める。基盤実装は #124、投稿 API への接続と本家比較は #127 で行う。
+
+
+## 投稿の永続依頼：J1 保存（#124）
+
+`modules/post-work/public` は `PostWorkRequests.append` と AP 展開・ローカル通知の型付き依頼を公開する。
+`platform/database/post-work/append` の `withPostWorkRequests(manager, callback)` を、呼び出し元が所有する transaction 内で使う。
+組み立て側で同じ manager に結び付けた業務更新窓口と requests を UseCase の scope へ渡す。UseCase に manager は渡さない。
+以下は adapter の組み込み形であり、投稿 UseCase/HTTP の実装は #127 で接続する。
+
+```ts
+await source.transaction(manager =>
+  withPostWorkRequests(manager, requests => requests.append(confirmedPostWork)));
+```
+
+callback が終了すると新しい append は拒否し、開始済みの append が全て終わってから呼び出し元へ戻る。
+append の失敗を callback が catch した場合も、scope 全体は失敗する。業務更新と同様に append を await する。
+adapter 自身は commit・enqueue・自動再試行をしない。COMMIT 応答不明のときも投稿を再作成せず、
+既知の requestId/eventId で保存結果を確認する。不在を一回読んだだけで rollback とは断定しない。
+
+初期形式は schemaVersion=1。AP は Create/Announce（世代1）、Delete/Undo（世代2）の固定 activity ID・
+JSON 本文と direct actor ID を受け、followers/relay 集合の固定は後続の実行時に行う。
+公開範囲・localOnly・channelId は作成時の確定値で、削除でも広げない。
+通知は候補 recipientId と reply/mention/quote/renote/note の組を受け、対象別の初期 item を同時保存する。
+本文中に秘密鍵・認証 token を渡さない。AP 全表現・署名・通知条件の本家互換性は N4/N6 の検証対象。
+
+`(eventId, kind, noteGeneration)` が同じ依頼は、完全な immutable 内容と hash を照合し、
+既存 requestId を返す。新しい requestId で同じ仕事を増やさず、item の進捗・回数・期限を上書きしない。
+本文廃棄後、内容不一致、requestId の別業務キーへの再利用、削除後の新たな世代1依頼は拒否する。
+既存依頼の照合は削除後にも可能だが、世代を戻したり新しい item を生成したりしない。
+
+内部の4テーブルは `note_work_state` / `work_request` / `work_item` / `work_capacity`。
+独自 migration に up/down があり、通常起動は未適用を拒否する。`check-schema` は内部定義の差分も読み取り専用で検出する。
+100万行・20 GiB の論理予約に対して、通常は90%、削除は100%まで同一 transaction の条件付き更新で確保する。
+各行に算定版と予約 bytes を保存し、容量行自身の baseline も含める。依頼全体は UTF-8 で最大2 MiB。
+これは物理ディスク上限ではない。J1 の結合テストでは代表・最大本文の実 relation サイズと比較するが、全運用条件を保証しない。
+
+この段階では依頼は保存されるだけで実行されない。J2 は BullMQ・dispatch/実行 claim・recipient/通知成立記録・実 worker、
+J3 は管理操作・清掃・物理容量監視・形式移行/運用の検証へ進む。受理入口はまだ HTTP に公開せず、
+清掃による容量の解放もまだないため、J1 だけで運用可能なジョブ基盤や #124 全体の完了とは扱わない。

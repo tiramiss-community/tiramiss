@@ -6,8 +6,10 @@ import { DataSource } from 'typeorm';
 import { migrations } from 'backend-upstream/migrations';
 import { databaseOptions } from './data-source.js';
 import type { DatabaseConfig } from '../../config/types.js';
+import { postWorkEntities } from './post-work/schema.js';
+import { PostWorkPersistence1792590060271 } from './post-work/migrations.js';
 
-export const internalMigrations = [];
+export const internalMigrations = [PostWorkPersistence1792590060271];
 export function migrationSources(config: DatabaseConfig) {
 	const options = databaseOptions(config);
 	return {
@@ -20,7 +22,7 @@ export function migrationSources(config: DatabaseConfig) {
 		}),
 		internal: new DataSource({
 			...options,
-			entities: [],
+			entities: postWorkEntities,
 			schema: 'backend_internal',
 			migrations: internalMigrations,
 			migrationsTableName: 'migrations',
