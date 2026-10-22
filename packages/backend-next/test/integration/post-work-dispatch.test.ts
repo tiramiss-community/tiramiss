@@ -61,8 +61,8 @@ test('full queue waits without consuming a seq and the scanner continues into an
 	await source.query("UPDATE backend_internal.work_control SET reserved_dispatches=10000 WHERE queue_key='deliver'");
 	const sent: string[] = [];
 	await scanPostWork(store, { enqueue: async value => {
- sent.push(value.queueKey); 
-}, retire: async () => true }, 'scanner');
+		sent.push(value.queueKey);
+	}, retire: async () => true }, 'scanner');
 	expect(sent).toEqual(['postLocal']);
 	expect(await items()).toEqual([
 		{ state: 'ready', attempt_count: 0, seq: 1 }, { state: 'retry_wait', attempt_count: 0, seq: 0 },
@@ -92,8 +92,8 @@ test('same owner cannot confirm an expired claim or an older sequence', async ()
 test('enqueue ambiguity preserves the same reservation until retirement confirms release', async () => {
 	await appendSend();
 	const transport = { enqueue: async () => {
- throw new Error('lost response'); 
-}, retire: async () => false };
+		throw new Error('lost response');
+	}, retire: async () => false };
 	await expect(scanPostWork(store, transport, 'scanner')).rejects.toThrow('lost response');
 	expect((await store.pending())).toHaveLength(1);
 	await reconcilePostWork(store, transport);
@@ -161,8 +161,8 @@ test('one scan handles at most one hundred candidates and leaves later durable w
 	await append(request);
 	let enqueues = 0;
 	await scanPostWork(store, { enqueue: async () => {
- enqueues++; 
-}, retire: async () => true }, 'scanner');
+		enqueues++;
+	}, retire: async () => true }, 'scanner');
 	expect(enqueues).toBe(100);
 	expect((await items()).filter((item: { seq: number }) => item.seq === 0)).toHaveLength(1);
 	expect((await source.query('SELECT count(*)::int AS count FROM backend_internal.queue_dispatch'))[0].count).toBe(100);
@@ -177,8 +177,8 @@ test('failed reconciliation preserves queue capacity for a later confirmed recov
 	await source.query("UPDATE backend_internal.queue_dispatch SET reserved_at=reserved_at-interval '61 seconds', token_expires_at=token_expires_at-interval '61 seconds'");
 	await expect(reconcilePostWork(store, {
 		enqueue: async () => {}, retire: async () => {
- throw new Error('Redis response lost'); 
-},
+			throw new Error('Redis response lost');
+		},
 	})).rejects.toThrow('Redis response lost');
 	expect(await store.pending()).toHaveLength(1);
 	expect((await source.query("SELECT reserved_dispatches FROM backend_internal.work_control WHERE queue_key='deliver'"))[0].reserved_dispatches).toBe(1);
@@ -194,8 +194,9 @@ test('recovers a real enqueue with a lost response using the same durable work I
 		await transport.initialize('postLocal', '1');
 		await expect(scanPostWork(store, {
 			enqueue: async (value, now) => {
- await transport.enqueue(value, now); throw new Error('enqueue response lost'); 
-},
+				await transport.enqueue(value, now);
+				throw new Error('enqueue response lost');
+			},
 			retire: value => transport.retire(value),
 		}, 'scanner')).rejects.toThrow('enqueue response lost');
 		expect(await queue.getWaitingCount()).toBe(1);

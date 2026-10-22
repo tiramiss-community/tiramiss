@@ -25,8 +25,10 @@ async function setup() {
 	const queue = new Queue('deliver', { connection, prefix });
 	const redis = new Redis(connection);
 	cleanup.push(async () => {
- await queue.obliterate({ force: true }); await queue.close(); await redis.quit(); 
-});
+		await queue.obliterate({ force: true });
+		await queue.close();
+		await redis.quit();
+	});
 	cleanup.push(() => transport.close());
 	await transport.initialize('deliver', '1');
 	const now = Date.now();
@@ -44,8 +46,8 @@ test('real BullMQ consumes ID-only data and duplicate enqueue preserves one stab
 	expect(await queue.getWaitingCount()).toBe(1);
 	const received: unknown[] = [];
 	const worker = new Worker('deliver', async job => {
- received.push(job.data); 
-}, { connection, prefix });
+		received.push(job.data);
+	}, { connection, prefix });
 	cleanup.push(() => worker.close());
 	await expect.poll(() => received.length).toBe(1);
 	expect(received).toEqual([{
@@ -80,12 +82,13 @@ test('cannot release an active entry; terminal retirement is repeatable and fenc
 	const { transport, queue, prefix, reservation } = await setup();
 	let finish!: () => void;
 	const running = new Promise<void>(resolve => {
- finish = resolve; 
-});
+		finish = resolve;
+	});
 	const worker = new Worker('deliver', async () => running, { connection, prefix });
 	cleanup.push(async () => {
- finish(); await worker.close(); 
-});
+		finish();
+		await worker.close();
+	});
 	await transport.enqueue(reservation, Date.now());
 	await expect.poll(() => queue.getActiveCount()).toBe(1);
 	expect(await transport.retire(reservation)).toBe(false);
