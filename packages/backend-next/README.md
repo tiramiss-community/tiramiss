@@ -185,10 +185,31 @@ DB確定前にenqueue応答が失われても、元のworkIdを保持したま�
 
 **自動起動と実行UseCaseにはまだ接続していない。** `initialize(queue,generation)` は呼出側が
 DBと照合した世代を使う低層操作であり、Redis全喪失後に同じ世代で再初期化してはならない。
-worker起動前の世代切替/旧予約の照合、5秒周期の走査、実行claim/lease/試行予算、
+worker起動前の世代切替/旧予約の照合は下記J2bの回復入口を使う。5秒周期の走査、実行claim/lease/試行予算、
 固定宛先・fake inboxへの配送、通知結果の同時確定、プロセス寿命への接続をJ2bで段階実装する。
 初期ローカル仕事のDB実行権は下記J2b1を参照。
 管理操作・清掃・形式移行などのJ3と合わせて、#124全体の完了条件を検証する。
+
+## Redis消失後の起動調停（#124 / J2b）
+
+`platform/database/post-work/recovery` の `recoverPostWork(source, transport)` は、将来の
+worker/HTTPのready、consumer、scanner開始より前に呼ぶ起動入口。現在のプロセス起動にはまだ接続しない。
+専用PostgreSQL接続のsession advisory lockで並行初期化を直列化し、正常なgateが両queueにあれば
+世代を維持する。gate欠落/旧世代では両queueのDB世代を進め、`recovery_pending`を同じtransactionで保存する。
+そのcommit後にRedis gateを観測値とのCASで進める。未知/未来のgateやCAS不一致は起動失敗とする。
+
+回復中は投入/ローカル実行claimを開始しない。旧世代の未解放予約はtoken期限に関係なく最大100件/回で
+照合し、Redis token失効とentry除去/終了の確認後だけ既存の条件付きreleaseでqueue枠を返す。
+全予約の照合と両gateの再確認が終わってから、両queueのpendingを同時に解除する。
+active entry・Redis応答不明・DB障害では起動失敗にし、予約をゼロ扱いしない。
+古いworkerの有効な業務実行lease、累積試行数、元の期限、保存行/bytesへの課金は変更しない。
+
+途中停止後はDBのpending世代を再利用して再開し、成功済みreleaseは二重計上しない。
+専用DB接続は失敗時も破棄するため、poolへadvisory lockを持ち帰らない。
+遅延した旧世代のenqueueはRedis gateで拒否される。古いcompleted/failed履歴や未知entryは業務結果と扱わず、
+将来のconsumerも必ずDBのenvelope/世代/保存形式検証を通す。
+この入口自体は稼働中Redis障害の監視・停止経路や既存起動期限への接続を行わず、
+通知/AP業務処理・実workerの寿命への接続と併せて後続J2で実装する。#124全体は未完了。
 
 ## ローカル仕事の実行権：J2b1（#124）
 

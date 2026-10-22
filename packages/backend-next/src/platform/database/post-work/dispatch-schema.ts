@@ -17,6 +17,7 @@ export const dispatchEntities = [
 		columns: {
 			queue_key: { type: 'varchar', length: 32, primary: true },
 			queue_generation: { type: 'bigint', default: 1 }, paused: { type: 'boolean', default: false },
+			recovery_pending: { type: 'boolean', default: false },
 			reserved_dispatches: { type: 'integer', default: 0 }, ...accounting,
 		},
 		checks: [

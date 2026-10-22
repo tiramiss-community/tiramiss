@@ -145,6 +145,7 @@ test('schema matches and dispatch migration can be rolled back and applied again
 	await migration.initialize();
 	try {
 		await migration.undoLastMigration();
+		await migration.undoLastMigration();
 		expect((await source.query("SELECT to_regclass('backend_internal.queue_dispatch') AS relation"))[0].relation).toBe(null);
 		await migration.runMigrations();
 	} finally {

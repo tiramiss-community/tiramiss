@@ -45,6 +45,12 @@ local current = redis.call('GET', KEYS[1])
 if current and current ~= ARGV[1] then return redis.error_reply('dispatch generation mismatch') end
 redis.call('SET', KEYS[1], ARGV[1])
 return 1` },
+			dispatchReplaceGeneration: { name: 'dispatchReplaceGeneration', keys: 1, content: `
+local current = redis.call('GET', KEYS[1])
+local expected = ARGV[1]
+if (current or '') ~= expected then return redis.error_reply('dispatch generation changed') end
+redis.call('SET', KEYS[1], ARGV[2])
+return 1` },
 			dispatchRetire: { name: 'dispatchRetire', keys: 1, content: retireToken },
 		});
 	}
@@ -87,6 +93,24 @@ export class BullmqDispatch implements DispatchTransport {
 		const client = await queue.backend.client;
 		const key = `${queue.keys.meta}:dispatch-generation`;
 		await queue.backend.execCommand(client, 'dispatchInitialize', [key, generation]);
+	}
+
+	async readGeneration(queueKey: WorkQueue): Promise<string | null> {
+		const queue = this.queues[queueKey];
+		return (await queue.backend.client).get(`${queue.keys.meta}:dispatch-generation`);
+	}
+
+	// Startup coordinator only: the DB recovery fence must already be committed.
+	async replaceGeneration(queueKey: WorkQueue, expected: string | null, generation: string): Promise<void> {
+		const valid = (value: string) => /^[1-9][0-9]{0,18}$/.test(value) && BigInt(value) <= 9223372036854775807n;
+		if (!valid(generation) || (expected !== null && (!valid(expected) || BigInt(expected) > BigInt(generation)))) {
+			throw new Error('Invalid dispatch generation');
+		}
+		const queue = this.queues[queueKey];
+		const client = await queue.backend.client;
+		await queue.backend.execCommand(client, 'dispatchReplaceGeneration', [
+			`${queue.keys.meta}:dispatch-generation`, expected ?? '', generation,
+		]);
 	}
 
 	async enqueue(reservation: DispatchReservation, dbNowMs: number): Promise<void> {
