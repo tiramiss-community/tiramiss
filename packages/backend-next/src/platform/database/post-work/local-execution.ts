@@ -2,10 +2,10 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { isDeepStrictEqual } from 'node:util';
-import { preparePostWork, workHash } from '../../../modules/post-work/prepare.js';
 import { LostLocalExecution } from '../../jobs/local-execution.js';
+import { LocalWorkValidationCache } from './local-work-validation.js';
 import { activeLocalStates, aggregateLocalRequest, localKinds, settleLocalItem } from './local-execution-state.js';
+import type { SavedLocalRequest } from './local-work-validation.js';
 import type { LocalExecutionClaim, LocalExecutionEnvelope, LocalWorkOutcome } from '../../jobs/local-execution.js';
 import type { DataSource, EntityManager } from 'typeorm';
 
@@ -15,11 +15,7 @@ interface ItemRow {
 	execution_owner: string | null; execution_epoch: string; execution_until: Date | null; deadline_at: Date;
 	active: boolean; expired: boolean; future: boolean;
 }
-interface RequestRow {
-	request_id: string; event_id: string; note_id: string; actor_id: string; note_generation: number;
-	kind: string; schema_version: number; note_facts: unknown; payload: string | null; payload_hash: string;
-	occurred_at: Date; not_before: Date; deadline_at: Date; future: boolean;
-}
+interface RequestRow extends SavedLocalRequest { future: boolean }
 interface NoteRow { note_id: string; generation: number; deleted_at: Date | null }
 
 function validText(value: unknown, max: number): value is string {
@@ -65,29 +61,6 @@ async function lockLocalItem(manager: EntityManager, workId: string) {
 	return request && request.note_id === note.note_id ? { note, item, request } : null;
 }
 
-function validatedRequest(item: ItemRow, request: RequestRow) {
-	try {
-		if (item.schema_version !== 1 || request.schema_version !== 1 || !item.payload || !request.payload
-			|| workHash(item.payload) !== item.payload_hash || workHash(request.payload) !== request.payload_hash) {
-			return null;
-		}
-		const prepared = preparePostWork({
-			requestId: request.request_id, eventId: request.event_id, noteId: request.note_id, actorId: request.actor_id,
-			note: request.note_facts, noteGeneration: request.note_generation, kind: request.kind, schemaVersion: request.schema_version,
-			occurredAtMs: request.occurred_at.getTime(), notBeforeMs: request.not_before.getTime(), payload: JSON.parse(request.payload),
-		});
-		const payload = JSON.parse(item.payload) as Record<string, unknown>;
-		const expected = prepared.items.find(candidate => candidate.kind === item.kind && candidate.targetKey === item.target_key);
-		if (!expected || !isDeepStrictEqual(expected.payload, payload) || prepared.payloadJson !== request.payload
-			|| prepared.deadlineAtMs !== request.deadline_at.getTime() || item.deadline_at.getTime() !== request.deadline_at.getTime()) {
-			return null;
-		}
-		return { request: prepared.request, payload };
-	} catch {
-		return null;
-	}
-}
-
 function cancelled(note: NoteRow, request: RequestRow): boolean {
 	return request.note_generation === 1 && (note.generation !== 1 || note.deleted_at !== null);
 }
@@ -98,6 +71,8 @@ async function terminate(manager: EntityManager, item: ItemRow, state: string, r
 }
 
 export class PostWorkLocalExecutionStore {
+	private readonly validation = new LocalWorkValidationCache();
+
 	constructor(private readonly source: DataSource, private readonly random: () => number = Math.random) {}
 
 	async claim(input: unknown, owner: string): Promise<LocalExecutionClaim | null> {
@@ -116,9 +91,10 @@ export class PostWorkLocalExecutionStore {
 			if (item.kind !== input.kind || item.schema_version !== input.schemaVersion || !activeLocalStates.includes(item.state) || item.active) {
 				return null;
 			}
+			const validated = this.validation.validate(item, request);
 			const queues = item.kind === 'ap.expand' ? ['deliver', 'postLocal'] : ['postLocal'];
 			const controls = await manager.createQueryBuilder().select('control.*').from('backend_internal.work_control', 'control')
-				.where('queue_key IN (:...queues)', { queues }).orderBy('queue_key').setLock('pessimistic_write')
+				.where('queue_key IN (:...queues)', { queues }).orderBy('queue_key').setLock('pessimistic_read')
 				.getRawMany<{ queue_key: string; queue_generation: string; paused: boolean }>();
 			const control = controls.find(value => value.queue_key === 'postLocal');
 			if (controls.length !== queues.length || !control) {
@@ -131,7 +107,6 @@ export class PostWorkLocalExecutionStore {
 			if (!transport || control.queue_generation !== input.queueGeneration) {
 				return null;
 			}
-			const validated = validatedRequest(item, request);
 			if (!validated) {
 				await terminate(manager, item, 'quarantined', 'invalid_payload');
 				return null;

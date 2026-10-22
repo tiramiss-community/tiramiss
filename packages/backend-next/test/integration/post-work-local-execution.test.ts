@@ -380,3 +380,48 @@ test('an early item schedule cannot bypass the immutable request not-before time
 	expect(await execution.claim(envelope, 'worker')).toBe(null);
 	expect(await item()).toMatchObject({ state: 'ready', attempt_count: 0 });
 });
+
+test('an execution claim can share queue control reads with another transaction', async () => {
+	const envelope = await seed();
+	const locker = source.createQueryRunner();
+	await locker.connect();
+	await locker.startTransaction();
+	let pending: Promise<LocalExecutionClaim | null> | undefined;
+	try {
+		await locker.query('SELECT queue_key FROM backend_internal.work_control WHERE queue_key=\'postLocal\' FOR SHARE');
+		pending = execution.claim(envelope, 'worker');
+		await expect.poll(async () => (await item()).state, { timeout: 1500, interval: 25 }).toBe('running');
+	} finally {
+		await locker.rollbackTransaction();
+		await locker.release();
+		await pending;
+	}
+});
+
+test.each(['pause', 'generation'])('control %s committed during a lock wait is checked before execution', async change => {
+	const envelope = await seed();
+	const locker = source.createQueryRunner();
+	await locker.connect();
+	await locker.startTransaction();
+	let pending: Promise<LocalExecutionClaim | null> | undefined;
+	try {
+		await locker.query('SELECT queue_key FROM backend_internal.work_control WHERE queue_key=\'postLocal\' FOR UPDATE');
+		const [{ pid }] = await locker.query('SELECT pg_backend_pid() AS pid');
+		pending = execution.claim(envelope, 'worker');
+		await expect.poll(async () => (await source.query(
+			'SELECT EXISTS(SELECT 1 FROM pg_stat_activity AS activity WHERE datname=current_database() AND $1=ANY(pg_blocking_pids(activity.pid))) AS blocked', [pid],
+		))[0].blocked, { timeout: 1500, interval: 25 }).toBe(true);
+		await locker.query(change === 'pause'
+			? 'UPDATE backend_internal.work_control SET paused=true WHERE queue_key=\'postLocal\''
+			: 'UPDATE backend_internal.work_control SET queue_generation=2 WHERE queue_key=\'postLocal\'');
+		await locker.commitTransaction();
+		expect(await pending).toBe(null);
+		expect((await item()).attempt_count).toBe(0);
+	} finally {
+		if (locker.isTransactionActive) {
+			await locker.rollbackTransaction();
+		}
+		await locker.release();
+		await pending;
+	}
+});
