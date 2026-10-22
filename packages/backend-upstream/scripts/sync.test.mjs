@@ -87,3 +87,29 @@ test('removes obsolete managed files but preserves handwritten files across sour
 	assert.equal(await readFile(join(f.dest, 'README.md'), 'utf8'), 'keep');
 	await sync({ repository: f.root, destination: f.dest, check: true });
 });
+
+test('copies an explicitly declared shared type definition without changing alias imports', async (t) => {
+	const f = await fixture(t);
+	const entity = "import { values } from '@/types.js';\nexport class MiRole {}\n";
+	const types = "export const values = ['public'] as const;\n";
+	await writeFile(join(f.root, 'packages/backend/src/models/Role.ts'), entity);
+	await writeFile(join(f.root, 'packages/backend/src/types.ts'), types);
+	f.git('add', 'packages/backend/src');
+	f.git('-c', 'user.name=Test', '-c', 'user.email=test@example.invalid', 'commit', '-qm', 'shared types');
+	f.manifest.commit = f.git('rev-parse', 'HEAD');
+	await writeFile(join(f.dest, 'upstream-sync.json'), JSON.stringify(f.manifest));
+	await assert.rejects(sync({ repository: f.root, destination: f.dest }), /undeclared dependency/);
+	f.manifest.files.push('src/types.ts');
+	await writeFile(join(f.dest, 'upstream-sync.json'), JSON.stringify(f.manifest));
+	await sync({ repository: f.root, destination: f.dest });
+	assert.equal(await readFile(join(f.dest, 'src/models/Role.ts'), 'utf8'), entity);
+	assert.equal(await readFile(join(f.dest, 'src/types.ts'), 'utf8'), types);
+	await sync({ repository: f.root, destination: f.dest, check: true });
+});
+
+test('does not allow arbitrary source files when shared types are permitted', async (t) => {
+	const f = await fixture(t);
+	f.manifest.files.push('src/Service.ts');
+	await writeFile(join(f.dest, 'upstream-sync.json'), JSON.stringify(f.manifest));
+	await assert.rejects(sync({ repository: f.root, destination: f.dest }), /Invalid managed path/);
+});

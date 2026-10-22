@@ -352,12 +352,15 @@
 	"migration/1791109435844-FollowApprovalByAccountAge.js",
 	"src/models/AccessToken.ts",
 	"src/models/App.ts",
+	"src/models/Channel.ts",
 	"src/models/DriveFile.ts",
 	"src/models/DriveFolder.ts",
 	"src/models/Meta.ts",
 	"src/models/ModerationLog.ts",
+	"src/models/Note.ts",
 	"src/models/Role.ts",
 	"src/models/RoleAssignment.ts",
 	"src/models/User.ts",
-	"src/models/util/id.ts"
+	"src/models/util/id.ts",
+	"src/types.ts"
 ]

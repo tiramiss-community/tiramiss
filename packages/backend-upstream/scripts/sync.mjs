@@ -12,7 +12,7 @@ const header =
 
 function safePath(path) {
 	if (
-		!/^(src\/models\/.*\.ts|migration\/[^/]+\.js|exports\/(entities|migrations)\.ts)$/.test(path) ||
+		!/^(src\/models\/.*\.ts|src\/types\.ts|migration\/[^/]+\.js|exports\/(entities|migrations)\.ts)$/.test(path) ||
 		path.split('/').includes('..')
 	) {
 		throw new Error(`Invalid managed path: ${path}`);
