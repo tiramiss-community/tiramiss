@@ -5,6 +5,7 @@
 import 'reflect-metadata';
 import { DataSource, type DataSourceOptions } from 'typeorm';
 import { entities } from 'backend-upstream/entities';
+import { postWorkEntities } from './post-work/schema.js';
 import type { DatabaseConfig } from '../../config/types.js';
 
 export function databaseOptions(
@@ -15,7 +16,7 @@ export function databaseOptions(
 		type: 'postgres',
 		...config,
 		extra: { ...config.extra, connectionTimeoutMillis: timeoutMs },
-		entities,
+		entities: [...entities, ...postWorkEntities],
 		synchronize: false,
 		migrationsRun: false,
 		logging: false,

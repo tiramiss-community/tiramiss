@@ -24,18 +24,25 @@ function conflict(): never {
 
 async function existingRequest(manager: EntityManager, prepared: Prepared): Promise<string | null> {
 	const { request, payloadJson, noteJson, hash, deadlineAtMs } = prepared;
-	const rows: { request_id: string; matches: boolean }[] = await manager.query(`
-		SELECT request_id, (
-			event_id=$2 AND kind=$3 AND note_generation=$4 AND note_id=$5 AND actor_id=$6
-			AND schema_version=$7 AND payload=$8 AND payload_hash=$9 AND note_facts=$10::jsonb
-			AND occurred_at=$11 AND not_before=$12 AND deadline_at=$13
-		) AS matches FROM backend_internal.work_request
-		WHERE request_id=$1 OR (event_id=$2 AND kind=$3 AND note_generation=$4)
-		ORDER BY request_id FOR UPDATE`, [
-		request.requestId, request.eventId, request.kind, request.noteGeneration, request.noteId, request.actorId,
-		request.schemaVersion, payloadJson, hash, noteJson,
-		new Date(request.occurredAtMs), new Date(request.notBeforeMs), new Date(deadlineAtMs),
-	]);
+	const rows = await manager.createQueryBuilder()
+		.select('request.request_id', 'request_id')
+		.addSelect(`(
+			event_id=:eventId AND kind=:kind AND note_generation=:generation AND note_id=:noteId AND actor_id=:actorId
+			AND schema_version=:version AND payload=:payload AND payload_hash=:hash AND note_facts=CAST(:note AS jsonb)
+			AND occurred_at=:occurredAt AND not_before=:notBefore AND deadline_at=:deadline
+		)`, 'matches')
+		.from('backend_internal.work_request', 'request')
+		.where('request_id=:requestId')
+		.orWhere('(event_id=:eventId AND kind=:kind AND note_generation=:generation)')
+		.orderBy('request.request_id')
+		.setLock('pessimistic_write')
+		.setParameters({
+			requestId: request.requestId, eventId: request.eventId, kind: request.kind, generation: request.noteGeneration,
+			noteId: request.noteId, actorId: request.actorId, version: request.schemaVersion,
+			payload: payloadJson, hash, note: noteJson,
+			occurredAt: new Date(request.occurredAtMs), notBefore: new Date(request.notBeforeMs), deadline: new Date(deadlineAtMs),
+		})
+		.getRawMany<{ request_id: string; matches: boolean }>();
 	if (rows.length === 0) {
 		return null;
 	}
@@ -49,17 +56,21 @@ async function append(manager: EntityManager, prepared: Prepared): Promise<{ req
 	const { request, payloadJson, noteJson, hash, deadlineAtMs, deleting } = prepared;
 	// Both event slots are reserved at their maximum width so cancellation never grows this row's charge.
 	const noteCharge = chargedBytes(256, request.noteId + request.actorId + 'x'.repeat(256) + JSON.stringify(request.note));
-	const insertedNote: { note_id: string }[] = await manager.query(`
-		INSERT INTO backend_internal.note_work_state
-		(note_id,actor_id,generation,create_event_id,cancel_event_id,visibility,local_only,channel_id,
-		 deleted_at,recipient_coverage,last_dependency_at,charged_bytes)
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
-		ON CONFLICT DO NOTHING RETURNING note_id`, [
-		request.noteId, request.actorId, request.noteGeneration, deleting ? null : request.eventId, deleting ? request.eventId : null,
-		request.note.visibility, request.note.localOnly, request.note.channelId,
-		deleting ? new Date(request.occurredAtMs) : null, deleting ? 'unavailable' : 'not_started', new Date(request.occurredAtMs), noteCharge,
-	]);
-	const [note]: NoteState[] = await manager.query('SELECT * FROM backend_internal.note_work_state WHERE note_id=$1 FOR UPDATE', [request.noteId]);
+	const insertedNote = await manager.createQueryBuilder().insert()
+		.into('backend_internal.note_work_state')
+		.values({
+			note_id: request.noteId, actor_id: request.actorId, generation: request.noteGeneration,
+			create_event_id: deleting ? null : request.eventId, cancel_event_id: deleting ? request.eventId : null,
+			visibility: request.note.visibility, local_only: request.note.localOnly, channel_id: request.note.channelId,
+			deleted_at: deleting ? new Date(request.occurredAtMs) : null,
+			recipient_coverage: deleting ? 'unavailable' : 'not_started',
+			last_dependency_at: new Date(request.occurredAtMs), charged_bytes: noteCharge,
+		})
+		.orIgnore().returning('note_id').execute();
+	const note = await manager.createQueryBuilder().select('note.*')
+		.from('backend_internal.note_work_state', 'note')
+		.where('note_id=:noteId', { noteId: request.noteId })
+		.setLock('pessimistic_write').getRawOne<NoteState>();
 	if (!note || note.actor_id !== request.actorId || note.visibility !== request.note.visibility
 		|| note.local_only !== request.note.localOnly || note.channel_id !== request.note.channelId) {
 		conflict();
@@ -70,9 +81,10 @@ async function append(manager: EntityManager, prepared: Prepared): Promise<{ req
 	}
 	if (deleting) {
 		if (note.generation === 1 && note.create_event_id !== request.eventId) {
-			await manager.query(`UPDATE backend_internal.note_work_state SET generation=2,cancel_event_id=$2,deleted_at=$3
-				WHERE note_id=$1`, [request.noteId, request.eventId, new Date(request.occurredAtMs)]);
-		} else if (insertedNote.length !== 1) {
+			await manager.createQueryBuilder().update('backend_internal.note_work_state')
+				.set({ generation: 2, cancel_event_id: request.eventId, deleted_at: new Date(request.occurredAtMs) })
+				.where('note_id=:noteId', { noteId: request.noteId }).execute();
+		} else if (insertedNote.raw.length !== 1) {
 			// Retained cancellation state cannot be used to regenerate a discarded request.
 			conflict();
 		}
@@ -82,17 +94,17 @@ async function append(manager: EntityManager, prepared: Prepared): Promise<{ req
 
 	const requestCharge = chargedBytes(1024,
 		request.requestId + request.eventId + request.noteId + request.actorId + request.kind + noteJson + payloadJson);
-	const inserted: { request_id: string }[] = await manager.query(`
-		INSERT INTO backend_internal.work_request
-		(request_id,event_id,note_id,actor_id,note_generation,kind,schema_version,note_facts,payload,payload_hash,
-		 occurred_at,not_before,deadline_at,charged_bytes)
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
-		ON CONFLICT DO NOTHING RETURNING request_id`, [
-		request.requestId, request.eventId, request.noteId, request.actorId, request.noteGeneration, request.kind,
-		request.schemaVersion, noteJson, payloadJson, hash,
-		new Date(request.occurredAtMs), new Date(request.notBeforeMs), new Date(deadlineAtMs), requestCharge,
-	]);
-	if (inserted.length !== 1) {
+	const inserted = await manager.createQueryBuilder().insert()
+		.into('backend_internal.work_request')
+		.values({
+			request_id: request.requestId, event_id: request.eventId, note_id: request.noteId, actor_id: request.actorId,
+			note_generation: request.noteGeneration, kind: request.kind, schema_version: request.schemaVersion,
+			note_facts: request.note, payload: payloadJson, payload_hash: hash,
+			occurred_at: new Date(request.occurredAtMs), not_before: new Date(request.notBeforeMs),
+			deadline_at: new Date(deadlineAtMs), charged_bytes: requestCharge,
+		})
+		.orIgnore().returning('request_id').execute();
+	if (inserted.raw.length !== 1) {
 		// Different note locks may still collide on a global request/event key.
 		const canonical = await existingRequest(manager, prepared);
 		if (canonical === null) {
@@ -110,29 +122,30 @@ async function append(manager: EntityManager, prepared: Prepared): Promise<{ req
 		};
 	});
 	for (let offset = 0; offset < items.length; offset += 100) {
-		await manager.query(`
-			INSERT INTO backend_internal.work_item
-			(work_id,request_id,kind,target_key,schema_version,payload,payload_hash,next_attempt_at,deadline_at,charged_bytes)
-			SELECT item.work_id,$2,item.kind,item.target_key,$3,item.payload,item.payload_hash,$4,$5,item.charged_bytes
-			FROM jsonb_to_recordset($1::jsonb) AS item
-			(work_id text,kind text,target_key text,payload text,payload_hash text,charged_bytes bigint)`, [
-			JSON.stringify(items.slice(offset, offset + 100)), request.requestId, request.schemaVersion,
-			new Date(request.notBeforeMs), new Date(deadlineAtMs),
-		]);
+		await manager.createQueryBuilder().insert().into('backend_internal.work_item')
+			.values(items.slice(offset, offset + 100).map(item => ({
+				...item, request_id: request.requestId, schema_version: request.schemaVersion,
+				next_attempt_at: new Date(request.notBeforeMs), deadline_at: new Date(deadlineAtMs),
+			}))).execute();
 	}
-	await manager.query('UPDATE backend_internal.note_work_state SET last_dependency_at=GREATEST(last_dependency_at,$2) WHERE note_id=$1', [request.noteId, new Date(request.occurredAtMs)]);
+	await manager.createQueryBuilder().update('backend_internal.note_work_state')
+		.set({ last_dependency_at: () => 'GREATEST(last_dependency_at, :occurredAt)' })
+		.where('note_id=:noteId', { noteId: request.noteId })
+		.setParameter('occurredAt', new Date(request.occurredAtMs)).execute();
 
 	// Reserve shared capacity after item writes so unrelated inserts do not wait on this counter.
-	const rows = insertedNote.length + 1 + items.length;
-	const bytes = insertedNote.length * noteCharge + requestCharge + items.reduce((sum, item) => sum + item.charged_bytes, 0);
+	const rows = insertedNote.raw.length + 1 + items.length;
+	const bytes = insertedNote.raw.length * noteCharge + requestCharge + items.reduce((sum, item) => sum + item.charged_bytes, 0);
 	const fraction = deleting ? 1 : 0.9;
-	const reserved: { capacity_key: string }[] = await manager.query(`
-		WITH reserved AS (
-			UPDATE backend_internal.work_capacity SET reserved_rows=reserved_rows+$1,reserved_bytes=reserved_bytes+$2
-			WHERE capacity_key='global' AND capacity_formula_version=$3
-			AND reserved_rows+$1 <= $4 AND reserved_bytes+$2 <= $5 RETURNING capacity_key
-		) SELECT capacity_key FROM reserved`, [rows, bytes, workCapacity.formulaVersion, workCapacity.rows * fraction, Math.floor(workCapacity.bytes * fraction)]);
-	if (reserved.length !== 1) {
+	const reserved = await manager.createQueryBuilder().update('backend_internal.work_capacity')
+		.set({ reserved_rows: () => 'reserved_rows + :rows', reserved_bytes: () => 'reserved_bytes + :bytes' })
+		.where('capacity_key=:key AND capacity_formula_version=:version')
+		.andWhere('reserved_rows + :rows <= :rowLimit AND reserved_bytes + :bytes <= :byteLimit')
+		.setParameters({
+			key: 'global', version: workCapacity.formulaVersion, rows, bytes,
+			rowLimit: workCapacity.rows * fraction, byteLimit: Math.floor(workCapacity.bytes * fraction),
+		}).execute();
+	if (reserved.affected !== 1) {
 		throw new WorkCapacityExceeded('The durable work capacity is full or requires reconciliation');
 	}
 	return { requestId: request.requestId };

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { DataSource } from 'typeorm';
+import { entities } from 'backend-upstream/entities';
 import { migrations } from 'backend-upstream/migrations';
 import { databaseOptions } from './data-source.js';
 import type { DatabaseConfig } from '../../config/types.js';
@@ -16,6 +17,7 @@ export function migrationSources(config: DatabaseConfig) {
 		upstream: new DataSource({
 			...options,
 			schema: 'public',
+			entities,
 			migrations,
 			migrationsTableName: 'migrations',
 			migrationsTransactionMode: process.env.MISSKEY_MIGRATION_CREATE_INDEX_CONCURRENTLY === '1' ? 'each' : 'all',

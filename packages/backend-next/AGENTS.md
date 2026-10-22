@@ -27,6 +27,10 @@ Issueは作業の範囲・順序・完了条件、設計書は合意した契約
 
 ## DBと実行プロセスの運用
 
+- 通常の取得・追加・更新・削除には TypeORM の Repository / QueryBuilder を優先する。一括追加も `.insert().values(配列)` を使い、単純な CRUD を JSON 化して `jsonb_to_recordset` 等で展開しない。
+- 行ロック・条件付きの原子的更新も QueryBuilder で表現できるか先に確認する。同じ EntityManager / QueryRunner に結び付け、ロック順・一意制約・transaction 境界を維持する。
+- 生 SQL は DDL、DB 固有の検査、QueryBuilder では明瞭に表現できない処理や実測で必要と分かった最適化に限る。採用理由が自明でなければコードに短く残す。本家の複製と適用済み migration は、この方針のために書き換えない。
+- テストの準備・障害注入・DB状態の独立した検証に使う SQL は、業務処理の CRUD と区別する。
 - 本家の業務データ構造と `public.migrations` の履歴を維持する。独自の永続状態は `backend_internal` と独立した履歴で管理する。本家由来のmigrationは複製先で修正しない。
 - 新しい独自migrationの `up()`・`down()` と登録先を用意し、既存の `src/platform/database/migration-sources.ts` の実行設定へ接続する。適用済みの履歴を編集しない。
 - `migrate` は完全停止下で本家→独自の順に適用する。通常起動からの自動migration・schema同期・履歴作成を追加しない。
