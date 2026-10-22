@@ -32,8 +32,8 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-	await source.query('TRUNCATE backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
-	await source.query('UPDATE backend_internal.work_capacity SET reserved_rows = 1, reserved_bytes = charged_bytes');
+	await source.query('TRUNCATE backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
+	await source.query('UPDATE backend_internal.work_capacity SET reserved_rows = 3, reserved_bytes = charged_bytes + 4096');
 	await source.getRepository(MiUser).update({ id: 'actor' }, { notesCount: 0 });
 });
 
@@ -66,7 +66,8 @@ test('commits business data, AP and notification requests/items and capacity tog
 		SELECT count(*) n, sum(charged_bytes) b FROM backend_internal.work_request UNION ALL
 		SELECT count(*), sum(charged_bytes) FROM backend_internal.work_item UNION ALL
 		SELECT count(*), sum(charged_bytes) FROM backend_internal.note_work_state UNION ALL
-		SELECT count(*), sum(charged_bytes) FROM backend_internal.work_capacity) s`);
+		SELECT count(*), sum(charged_bytes) FROM backend_internal.work_capacity UNION ALL
+		SELECT count(*), sum(charged_bytes) FROM backend_internal.work_control) s`);
 	expect(await capacity()).toEqual([totals]);
 });
 
@@ -215,6 +216,7 @@ test('checks internal schema drift and migration down/up without changing upstre
 	const { internal } = migrationSources(database.config.database);
 	await internal.initialize();
 	try {
+		await internal.undoLastMigration();
 		await internal.undoLastMigration();
 		expect(await source.query("SELECT to_regclass('backend_internal.work_request') AS name")).toEqual([{ name: null }]);
 		await expect(assertMigrationsApplied(database.config.database)).rejects.toMatchObject({ code: 'PENDING_MIGRATIONS' });

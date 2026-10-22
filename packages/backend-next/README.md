@@ -157,3 +157,34 @@ JSON 本文と direct actor ID を受け、followers/relay 集合の固定は後
 この段階では依頼は保存されるだけで実行されない。J2 は BullMQ・dispatch/実行 claim・recipient/通知成立記録・実 worker、
 J3 は管理操作・清掃・物理容量監視・形式移行/運用の検証へ進む。受理入口はまだ HTTP に公開せず、
 清掃による容量の解放もまだないため、J1 だけで運用可能なジョブ基盤や #124 全体の完了とは扱わない。
+
+## 投稿の投入アダプタ：J2a（#124）
+
+`platform/database/post-work/dispatch` の `PostWorkDispatchStore` と `scanPostWork` は、
+J1の確定済みitemを最大100候補/回・候補ごとのtransactionで投入claimし、
+`platform/jobs/bullmq-dispatch` の `BullmqDispatch` へ渡す。
+AP展開/ページ・通知は `postLocal`、AP送信は `deliver`。展開のclaimはdeliverのpauseも確認する。
+物理queueのprefixは旧backendと分け、Redisの `keyPrefix` は指定しない。
+
+投入claimは30秒、開始未確認の再投入は60秒後。seqはclaimごとに増加する。
+各queueの未解放予約は最大10000件で、DBの行/bytes枠も同時に予約する。
+満杯の候補は `capacity_wait` として30秒待ち、後続候補の走査を続ける。
+投入回数は `attempt_count` を増やさない。保存したdispatch行は枠解放後もDB容量へ課金する。
+
+BullMQは6.3.11へ固定し、インストールされた `addStandardJob` Luaの前に
+queue世代・token・Redis時刻による絶対期限の検査を挿入する。
+検査と追加は同じRedis原子操作であり、通常の `add` の前に別操作で確認する方式ではない。
+tokenの期限はDB予約時刻+60秒から延長しない。DB/Redisの時計差が5秒超なら投入を拒否する。
+Redisに保存するdataはworkId/kind/schemaVersion/dispatchSeq/queueGenerationのみで、固定本文はDBから読む。
+BullMQ更新時にはこの内部スクリプト境界を再レビューするまで起動を拒否する。
+
+`reconcilePostWork` は期限切れ予約を最大100件ずつ照合する。
+先にtokenを失効させ、entryの欠落/終了または除去を確認できたときだけDBのqueue枠を一度解放する。
+activeや応答不明では予約を残す。照合時刻を更新し、古いactive100件で後続の照合を止めない。
+DB確定前にenqueue応答が失われても、元のworkIdを保持したまま次のseqで回収する。
+
+**自動起動と実行UseCaseにはまだ接続していない。** `initialize(queue,generation)` は呼出側が
+DBと照合した世代を使う低層操作であり、Redis全喪失後に同じ世代で再初期化してはならない。
+worker起動前の世代切替/旧予約の照合、5秒周期の走査、実行claim/lease/試行予算、
+固定宛先・fake inboxへの配送、通知結果の同時確定、プロセス寿命への接続はJ2bで実装する。
+管理操作・清掃・形式移行などのJ3と合わせて、#124全体の完了条件を検証する。
