@@ -218,6 +218,7 @@ test('checks internal schema drift and migration down/up without changing upstre
 	try {
 		await internal.undoLastMigration();
 		await internal.undoLastMigration();
+		await internal.undoLastMigration();
 		expect(await source.query("SELECT to_regclass('backend_internal.work_request') AS name")).toEqual([{ name: null }]);
 		await expect(assertMigrationsApplied(database.config.database)).rejects.toMatchObject({ code: 'PENDING_MIGRATIONS' });
 		await internal.runMigrations();

@@ -95,10 +95,13 @@ export class PostWorkLocalExecutionStore {
 			const queues = item.kind === 'ap.expand' ? ['deliver', 'postLocal'] : ['postLocal'];
 			const controls = await manager.createQueryBuilder().select('control.*').from('backend_internal.work_control', 'control')
 				.where('queue_key IN (:...queues)', { queues }).orderBy('queue_key').setLock('pessimistic_read')
-				.getRawMany<{ queue_key: string; queue_generation: string; paused: boolean }>();
+				.getRawMany<{ queue_key: string; queue_generation: string; paused: boolean; recovery_pending: boolean }>();
 			const control = controls.find(value => value.queue_key === 'postLocal');
 			if (controls.length !== queues.length || !control) {
 				throw new Error('Missing work queue control');
+			}
+			if (controls.some(value => value.recovery_pending)) {
+				return null;
 			}
 			const transport = await manager.createQueryBuilder().select('dispatch.work_id').from('backend_internal.queue_dispatch', 'dispatch')
 				.where('work_id = :workId AND dispatch_seq = :seq AND queue_generation = :generation AND queue_key = \'postLocal\'', {

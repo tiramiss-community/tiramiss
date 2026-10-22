@@ -11,8 +11,9 @@ import { postWorkEntities } from './post-work/schema.js';
 import { dispatchEntities } from './post-work/dispatch-schema.js';
 import { PostWorkPersistence1792590060271 } from './post-work/migrations.js';
 import { PostWorkDispatch1792643873727 } from './post-work/dispatch-migration.js';
+import { PostWorkRecovery1792665615537 } from './post-work/recovery-migration.js';
 
-export const internalMigrations = [PostWorkPersistence1792590060271, PostWorkDispatch1792643873727];
+export const internalMigrations = [PostWorkPersistence1792590060271, PostWorkDispatch1792643873727, PostWorkRecovery1792665615537];
 export function migrationSources(config: DatabaseConfig) {
 	const options = databaseOptions(config);
 	return {

@@ -66,10 +66,13 @@ export class PostWorkDispatchStore {
 			const queues = item.kind === 'ap.expand' || item.kind === 'ap.expand.page' ? ['deliver', 'postLocal'] : [queueKey];
 			const controls = await manager.createQueryBuilder().select('control.*').from('backend_internal.work_control', 'control')
 				.where('control.queue_key IN (:...queues)', { queues }).orderBy('control.queue_key').setLock('pessimistic_write')
-				.getRawMany<{ queue_key: WorkQueue; queue_generation: string; paused: boolean; reserved_dispatches: number }>();
+				.getRawMany<{ queue_key: WorkQueue; queue_generation: string; paused: boolean; recovery_pending: boolean; reserved_dispatches: number }>();
 			const control = controls.find(control => control.queue_key === queueKey);
 			if (!control || controls.length !== queues.length) {
 				throw new Error('Missing work queue control');
+			}
+			if (controls.some(value => value.recovery_pending)) {
+				return { status: 'waiting' };
 			}
 			const wait = async (reason: string): Promise<ClaimResult> => {
 				await manager.createQueryBuilder().update('backend_internal.work_item').set({
