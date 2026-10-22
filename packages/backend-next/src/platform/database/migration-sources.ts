@@ -8,9 +8,11 @@ import { migrations } from 'backend-upstream/migrations';
 import { databaseOptions } from './data-source.js';
 import type { DatabaseConfig } from '../../config/types.js';
 import { postWorkEntities } from './post-work/schema.js';
+import { dispatchEntities } from './post-work/dispatch-schema.js';
 import { PostWorkPersistence1792590060271 } from './post-work/migrations.js';
+import { PostWorkDispatch1792643873727 } from './post-work/dispatch-migration.js';
 
-export const internalMigrations = [PostWorkPersistence1792590060271];
+export const internalMigrations = [PostWorkPersistence1792590060271, PostWorkDispatch1792643873727];
 export function migrationSources(config: DatabaseConfig) {
 	const options = databaseOptions(config);
 	return {
@@ -24,7 +26,7 @@ export function migrationSources(config: DatabaseConfig) {
 		}),
 		internal: new DataSource({
 			...options,
-			entities: postWorkEntities,
+			entities: [...postWorkEntities, ...dispatchEntities],
 			schema: 'backend_internal',
 			migrations: internalMigrations,
 			migrationsTableName: 'migrations',

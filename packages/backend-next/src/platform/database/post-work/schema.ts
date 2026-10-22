@@ -16,7 +16,7 @@ const accountingChecks = [
 	{ name: 'charge_positive', expression: 'charged_bytes > 0 AND charged_bytes % 1024 = 0' },
 ];
 
-function schema(options: EntitySchemaOptions<object>): EntitySchema {
+export function schema(options: EntitySchemaOptions<object>): EntitySchema {
 	const checks = [...accountingChecks, ...options.checks ?? []];
 	for (const [name, column] of Object.entries(options.columns)) {
 		if (column?.type === 'varchar') {

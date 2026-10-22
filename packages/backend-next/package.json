@@ -31,7 +31,8 @@
 		"@hono/node-server": "2.1.4",
 		"inversify": "8.2.3",
 		"ajv": "8.20.0",
-		"ulid": "3.0.2"
+		"ulid": "3.0.2",
+		"bullmq": "6.3.11"
 	},
 	"devDependencies": {
 		"@types/node": "26.6.4",
