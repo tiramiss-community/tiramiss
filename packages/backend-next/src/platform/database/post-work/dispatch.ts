@@ -51,6 +51,11 @@ export class PostWorkDispatchStore {
 				.andWhere('(item.execution_until IS NULL OR item.execution_until <= clock_timestamp())')
 				.andWhere('(item.dispatch_until IS NULL OR item.dispatch_until <= clock_timestamp())')
 				.andWhere("(item.last_enqueued_at IS NULL OR item.last_enqueued_at <= clock_timestamp() - interval '60 seconds')")
+				.andWhere(query => `NOT EXISTS ${query.subQuery().select('1')
+					.from('backend_internal.queue_dispatch', 'live')
+					.where('live.work_id = item.work_id')
+					.andWhere("live.state IN ('reserved','enqueue_unknown')")
+					.andWhere('live.token_expires_at > clock_timestamp()').getQuery()}`)
 				.orderBy('item.next_attempt_at').addOrderBy('item.work_id').limit(1)
 				.setLock('pessimistic_write', undefined, ['item']).setOnLocked('skip_locked')
 				.getRawOne<{ work_id: string; kind: string; schema_version: number; dispatch_seq: string; note_generation: number }>();

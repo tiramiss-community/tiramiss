@@ -55,6 +55,38 @@ test('concurrent scanners claim once and dispatch never consumes execution attem
 	expect((await source.query('SELECT reserved_dispatches FROM backend_internal.work_control WHERE queue_key=\'deliver\''))[0].reserved_dispatches).toBe(1);
 });
 
+test.each(['reserved', 'enqueue_unknown'])('keeps a live %s reservation after its dispatch claim expires', async state => {
+	await appendSend();
+	const first = await store.claim('same');
+	if (first.status !== 'claimed') {
+		throw new Error('missing first claim');
+	}
+	await source.query("UPDATE backend_internal.work_item SET dispatch_until=clock_timestamp()-interval '1 second'");
+	await source.query('UPDATE backend_internal.queue_dispatch SET state=$1', [state]);
+	const before = await source.query('SELECT reserved_rows, reserved_bytes FROM backend_internal.work_capacity');
+
+	expect((await store.claim('same')).status).toBe('empty');
+	expect(await store.pending()).toEqual([first.reservation]);
+	expect(await items()).toEqual([{ state: 'ready', attempt_count: 0, seq: 1 }]);
+	expect(await source.query('SELECT reserved_rows, reserved_bytes FROM backend_internal.work_capacity')).toEqual(before);
+	expect((await source.query("SELECT reserved_dispatches FROM backend_internal.work_control WHERE queue_key='deliver'"))[0].reserved_dispatches).toBe(1);
+
+	await append(notificationRequest('other'));
+	const other = await store.claim('another');
+	expect(other.status).toBe('claimed');
+	if (other.status === 'claimed') {
+		expect(other.reservation.queueKey).toBe('postLocal');
+	}
+
+	await source.query("UPDATE backend_internal.queue_dispatch SET reserved_at=reserved_at-interval '61 seconds', token_expires_at=token_expires_at-interval '61 seconds' WHERE work_id=$1", [first.reservation.workId]);
+	const second = await store.claim('same');
+	if (second.status !== 'claimed') {
+		throw new Error('missing claim after token expiry');
+	}
+	expect(second.reservation.workId).toBe(first.reservation.workId);
+	expect(second.reservation.dispatchSeq).toBe('2');
+});
+
 test('full queue waits without consuming a seq and the scanner continues into another queue', async () => {
 	await appendSend();
 	await append(notificationRequest('later'));
@@ -79,6 +111,7 @@ test('same owner cannot confirm an expired claim or an older sequence', async ()
 	}
 	await source.query("UPDATE backend_internal.work_item SET dispatch_until=clock_timestamp()-interval '1 second'");
 	expect(await store.enqueued(first.reservation, 'same')).toBe(false);
+	await source.query("UPDATE backend_internal.queue_dispatch SET reserved_at=reserved_at-interval '61 seconds', token_expires_at=token_expires_at-interval '61 seconds'");
 	const second = await store.claim('same');
 	if (second.status !== 'claimed') {
 		throw new Error('missing second claim');
