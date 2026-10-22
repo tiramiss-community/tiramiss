@@ -186,5 +186,37 @@ DB確定前にenqueue応答が失われても、元のworkIdを保持したま�
 **自動起動と実行UseCaseにはまだ接続していない。** `initialize(queue,generation)` は呼出側が
 DBと照合した世代を使う低層操作であり、Redis全喪失後に同じ世代で再初期化してはならない。
 worker起動前の世代切替/旧予約の照合、5秒周期の走査、実行claim/lease/試行予算、
-固定宛先・fake inboxへの配送、通知結果の同時確定、プロセス寿命への接続はJ2bで実装する。
+固定宛先・fake inboxへの配送、通知結果の同時確定、プロセス寿命への接続をJ2bで段階実装する。
+初期ローカル仕事のDB実行権は下記J2b1を参照。
 管理操作・清掃・形式移行などのJ3と合わせて、#124全体の完了条件を検証する。
+
+## ローカル仕事の実行権：J2b1（#124）
+
+`platform/database/post-work/local-execution` の `PostWorkLocalExecutionStore` は、初期の
+`ap.expand` と `notification.create` の DB 実行権を扱う。投入とは別の claim であり、
+保存済み dispatch・queue 世代・kind/版・request/item の本文/hash/対象を照合する。
+無関係な envelope や解放済み予約は保存状態を変えない。保存形式が壊れていれば隔離して確認対象にする。
+`ap.send` と `ap.expand.page` は後続 adapter の担当であり、この adapter では実行権を取得しない。
+
+ロック順は note 状態→item→queue 制御。実行可能な claim だけが累積試行回数を一回増やし、
+60秒の lease と増加する epoch を取得する。ローカル仕事は合計8試行まで。
+pause・未来の item 時刻/依頼の not-before・有効 lease 中の重複では試行を消費しない。
+削除された投稿の未開始作成仕事は cancelled にする。AP 展開は deliver の pause も確認する。
+`renew` は既存の owner/epoch/有効 lease/期限を確認し、ロック待ち中に失効した lease を復活させない。
+
+業務結果の adapter は、呼出側が所有する同じ transaction の
+`withLocalWorkCompletion(manager, claim, work)` 内で DB 結果を書き、outcome を返す。
+先に note/item をロックして実行権と取消を検査し、callback 後も owner/epoch/lease/期限を
+条件付き更新で再確認する。失敗例外は transaction 境界まで伝播させ、結果と進捗をともに rollback する。
+DB 外への送信をこの callback に入れない。`finish` は業務結果の書込みを伴わない進捗更新用。
+COMMIT 応答不明で同じ callback を自動再実行せず、後続の成立記録から確認する。
+
+retry は DB 時刻から指数 backoff（60秒から最大1時間、0–20%加算 jitter）を保存し、
+8試行または元の期限に達する場合は exhausted にする。終端時は全子 item を確認して
+依頼を settled/needs_attention に集約する。`expire` は期限/予算切れで有効 lease のない
+ローカル item を最大100件/回で終端化する。投入 scanner が除外する期限切れもこの窓口で回収する。
+
+この段階では通常 worker は起動・停止の枠だけで、ジョブを実行しない。J2b の残りは、
+本家 Note の保存 fixture、通知の実保存と成立記録、宛先固定/ページ/host lease と実配送、
+Redis 世代回復、BullMQ worker・5秒走査/10秒 lease 更新・プロセス寿命への接続。
+通知条件/AP 表現の全移植は引き続き N4/N6、管理・清掃は J3 で扱い、#124 は完了にしない。
