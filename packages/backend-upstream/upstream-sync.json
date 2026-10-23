@@ -12,6 +12,8 @@
 		"src/models/DriveFolder.ts",
 		"src/models/Note.ts",
 		"src/models/Channel.ts",
+		"src/models/Following.ts",
+		"src/models/Relay.ts",
 		"src/types.ts",
 		"src/models/util/id.ts"
 	],

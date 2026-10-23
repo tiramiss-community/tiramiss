@@ -7,6 +7,7 @@ import { DataSource, type DataSourceOptions } from 'typeorm';
 import { entities } from 'backend-upstream/entities';
 import { postWorkEntities } from './post-work/schema.js';
 import { dispatchEntities } from './post-work/dispatch-schema.js';
+import { apRecipientEntities } from './ap/schema.js';
 import { notificationEntities } from './notification/schema.js';
 import type { DatabaseConfig } from '../../config/types.js';
 
@@ -18,7 +19,7 @@ export function databaseOptions(
 		type: 'postgres',
 		...config,
 		extra: { ...config.extra, connectionTimeoutMillis: timeoutMs },
-		entities: [...entities, ...postWorkEntities, ...dispatchEntities, ...notificationEntities],
+		entities: [...entities, ...postWorkEntities, ...dispatchEntities, ...notificationEntities, ...apRecipientEntities],
 		synchronize: false,
 		migrationsRun: false,
 		logging: false,

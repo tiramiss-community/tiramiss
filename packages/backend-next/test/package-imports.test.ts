@@ -35,5 +35,7 @@ test('loads copied entities without eagerly loading migration dependencies', asy
 	expectTypeOf<MiNote['visibility']>().toEqualTypeOf<'public' | 'home' | 'followers' | 'specified'>();
 	expect(source.getMetadata('MiChannel').tableName).toBe('channel');
 	expect(source.getMetadata('MiNote').relations.find(relation => relation.propertyName === 'channel')?.inverseEntityMetadata.tableName).toBe('channel');
-	expect(source.entityMetadatas).toHaveLength(11);
+	expect(source.getMetadata('MiFollowing').relations.find(relation => relation.propertyName === 'follower')?.inverseEntityMetadata.tableName).toBe('user');
+	expect(source.getMetadata('MiRelay').tableName).toBe('relay');
+	expect(source.entityMetadatas).toHaveLength(13);
 });
