@@ -10,6 +10,9 @@
 		"src/models/App.ts",
 		"src/models/DriveFile.ts",
 		"src/models/DriveFolder.ts",
+		"src/models/Note.ts",
+		"src/models/Channel.ts",
+		"src/types.ts",
 		"src/models/util/id.ts"
 	],
 	"migrationDirectory": "migration",
@@ -20,7 +23,7 @@
 	],
 	"generatorVersion": 1,
 	"build": {
-		"compiler": "tsc",
+		"compiler": "tsc + tsc-alias",
 		"module": "NodeNext",
 		"outDir": "built",
 		"declaration": true

@@ -4,9 +4,10 @@
  */
 import 'reflect-metadata';
 import { execFileSync } from 'node:child_process';
-import { expect, test } from 'vitest';
+import { expect, expectTypeOf, test } from 'vitest';
 import { DataSource } from 'typeorm';
 import { entities, MiRole } from 'backend-upstream/entities';
+import type { MiNote } from 'backend-upstream/entities';
 
 test('loads copied entities without eagerly loading migration dependencies', async () => {
 	const output = execFileSync(
@@ -29,5 +30,10 @@ test('loads copied entities without eagerly loading migration dependencies', asy
 	// Metadata construction validates cyclic relation targets without opening a DB.
 	await (source as unknown as { buildMetadatas(): Promise<void> }).buildMetadatas();
 	expect(source.getMetadata(MiRole).tableName).toBe('role');
-	expect(source.entityMetadatas).toHaveLength(9);
+	expect(source.getMetadata('MiNote').tableName).toBe('note');
+	expect(source.getMetadata('MiNote').columns.find(column => column.propertyName === 'visibility')?.enum).toEqual(['public', 'home', 'followers', 'specified']);
+	expectTypeOf<MiNote['visibility']>().toEqualTypeOf<'public' | 'home' | 'followers' | 'specified'>();
+	expect(source.getMetadata('MiChannel').tableName).toBe('channel');
+	expect(source.getMetadata('MiNote').relations.find(relation => relation.propertyName === 'channel')?.inverseEntityMetadata.tableName).toBe('channel');
+	expect(source.entityMetadatas).toHaveLength(11);
 });

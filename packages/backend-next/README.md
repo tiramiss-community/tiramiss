@@ -245,7 +245,13 @@ retry は DB 時刻から指数 backoff（60秒から最大1時間、0–20%加�
 依頼を settled/needs_attention に集約する。`expire` は期限/予算切れで有効 lease のない
 ローカル item を最大100件/回で終端化する。投入 scanner が除外する期限切れもこの窓口で回収する。
 
+本家 Note と後続依頼の同時保存は `test/integration/post-work-note.test.ts` の producer fixture で検証する。
+同期した `MiNote` の保存・作者投稿数更新と AP/通知依頼を同じ transaction へ結び付け、
+途中例外・後続通知の容量不足・本家 FK 違反時には先行更新も rollback する。
+別接続からの commit 前後の可視性と、再接続後に未投入の仕事を dispatch claim で取得できることも確認する。
+この fixture は投稿 UseCase/HTTP、本家 AP 表現、通知条件の実装・互換性検証を代用しない。
+
 この段階では通常 worker は起動・停止の枠だけで、ジョブを実行しない。J2b の残りは、
-本家 Note の保存 fixture、通知の実保存と成立記録、宛先固定/ページ/host lease と実配送、
-Redis 世代回復、BullMQ worker・5秒走査/10秒 lease 更新・プロセス寿命への接続。
+通知の実保存と成立記録、宛先固定/ページ/host lease と実配送、
+Redis 世代回復の起動接続、BullMQ worker・5秒走査/10秒 lease 更新・プロセス寿命への接続。
 通知条件/AP 表現の全移植は引き続き N4/N6、管理・清掃は J3 で扱い、#124 は完了にしない。

@@ -878,6 +878,9 @@ importers:
       eslint:
         specifier: 9.39.5
         version: 9.39.5(supports-color@10.2.2)
+      tsc-alias:
+        specifier: 1.9.7
+        version: 1.9.7
       typescript:
         specifier: npm:@typescript/typescript6@6.0.2
         version: '@typescript/typescript6@6.0.2'

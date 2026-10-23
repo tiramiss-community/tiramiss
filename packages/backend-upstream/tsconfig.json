@@ -4,6 +4,9 @@
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
 		"rootDir": ".",
+		"paths": {
+			"@/*": ["./src/*"]
+		},
 		"outDir": "built",
 		"strict": true,
 		"skipLibCheck": true,
