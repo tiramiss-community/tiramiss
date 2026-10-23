@@ -1,0 +1,24 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import type { MigrationInterface, QueryRunner } from 'typeorm';
+
+export class PostNotification1792732433541 implements MigrationInterface {
+	async up(runner: QueryRunner): Promise<void> {
+		await runner.query("CREATE TABLE \"backend_internal\".\"notification\" (\"notification_id\" character varying(128) NOT NULL, \"recipient_id\" character varying(128) NOT NULL, \"notification_type\" character varying(16) NOT NULL, \"notifier_id\" character varying(128) NOT NULL, \"note_id\" character varying(128) NOT NULL, \"target_note_id\" character varying(128), \"created_at\" TIMESTAMP WITH TIME ZONE NOT NULL, \"capacity_formula_version\" integer NOT NULL DEFAULT '1', \"charged_bytes\" bigint NOT NULL, CONSTRAINT \"notification_formula_positive\" CHECK (capacity_formula_version > 0), CONSTRAINT \"notification_charge_positive\" CHECK (charged_bytes > 0 AND charged_bytes % 1024 = 0), CONSTRAINT \"notification_type\" CHECK (notification_type IN ('reply','mention','quote','renote','note')), CONSTRAINT \"notification_target\" CHECK ((notification_type = 'renote') = (target_note_id IS NOT NULL)), CONSTRAINT \"notification_bytes_notification_id\" CHECK (octet_length(\"notification_id\") BETWEEN 1 AND 128), CONSTRAINT \"notification_bytes_recipient_id\" CHECK (octet_length(\"recipient_id\") BETWEEN 1 AND 128), CONSTRAINT \"notification_bytes_notification_type\" CHECK (octet_length(\"notification_type\") BETWEEN 1 AND 16), CONSTRAINT \"notification_bytes_notifier_id\" CHECK (octet_length(\"notifier_id\") BETWEEN 1 AND 128), CONSTRAINT \"notification_bytes_note_id\" CHECK (octet_length(\"note_id\") BETWEEN 1 AND 128), CONSTRAINT \"notification_bytes_target_note_id\" CHECK (octet_length(\"target_note_id\") BETWEEN 1 AND 128), CONSTRAINT \"PK_fc4db99eb33f32cea47c5b6a39c\" PRIMARY KEY (\"notification_id\"))");
+		await runner.query("CREATE INDEX \"notification_recipient_order\" ON \"backend_internal\".\"notification\"  (\"recipient_id\", \"created_at\", \"notification_id\") ");
+		await runner.query("CREATE TABLE \"backend_internal\".\"notification_effect\" (\"request_id\" character varying(128) NOT NULL, \"recipient_id\" character varying(128) NOT NULL, \"notification_type\" character varying(16) NOT NULL, \"notification_id\" character varying(128), \"reason_code\" character varying(64), \"formed_at\" TIMESTAMP WITH TIME ZONE NOT NULL, \"capacity_formula_version\" integer NOT NULL DEFAULT '1', \"charged_bytes\" bigint NOT NULL, CONSTRAINT \"notification_effect_formula_positive\" CHECK (capacity_formula_version > 0), CONSTRAINT \"notification_effect_charge_positive\" CHECK (charged_bytes > 0 AND charged_bytes % 1024 = 0), CONSTRAINT \"notification_effect_type\" CHECK (notification_type IN ('reply','mention','quote','renote','note')), CONSTRAINT \"notification_effect_outcome\" CHECK ((notification_id IS NULL) <> (reason_code IS NULL)), CONSTRAINT \"notification_effect_reason\" CHECK (reason_code IS NULL OR reason_code ~ '^[a-z][a-z0-9_]*$'), CONSTRAINT \"notification_effect_bytes_request_id\" CHECK (octet_length(\"request_id\") BETWEEN 1 AND 128), CONSTRAINT \"notification_effect_bytes_recipient_id\" CHECK (octet_length(\"recipient_id\") BETWEEN 1 AND 128), CONSTRAINT \"notification_effect_bytes_notification_type\" CHECK (octet_length(\"notification_type\") BETWEEN 1 AND 16), CONSTRAINT \"notification_effect_bytes_notification_id\" CHECK (octet_length(\"notification_id\") BETWEEN 1 AND 128), CONSTRAINT \"notification_effect_bytes_reason_code\" CHECK (octet_length(\"reason_code\") BETWEEN 1 AND 64), CONSTRAINT \"PK_493c96595c2ec597b896a3eb43c\" PRIMARY KEY (\"request_id\", \"recipient_id\", \"notification_type\"))");
+		await runner.query("CREATE INDEX \"notification_effect_retention\" ON \"backend_internal\".\"notification_effect\"  (\"formed_at\", \"request_id\") ");
+		await runner.query("ALTER TABLE \"backend_internal\".\"notification_effect\" ADD CONSTRAINT \"notification_effect_request\" FOREIGN KEY (\"request_id\") REFERENCES \"backend_internal\".\"work_request\"(\"request_id\") ON DELETE NO ACTION ON UPDATE NO ACTION");
+	}
+
+	async down(runner: QueryRunner): Promise<void> {
+		await runner.query(`UPDATE backend_internal.work_capacity SET
+			reserved_rows = reserved_rows - (SELECT count(*) FROM backend_internal.notification) - (SELECT count(*) FROM backend_internal.notification_effect),
+			reserved_bytes = reserved_bytes - COALESCE((SELECT sum(charged_bytes) FROM backend_internal.notification),0) - COALESCE((SELECT sum(charged_bytes) FROM backend_internal.notification_effect),0)
+			WHERE capacity_key='global'`);
+		await runner.query('DROP TABLE backend_internal.notification_effect');
+		await runner.query('DROP TABLE backend_internal.notification');
+	}
+}
