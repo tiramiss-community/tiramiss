@@ -67,6 +67,13 @@ const items = () => source.query('SELECT kind,state,payload,deadline_at FROM bac
 const capacity = () => source.query('SELECT reserved_rows,reserved_bytes FROM backend_internal.work_capacity');
 const complete = (owned: Awaited<ReturnType<typeof seed>>['owned']) => source.transaction(manager => new PostApRecipientSnapshot().complete(manager, owned, async () => ({ status: 'deliver' })));
 
+const coverage = () => source.query('SELECT recipient_coverage FROM backend_internal.note_work_state');
+
+async function expectUnchangedExpansion(beforeCoverage: unknown) {
+	expect(await items()).toEqual([expect.objectContaining({ kind: 'ap.expand', state: 'running' })]);
+	expect(await coverage()).toEqual(beforeCoverage);
+}
+
 async function follow() {
 	await source.getRepository(MiFollowing).insert({ id: 'follow', followeeId: 'actor', followerId: 'remote', followerHost: 'remote.test', followerInbox: 'https://remote.test/inbox', followerSharedInbox: 'https://remote.test/shared' });
 }
@@ -133,10 +140,12 @@ test.each(['missing_direct', 'missing_inbox', 'missing_follower_inbox'] as const
 		await source.getRepository(MiFollowing).update({ id: 'follow' }, { followerInbox: null, followerSharedInbox: null });
 	}
 	const before = await capacity();
+	const beforeCoverage = await coverage();
 	await expect(complete(owned)).rejects.toThrow('Unresolved');
 	expect(await ledger()).toEqual([]);
 	expect(await capacity()).toEqual(before);
-	expect((await items())[0].state).toBe('running');
+
+	await expectUnchangedExpansion(beforeCoverage);
 });
 
 test('rollback after completion removes the entire fixed set and page', async () => {
@@ -175,8 +184,10 @@ test.each(['owner', 'epoch', 'lease', 'deadline', 'cancel'] as const)('%s fences
 	} else {
 		await source.query('UPDATE backend_internal.note_work_state SET generation=2,deleted_at=clock_timestamp(),cancel_event_id=\'deleted\'');
 	}
+	const beforeCoverage = await coverage();
 	await expect(complete(owned)).rejects.toThrow('execution');
 	expect(await ledger()).toEqual([]);
+	await expectUnchangedExpansion(beforeCoverage);
 });
 
 test('lease loss during federation checking rolls back the generated set', async () => {
@@ -202,8 +213,10 @@ test('parallel completion fixes one set and page', async () => {
 test('saved payload corruption is rejected even when caller payload looks valid', async () => {
 	const { owned } = await seed();
 	await source.query('UPDATE backend_internal.work_request SET payload=replace(payload,\'remote\',\'absent\')');
+	const beforeCoverage = await coverage();
 	await expect(complete(owned)).rejects.toThrow('payload');
 	expect(await ledger()).toEqual([]);
+	await expectUnchangedExpansion(beforeCoverage);
 });
 
 test('caller mutation during recheck does not redirect the completion', async () => {
@@ -221,17 +234,26 @@ test('a lost commit acknowledgement can be resolved after reconnect without rebu
 	await follow();
 	const { owned } = await seed();
 	const runner = source.createQueryRunner();
-	await runner.connect();
-	await runner.startTransaction();
-	await new PostApRecipientSnapshot().complete(runner.manager, owned, async () => ({ status: 'deliver' }));
-	// Another connection cannot observe a partial set, page, or coverage before COMMIT.
-	expect(await ledger()).toEqual([]);
-	expect(await items()).toHaveLength(1);
-	await expect((async () => {
-		await runner.commitTransaction();
-		throw new Error('commit acknowledgement lost');
-	})()).rejects.toThrow('commit acknowledgement lost');
-	await runner.release();
+	try {
+		await runner.connect();
+		await runner.startTransaction();
+		await new PostApRecipientSnapshot().complete(runner.manager, owned, async () => ({ status: 'deliver' }));
+		// Another connection cannot observe a partial set, page, or coverage before COMMIT.
+		expect(await ledger()).toEqual([]);
+		expect(await items()).toHaveLength(1);
+		await expect((async () => {
+			await runner.commitTransaction();
+			throw new Error('commit acknowledgement lost');
+		})()).rejects.toThrow('commit acknowledgement lost');
+	} finally {
+		try {
+			if (runner.isTransactionActive) {
+				await runner.rollbackTransaction();
+			}
+		} finally {
+			await runner.release();
+		}
+	}
 	await source.getRepository(MiFollowing).deleteAll();
 	await source.getRepository(MiUser).update({ id: 'remote' }, { inbox: 'https://new.test/inbox', sharedInbox: 'https://new.test/shared' });
 	await expect(complete(owned)).rejects.toThrow('execution');
@@ -337,10 +359,12 @@ test('empty completion can settle while deletion reservations exceed the normal 
 test('Delete requests are not expanded using creation recipes', async () => {
 	const { owned } = await seed('public', false, ['remote'], null, true);
 	const before = await capacity();
+	const beforeCoverage = await coverage();
 	await expect(complete(owned)).rejects.toThrow('unsupported');
 	expect(await ledger()).toEqual([]);
-	expect((await items())[0].state).toBe('running');
+
 	expect(await capacity()).toEqual(before);
+	await expectUnchangedExpansion(beforeCoverage);
 });
 
 test('a real SQL timeout rolls back the entire snapshot', async () => {
@@ -376,4 +400,27 @@ test('migration down releases saved ledger charges and up restores the exact sch
 		await new ApRecipientSnapshot1792734340852().up(runner);
 	});
 	await assertSchemaMatches(database.config.database);
+});
+
+test('applies the 20s snapshot limit and restores a longer caller timeout', async () => {
+	const { owned } = await seed();
+	await source.query(`CREATE FUNCTION public.check_snapshot_timeout() RETURNS trigger LANGUAGE plpgsql AS $$
+		BEGIN
+			IF current_setting('statement_timeout') <> '20s' THEN
+				RAISE EXCEPTION 'snapshot timeout was not capped';
+			END IF;
+			RETURN NEW;
+		END $$`);
+	await source.query('CREATE TRIGGER check_snapshot_timeout BEFORE INSERT ON backend_internal.delivery_recipient FOR EACH ROW EXECUTE FUNCTION public.check_snapshot_timeout()');
+	try {
+		await source.transaction(async manager => {
+			await manager.query('SET LOCAL statement_timeout=\'30s\'');
+			await new PostApRecipientSnapshot().complete(manager, owned, async () => ({ status: 'deliver' }));
+			expect(await manager.query('SHOW statement_timeout')).toEqual([{ statement_timeout: '30s' }]);
+		});
+	} finally {
+		await source.query('DROP TRIGGER check_snapshot_timeout ON backend_internal.delivery_recipient');
+		await source.query('DROP FUNCTION public.check_snapshot_timeout()');
+	}
+	expect(await ledger()).toHaveLength(1);
 });

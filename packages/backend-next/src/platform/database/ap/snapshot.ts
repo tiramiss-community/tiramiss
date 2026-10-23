@@ -66,21 +66,25 @@ export class PostApRecipientSnapshot {
 			if (!validated || validated.request.kind !== 'ap.expand' || validated.request.noteGeneration !== 1) {
 				throw new Error('Invalid or unsupported AP snapshot payload');
 			}
+
 			const request = validated.request;
 			const note = await manager.createQueryBuilder().select('note.recipient_coverage', 'coverage')
 				.from('backend_internal.note_work_state', 'note').where('note_id=:id', { id: request.noteId }).getRawOne<{ coverage: string }>();
 			if (note?.coverage !== 'not_started') {
 				throw new Error('AP recipient coverage is already fixed or unavailable');
 			}
+
 			const actor = await manager.getRepository(MiUser).findOneBy({ id: request.actorId });
 			if (!actor || actor.host !== null) {
 				throw new Error('AP snapshot requires a current local actor');
 			}
+
 			const decision = await recheck(request);
 			if (!decision || !['deliver', 'suppress'].includes(decision.status)
 				|| (decision.status === 'suppress' && !/^[a-z][a-z0-9_]{0,63}$/.test(decision.reason))) {
 				throw new Error('Invalid AP snapshot decision');
 			}
+
 			let bytes = 0;
 			if (!request.note.localOnly && request.note.channelId === null && decision.status === 'deliver') {
 				const [previous] = await manager.query('SELECT current_setting(\'statement_timeout\') AS timeout');
@@ -102,6 +106,7 @@ export class PostApRecipientSnapshot {
 				}
 				bytes = Number(result.bytes);
 			}
+
 			let rows = count;
 			if (count > 0) {
 				const kind = 'ap.expand.page';
@@ -117,9 +122,11 @@ export class PostApRecipientSnapshot {
 				rows++;
 				bytes += charge;
 			}
+
 			await manager.createQueryBuilder().update('backend_internal.note_work_state').set({
 				recipient_coverage: 'fixed', recipients_fixed_at: () => 'clock_timestamp()', last_dependency_at: () => 'clock_timestamp()',
 			}).where('note_id=:id', { id: request.noteId }).execute();
+
 			const reserved = await manager.createQueryBuilder().update('backend_internal.work_capacity')
 				.set({ reserved_rows: () => 'reserved_rows+:rows', reserved_bytes: () => 'reserved_bytes+:bytes' })
 				.where('capacity_key=\'global\' AND capacity_formula_version=:version')
@@ -128,6 +135,7 @@ export class PostApRecipientSnapshot {
 			if (reserved.affected !== 1) {
 				throw new WorkCapacityExceeded('The durable work capacity is full or requires reconciliation');
 			}
+
 			return decision.status === 'suppress' ? { status: 'skipped', reason: decision.reason } : { status: 'succeeded' };
 		});
 		return { count };
