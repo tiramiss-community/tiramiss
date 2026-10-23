@@ -5,7 +5,6 @@
 import { randomUUID } from 'node:crypto';
 import { Queue, Worker } from 'bullmq';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, test } from 'vitest';
-import type { DataSource } from 'typeorm';
 import { BullmqDispatch } from '../../src/platform/jobs/bullmq-dispatch.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
 import { migrateDatabase } from '../../src/platform/database/migrate.js';
@@ -17,6 +16,7 @@ import { PostWorkLocalExecutionStore } from '../../src/platform/database/post-wo
 import { withPostWorkRequests } from '../../src/platform/database/post-work/append.js';
 import { createTestDatabase } from '../helpers/database.js';
 import { notificationRequest } from '../helpers/post-work.js';
+import type { DataSource } from 'typeorm';
 
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 let source: DataSource;
@@ -48,7 +48,7 @@ beforeAll(async () => {
 	store = new PostWorkDispatchStore(source);
 });
 beforeEach(async () => {
-	await source.query('TRUNCATE backend_internal.notification, backend_internal.notification_effect, backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
+	await source.query('TRUNCATE backend_internal.delivery_recipient, backend_internal.notification, backend_internal.notification_effect, backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
 	await source.query('UPDATE backend_internal.work_control SET queue_generation=1,recovery_pending=false,reserved_dispatches=0,paused=false');
 	await source.query('UPDATE backend_internal.work_capacity SET reserved_rows=3,reserved_bytes=6144');
 	prefix = `recovery-${randomUUID()}`;
@@ -86,7 +86,7 @@ test('pending recovery fences dispatch and local execution without changing dura
 	await source.query('UPDATE backend_internal.work_control SET recovery_pending=true');
 	const before = await business();
 	expect(await new PostWorkLocalExecutionStore(source).claim(asEnvelope(saved), 'worker')).toBe(null);
-	await source.query("UPDATE backend_internal.work_item SET last_enqueued_at=NULL");
+	await source.query('UPDATE backend_internal.work_item SET last_enqueued_at=NULL');
 	expect((await store.claim('scanner')).status).toBe('waiting');
 	expect(await business()).toEqual(before);
 	expect((await store.pending())).toHaveLength(1);
@@ -238,8 +238,11 @@ test('recovery migration has a reversible schema and preserves control counters'
 	const migrations = migrationSources(database.config.database).internal;
 	await migrations.initialize();
 	try {
-		await source.query("UPDATE backend_internal.work_control SET queue_generation=7,paused=true,reserved_dispatches=3");
+		await source.query('UPDATE backend_internal.work_control SET queue_generation=7,paused=true,reserved_dispatches=3');
 		await migrations.undoLastMigration();
+		await migrations.undoLastMigration();
+		await migrations.undoLastMigration();
+		expect(await source.query('SELECT column_name FROM information_schema.columns WHERE table_schema=\'backend_internal\' AND table_name=\'work_control\' AND column_name=\'recovery_pending\'' )).toEqual([]);
 		expect(await source.query('SELECT queue_generation,paused,reserved_dispatches FROM backend_internal.work_control')).toEqual(Array(2).fill({ queue_generation: '7', paused: true, reserved_dispatches: 3 }));
 		await migrations.runMigrations();
 		expect((await controls()).every((row: { recovery_pending: boolean }) => !row.recovery_pending)).toBe(true);
@@ -285,7 +288,7 @@ test('lost coordinator DB connection cannot clear pending and its session lock i
 		readGeneration: transport.readGeneration.bind(transport),
 		replaceGeneration: async (...args: Parameters<BullmqDispatch['replaceGeneration']>) => {
 			if (args[0] === 'deliver') {
-				const killed = await source.query("SELECT pg_terminate_backend(pid) AS killed FROM pg_locks WHERE locktype='advisory' AND classid=1792665615 AND objid=537 AND granted");
+				const killed = await source.query('SELECT pg_terminate_backend(pid) AS killed FROM pg_locks WHERE locktype=\'advisory\' AND classid=1792665615 AND objid=537 AND granted');
 				expect(killed).toEqual([{ killed: true }]);
 			}
 			await transport.replaceGeneration(...args);

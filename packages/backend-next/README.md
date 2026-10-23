@@ -281,3 +281,29 @@ commit 応答不明を rollback 確定とせず、同じ通知を自動で作り
 件数制限と容量差分、flush後の再生成防止、commit応答喪失後の照会、新migrationのup/downを検証する。
 通知API・既読・stream/push、受信条件の全移植、ユーザー/投稿削除と実体の清掃接続、既存Redis通知の移行は N6/#137 の残件。
 通常 worker への接続も後続J2で行い、この保存アダプタだけで実通知機能や #124 全体を完成扱いにしない。
+
+## AP 作成宛先の初回固定（#124 / J2）
+
+[固定設計](../../docs/superpowers/specs/2026-10-23-ap-recipient-snapshot-design.md)に従い、
+`PostApRecipientSnapshot.complete(manager, claim, recheck)` が Create/Announce の初回集合を保存する。
+activeなcaller-owned transactionでawaitし、例外はtransaction外まで伝える。
+最新の連合条件を同じtransactionで読む `recheck(request)` は必須で、callback内でHTTPを行わない。
+保存済request/itemを再検証し、note→itemのロック・取消/owner/epoch/lease/deadline確認を通す。
+
+followers（Followingの非正規化inbox/sharedInbox）・publicのaccepted relay・direct Userを
+単一statement snapshotで取得する。sharedInboxに含まれるdirectを除き、最終inboxを重複排除して
+`backend_internal.delivery_recipient`へ保存する。この集合とcoverage=fixed、root成功、
+先頭 `ap.expand.page` を同時確定する。空集合はpageを作らずfixedを記録する。
+localOnly/channelも0件。Delete/Undoは作成レシピで代用せず、このadapterでは拒否する。
+
+200000宛先を超えた場合は一件も保存せずrecipient_limitで確認対象とする。
+SQLは最大20秒（callerが短く設定したstatement_timeoutを優先）。容量不足・SQL失敗は全rollbackし、
+呼出側が既存の有限retry契約で扱う。台帳は90日保持し、本文は複製しない。
+通常90%のrow/byte枠へ台帳と初回pageを課金し、pageのdeadlineは元requestから延長しない。
+追加課金が0の完了は、削除予約によって通常枠を超えていても終端化できる。
+
+実DBテストは公開範囲別レシピ、重複排除、並行固定、固定中/固定後の関係変更、取消・lease失効、
+容量と件数制限、statement timeout、commit前不可視・再接続後の固定集合、migration up/downを検証する。
+**通常workerは未接続のまま。** dispatchはpageを投入できるが、pageの実行claim/固定cursor照合・
+最大100件ずつの送信item生成、Delete宛先復元、host lease、HTTP送信、N4の本家比較は後続。
+このadapterだけでAP配信や#124全体を完成扱いにしない。
