@@ -252,6 +252,32 @@ retry は DB 時刻から指数 backoff（60秒から最大1時間、0–20%加�
 この fixture は投稿 UseCase/HTTP、本家 AP 表現、通知条件の実装・互換性検証を代用しない。
 
 この段階では通常 worker は起動・停止の枠だけで、ジョブを実行しない。J2b の残りは、
-通知の実保存と成立記録、宛先固定/ページ/host lease と実配送、
+通知の全受信条件とworker接続、宛先固定/ページ/host lease と実配送、
 Redis 世代回復の起動接続、BullMQ worker・5秒走査/10秒 lease 更新・プロセス寿命への接続。
 通知条件/AP 表現の全移植は引き続き N4/N6、管理・清掃は J3 で扱い、#124 は完了にしない。
+
+## 通知の PostgreSQL 保存（#124 / J2）
+
+[保存設計](../../docs/superpowers/specs/2026-10-23-notification-persistence-design.md)に従い、
+本家の Redis Stream 正本から変更し、通知実体を `backend_internal.notification` に保存する。
+本家 public の Entity と migration は変更しない。Redis は引き続き必須であり、障害時の縮退保存ではない。
+
+`PostNotificationPersistence.complete(manager, claim, recheck)` は caller-owned transaction で必ず await し、
+例外を transaction 外へ伝える。Note/item のロック・owner/epoch/lease/deadline/取消確認後、保存済み依頼を再検証し、
+最新の実 Note と受信者を取得する。reply/mention/quote/renote/note を保存でき、renote の targetNoteId は実 Note から読む。
+候補は通知許可ではないため `recheck(facts)` は必須で、同じtransactionへ結び付けた読み取りで受信条件を再評価する。
+外部通信をこの callback に入れない。通知本体・effect・容量差分・item 成功/抑止は同時確定する。
+
+既定の受信者別上限は本家と同じ500件（構築時 `perUserNotificationsMaxCount` で変更可能）。
+本家の近似 MAXLEN と異なり、受信者単位の transaction advisory lock により厳密に制限する。
+保持上限を超える古い本体は削除し、成立記録は残す。`flush(manager, recipientId)` も本体だけを削除する。
+両操作は削除した本体の保存済み課金だけを解放し、二重に解放しない。通知本体と effect はどちらも通常作成用90%の論理容量枠へ算入する。
+
+`readEffect(manager, requestId, recipientId, type)` は再接続後も既存結果を照会でき、
+通知本体の削除後も保存済み通知ID/抑止理由を返す。同じ仕事を再成立させないため、本体への cascade FK は付けない。
+commit 応答不明を rollback 確定とせず、同じ通知を自動で作り直さない。
+
+実 DB テストは5種類の本体、同時確定/rollback、重複/並行実行、取消/lease失効、
+件数制限と容量差分、flush後の再生成防止、commit応答喪失後の照会、新migrationのup/downを検証する。
+通知API・既読・stream/push、受信条件の全移植、ユーザー/投稿削除と実体の清掃接続、既存Redis通知の移行は N6/#137 の残件。
+通常 worker への接続も後続J2で行い、この保存アダプタだけで実通知機能や #124 全体を完成扱いにしない。

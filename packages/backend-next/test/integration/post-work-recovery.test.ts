@@ -48,7 +48,7 @@ beforeAll(async () => {
 	store = new PostWorkDispatchStore(source);
 });
 beforeEach(async () => {
-	await source.query('TRUNCATE backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
+	await source.query('TRUNCATE backend_internal.notification, backend_internal.notification_effect, backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
 	await source.query('UPDATE backend_internal.work_control SET queue_generation=1,recovery_pending=false,reserved_dispatches=0,paused=false');
 	await source.query('UPDATE backend_internal.work_capacity SET reserved_rows=3,reserved_bytes=6144');
 	prefix = `recovery-${randomUUID()}`;
