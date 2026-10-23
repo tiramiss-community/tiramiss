@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { isDeepStrictEqual } from 'node:util';
+import { parsePagePayload } from '../ap/page-payload.js';
 import { preparePostWork, workHash } from '../../../modules/post-work/prepare.js';
 import type { PostWorkRequest } from '../../../modules/post-work/public.js';
 
@@ -103,7 +104,9 @@ export class LocalWorkValidationCache {
 			}
 			const validated = entry.validated;
 			const payload = JSON.parse(item.payload) as Record<string, unknown>;
-			const expected = validated?.targets.get(JSON.stringify([item.kind, item.target_key]));
+			const page = item.kind === 'ap.expand.page' && validated?.request.kind === 'ap.expand'
+				&& validated.request.noteGeneration === 1 ? parsePagePayload(item.payload, item.target_key) : null;
+			const expected = page ?? validated?.targets.get(JSON.stringify([item.kind, item.target_key]));
 			if (!validated || expected === undefined || !isDeepStrictEqual(expected, payload)
 				|| item.deadline_at.getTime() !== validated.deadlineAtMs) {
 				return null;

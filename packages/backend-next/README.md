@@ -304,6 +304,28 @@ SQLは最大20秒（callerが短く設定したstatement_timeoutを優先）。�
 
 実DBテストは公開範囲別レシピ、重複排除、並行固定、固定中/固定後の関係変更、取消・lease失効、
 容量と件数制限、statement timeout、commit前不可視・再接続後の固定集合、migration up/downを検証する。
-**通常workerは未接続のまま。** dispatchはpageを投入できるが、pageの実行claim/固定cursor照合・
-最大100件ずつの送信item生成、Delete宛先復元、host lease、HTTP送信、N4の本家比較は後続。
+**通常workerは未接続のまま。** pageの実行claim/固定cursor照合・最大100件ずつの送信item生成は次節を参照。
+Delete宛先復元、host lease、HTTP送信、N4の本家比較は後続。
 このadapterだけでAP配信や#124全体を完成扱いにしない。
+
+## AP 固定宛先のページ展開（#124 / J2）
+
+[ページ設計](../../docs/superpowers/specs/2026-10-23-ap-recipient-pages-design.md)に従い、
+`PostApRecipientPages.complete(manager, claim)` が固定台帳をDBのinbox順で最大100件ずつ送信itemへ変換する。
+caller-owned transactionでawaitし、例外は外まで伝える。保存済request/pageの版・本文/hash・安定ID・
+元の期限、coverage=fixed、成功済rootを再検証する。継続cursorは成功済み前ページの100件目であることも
+最大101件の読み取りで照合し、任意の実在宛先から途中再開することを許さない。
+
+送信itemの `{inbox,shared}` は台帳から取得し、activity本文はrequestで共有する。
+最大100送信item・必要な次ページ・通常90%枠の容量課金・現在ページ成功を同時確定する。
+同一キーの既存itemはimmutable内容を照合し、一致すれば進捗を維持する。不一致は全rollbackし、課金は新規挿入分だけ。
+元requestのnot_before/deadlineを全子へ引き継ぎ、継続ごとに期限を延ばさない。
+各ページは独立した最大8試行で、成功済みページを再処理しない。commit応答不明時は元のIDで保存結果を照会する。
+
+local executionはpageのclaim/renew/expireに対応し、postLocalとdeliver双方のpause/recoveryを確認する。
+既存のnote→itemロックとowner/epoch/lease/deadline/取消fenceを使い、台帳の送信状態は変更しない。
+実DBテストで境界、1000件超の継続、失敗ページの再開、固定後の関係変更、不正cursor、容量とlease失効、
+並行・重複・commit応答不明を検証する。
+
+通常workerへの接続、ap.sendの実行claim/host枠・HTTP送信・署名、Delete/Undo展開、管理と清掃は後続。
+送信itemの生成だけでAP配送や#124全体の完了とは扱わない。

@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { validateApPage } from '../ap/page-validation.js';
 import { LostLocalExecution } from '../../jobs/local-execution.js';
 import { LocalWorkValidationCache } from './local-work-validation.js';
 import { activeLocalStates, aggregateLocalRequest, localKinds, settleLocalItem } from './local-execution-state.js';
@@ -91,8 +92,11 @@ export class PostWorkLocalExecutionStore {
 			if (item.kind !== input.kind || item.schema_version !== input.schemaVersion || !activeLocalStates.includes(item.state) || item.active) {
 				return null;
 			}
-			const validated = this.validation.validate(item, request);
-			const queues = item.kind === 'ap.expand' ? ['deliver', 'postLocal'] : ['postLocal'];
+			let validated = this.validation.validate(item, request);
+			if (validated && item.kind === 'ap.expand.page' && !await validateApPage(manager, item, request, this.validation)) {
+				validated = null;
+			}
+			const queues = item.kind === 'ap.expand' || item.kind === 'ap.expand.page' ? ['deliver', 'postLocal'] : ['postLocal'];
 			const controls = await manager.createQueryBuilder().select('control.*').from('backend_internal.work_control', 'control')
 				.where('queue_key IN (:...queues)', { queues }).orderBy('queue_key').setLock('pessimistic_read')
 				.getRawMany<{ queue_key: string; queue_generation: string; paused: boolean; recovery_pending: boolean }>();
