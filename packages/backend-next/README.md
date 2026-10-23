@@ -213,11 +213,13 @@ active entry・Redis応答不明・DB障害では起動失敗にし、予約を�
 
 ## ローカル仕事の実行権：J2b1（#124）
 
-`platform/database/post-work/local-execution` の `PostWorkLocalExecutionStore` は、初期の
-`ap.expand` と `notification.create` の DB 実行権を扱う。投入とは別の claim であり、
+`platform/database/post-work/local-execution` の `PostWorkLocalExecutionStore` は、
+`ap.expand`・`ap.expand.page`・`notification.create` の DB 実行権を扱う。投入とは別の claim であり、
 保存済み dispatch・queue 世代・kind/版・request/item の本文/hash/対象を照合する。
 無関係な envelope や解放済み予約は保存状態を変えない。保存形式が壊れていれば隔離して確認対象にする。
-`ap.send` と `ap.expand.page` は後続 adapter の担当であり、この adapter では実行権を取得しない。
+`ap.expand.page` の claim・renew・expire もこの adapter が扱う。送信itemの生成は
+後述の「AP 固定宛先のページ展開」を参照。
+`ap.send` は後続 adapter の担当であり、この adapter では実行権を取得しない。
 
 request の解析・正規化・hash 検証は queue 制御行をロックする前に行う。
 同じ store 内では直近の最大4依頼、保存元 JSON/メタデータ合計4 MiBまでの検証結果を再利用し、
