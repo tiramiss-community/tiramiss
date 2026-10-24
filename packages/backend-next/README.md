@@ -4,6 +4,10 @@ Misskeyバックエンド再設計の実行基盤とRole初期実装。
 既存トークンで `admin/roles/show` と `admin/roles/update` を利用できる。
 その他のAPIと業務ジョブは後続の実装範囲。
 
+全公開契約の移植状況・保存/副作用・担当Issueは[バックエンド対応表](../../docs/superpowers/compatibility/backend-inventory/README.md)を参照する。
+登録APIだけでなく、非API HTTP、stream、ActivityPub、定期/業務ジョブ、CLIも追跡する。
+adapterの部分実装と、通常worker/APIを通した機能の完成を区別する。
+
 ## Role実装に着手するとき
 
 #116の成果物は[Role互換性契約](../../docs/superpowers/specs/2026-10-17-role-compatibility-contract.md)と[本家比較資料](../../docs/superpowers/compatibility/role/README.md)にある。比較資料にはJSONの期待値、再実行できるTypeScript probe、固定した本家コミットと実行結果を保存している。

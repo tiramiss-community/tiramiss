@@ -1,0 +1,1414 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "implementationCommit": "a5840cc43089ea49c9f3ac14444390b0a809953f",
+  "domains": [
+    {
+      "id": "api-common",
+      "title": "API共通契約",
+      "issue": 178,
+      "relatedIssues": [],
+      "scope": "登録/GET可否/multipart/共通認証・scope・制限・error/metadata公開。Role個別のgateだけで全API互換としない。",
+      "persistence": [
+        "本家User/App/AccessToken/Meta",
+        "Redis rate limit"
+      ],
+      "effects": [
+        "共通エラー・認可・入力検証順"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/server/api/ApiServerService.ts",
+        "packages/backend/src/server/api/ApiCallService.ts"
+      ],
+      "apiPrefixes": [],
+      "apiNames": [
+        "endpoint",
+        "endpoints",
+        "test",
+        "reset-db"
+      ],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "identity",
+      "title": "ログイン・認証情報・アプリ認可",
+      "issue": 179,
+      "relatedIssues": [],
+      "scope": "signup/signin/passkey/2FA/メール検証/password reset/App/native token/MiAuth/OAuth/招待を含む。",
+      "persistence": [
+        "User/Profile/App/AccessToken/招待/認証状態"
+      ],
+      "effects": [
+        "メール・認可redirect・token発行・失効"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/server/api/SigninApiService.ts",
+        "packages/backend/src/server/api/SignupApiService.ts",
+        "packages/backend/src/server/oauth/OAuth2ProviderService.ts"
+      ],
+      "apiPrefixes": [
+        "auth/",
+        "app/",
+        "miauth/",
+        "my/apps",
+        "i/2fa/",
+        "invite/"
+      ],
+      "apiNames": [
+        "username/available",
+        "email-address/available",
+        "request-reset-password",
+        "reset-password",
+        "verify-email",
+        "i/apps",
+        "i/authorized-apps",
+        "i/change-password",
+        "i/regenerate-token",
+        "i/revoke-token",
+        "i/signin-history",
+        "admin/accounts/create",
+        "admin/reset-password",
+        "admin/unset-mfa"
+      ],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "accounts",
+      "title": "ユーザー・設定・クライアントregistry",
+      "issue": 180,
+      "relatedIssues": [],
+      "scope": "ユーザー表示/プロフィール/個人設定/registry/achievement/メモ等。ログイン発行とアカウント削除・移動は別の所有者。",
+      "persistence": [
+        "User/Profile/registry/achievement/関連設定"
+      ],
+      "effects": [
+        "profile更新通知・AP表現/更新・キャッシュ無効化"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/entities/UserEntityService.ts",
+        "packages/backend/src/core/UserService.ts"
+      ],
+      "apiPrefixes": [
+        "users/",
+        "i/"
+      ],
+      "apiNames": [
+        "i",
+        "users"
+      ],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "roles",
+      "title": "Role全API・割り当て変更",
+      "issue": 181,
+      "relatedIssues": [
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121
+      ],
+      "scope": "初期show/updateと区別してcreate/delete/list/assign/unassign/default policies/公開Role参照を移植する。",
+      "persistence": [
+        "Role/RoleAssignment/ModerationLog"
+      ],
+      "effects": [
+        "同時監査・材料cache無効化・資格/ポリシー反映"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/RoleService.ts"
+      ],
+      "apiPrefixes": [
+        "admin/roles/",
+        "roles/"
+      ],
+      "apiNames": [],
+      "implementation": [
+        "packages/backend-next/src/modules/role/public.ts",
+        "packages/backend-next/src/http/role-api.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/role-acceptance.test.ts"
+      ],
+      "differences": [
+        "ロール更新と監査を同時確定。HTTPの既知差異はdocs/superpowers/specs/2026-10-17-role-compatibility-contract.mdとcompatibility/role/README.mdを参照。"
+      ]
+    },
+    {
+      "id": "social",
+      "title": "follow・block・mute・関係管理",
+      "issue": 182,
+      "relatedIssues": [],
+      "scope": "follow/request/取消・承認・reject、block/mute/renote mute、期限・AP関係activity。remote解決と循環しないsliceで実装。",
+      "persistence": [
+        "Following/FollowRequest/Blocking/Muting/RenoteMuting"
+      ],
+      "effects": [
+        "関係count・通知・AP Follow/Accept/Reject/Undo/Block・期限処理"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/UserFollowingService.ts",
+        "packages/backend/src/core/UserBlockingService.ts"
+      ],
+      "apiPrefixes": [
+        "following/",
+        "blocking/",
+        "mute/",
+        "renote-mute/"
+      ],
+      "apiNames": [
+        "users/followers",
+        "users/following",
+        "users/relation"
+      ],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "notes",
+      "title": "投稿初期フロー",
+      "issue": 127,
+      "relatedIssues": [
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176
+      ],
+      "scope": "notes/create/show/deleteと関連入力・純粋出力。producer fixtureはHTTP実装ではない。",
+      "persistence": [
+        "Note/Poll/count/取消世代/固定依頼"
+      ],
+      "effects": [
+        "通知・AP・stream・TL/検索・webhookへの依頼"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/NoteCreateService.ts",
+        "packages/backend/src/core/NoteDeleteService.ts",
+        "packages/backend/src/core/entities/NoteEntityService.ts"
+      ],
+      "apiPrefixes": [],
+      "apiNames": [
+        "notes/create",
+        "notes/show",
+        "notes/delete"
+      ],
+      "implementation": [
+        "packages/backend-next/src/platform/database/post-work/append.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/post-work-note.test.ts"
+      ],
+      "differences": [
+        "Note/依頼/整合countを同時確定。client再送の独自冪等APIは追加しない。投稿設計§7/ジョブ設計§4.1。"
+      ]
+    },
+    {
+      "id": "notes-extra",
+      "title": "投稿周辺参照・下書き・予約",
+      "issue": 183,
+      "relatedIssues": [
+        127
+      ],
+      "scope": "初期create/show/delete以外のchildren/conversation/reply/renote/state/bulk show/翻訳、下書きと予約時刻・取消を実装する。",
+      "persistence": [
+        "Note/NoteDraft/予約内容/関連状態"
+      ],
+      "effects": [
+        "予約投稿・翻訳HTTP・遅延取消/再認可"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/NoteDraftService.ts",
+        "packages/backend/src/queue/processors/PostScheduledNoteProcessorService.ts"
+      ],
+      "apiPrefixes": [
+        "notes/"
+      ],
+      "apiNames": [],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "engagement",
+      "title": "reaction・投票・favorite・thread mute",
+      "issue": 184,
+      "relatedIssues": [],
+      "scope": "reactionの追加/削除、投票・推薦、favorite、thread mute、unrenote等の操作と公開契約。",
+      "persistence": [
+        "Reaction/PollVote/NoteFavorite/NoteThreadMuting"
+      ],
+      "effects": [
+        "count・通知・AP Like/Undo・stream・buffer反映"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/ReactionService.ts",
+        "packages/backend/src/core/PollService.ts"
+      ],
+      "apiPrefixes": [
+        "notes/reactions/",
+        "notes/polls/",
+        "notes/favorites/",
+        "notes/thread-muting/"
+      ],
+      "apiNames": [
+        "notes/reactions",
+        "notes/unrenote",
+        "i/favorites"
+      ],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "timeline",
+      "title": "TL・アンテナ・一覧閲覧",
+      "issue": 185,
+      "relatedIssues": [
+        132,
+        133,
+        174
+      ],
+      "scope": "home/local/hybrid/global/user-list/Role/antenna/mentions/featuredとcursor/可視性。通常更新/再構築は別責任。",
+      "persistence": [
+        "Note/関係facts/アンテナ設定",
+        "Redis TL cache"
+      ],
+      "effects": [
+        "一覧paging・アンテナ設定/候補・stream公開条件"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/FanoutTimelineService.ts",
+        "packages/backend/src/core/AntennaService.ts"
+      ],
+      "apiPrefixes": [
+        "antennas/"
+      ],
+      "apiNames": [
+        "notes",
+        "notes/timeline",
+        "notes/local-timeline",
+        "notes/global-timeline",
+        "notes/hybrid-timeline",
+        "notes/user-list-timeline",
+        "notes/mentions",
+        "notes/featured",
+        "roles/notes",
+        "users/notes"
+      ],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "search",
+      "title": "検索・ハッシュタグ",
+      "issue": 186,
+      "relatedIssues": [
+        132,
+        133,
+        174
+      ],
+      "scope": "Note/User/タグ検索・タグ一覧/トレンド等の入力・cursor・可視性。検索データ通常更新/再構築とは別の閲覧契約。",
+      "persistence": [
+        "Note/User/Hashtag",
+        "MeilisearchまたはDB検索"
+      ],
+      "effects": [
+        "検索結果と公開範囲・検索記録/制限"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/SearchService.ts",
+        "packages/backend/src/core/HashtagService.ts"
+      ],
+      "apiPrefixes": [
+        "hashtags/"
+      ],
+      "apiNames": [
+        "notes/search",
+        "notes/search-by-tag",
+        "users/search",
+        "users/search-by-username-and-host"
+      ],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "collections",
+      "title": "list・clip・channel",
+      "issue": 187,
+      "relatedIssues": [],
+      "scope": "リスト/clip/channelの管理・membership・favorite/follow/mute、公開条件・一覧/TLを含む。",
+      "persistence": [
+        "UserList/Clip/Channel/所属・関係行"
+      ],
+      "effects": [
+        "count・公開可否・stream・TL候補更新",
+        "clip updatedは先頭即時と3秒静穏後の末尾通知、削除時timer取消"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/entities/ChannelEntityService.ts",
+        "packages/backend/src/core/entities/ClipEntityService.ts",
+        "packages/backend/src/core/ClipService.ts"
+      ],
+      "apiPrefixes": [
+        "clips/",
+        "channels/",
+        "users/lists/"
+      ],
+      "apiNames": [
+        "notes/clips",
+        "users/clips",
+        "users/featured-notes"
+      ],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "notifications",
+      "title": "通知・未読/既読・push",
+      "issue": 177,
+      "relatedIssues": [
+        155,
+        173,
+        139
+      ],
+      "scope": "PG保存と分けて全通知条件、一覧/grouping/cursor/未読/既読/flush/設定、Service Worker push、旧Redis移行を追跡する。",
+      "persistence": [
+        "本家Redis通知/未読",
+        "新PG notification/effect"
+      ],
+      "effects": [
+        "stream・push配信・遅延未読処理"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/NotificationService.ts",
+        "packages/backend/src/core/PushNotificationService.ts"
+      ],
+      "apiPrefixes": [
+        "notifications/",
+        "sw/"
+      ],
+      "apiNames": [
+        "i/notifications",
+        "i/notifications-grouped"
+      ],
+      "implementation": [
+        "packages/backend-next/src/platform/database/notification/persistence.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/post-work-notification.test.ts"
+      ],
+      "differences": [
+        "本家Redis StreamからPG本体+成立記録へ変更（ユーザー承認済み）。notification-persistence-design.md参照。"
+      ]
+    },
+    {
+      "id": "drive",
+      "title": "Drive・ファイル配信・外部保存",
+      "issue": 188,
+      "relatedIssues": [
+        130,
+        170,
+        139
+      ],
+      "scope": "upload/URL取得/移動/削除・folder/容量/添付参照・ファイルproxy/thumbnail/cacheを含める。",
+      "persistence": [
+        "DriveFile/Folder/count",
+        "filesystemまたはobject storage"
+      ],
+      "effects": [
+        "外部保存・画像処理・参照更新・清掃/回復"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/DriveService.ts",
+        "packages/backend/src/server/FileServerService.ts"
+      ],
+      "apiPrefixes": [
+        "drive/",
+        "admin/drive/"
+      ],
+      "apiNames": [
+        "drive",
+        "admin/delete-all-files-of-a-user"
+      ],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "stream",
+      "title": "WebSocket接続・購読・状態変更",
+      "issue": 189,
+      "relatedIssues": [],
+      "scope": "接続/auth/heartbeat/再接続、19channel、10接続操作と別名、note購読、channelごとのWS書込とevent payloadを扱う。",
+      "persistence": [
+        "認証/関係facts",
+        "Redis PubSub",
+        "chat既読/game状態"
+      ],
+      "effects": [
+        "stream配信・通知既読・chat read・game ready/settings/cancel/putStone等"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/server/api/StreamingApiServerService.ts",
+        "packages/backend/src/server/api/stream/Connection.ts",
+        "packages/backend/src/core/GlobalEventService.ts"
+      ],
+      "apiPrefixes": [],
+      "apiNames": [],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "chat",
+      "title": "chatメッセージ・room",
+      "issue": 190,
+      "relatedIssues": [],
+      "scope": "DM/room作成・参加/招待・mute・履歴/検索・既読・reaction・添付とWS eventを扱う。",
+      "persistence": [
+        "ChatMessage/Room/Invitation/membership/既読"
+      ],
+      "effects": [
+        "通知・push・WS・添付整合・時刻駆動",
+        "chatUser.readとchatRoom.readの別の既読更新"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/ChatService.ts",
+        "packages/backend/src/server/api/stream/channels/chat-user.ts",
+        "packages/backend/src/server/api/stream/channels/chat-room.ts"
+      ],
+      "apiPrefixes": [
+        "chat/"
+      ],
+      "apiNames": [],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "content",
+      "title": "pages・Play・gallery",
+      "issue": 191,
+      "relatedIssues": [],
+      "scope": "pages/flash/Play/galleryの作成・更新・削除・閲覧・like・検索とpage-push。",
+      "persistence": [
+        "Page/Flash/GalleryPost/Like/添付参照"
+      ],
+      "effects": [
+        "like通知・embed/OGP・stream等"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/entities/PageEntityService.ts",
+        "packages/backend/src/core/entities/FlashEntityService.ts",
+        "packages/backend/src/core/entities/GalleryPostEntityService.ts"
+      ],
+      "apiPrefixes": [
+        "pages/",
+        "flash/",
+        "gallery/",
+        "i/gallery/",
+        "users/gallery/"
+      ],
+      "apiNames": [
+        "page-push",
+        "i/pages",
+        "i/page-likes",
+        "users/pages",
+        "users/flashs"
+      ],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "games",
+      "title": "Reversi・bubble game",
+      "issue": 192,
+      "relatedIssues": [],
+      "scope": "match/invitation/game状態/verify/surrender/ranking/registerとWS game操作、期限・並行操作を扱う。",
+      "persistence": [
+        "ReversiGame/ranking/ユーザー記録"
+      ],
+      "effects": [
+        "WS・game timer・終了/放置処理"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/ReversiService.ts"
+      ],
+      "apiPrefixes": [
+        "reversi/",
+        "bubble-game/"
+      ],
+      "apiNames": [],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "discovery",
+      "title": "instance公開情報・emoji・announcement",
+      "issue": 193,
+      "relatedIssues": [],
+      "scope": "meta/ping/server-info/ユーザー数、emoji/avatar decoration、announcement/promo/pinned users等の公開取得・個人既読を含む。",
+      "persistence": [
+        "Meta/Emoji/Announcement/Ad/Decoration"
+      ],
+      "effects": [
+        "公開JSON・cache・announce既読・nodeinfo/host-meta"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/server/NodeinfoServerService.ts",
+        "packages/backend/src/server/WellKnownServerService.ts"
+      ],
+      "apiPrefixes": [
+        "announcements/",
+        "promo/"
+      ],
+      "apiNames": [
+        "meta",
+        "ping",
+        "server-info",
+        "get-online-users-count",
+        "emoji",
+        "emojis",
+        "get-avatar-decorations",
+        "announcements",
+        "pinned-users",
+        "i/read-announcement"
+      ],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "moderation",
+      "title": "管理・モデレーション・設定",
+      "issue": 194,
+      "relatedIssues": [],
+      "scope": "他領域で所有しないadmin API：ユーザー制御/通報/設定/emoji/ad/announce/監査/DB状態・メール送信等。",
+      "persistence": [
+        "Meta/ModerationLog/AbuseReport/管理対象"
+      ],
+      "effects": [
+        "監査・配信停止・メール・キャッシュ/公開設定反映"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/server/api/endpoints/admin/update-meta.ts",
+        "packages/backend/src/core/AbuseReportService.ts"
+      ],
+      "apiPrefixes": [
+        "admin/",
+        "v2/admin/"
+      ],
+      "apiNames": [],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "federation",
+      "title": "AP受信・remote解決・actor公開",
+      "issue": 195,
+      "relatedIssues": [
+        160,
+        171
+      ],
+      "scope": "inbox全activity・検証/remote actor/Note解決・照会、AP actor/object/outbox/followers等とWebFinger/relay/instance管理を扱う。",
+      "persistence": [
+        "remote User/Note/関係/instance/relay",
+        "inbox進捗"
+      ],
+      "effects": [
+        "署名/文書取得・HTTP・受信副作用・AP応答・federation cache"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/server/ActivityPubServerService.ts",
+        "packages/backend/src/core/activitypub/ApInboxService.ts",
+        "packages/backend/src/core/activitypub/ApResolverService.ts"
+      ],
+      "apiPrefixes": [
+        "ap/",
+        "federation/",
+        "admin/federation/",
+        "admin/relays/"
+      ],
+      "apiNames": [],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "ap-outbound",
+      "title": "投稿AP送信・宛先・結果不明",
+      "issue": 124,
+      "relatedIssues": [
+        159,
+        160,
+        161,
+        162,
+        171,
+        172
+      ],
+      "scope": "固定本文から宛先snapshot/page/claim/host lease/署名送信/取消世代/Delete-Undoまで。HTTP搬送と投稿表現を別Issueで接続。",
+      "persistence": [
+        "work_request/item/recipient/host lease"
+      ],
+      "effects": [
+        "外部AP HTTP・有限retry・unknown/順序制約"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/activitypub/ApDeliverManagerService.ts",
+        "packages/backend/src/core/activitypub/ApRequestService.ts"
+      ],
+      "apiPrefixes": [],
+      "apiNames": [],
+      "implementation": [
+        "packages/backend-next/src/platform/database/ap/snapshot.ts",
+        "packages/backend-next/src/platform/database/ap/pages.ts",
+        "packages/backend-next/src/platform/database/ap/host-leases.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/post-work-ap-snapshot.test.ts",
+        "packages/backend-next/test/integration/post-work-ap-pages.test.ts",
+        "packages/backend-next/test/integration/ap-host-leases.test.ts"
+      ],
+      "differences": [
+        "DB正本と固定宛先集合・有限保持/再試行・削除台帳復元制限。外部の厳密一回配送は保証しない。"
+      ]
+    },
+    {
+      "id": "web",
+      "title": "HTML・feed・preview・公開配布経路",
+      "issue": 196,
+      "relatedIssues": [],
+      "scope": "AcceptによるAP/HTML分岐、SPA/OGP/embed/feed/robots/OpenSearch/sw/manifest/assets/tarball、URL preview/RSS等を扱う。",
+      "persistence": [
+        "公開Note/User/コンテンツ/設定",
+        "preview cache"
+      ],
+      "effects": [
+        "HTML/feed・外部URL取得・配布・ブラウザcache制御"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/server/web/ClientServerService.ts",
+        "packages/backend/src/server/web/FeedService.ts",
+        "packages/backend/src/server/web/UrlPreviewService.ts",
+        "packages/backend/src/server/ServerService.ts"
+      ],
+      "apiPrefixes": [],
+      "apiNames": [
+        "fetch-external-resources",
+        "fetch-rss"
+      ],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "user-webhook",
+      "title": "user webhook設定・全イベント配送",
+      "issue": 197,
+      "relatedIssues": [
+        163,
+        175
+      ],
+      "scope": "hook管理6API/テスト、投稿に加えfollow/unfollow/followed/reaction等の全イベント、secretの実行時取得、有限配送/unknownを扱う。投稿sliceは#175を再利用する。",
+      "persistence": [
+        "UserWebhook",
+        "固定依頼・配送進捗"
+      ],
+      "effects": [
+        "userWebhookDeliver HTTP・署名・retry"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/UserWebhookService.ts",
+        "packages/backend/src/models/Webhook.ts"
+      ],
+      "apiPrefixes": [
+        "i/webhooks/"
+      ],
+      "apiNames": [],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "system-webhook",
+      "title": "system webhook設定・配送",
+      "issue": 198,
+      "relatedIssues": [],
+      "scope": "system hook管理・test・対象業務eventと固定依頼/署名配送をuser hookと区別する。",
+      "persistence": [
+        "SystemWebhook/対象関連",
+        "固定依頼・結果"
+      ],
+      "effects": [
+        "systemWebhookDeliver HTTP・署名・retry/unknown"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/SystemWebhookService.ts"
+      ],
+      "apiPrefixes": [
+        "admin/system-webhook/"
+      ],
+      "apiNames": [],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "maintenance",
+      "title": "import/export・移動/削除・保守ジョブ",
+      "issue": 199,
+      "relatedIssues": [
+        130,
+        139
+      ],
+      "scope": "エクスポート/インポート、account移動/削除、期限mute/announcement archive/remote cleanup等。保存/外部の部分完了を機能別に設計。",
+      "persistence": [
+        "各業務正本",
+        "再開cursor/取消・清掃進捗"
+      ],
+      "effects": [
+        "exportファイル・関係/AP・削除・期限処理・有限回復"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/QueueService.ts",
+        "packages/backend/src/queue/QueueProcessorService.ts",
+        "packages/backend/src/queue/processors/DeleteAccountProcessorService.ts"
+      ],
+      "apiPrefixes": [
+        "i/export-",
+        "i/import-"
+      ],
+      "apiNames": [
+        "i/delete-account",
+        "i/move",
+        "admin/delete-account",
+        "admin/accounts/delete",
+        "export-custom-emojis"
+      ],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "analytics",
+      "title": "charts・retention・統計",
+      "issue": 200,
+      "relatedIssues": [
+        132,
+        133
+      ],
+      "scope": "chart各系列/retention/statsと集計/tick/resync/clean、履歴的countと復元不能な期間を扱う。",
+      "persistence": [
+        "chart系列/retention/履歴集計",
+        "buffer"
+      ],
+      "effects": [
+        "定期集計・flush・保持清掃"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/chart/ChartManagementService.ts"
+      ],
+      "apiPrefixes": [
+        "charts/"
+      ],
+      "apiNames": [
+        "retention",
+        "stats"
+      ],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "queue",
+      "title": "ジョブ管理・照会・制御",
+      "issue": 163,
+      "relatedIssues": [
+        124,
+        162,
+        164,
+        165
+      ],
+      "scope": "本家queue単位管理と新DB正本の差異、認可/マスキング/rate limit/監査/有限再実行を扱う。",
+      "persistence": [
+        "work/dispatch/control/管理操作進捗/ModerationLog"
+      ],
+      "effects": [
+        "BullMQ制御とDB先行調停・手動retry/取消"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/QueueService.ts",
+        "packages/backend/src/server/api/endpoints/admin/queue/show-job.ts"
+      ],
+      "apiPrefixes": [
+        "admin/queue/"
+      ],
+      "apiNames": [],
+      "implementation": [
+        "packages/backend-next/src/platform/database/post-work/dispatch.ts",
+        "packages/backend-next/src/platform/database/post-work/local-execution.ts",
+        "packages/backend-next/src/platform/database/post-work/recovery.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/post-work-dispatch.test.ts",
+        "packages/backend-next/test/integration/post-work-local-execution.test.ts",
+        "packages/backend-next/test/integration/post-work-recovery.test.ts"
+      ],
+      "differences": [
+        "BullMQは輸送、DBは業務正本。管理の表示/取消/監査はジョブ設計§7に従う。未実装部分を互換完了としない。"
+      ]
+    },
+    {
+      "id": "operations",
+      "title": "起動・migration・CLI・配布",
+      "issue": 138,
+      "relatedIssues": [
+        113,
+        135,
+        136,
+        137,
+        139,
+        162,
+        166
+      ],
+      "scope": "Supervisor/HTTP/worker・設定/DB/Redis・migration/check・CLI・healthz・配布/監視と完全停止切り替えを扱う。",
+      "persistence": [
+        "本家public履歴/独自履歴",
+        "設定・接続"
+      ],
+      "effects": [
+        "起動終了・CLI・観測・物理容量停止・リリース判定"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/boot/cli.ts",
+        "packages/backend/src/server/HealthServerService.ts"
+      ],
+      "apiPrefixes": [],
+      "apiNames": [],
+      "implementation": [
+        "packages/backend-next/src/processes/supervisor.ts",
+        "packages/backend-next/src/processes/lifecycle.ts",
+        "packages/backend-next/src/platform/database/migrate.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/processes/children.test.ts"
+      ],
+      "differences": [
+        "本家/独自migration分離、通常起動時自動migrationなし、完全停止切り替え。worker業務handlerと配布の統合は未完了。"
+      ]
+    }
+  ],
+  "sources": {
+    "channels": {
+      "main": "packages/backend/src/server/api/stream/channels/main.ts",
+      "homeTimeline": "packages/backend/src/server/api/stream/channels/home-timeline.ts",
+      "localTimeline": "packages/backend/src/server/api/stream/channels/local-timeline.ts",
+      "hybridTimeline": "packages/backend/src/server/api/stream/channels/hybrid-timeline.ts",
+      "globalTimeline": "packages/backend/src/server/api/stream/channels/global-timeline.ts",
+      "userList": "packages/backend/src/server/api/stream/channels/user-list.ts",
+      "clip": "packages/backend/src/server/api/stream/channels/clip.ts",
+      "hashtag": "packages/backend/src/server/api/stream/channels/hashtag.ts",
+      "roleTimeline": "packages/backend/src/server/api/stream/channels/role-timeline.ts",
+      "antenna": "packages/backend/src/server/api/stream/channels/antenna.ts",
+      "channel": "packages/backend/src/server/api/stream/channels/channel.ts",
+      "drive": "packages/backend/src/server/api/stream/channels/drive.ts",
+      "serverStats": "packages/backend/src/server/api/stream/channels/server-stats.ts",
+      "queueStats": "packages/backend/src/server/api/stream/channels/queue-stats.ts",
+      "admin": "packages/backend/src/server/api/stream/channels/admin.ts",
+      "chatUser": "packages/backend/src/server/api/stream/channels/chat-user.ts",
+      "chatRoom": "packages/backend/src/server/api/stream/channels/chat-room.ts",
+      "reversi": "packages/backend/src/server/api/stream/channels/reversi.ts",
+      "reversiGame": "packages/backend/src/server/api/stream/channels/reversi-game.ts"
+    },
+    "http": {
+      "packages/backend/src/server/ActivityPubServerService.ts": "federation",
+      "packages/backend/src/server/FileServerService.ts": "drive",
+      "packages/backend/src/server/NodeinfoServerService.ts": "discovery",
+      "packages/backend/src/server/WellKnownServerService.ts": "discovery",
+      "packages/backend/src/server/HealthServerService.ts": "operations",
+      "packages/backend/src/server/oauth/OAuth2ProviderService.ts": "identity",
+      "packages/backend/src/server/web/ClientServerService.ts": "web",
+      "packages/backend/src/server/ServerService.ts": "web",
+      "packages/backend/src/server/api/openapi/OpenApiServerService.ts": "api-common"
+    },
+    "cases": {
+      "packages/backend/src/server/api/stream/Connection.ts": {
+        "onWsConnectionMessage": "stream-command",
+        "getChannelConstructor": "stream-channel"
+      },
+      "packages/backend/src/queue/QueueProcessorService.ts": {
+        "(module)": "job"
+      },
+      "packages/backend/src/boot/cli.ts": {
+        "(module)": "cli"
+      }
+    },
+    "jobs": {
+      "tickCharts": "analytics",
+      "resyncCharts": "analytics",
+      "cleanCharts": "analytics",
+      "aggregateRetention": "analytics",
+      "checkExpiredMutings": "maintenance",
+      "archiveAnnouncement": "maintenance",
+      "bakeBufferedReactions": "engagement",
+      "checkModeratorsActivity": "maintenance",
+      "clean": "maintenance",
+      "cleanRemoteNotes": "maintenance",
+      "deleteDriveFiles": "drive",
+      "exportCustomEmojis": "maintenance",
+      "exportNotes": "maintenance",
+      "exportClips": "maintenance",
+      "exportFavorites": "maintenance",
+      "exportFollowing": "maintenance",
+      "exportMuting": "maintenance",
+      "exportBlocking": "maintenance",
+      "exportUserLists": "maintenance",
+      "exportAntennas": "maintenance",
+      "importFollowing": "maintenance",
+      "importFollowingToDb": "maintenance",
+      "importMuting": "maintenance",
+      "importBlocking": "maintenance",
+      "importBlockingToDb": "maintenance",
+      "importUserLists": "maintenance",
+      "importCustomEmojis": "maintenance",
+      "importAntennas": "maintenance",
+      "deleteAccount": "maintenance",
+      "follow": "social",
+      "unfollow": "social",
+      "block": "social",
+      "unblock": "social",
+      "deleteFile": "drive",
+      "cleanRemoteFiles": "drive"
+    },
+    "processors": {
+      "AggregateRetention": "analytics",
+      "ArchiveAnnouncement": "maintenance",
+      "BakeBufferedReactions": "engagement",
+      "CheckExpiredMutings": "maintenance",
+      "CheckModeratorsActivity": "maintenance",
+      "CleanCharts": "analytics",
+      "Clean": "maintenance",
+      "CleanRemoteFiles": "drive",
+      "CleanRemoteNotes": "maintenance",
+      "DeleteAccount": "maintenance",
+      "DeleteDriveFiles": "drive",
+      "DeleteFile": "drive",
+      "Deliver": "ap-outbound",
+      "EndedPollNotification": "notifications",
+      "ExportAntennas": "maintenance",
+      "ExportBlocking": "maintenance",
+      "ExportClips": "maintenance",
+      "ExportCustomEmojis": "maintenance",
+      "ExportFavorites": "maintenance",
+      "ExportFollowing": "maintenance",
+      "ExportMuting": "maintenance",
+      "ExportNotes": "maintenance",
+      "ExportUserLists": "maintenance",
+      "ImportAntennas": "maintenance",
+      "ImportBlocking": "maintenance",
+      "ImportCustomEmojis": "maintenance",
+      "ImportFollowing": "maintenance",
+      "ImportMuting": "maintenance",
+      "ImportUserLists": "maintenance",
+      "Inbox": "federation",
+      "PostScheduledNote": "notes-extra",
+      "Relationship": "social",
+      "ResyncCharts": "analytics",
+      "SystemWebhookDeliver": "system-webhook",
+      "TickCharts": "analytics",
+      "UserWebhookDeliver": "user-webhook"
+    }
+  },
+  "capabilities": [
+    {
+      "id": "capability:api-common",
+      "name": "API共通契約（保存・副作用・共通能力）",
+      "source": "packages/backend/src/server/api/ApiServerService.ts",
+      "line": 1,
+      "domain": "api-common"
+    },
+    {
+      "id": "capability:identity",
+      "name": "ログイン・認証情報・アプリ認可（保存・副作用・共通能力）",
+      "source": "packages/backend/src/server/api/SigninApiService.ts",
+      "line": 1,
+      "domain": "identity"
+    },
+    {
+      "id": "capability:accounts",
+      "name": "ユーザー・設定・クライアントregistry（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/entities/UserEntityService.ts",
+      "line": 1,
+      "domain": "accounts"
+    },
+    {
+      "id": "capability:roles",
+      "name": "Role全API・割り当て変更（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/RoleService.ts",
+      "line": 1,
+      "domain": "roles"
+    },
+    {
+      "id": "capability:social",
+      "name": "follow・block・mute・関係管理（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/UserFollowingService.ts",
+      "line": 1,
+      "domain": "social"
+    },
+    {
+      "id": "capability:notes",
+      "name": "投稿初期フロー（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/NoteCreateService.ts",
+      "line": 1,
+      "domain": "notes"
+    },
+    {
+      "id": "capability:notes-extra",
+      "name": "投稿周辺参照・下書き・予約（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/NoteDraftService.ts",
+      "line": 1,
+      "domain": "notes-extra"
+    },
+    {
+      "id": "capability:engagement",
+      "name": "reaction・投票・favorite・thread mute（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/ReactionService.ts",
+      "line": 1,
+      "domain": "engagement"
+    },
+    {
+      "id": "capability:timeline",
+      "name": "TL・アンテナ・一覧閲覧（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/FanoutTimelineService.ts",
+      "line": 1,
+      "domain": "timeline"
+    },
+    {
+      "id": "capability:search",
+      "name": "検索・ハッシュタグ（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/SearchService.ts",
+      "line": 1,
+      "domain": "search"
+    },
+    {
+      "id": "capability:collections",
+      "name": "list・clip・channel（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/entities/ChannelEntityService.ts",
+      "line": 1,
+      "domain": "collections"
+    },
+    {
+      "id": "capability:notifications",
+      "name": "通知・未読/既読・push（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/NotificationService.ts",
+      "line": 1,
+      "domain": "notifications"
+    },
+    {
+      "id": "capability:drive",
+      "name": "Drive・ファイル配信・外部保存（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/DriveService.ts",
+      "line": 1,
+      "domain": "drive"
+    },
+    {
+      "id": "capability:stream",
+      "name": "WebSocket接続・購読・状態変更（保存・副作用・共通能力）",
+      "source": "packages/backend/src/server/api/StreamingApiServerService.ts",
+      "line": 1,
+      "domain": "stream"
+    },
+    {
+      "id": "capability:chat",
+      "name": "chatメッセージ・room（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/ChatService.ts",
+      "line": 1,
+      "domain": "chat"
+    },
+    {
+      "id": "capability:content",
+      "name": "pages・Play・gallery（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/entities/PageEntityService.ts",
+      "line": 1,
+      "domain": "content"
+    },
+    {
+      "id": "capability:games",
+      "name": "Reversi・bubble game（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/ReversiService.ts",
+      "line": 1,
+      "domain": "games"
+    },
+    {
+      "id": "capability:discovery",
+      "name": "instance公開情報・emoji・announcement（保存・副作用・共通能力）",
+      "source": "packages/backend/src/server/NodeinfoServerService.ts",
+      "line": 1,
+      "domain": "discovery"
+    },
+    {
+      "id": "capability:moderation",
+      "name": "管理・モデレーション・設定（保存・副作用・共通能力）",
+      "source": "packages/backend/src/server/api/endpoints/admin/update-meta.ts",
+      "line": 1,
+      "domain": "moderation"
+    },
+    {
+      "id": "capability:federation",
+      "name": "AP受信・remote解決・actor公開（保存・副作用・共通能力）",
+      "source": "packages/backend/src/server/ActivityPubServerService.ts",
+      "line": 1,
+      "domain": "federation"
+    },
+    {
+      "id": "capability:ap-outbound",
+      "name": "投稿AP送信・宛先・結果不明（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/activitypub/ApDeliverManagerService.ts",
+      "line": 1,
+      "domain": "ap-outbound"
+    },
+    {
+      "id": "capability:web",
+      "name": "HTML・feed・preview・公開配布経路（保存・副作用・共通能力）",
+      "source": "packages/backend/src/server/web/ClientServerService.ts",
+      "line": 1,
+      "domain": "web"
+    },
+    {
+      "id": "capability:user-webhook",
+      "name": "user webhook設定・全イベント配送（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/UserWebhookService.ts",
+      "line": 1,
+      "domain": "user-webhook"
+    },
+    {
+      "id": "capability:system-webhook",
+      "name": "system webhook設定・配送（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/SystemWebhookService.ts",
+      "line": 1,
+      "domain": "system-webhook"
+    },
+    {
+      "id": "capability:maintenance",
+      "name": "import/export・移動/削除・保守ジョブ（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/QueueService.ts",
+      "line": 1,
+      "domain": "maintenance"
+    },
+    {
+      "id": "capability:analytics",
+      "name": "charts・retention・統計（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/chart/ChartManagementService.ts",
+      "line": 1,
+      "domain": "analytics"
+    },
+    {
+      "id": "capability:queue",
+      "name": "ジョブ管理・照会・制御（保存・副作用・共通能力）",
+      "source": "packages/backend/src/core/QueueService.ts",
+      "line": 1,
+      "domain": "queue"
+    },
+    {
+      "id": "capability:operations",
+      "name": "起動・migration・CLI・配布（保存・副作用・共通能力）",
+      "source": "packages/backend/src/boot/cli.ts",
+      "line": 1,
+      "domain": "operations"
+    },
+    {
+      "id": "capability:stream-chat-read",
+      "name": "chatRoomのWS readと既読",
+      "source": "packages/backend/src/server/api/stream/channels/chat-room.ts",
+      "line": 1,
+      "domain": "chat"
+    },
+    {
+      "id": "capability:stream-game-write",
+      "name": "reversiGameのready/updateSettings/cancel/putStone/claimTimeIsUp",
+      "source": "packages/backend/src/server/api/stream/channels/reversi-game.ts",
+      "line": 1,
+      "domain": "games"
+    },
+    {
+      "id": "capability:chart-flush",
+      "name": "queue外のchart buffer周期flush",
+      "source": "packages/backend/src/core/chart/ChartManagementService.ts",
+      "line": 1,
+      "domain": "analytics"
+    },
+    {
+      "id": "capability:notification-unread",
+      "name": "未読通知の遅延処理と停止",
+      "source": "packages/backend/src/core/NotificationService.ts",
+      "line": 1,
+      "domain": "notifications"
+    },
+    {
+      "id": "capability:chat-timer",
+      "name": "chatの時刻駆動処理",
+      "source": "packages/backend/src/core/ChatService.ts",
+      "line": 1,
+      "domain": "chat"
+    },
+    {
+      "id": "capability:game-timer",
+      "name": "Reversiの時間制御と停止",
+      "source": "packages/backend/src/core/ReversiService.ts",
+      "line": 1,
+      "domain": "games"
+    },
+    {
+      "id": "capability:server-stats",
+      "name": "ServerStatsの周期観測",
+      "source": "packages/backend/src/daemons/ServerStatsService.ts",
+      "line": 1,
+      "domain": "operations"
+    },
+    {
+      "id": "capability:queue-stats",
+      "name": "QueueStatsの周期観測",
+      "source": "packages/backend/src/daemons/QueueStatsService.ts",
+      "line": 1,
+      "domain": "queue"
+    },
+    {
+      "id": "capability:static-http",
+      "name": "fastifyStatic/redirect/Accept・HTTP共通middleware",
+      "source": "packages/backend/src/server/ServerService.ts",
+      "line": 1,
+      "domain": "web"
+    },
+    {
+      "id": "capability:stream-chat-user-read",
+      "name": "chatUserのWS readとDM既読",
+      "source": "packages/backend/src/server/api/stream/channels/chat-user.ts",
+      "line": 50,
+      "domain": "chat"
+    },
+    {
+      "id": "capability:clip-updated-timer",
+      "name": "clip updatedの即時/3秒静穏後通知と削除時timer取消",
+      "source": "packages/backend/src/core/ClipService.ts",
+      "line": 47,
+      "domain": "collections"
+    }
+  ],
+  "overrides": {
+    "capability:roles": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/role/public.ts",
+        "packages/backend-next/src/http/role-api.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/role-acceptance.test.ts"
+      ]
+    },
+    "capability:notes": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/platform/database/post-work/append.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/post-work-note.test.ts"
+      ]
+    },
+    "capability:notifications": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/platform/database/notification/persistence.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/post-work-notification.test.ts"
+      ]
+    },
+    "capability:ap-outbound": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/platform/database/ap/snapshot.ts",
+        "packages/backend-next/src/platform/database/ap/pages.ts",
+        "packages/backend-next/src/platform/database/ap/host-leases.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/post-work-ap-snapshot.test.ts",
+        "packages/backend-next/test/integration/post-work-ap-pages.test.ts",
+        "packages/backend-next/test/integration/ap-host-leases.test.ts"
+      ]
+    },
+    "capability:queue": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/platform/database/post-work/dispatch.ts",
+        "packages/backend-next/src/platform/database/post-work/local-execution.ts",
+        "packages/backend-next/src/platform/database/post-work/recovery.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/post-work-dispatch.test.ts",
+        "packages/backend-next/test/integration/post-work-local-execution.test.ts",
+        "packages/backend-next/test/integration/post-work-recovery.test.ts"
+      ]
+    },
+    "capability:operations": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/processes/supervisor.ts",
+        "packages/backend-next/src/processes/lifecycle.ts",
+        "packages/backend-next/src/platform/database/migrate.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/processes/children.test.ts"
+      ]
+    },
+    "api:admin/roles/show": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/http/role-api.ts",
+        "packages/backend-next/src/composition/role-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/role-http.test.ts",
+        "packages/backend-next/test/integration/role-acceptance.test.ts"
+      ],
+      "differences": [
+        "ロール更新と監査を同時確定。HTTPの既知差異はdocs/superpowers/specs/2026-10-17-role-compatibility-contract.mdとcompatibility/role/README.mdを参照。"
+      ]
+    },
+    "api:admin/roles/update": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/http/role-api.ts",
+        "packages/backend-next/src/composition/role-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/role-http.test.ts",
+        "packages/backend-next/test/integration/role-acceptance.test.ts"
+      ],
+      "differences": [
+        "ロール更新と監査を同時確定。HTTPの既知差異はdocs/superpowers/specs/2026-10-17-role-compatibility-contract.mdとcompatibility/role/README.mdを参照。"
+      ]
+    }
+  }
+}
