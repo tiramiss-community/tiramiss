@@ -1,0 +1,65 @@
+[
+  {
+    "id": "D1",
+    "contract": "Noteと必須後続依頼を同一transactionで保存する。停止回復は新保証。",
+    "owners": [
+      169,
+      170,
+      162,
+      176
+    ],
+    "newImplementationVerified": false
+  },
+  {
+    "id": "D2",
+    "contract": "count/関係更新を作成・削除と同時確定する。正常時の値と本家の応答直後/遅延の時点差を分ける。channel人数等の値の修正は未合意。",
+    "owners": [
+      169,
+      170,
+      172
+    ],
+    "newImplementationVerified": false
+  },
+  {
+    "id": "D3",
+    "contract": "取消世代・開始済み/unknownのDelete後続。非publicのDelete宛先を初回固定集合/送信実績へ限定する。本家F8はlate follower/relayにも送る。",
+    "owners": [
+      159,
+      161,
+      171,
+      172
+    ],
+    "newImplementationVerified": false
+  },
+  {
+    "id": "D4",
+    "contract": "有限試行・期限・容量・保持・未知schema隔離。上限の413/503は本家のHTTP互換とは別の受理制御契約。",
+    "owners": [
+      160,
+      163,
+      164,
+      165,
+      166,
+      169
+    ],
+    "newImplementationVerified": false
+  },
+  {
+    "id": "D5",
+    "contract": "通知実体をbackend_internalのPostgreSQLへ保存し、通知成立と進捗を同時確定する。本家Redis Streamとの既存通知移行/閲覧互換は別途必要。",
+    "owners": [
+      173,
+      177
+    ],
+    "newImplementationVerified": false
+  },
+  {
+    "id": "D6",
+    "contract": "非文字列tokenを400空本文で終える。既存Role比較資料の承認済み差異を共通HTTPへ引き継ぐ。",
+    "owners": [
+      178,
+      179
+    ],
+    "newImplementationVerified": false
+  }
+]

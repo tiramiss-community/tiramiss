@@ -5,6 +5,8 @@ on:
     branches: [master, develop]
     paths:
       - 'docs/superpowers/compatibility/role/**'
+      - 'docs/superpowers/compatibility/note/**'
+      - 'scripts/note-contract-fixtures.test.mjs'
       - 'packages/backend-next/**'
       - 'packages/backend-upstream/**'
       - 'packages/shared/eslint.config.js'
@@ -16,6 +18,8 @@ on:
   pull_request:
     paths:
       - 'docs/superpowers/compatibility/role/**'
+      - 'docs/superpowers/compatibility/note/**'
+      - 'scripts/note-contract-fixtures.test.mjs'
       - 'packages/backend-next/**'
       - 'packages/backend-upstream/**'
       - 'packages/shared/eslint.config.js'
@@ -57,6 +61,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile --filter backend-next...
       - run: git diff --exit-code pnpm-lock.yaml
+      - name: Note comparison fixture references and contracts
+        run: node --test scripts/note-contract-fixtures.test.mjs
       - run: pnpm --filter backend-upstream sync:check
       - run: pnpm --filter backend-next... build
       - run: pnpm --filter backend-next... typecheck

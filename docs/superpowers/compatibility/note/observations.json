@@ -1,0 +1,4685 @@
+{
+  "C1-basic": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C1-basic",
+        "createdAt": "$time",
+        "userId": "$alice",
+        "user": {
+          "id": "$alice",
+          "name": null,
+          "username": "probe_alice",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": "hello",
+        "cw": null,
+        "visibility": "public",
+        "localOnly": false,
+        "reactionAcceptance": null,
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "fileIds": [],
+        "files": [],
+        "replyId": null,
+        "renoteId": null,
+        "clippedCount": 0
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 0
+    },
+    "saved": {
+      "id": "$C1-basic",
+      "text": "hello",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "fileIds": [],
+      "replyId": null,
+      "renoteId": null,
+      "channelId": null,
+      "visibleUserIds": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "hasPoll": false,
+      "poll": null
+    }
+  },
+  "C2-guest": {
+    "status": 401,
+    "body": {
+      "error": {
+        "message": "Credential required.",
+        "code": "CREDENTIAL_REQUIRED",
+        "id": "1384574d-a912-4b81-8601-c7b1c4085df1",
+        "kind": "client"
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C2-invalid": {
+    "status": 401,
+    "body": {
+      "error": {
+        "message": "Authentication failed. Please ensure your token is correct.",
+        "code": "AUTHENTICATION_FAILED",
+        "id": "b0a7f5f8-dc2f-4171-b91f-de88ad238e14",
+        "kind": "client"
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_token\", error_description=\"Authentication failed. Please ensure your token is correct.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C2-suspended": {
+    "status": 403,
+    "body": {
+      "error": {
+        "message": "Your account has been suspended.",
+        "code": "YOUR_ACCOUNT_SUSPENDED",
+        "id": "a8c724b3-6e9c-4b46-b1a8-bc3ed6258370",
+        "kind": "permission"
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C2-moved": {
+    "status": 403,
+    "body": {
+      "error": {
+        "message": "You have moved your account.",
+        "code": "YOUR_ACCOUNT_MOVED",
+        "id": "56f20ec9-fd06-4fa5-841b-edd6d7d4fa31",
+        "kind": "permission"
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C2-no-scope": {
+    "status": 403,
+    "body": {
+      "error": {
+        "message": "Your app does not have the necessary permissions to use this endpoint.",
+        "code": "PERMISSION_DENIED",
+        "id": "1370e5b7-d4eb-4566-bb1d-7748ee6a1838",
+        "kind": "permission"
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"insufficient_scope\", error_description=\"Your app does not have the necessary permissions to use this endpoint.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C2-app-denied": {
+    "status": 403,
+    "body": {
+      "error": {
+        "message": "Your app does not have the necessary permissions to use this endpoint.",
+        "code": "PERMISSION_DENIED",
+        "id": "1370e5b7-d4eb-4566-bb1d-7748ee6a1838",
+        "kind": "permission"
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"insufficient_scope\", error_description=\"Your app does not have the necessary permissions to use this endpoint.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C2-native": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C2-native",
+        "createdAt": "$time",
+        "userId": "$alice",
+        "user": {
+          "id": "$alice",
+          "name": null,
+          "username": "probe_alice",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": "native",
+        "cw": null,
+        "visibility": "public",
+        "localOnly": false,
+        "reactionAcceptance": null,
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "fileIds": [],
+        "files": [],
+        "replyId": null,
+        "renoteId": null,
+        "clippedCount": 0
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 0
+    },
+    "saved": {
+      "id": "$C2-native",
+      "text": "native",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "fileIds": [],
+      "replyId": null,
+      "renoteId": null,
+      "channelId": null,
+      "visibleUserIds": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "hasPoll": false,
+      "poll": null
+    }
+  },
+  "C2-scoped": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C2-scoped",
+        "createdAt": "$time",
+        "userId": "$alice",
+        "user": {
+          "id": "$alice",
+          "name": null,
+          "username": "probe_alice",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": "scoped",
+        "cw": null,
+        "visibility": "public",
+        "localOnly": false,
+        "reactionAcceptance": null,
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "fileIds": [],
+        "files": [],
+        "replyId": null,
+        "renoteId": null,
+        "clippedCount": 0
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 0
+    },
+    "saved": {
+      "id": "$C2-scoped",
+      "text": "scoped",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "fileIds": [],
+      "replyId": null,
+      "renoteId": null,
+      "channelId": null,
+      "visibleUserIds": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "hasPoll": false,
+      "poll": null
+    }
+  },
+  "C2-app-permission": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C2-app-permission",
+        "createdAt": "$time",
+        "userId": "$alice",
+        "user": {
+          "id": "$alice",
+          "name": null,
+          "username": "probe_alice",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": "app",
+        "cw": null,
+        "visibility": "public",
+        "localOnly": false,
+        "reactionAcceptance": null,
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "fileIds": [],
+        "files": [],
+        "replyId": null,
+        "renoteId": null,
+        "clippedCount": 0
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 0
+    },
+    "saved": {
+      "id": "$C2-app-permission",
+      "text": "app",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "fileIds": [],
+      "replyId": null,
+      "renoteId": null,
+      "channelId": null,
+      "visibleUserIds": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "hasPoll": false,
+      "poll": null
+    }
+  },
+  "C3-missing": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "Invalid param.",
+        "code": "INVALID_PARAM",
+        "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+        "kind": "client",
+        "info": {
+          "param": "#/then/required",
+          "reason": "must have required property 'text'"
+        }
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C3-whitespace": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "Invalid param.",
+        "code": "INVALID_PARAM",
+        "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+        "kind": "client",
+        "info": {
+          "param": "#/then/properties/text/pattern",
+          "reason": "must match pattern \"[^\\s]+\""
+        }
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C3-long": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "Invalid param.",
+        "code": "INVALID_PARAM",
+        "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+        "kind": "client",
+        "info": {
+          "param": "#/then/properties/text/maxLength",
+          "reason": "must NOT have more than 3000 characters"
+        }
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C3-empty-cw": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "Invalid param.",
+        "code": "INVALID_PARAM",
+        "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+        "kind": "client",
+        "info": {
+          "param": "#/properties/cw/minLength",
+          "reason": "must NOT have fewer than 1 characters"
+        }
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C3-cw-only": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "Invalid param.",
+        "code": "INVALID_PARAM",
+        "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+        "kind": "client",
+        "info": {
+          "param": "#/then/required",
+          "reason": "must have required property 'text'"
+        }
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C3-missing-file": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "Some files are not found.",
+        "code": "NO_SUCH_FILE",
+        "id": "b6992544-63e7-67f0-fa7f-32444b1b5306",
+        "kind": "client"
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Some files are not found.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C3-foreign-file": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "Some files are not found.",
+        "code": "NO_SUCH_FILE",
+        "id": "b6992544-63e7-67f0-fa7f-32444b1b5306",
+        "kind": "client"
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Some files are not found.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C3-file-precedence": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C3-file-precedence",
+        "createdAt": "$time",
+        "userId": "$alice",
+        "user": {
+          "id": "$alice",
+          "name": null,
+          "username": "probe_alice",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": null,
+        "cw": null,
+        "visibility": "public",
+        "localOnly": false,
+        "reactionAcceptance": null,
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "fileIds": [
+          "$aliceFile2",
+          "$aliceFile1"
+        ],
+        "files": [
+          {
+            "id": "$aliceFile2",
+            "createdAt": "$time",
+            "name": "aliceFile2.png",
+            "type": "image/png",
+            "md5": "00000000000000000000000000000000",
+            "size": 1,
+            "isSensitive": false,
+            "blurhash": null,
+            "properties": {},
+            "url": "http://127.0.0.1:63167/files/aliceFile2.png",
+            "thumbnailUrl": "http://127.0.0.1:63167/files/aliceFile2.png",
+            "comment": null,
+            "folderId": null,
+            "folder": null,
+            "userId": "$alice",
+            "user": null
+          },
+          {
+            "id": "$aliceFile1",
+            "createdAt": "$time",
+            "name": "aliceFile1.png",
+            "type": "image/png",
+            "md5": "00000000000000000000000000000000",
+            "size": 1,
+            "isSensitive": false,
+            "blurhash": null,
+            "properties": {},
+            "url": "http://127.0.0.1:63167/files/aliceFile1.png",
+            "thumbnailUrl": "http://127.0.0.1:63167/files/aliceFile1.png",
+            "comment": null,
+            "folderId": null,
+            "folder": null,
+            "userId": "$alice",
+            "user": null
+          }
+        ],
+        "replyId": null,
+        "renoteId": null,
+        "clippedCount": 0
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 0
+    },
+    "saved": {
+      "id": "$C3-file-precedence",
+      "text": null,
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "fileIds": [
+        "$aliceFile2",
+        "$aliceFile1"
+      ],
+      "replyId": null,
+      "renoteId": null,
+      "channelId": null,
+      "visibleUserIds": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "hasPoll": false,
+      "poll": null
+    }
+  },
+  "C3-empty-file-precedence": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "Invalid param.",
+        "code": "INVALID_PARAM",
+        "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+        "kind": "client",
+        "info": {
+          "param": "#/properties/fileIds/minItems",
+          "reason": "must NOT have fewer than 1 items"
+        }
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C3-media-alias": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C3-media-alias",
+        "createdAt": "$time",
+        "userId": "$alice",
+        "user": {
+          "id": "$alice",
+          "name": null,
+          "username": "probe_alice",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": null,
+        "cw": null,
+        "visibility": "public",
+        "localOnly": false,
+        "reactionAcceptance": null,
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "fileIds": [
+          "$aliceFile1"
+        ],
+        "files": [
+          {
+            "id": "$aliceFile1",
+            "createdAt": "$time",
+            "name": "aliceFile1.png",
+            "type": "image/png",
+            "md5": "00000000000000000000000000000000",
+            "size": 1,
+            "isSensitive": false,
+            "blurhash": null,
+            "properties": {},
+            "url": "http://127.0.0.1:63167/files/aliceFile1.png",
+            "thumbnailUrl": "http://127.0.0.1:63167/files/aliceFile1.png",
+            "comment": null,
+            "folderId": null,
+            "folder": null,
+            "userId": "$alice",
+            "user": null
+          }
+        ],
+        "replyId": null,
+        "renoteId": null,
+        "clippedCount": 0
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 0
+    },
+    "saved": {
+      "id": "$C3-media-alias",
+      "text": null,
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "fileIds": [
+        "$aliceFile1"
+      ],
+      "replyId": null,
+      "renoteId": null,
+      "channelId": null,
+      "visibleUserIds": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "hasPoll": false,
+      "poll": null
+    }
+  },
+  "C4-sensitive": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C4-sensitive",
+        "createdAt": "$time",
+        "userId": "$alice",
+        "user": {
+          "id": "$alice",
+          "name": null,
+          "username": "probe_alice",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": "sensitive needle",
+        "cw": null,
+        "visibility": "home",
+        "localOnly": false,
+        "reactionAcceptance": null,
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "fileIds": [],
+        "files": [],
+        "replyId": null,
+        "renoteId": null,
+        "clippedCount": 0
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 0
+    },
+    "saved": {
+      "id": "$C4-sensitive",
+      "text": "sensitive needle",
+      "cw": null,
+      "visibility": "home",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "fileIds": [],
+      "replyId": null,
+      "renoteId": null,
+      "channelId": null,
+      "visibleUserIds": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "hasPoll": false,
+      "poll": null
+    }
+  },
+  "C4-policy": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C4-policy",
+        "createdAt": "$time",
+        "userId": "$limited",
+        "user": {
+          "id": "$limited",
+          "name": null,
+          "username": "probe_limited",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_limited@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": "limited",
+        "cw": null,
+        "visibility": "home",
+        "localOnly": false,
+        "reactionAcceptance": null,
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "fileIds": [],
+        "files": [],
+        "replyId": null,
+        "renoteId": null,
+        "clippedCount": 0
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 0
+    },
+    "saved": {
+      "id": "$C4-policy",
+      "text": "limited",
+      "cw": null,
+      "visibility": "home",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "fileIds": [],
+      "replyId": null,
+      "renoteId": null,
+      "channelId": null,
+      "visibleUserIds": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "hasPoll": false,
+      "poll": null
+    }
+  },
+  "C6-missing-reply": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "No such reply target.",
+        "code": "NO_SUCH_REPLY_TARGET",
+        "id": "749ee0f6-d3da-459a-bf02-282e2da4292c",
+        "kind": "client"
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"No such reply target.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C6-missing-renote": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "No such renote target.",
+        "code": "NO_SUCH_RENOTE_TARGET",
+        "id": "b5c90186-4ab0-49c8-9bba-a1f76c282ba4",
+        "kind": "client"
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"No such renote target.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C6-reply": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C6-reply",
+        "createdAt": "$time",
+        "userId": "$alice",
+        "user": {
+          "id": "$alice",
+          "name": null,
+          "username": "probe_alice",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": "reply",
+        "cw": null,
+        "visibility": "public",
+        "localOnly": false,
+        "reactionAcceptance": null,
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "fileIds": [],
+        "files": [],
+        "replyId": "$base",
+        "renoteId": null,
+        "mentions": [
+          "$bob"
+        ],
+        "clippedCount": 0,
+        "reply": {
+          "id": "$base",
+          "createdAt": "$time",
+          "userId": "$bob",
+          "user": {
+            "id": "$bob",
+            "name": null,
+            "username": "probe_bob",
+            "host": null,
+            "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+            "avatarBlurhash": null,
+            "avatarDecorations": [],
+            "isBot": false,
+            "isCat": false,
+            "emojis": {},
+            "onlineStatus": "unknown",
+            "badgeRoles": []
+          },
+          "text": "base",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "reactionAcceptance": null,
+          "renoteCount": 0,
+          "repliesCount": 0,
+          "reactionCount": 0,
+          "reactions": {},
+          "reactionEmojis": {},
+          "fileIds": [],
+          "files": [],
+          "replyId": null,
+          "renoteId": null
+        }
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 0
+    },
+    "saved": {
+      "id": "$C6-reply",
+      "text": "reply",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "fileIds": [],
+      "replyId": "$base",
+      "renoteId": null,
+      "channelId": null,
+      "visibleUserIds": [],
+      "mentions": [
+        "$bob"
+      ],
+      "tags": [],
+      "emojis": [],
+      "hasPoll": false,
+      "poll": null
+    }
+  },
+  "C6-pure-renote": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C6-pure-renote",
+        "createdAt": "$time",
+        "userId": "$alice",
+        "user": {
+          "id": "$alice",
+          "name": null,
+          "username": "probe_alice",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": null,
+        "cw": null,
+        "visibility": "public",
+        "localOnly": false,
+        "reactionAcceptance": null,
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "fileIds": [],
+        "files": [],
+        "replyId": null,
+        "renoteId": "$base",
+        "clippedCount": 0,
+        "renote": {
+          "id": "$base",
+          "createdAt": "$time",
+          "userId": "$bob",
+          "user": {
+            "id": "$bob",
+            "name": null,
+            "username": "probe_bob",
+            "host": null,
+            "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+            "avatarBlurhash": null,
+            "avatarDecorations": [],
+            "isBot": false,
+            "isCat": false,
+            "emojis": {},
+            "onlineStatus": "unknown",
+            "badgeRoles": []
+          },
+          "text": "base",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "reactionAcceptance": null,
+          "renoteCount": 0,
+          "repliesCount": 1,
+          "reactionCount": 0,
+          "reactions": {},
+          "reactionEmojis": {},
+          "fileIds": [],
+          "files": [],
+          "replyId": null,
+          "renoteId": null,
+          "clippedCount": 0
+        }
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 0
+    },
+    "saved": {
+      "id": "$C6-pure-renote",
+      "text": null,
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "fileIds": [],
+      "replyId": null,
+      "renoteId": "$base",
+      "channelId": null,
+      "visibleUserIds": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "hasPoll": false,
+      "poll": null
+    }
+  },
+  "C6-quote": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C6-quote",
+        "createdAt": "$time",
+        "userId": "$alice",
+        "user": {
+          "id": "$alice",
+          "name": null,
+          "username": "probe_alice",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": "quote",
+        "cw": null,
+        "visibility": "public",
+        "localOnly": false,
+        "reactionAcceptance": null,
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "fileIds": [],
+        "files": [],
+        "replyId": null,
+        "renoteId": "$base",
+        "clippedCount": 0,
+        "renote": {
+          "id": "$base",
+          "createdAt": "$time",
+          "userId": "$bob",
+          "user": {
+            "id": "$bob",
+            "name": null,
+            "username": "probe_bob",
+            "host": null,
+            "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+            "avatarBlurhash": null,
+            "avatarDecorations": [],
+            "isBot": false,
+            "isCat": false,
+            "emojis": {},
+            "onlineStatus": "unknown",
+            "badgeRoles": []
+          },
+          "text": "base",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "reactionAcceptance": null,
+          "renoteCount": 1,
+          "repliesCount": 1,
+          "reactionCount": 0,
+          "reactions": {},
+          "reactionEmojis": {},
+          "fileIds": [],
+          "files": [],
+          "replyId": null,
+          "renoteId": null,
+          "clippedCount": 0
+        }
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 0
+    },
+    "saved": {
+      "id": "$C6-quote",
+      "text": "quote",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "fileIds": [],
+      "replyId": null,
+      "renoteId": "$base",
+      "channelId": null,
+      "visibleUserIds": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "hasPoll": false,
+      "poll": null
+    }
+  },
+  "C6-reply-pure": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "You can not reply to a pure Renote.",
+        "code": "CANNOT_REPLY_TO_A_PURE_RENOTE",
+        "id": "3ac74a84-8fd5-4bb0-870f-01804f82ce15",
+        "kind": "client"
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"You can not reply to a pure Renote.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C6-renote-pure": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "You can not Renote a pure Renote.",
+        "code": "CANNOT_RENOTE_TO_A_PURE_RENOTE",
+        "id": "fd4cc33e-2a37-48dd-99cc-9b806eb2031a",
+        "kind": "client"
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"You can not Renote a pure Renote.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C6-invisible-reply": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "You cannot reply to an invisible Note.",
+        "code": "CANNOT_REPLY_TO_AN_INVISIBLE_NOTE",
+        "id": "b98980fa-3780-406c-a935-b6d0eeee10d1",
+        "kind": "client"
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"You cannot reply to an invisible Note.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C6-invisible-renote": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "You can not Renote due to target visibility.",
+        "code": "CANNOT_RENOTE_DUE_TO_VISIBILITY",
+        "id": "be9529e9-fe72-4de0-ae43-0b363c4938af",
+        "kind": "client"
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"You can not Renote due to target visibility.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C7-default": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C7-default",
+        "createdAt": "$time",
+        "userId": "$alice",
+        "user": {
+          "id": "$alice",
+          "name": null,
+          "username": "probe_alice",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": "poll",
+        "cw": null,
+        "visibility": "public",
+        "localOnly": false,
+        "reactionAcceptance": null,
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "fileIds": [],
+        "files": [],
+        "replyId": null,
+        "renoteId": null,
+        "hasPoll": true,
+        "clippedCount": 0,
+        "poll": {
+          "multiple": false,
+          "expiresAt": null,
+          "choices": [
+            {
+              "text": "a",
+              "votes": 0,
+              "isVoted": false
+            },
+            {
+              "text": "b",
+              "votes": 0,
+              "isVoted": false
+            }
+          ]
+        }
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 1
+    },
+    "saved": {
+      "id": "$C7-default",
+      "text": "poll",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "fileIds": [],
+      "replyId": null,
+      "renoteId": null,
+      "channelId": null,
+      "visibleUserIds": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "hasPoll": true,
+      "poll": {
+        "choices": [
+          "a",
+          "b"
+        ],
+        "multiple": false,
+        "expiresAt": null,
+        "votes": [
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "C7-expired": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "Poll is already expired.",
+        "code": "CANNOT_CREATE_ALREADY_EXPIRED_POLL",
+        "id": "04da457d-b083-4055-9082-955525eda5a5",
+        "kind": "client"
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Poll is already expired.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C7-relative-priority": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C7-relative-priority",
+        "createdAt": "$time",
+        "userId": "$alice",
+        "user": {
+          "id": "$alice",
+          "name": null,
+          "username": "probe_alice",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": "poll",
+        "cw": null,
+        "visibility": "public",
+        "localOnly": false,
+        "reactionAcceptance": null,
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "fileIds": [],
+        "files": [],
+        "replyId": null,
+        "renoteId": null,
+        "hasPoll": true,
+        "clippedCount": 0,
+        "poll": {
+          "multiple": false,
+          "expiresAt": "$time",
+          "choices": [
+            {
+              "text": "a",
+              "votes": 0,
+              "isVoted": false
+            },
+            {
+              "text": "b",
+              "votes": 0,
+              "isVoted": false
+            }
+          ]
+        }
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 1
+    },
+    "saved": {
+      "id": "$C7-relative-priority",
+      "text": "poll",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "fileIds": [],
+      "replyId": null,
+      "renoteId": null,
+      "channelId": null,
+      "visibleUserIds": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "hasPoll": true,
+      "poll": {
+        "choices": [
+          "a",
+          "b"
+        ],
+        "multiple": false,
+        "expiresAt": "$time",
+        "votes": [
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "C7-duplicate": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "Invalid param.",
+        "code": "INVALID_PARAM",
+        "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+        "kind": "client",
+        "info": {
+          "param": "#/properties/poll/properties/choices/uniqueItems",
+          "reason": "must NOT have duplicate items (items ## 1 and 0 are identical)"
+        }
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C7-one": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "Invalid param.",
+        "code": "INVALID_PARAM",
+        "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+        "kind": "client",
+        "info": {
+          "param": "#/properties/poll/properties/choices/minItems",
+          "reason": "must NOT have fewer than 2 items"
+        }
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C8-channel": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C8-channel",
+        "createdAt": "$time",
+        "userId": "$alice",
+        "user": {
+          "id": "$alice",
+          "name": null,
+          "username": "probe_alice",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": "channel",
+        "cw": null,
+        "visibility": "public",
+        "localOnly": true,
+        "reactionAcceptance": null,
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "fileIds": [],
+        "files": [],
+        "replyId": null,
+        "renoteId": null,
+        "channelId": "$channel",
+        "channel": {
+          "id": "$channel",
+          "name": "channel",
+          "color": "#86b300",
+          "isSensitive": false,
+          "allowRenoteToExternal": false,
+          "userId": "$alice"
+        },
+        "clippedCount": 0
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 0
+    },
+    "saved": {
+      "id": "$C8-channel",
+      "text": "channel",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": true,
+      "reactionAcceptance": null,
+      "fileIds": [],
+      "replyId": null,
+      "renoteId": null,
+      "channelId": "$channel",
+      "visibleUserIds": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "hasPoll": false,
+      "poll": null
+    }
+  },
+  "C8-archived": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "No such channel.",
+        "code": "NO_SUCH_CHANNEL",
+        "id": "b1653923-5453-4edc-b786-7c4f39bb0bbb",
+        "kind": "client"
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"No such channel.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C8-external-renote": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "Cannot renote outside of channel.",
+        "code": "CANNOT_RENOTE_OUTSIDE_OF_CHANNEL",
+        "id": "33510210-8452-094c-6227-4a6c05d99f00",
+        "kind": "client"
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Cannot renote outside of channel.\"",
+    "delta": {
+      "notes": 0,
+      "polls": 0
+    },
+    "saved": null
+  },
+  "C8-extract": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C8-extract",
+        "createdAt": "$time",
+        "userId": "$alice",
+        "user": {
+          "id": "$alice",
+          "name": null,
+          "username": "probe_alice",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": "@probe_bob #contract :missing_emoji:",
+        "cw": null,
+        "visibility": "public",
+        "localOnly": false,
+        "reactionAcceptance": null,
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "tags": [
+          "contract"
+        ],
+        "fileIds": [],
+        "files": [],
+        "replyId": null,
+        "renoteId": null,
+        "mentions": [
+          "$bob"
+        ],
+        "clippedCount": 0
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 0
+    },
+    "saved": {
+      "id": "$C8-extract",
+      "text": "@probe_bob #contract :missing_emoji:",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "fileIds": [],
+      "replyId": null,
+      "renoteId": null,
+      "channelId": null,
+      "visibleUserIds": [],
+      "mentions": [
+        "$bob"
+      ],
+      "tags": [
+        "contract"
+      ],
+      "emojis": [
+        "missing_emoji"
+      ],
+      "hasPoll": false,
+      "poll": null
+    }
+  },
+  "C8-no-extract": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C8-no-extract",
+        "createdAt": "$time",
+        "userId": "$alice",
+        "user": {
+          "id": "$alice",
+          "name": null,
+          "username": "probe_alice",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": "@probe_bob #contract :missing_emoji:",
+        "cw": null,
+        "visibility": "public",
+        "localOnly": false,
+        "reactionAcceptance": null,
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "fileIds": [],
+        "files": [],
+        "replyId": null,
+        "renoteId": null,
+        "clippedCount": 0
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 0
+    },
+    "saved": {
+      "id": "$C8-no-extract",
+      "text": "@probe_bob #contract :missing_emoji:",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "fileIds": [],
+      "replyId": null,
+      "renoteId": null,
+      "channelId": null,
+      "visibleUserIds": [],
+      "mentions": [],
+      "tags": [],
+      "emojis": [],
+      "hasPoll": false,
+      "poll": null
+    }
+  },
+  "C8-specified": {
+    "status": 200,
+    "body": {
+      "createdNote": {
+        "id": "$C8-specified",
+        "createdAt": "$time",
+        "userId": "$alice",
+        "user": {
+          "id": "$alice",
+          "name": null,
+          "username": "probe_alice",
+          "host": null,
+          "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+          "avatarBlurhash": null,
+          "avatarDecorations": [],
+          "isBot": false,
+          "isCat": false,
+          "emojis": {},
+          "onlineStatus": "unknown",
+          "badgeRoles": []
+        },
+        "text": "@probe_bob private",
+        "cw": null,
+        "visibility": "specified",
+        "localOnly": false,
+        "reactionAcceptance": null,
+        "visibleUserIds": [
+          "$alice"
+        ],
+        "renoteCount": 0,
+        "repliesCount": 0,
+        "reactionCount": 0,
+        "reactions": {},
+        "reactionEmojis": {},
+        "fileIds": [],
+        "files": [],
+        "replyId": null,
+        "renoteId": null,
+        "mentions": [
+          "$bob",
+          "$alice"
+        ],
+        "clippedCount": 0
+      }
+    },
+    "wwwAuthenticate": null,
+    "delta": {
+      "notes": 1,
+      "polls": 0
+    },
+    "saved": {
+      "id": "$C8-specified",
+      "text": "@probe_bob private",
+      "cw": null,
+      "visibility": "specified",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "fileIds": [],
+      "replyId": null,
+      "renoteId": null,
+      "channelId": null,
+      "visibleUserIds": [
+        "$alice"
+      ],
+      "mentions": [
+        "$bob",
+        "$alice"
+      ],
+      "tags": [],
+      "emojis": [],
+      "hasPoll": false,
+      "poll": null
+    }
+  },
+  "C1-show": {
+    "status": 200,
+    "body": {
+      "id": "$C1-basic",
+      "createdAt": "$time",
+      "userId": "$alice",
+      "user": {
+        "id": "$alice",
+        "name": null,
+        "username": "probe_alice",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": "hello",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 0,
+      "reactions": {},
+      "reactionEmojis": {},
+      "fileIds": [],
+      "files": [],
+      "replyId": null,
+      "renoteId": null,
+      "clippedCount": 0
+    }
+  },
+  "C1-user-count": {
+    "before": 0,
+    "afterCreate": 1,
+    "afterDelete": 1
+  },
+  "C2-suspended-show": {
+    "status": 200,
+    "body": {
+      "id": "$base",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": "base",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 2,
+      "repliesCount": 1,
+      "reactionCount": 0,
+      "reactions": {},
+      "reactionEmojis": {},
+      "fileIds": [],
+      "files": [],
+      "replyId": null,
+      "renoteId": null,
+      "clippedCount": 0
+    }
+  },
+  "C2-moved-delete": {
+    "status": 204,
+    "body": null
+  },
+  "C2-bearer-precedence": {
+    "status": 200,
+    "body": {
+      "id": "$base",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": "base",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 2,
+      "repliesCount": 1,
+      "reactionCount": 0,
+      "reactions": {},
+      "reactionEmojis": {},
+      "fileIds": [],
+      "files": [],
+      "replyId": null,
+      "renoteId": null,
+      "clippedCount": 0
+    }
+  },
+  "C5-followers-bob": {
+    "status": 200,
+    "body": {
+      "id": "$show-followers",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": "secret @probe_alice",
+      "cw": "cw",
+      "visibility": "followers",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 0,
+      "reactions": {},
+      "reactionEmojis": {},
+      "fileIds": [
+        "$bobFile"
+      ],
+      "files": [
+        {
+          "id": "$bobFile",
+          "createdAt": "$time",
+          "name": "bobFile.png",
+          "type": "image/png",
+          "md5": "00000000000000000000000000000000",
+          "size": 1,
+          "isSensitive": false,
+          "blurhash": null,
+          "properties": {},
+          "url": "http://127.0.0.1:63167/files/bobFile.png",
+          "thumbnailUrl": "http://127.0.0.1:63167/files/bobFile.png",
+          "comment": null,
+          "folderId": null,
+          "folder": null,
+          "userId": "$bob",
+          "user": null
+        }
+      ],
+      "replyId": null,
+      "renoteId": null,
+      "mentions": [
+        "$alice"
+      ],
+      "hasPoll": true,
+      "clippedCount": 0,
+      "poll": {
+        "multiple": false,
+        "expiresAt": null,
+        "choices": [
+          {
+            "text": "a",
+            "votes": 0,
+            "isVoted": false
+          },
+          {
+            "text": "b",
+            "votes": 0,
+            "isVoted": false
+          }
+        ]
+      }
+    }
+  },
+  "C5-followers-follower": {
+    "status": 200,
+    "body": {
+      "id": "$show-followers",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": "secret @probe_alice",
+      "cw": "cw",
+      "visibility": "followers",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 0,
+      "reactions": {},
+      "reactionEmojis": {},
+      "fileIds": [
+        "$bobFile"
+      ],
+      "files": [
+        {
+          "id": "$bobFile",
+          "createdAt": "$time",
+          "name": "bobFile.png",
+          "type": "image/png",
+          "md5": "00000000000000000000000000000000",
+          "size": 1,
+          "isSensitive": false,
+          "blurhash": null,
+          "properties": {},
+          "url": "http://127.0.0.1:63167/files/bobFile.png",
+          "thumbnailUrl": "http://127.0.0.1:63167/files/bobFile.png",
+          "comment": null,
+          "folderId": null,
+          "folder": null,
+          "userId": "$bob",
+          "user": null
+        }
+      ],
+      "replyId": null,
+      "renoteId": null,
+      "mentions": [
+        "$alice"
+      ],
+      "hasPoll": true,
+      "clippedCount": 0,
+      "poll": {
+        "multiple": false,
+        "expiresAt": null,
+        "choices": [
+          {
+            "text": "a",
+            "votes": 0,
+            "isVoted": false
+          },
+          {
+            "text": "b",
+            "votes": 0,
+            "isVoted": false
+          }
+        ]
+      }
+    }
+  },
+  "C5-followers-alice": {
+    "status": 200,
+    "body": {
+      "id": "$show-followers",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": "secret @probe_alice",
+      "cw": "cw",
+      "visibility": "followers",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 0,
+      "reactions": {},
+      "reactionEmojis": {},
+      "fileIds": [
+        "$bobFile"
+      ],
+      "files": [
+        {
+          "id": "$bobFile",
+          "createdAt": "$time",
+          "name": "bobFile.png",
+          "type": "image/png",
+          "md5": "00000000000000000000000000000000",
+          "size": 1,
+          "isSensitive": false,
+          "blurhash": null,
+          "properties": {},
+          "url": "http://127.0.0.1:63167/files/bobFile.png",
+          "thumbnailUrl": "http://127.0.0.1:63167/files/bobFile.png",
+          "comment": null,
+          "folderId": null,
+          "folder": null,
+          "userId": "$bob",
+          "user": null
+        }
+      ],
+      "replyId": null,
+      "renoteId": null,
+      "mentions": [
+        "$alice"
+      ],
+      "hasPoll": true,
+      "clippedCount": 0,
+      "poll": {
+        "multiple": false,
+        "expiresAt": null,
+        "choices": [
+          {
+            "text": "a",
+            "votes": 0,
+            "isVoted": false
+          },
+          {
+            "text": "b",
+            "votes": 0,
+            "isVoted": false
+          }
+        ]
+      }
+    }
+  },
+  "C5-followers-outsider": {
+    "status": 200,
+    "body": {
+      "id": "$show-followers",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": null,
+      "cw": null,
+      "visibility": "followers",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 0,
+      "reactions": {},
+      "reactionEmojis": {},
+      "fileIds": [],
+      "files": [],
+      "replyId": null,
+      "renoteId": null,
+      "mentions": [
+        "$alice"
+      ],
+      "hasPoll": true,
+      "clippedCount": 0,
+      "isHidden": true
+    }
+  },
+  "C5-followers-guest": {
+    "status": 200,
+    "body": {
+      "id": "$show-followers",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": null,
+      "cw": null,
+      "visibility": "followers",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 0,
+      "reactions": {},
+      "reactionEmojis": {},
+      "fileIds": [],
+      "files": [],
+      "replyId": null,
+      "renoteId": null,
+      "mentions": [
+        "$alice"
+      ],
+      "hasPoll": true,
+      "clippedCount": 0,
+      "isHidden": true
+    }
+  },
+  "C5-specified-bob": {
+    "status": 200,
+    "body": {
+      "id": "$show-specified",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": "secret @probe_alice",
+      "cw": "cw",
+      "visibility": "specified",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "visibleUserIds": [
+        "$alice"
+      ],
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 0,
+      "reactions": {},
+      "reactionEmojis": {},
+      "fileIds": [
+        "$bobFile"
+      ],
+      "files": [
+        {
+          "id": "$bobFile",
+          "createdAt": "$time",
+          "name": "bobFile.png",
+          "type": "image/png",
+          "md5": "00000000000000000000000000000000",
+          "size": 1,
+          "isSensitive": false,
+          "blurhash": null,
+          "properties": {},
+          "url": "http://127.0.0.1:63167/files/bobFile.png",
+          "thumbnailUrl": "http://127.0.0.1:63167/files/bobFile.png",
+          "comment": null,
+          "folderId": null,
+          "folder": null,
+          "userId": "$bob",
+          "user": null
+        }
+      ],
+      "replyId": null,
+      "renoteId": null,
+      "mentions": [
+        "$alice"
+      ],
+      "hasPoll": true,
+      "clippedCount": 0,
+      "poll": {
+        "multiple": false,
+        "expiresAt": null,
+        "choices": [
+          {
+            "text": "a",
+            "votes": 0,
+            "isVoted": false
+          },
+          {
+            "text": "b",
+            "votes": 0,
+            "isVoted": false
+          }
+        ]
+      }
+    }
+  },
+  "C5-specified-follower": {
+    "status": 200,
+    "body": {
+      "id": "$show-specified",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": null,
+      "cw": null,
+      "visibility": "specified",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 0,
+      "reactions": {},
+      "reactionEmojis": {},
+      "fileIds": [],
+      "files": [],
+      "replyId": null,
+      "renoteId": null,
+      "mentions": [
+        "$alice"
+      ],
+      "hasPoll": true,
+      "clippedCount": 0,
+      "isHidden": true
+    }
+  },
+  "C5-specified-alice": {
+    "status": 200,
+    "body": {
+      "id": "$show-specified",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": "secret @probe_alice",
+      "cw": "cw",
+      "visibility": "specified",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "visibleUserIds": [
+        "$alice"
+      ],
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 0,
+      "reactions": {},
+      "reactionEmojis": {},
+      "fileIds": [
+        "$bobFile"
+      ],
+      "files": [
+        {
+          "id": "$bobFile",
+          "createdAt": "$time",
+          "name": "bobFile.png",
+          "type": "image/png",
+          "md5": "00000000000000000000000000000000",
+          "size": 1,
+          "isSensitive": false,
+          "blurhash": null,
+          "properties": {},
+          "url": "http://127.0.0.1:63167/files/bobFile.png",
+          "thumbnailUrl": "http://127.0.0.1:63167/files/bobFile.png",
+          "comment": null,
+          "folderId": null,
+          "folder": null,
+          "userId": "$bob",
+          "user": null
+        }
+      ],
+      "replyId": null,
+      "renoteId": null,
+      "mentions": [
+        "$alice"
+      ],
+      "hasPoll": true,
+      "clippedCount": 0,
+      "poll": {
+        "multiple": false,
+        "expiresAt": null,
+        "choices": [
+          {
+            "text": "a",
+            "votes": 0,
+            "isVoted": false
+          },
+          {
+            "text": "b",
+            "votes": 0,
+            "isVoted": false
+          }
+        ]
+      }
+    }
+  },
+  "C5-specified-outsider": {
+    "status": 200,
+    "body": {
+      "id": "$show-specified",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": null,
+      "cw": null,
+      "visibility": "specified",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 0,
+      "reactions": {},
+      "reactionEmojis": {},
+      "fileIds": [],
+      "files": [],
+      "replyId": null,
+      "renoteId": null,
+      "mentions": [
+        "$alice"
+      ],
+      "hasPoll": true,
+      "clippedCount": 0,
+      "isHidden": true
+    }
+  },
+  "C5-specified-guest": {
+    "status": 200,
+    "body": {
+      "id": "$show-specified",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": null,
+      "cw": null,
+      "visibility": "specified",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 0,
+      "reactions": {},
+      "reactionEmojis": {},
+      "fileIds": [],
+      "files": [],
+      "replyId": null,
+      "renoteId": null,
+      "mentions": [
+        "$alice"
+      ],
+      "hasPoll": true,
+      "clippedCount": 0,
+      "isHidden": true
+    }
+  },
+  "C5-reply-author": {
+    "id": "$show-reply",
+    "createdAt": "$time",
+    "userId": "$alice",
+    "user": {
+      "id": "$alice",
+      "name": null,
+      "username": "probe_alice",
+      "host": null,
+      "avatarUrl": "$origin/identicon/probe_alice@127.0.0.1:61167",
+      "avatarBlurhash": null,
+      "avatarDecorations": [],
+      "isBot": false,
+      "isCat": false,
+      "emojis": {},
+      "onlineStatus": "unknown",
+      "badgeRoles": []
+    },
+    "text": "reply",
+    "cw": null,
+    "visibility": "followers",
+    "localOnly": false,
+    "reactionAcceptance": null,
+    "renoteCount": 0,
+    "repliesCount": 0,
+    "reactionCount": 0,
+    "reactions": {},
+    "reactionEmojis": {},
+    "fileIds": [],
+    "files": [],
+    "replyId": "$base",
+    "renoteId": null,
+    "mentions": [
+      "$bob"
+    ],
+    "clippedCount": 0,
+    "reply": {
+      "id": "$base",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": "base",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 2,
+      "repliesCount": 2,
+      "reactionCount": 0,
+      "reactions": {},
+      "reactionEmojis": {},
+      "fileIds": [],
+      "files": [],
+      "replyId": null,
+      "renoteId": null
+    }
+  },
+  "C5-missing": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "No such note.",
+        "code": "NO_SUCH_NOTE",
+        "id": "24fcbfc6-2e37-42b6-8388-c29b3861a08d",
+        "kind": "client"
+      }
+    }
+  },
+  "C5-user-restricted": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "Content restricted by user. Please sign in to view.",
+        "code": "CONTENT_RESTRICTED_BY_USER",
+        "id": "fbcc002d-37d9-4944-a6b0-d9e29f2d33ab",
+        "kind": "client"
+      }
+    }
+  },
+  "C5-server-restricted": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "Content restricted by server settings. Please sign in to view.",
+        "code": "CONTENT_RESTRICTED_BY_SERVER",
+        "id": "145f88d2-b03d-4087-8143-a78928883c4b",
+        "kind": "client"
+      }
+    }
+  },
+  "C5-detail-self": {
+    "status": 200,
+    "body": {
+      "id": "$detail-note",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": "detail",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 1,
+      "reactions": {
+        "❤": 1
+      },
+      "reactionEmojis": {},
+      "fileIds": [
+        "$bobFile"
+      ],
+      "files": [
+        {
+          "id": "$bobFile",
+          "createdAt": "$time",
+          "name": "bobFile.png",
+          "type": "image/png",
+          "md5": "00000000000000000000000000000000",
+          "size": 1,
+          "isSensitive": false,
+          "blurhash": null,
+          "properties": {},
+          "url": "http://127.0.0.1:63167/files/bobFile.png",
+          "thumbnailUrl": "http://127.0.0.1:63167/files/bobFile.png",
+          "comment": null,
+          "folderId": null,
+          "folder": null,
+          "userId": "$bob",
+          "user": null
+        }
+      ],
+      "replyId": null,
+      "renoteId": null,
+      "hasPoll": true,
+      "clippedCount": 0,
+      "poll": {
+        "multiple": false,
+        "expiresAt": null,
+        "choices": [
+          {
+            "text": "a",
+            "votes": 0,
+            "isVoted": false
+          },
+          {
+            "text": "b",
+            "votes": 1,
+            "isVoted": true
+          }
+        ]
+      },
+      "myReaction": "❤"
+    }
+  },
+  "C5-detail-other": {
+    "status": 200,
+    "body": {
+      "id": "$detail-note",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": "detail",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 1,
+      "reactions": {
+        "❤": 1
+      },
+      "reactionEmojis": {},
+      "fileIds": [
+        "$bobFile"
+      ],
+      "files": [
+        {
+          "id": "$bobFile",
+          "createdAt": "$time",
+          "name": "bobFile.png",
+          "type": "image/png",
+          "md5": "00000000000000000000000000000000",
+          "size": 1,
+          "isSensitive": false,
+          "blurhash": null,
+          "properties": {},
+          "url": "http://127.0.0.1:63167/files/bobFile.png",
+          "thumbnailUrl": "http://127.0.0.1:63167/files/bobFile.png",
+          "comment": null,
+          "folderId": null,
+          "folder": null,
+          "userId": "$bob",
+          "user": null
+        }
+      ],
+      "replyId": null,
+      "renoteId": null,
+      "hasPoll": true,
+      "clippedCount": 0,
+      "poll": {
+        "multiple": false,
+        "expiresAt": null,
+        "choices": [
+          {
+            "text": "a",
+            "votes": 0,
+            "isVoted": false
+          },
+          {
+            "text": "b",
+            "votes": 1,
+            "isVoted": false
+          }
+        ]
+      }
+    }
+  },
+  "C5-removed-file": {
+    "status": 200,
+    "body": {
+      "id": "$detail-note",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": "detail",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 1,
+      "reactions": {
+        "❤": 1
+      },
+      "reactionEmojis": {},
+      "fileIds": [
+        "$bobFile"
+      ],
+      "files": [],
+      "replyId": null,
+      "renoteId": null,
+      "hasPoll": true,
+      "clippedCount": 0,
+      "poll": {
+        "multiple": false,
+        "expiresAt": null,
+        "choices": [
+          {
+            "text": "a",
+            "votes": 0,
+            "isVoted": false
+          },
+          {
+            "text": "b",
+            "votes": 1,
+            "isVoted": true
+          }
+        ]
+      },
+      "myReaction": "❤"
+    }
+  },
+  "C5-time-followers-outsider": {
+    "status": 200,
+    "body": {
+      "id": "$detail-note",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "makeNotesFollowersOnlyBefore": 0,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": null,
+      "cw": null,
+      "visibility": "followers",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 1,
+      "reactions": {
+        "❤": 1
+      },
+      "reactionEmojis": {},
+      "fileIds": [],
+      "files": [],
+      "replyId": null,
+      "renoteId": null,
+      "hasPoll": true,
+      "clippedCount": 0,
+      "isHidden": true
+    }
+  },
+  "C5-time-followers-author": {
+    "status": 200,
+    "body": {
+      "id": "$detail-note",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "makeNotesFollowersOnlyBefore": 0,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": "detail",
+      "cw": null,
+      "visibility": "followers",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 1,
+      "reactions": {
+        "❤": 1
+      },
+      "reactionEmojis": {},
+      "fileIds": [
+        "$bobFile"
+      ],
+      "files": [],
+      "replyId": null,
+      "renoteId": null,
+      "hasPoll": true,
+      "clippedCount": 0,
+      "poll": {
+        "multiple": false,
+        "expiresAt": null,
+        "choices": [
+          {
+            "text": "a",
+            "votes": 0,
+            "isVoted": false
+          },
+          {
+            "text": "b",
+            "votes": 1,
+            "isVoted": false
+          }
+        ]
+      }
+    }
+  },
+  "C5-time-hidden-follower": {
+    "status": 200,
+    "body": {
+      "id": "$detail-note",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "makeNotesHiddenBefore": 0,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": null,
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 1,
+      "reactions": {
+        "❤": 1
+      },
+      "reactionEmojis": {},
+      "fileIds": [],
+      "files": [],
+      "replyId": null,
+      "renoteId": null,
+      "hasPoll": true,
+      "clippedCount": 0,
+      "isHidden": true
+    }
+  },
+  "C5-time-hidden-author": {
+    "status": 200,
+    "body": {
+      "id": "$detail-note",
+      "createdAt": "$time",
+      "userId": "$bob",
+      "user": {
+        "id": "$bob",
+        "name": null,
+        "username": "probe_bob",
+        "host": null,
+        "avatarUrl": "$origin/identicon/probe_bob@127.0.0.1:61167",
+        "avatarBlurhash": null,
+        "avatarDecorations": [],
+        "isBot": false,
+        "isCat": false,
+        "makeNotesHiddenBefore": 0,
+        "emojis": {},
+        "onlineStatus": "unknown",
+        "badgeRoles": []
+      },
+      "text": "detail",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "reactionAcceptance": null,
+      "renoteCount": 0,
+      "repliesCount": 0,
+      "reactionCount": 1,
+      "reactions": {
+        "❤": 1
+      },
+      "reactionEmojis": {},
+      "fileIds": [
+        "$bobFile"
+      ],
+      "files": [],
+      "replyId": null,
+      "renoteId": null,
+      "hasPoll": true,
+      "clippedCount": 0,
+      "poll": {
+        "multiple": false,
+        "expiresAt": null,
+        "choices": [
+          {
+            "text": "a",
+            "votes": 0,
+            "isVoted": false
+          },
+          {
+            "text": "b",
+            "votes": 1,
+            "isVoted": false
+          }
+        ]
+      }
+    }
+  },
+  "C6-counts": {
+    "repliesCount": 2,
+    "renoteCount": 2
+  },
+  "C8-channel-counts": {
+    "before": {
+      "notes": 3,
+      "users": 2
+    },
+    "afterDelete": {
+      "notes": 3,
+      "users": 2
+    },
+    "afterAgain": {
+      "notes": 4,
+      "users": 3
+    }
+  },
+  "C10-other": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "Access denied.",
+        "code": "ACCESS_DENIED",
+        "id": "fe8d7103-0ea8-4ec3-814d-f8b401dc69e9",
+        "kind": "client"
+      }
+    }
+  },
+  "C10-author": {
+    "status": 204,
+    "body": null
+  },
+  "C10-deleted-stream": [
+    {
+      "channel": "noteStream:$delete-target",
+      "message": {
+        "type": "deleted",
+        "body": {
+          "id": "$delete-target",
+          "userId": "$alice",
+          "visibility": "public",
+          "visibleUserIds": [],
+          "body": {
+            "deletedAt": "$time"
+          }
+        }
+      }
+    }
+  ],
+  "C10-repeat": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "No such note.",
+        "code": "NO_SUCH_NOTE",
+        "id": "490be23f-8c1f-4796-819f-94cb4f9d1630",
+        "kind": "client"
+      }
+    }
+  },
+  "C10-moderator": {
+    "status": 204,
+    "body": null
+  },
+  "C10-audit": {
+    "userId": "$moderator",
+    "type": "deleteNote",
+    "noteId": "$moderated-target",
+    "noteUserId": "$alice",
+    "noteUserUsername": "probe_alice",
+    "noteUserHost": null
+  },
+  "C9-public": [
+    {
+      "path": "/inbox/relay",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "id": "$origin/notes/$ap-public/activity",
+        "actor": "$origin/users/$alice",
+        "type": "Create",
+        "published": "$time",
+        "object": {
+          "id": "$origin/notes/$ap-public",
+          "type": "Note",
+          "attributedTo": "$origin/users/$alice",
+          "content": "AP contract",
+          "published": "$time",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "$origin/users/$alice/followers",
+            "http://127.0.0.1:63167/users/remote1"
+          ],
+          "inReplyTo": "http://127.0.0.1:63167/notes/remote-base",
+          "attachment": [],
+          "sensitive": false,
+          "tag": [
+            {
+              "type": "Mention",
+              "href": "http://127.0.0.1:63167/users/remote1",
+              "name": "@remote1@127.0.0.1:63167"
+            }
+          ]
+        },
+        "to": [
+          "https://www.w3.org/ns/activitystreams#Public"
+        ],
+        "cc": [
+          "$origin/users/$alice/followers",
+          "http://127.0.0.1:63167/users/remote1"
+        ],
+        "signature": {
+          "type": "RsaSignature2017",
+          "creator": "$origin/users/$alice#main-key",
+          "nonce": "$nonce",
+          "created": "$time",
+          "signatureValue": "$signature"
+        }
+      },
+      "signed": true,
+      "digest": true
+    },
+    {
+      "path": "/inbox/shared",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "id": "$origin/notes/$ap-public/activity",
+        "actor": "$origin/users/$alice",
+        "type": "Create",
+        "published": "$time",
+        "object": {
+          "id": "$origin/notes/$ap-public",
+          "type": "Note",
+          "attributedTo": "$origin/users/$alice",
+          "content": "AP contract",
+          "published": "$time",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "$origin/users/$alice/followers",
+            "http://127.0.0.1:63167/users/remote1"
+          ],
+          "inReplyTo": "http://127.0.0.1:63167/notes/remote-base",
+          "attachment": [],
+          "sensitive": false,
+          "tag": [
+            {
+              "type": "Mention",
+              "href": "http://127.0.0.1:63167/users/remote1",
+              "name": "@remote1@127.0.0.1:63167"
+            }
+          ]
+        },
+        "to": [
+          "https://www.w3.org/ns/activitystreams#Public"
+        ],
+        "cc": [
+          "$origin/users/$alice/followers",
+          "http://127.0.0.1:63167/users/remote1"
+        ]
+      },
+      "signed": true,
+      "digest": true
+    }
+  ],
+  "C9-home": [
+    {
+      "path": "/inbox/shared",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "id": "$origin/notes/$ap-home/activity",
+        "actor": "$origin/users/$alice",
+        "type": "Create",
+        "published": "$time",
+        "object": {
+          "id": "$origin/notes/$ap-home",
+          "type": "Note",
+          "attributedTo": "$origin/users/$alice",
+          "content": "AP contract",
+          "published": "$time",
+          "to": [
+            "$origin/users/$alice/followers"
+          ],
+          "cc": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "to": [
+          "$origin/users/$alice/followers"
+        ],
+        "cc": [
+          "https://www.w3.org/ns/activitystreams#Public"
+        ]
+      },
+      "signed": true,
+      "digest": true
+    }
+  ],
+  "C9-followers": [
+    {
+      "path": "/inbox/shared",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "id": "$origin/notes/$ap-followers/activity",
+        "actor": "$origin/users/$alice",
+        "type": "Create",
+        "published": "$time",
+        "object": {
+          "id": "$origin/notes/$ap-followers",
+          "type": "Note",
+          "attributedTo": "$origin/users/$alice",
+          "content": "AP contract",
+          "published": "$time",
+          "to": [
+            "$origin/users/$alice/followers"
+          ],
+          "cc": [],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "to": [
+          "$origin/users/$alice/followers"
+        ],
+        "cc": []
+      },
+      "signed": true,
+      "digest": true
+    }
+  ],
+  "C9-specified": [
+    {
+      "path": "/inbox/remote1",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "id": "$origin/notes/$ap-specified/activity",
+        "actor": "$origin/users/$alice",
+        "type": "Create",
+        "published": "$time",
+        "object": {
+          "id": "$origin/notes/$ap-specified",
+          "type": "Note",
+          "attributedTo": "$origin/users/$alice",
+          "content": "AP contract",
+          "published": "$time",
+          "to": [
+            "http://127.0.0.1:63167/users/remote1"
+          ],
+          "cc": [],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": [
+            {
+              "type": "Mention",
+              "href": "http://127.0.0.1:63167/users/remote1",
+              "name": "@remote1@127.0.0.1:63167"
+            }
+          ]
+        },
+        "to": [
+          "http://127.0.0.1:63167/users/remote1"
+        ],
+        "cc": []
+      },
+      "signed": true,
+      "digest": true
+    }
+  ],
+  "C9-pure": [
+    {
+      "path": "/inbox/relay",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "id": "$origin/notes/$ap-pure/activity",
+        "actor": "$origin/users/$alice",
+        "type": "Announce",
+        "published": "$time",
+        "to": [
+          "https://www.w3.org/ns/activitystreams#Public"
+        ],
+        "cc": [
+          "$origin/users/$alice/followers"
+        ],
+        "object": "$origin/notes/$base",
+        "signature": {
+          "type": "RsaSignature2017",
+          "creator": "$origin/users/$alice#main-key",
+          "nonce": "$nonce",
+          "created": "$time",
+          "signatureValue": "$signature"
+        }
+      },
+      "signed": true,
+      "digest": true
+    },
+    {
+      "path": "/inbox/shared",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "id": "$origin/notes/$ap-pure/activity",
+        "actor": "$origin/users/$alice",
+        "type": "Announce",
+        "published": "$time",
+        "to": [
+          "https://www.w3.org/ns/activitystreams#Public"
+        ],
+        "cc": [
+          "$origin/users/$alice/followers"
+        ],
+        "object": "$origin/notes/$base"
+      },
+      "signed": true,
+      "digest": true
+    }
+  ],
+  "C9-quote": [
+    {
+      "path": "/inbox/relay",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "id": "$origin/notes/$ap-quote/activity",
+        "actor": "$origin/users/$alice",
+        "type": "Create",
+        "published": "$time",
+        "object": {
+          "id": "$origin/notes/$ap-quote",
+          "type": "Note",
+          "attributedTo": "$origin/users/$alice",
+          "content": "quote<br><br><span class=\"quote-inline\">RE: <a href=\"$origin/notes/$base\">$origin/notes/$base</a></span>",
+          "_misskey_content": "quote",
+          "source": {
+            "content": "quote",
+            "mediaType": "text/x.misskeymarkdown"
+          },
+          "_misskey_quote": "$origin/notes/$base",
+          "quoteUrl": "$origin/notes/$base",
+          "published": "$time",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "$origin/users/$alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "to": [
+          "https://www.w3.org/ns/activitystreams#Public"
+        ],
+        "cc": [
+          "$origin/users/$alice/followers"
+        ],
+        "signature": {
+          "type": "RsaSignature2017",
+          "creator": "$origin/users/$alice#main-key",
+          "nonce": "$nonce",
+          "created": "$time",
+          "signatureValue": "$signature"
+        }
+      },
+      "signed": true,
+      "digest": true
+    },
+    {
+      "path": "/inbox/shared",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "id": "$origin/notes/$ap-quote/activity",
+        "actor": "$origin/users/$alice",
+        "type": "Create",
+        "published": "$time",
+        "object": {
+          "id": "$origin/notes/$ap-quote",
+          "type": "Note",
+          "attributedTo": "$origin/users/$alice",
+          "content": "quote<br><br><span class=\"quote-inline\">RE: <a href=\"$origin/notes/$base\">$origin/notes/$base</a></span>",
+          "_misskey_content": "quote",
+          "source": {
+            "content": "quote",
+            "mediaType": "text/x.misskeymarkdown"
+          },
+          "_misskey_quote": "$origin/notes/$base",
+          "quoteUrl": "$origin/notes/$base",
+          "published": "$time",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "$origin/users/$alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "to": [
+          "https://www.w3.org/ns/activitystreams#Public"
+        ],
+        "cc": [
+          "$origin/users/$alice/followers"
+        ]
+      },
+      "signed": true,
+      "digest": true
+    }
+  ],
+  "C10-Delete": [
+    {
+      "path": "/inbox/relay",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Delete",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$ap-public",
+          "type": "Tombstone"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Delete-$ap-public",
+        "to": [
+          "https://www.w3.org/ns/activitystreams#Public"
+        ],
+        "signature": {
+          "type": "RsaSignature2017",
+          "creator": "$origin/users/$alice#main-key",
+          "nonce": "$nonce",
+          "created": "$time",
+          "signatureValue": "$signature"
+        }
+      },
+      "signed": true,
+      "digest": true
+    },
+    {
+      "path": "/inbox/remote1",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Delete",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$ap-public",
+          "type": "Tombstone"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Delete-$ap-public"
+      },
+      "signed": true,
+      "digest": true
+    },
+    {
+      "path": "/inbox/shared",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Delete",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$ap-public",
+          "type": "Tombstone"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Delete-$ap-public"
+      },
+      "signed": true,
+      "digest": true
+    }
+  ],
+  "C10-Undo": [
+    {
+      "path": "/inbox/relay",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Undo",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$ap-pure/activity",
+          "actor": "$origin/users/$alice",
+          "type": "Announce",
+          "published": "$time",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "$origin/users/$alice/followers"
+          ],
+          "object": "$origin/notes/$base"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Undo-$ap-pure",
+        "to": [
+          "https://www.w3.org/ns/activitystreams#Public"
+        ],
+        "signature": {
+          "type": "RsaSignature2017",
+          "creator": "$origin/users/$alice#main-key",
+          "nonce": "$nonce",
+          "created": "$time",
+          "signatureValue": "$signature"
+        }
+      },
+      "signed": true,
+      "digest": true
+    },
+    {
+      "path": "/inbox/shared",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Undo",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$ap-pure/activity",
+          "actor": "$origin/users/$alice",
+          "type": "Announce",
+          "published": "$time",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "$origin/users/$alice/followers"
+          ],
+          "object": "$origin/notes/$base"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Undo-$ap-pure"
+      },
+      "signed": true,
+      "digest": true
+    }
+  ],
+  "C10-fallback": [
+    {
+      "path": "/inbox/relay",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Delete",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$fallback-renote",
+          "type": "Tombstone"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Delete-$fallback-renote",
+        "to": [
+          "https://www.w3.org/ns/activitystreams#Public"
+        ],
+        "signature": {
+          "type": "RsaSignature2017",
+          "creator": "$origin/users/$alice#main-key",
+          "nonce": "$nonce",
+          "created": "$time",
+          "signatureValue": "$signature"
+        }
+      },
+      "signed": true,
+      "digest": true
+    },
+    {
+      "path": "/inbox/shared",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Delete",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$fallback-renote",
+          "type": "Tombstone"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Delete-$fallback-renote"
+      },
+      "signed": true,
+      "digest": true
+    }
+  ],
+  "F8-upstream-home": [
+    {
+      "path": "/inbox/late",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Delete",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$ap-home",
+          "type": "Tombstone"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Delete-$ap-home"
+      },
+      "signed": true,
+      "digest": true
+    },
+    {
+      "path": "/inbox/relay",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Delete",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$ap-home",
+          "type": "Tombstone"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Delete-$ap-home",
+        "to": [
+          "https://www.w3.org/ns/activitystreams#Public"
+        ],
+        "signature": {
+          "type": "RsaSignature2017",
+          "creator": "$origin/users/$alice#main-key",
+          "nonce": "$nonce",
+          "created": "$time",
+          "signatureValue": "$signature"
+        }
+      },
+      "signed": true,
+      "digest": true
+    },
+    {
+      "path": "/inbox/shared",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Delete",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$ap-home",
+          "type": "Tombstone"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Delete-$ap-home"
+      },
+      "signed": true,
+      "digest": true
+    }
+  ],
+  "F8-upstream-followers": [
+    {
+      "path": "/inbox/late",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Delete",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$ap-followers",
+          "type": "Tombstone"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Delete-$ap-followers"
+      },
+      "signed": true,
+      "digest": true
+    },
+    {
+      "path": "/inbox/relay",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Delete",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$ap-followers",
+          "type": "Tombstone"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Delete-$ap-followers",
+        "to": [
+          "https://www.w3.org/ns/activitystreams#Public"
+        ],
+        "signature": {
+          "type": "RsaSignature2017",
+          "creator": "$origin/users/$alice#main-key",
+          "nonce": "$nonce",
+          "created": "$time",
+          "signatureValue": "$signature"
+        }
+      },
+      "signed": true,
+      "digest": true
+    },
+    {
+      "path": "/inbox/shared",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Delete",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$ap-followers",
+          "type": "Tombstone"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Delete-$ap-followers"
+      },
+      "signed": true,
+      "digest": true
+    }
+  ],
+  "F8-upstream-specified": [
+    {
+      "path": "/inbox/late",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Delete",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$ap-specified",
+          "type": "Tombstone"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Delete-$ap-specified"
+      },
+      "signed": true,
+      "digest": true
+    },
+    {
+      "path": "/inbox/relay",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Delete",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$ap-specified",
+          "type": "Tombstone"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Delete-$ap-specified",
+        "to": [
+          "https://www.w3.org/ns/activitystreams#Public"
+        ],
+        "signature": {
+          "type": "RsaSignature2017",
+          "creator": "$origin/users/$alice#main-key",
+          "nonce": "$nonce",
+          "created": "$time",
+          "signatureValue": "$signature"
+        }
+      },
+      "signed": true,
+      "digest": true
+    },
+    {
+      "path": "/inbox/remote1",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Delete",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$ap-specified",
+          "type": "Tombstone"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Delete-$ap-specified"
+      },
+      "signed": true,
+      "digest": true
+    },
+    {
+      "path": "/inbox/shared",
+      "activity": {
+        "@context": [
+          "https://www.w3.org/ns/activitystreams",
+          "https://w3id.org/security/v1",
+          {
+            "Key": "sec:Key",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "sensitive": "as:sensitive",
+            "Hashtag": "as:Hashtag",
+            "quoteUrl": "as:quoteUrl",
+            "toot": "http://joinmastodon.org/ns#",
+            "Emoji": "toot:Emoji",
+            "featured": "toot:featured",
+            "discoverable": "toot:discoverable",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "misskey": "https://misskey-hub.net/ns#",
+            "_misskey_content": "misskey:_misskey_content",
+            "_misskey_quote": "misskey:_misskey_quote",
+            "_misskey_reaction": "misskey:_misskey_reaction",
+            "_misskey_votes": "misskey:_misskey_votes",
+            "_misskey_summary": "misskey:_misskey_summary",
+            "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+            "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+            "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+            "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+            "_misskey_license": "misskey:_misskey_license",
+            "freeText": {
+              "@id": "misskey:freeText",
+              "@type": "schema:text"
+            },
+            "isCat": "misskey:isCat",
+            "vcard": "http://www.w3.org/2006/vcard/ns#"
+          }
+        ],
+        "type": "Delete",
+        "actor": "$origin/users/$alice",
+        "object": {
+          "id": "$origin/notes/$ap-specified",
+          "type": "Tombstone"
+        },
+        "published": "$time",
+        "id": "$origin/$activity-Delete-$ap-specified"
+      },
+      "signed": true,
+      "digest": true
+    }
+  ],
+  "C9-localOnly": {
+    "deliveries": []
+  }
+}
