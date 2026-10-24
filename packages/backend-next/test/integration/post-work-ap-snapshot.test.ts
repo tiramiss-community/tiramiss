@@ -24,7 +24,7 @@ beforeAll(async () => {
 	source = await createDataSource(database.config.database).initialize();
 });
 beforeEach(async () => {
-	await source.query('TRUNCATE backend_internal.delivery_recipient, backend_internal.notification, backend_internal.notification_effect, backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
+	await source.query('TRUNCATE backend_internal.ap_host_lease, backend_internal.delivery_recipient, backend_internal.notification, backend_internal.notification_effect, backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
 	await source.query('TRUNCATE public.following, public.relay, public.\"user\" CASCADE');
 	await source.query('UPDATE backend_internal.work_capacity SET reserved_rows=3, reserved_bytes=6144');
 	await source.query('UPDATE backend_internal.work_control SET reserved_dispatches=0, paused=false, recovery_pending=false, queue_generation=1');

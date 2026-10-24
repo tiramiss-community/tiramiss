@@ -307,7 +307,7 @@ SQLは最大20秒（callerが短く設定したstatement_timeoutを優先）。�
 実DBテストは公開範囲別レシピ、重複排除、並行固定、固定中/固定後の関係変更、取消・lease失効、
 容量と件数制限、statement timeout、commit前不可視・再接続後の固定集合、migration up/downを検証する。
 **通常workerは未接続のまま。** pageの実行claim/固定cursor照合・最大100件ずつの送信item生成は次節を参照。
-Delete宛先復元、host lease、HTTP送信、N4の本家比較は後続。
+Delete宛先復元、HTTP送信、N4の本家比較は後続。host lease の保存 adapter は後述する。
 このadapterだけでAP配信や#124全体を完成扱いにしない。
 
 ## AP 固定宛先のページ展開（#124 / J2）
@@ -329,5 +329,28 @@ local executionはpageのclaim/renew/expireに対応し、postLocalとdeliver双
 実DBテストで境界、1000件超の継続、失敗ページの再開、固定後の関係変更、不正cursor、容量とlease失効、
 並行・重複・commit応答不明を検証する。
 
-通常workerへの接続、ap.sendの実行claim/host枠・HTTP送信・署名、Delete/Undo展開、管理と清掃は後続。
+通常workerへの接続、ap.sendの実行claim・HTTP送信・署名、Delete/Undo展開、管理と周期清掃は後続。
 送信itemの生成だけでAP配送や#124全体の完了とは扱わない。
+
+## AP 送信の host 枠（#124 / J2）
+
+[host 枠設計](../../docs/superpowers/specs/2026-10-24-ap-host-leases-design.md)に従い、
+`PostApHostLeases` が `backend_internal.ap_host_lease` の host 当たり 2 枠を全 worker で共有する。
+`acquire(manager, {workId,owner,epoch})` は caller-owned transaction 内の `ap.send` 実行権と結び付ける。
+呼出側が同じ transaction で実行 claim と試行加算を行い、枠不足・失権の例外を外へ伝えて全 rollback する。
+枠が取れない場合の無消費の待機は、後続の送信 claim adapter が rollback 後に行う。
+
+保存済み inbox の URL.hostname を IDN/IPv6 の正規形・小文字・末尾 dot 除去でまとめ、scheme/path/port は枠を分けない。
+inbox 自体を変更せず、userinfo・HTTP(S) 以外を拒否する。送信先 DNS/IP 等の検査は HTTP adapter の別契約となる。
+note→item→capacity→host のロック順で実行 owner/epoch/期限・取消を確認し、lease は DB 時刻の最大 60 秒、
+item の実行 lease と deadline を超えない。同一実行の有効な再取得は同じ枠を返す。
+
+`renew(manager, lease)` は有効な実行権と枠を再確認する。呼出側の実行 lease 延長も同じ transaction で行う。
+期限切れは復活させず、`release(manager, lease)` は枠の epoch/token と実行識別が一致するときだけ解放する。
+行の回収・再作成後も UUID token により古い handle を拒否する。各動的行を formula 1・base 256 と
+host bytes + work ID 最大 128 bytes で課金し、枠の再利用時には重複課金しない。
+
+`cleanup(source, limit=100)` は同 host の全枠に有効 lease・未終端参照がなく、最後の利用と参照 work の
+終端の両方から 30 日後に、保存した行数/bytes を最大 100 行ずつ一度だけ戻す。
+解放後も work への参照が残るため、item 清掃は host 参照の回収を先に確認する。
+この入口の周期実行、送信 claim/開始/結果不明回収、HTTP/署名、worker への接続はまだ行わない。
