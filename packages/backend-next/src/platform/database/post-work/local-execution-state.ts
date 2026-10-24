@@ -4,7 +4,7 @@
  */
 import type { EntityManager } from 'typeorm';
 
-export const localKinds = ['ap.expand', 'notification.create'];
+export const localKinds = ['ap.expand', 'ap.expand.page', 'notification.create'];
 export const activeLocalStates = ['ready', 'retry_wait', 'running'];
 const attentionStates = ['failed_permanent', 'exhausted', 'exhausted_unknown', 'quarantined'];
 

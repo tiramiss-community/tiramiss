@@ -16,7 +16,7 @@ export interface LocalExecutionClaim {
 	workId: string;
 	requestId: string;
 	noteId: string;
-	kind: 'ap.expand' | 'notification.create';
+	kind: 'ap.expand' | 'ap.expand.page' | 'notification.create';
 	owner: string;
 	epoch: string;
 	attempt: number;

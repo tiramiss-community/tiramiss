@@ -336,13 +336,11 @@ test('seventh-attempt retry caps the base delay at one hour with twenty percent 
 	expect(saved.next_attempt_at.getTime()).toBeLessThan(Date.now() + 4320100);
 });
 
-test('unsupported external send and recipient-page jobs are left for their owning adapters', async () => {
+test('external send jobs are left for their owning adapter', async () => {
 	const envelope = await seed(true);
-	for (const kind of ['ap.send', 'ap.expand.page']) {
-		await source.query('UPDATE backend_internal.work_item SET kind=$1', [kind]);
-		expect(await execution.claim({ ...envelope, kind }, 'worker')).toBe(null);
-		expect(await item()).toMatchObject({ state: 'ready', attempt_count: 0, execution_epoch: '0' });
-	}
+	await source.query('UPDATE backend_internal.work_item SET kind=\'ap.send\'');
+	expect(await execution.claim({ ...envelope, kind: 'ap.send' }, 'worker')).toBe(null);
+	expect(await item()).toMatchObject({ state: 'ready', attempt_count: 0, execution_epoch: '0' });
 });
 
 test('recovery enforces its one-hundred-item batch limit and leaves further items durable', async () => {
