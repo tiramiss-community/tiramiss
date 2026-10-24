@@ -38,7 +38,7 @@ beforeAll(async () => {
 	store = new PostWorkDispatchStore(source);
 });
 beforeEach(async () => {
-	await source.query('TRUNCATE backend_internal.delivery_recipient, backend_internal.notification, backend_internal.notification_effect, backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
+	await source.query('TRUNCATE backend_internal.ap_host_lease, backend_internal.delivery_recipient, backend_internal.notification, backend_internal.notification_effect, backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
 	await source.query('UPDATE backend_internal.work_control SET reserved_dispatches=0, paused=false');
 	await source.query('UPDATE backend_internal.work_capacity SET reserved_rows=3, reserved_bytes=6144');
 });
@@ -144,6 +144,7 @@ test('schema matches and dispatch migration can be rolled back and applied again
 	const migration = migrationSources(database.config.database).internal;
 	await migration.initialize();
 	try {
+		await migration.undoLastMigration();
 		await migration.undoLastMigration();
 		await migration.undoLastMigration();
 		await migration.undoLastMigration();

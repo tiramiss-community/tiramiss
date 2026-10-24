@@ -8,6 +8,7 @@ import { entities } from 'backend-upstream/entities';
 import { postWorkEntities } from './post-work/schema.js';
 import { dispatchEntities } from './post-work/dispatch-schema.js';
 import { apRecipientEntities } from './ap/schema.js';
+import { apHostEntities } from './ap/host-schema.js';
 import { notificationEntities } from './notification/schema.js';
 import type { DatabaseConfig } from '../../config/types.js';
 
@@ -19,7 +20,7 @@ export function databaseOptions(
 		type: 'postgres',
 		...config,
 		extra: { ...config.extra, connectionTimeoutMillis: timeoutMs },
-		entities: [...entities, ...postWorkEntities, ...dispatchEntities, ...notificationEntities, ...apRecipientEntities],
+		entities: [...entities, ...postWorkEntities, ...dispatchEntities, ...notificationEntities, ...apRecipientEntities, ...apHostEntities],
 		synchronize: false,
 		migrationsRun: false,
 		logging: false,
