@@ -1,0 +1,443 @@
+[
+  {
+    "id": "C1-basic",
+    "group": "C1",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "hello"
+    }
+  },
+  {
+    "id": "C2-guest",
+    "group": "C2",
+    "endpoint": "create",
+    "actor": null,
+    "params": {}
+  },
+  {
+    "id": "C2-invalid",
+    "group": "C2",
+    "endpoint": "create",
+    "actor": "invalid",
+    "params": {}
+  },
+  {
+    "id": "C2-suspended",
+    "group": "C2",
+    "endpoint": "create",
+    "actor": "suspended",
+    "params": {}
+  },
+  {
+    "id": "C2-moved",
+    "group": "C2",
+    "endpoint": "create",
+    "actor": "moved",
+    "params": {}
+  },
+  {
+    "id": "C2-no-scope",
+    "group": "C2",
+    "endpoint": "create",
+    "actor": "noScope",
+    "params": {}
+  },
+  {
+    "id": "C2-app-denied",
+    "group": "C2",
+    "endpoint": "create",
+    "actor": "appDenied",
+    "params": {}
+  },
+  {
+    "id": "C2-native",
+    "group": "C2",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "native"
+    }
+  },
+  {
+    "id": "C2-scoped",
+    "group": "C2",
+    "endpoint": "create",
+    "actor": "writeScope",
+    "params": {
+      "text": "scoped"
+    }
+  },
+  {
+    "id": "C2-app-permission",
+    "group": "C2",
+    "endpoint": "create",
+    "actor": "appWrite",
+    "params": {
+      "text": "app"
+    }
+  },
+  {
+    "id": "C3-missing",
+    "group": "C3",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {}
+  },
+  {
+    "id": "C3-whitespace",
+    "group": "C3",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": " \n\t "
+    }
+  },
+  {
+    "id": "C3-long",
+    "group": "C3",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": {
+        "$repeat": [
+          "x",
+          3001
+        ]
+      }
+    }
+  },
+  {
+    "id": "C3-empty-cw",
+    "group": "C3",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "cw",
+      "cw": ""
+    }
+  },
+  {
+    "id": "C3-cw-only",
+    "group": "C3",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "cw": "cw"
+    }
+  },
+  {
+    "id": "C3-missing-file",
+    "group": "C3",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "file",
+      "fileIds": [
+        "$missing"
+      ]
+    }
+  },
+  {
+    "id": "C3-foreign-file",
+    "group": "C3",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "file",
+      "fileIds": [
+        "$bobFile"
+      ]
+    }
+  },
+  {
+    "id": "C3-file-precedence",
+    "group": "C3",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "fileIds": [
+        "$aliceFile2",
+        "$aliceFile1"
+      ],
+      "mediaIds": [
+        "$missing"
+      ]
+    }
+  },
+  {
+    "id": "C3-empty-file-precedence",
+    "group": "C3",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "empty",
+      "fileIds": [],
+      "mediaIds": [
+        "$missing"
+      ]
+    }
+  },
+  {
+    "id": "C3-media-alias",
+    "group": "C3",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "mediaIds": [
+        "$aliceFile1"
+      ]
+    }
+  },
+  {
+    "id": "C4-sensitive",
+    "group": "C4",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "sensitive needle",
+      "visibility": "public"
+    },
+    "setup": "sensitive"
+  },
+  {
+    "id": "C4-policy",
+    "group": "C4",
+    "endpoint": "create",
+    "actor": "limited",
+    "params": {
+      "text": "limited",
+      "visibility": "public"
+    }
+  },
+  {
+    "id": "C6-missing-reply",
+    "group": "C6",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "reply",
+      "replyId": "$missing"
+    }
+  },
+  {
+    "id": "C6-missing-renote",
+    "group": "C6",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$missing"
+    }
+  },
+  {
+    "id": "C6-reply",
+    "group": "C6",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "reply",
+      "replyId": "$base"
+    }
+  },
+  {
+    "id": "C6-pure-renote",
+    "group": "C6",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$base"
+    }
+  },
+  {
+    "id": "C6-quote",
+    "group": "C6",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "quote",
+      "renoteId": "$base"
+    }
+  },
+  {
+    "id": "C6-reply-pure",
+    "group": "C6",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "reply",
+      "replyId": "$pure"
+    }
+  },
+  {
+    "id": "C6-renote-pure",
+    "group": "C6",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$pure"
+    }
+  },
+  {
+    "id": "C6-invisible-reply",
+    "group": "C6",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "reply",
+      "replyId": "$private"
+    }
+  },
+  {
+    "id": "C6-invisible-renote",
+    "group": "C6",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$private"
+    }
+  },
+  {
+    "id": "C7-default",
+    "group": "C7",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "poll",
+      "poll": {
+        "choices": [
+          "a",
+          "b"
+        ]
+      }
+    }
+  },
+  {
+    "id": "C7-expired",
+    "group": "C7",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "poll",
+      "poll": {
+        "choices": [
+          "a",
+          "b"
+        ],
+        "expiresAt": 1
+      }
+    }
+  },
+  {
+    "id": "C7-relative-priority",
+    "group": "C7",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "poll",
+      "poll": {
+        "choices": [
+          "a",
+          "b"
+        ],
+        "expiresAt": 1,
+        "expiredAfter": 600000
+      }
+    }
+  },
+  {
+    "id": "C7-duplicate",
+    "group": "C7",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "poll",
+      "poll": {
+        "choices": [
+          "a",
+          "a"
+        ]
+      }
+    }
+  },
+  {
+    "id": "C7-one",
+    "group": "C7",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "poll",
+      "poll": {
+        "choices": [
+          "a"
+        ]
+      }
+    }
+  },
+  {
+    "id": "C8-channel",
+    "group": "C8",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "channel",
+      "channelId": "$channel",
+      "visibility": "specified",
+      "visibleUserIds": [
+        "$bob"
+      ]
+    }
+  },
+  {
+    "id": "C8-archived",
+    "group": "C8",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "channel",
+      "channelId": "$archived"
+    }
+  },
+  {
+    "id": "C8-external-renote",
+    "group": "C8",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$channelNote"
+    }
+  },
+  {
+    "id": "C8-extract",
+    "group": "C8",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "@probe_bob #contract :missing_emoji:"
+    }
+  },
+  {
+    "id": "C8-no-extract",
+    "group": "C8",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "@probe_bob #contract :missing_emoji:",
+      "noExtractMentions": true,
+      "noExtractHashtags": true,
+      "noExtractEmojis": true
+    }
+  },
+  {
+    "id": "C8-specified",
+    "group": "C8",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "@probe_bob private",
+      "visibility": "specified",
+      "visibleUserIds": [
+        "$alice"
+      ]
+    }
+  }
+]

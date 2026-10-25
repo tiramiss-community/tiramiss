@@ -354,3 +354,5 @@ host bytes + work ID 最大 128 bytes で課金し、枠の再利用時には重
 終端の両方から 30 日後に、保存した行数/bytes を最大 100 行ずつ一度だけ戻す。
 解放後も work への参照が残るため、item 清掃は host 参照の回収を先に確認する。
 この入口の周期実行、送信 claim/開始/結果不明回収、HTTP/署名、worker への接続はまだ行わない。
+
+投稿N0の固定本家HTTP/DB/AP/stream比較資料は[投稿の本家比較契約](../../docs/superpowers/compatibility/note/README.md)を参照する。保存済み期待値は#168–#176への入力であり、新実装での投稿互換性検証済みを示さない。

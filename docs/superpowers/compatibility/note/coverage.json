@@ -1,0 +1,689 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "cases": [
+    {
+      "id": "C1",
+      "status": "measured",
+      "owners": [
+        168,
+        169,
+        171
+      ],
+      "upstream": [
+        "packages/backend/src/server/api/endpoints/notes/create.ts",
+        "packages/backend/src/core/NoteCreateService.ts"
+      ],
+      "evidence": [
+        {
+          "file": "observations.json",
+          "key": "C1-basic"
+        },
+        {
+          "file": "observations.json",
+          "key": "C1-show"
+        },
+        {
+          "file": "observations.json",
+          "key": "C1-user-count"
+        }
+      ],
+      "remaining": [
+        "新実装のHTTP/保存/依頼/次操作へ同じ期待値を接続する。APの本家観測はC9-public。"
+      ]
+    },
+    {
+      "id": "C2",
+      "status": "measured",
+      "owners": [
+        169,
+        178,
+        179
+      ],
+      "upstream": [
+        "packages/backend/src/server/api/ApiCallService.ts",
+        "packages/backend/src/server/api/RateLimiterService.ts"
+      ],
+      "evidence": [
+        {
+          "file": "observations.json",
+          "key": "C2-guest"
+        },
+        {
+          "file": "observations.json",
+          "key": "C2-invalid"
+        },
+        {
+          "file": "observations.json",
+          "key": "C2-suspended"
+        },
+        {
+          "file": "observations.json",
+          "key": "C2-moved"
+        },
+        {
+          "file": "observations.json",
+          "key": "C2-no-scope"
+        },
+        {
+          "file": "observations.json",
+          "key": "C2-app-denied"
+        },
+        {
+          "file": "observations.json",
+          "key": "C2-native"
+        },
+        {
+          "file": "observations.json",
+          "key": "C2-scoped"
+        },
+        {
+          "file": "observations.json",
+          "key": "C2-app-permission"
+        },
+        {
+          "file": "observations.json",
+          "key": "C2-suspended-show"
+        },
+        {
+          "file": "observations.json",
+          "key": "C2-moved-delete"
+        },
+        {
+          "file": "observations.json",
+          "key": "C2-bearer-precedence"
+        },
+        {
+          "file": "rate-observations.json",
+          "key": "C2-rate-first-invalid"
+        },
+        {
+          "file": "rate-observations.json",
+          "key": "C2-rate-before-input"
+        },
+        {
+          "file": "rate-observations.json",
+          "key": "C2-rate-db-delta"
+        }
+      ],
+      "remaining": [
+        "認証共通gateはRole固有実装から一般化する。レート拒否はrateLimitFactor=300で1枠に縮めた実HTTP観測。実際に300回送る試験、IP quota、非文字列tokenは本probe対象外。"
+      ]
+    },
+    {
+      "id": "C3",
+      "status": "measured",
+      "owners": [
+        170,
+        188
+      ],
+      "upstream": [
+        "packages/backend/src/server/api/endpoints/notes/create.ts",
+        "packages/backend/src/core/NoteCreateService.ts"
+      ],
+      "evidence": [
+        {
+          "file": "observations.json",
+          "key": "C3-missing"
+        },
+        {
+          "file": "observations.json",
+          "key": "C3-whitespace"
+        },
+        {
+          "file": "observations.json",
+          "key": "C3-long"
+        },
+        {
+          "file": "observations.json",
+          "key": "C3-empty-cw"
+        },
+        {
+          "file": "observations.json",
+          "key": "C3-cw-only"
+        },
+        {
+          "file": "observations.json",
+          "key": "C3-missing-file"
+        },
+        {
+          "file": "observations.json",
+          "key": "C3-foreign-file"
+        },
+        {
+          "file": "observations.json",
+          "key": "C3-file-precedence"
+        },
+        {
+          "file": "observations.json",
+          "key": "C3-empty-file-precedence"
+        },
+        {
+          "file": "observations.json",
+          "key": "C3-media-alias"
+        }
+      ],
+      "remaining": [
+        "Drive管理API/実バイナリuploadは#188。file factsはDB fixture投入。全MIME/所有者移動/同時削除はN3で追加する。"
+      ]
+    },
+    {
+      "id": "C4",
+      "status": "measured",
+      "owners": [
+        168,
+        169,
+        171
+      ],
+      "upstream": [
+        "packages/backend/src/core/NoteCreateService.ts"
+      ],
+      "evidence": [
+        {
+          "file": "observations.json",
+          "key": "C4-sensitive"
+        },
+        {
+          "file": "observations.json",
+          "key": "C4-policy"
+        }
+      ],
+      "remaining": [
+        "home補正のHTTP/保存を新実装へ接続する。補正後本文のAP audience実測は本probeでは未実施（C9-homeで明示homeのaudienceを観測）。"
+      ]
+    },
+    {
+      "id": "C5",
+      "status": "measured",
+      "owners": [
+        168,
+        170
+      ],
+      "upstream": [
+        "packages/backend/src/core/entities/NoteEntityService.ts",
+        "packages/backend/src/server/api/endpoints/notes/show.ts",
+        "packages/backend/src/misc/should-hide-note-by-time.ts"
+      ],
+      "evidence": [
+        {
+          "file": "observations.json",
+          "key": "C5-followers-bob"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-followers-follower"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-followers-alice"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-followers-outsider"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-followers-guest"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-specified-bob"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-specified-follower"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-specified-alice"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-specified-outsider"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-specified-guest"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-reply-author"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-missing"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-user-restricted"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-server-restricted"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-detail-self"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-detail-other"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-removed-file"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-time-followers-outsider"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-time-followers-author"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-time-hidden-follower"
+        },
+        {
+          "file": "observations.json",
+          "key": "C5-time-hidden-author"
+        }
+      ],
+      "remaining": [
+        "show/detail/hidden/添付消失/myReaction/poll vote/時刻0境界をN1へ接続。深いネスト、全時刻閾値、server=localのremote閲覧、query数非比例はN1で追加する。"
+      ]
+    },
+    {
+      "id": "C6",
+      "status": "measured",
+      "owners": [
+        170,
+        171
+      ],
+      "upstream": [
+        "packages/backend/src/core/NoteCreateService.ts",
+        "packages/backend/src/server/api/endpoints/notes/create.ts"
+      ],
+      "evidence": [
+        {
+          "file": "observations.json",
+          "key": "C6-missing-reply"
+        },
+        {
+          "file": "observations.json",
+          "key": "C6-missing-renote"
+        },
+        {
+          "file": "observations.json",
+          "key": "C6-reply"
+        },
+        {
+          "file": "observations.json",
+          "key": "C6-pure-renote"
+        },
+        {
+          "file": "observations.json",
+          "key": "C6-quote"
+        },
+        {
+          "file": "observations.json",
+          "key": "C6-reply-pure"
+        },
+        {
+          "file": "observations.json",
+          "key": "C6-renote-pure"
+        },
+        {
+          "file": "observations.json",
+          "key": "C6-invisible-reply"
+        },
+        {
+          "file": "observations.json",
+          "key": "C6-invisible-renote"
+        },
+        {
+          "file": "observations.json",
+          "key": "C6-counts"
+        }
+      ],
+      "remaining": [
+        "不可視/不存在/pureRenote、返信/引用のHTTP/保存を接続する。block同時変更、reply作者のvisibleUserIds補正の全組合せ、bot/selfの個別カウントfixtureをN3で追加。"
+      ]
+    },
+    {
+      "id": "C7",
+      "status": "measured",
+      "owners": [
+        170,
+        173
+      ],
+      "upstream": [
+        "packages/backend/src/server/api/endpoints/notes/create.ts",
+        "packages/backend/src/core/NoteCreateService.ts"
+      ],
+      "evidence": [
+        {
+          "file": "observations.json",
+          "key": "C7-default"
+        },
+        {
+          "file": "observations.json",
+          "key": "C7-expired"
+        },
+        {
+          "file": "observations.json",
+          "key": "C7-relative-priority"
+        },
+        {
+          "file": "observations.json",
+          "key": "C7-duplicate"
+        },
+        {
+          "file": "observations.json",
+          "key": "C7-one"
+        }
+      ],
+      "remaining": [
+        "expiredAfter優先はHTTP期限の上下限とDB保存値との一致をassertしてから時刻正規化。既定multiple=false、重複choicesと不足choicesを観測。期限終了実ジョブと投票終了通知は#173。"
+      ]
+    },
+    {
+      "id": "C8",
+      "status": "measured",
+      "owners": [
+        170,
+        171
+      ],
+      "upstream": [
+        "packages/backend/src/core/NoteCreateService.ts"
+      ],
+      "evidence": [
+        {
+          "file": "observations.json",
+          "key": "C8-channel"
+        },
+        {
+          "file": "observations.json",
+          "key": "C8-archived"
+        },
+        {
+          "file": "observations.json",
+          "key": "C8-external-renote"
+        },
+        {
+          "file": "observations.json",
+          "key": "C8-extract"
+        },
+        {
+          "file": "observations.json",
+          "key": "C8-no-extract"
+        },
+        {
+          "file": "observations.json",
+          "key": "C8-specified"
+        },
+        {
+          "file": "observations.json",
+          "key": "C8-channel-counts"
+        }
+      ],
+      "remaining": [
+        "channel強制public/localOnly、archive/外部Renote拒否、抽出抑止、specified+mention、人数再加算を接続。channel reply補正全組合せ、mention上限、emoji実体はN3/N4で追加。"
+      ]
+    },
+    {
+      "id": "C9",
+      "status": "measured",
+      "owners": [
+        159,
+        160,
+        162,
+        171
+      ],
+      "upstream": [
+        "packages/backend/src/core/activitypub/ApDeliverManagerService.ts",
+        "packages/backend/src/core/activitypub/ApRendererService.ts",
+        "packages/backend/src/core/RelayService.ts",
+        "packages/backend/src/queue/processors/DeliverProcessorService.ts"
+      ],
+      "evidence": [
+        {
+          "file": "observations.json",
+          "key": "C9-public"
+        },
+        {
+          "file": "observations.json",
+          "key": "C9-home"
+        },
+        {
+          "file": "observations.json",
+          "key": "C9-followers"
+        },
+        {
+          "file": "observations.json",
+          "key": "C9-specified"
+        },
+        {
+          "file": "observations.json",
+          "key": "C9-pure"
+        },
+        {
+          "file": "observations.json",
+          "key": "C9-quote"
+        },
+        {
+          "file": "observations.json",
+          "key": "C9-localOnly"
+        }
+      ],
+      "remaining": [
+        "署名/Digestのheader存在を確認し実受信本文を記録。暗号署名の検証、非同期worker停止、遅い再送、host制限/HTTP分類は#159/#160/#162/#171。localOnlyの0件は正の配送drain後300msの有限観測。"
+      ]
+    },
+    {
+      "id": "C10",
+      "status": "measured",
+      "owners": [
+        172,
+        173
+      ],
+      "upstream": [
+        "packages/backend/src/core/NoteDeleteService.ts",
+        "packages/backend/src/server/api/endpoints/notes/delete.ts"
+      ],
+      "evidence": [
+        {
+          "file": "observations.json",
+          "key": "C10-other"
+        },
+        {
+          "file": "observations.json",
+          "key": "C10-author"
+        },
+        {
+          "file": "observations.json",
+          "key": "C10-deleted-stream"
+        },
+        {
+          "file": "observations.json",
+          "key": "C10-repeat"
+        },
+        {
+          "file": "observations.json",
+          "key": "C10-moderator"
+        },
+        {
+          "file": "observations.json",
+          "key": "C10-audit"
+        },
+        {
+          "file": "observations.json",
+          "key": "C10-Delete"
+        },
+        {
+          "file": "observations.json",
+          "key": "C10-Undo"
+        },
+        {
+          "file": "observations.json",
+          "key": "C10-fallback"
+        }
+      ],
+      "remaining": [
+        "作者/他者/moderator、連続削除、audit、Redis noteStream、Delete/Undo/元投稿消失fallbackを新実装へ接続。Redis publish観測であり実WebSocketクライアント受信の確認は#173/#189。"
+      ]
+    },
+    {
+      "id": "F1",
+      "status": "new-design-contract",
+      "owners": [
+        169,
+        170
+      ],
+      "upstream": [
+        "packages/backend/src/core/NoteCreateService.ts",
+        "packages/backend/src/core/QueueService.ts"
+      ],
+      "evidence": [],
+      "remaining": [
+        "同時rollbackとCOMMIT結果不明は新設計の要求。本家Note/Pollのtransaction読解と新実装の失敗注入を区別し、N2/N3でDB障害位置を追加する。"
+      ]
+    },
+    {
+      "id": "F2",
+      "status": "new-design-contract",
+      "owners": [
+        162,
+        173,
+        176
+      ],
+      "upstream": [
+        "packages/backend/src/core/NoteCreateService.ts",
+        "packages/backend/src/core/QueueService.ts"
+      ],
+      "evidence": [],
+      "remaining": [
+        "永続requestIdとcommit/queue間の停止回復は本家に同一契約がない。既存adapterのテストを通常workerへ接続し、実SIGKILLを#176で行う。"
+      ]
+    },
+    {
+      "id": "F3",
+      "status": "new-design-contract",
+      "owners": [
+        169,
+        170,
+        172
+      ],
+      "upstream": [
+        "packages/backend/src/core/NoteCreateService.ts",
+        "packages/backend/src/core/QueueService.ts"
+      ],
+      "evidence": [],
+      "remaining": [
+        "本家APIの単独操作観測はC群。新ロック規約での並行作成/削除・follow/block・file/channel削除とdeadlockの注入はN2/N3/N5。"
+      ]
+    },
+    {
+      "id": "F4",
+      "status": "new-design-contract",
+      "owners": [
+        159,
+        161,
+        171,
+        172
+      ],
+      "upstream": [
+        "packages/backend/src/core/NoteCreateService.ts",
+        "packages/backend/src/core/QueueService.ts"
+      ],
+      "evidence": [],
+      "remaining": [
+        "HTTP送信権/unknown/取消世代とDelete順序は新設計。応答喪失の外部重複・旧owner継続をfake inboxで#159/#161/N4/N5が実測する。"
+      ]
+    },
+    {
+      "id": "F5",
+      "status": "new-design-contract",
+      "owners": [
+        173,
+        174
+      ],
+      "upstream": [
+        "packages/backend/src/core/NoteCreateService.ts",
+        "packages/backend/src/core/QueueService.ts"
+      ],
+      "evidence": [],
+      "remaining": [
+        "PG通知一意成立と現在状態の古い反映による復活防止をN6a/bで検証。本家の旧派生状態を新保証の期待値として保存しない。"
+      ]
+    },
+    {
+      "id": "F6",
+      "status": "new-design-contract",
+      "owners": [
+        160,
+        163,
+        164,
+        165,
+        166,
+        169,
+        176
+      ],
+      "upstream": [
+        "packages/backend/src/core/NoteCreateService.ts",
+        "packages/backend/src/core/QueueService.ts"
+      ],
+      "evidence": [],
+      "remaining": [
+        "未知schema・容量・有限期限/保持は新ジョブ契約。HTTP分類と413/503を含む新実装の入力/期待値はジョブ設計の数値に従い担当Issueで検証。"
+      ]
+    },
+    {
+      "id": "F7",
+      "status": "new-design-contract",
+      "owners": [
+        159,
+        162,
+        173,
+        176
+      ],
+      "upstream": [
+        "packages/backend/src/core/NoteCreateService.ts",
+        "packages/backend/src/core/QueueService.ts"
+      ],
+      "evidence": [],
+      "remaining": [
+        "request/workの一意キー、claimと所有世代は新DB契約。本家BullMQのIDだけを同等証明にしない。新worker/通知の多重取得・lease失効は担当Issueで検証。"
+      ]
+    },
+    {
+      "id": "F8",
+      "status": "measured",
+      "owners": [
+        161,
+        171,
+        172
+      ],
+      "upstream": [
+        "packages/backend/src/core/NoteDeleteService.ts"
+      ],
+      "evidence": [
+        {
+          "file": "observations.json",
+          "key": "F8-upstream-home"
+        },
+        {
+          "file": "observations.json",
+          "key": "F8-upstream-followers"
+        },
+        {
+          "file": "observations.json",
+          "key": "F8-upstream-specified"
+        }
+      ],
+      "remaining": [
+        "本家は作成後のlate followerとrelayへ非publicのDeleteも送ると実受信で確認。新実装は固定集合へ限定（D3）。展開前/途中の削除とunknown宛先はN4/N5で追加。"
+      ]
+    }
+  ]
+}
