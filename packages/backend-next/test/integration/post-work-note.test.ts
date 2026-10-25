@@ -11,10 +11,10 @@ import { workCapacity } from '../../src/modules/post-work/prepare.js';
 import { withPostWorkRequests } from '../../src/platform/database/post-work/append.js';
 import { PostWorkDispatchStore } from '../../src/platform/database/post-work/dispatch.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
-import { migrateDatabase } from '../../src/platform/database/migrate.js';
+import { migrateTestDatabase as migrateDatabase } from '../helpers/database.js';
 import { assertMigrationsApplied } from '../../src/platform/database/check-migrations.js';
 import { assertSchemaMatches } from '../../src/platform/database/check-schema.js';
-import { createTestDatabase } from '../helpers/database.js';
+import { createTestDatabase, seedHealthyCapacity } from '../helpers/database.js';
 
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 let source: DataSource;
@@ -29,6 +29,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+	await seedHealthyCapacity(source);
 	await source.query('TRUNCATE backend_internal.ap_host_lease, backend_internal.delivery_recipient, backend_internal.notification, backend_internal.notification_effect, backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
 	await source.getRepository(MiNote).deleteAll();
 	await source.getRepository(MiUser).update({ id: 'actor' }, { notesCount: 0 });

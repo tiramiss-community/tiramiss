@@ -39,7 +39,7 @@ export async function configuration(config: RuntimeConfig) {
 			},
 			redis: config.redis,
 			redisForPubsub: config.redisForPubsub,
-			backendNext: config.processes,
+			backendNext: { ...config.processes, capacityMonitor: config.capacityMonitor },
 		}),
 	);
 	return { path, directory, close: () => rm(directory, { recursive: true, force: true }) };

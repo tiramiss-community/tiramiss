@@ -4,11 +4,11 @@
  */
 import { beforeAll, beforeEach, afterAll, expect, test } from 'vitest';
 import { createDataSource } from '../../src/platform/database/data-source.js';
-import { migrateDatabase } from '../../src/platform/database/migrate.js';
+import { migrateTestDatabase as migrateDatabase } from '../helpers/database.js';
 import { withPostWorkRequests } from '../../src/platform/database/post-work/append.js';
 import { PostWorkDispatchStore } from '../../src/platform/database/post-work/dispatch.js';
 import { PostWorkLocalExecutionStore, withLocalWorkCompletion } from '../../src/platform/database/post-work/local-execution.js';
-import { createTestDatabase } from '../helpers/database.js';
+import { createTestDatabase, seedHealthyCapacity } from '../helpers/database.js';
 import { apRequest, notificationRequest } from '../helpers/post-work.js';
 import type { LocalExecutionClaim, LocalExecutionEnvelope } from '../../src/platform/jobs/local-execution.js';
 import type { DataSource, EntityManager } from 'typeorm';
@@ -28,6 +28,7 @@ beforeAll(async () => {
 	await source.query('CREATE TABLE execution_probe (id text PRIMARY KEY)');
 });
 beforeEach(async () => {
+	await seedHealthyCapacity(source);
 	await source.query('TRUNCATE execution_probe, backend_internal.ap_host_lease, backend_internal.delivery_recipient, backend_internal.notification, backend_internal.notification_effect, backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
 	await source.query('UPDATE backend_internal.work_control SET reserved_dispatches=0, paused=false, queue_generation=1');
 	await source.query('UPDATE backend_internal.work_capacity SET reserved_rows=3, reserved_bytes=6144');

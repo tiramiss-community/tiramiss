@@ -4,6 +4,7 @@
  */
 import { randomUUID } from 'node:crypto';
 import { chargedBytes, workCapacity } from '../../../modules/post-work/prepare.js';
+import { assertPhysicalCapacity, physicalCapacityCondition } from '../work-capacity/gate.js';
 import { WorkCapacityExceeded } from '../../../modules/post-work/public.js';
 import type { DataSource, EntityManager } from 'typeorm';
 
@@ -108,11 +109,13 @@ export class PostApHostLeases {
 			const quota = await manager.createQueryBuilder().update('backend_internal.work_capacity').set({
 				reserved_rows: () => 'reserved_rows+:rows', reserved_bytes: () => 'reserved_bytes+:bytes',
 			}).where('capacity_key=\'global\' AND capacity_formula_version=1')
+				.andWhere(physicalCapacityCondition)
 				.andWhere('reserved_rows+:rows <= :maxRows AND reserved_bytes+:bytes <= :maxBytes')
 				.setParameters({ rows: count, bytes: charge * count, maxRows: workCapacity.rows * 0.9, maxBytes: workCapacity.bytes * 0.9 }).execute();
 			if (quota.affected !== 1) {
 				throw new WorkCapacityExceeded('AP host capacity unavailable');
 			}
+			await assertPhysicalCapacity(manager);
 		}
 		await manager.createQueryBuilder().select('host.*').from('backend_internal.ap_host_lease', 'host')
 			.where('host=:host', { host }).orderBy('slot').setLock('pessimistic_write').getRawMany();

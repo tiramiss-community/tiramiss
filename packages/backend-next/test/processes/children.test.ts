@@ -10,7 +10,7 @@ import { configuration, freePort, launch } from '../helpers/process.js';
 import { MiMeta, MiNote, MiUser } from 'backend-upstream/entities';
 import { createDataSource } from '../../src/platform/database/data-source.js';
 import { createIdCodec } from '../../src/platform/id-codec.js';
-import { migrateDatabase } from '../../src/platform/database/migrate.js';
+import { migrateTestDatabase as migrateDatabase } from '../helpers/database.js';
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 beforeAll(async () => {
 	database = await createTestDatabase();

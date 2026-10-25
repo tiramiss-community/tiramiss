@@ -5,7 +5,7 @@
 import { afterAll, beforeAll, expect, test } from 'vitest';
 import { createTestDatabase } from '../helpers/database.js';
 import { configuration, freePort, launch } from '../helpers/process.js';
-import { migrateDatabase } from '../../src/platform/database/migrate.js';
+import { migrateTestDatabase as migrateDatabase } from '../helpers/database.js';
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 beforeAll(async () => {
 	database = await createTestDatabase();

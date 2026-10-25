@@ -8,12 +8,12 @@ import { BullmqDispatch } from '../../src/platform/jobs/bullmq-dispatch.js';
 import { afterAll, beforeAll, beforeEach, expect, test } from 'vitest';
 import type { DataSource } from 'typeorm';
 import { createDataSource } from '../../src/platform/database/data-source.js';
-import { migrateDatabase } from '../../src/platform/database/migrate.js';
+import { migrateTestDatabase as migrateDatabase } from '../helpers/database.js';
 import { PostWorkDispatchStore, scanPostWork, reconcilePostWork } from '../../src/platform/database/post-work/dispatch.js';
 import { withPostWorkRequests } from '../../src/platform/database/post-work/append.js';
 import { assertSchemaMatches } from '../../src/platform/database/check-schema.js';
 import { migrationSources } from '../../src/platform/database/migration-sources.js';
-import { createTestDatabase } from '../helpers/database.js';
+import { createTestDatabase, seedHealthyCapacity } from '../helpers/database.js';
 import { apRequest, notificationRequest } from '../helpers/post-work.js';
 import type { PostWorkRequest } from '../../src/modules/post-work/public.js';
 
@@ -38,6 +38,7 @@ beforeAll(async () => {
 	store = new PostWorkDispatchStore(source);
 });
 beforeEach(async () => {
+	await seedHealthyCapacity(source);
 	await source.query('TRUNCATE backend_internal.ap_host_lease, backend_internal.delivery_recipient, backend_internal.notification, backend_internal.notification_effect, backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
 	await source.query('UPDATE backend_internal.work_control SET reserved_dispatches=0, paused=false');
 	await source.query('UPDATE backend_internal.work_capacity SET reserved_rows=3, reserved_bytes=6144');
@@ -144,6 +145,7 @@ test('schema matches and dispatch migration can be rolled back and applied again
 	const migration = migrationSources(database.config.database).internal;
 	await migration.initialize();
 	try {
+		await migration.undoLastMigration();
 		await migration.undoLastMigration();
 		await migration.undoLastMigration();
 		await migration.undoLastMigration();
@@ -284,4 +286,12 @@ test('active reservations in the first batch do not starve a later completed ent
 	expect((await source.query("SELECT reserved_dispatches FROM backend_internal.work_control WHERE queue_key='postLocal'"))[0].reserved_dispatches).toBe(101);
 	await reconcilePostWork(store, recovery);
 	expect((await source.query("SELECT reserved_dispatches FROM backend_internal.work_control WHERE queue_key='postLocal'"))[0].reserved_dispatches).toBe(100);
+});
+
+test('low physical capacity does not create dispatch rows or advance sequence or attempt', async () => {
+	await appendSend();
+	await source.query('UPDATE backend_internal.work_capacity SET physical_free_bytes=1');
+	expect(await store.claim('scanner')).toEqual({ status: 'waiting' });
+	expect(await source.query('SELECT count(*)::int AS count FROM backend_internal.queue_dispatch')).toEqual([{ count: 0 }]);
+	expect(await items()).toEqual([{ state: 'retry_wait', attempt_count: 0, seq: 0 }]);
 });

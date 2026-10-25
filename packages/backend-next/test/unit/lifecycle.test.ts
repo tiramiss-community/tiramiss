@@ -9,6 +9,8 @@ const resources = vi.hoisted(() => ({ close: vi.fn(async () => {}), logger: { in
 const initialize = vi.hoisted(() => vi.fn(async () => resources));
 const check = vi.hoisted(() => vi.fn(async () => {}));
 vi.mock('../../src/composition/create-runtime.js', () => ({ createRuntime: initialize }));
+vi.mock('../../src/platform/database/work-capacity/accounting.js', () => ({ assertWorkCapacity: async () => {} }));
+vi.mock('../../src/platform/work-capacity-monitor.js', () => ({ startWorkCapacityMonitor: async () => async () => {} }));
 vi.mock('../../src/platform/database/check-migrations.js', () => ({ assertMigrationsApplied: check }));
 
 test('does not accept traffic before dependency and history checks, and stops once', async () => {

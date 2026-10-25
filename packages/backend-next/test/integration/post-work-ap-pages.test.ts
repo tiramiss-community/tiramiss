@@ -10,9 +10,9 @@ import { PostWorkLocalExecutionStore } from '../../src/platform/database/post-wo
 import { PostApRecipientSnapshot } from '../../src/platform/database/ap/snapshot.js';
 import { PostApRecipientPages } from '../../src/platform/database/ap/pages.js';
 import { workHash } from '../../src/modules/post-work/prepare.js';
-import { createTestDatabase } from '../helpers/database.js';
+import { createTestDatabase, seedHealthyCapacity } from '../helpers/database.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
-import { migrateDatabase } from '../../src/platform/database/migrate.js';
+import { migrateTestDatabase as migrateDatabase } from '../helpers/database.js';
 import { apRequest } from '../helpers/post-work.js';
 import type { LocalExecutionClaim, LocalExecutionEnvelope } from '../../src/platform/jobs/local-execution.js';
 import type { DataSource } from 'typeorm';
@@ -27,6 +27,7 @@ beforeAll(async () => {
 	execution = new PostWorkLocalExecutionStore(source, () => 0);
 });
 beforeEach(async () => {
+	await seedHealthyCapacity(source);
 	await source.query('TRUNCATE backend_internal.ap_host_lease, backend_internal.delivery_recipient, backend_internal.notification, backend_internal.notification_effect, backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
 	await source.query('TRUNCATE public.following, public.relay, public."user" CASCADE');
 	await source.query('UPDATE backend_internal.work_capacity SET reserved_rows=3,reserved_bytes=6144');
@@ -433,4 +434,13 @@ test('conflicting existing child content rolls back new siblings and quota witho
 	expect(await capacity()).toEqual(before);
 	expect(await children()).toMatchObject([{ state: 'succeeded', attempt_count: 3, payload: '{"inbox":"https://relay.test/0001","shared":true}' }]);
 	expect(await pages()).toMatchObject([{ state: 'running' }]);
+});
+
+test('low physical capacity preserves the fixed ledger but creates no child items', async () => {
+	await seed(101);
+	const owned = await claim();
+	await source.query('UPDATE backend_internal.work_capacity SET physical_free_bytes=1');
+	await expect(complete(owned)).rejects.toThrow('capacity');
+	expect(await children()).toEqual([]);
+	expect(await source.query('SELECT count(*)::int AS count FROM backend_internal.delivery_recipient')).toEqual([{ count: 101 }]);
 });

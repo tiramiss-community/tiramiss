@@ -11,8 +11,8 @@ import type { RoleUpdateScope } from '../../src/modules/role/update-contract.js'
 import { createAttemptEvaluation, createUpdateRole, AdministratorRequired, ActorNotFound } from '../../src/modules/role/public.js';
 import { createRoleUpdateTransactions } from '../../src/platform/database/role-update.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
-import { migrateDatabase } from '../../src/platform/database/migrate.js';
-import { createTestDatabase } from '../helpers/database.js';
+import { migrateTestDatabase as migrateDatabase } from '../helpers/database.js';
+import { createTestDatabase, seedHealthyCapacity } from '../helpers/database.js';
 import { deferred } from '../unit/role/fixtures.js';
 
 const atMs = Date.parse('2026-10-17T12:00:00Z');
@@ -60,6 +60,7 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
+	await seedHealthyCapacity(source);
 	notifications = [];
 	await source.query('ALTER TABLE role DROP CONSTRAINT IF EXISTS role_update_test_failure');
 	await source.query('ALTER TABLE moderation_log DROP CONSTRAINT IF EXISTS audit_update_test_failure');
@@ -312,4 +313,13 @@ test('committed update invalidates real local/remote material caches and the ope
 		await b.close();
 		publisher.disconnect();
 	}
+});
+
+test('low physical capacity rolls back an authorized role update and its audit without notifying', async () => {
+	const before = await stored();
+	await source.query('UPDATE backend_internal.work_capacity SET physical_free_bytes=1');
+	await expect(updater().updateRole(actor, { roleId, name: 'rejected' }, createAttemptEvaluation(atMs))).rejects.toThrow('capacity');
+	expect(await stored()).toEqual(before);
+	expect(await logs()).toEqual([]);
+	expect(notifications).toEqual([]);
 });

@@ -19,7 +19,9 @@ import { PostWorkPersistence1792590060271 } from './post-work/migrations.js';
 import { PostWorkDispatch1792643873727 } from './post-work/dispatch-migration.js';
 import { PostWorkRecovery1792665615537 } from './post-work/recovery-migration.js';
 
-export const internalMigrations = [PostWorkPersistence1792590060271, PostWorkDispatch1792643873727, PostWorkRecovery1792665615537, PostNotification1792732433541, ApRecipientSnapshot1792734340852, ApHostLease1792815498061];
+import { WorkPhysicalCapacity1792903206054 } from './work-capacity/migration.js';
+
+export const internalMigrations = [PostWorkPersistence1792590060271, PostWorkDispatch1792643873727, PostWorkRecovery1792665615537, PostNotification1792732433541, ApRecipientSnapshot1792734340852, ApHostLease1792815498061, WorkPhysicalCapacity1792903206054];
 export function migrationSources(config: DatabaseConfig) {
 	const options = databaseOptions(config);
 	return {

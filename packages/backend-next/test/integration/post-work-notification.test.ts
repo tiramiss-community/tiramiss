@@ -5,9 +5,9 @@
 import { afterAll, beforeAll, beforeEach, expect, test } from 'vitest';
 import { MiNote, MiUser } from 'backend-upstream/entities';
 import type { DataSource } from 'typeorm';
-import { createTestDatabase } from '../helpers/database.js';
+import { createTestDatabase, seedHealthyCapacity } from '../helpers/database.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
-import { migrateDatabase } from '../../src/platform/database/migrate.js';
+import { migrateTestDatabase as migrateDatabase } from '../helpers/database.js';
 
 import { withPostWorkRequests } from '../../src/platform/database/post-work/append.js';
 import { PostWorkDispatchStore } from '../../src/platform/database/post-work/dispatch.js';
@@ -38,6 +38,7 @@ beforeAll(async () => {
 	]);
 });
 beforeEach(async () => {
+	await seedHealthyCapacity(source);
 	await source.query('TRUNCATE backend_internal.ap_host_lease, backend_internal.delivery_recipient, backend_internal.notification, backend_internal.notification_effect, backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
 	await source.getRepository(MiNote).deleteAll();
 	await source.query('UPDATE backend_internal.work_capacity SET reserved_rows=3, reserved_bytes=6144');
@@ -377,4 +378,17 @@ test('mutating the caller claim during reception checking cannot complete anothe
 	expect(await source.query('SELECT state FROM backend_internal.work_item WHERE work_id=$1', [second.owned.workId])).toEqual([{ state: 'running' }]);
 	expect(await bodies()).toMatchObject([{ note_id: 'note1' }]);
 	expect(await effects()).toMatchObject([{ request_id: 'request1' }]);
+});
+
+test('low physical capacity blocks effects and new bodies while existing read and flush remain usable', async () => {
+	const first = await seed('first');
+	await complete(first.owned);
+	const second = await seed('second');
+	await source.query('UPDATE backend_internal.work_capacity SET physical_free_bytes=1');
+	await expect(complete(second.owned)).rejects.toThrow('capacity');
+	expect(await effects()).toHaveLength(1);
+	await source.transaction(manager => storage.flush(manager, 'recipient'));
+	expect(await bodies()).toEqual([]);
+	expect(await effects()).toHaveLength(1);
+	expect((await source.query('SELECT physical_free_bytes FROM backend_internal.work_capacity'))[0].physical_free_bytes).toBe('1');
 });

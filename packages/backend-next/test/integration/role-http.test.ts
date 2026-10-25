@@ -9,7 +9,7 @@ import { MiAccessToken, MiModerationLog, MiRole, MiRoleAssignment, MiUser } from
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createRoleHttpApp } from '../../src/composition/role-http.js';
 import { listenHttp, closeHttp } from '../../src/processes/http.js';
-import { migrateDatabase } from '../../src/platform/database/migrate.js';
+import { migrateTestDatabase as migrateDatabase } from '../helpers/database.js';
 import { createLogger } from '../../src/platform/logger.js';
 import { createTestDatabase } from '../helpers/database.js';
 import { seedRoleHttp } from '../helpers/role-http.js';

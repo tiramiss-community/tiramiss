@@ -86,7 +86,12 @@ export async function loadConfig(
 		throw new DiagnosticError('INVALID_CONFIG', { field: 'id' });
 	}
 
+	const capacity = specific.capacityMonitor === undefined ? undefined : object(specific.capacityMonitor, 'backendNext.capacityMonitor');
+	if (capacity && Buffer.byteLength(text(capacity.volumeId, 'capacityMonitor.volumeId')) > 128) {
+		throw new DiagnosticError('INVALID_CONFIG', { field: 'capacityMonitor.volumeId' });
+	}
 	return {
+		capacityMonitor: capacity ? { file: resolve(text(capacity.file, 'capacityMonitor.file')), volumeId: text(capacity.volumeId, 'capacityMonitor.volumeId') } : undefined,
 		id,
 		url: url.origin,
 		roleCache: {

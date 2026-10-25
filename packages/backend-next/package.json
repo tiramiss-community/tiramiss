@@ -13,6 +13,8 @@
 		"test:integration": "vitest run --config vitest.integration.config.ts",
 		"test:acceptance": "vitest run --config vitest.acceptance.config.ts",
 		"test:process": "vitest run --config vitest.process.config.ts",
+		"collect-volume": "node built/entrypoints/collect-volume.js",
+		"reconcile-work-capacity": "node built/entrypoints/reconcile-work-capacity.js",
 		"migrate": "node built/entrypoints/migrate.js",
 		"check-migrations": "node built/entrypoints/check-migrations.js",
 		"check-schema": "node built/entrypoints/check-schema.js",

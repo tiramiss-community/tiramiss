@@ -25,6 +25,7 @@ export interface RoleCacheConfig {
 }
 
 export interface RuntimeConfig {
+	capacityMonitor?: { file: string; volumeId: string };
 	id: IdMethod;
 	roleCache: RoleCacheConfig;
 	url: string;

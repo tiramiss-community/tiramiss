@@ -7,14 +7,14 @@ import { Queue, Worker } from 'bullmq';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, test } from 'vitest';
 import { BullmqDispatch } from '../../src/platform/jobs/bullmq-dispatch.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
-import { migrateDatabase } from '../../src/platform/database/migrate.js';
+import { migrateTestDatabase as migrateDatabase } from '../helpers/database.js';
 import { assertSchemaMatches } from '../../src/platform/database/check-schema.js';
 import { migrationSources } from '../../src/platform/database/migration-sources.js';
 import { recoverPostWork } from '../../src/platform/database/post-work/recovery.js';
 import { PostWorkDispatchStore, scanPostWork } from '../../src/platform/database/post-work/dispatch.js';
 import { PostWorkLocalExecutionStore } from '../../src/platform/database/post-work/local-execution.js';
 import { withPostWorkRequests } from '../../src/platform/database/post-work/append.js';
-import { createTestDatabase } from '../helpers/database.js';
+import { createTestDatabase, seedHealthyCapacity } from '../helpers/database.js';
 import { notificationRequest } from '../helpers/post-work.js';
 import type { DataSource } from 'typeorm';
 
@@ -48,6 +48,7 @@ beforeAll(async () => {
 	store = new PostWorkDispatchStore(source);
 });
 beforeEach(async () => {
+	await seedHealthyCapacity(source);
 	await source.query('TRUNCATE backend_internal.ap_host_lease, backend_internal.delivery_recipient, backend_internal.notification, backend_internal.notification_effect, backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
 	await source.query('UPDATE backend_internal.work_control SET queue_generation=1,recovery_pending=false,reserved_dispatches=0,paused=false');
 	await source.query('UPDATE backend_internal.work_capacity SET reserved_rows=3,reserved_bytes=6144');
@@ -239,6 +240,7 @@ test('recovery migration has a reversible schema and preserves control counters'
 	await migrations.initialize();
 	try {
 		await source.query('UPDATE backend_internal.work_control SET queue_generation=7,paused=true,reserved_dispatches=3');
+		await migrations.undoLastMigration();
 		await migrations.undoLastMigration();
 		await migrations.undoLastMigration();
 		await migrations.undoLastMigration();
