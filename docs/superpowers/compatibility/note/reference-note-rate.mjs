@@ -29,6 +29,8 @@ await new Promise(resolve => portCheck.close(resolve));
 const db = new pg.Client({ host: config.db.host, port: config.db.port, database: config.db.db, user: config.db.user, password: config.db.pass });
 await db.connect();
 let server;
+let roleCreated = false;
+let assignmentCreated = false;
 const observations = {};
 const recording = process.env.NOTE_PROBE_RECORD === '1';
 const output = new URL('./note-rate-observations.json', import.meta.url);
@@ -45,7 +47,9 @@ try {
 	assert.ok(actor?.token, 'run note e2e first');
 	// 300 / factor300 = 1 request/hour; exercise the real production limiter cheaply.
 	await db.query('INSERT INTO role (id,name,description,"updatedAt","lastUsedAt",policies) VALUES ($1,$2,$3,now(),now(),$4)', ['note167rateRole', 'rate probe', '', JSON.stringify({ rateLimitFactor: { useDefault: false, priority: 1, value: 300 } })]);
+	roleCreated = true;
 	await db.query('INSERT INTO role_assignment (id,"roleId","userId") VALUES ($1,$2,$3)', ['note167rateAssignment', 'note167rateRole', actor.id]);
+	assignmentCreated = true;
 	server = spawn(process.execPath, ['./built/entry.js'], { cwd: new URL('../', import.meta.url), env: { ...process.env, NODE_ENV: 'production', MK_ONLY_SERVER: '1', MK_DISABLE_CLUSTERING: '1', MK_NO_DAEMONS: '1', MK_QUIET: '1' }, stdio: ['ignore', 'ignore', 'pipe'] });
 	let stderr = '';
 	server.stderr.on('data', data => { stderr = `${stderr}${data}`.slice(-2000); });
@@ -93,7 +97,14 @@ try {
 		await closed;
 		clearTimeout(forced);
 	}
-	await db.query('DELETE FROM role_assignment WHERE id=$1', ['note167rateAssignment']);
-	await db.query('DELETE FROM role WHERE id=$1', ['note167rateRole']);
-	await db.end();
+	try {
+		if (assignmentCreated) {
+			await db.query('DELETE FROM role_assignment WHERE id=$1', ['note167rateAssignment']);
+		}
+		if (roleCreated) {
+			await db.query('DELETE FROM role WHERE id=$1', ['note167rateRole']);
+		}
+	} finally {
+		await db.end();
+	}
 }

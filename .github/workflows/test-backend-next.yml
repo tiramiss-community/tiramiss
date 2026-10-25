@@ -6,7 +6,7 @@ on:
     paths:
       - 'docs/superpowers/compatibility/role/**'
       - 'docs/superpowers/compatibility/note/**'
-      - 'scripts/note-contract-fixtures.test.mjs'
+      - 'scripts/note-contract-*.test.mjs'
       - 'packages/backend-next/**'
       - 'packages/backend-upstream/**'
       - 'packages/shared/eslint.config.js'
@@ -19,7 +19,7 @@ on:
     paths:
       - 'docs/superpowers/compatibility/role/**'
       - 'docs/superpowers/compatibility/note/**'
-      - 'scripts/note-contract-fixtures.test.mjs'
+      - 'scripts/note-contract-*.test.mjs'
       - 'packages/backend-next/**'
       - 'packages/backend-upstream/**'
       - 'packages/shared/eslint.config.js'
@@ -62,7 +62,7 @@ jobs:
       - run: pnpm install --frozen-lockfile --filter backend-next...
       - run: git diff --exit-code pnpm-lock.yaml
       - name: Note comparison fixture references and contracts
-        run: node --test scripts/note-contract-fixtures.test.mjs
+        run: node --test scripts/note-contract-*.test.mjs
       - run: pnpm --filter backend-upstream sync:check
       - run: pnpm --filter backend-next... build
       - run: pnpm --filter backend-next... typecheck

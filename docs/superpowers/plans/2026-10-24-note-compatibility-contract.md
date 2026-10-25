@@ -70,3 +70,8 @@
 
 
 最終結果: 本家51テストのrecord無効再生、production rate HTTP/DB probe、参照側probe lint、Node fixture4件、workflow YAML、文書リンク23件、Node構文、SPDX/locale/diffはPASS。独立レビューは3巡で指摘3件を解消、最終No findings。実装/API/schema変更がないため広域の新旧backendテスト・API型生成・schema検査はSKIPPED。PRのCI結果はローカル検証と区別する。
+
+
+PR #202 review 5640340492（2026-10-25）: 固定比較SHAと同期SHAの結合、INSERT失敗後の既存行削除の二件を確認。三つの回帰失敗をREDで再現し、固定測定SHAだけの照合と行ごとのINSERT成功フラグへ修正した。server起動失敗時の自作行の後始末も検査する。比較入力/期待値/本家HTTP処理は変更せず、追加の子プロセス検査はテスト用DB driverを使う。
+
+追加レビュー対応の最終結果: Node比較検査8件・Node構文・workflow YAML/実行コマンド・SPDX/locale/diffはPASS。別エージェントの独立レビューはNo findings、レビュアーの独立実行でも8件PASS。本家HTTP/実PostgreSQLの再測定は行わず、失敗時の後始末をテスト用driverに置き換えた子プロセスで検証した。

@@ -152,7 +152,7 @@ pnpm --filter backend exec eslint --quiet test/e2e/note-contract.ts test/note-se
 cd "$NOTE_SOURCE_ROOT"
 BACKEND_NEXT_TEST_DB_PORT=55167 BACKEND_NEXT_TEST_REDIS_PORT=56167 \
   docker compose -p note-167-reference -f packages/backend-next/compose.test.yml down
-node --test scripts/note-contract-fixtures.test.mjs
+node --test scripts/note-contract-*.test.mjs
 ```
 
 ## 実行記録
@@ -160,3 +160,6 @@ node --test scripts/note-contract-fixtures.test.mjs
 2026-10-24、Node.js24.20.0 / pnpm12.9.1 / PostgreSQL18 / Redis8、専用Compose `note-167-reference`。Git archiveした固定本家と同SHA用の既存依存treeを再利用し、参照側を再ビルドした。src/migration/manifest/lockfile計1330ファイルを固定Git内容と照合した。本家のVite将来設定警告と複数Nest context由来のEventEmitter listener警告は本家環境の観測として区別する。
 
 2026-10-25の最終再生は本家51テスト・production rate probe・probe lint・Node fixture4件がPASS。独立レビュー3巡で指摘3件を修正し、最終No findings。検証の詳細は[実装計画](../../plans/2026-10-24-note-compatibility-contract.md)とPRへ記録する。新backendの製品コード/API/Entity/migrationを変更していないため、旧backendのAPI型再生成・新migration/schema検査は今回の検証対象外。
+
+
+PR #202の追加レビュー対応（2026-10-25）: 比較資料の固定SHA検査は更新される`backend-upstream`同期SHAから独立させた。rate probeはINSERT成功を確認した行だけを後始末する。`scripts/note-contract-review.test.mjs`で同期元SHAのみの更新、ロール/割り当ての衝突、行作成後のserver起動失敗を回帰検査する。後始末の試験は実際のprobeを子プロセスで実行し、DB接続をPK衝突と削除cascadeを再現するテスト用driverへ置き換える。本家HTTP/DBの再測定とは区別する。

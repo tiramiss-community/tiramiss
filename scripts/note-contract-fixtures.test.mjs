@@ -14,8 +14,8 @@ const observations = read('observations.json');
 
 test('C1–C10/F1–F8 keep concrete evidence and an implementation owner', () => {
 	const coverage = read('coverage.json');
-	const sync = JSON.parse(readFileSync(new URL('../packages/backend-upstream/upstream-sync.json', import.meta.url), 'utf8'));
-	assert.equal(coverage.upstreamCommit, sync.commit);
+	// This measured dataset stays pinned when backend-upstream advances.
+	assert.equal(coverage.upstreamCommit, '8e07cf085adf7009583d234a208e30436f020e26');
 	assert.deepEqual(coverage.cases.map(entry => entry.id), [...Array.from({ length: 10 }, (_, i) => `C${i + 1}`), ...Array.from({ length: 8 }, (_, i) => `F${i + 1}`)]);
 	for (const entry of coverage.cases) {
 		assert.ok(entry.owners.length > 0, entry.id);
