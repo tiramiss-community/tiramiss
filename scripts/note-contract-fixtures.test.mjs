@@ -80,10 +80,10 @@ test('AP evidence is real HTTP and intentional differences remain separate from 
 	}
 	assert.deepEqual(observations['C9-localOnly'], { deliveries: [] });
 	const differences = read('intentional-differences.json');
-	assert.deepEqual(differences.map(entry => entry.id), ['D1', 'D2', 'D3', 'D4', 'D5', 'D6']);
+	assert.deepEqual(differences.map(entry => entry.id), ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7']);
 	for (const entry of differences) {
 		assert.ok(entry.owners.length > 0);
-		assert.equal(entry.newImplementationVerified, false);
+		assert.equal(entry.newImplementationVerified, entry.id === 'D7');
 	}
 	const rate = read('rate-observations.json');
 	assert.equal(rate['C2-rate-before-input'].status, 429);

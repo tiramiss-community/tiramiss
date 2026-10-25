@@ -1,8 +1,8 @@
 # backend-next
 
-Misskeyバックエンド再設計の実行基盤とRole初期実装。
+Misskeyバックエンド再設計の実行基盤・Role初期実装・投稿参照。
 既存トークンで `admin/roles/show` と `admin/roles/update` を利用できる。
-その他のAPIと業務ジョブは後続の実装範囲。
+`notes/show` は保存済み本家データから取得・可視性判定・出力を提供する。その他のAPIと業務ジョブは後続の実装範囲。
 
 ## Role実装に着手するとき
 
@@ -355,4 +355,15 @@ host bytes + work ID 最大 128 bytes で課金し、枠の再利用時には重
 解放後も work への参照が残るため、item 清掃は host 参照の回収を先に確認する。
 この入口の周期実行、送信 claim/開始/結果不明回収、HTTP/署名、worker への接続はまだ行わない。
 
-投稿N0の固定本家HTTP/DB/AP/stream比較資料は[投稿の本家比較契約](../../docs/superpowers/compatibility/note/README.md)を参照する。保存済み期待値は#168–#176への入力であり、新実装での投稿互換性検証済みを示さない。
+投稿N0の固定本家HTTP/DB/AP/stream比較資料は[投稿の本家比較契約](../../docs/superpowers/compatibility/note/README.md)を参照する。保存済み期待値は#168–#176への入力であり、投稿全体の互換性検証済みを示さない。N1のshow照合範囲は比較資料を参照する。
+
+
+## 投稿参照（#168 / N1）
+
+通常HTTP起動から `POST /api/notes/show` を利用できる。`{noteId,i?}` の既存tokenとBearerを扱い、guestのserver/作者制限と、閲覧者別のhiddenを区別する。Noteと関連factsは階層ごと/集合ごとにRepositoryで取得し、変換中はDB/Redisへ接続しない。replyは簡略、renoteは詳細を保つ。
+
+循環と64階層・256 Noteの予算超過はログ付き500とし、部分JSONを返さない。新実装の保護契約として[比較台帳D7](../../docs/superpowers/compatibility/note/intentional-differences.json)へ記録する。[本家比較資料のN1節](../../docs/superpowers/compatibility/note/README.md#n1-notesshow-の接続168)にN0期待値との照合範囲と未実測を残す。
+
+本家形式の `redisForReactions` を指定した場合は専用接続で反応bufferを読み、未指定なら通常Redisを使う。`mediaProxy` / `videoThumbnailGenerator` とDBの `proxyRemoteFiles` を添付URLに適用する。専用接続も起動・終了期限と必須接続の障害監視に参加する。
+
+投稿作成・削除・変更系API・実worker/配信は後続。保存済みデータのshow検証だけで投稿縦断の完成とは扱わない。

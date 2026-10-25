@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { ActorNotFound, ActorSuspended, AdministratorRequired, ModeratorRequired, CredentialScopeDenied, RoleNotFound, RoleInputInvalid } from '../modules/role/public.js';
+import { ApiInputInvalid } from './input-error.js';
 import { AuthenticationFailed, CredentialRequired } from './authentication-error.js';
 
 export function apiErrorResponse(error: unknown, operation: 'show' | 'update'): Response {
@@ -32,7 +33,7 @@ export function apiErrorResponse(error: unknown, operation: 'show' | 'update'): 
 		status = 403;
 		body = { message: 'Your app does not have the necessary permissions to use this endpoint.', code: 'PERMISSION_DENIED', id: '1370e5b7-d4eb-4566-bb1d-7748ee6a1838', kind: 'permission' };
 		authenticate = `Bearer realm="Misskey", error="insufficient_scope", error_description="${body.message}"`;
-	} else if (error instanceof RoleNotFound || error instanceof RoleInputInvalid) {
+	} else if (error instanceof RoleNotFound || error instanceof RoleInputInvalid || error instanceof ApiInputInvalid) {
 		status = 400;
 		body = error instanceof RoleNotFound
 			? { message: 'No such role.', code: 'NO_SUCH_ROLE', id: operation === 'show' ? '07dc7d34-c0d8-49b7-96c6-db3ce64ee0b3' : 'cd23ef55-09ad-428a-ac61-95a45e124b32', kind: 'client' }

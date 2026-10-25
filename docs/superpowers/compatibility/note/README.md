@@ -1,8 +1,8 @@
-# 投稿の本家比較契約（N0 / #167）
+# 投稿の本家比較契約（N0 / #167・N1 / #168）
 
 [投稿設計](../../specs/2026-10-21-note-flow-design.md) §8 C1–C10/F1–F8を、後続の[#168–#176](https://github.com/tiramiss-community/tiramiss/issues/127)が引き継ぐための資料。比較元は本家 **`8e07cf085adf7009583d234a208e30436f020e26`**。新実装の基準はdevelop `a5840cc43089ea49c9f3ac14444390b0a809953f`（PR #158マージ後）。
 
-本家の実HTTP・別DB接続・実worker→localhost fake inbox・Redis Pub/Subを観測した。新backendの投稿API・通常workerは未接続であり、この資料の成功は新旧一致や投稿領域の完成を示さない。本家e2eはテスト用schemaを再作成するため、本家migration全履歴の適用・本番移行の証明でもない。
+本家の実HTTP・別DB接続・実worker→localhost fake inbox・Redis Pub/Subを観測した。N0時点では新backendの投稿API・通常workerは未接続。N1ではnotes/showを接続し、下記範囲を検証した。資料全体の成功を投稿領域の完成とは扱わない。本家e2eはテスト用schemaを再作成するため、本家migration全履歴の適用・本番移行の証明でもない。
 
 ## ファイルと使い方
 
@@ -12,7 +12,7 @@
 | [observations.json](observations.json) | 上記入力と追加シナリオの正規化済み実測89件。HTTP本文/エラー/WWW-Authenticate、Note/Poll差分、保存字段、show、カウント、AP受信、削除stream/監査 |
 | [rate-observations.json](rate-observations.json) | productionモードの本家HTTPでのレート制限実測3件 |
 | [coverage.json](coverage.json) | C1–C10/F1–F8の根拠キー・本家ソース・担当Issue・未測定/未接続。`measured`は記載範囲を実測した意味で全組合せの網羅ではない |
-| [intentional-differences.json](intentional-differences.json) | 既存合意の差異D1–D6。新実装の検証済み欄はすべてfalse。未実装を差異へ読み替えない |
+| [intentional-differences.json](intentional-differences.json) | 既存合意の差異D1–D6と、N1の参照予算D7。D7のみ新実装の検証済み。未実装を差異へ読み替えない |
 | [reference-note.e2e.ts](reference-note.e2e.ts) | 本家テストサーバーへのprobe。JSON入力を解決し、別接続のDBと受信結果を期待値に照合 |
 | [reference-note.setup.ts](reference-note.setup.ts) / [reference-note.config.mjs](reference-note.config.mjs) | 本家e2e設定の上書き。HTTPサーバー側の署名用native poolも初期化する |
 | [reference-note-rate.mjs](reference-note-rate.mjs) | e2e終了後、同じ専用DBでproduction HTTPプロセスを起動し、本物のレート制限を確認。自身の子だけを停止 |
@@ -163,3 +163,24 @@ node --test scripts/note-contract-*.test.mjs
 
 
 PR #202の追加レビュー対応（2026-10-25）: 比較資料の固定SHA検査は更新される`backend-upstream`同期SHAから独立させた。rate probeはINSERT成功を確認した行だけを後始末する。`scripts/note-contract-review.test.mjs`で同期元SHAのみの更新、ロール/割り当ての衝突、行作成後のserver起動失敗を回帰検査する。後始末の試験は実際のprobeを子プロセスで実行し、DB接続をPK衝突と削除cascadeを再現するテスト用driverへ置き換える。本家HTTP/DBの再測定とは区別する。
+
+
+## N1 notes/show の接続（#168）
+
+`packages/backend-next/test/integration/note-show.test.ts` は、本家の保存データを独立したPostgreSQLへ準備し、N0のC1-showとC5全21観測（公開範囲10・返信相手1・エラー3・detail2・添付消失1・時刻0境界4）のHTTP本文を、既存 `observations.json` と照合する。ID/作成時刻/既知originだけを正規化し、null/省略・配列順・MD5・poll vote/myReactionを保持する。expected JSONは再生成していない。
+
+追加のunit/実DB検証では、reply:false/renote:true、共有参照の詳細昇格、欠落参照・ネストのPoll欠落、64階層/256 Noteと循環、全時刻境界、remote rootのguest server=localとlocal root内remoteの差、作者badge/装飾/instance/emoji、media URL/rotation、Redis反応、Bearer/不正token/scopeなし/停止・移行actor、CORS/preflight/cache/エラーヘッダーを扱う。20 root・20作者と1 rootでSQL数が同じ16以下、描画中SQLが0であることを実DBで確認する。通常HTTP子プロセスの実TCPからも保存済み投稿を返す。
+
+これら追加条件は固定本家の**ソース由来の期待値と新実装の検証**であり、本家側を新たに起動して実測した成果ではない。N0の本家51テストやproduction rate probeを今回再実行したとは記さない。追加の固定本家実測は#170/#176で、共通HTTP全体の移植は#178で追跡する。
+
+D7の予算は新実装の保護契約。`note-show.failed`へ原因を記録し、500を返す。途中までの成功JSONや独自のclientエラーを返さない。guestのrootアクセス制限を先に適用する。作者本人の非表示例外を保つ。本文を隠す場合も参照先は本家同様に独立して判定する。
+
+検証コマンド（専用Compose名とポートは他セッションと分離する）:
+
+```sh
+pnpm --filter backend-next test test/unit/note
+BACKEND_NEXT_TEST_DB_PORT=55168 BACKEND_NEXT_TEST_REDIS_PORT=56168 \
+  pnpm --filter backend-next test:integration test/integration/note-show.test.ts
+```
+
+notes/create/delete、投票・reaction・follow等の変更API、TL/検索API、AP送信・通常workerはこの接続の完成範囲に含めない。次は#169（N2: 基本文の作成と同時保存）。#166が#169の先行依存に残る。
