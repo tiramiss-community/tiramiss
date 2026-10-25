@@ -5,7 +5,7 @@
 import { createServer, type Server } from 'node:http';
 import { chmod } from 'node:fs/promises';
 import { getRequestListener } from '@hono/node-server';
-import { createRoleHttpApp } from '../composition/role-http.js';
+import { createBackendHttpApp } from '../composition/note-http.js';
 import { startManagedProcess } from './lifecycle.js';
 import type { Hono } from 'hono';
 import type { RuntimeConfig } from '../config/types.js';
@@ -102,7 +102,7 @@ export async function closeHttp(server: Server): Promise<void> {
 
 export function startHttp(config: RuntimeConfig) {
 	return startManagedProcess('http', config, async resources => {
-		const server = await listenHttp(createRoleHttpApp(resources, config), config.http);
+		const server = await listenHttp(createBackendHttpApp(resources, config), config.http);
 		return () => closeHttp(server);
 	});
 }

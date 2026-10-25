@@ -7,6 +7,9 @@ import { join } from 'node:path';
 import { afterAll, beforeAll, expect, test } from 'vitest';
 import { createTestDatabase } from '../helpers/database.js';
 import { configuration, freePort, launch } from '../helpers/process.js';
+import { MiMeta, MiNote, MiUser } from 'backend-upstream/entities';
+import { createDataSource } from '../../src/platform/database/data-source.js';
+import { createIdCodec } from '../../src/platform/id-codec.js';
 import { migrateDatabase } from '../../src/platform/database/migrate.js';
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 beforeAll(async () => {
@@ -186,6 +189,34 @@ test.each([false, true])('drains accepted requests before failing on publisher l
 		expect((await child.exit).code, child.output()).toBe(1);
 	} finally {
 		control.disconnect();
+		await child.close();
+		await config.close();
+	}
+});
+
+test('normal HTTP entrypoint serves a persisted note over TCP', async () => {
+	const codec = createIdCodec('aidx');
+	const userId = codec.newId(Date.now() - 10000);
+	const noteId = codec.newId(Date.now() - 10000);
+	const source = await createDataSource(database.config.database).initialize();
+	try {
+		await source.getRepository(MiMeta).insert({ id: 'singleton', ugcVisibilityForVisitor: 'all' });
+		await source.getRepository(MiUser).insert({ id: userId, username: 'process-note-author', usernameLower: 'process-note-author' });
+		await source.getRepository(MiNote).insert({ id: noteId, userId, text: 'persisted note', visibility: 'public' });
+	} finally {
+		await source.destroy();
+	}
+	const port = await freePort();
+	const config = await configuration({ ...database.config, http: { port } });
+	const child = launch('built/entrypoints/http.js', config.path);
+	try {
+		await child.ready;
+		const response = await fetch(`http://127.0.0.1:${port}/api/notes/show`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ noteId }) });
+		expect(response.status).toBe(200);
+		expect(await response.json()).toMatchObject({ id: noteId, text: 'persisted note', userId });
+		child.child.kill('SIGTERM');
+		expect((await child.exit).code).toBe(0);
+	} finally {
 		await child.close();
 		await config.close();
 	}

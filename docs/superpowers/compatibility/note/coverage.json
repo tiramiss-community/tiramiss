@@ -290,8 +290,14 @@
         }
       ],
       "remaining": [
-        "show/detail/hidden/添付消失/myReaction/poll vote/時刻0境界をN1へ接続。深いネスト、全時刻閾値、server=localのremote閲覧、query数非比例はN1で追加する。"
-      ]
+        "N0のC5全21観測を新実装HTTPへ接続済み。深いネスト、全時刻閾値、server=localのremote閲覧、query数非比例はN1のunit/実DBで追加検証したが、固定本家での追加実測は未実施。追加本家比較・作成からの縦断は#170/#176で追う。"
+      ],
+      "newImplementation": {
+        "issue": 168,
+        "test": "packages/backend-next/test/integration/note-show.test.ts",
+        "verified": "N0のC5全21観測のHTTP本文を固定期待値と比較。深いネスト/共有参照/循環・server=local・作者/メディア/Redis反応・query数はソース由来と新実装の実DB検証を区別する。",
+        "upstreamRerun": false
+      }
     },
     {
       "id": "C6",

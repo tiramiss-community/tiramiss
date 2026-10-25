@@ -61,5 +61,13 @@
       179
     ],
     "newImplementationVerified": false
+  },
+  {
+    "id": "D7",
+    "contract": "notes/showの詳細参照を最大64階層・256 Noteへ有限化する。描画で展開するRenote循環/取得予算超過は記録して500とし、部分JSONを成功で返さない。本家に同じ上限があるとは扱わない。replyはdetail:falseでその先を展開しない。",
+    "owners": [
+      168
+    ],
+    "newImplementationVerified": true
   }
 ]

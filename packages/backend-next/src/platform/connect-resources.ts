@@ -78,6 +78,32 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 
+		let reactionsRedis = redis;
+		if (config.redisForReactions) {
+			reactionsRedis = new Redis({ ...config.redisForReactions, lazyConnect: true, retryStrategy: () => null,
+				maxRetriesPerRequest: 0, disconnectTimeout: 0, connectTimeout: config.processes.startupTimeoutMs });
+			reactionsRedis.on('error', error => logger.error('reactions-redis.error', { error }));
+			reactionsRedis.on('end', () => {
+				if (active && !closing) {
+					reportFailure(new DiagnosticError('REACTIONS_REDIS_ENDED', {}));
+				}
+			});
+			const connection = reactionsRedis;
+			scope.defer(async () => {
+				if (connection.status !== 'end') {
+					await new Promise<void>(resolve => {
+						connection.once('end', resolve);
+						connection.disconnect();
+					});
+				}
+			});
+			await reactionsRedis.connect();
+			await reactionsRedis.ping();
+			if (cancelled) {
+				throw timeout;
+			}
+		}
+
 		const rolePublisher = new Redis({
 			...config.redisForPubsub,
 			disconnectTimeout: 0,
@@ -121,7 +147,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		}
 
 		active = true;
-		return { dataSource, redis, roleMaterials, logger, close, failure };
+		return { dataSource, redis, reactionsRedis, roleMaterials, logger, close, failure };
 	};
 
 	try {
