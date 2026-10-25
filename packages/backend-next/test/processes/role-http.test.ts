@@ -6,7 +6,7 @@ import { request } from 'node:http';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { MiModerationLog, MiRole } from 'backend-upstream/entities';
 import { createDataSource } from '../../src/platform/database/data-source.js';
-import { migrateDatabase } from '../../src/platform/database/migrate.js';
+import { migrateTestDatabase as migrateDatabase } from '../helpers/database.js';
 import { createTestDatabase } from '../helpers/database.js';
 import { configuration, freePort, launch } from '../helpers/process.js';
 import { seedRoleHttp } from '../helpers/role-http.js';
@@ -69,5 +69,38 @@ test.each([false, true])('commits an accepted HTTP update once during shutdown (
 		await blocker.release();
 		await child.close();
 		await config.close();
+	}
+});
+
+test('normal HTTP process consumes DB-volume observation before admitting mutations while keeping reads available', async () => {
+	const { mkdtemp, writeFile, rm } = await import('node:fs/promises');
+	const { tmpdir } = await import('node:os');
+	const { join } = await import('node:path');
+	const { seedHealthyCapacity } = await import('../helpers/database.js');
+	const directory = await mkdtemp(join(tmpdir(), 'capacity-http-'));
+	const file = join(directory, 'volume.json');
+	await writeFile(file, JSON.stringify({ volumeId: 'dedicated-test-volume', observedAtMs: Date.now(), totalBytes: '21474836480', freeBytes: '1' }));
+	const port = await freePort();
+	const config = await configuration({ ...database.config, capacityMonitor: { file, volumeId: 'dedicated-test-volume' }, http: { port } });
+	const child = launch('built/entrypoints/http.js', config.path);
+	try {
+		await child.ready;
+		const request = (operation: string, value: object) => fetch(`http://127.0.0.1:${port}/api/admin/roles/${operation}`, {
+			method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value),
+		});
+		expect((await request('show', { roleId: seeded.roleId, i: seeded.actors.root.token })).status).toBe(200);
+		const before = await source.getRepository(MiModerationLog).count();
+		const rejected = await request('update', { roleId: seeded.roleId, name: 'physical-rejected', i: seeded.actors.root.token });
+		expect(rejected.status).toBe(503);
+		expect((await rejected.json()).error.code).toBe('BACKEND_BUSY');
+		expect(await source.getRepository(MiModerationLog).count()).toBe(before);
+		await seedHealthyCapacity(source);
+		expect((await request('update', { roleId: seeded.roleId, name: 'physical-recovered', i: seeded.actors.root.token })).status).toBe(204);
+		child.child.kill('SIGTERM');
+		expect((await child.exit).code, child.output()).toBe(0);
+	} finally {
+		await child.close();
+		await config.close();
+		await rm(directory, { recursive: true });
 	}
 });

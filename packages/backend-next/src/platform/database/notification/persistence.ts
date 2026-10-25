@@ -5,6 +5,7 @@
 import { MiNote, MiUser } from 'backend-upstream/entities';
 import type { EntityManager } from 'typeorm';
 import type { NotificationEffect, PostNotificationDecision, PostNotificationFacts, PostNotificationType } from '../../../modules/notification/public.js';
+import { assertPhysicalCapacity, physicalCapacityCondition } from '../work-capacity/gate.js';
 import { WorkCapacityExceeded } from '../../../modules/post-work/public.js';
 import { chargedBytes, workCapacity } from '../../../modules/post-work/prepare.js';
 import { withLocalWorkCompletion } from '../post-work/local-execution.js';
@@ -44,11 +45,15 @@ async function adjustCapacity(manager: EntityManager, rows: number, bytes: numbe
 		.where('capacity_key=:key AND capacity_formula_version=:version')
 		.setParameters({ key: 'global', version: workCapacity.formulaVersion, rows, bytes });
 	if (growing) {
+		query.andWhere(physicalCapacityCondition);
 		query.andWhere('reserved_rows + :rows <= :rowLimit AND reserved_bytes + :bytes <= :byteLimit')
 			.setParameters({ rowLimit: workCapacity.rows * 0.9, byteLimit: Math.floor(workCapacity.bytes * 0.9) });
 	}
 	if ((await query.execute()).affected !== 1) {
 		throw new WorkCapacityExceeded('The durable notification capacity is full or requires reconciliation');
+	}
+	if (growing) {
+		await assertPhysicalCapacity(manager);
 	}
 }
 

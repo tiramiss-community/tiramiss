@@ -108,7 +108,14 @@ export const postWorkEntities = [
 	}),
 	schema({
 		name: 'work_capacity',
-		columns: { capacity_key: { type: 'varchar', length: 32, primary: true }, reserved_rows: { type: 'bigint' }, reserved_bytes: { type: 'bigint' }, ...accounting },
+		columns: {
+			capacity_key: { type: 'varchar', length: 32, primary: true },
+			reserved_rows: { type: 'bigint' }, reserved_bytes: { type: 'bigint' },
+			physical_observed_at: { type: 'timestamptz', nullable: true },
+			physical_free_bytes: { type: 'bigint', nullable: true }, physical_total_bytes: { type: 'bigint', nullable: true },
+			physical_volume_id: { type: 'varchar', length: 128, nullable: true },
+			capacity_coefficient: { type: 'integer', default: 4 }, ...accounting,
+		},
 		checks: [
 			{ name: 'key', expression: "capacity_key = 'global'" },
 			{ name: 'bounds', expression: 'reserved_rows BETWEEN 1 AND 1000000 AND reserved_bytes BETWEEN charged_bytes AND 21474836480' },

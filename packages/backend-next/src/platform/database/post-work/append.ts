@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import type { EntityManager } from 'typeorm';
+import { assertPhysicalCapacity, physicalCapacityCondition } from '../work-capacity/gate.js';
 import { WorkCapacityExceeded, WorkRequestConflict } from '../../../modules/post-work/public.js';
 import type { PostWorkRequests } from '../../../modules/post-work/public.js';
 import { chargedBytes, preparePostWork, workCapacity, workHash } from '../../../modules/post-work/prepare.js';
@@ -77,6 +78,7 @@ async function append(manager: EntityManager, prepared: Prepared): Promise<{ req
 	}
 	const existing = await existingRequest(manager, prepared);
 	if (existing !== null) {
+		await assertPhysicalCapacity(manager);
 		return { requestId: existing };
 	}
 	if (deleting) {
@@ -110,6 +112,7 @@ async function append(manager: EntityManager, prepared: Prepared): Promise<{ req
 		if (canonical === null) {
 			conflict();
 		}
+		await assertPhysicalCapacity(manager);
 		return { requestId: canonical };
 	}
 
@@ -140,6 +143,7 @@ async function append(manager: EntityManager, prepared: Prepared): Promise<{ req
 	const reserved = await manager.createQueryBuilder().update('backend_internal.work_capacity')
 		.set({ reserved_rows: () => 'reserved_rows + :rows', reserved_bytes: () => 'reserved_bytes + :bytes' })
 		.where('capacity_key=:key AND capacity_formula_version=:version')
+		.andWhere(physicalCapacityCondition)
 		.andWhere('reserved_rows + :rows <= :rowLimit AND reserved_bytes + :bytes <= :byteLimit')
 		.setParameters({
 			key: 'global', version: workCapacity.formulaVersion, rows, bytes,
@@ -148,6 +152,7 @@ async function append(manager: EntityManager, prepared: Prepared): Promise<{ req
 	if (reserved.affected !== 1) {
 		throw new WorkCapacityExceeded('The durable work capacity is full or requires reconciliation');
 	}
+	await assertPhysicalCapacity(manager);
 	return { requestId: request.requestId };
 }
 

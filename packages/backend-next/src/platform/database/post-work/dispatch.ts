@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { assertPhysicalCapacity, physicalCapacityCondition } from '../work-capacity/gate.js';
 import { randomUUID } from 'node:crypto';
 import type { DataSource, EntityManager } from 'typeorm';
 import { chargedBytes, workCapacity } from '../../../modules/post-work/prepare.js';
@@ -93,12 +94,15 @@ export class PostWorkDispatchStore {
 			const reserved = await manager.createQueryBuilder().update('backend_internal.work_capacity')
 				.set({ reserved_rows: () => 'reserved_rows + 1', reserved_bytes: () => 'reserved_bytes + :bytes' })
 				.where("capacity_key = 'global'")
+				.andWhere('capacity_formula_version = :formulaVersion', { formulaVersion: workCapacity.formulaVersion })
+				.andWhere(physicalCapacityCondition)
 				.andWhere('reserved_rows + 1 <= :rows AND reserved_bytes + :bytes <= :maxBytes', {
 					rows: workCapacity.rows * fraction, bytes, maxBytes: workCapacity.bytes * fraction,
 				}).execute();
 			if (reserved.affected !== 1) {
 				return wait('capacity_wait');
 			}
+			await assertPhysicalCapacity(manager);
 			await manager.createQueryBuilder().update('backend_internal.work_control')
 				.set({ reserved_dispatches: () => 'reserved_dispatches + 1' }).where('queue_key = :queueKey', { queueKey }).execute();
 			await manager.createQueryBuilder().insert().into('backend_internal.queue_dispatch').values({

@@ -7,10 +7,10 @@ import { PostApHostLeases } from '../../src/platform/database/ap/host-leases.js'
 import { withPostWorkRequests } from '../../src/platform/database/post-work/append.js';
 import { workHash } from '../../src/modules/post-work/prepare.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
-import { migrateDatabase } from '../../src/platform/database/migrate.js';
+import { migrateTestDatabase as migrateDatabase } from '../helpers/database.js';
 import { assertSchemaMatches } from '../../src/platform/database/check-schema.js';
 import { migrationSources } from '../../src/platform/database/migration-sources.js';
-import { createTestDatabase } from '../helpers/database.js';
+import { createTestDatabase, seedHealthyCapacity } from '../helpers/database.js';
 import { apRequest } from '../helpers/post-work.js';
 import type { DataSource } from 'typeorm';
 
@@ -23,6 +23,7 @@ beforeAll(async () => {
 	source = await createDataSource(database.config.database).initialize();
 });
 beforeEach(async () => {
+	await seedHealthyCapacity(source);
 	await source.query('TRUNCATE backend_internal.ap_host_lease, backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state CASCADE');
 	await source.query('UPDATE backend_internal.work_capacity SET reserved_rows=3,reserved_bytes=6144');
 });
@@ -306,6 +307,7 @@ test('new migration rolls host charges back without changing upstream history, a
 	try {
 		await internal.initialize();
 		await internal.undoLastMigration();
+		await internal.undoLastMigration();
 		expect(await source.query('SELECT to_regclass(\'backend_internal.ap_host_lease\') AS name')).toEqual([{ name: null }]);
 		expect(BigInt(before.reserved_rows) - BigInt((await capacity()).reserved_rows)).toBe(2n);
 		expect(BigInt(before.reserved_bytes) - BigInt((await capacity()).reserved_bytes)).toBe(4096n);
@@ -315,4 +317,11 @@ test('new migration rolls host charges back without changing upstream history, a
 	}
 	expect(await source.query('SELECT * FROM public.migrations ORDER BY id')).toEqual(upstream);
 	await assertSchemaMatches(database.config.database);
+});
+
+test('low physical capacity prevents new host rows without consuming the execution lease', async () => {
+	const owned = await seed('capacity');
+	await source.query('UPDATE backend_internal.work_capacity SET physical_free_bytes=1');
+	await expect(acquire(owned)).rejects.toThrow('capacity');
+	expect(await source.query('SELECT count(*)::int AS count FROM backend_internal.ap_host_lease')).toEqual([{ count: 0 }]);
 });

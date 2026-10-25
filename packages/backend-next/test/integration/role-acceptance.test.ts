@@ -10,7 +10,7 @@ import { createAttemptEvaluation, createRequestEvaluation } from '../../src/modu
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createRoleHttpApp } from '../../src/composition/role-http.js';
 import { listenHttp, closeHttp } from '../../src/processes/http.js';
-import { migrateDatabase } from '../../src/platform/database/migrate.js';
+import { migrateTestDatabase as migrateDatabase } from '../helpers/database.js';
 import { createRoleMaterialReader } from '../../src/platform/database/role-materials.js';
 import { openRoleMaterials } from '../../src/platform/role-materials.js';
 import { createLogger } from '../../src/platform/logger.js';

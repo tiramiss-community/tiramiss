@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { ActorNotFound, ActorSuspended, AdministratorRequired, ModeratorRequired, CredentialScopeDenied, RoleNotFound, RoleInputInvalid } from '../modules/role/public.js';
+import { WorkCapacityExceeded } from '../modules/post-work/public.js';
 import { ApiInputInvalid } from './input-error.js';
 import { AuthenticationFailed, CredentialRequired } from './authentication-error.js';
 
@@ -13,7 +14,10 @@ export function apiErrorResponse(error: unknown, operation: 'show' | 'update'): 
 		id: '5d37dbcb-891e-41ca-a3d6-e690c97775ac', kind: 'server',
 	};
 	let authenticate: string | undefined;
-	if (error instanceof CredentialRequired) {
+	if (error instanceof WorkCapacityExceeded) {
+		status = 503;
+		body = { message: 'The server is temporarily busy. Please try again later.', code: 'BACKEND_BUSY', id: '3ba27d7e-a4eb-4ae9-89ad-152bc40aad2d', kind: 'server' };
+	} else if (error instanceof CredentialRequired) {
 		status = 401;
 		body = { message: 'Credential required.', code: 'CREDENTIAL_REQUIRED', id: '1384574d-a912-4b81-8601-c7b1c4085df1', kind: 'client' };
 		authenticate = 'Bearer realm="Misskey"';

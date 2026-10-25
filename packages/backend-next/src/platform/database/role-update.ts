@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { assertPhysicalCapacity } from './work-capacity/gate.js';
 import { MiRole } from 'backend-upstream/entities';
 import type { DataSource } from 'typeorm';
 import type { TransactionRunner } from '../../application/transaction.js';
@@ -36,6 +37,7 @@ export function createRoleUpdateTransactions(source: DataSource, ids: {
 						},
 						savePatch: async (roleId, patch, updatedAtMs) => {
 							assertActive();
+							await assertPhysicalCapacity(manager);
 							const saved = await roles.createQueryBuilder().update()
 								.set({ ...rolePatchColumns(patch), updatedAt: new Date(updatedAtMs) })
 								.where('id = :roleId', { roleId }).returning('*').execute();

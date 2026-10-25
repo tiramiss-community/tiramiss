@@ -10,12 +10,12 @@ import type { PostWorkRequest, PostWorkRequests } from '../../src/modules/post-w
 import { InvalidPostWorkRequest, WorkCapacityExceeded, WorkRequestConflict } from '../../src/modules/post-work/public.js';
 import { withPostWorkRequests } from '../../src/platform/database/post-work/append.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
-import { migrateDatabase } from '../../src/platform/database/migrate.js';
+import { migrateTestDatabase as migrateDatabase } from '../helpers/database.js';
 import { assertMigrationsApplied } from '../../src/platform/database/check-migrations.js';
 import { assertSchemaMatches } from '../../src/platform/database/check-schema.js';
 import { migrationSources } from '../../src/platform/database/migration-sources.js';
 import { workCapacity } from '../../src/modules/post-work/prepare.js';
-import { createTestDatabase } from '../helpers/database.js';
+import { createTestDatabase, seedHealthyCapacity } from '../helpers/database.js';
 import { apRequest, notificationRequest } from '../helpers/post-work.js';
 
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
@@ -32,6 +32,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+	await seedHealthyCapacity(source);
 	await source.query('TRUNCATE backend_internal.ap_host_lease, backend_internal.delivery_recipient, backend_internal.notification, backend_internal.notification_effect, backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
 	await source.query('UPDATE backend_internal.work_capacity SET reserved_rows = 3, reserved_bytes = charged_bytes + 4096');
 	await source.getRepository(MiUser).update({ id: 'actor' }, { notesCount: 0 });
@@ -222,6 +223,7 @@ test('checks internal schema drift and migration down/up without changing upstre
 		await internal.undoLastMigration();
 		await internal.undoLastMigration();
 		await internal.undoLastMigration();
+		await internal.undoLastMigration();
 		expect(await source.query("SELECT to_regclass('backend_internal.work_request') AS name")).toEqual([{ name: null }]);
 		await expect(assertMigrationsApplied(database.config.database)).rejects.toMatchObject({ code: 'PENDING_MIGRATIONS' });
 		await internal.runMigrations();
@@ -259,11 +261,11 @@ test('keeps the measured initial relations below saved logical charges for repre
 			(SELECT reserved_bytes::text FROM backend_internal.work_capacity) AS reserved,
 			(SELECT sum(pg_total_relation_size(oid))::text FROM pg_class
 			WHERE relnamespace='backend_internal'::regnamespace AND relkind='r'
-			AND relname IN ('work_request','work_item','note_work_state','work_capacity')) AS actual`);
+			AND relname IN ('work_request','work_item','note_work_state','work_capacity','work_control','queue_dispatch','delivery_recipient','notification','notification_effect','ap_host_lease')) AS actual`);
 		expect(Number(usage.actual)).toBeLessThanOrEqual(Number(usage.reserved));
 		return usage;
 	};
-	await measure();
+	console.info('capacity-relation-measurement representative', await measure());
 	const request = apRequest('maximum');
 	const emptyBody = JSON.stringify({ id: request.payload.activity.id, type: 'Create', content: '' });
 	const empty = { ...request, payload: { ...request.payload, activity: { ...request.payload.activity, body: emptyBody } } };
@@ -274,7 +276,7 @@ test('keeps the measured initial relations below saved logical charges for repre
 	await append(maximum);
 	const [stored] = await source.query('SELECT payload FROM backend_internal.work_request WHERE request_id=$1', [request.requestId]);
 	expect(JSON.parse(stored.payload).activity.body).toBe(maximum.payload.activity.body);
-	await measure();
+	console.info('capacity-relation-measurement maximum', await measure());
 });
 
 test('resolves notification targets under the canonical request and rejects cross-note PK collisions without orphan rows', async () => {

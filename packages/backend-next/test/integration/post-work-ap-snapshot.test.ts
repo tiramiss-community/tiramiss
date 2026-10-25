@@ -10,9 +10,9 @@ import { withPostWorkRequests } from '../../src/platform/database/post-work/appe
 import { PostWorkDispatchStore } from '../../src/platform/database/post-work/dispatch.js';
 import { PostWorkLocalExecutionStore } from '../../src/platform/database/post-work/local-execution.js';
 import { PostApRecipientSnapshot } from '../../src/platform/database/ap/snapshot.js';
-import { createTestDatabase } from '../helpers/database.js';
+import { createTestDatabase, seedHealthyCapacity } from '../helpers/database.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
-import { migrateDatabase } from '../../src/platform/database/migrate.js';
+import { migrateTestDatabase as migrateDatabase } from '../helpers/database.js';
 import type { ApWorkRequest } from '../../src/modules/post-work/public.js';
 import type { DataSource } from 'typeorm';
 
@@ -24,6 +24,7 @@ beforeAll(async () => {
 	source = await createDataSource(database.config.database).initialize();
 });
 beforeEach(async () => {
+	await seedHealthyCapacity(source);
 	await source.query('TRUNCATE backend_internal.ap_host_lease, backend_internal.delivery_recipient, backend_internal.notification, backend_internal.notification_effect, backend_internal.queue_dispatch, backend_internal.work_item, backend_internal.work_request, backend_internal.note_work_state');
 	await source.query('TRUNCATE public.following, public.relay, public.\"user\" CASCADE');
 	await source.query('UPDATE backend_internal.work_capacity SET reserved_rows=3, reserved_bytes=6144');
@@ -423,4 +424,13 @@ test('applies the 20s snapshot limit and restores a longer caller timeout', asyn
 		await source.query('DROP FUNCTION public.check_snapshot_timeout()');
 	}
 	expect(await ledger()).toHaveLength(1);
+});
+
+test('low physical capacity rolls back the entire snapshot and page generation', async () => {
+	await follow();
+	const { owned } = await seed();
+	await source.query('UPDATE backend_internal.work_capacity SET physical_free_bytes=1');
+	await expect(complete(owned)).rejects.toThrow('capacity');
+	expect(await ledger()).toEqual([]);
+	expect(await coverage()).toEqual([{ recipient_coverage: 'not_started' }]);
 });

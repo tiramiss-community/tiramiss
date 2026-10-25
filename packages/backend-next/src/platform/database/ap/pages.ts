@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { assertPhysicalCapacity, physicalCapacityCondition } from '../work-capacity/gate.js';
 import { WorkCapacityExceeded, WorkRequestConflict } from '../../../modules/post-work/public.js';
 import { chargedBytes, workCapacity, workHash } from '../../../modules/post-work/prepare.js';
 import { withLocalWorkCompletion } from '../post-work/local-execution.js';
@@ -85,11 +86,13 @@ export class PostApRecipientPages {
 			const reserved = await manager.createQueryBuilder().update('backend_internal.work_capacity')
 				.set({ reserved_rows: () => 'reserved_rows+:rows', reserved_bytes: () => 'reserved_bytes+:bytes' })
 				.where('capacity_key=\'global\' AND capacity_formula_version=:version')
-				.andWhere('((:rows=0 AND :bytes=0) OR (reserved_rows+:rows <= :rowLimit AND reserved_bytes+:bytes <= :byteLimit))')
+				.andWhere(physicalCapacityCondition)
+			.andWhere('((:rows=0 AND :bytes=0) OR (reserved_rows+:rows <= :rowLimit AND reserved_bytes+:bytes <= :byteLimit))')
 				.setParameters({ rows: inserted.raw.length, bytes, version: workCapacity.formulaVersion, rowLimit: workCapacity.rows * 0.9, byteLimit: Math.floor(workCapacity.bytes * 0.9) }).execute();
 			if (reserved.affected !== 1) {
 				throw new WorkCapacityExceeded('The durable work capacity is full or requires reconciliation');
 			}
+			await assertPhysicalCapacity(manager);
 			await manager.createQueryBuilder().update('backend_internal.note_work_state').set({ last_dependency_at: () => 'clock_timestamp()' })
 				.where('note_id=:id', { id: request.noteId }).execute();
 			return { status: 'succeeded' };

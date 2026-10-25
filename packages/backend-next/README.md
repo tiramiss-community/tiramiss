@@ -367,3 +367,93 @@ host bytes + work ID 最大 128 bytes で課金し、枠の再利用時には重
 本家形式の `redisForReactions` を指定した場合は専用接続で反応bufferを読み、未指定なら通常Redisを使う。`mediaProxy` / `videoThumbnailGenerator` とDBの `proxyRemoteFiles` を添付URLに適用する。専用接続も起動・終了期限と必須接続の障害監視に参加する。
 
 投稿作成・削除・変更系API・実worker/配信は後続。保存済みデータのshow検証だけで投稿縦断の完成とは扱わない。
+
+## 物理容量と業務受付（#166）
+
+論理予約（100万行・20 GiB）とは別に、PostgreSQL data volume の空き量で受付を制御する。
+空きが `max(2 GiB, volume全体の10%)` 未満、正常な観測がない、または観測から120秒以上なら、
+新規依頼・削除/取消・宛先固定・子item生成・通知成立・dispatch追加・新host枠とRole更新を拒否する。
+HTTPは `503 BACKEND_BUSY`。認証/認可と入力検証の順序を保ち、確定済み業務結果へ503を返し直さない。
+照会、保存済み結果、通知flush、保持条件を満たすhost清掃やdispatch予約解放は継続できる。
+通常worker接続と周期清掃全体は #162/#164 に残る。
+
+DB側の共有容量行に観測を保存し、各予約transactionの条件と、ロック取得後の別statementで
+DB時刻を確認する。HTTP/workerのローカル状態だけで判断しない。Role更新も同じ行の共有ロック取得後に確認する。
+論理枠が空いても、清掃後も、物理観測を正常に書き換えない。低容量時の削除もWALを必要とするため、
+清掃不能ならvolume拡張やDB外の期限済みbackup/logの退避が必要になる。
+
+### 監視値の供給
+
+`backendNext.capacityMonitor` を設定する。未設定/未供給では新しい正常観測が作られず、受付は閉じる。
+設定ファイル例（既存のDB/Redis設定に追加）:
+
+```yaml
+backendNext:
+  capacityMonitor:
+    file: /run/backend-next/postgres-volume.json
+    volumeId: postgres-data
+```
+
+供給元は **PostgreSQLホスト上でdata volumeそのものを測るcollector**。
+`built/entrypoints/collect-volume.js` をDBホストへ配置し、Node.jsのリポジトリ指定版で60秒周期に実行する。
+指定パスは本当のDB data volumeのmountでなければならない。remote DBに対してアプリホストの `/` や `/tmp` を指定しない。
+
+```sh
+node built/entrypoints/collect-volume.js /var/lib/postgresql postgres-data /shared/postgres-volume.json
+```
+
+collectorは `statfs(...).bavail * bsize`（DB実行ユーザーが利用可能な空き）と全容量を取得し、
+一時ファイルからrenameしてJSONを更新する。DBプロセスと同じ権限・mount namespaceで実行し、
+出力の読取権限と共有mount/転送を運用側で用意する。各アプリプロセスは起動時と60秒周期で、
+最大4096 bytesのregular fileを読み込む。例:
+
+```json
+{"volumeId":"postgres-data","observedAtMs":1792886400000,"totalBytes":"21474836480","freeBytes":"2147483648"}
+```
+
+volumeIdは設定と一致する必要があり、bytesは整数の十進文字列。未来時刻・不正値・別volume・読込失敗は
+正常観測として扱わない。DBとcollectorの時計を同期する。古いファイルの再読込や遅延した別プロセスからの
+正常値で、新しい低容量観測や観測時刻を上書きしない。監視失敗では最後の成功時刻を維持し、120秒で閉じる。
+`work-capacity.observed` はDB/対象10relationの実サイズ（索引/TOAST込み）と共有観測を記録し、
+`work-capacity.monitor-failed` は供給/書込失敗を記録する。
+
+data volume以外に分けたWAL、tablespace、backup領域の監視、collectorの配布・周期実行と通知先の設定は
+#138/#139 の配布環境側で接続する。論理係数や一つのvolume観測だけで全ディスクの安全性は保証しない。
+
+### 起動検査・復旧・係数変更
+
+通常HTTP/workerはmigration検査後に課金対象10表の保存版・保存課金合計・行数・集計カウンターと
+100万行/20 GiB上限を確認する。不一致は `WORK_CAPACITY_RECONCILIATION_REQUIRED`、
+上限超過は `WORK_CAPACITY_LIMIT_EXCEEDED` で起動を拒否する。起動時の自動修復はしない。
+物理観測がないだけなら照会可能な状態で起動し、変更系の受付を閉じる。
+
+1. 物理容量/監視の障害を解消する。DB拡張や期限済みDB外backup退避が必要なら先に行う。
+2. カウンター不一致や係数変更では全HTTP/worker/Supervisorを完全停止する。
+3. `pnpm --filter backend-next reconcile-work-capacity --offline` で全課金表をロックして照合する。
+   保存課金合計から集計値を修復する。途中失敗や上限超過では全rollbackし、COMMIT応答不明なら再接続して照会する。
+4. 通常起動検査を通し、新しい正常な物理観測と論理枠を確認してから再開する。
+   offline照合は観測を消去するので、照合だけで受付が正常化することはない。
+
+現行算定は係数4・formula version1。offline primitiveは新係数への保存済み1024-byte単位課金の
+保守的な上方再見積りと原子的更新を検証している。将来の係数変更では `currentFormula` だけでなく、
+`prepare.chargedBytes`、`snapshotSql`、`workCapacity.formulaVersion`、全INSERT/schema default、
+host予約の版条件、AP page既存子の課金比較も同時に更新して検証する必要がある。
+このCLIの引数で現在のbinaryの係数を変更する機能はない。新binaryと対応migrationを用意し、
+停止下でそのbinaryの算定版へ再見積りする。旧binaryは新版の保存状態で起動できない。
+予約済みの将来列・除去済み本文の余裕を失わないため、現時点のnullable列長だけで減額しない。
+係数低下・任意の算定規則変更はこのprimitiveでは扱わず、専用migrationと検証を追加する。
+
+### 係数4の測定範囲
+
+専用PostgreSQL18・新規DBで、通知依頼8件×200 itemと最大2 MiBの非圧縮性AP payloadを保存した。
+`pg_total_relation_size` は課金対象10表の索引/TOASTを含む合計。今回の観測値は次のとおり。
+
+| データ | 保存済み論理bytes | relation実bytes |
+| --- | ---: | ---: |
+| 代表データ（1,600 item） | 11,851,776 | 2,138,112 |
+| 最大payloadを追加 | 20,254,720 | 4,349,952 |
+
+この入力では過小見積りは観測されず、係数4を維持する。全行が最大幅の宛先/索引分布や長期の更新・削除による
+bloatを網羅した上限証明ではない。空のrelationにも初期ページの固定費があり、少数行で4倍が必ず実サイズを上回る
+保証もない。publicテーブル、WAL、backup、別tablespaceはこの論理合計に含めない。
+運用では実volume観測とDB/relation実サイズを併用し、配布/移行時の容量値の校正は #138/#139 で行う。

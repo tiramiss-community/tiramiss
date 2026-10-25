@@ -4,6 +4,8 @@
  */
 import { createRuntime, type RuntimeResources } from '../composition/create-runtime.js';
 import { assertMigrationsApplied } from '../platform/database/check-migrations.js';
+import { assertWorkCapacity } from '../platform/database/work-capacity/accounting.js';
+import { startWorkCapacityMonitor } from '../platform/work-capacity-monitor.js';
 import { ResourceScope } from '../platform/resource-scope.js';
 import type { RuntimeConfig } from '../config/types.js';
 
@@ -23,6 +25,8 @@ export async function startManagedProcess(
 
 	try {
 		await assertMigrationsApplied(config.database);
+		await assertWorkCapacity(resources.dataSource);
+		scope.defer(await startWorkCapacityMonitor(resources.dataSource, config.capacityMonitor, resources.logger));
 		scope.defer(await start(resources));
 		return { stop: () => scope.close(), failure: resources.failure };
 	} catch (error) {

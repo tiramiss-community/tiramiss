@@ -95,3 +95,9 @@ redisForReactions: {host: reactions, port: 6381, db: 5, prefix: reaction-prefix}
 	expect(value.redisForReactions).toMatchObject({ host: 'reactions', port: 6381, db: 5, keyPrefix: 'reaction-prefix:' });
 	expect(value.noteMedia).toEqual({ mediaProxy: 'https://media.test', externalMediaProxyEnabled: true, videoThumbnailGenerator: 'https://video.test' });
 });
+
+test('pins the DB volume observation file and identity', async () => {
+	const value = await loadConfig({ configFile: await config('backendNext: {capacityMonitor: {file: /run/db-volume.json, volumeId: postgres-data}}'), env: { DATABASE_DB: 'test', DATABASE_USER: 'tester' } });
+	expect(value.capacityMonitor).toEqual({ file: '/run/db-volume.json', volumeId: 'postgres-data' });
+	await expect(loadConfig({ configFile: await config(`backendNext: {capacityMonitor: {file: /tmp/volume.json, volumeId: ${'あ'.repeat(50)}}}`), env: { DATABASE_DB: 'test', DATABASE_USER: 'tester' } })).rejects.toThrow();
+});
