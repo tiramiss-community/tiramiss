@@ -47,7 +47,7 @@
 - [x] down/upを検証。元protocolデータの復元にはバックアップが必要と明記。旧schema再生成で通常通知bodyを失わない。
 - [x] READMEから撤去済手順を除き、残ジョブの診断と手動確認・旧専用Redis namespaceの扱いを書く。
 - [x] build/typecheck/unit、全integration、Role acceptance、process、migrate/check-migrations/check-schema、shippingを実行。
-- [ ] 独立レビューを受け指摘を修正し再レビューで収束。PR作成・#114/#124/#127/#177の現在欄更新。次は #170。
+- [x] 独立レビューを受け指摘を修正し再レビューで収束。PR作成・#114/#124/#127/#177の現在欄更新。次は #170。
 
 ## 判断と検証記録
 
@@ -58,7 +58,9 @@
 - RED: 新通知interfaceの11テストがsave未実装で失敗、削減21テストが表の残存/拒否なしで失敗。GREEN: migration/通知/既存履歴の3ファイル43件成功。
 - PASS: build/typecheck、unit208、integration136、Role受け入れ63、process23、固定fixture8。専用Compose `simplify-jobs-124`（PG55124/Redis56124）でCLI migrate/check-migrations/check-schema成功、schema差分0。
 - PASS: 変更9ファイルlint、SPDX2986、locale/diff、変更Markdown4ファイルのローカルリンク。既存pg concurrent-query deprecation警告は残る。
-- 独立scope監査でAP direct欠落/relay別payloadを確認し引継ぎに反映。新contextの全差分レビューでは具体的不具合なし。CodeRabbitは別途実行中。
+- 独立scope監査でAP direct欠落/relay別payloadを確認し引継ぎに反映。新contextの全差分レビューでは具体的不具合なし。CodeRabbit CLIも全差分で指摘0件。未使用依存削除の追記も独立再レビューで追加指摘なし。
 - 判断: 通知schema変更と旧Entity削除は新migrationと同じcommitへまとめ、動作しない中間版を作らない。通常worker/AP/通知機能は未接続のままであり、完了とみなさない。
 - 旧backendのmeta/paramDef/resと自動生成型は変更なし。misskey-js生成は対象外。本家同期対象と歴史6migrationは差分なし。新パッケージのschema/migration検証を実施し、旧backendの検査を代用しない。
 - 次の作業: 削減PRマージ後に #170。#124は署名HTTP/通常worker/retry・管理等の実接続が残るためcloseしない。#177の閲覧/既読/既存Redis移行も残す。#206は保留。
+
+- 成果: [PR #213](https://github.com/tiramiss-community/tiramiss/pull/213)（未マージ）。実装commit `a19b11621be8dec152480af889c85992ecae8dc7`。#114/#124/#127/#177の現在欄を更新し、読戻しで一致確認。GitHub CIは作成時点で実行中。

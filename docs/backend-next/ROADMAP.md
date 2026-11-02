@@ -23,7 +23,7 @@
 | PG通知保存・effect記録（#155） | 保存先の承認を維持し直接save/flushへ分離。effect/課金への依存を撤去し、閲覧/既読/移行は#177へ残す |
 | 物理容量監視と受付停止（#166 / PR #206） | 初期範囲から外し保留。PRは未マージのまま残し、勝手にclose/mergeしない |
 
-通常workerは起動停止だけで、実ジョブhandlerは未接続。#169 / PR #212はマージ済みで、基本text作成のHTTP・保存・応答・後続count更新と、独自BullMQ transport/Redis復旧の撤去を完了。直後の削減でPG通知を直接保存へ分離し、残るPGジョブ/AP protocol・専用テスト・起動Entity登録を撤去する。新migrationが未解決の仕事を拒否し、通知本体を保持して不要9表/課金列を廃止する。添付/返信等、delete、配送を通した完成品はまだない。マージ済みの独自migrationは履歴として保持するが、未使用adapterや不要テーブルを最終構成に残す方針ではない。以下の削減工程で整理する。
+通常workerは起動停止だけで、実ジョブhandlerは未接続。#169 / PR #212はマージ済みで、基本text作成のHTTP・保存・応答・後続count更新と、独自BullMQ transport/Redis復旧の撤去を完了。[PR #213](https://github.com/tiramiss-community/tiramiss/pull/213)（未マージ）の削減でPG通知を直接保存へ分離し、残るPGジョブ/AP protocol・専用テスト・起動Entity登録を撤去する。新migrationが未解決の仕事を拒否し、通知本体を保持して不要9表/課金列を廃止する。添付/返信等、delete、配送を通した完成品はまだない。マージ済みの独自migrationは履歴として保持するが、未使用adapterや不要テーブルを最終構成に残す方針ではない。以下の削減工程で整理する。
 
 ## 本家比較から分かった追加仕様
 
