@@ -825,9 +825,18 @@ importers:
       js-yaml:
         specifier: 5.4.2
         version: 5.4.2
+      mfm-js:
+        specifier: 0.27.0
+        version: 0.27.0
       pg:
         specifier: 8.23.1
         version: 8.23.1
+      ratelimiter:
+        specifier: 3.4.1
+        version: 3.4.1
+      re2:
+        specifier: 1.27.0
+        version: 1.27.0
       reflect-metadata:
         specifier: 0.2.2
         version: 0.2.2
@@ -844,6 +853,9 @@ importers:
       '@types/node':
         specifier: 26.6.4
         version: 26.6.4
+      '@types/ratelimiter':
+        specifier: 3.4.6
+        version: 3.4.6
       '@typescript-eslint/parser':
         specifier: 8.71.0
         version: 8.71.0(@typescript/typescript6@6.0.2)(eslint@9.39.5(supports-color@10.2.2))(supports-color@10.2.2)

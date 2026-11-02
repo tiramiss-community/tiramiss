@@ -160,58 +160,15 @@ JSON 本文と direct actor ID を受け、followers/relay 集合の固定は後
 J3 は管理操作・清掃・物理容量監視・形式移行/運用の検証へ進む。受理入口はまだ HTTP に公開せず、
 清掃による容量の解放もまだないため、J1 だけで運用可能なジョブ基盤や #124 全体の完了とは扱わない。
 
-## 投稿の投入アダプタ：J2a（#124）
+## 独自ジョブ実装の削減（#124）
 
-`platform/database/post-work/dispatch` の `PostWorkDispatchStore` と `scanPostWork` は、
-J1の確定済みitemを最大100候補/回・候補ごとのtransactionで投入claimし、
-`platform/jobs/bullmq-dispatch` の `BullmqDispatch` へ渡す。
-AP展開/ページ・通知は `postLocal`、AP送信は `deliver`。展開のclaimはdeliverのpauseも確認する。
-物理queueのprefixは旧backendと分け、Redisの `keyPrefix` は指定しない。
+[投稿の最小契約](../../docs/backend-next/posting-contract.md)へ移行中。
+BullMQ内部Lua差替えtransportとRedis全損時の世代復旧は未接続のまま撤去した。
+これらの投入/復旧手順は利用できない。適用済みmigrationと保存データは今回変更していない。
 
-投入claimは30秒、開始未確認の再投入は60秒後。seqはclaimごとに増加する。
-各queueの未解放予約は最大10000件で、DBの行/bytes枠も同時に予約する。
-満杯の候補は `capacity_wait` として30秒待ち、後続候補の走査を続ける。
-投入回数は `attempt_count` を増やさない。保存したdispatch行は枠解放後もDB容量へ課金する。
-
-BullMQは6.3.11へ固定し、インストールされた `addStandardJob` Luaの前に
-queue世代・token・Redis時刻による絶対期限の検査を挿入する。
-検査と追加は同じRedis原子操作であり、通常の `add` の前に別操作で確認する方式ではない。
-tokenの期限はDB予約時刻+60秒から延長しない。DB/Redisの時計差が5秒超なら投入を拒否する。
-Redisに保存するdataはworkId/kind/schemaVersion/dispatchSeq/queueGenerationのみで、固定本文はDBから読む。
-BullMQ更新時にはこの内部スクリプト境界を再レビューするまで起動を拒否する。
-
-`reconcilePostWork` は期限切れ予約を最大100件ずつ照合する。
-先にtokenを失効させ、entryの欠落/終了または除去を確認できたときだけDBのqueue枠を一度解放する。
-activeや応答不明では予約を残す。照合時刻を更新し、古いactive100件で後続の照合を止めない。
-DB確定前にenqueue応答が失われても、元のworkIdを保持したまま次のseqで回収する。
-
-**自動起動と実行UseCaseにはまだ接続していない。** `initialize(queue,generation)` は呼出側が
-DBと照合した世代を使う低層操作であり、Redis全喪失後に同じ世代で再初期化してはならない。
-worker起動前の世代切替/旧予約の照合は下記J2bの回復入口を使う。5秒周期の走査、実行claim/lease/試行予算、
-固定宛先・fake inboxへの配送、通知結果の同時確定、プロセス寿命への接続をJ2bで段階実装する。
-初期ローカル仕事のDB実行権は下記J2b1を参照。
-管理操作・清掃・形式移行などのJ3と合わせて、#124全体の完了条件を検証する。
-
-## Redis消失後の起動調停（#124 / J2b）
-
-`platform/database/post-work/recovery` の `recoverPostWork(source, transport)` は、将来の
-worker/HTTPのready、consumer、scanner開始より前に呼ぶ起動入口。現在のプロセス起動にはまだ接続しない。
-専用PostgreSQL接続のsession advisory lockで並行初期化を直列化し、正常なgateが両queueにあれば
-世代を維持する。gate欠落/旧世代では両queueのDB世代を進め、`recovery_pending`を同じtransactionで保存する。
-そのcommit後にRedis gateを観測値とのCASで進める。未知/未来のgateやCAS不一致は起動失敗とする。
-
-回復中は投入/ローカル実行claimを開始しない。旧世代の未解放予約はtoken期限に関係なく最大100件/回で
-照合し、Redis token失効とentry除去/終了の確認後だけ既存の条件付きreleaseでqueue枠を返す。
-全予約の照合と両gateの再確認が終わってから、両queueのpendingを同時に解除する。
-active entry・Redis応答不明・DB障害では起動失敗にし、予約をゼロ扱いしない。
-古いworkerの有効な業務実行lease、累積試行数、元の期限、保存行/bytesへの課金は変更しない。
-
-途中停止後はDBのpending世代を再利用して再開し、成功済みreleaseは二重計上しない。
-専用DB接続は失敗時も破棄するため、poolへadvisory lockを持ち帰らない。
-遅延した旧世代のenqueueはRedis gateで拒否される。古いcompleted/failed履歴や未知entryは業務結果と扱わず、
-将来のconsumerも必ずDBのenvelope/世代/保存形式検証を通す。
-この入口自体は稼働中Redis障害の監視・停止経路や既存起動期限への接続を行わず、
-通知/AP業務処理・実workerの寿命への接続と併せて後続J2で実装する。#124全体は未完了。
+残るPG request/item・dispatch/claim・AP snapshot/page/host枠・通知effect/容量会計は、
+PG通知保存を独自claimから分離する直後の削減PRでまとめて撤去する。
+以下は未接続の残存adapterの記録であり、通常workerの実ジョブ実装や完成した投稿機能を意味しない。
 
 ## ローカル仕事の実行権：J2b1（#124）
 
@@ -369,3 +326,16 @@ host bytes + work ID 最大 128 bytes で課金し、枠の再利用時には重
 本家形式の `redisForReactions` を指定した場合は専用接続で反応bufferを読み、未指定なら通常Redisを使う。`mediaProxy` / `videoThumbnailGenerator` とDBの `proxyRemoteFiles` を添付URLに適用する。専用接続も起動・終了期限と必須接続の障害監視に参加する。
 
 投稿作成・削除・変更系API・実worker/配信は後続。保存済みデータのshow検証だけで投稿縦断の完成とは扱わない。
+
+## 基本投稿作成（#169 / N2）
+
+通常HTTPの `POST /api/notes/create` で基本text投稿を保存し、`createdNote`を返す。
+認証/production rate/停止・移行・scope/入力の順序、public→home補正、禁止語、
+CW/localOnly/reactionAcceptanceを扱う。保存直後にnotes/showで参照でき、投稿数は保存後に加算する。
+DB失敗やクライアント切断を理由に自動再作成しない。通常終了では開始済みの投稿数更新も待つ。
+
+添付・投票・返信/Renote・channel・指定宛先・MFM抽出は#170で接続する。
+それらを含む入力は当面501 `NOT_IMPLEMENTED`で保存前に拒否する。
+noExtract*で抽出しないことを明示した本文は保存できる。
+AP/通知/stream/TL/検索/webhook・通常workerは未接続で、投稿領域全体の完成ではない。
+最小契約と既存実装の撤去順は[投稿の最小契約](../../docs/backend-next/posting-contract.md)を参照。
