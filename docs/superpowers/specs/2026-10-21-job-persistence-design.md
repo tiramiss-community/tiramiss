@@ -1,5 +1,7 @@
 # 最初の実ジョブの保存・再開・形式変更の契約
 
+> 2026-11-02 方針整理: 初期目標は[本家相当の機能と依存整理](../../backend-next/GOALS.md)。本書の独自の耐障害・容量・同時確定の追加保証は[全体計画](../../backend-next/ROADMAP.md)に従って再評価し、一律の先行条件にしない。過去の合意・実装根拠として本文を保持する。通知のPostgreSQL保存など承認済みの差異は、今回の文書整理だけで取り消さない。
+
 日付: 2026-10-21
 
 対象: [#123](https://github.com/tiramiss-community/tiramiss/issues/123)。親は [#122](https://github.com/tiramiss-community/tiramiss/issues/122)、対応順は [#114](https://github.com/tiramiss-community/tiramiss/issues/114)。

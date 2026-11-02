@@ -6,6 +6,8 @@
 
 ## 新バックエンドの調査・変更
 
+- 最初に [目的と初期完成条件](../docs/backend-next/GOALS.md) と [全体計画](../docs/backend-next/ROADMAP.md) を読む。詳細設計だけで初期範囲を広げず、独自の耐障害/容量保証は初期必須か再評価する。
+
 - リニューアルは `packages/backend-next` で進める。旧 `packages/backend` は本家追従・互換性確認用に維持し、リニューアルのために変更しない。既存fork固有機能は移植対象にしない。
 - `packages/backend-next/AGENTS.md` と、複製を扱う場合は `packages/backend-upstream/AGENTS.md` を作業前に読む。全体計画は [Issue #114](https://github.com/tiramiss-community/tiramiss/issues/114)。対象Issue・親の対応順・先行依存・関連設計書を確認する。
 - `backend-upstream` の `src/`・`migration/` は本家の固定SHAからの無改変複製、`exports/`・`.managed-files.json` は同期生成物。直接編集せず、manifestと同期スクリプトを通す。同期成功だけで業務動作の移植完了にはしない。

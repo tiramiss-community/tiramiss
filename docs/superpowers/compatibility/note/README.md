@@ -1,5 +1,7 @@
 # 投稿の本家比較契約（N0 / #167・N1 / #168）
 
+> 2026-11-02: [目的と初期完成条件](../../../backend-next/GOALS.md) / [全体計画](../../../backend-next/ROADMAP.md) に従い、本家の比較観測と追加保証の期待値を分けて利用する。D1–D6/F群の強化契約を、すべて初期移植の必須条件として適用しない。保存済み観測・期待値・実装履歴は変更しない。
+
 [投稿設計](../../specs/2026-10-21-note-flow-design.md) §8 C1–C10/F1–F8を、後続の[#168–#176](https://github.com/tiramiss-community/tiramiss/issues/127)が引き継ぐための資料。比較元は本家 **`8e07cf085adf7009583d234a208e30436f020e26`**。新実装の基準はdevelop `a5840cc43089ea49c9f3ac14444390b0a809953f`（PR #158マージ後）。
 
 本家の実HTTP・別DB接続・実worker→localhost fake inbox・Redis Pub/Subを観測した。N0時点では新backendの投稿API・通常workerは未接続。N1ではnotes/showを接続し、下記範囲を検証した。資料全体の成功を投稿領域の完成とは扱わない。本家e2eはテスト用schemaを再作成するため、本家migration全履歴の適用・本番移行の証明でもない。
