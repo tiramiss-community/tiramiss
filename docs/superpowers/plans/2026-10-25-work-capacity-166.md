@@ -56,7 +56,7 @@ Coefficient changes require stopped services and a compiled formula-version chan
 - [x] Run affected package tests, schema/migration, changed-file lint/SPDX/locale checks.
 - [x] Obtain independent review, fix findings and repeat until converged.
 - [x] Document configuration, stop/recovery/re-estimation steps and #138/#139 handoff.
-- [ ] Commit/push/open PR closing #166, update parent progress. Keep #124 open; next is #169.
+- [x] Commit/push/open PR closing #166, update parent progress. Keep #124 open; next is #169.
 
 ## Execution evidence
 
@@ -64,7 +64,7 @@ Worktree `/tmp/tiramiss-capacity-166`, branch `feat/backend-next-capacity-166`. 
 
 - Task 1: complete. Missing-observation integration test first failed because append fulfilled; unit validator initially absent. Added shared physical predicate, transaction-local locks and post-lock DB-time check. Create/delete/cancel, six growth adapters, existing-request reuse and authorized Role writes are gated; reads/flush/eligible cleanup remain available.
 - Task 2: complete. Monitor/accounting regression tests cover stale/future/wrong-volume/oversized/missing input, 60-second schedule/close, low-space recovery, injected observation write failure, version/counter mismatch, >20 GiB startup rejection and offline overflow rollback. Empty-DB 4→16 self-charge/counter update succeeds atomically; current binary rejects future saved versions. DB-host collector measures an explicit path and atomically writes JSON.
-- Task 3: validation/review complete, PR creation pending. Independent scope audit plus implementation review/re-review/final review completed without unresolved findings. Findings fixed: capacity-row self-charge update constraint, stale supplier log disagreement, unchanged-row-lock expiry; parent also added idempotent append admission regression. Unchanged-row-lock case observed fulfilled RED → rejected GREEN with DB sleep/lock injection.
+- Task 3: complete. PR #206 is open for review: https://github.com/tiramiss-community/tiramiss/pull/206. Implementation commit `7af308b8d70239b907a9ce88563dc35782d8f0f6`. Independent scope audit plus implementation review/re-review/final review completed without unresolved findings. Findings fixed: capacity-row self-charge update constraint, stale supplier log disagreement, unchanged-row-lock expiry; parent also added idempotent append admission regression. Unchanged-row-lock case observed fulfilled RED → rejected GREEN with DB sleep/lock injection.
 
 Validation evidence:
 
@@ -87,3 +87,5 @@ Measurement (PostgreSQL18, dedicated tmpfs DB): 1,600 notification items across8
 Implementation choices made within the existing contract: trusted DB-host observation file with pinned volume ID, strict future timestamp rejection and4096-byte bound, shared DB admission facts, upward saved-charge scaling preserving reserved headroom. No deferred review findings. Future coefficient changes require matching producer/formula/schema changes; CLI does not change the current binary factor. Deployment supplier/scheduling/additional volumes remain #138/#139; worker hookup/retention remain #162/#164.
 
 Dedicated validation environment: Compose `capacity-166`, PostgreSQL55166/Redis56166. Only disposable randomized databases; user `misskey-infra` untouched. Worktree and feature branch retained for PR review. Next #169 requires merged #166 and #168 (PR #205 already merged).
+
+Resume/handoff (2026-11-02): verified PR #206 remains open, non-draft, on the expected feature branch and implementation commit. Completed interrupted Issue progress updates for #114/#124/#127/#166; #168/PR #205 is merged, #166 remains pending human review/merge, and #169 is next after it merges. Original validation logs remain available and match the counts above; this continuation changes handoff documentation only. The dedicated `capacity-166` Compose containers/network were stopped and removed after validation; no user environment was stopped.
