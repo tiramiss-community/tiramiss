@@ -1,5 +1,7 @@
 # backend-next
 
+[目的と初期完成条件](../../docs/backend-next/GOALS.md) / [全体計画と現在地](../../docs/backend-next/ROADMAP.md)。
+
 Misskeyバックエンド再設計の実行基盤・Role初期実装・投稿参照。
 既存トークンで `admin/roles/show` と `admin/roles/update` を利用できる。
 `notes/show` は保存済み本家データから取得・可視性判定・出力を提供する。その他のAPIと業務ジョブは後続の実装範囲。

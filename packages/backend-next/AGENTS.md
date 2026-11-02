@@ -4,15 +4,16 @@
 
 ## 着手時に読むもの
 
-1. 対象のGitHub Issue、その親Issueの対応順、先行依存。全体計画は [#114](https://github.com/tiramiss-community/tiramiss/issues/114)、Role初期実装は [#115](https://github.com/tiramiss-community/tiramiss/issues/115)。子Issueを追加・分割した場合は、親の対応順も更新する。
-2. [バックエンド再設計の基本方針](../../docs/superpowers/specs/2026-10-15-misskey-backend-redesign-design.md) と、担当機能の詳細設計。Roleは [ロールのポリシー更新と反映](../../docs/superpowers/specs/2026-10-16-role-policy-update-design.md) を読む。
-3. [README](README.md) の設定・起動・テスト手順と、変更対象のコード・テスト。
+1. [目的と初期完成条件](../../docs/backend-next/GOALS.md) と [全体計画](../../docs/backend-next/ROADMAP.md)。作業開始・compact後の再開でも最初に確認する。
+2. 対象のGitHub Issue、その親Issueの対応順、先行依存。全体計画は [#114](https://github.com/tiramiss-community/tiramiss/issues/114)、Role初期実装は [#115](https://github.com/tiramiss-community/tiramiss/issues/115)。子Issueを追加・分割した場合は、親の対応順も更新する。
+3. [バックエンド再設計の基本方針](../../docs/superpowers/specs/2026-10-15-misskey-backend-redesign-design.md) と、担当機能の詳細設計。Roleは [ロールのポリシー更新と反映](../../docs/superpowers/specs/2026-10-16-role-policy-update-design.md) を読む。
+4. [README](README.md) の設定・起動・テスト手順と、変更対象のコード・テスト。
 
 Roleの後続作業（#117–#121）は、#116で確定した[互換性契約](../../docs/superpowers/specs/2026-10-17-role-compatibility-contract.md)と[比較資料の引き継ぎ表](../../docs/superpowers/compatibility/role/README.md#後続issueでの利用と更新)も着手前に読む。後者にJSON期待値・本家用TypeScript probeの所在、各Issueで新実装のテストへ接続する内容、再調査・期待値更新が必要な条件をまとめている。これらは後続実装の入力であり、Role実装済み・新旧一致検証済みを示すものではない。
 
 最小実行基盤は [PR #113](https://github.com/tiramiss-community/tiramiss/pull/113) で導入済み。基盤の存在だけでRole API・認証・実ジョブなどの業務機能も完成したとは扱わず、現在のコード・Issue・検証結果を確認する。
 
-Issueは作業の範囲・順序・完了条件、設計書は合意した契約、READMEは実行手順を示す。食い違いがあれば既存コードだけを正解として仕様を変更せず、差異を整理する。合意済みの方針を実装上の都合で黙って変更しない。
+目的文書は初期範囲の判断基準、全体計画は現在の工程、Issueは個別作業の範囲・順序・完了条件、設計書はその具体契約、READMEは実行手順を示す。2026-11-02のユーザー指示に従い、旧設計の永続ジョブ・容量・強い復旧保証を初期必須条件として機械的に適用しない。承認済みの差異を変更する場合は理由と履歴を明示する。食い違いがあれば既存コードだけを正解として仕様を変更せず、差異を整理する。合意済みの方針を実装上の都合で黙って変更しない。
 
 ## 編集範囲と依存規則
 
