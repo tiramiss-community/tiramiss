@@ -185,4 +185,14 @@ BACKEND_NEXT_TEST_DB_PORT=55168 BACKEND_NEXT_TEST_REDIS_PORT=56168 \
   pnpm --filter backend-next test:integration test/integration/note-show.test.ts
 ```
 
-notes/create/delete、投票・reaction・follow等の変更API、TL/検索API、AP送信・通常workerはこの接続の完成範囲に含めない。次は#169（N2: 基本文の作成と同時保存）。#166が#169の先行依存に残る。
+notes/create/delete、投票・reaction・follow等の変更API、TL/検索API、AP送信・通常workerはこの接続の完成範囲に含めない。次の基本text作成は#169。方針整理後は#166を必須依存とせず、[最小契約](../../../backend-next/posting-contract.md)で保存/後続処理の境界を定める。
+
+## N2: 基本text作成の接続（#169）
+
+`test/integration/note-create.test.ts`は既存N0のC1-basic、C2の作成9ケース、C3のmissing/whitespace/long/empty-cw/cw-only、C4の計17件についてHTTP本文・資格header・Note/Poll増分と保存結果を照合し、成功したNoteの直後showも確認する。JSON期待値は変更していない。production rateの保存済み2HTTP観測とDB増分0も照合する。
+
+追加のCW優先/禁止語AND・RE2/Unicode境界/並行作成/count/未対応入力/DB失敗、切断・終了時の受理済み投稿は新実装の単体・実DB・子プロセス試験。これらを固定本家で新たに実測したとは扱わない。
+
+基本text保存だけのためのPG依頼は作らず、本家同様に保存後のcount更新を開始する。添付・投票・返信/Renote・channel・指定宛先・MFM抽出は#170まで明示501で保存前に拒否する。noExtract*で抽出を無効にした本文は保存できる。AP/通知/stream/TL/検索/webhook/通常workerの一致や投稿領域全体の完成を示さない。
+
+旧D1/D2/F群の強い同時確定・容量・復旧を初期必須の期待値にしない。[最小契約](../../../backend-next/posting-contract.md)と[実装計画](../../plans/2026-11-03-note-create-169.md)に判断・検証・撤去範囲を記録する。

@@ -9,7 +9,7 @@ import type { RoleActor } from '../../modules/role/public.js';
 import type { Logger } from '../logger.js';
 
 export function createTokenAuthenticator(manager: EntityManager, logger: Logger) {
-	return async (token: string | null | undefined): Promise<RoleActor> => {
+	return async (token: string | null | undefined): Promise<RoleActor & { canWriteNote: boolean }> => {
 		if (token == null) {
 			throw new CredentialRequired();
 		}
@@ -18,7 +18,7 @@ export function createTokenAuthenticator(manager: EntityManager, logger: Logger)
 			if (user === null) {
 				throw new AuthenticationFailed();
 			}
-			return { userId: user.id, credentialGrant: { readRole: true, updateRole: true } };
+			return { userId: user.id, canWriteNote: true, credentialGrant: { readRole: true, updateRole: true } };
 		}
 
 		const accessToken = await manager.getRepository(MiAccessToken).findOne({ where: [{ hash: token.toLowerCase() }, { token }] });
@@ -38,7 +38,7 @@ export function createTokenAuthenticator(manager: EntityManager, logger: Logger)
 		} catch (error) {
 			logger.error('credential-usage.failed', { error });
 		}
-		return { userId: user.id, credentialGrant: {
+		return { userId: user.id, canWriteNote: permission.includes('write:notes'), credentialGrant: {
 			readRole: permission.includes('read:admin:roles'), updateRole: permission.includes('write:admin:roles'),
 		} };
 	};
