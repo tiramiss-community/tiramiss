@@ -91,6 +91,7 @@ instance 表の stub は PostgreSQL と同じく `host` の一意制約を持ち
 ### 本文の HTML
 
 - 全体を `<p>` で包まない。`extraHtml` は末尾にそのまま足す。`extraHtml` が空文字列でも `null` ではないので `noMisskeyContent` は `false` になる。
+- 改行を含む text は、行の間へ `'br'` を挟んでから `'br'` と等しい要素をすべて `<br />` にする。このため、ちょうど `br` の行も改行になる（`a\nbr\nb` → `a<br /><br /><br />b`）。改行のない `br` だけの本文や、`BR`・` br` の行はそのまま残る。
 - `noMisskeyContent` は、最上位のノードがすべて `text`・`unicodeEmoji`・`emojiCode`・`mention`・`hashtag`・`url` のときだけ `true`。空の本文も `true`。
 - `$[ruby 漢字]`（空白のない 1 語）と `$[ruby **a**]`（子が文字列でない 1 つ）は `TypeError` を投げる。表現全体が失敗し、その投稿は配送されない（`render-cases.json` の `mfm-ruby-crash`。relay も呼ばない）。
 - `$[unixtime]` は、数字でない・範囲外なら `<i>` で包むだけ。子が文字列でなければ子を `<i>` で包む。
@@ -147,7 +148,7 @@ probe は固定コミットの本家で実行する。本リポジトリの旧 b
 
 probe は re2 を差し替える（federation-base と同じ理由）。`postNoteCreated` は配送に関係しない依存をすべて何もしない値にして動かし、表現・宛先・投入は本家の `ApRendererService`・`ApMfmService`・`MfmService`・`ApDeliverManagerService`・`QueueService.deliverMany` を通す。DB の読み取りは stub で、メンションの利用者は表の順で返す。`DeliverProcessorService` は本家の `FederatedInstanceService`・`UtilityService` とつなぎ、instance 表と Redis だけを stub にする。Worker は `bullmq` の `Worker` を記録用のクラスへ差し替え、Redis へ接続しない。時刻は `Date` だけを固定する。待たれない処理の例外を記録する間だけ、Vitest の `unhandledRejection` の受け手を外す。
 
-2026-11-03 に Node.js `v26.4.0` で記録し、5 件（HTML 86 件・表現と宛先 63 件・宛先の Map 24 件・投入と Worker（設定 4 通り・queue 2 件・backoff 3 表・再試行 9 表）・処理 54 件 60 ジョブ）とも一致した。Node.js `v24.20.0` でも同じ結果になった。
+2026-11-03 に Node.js `v26.4.0` で記録し、5 件（HTML 86 件・表現と宛先 63 件・宛先の Map 24 件・投入と Worker（設定 4 通り・queue 2 件・backoff 3 表・再試行 9 表）・処理 54 件 60 ジョブ）とも一致した。Node.js `v24.20.0` でも同じ結果になった。2026-11-04 に、ちょうど `br` の行の 4 件を HTML へ足して再記録した（HTML 90 件）。Node.js `v26.4.0`・`v24.20.0` とも 5 件一致した。
 
 ## 新実装への接続
 
@@ -155,7 +156,7 @@ probe は re2 を差し替える（federation-base と同じ理由）。`postNot
 
 | 資料 | 新実装のテスト | 比べること |
 | --- | --- | --- |
-| `mfm-html-cases.json` | `unit/mfm/note-html.test.ts` | 全 86 件。MFM → HTML の純関数と `noMisskeyContent` の判定。`content` は byte 単位、例外は名前とメッセージ |
+| `mfm-html-cases.json` | `unit/mfm/note-html.test.ts` | 全 90 件。MFM → HTML の純関数と `noMisskeyContent` の判定。`content` は byte 単位、例外は名前とメッセージ |
 | `render-cases.json` | `unit/federation/note-activity.test.ts`・`unit/federation/note-delivery.test.ts`・`integration/note-activity.test.ts` | 全 63 件。保存済みの列と関連の行からの activity（文字列で一致。メンションの `tag` だけは集合で比べる）、宛先と job の順・digest・本文、配送しない場合。結合テストは行を PostgreSQL へ入れて読み取りから通す（`reply-author-missing` など実 DB で作れない行を除く） |
 | `recipient-cases.json` | `unit/federation/deliver-recipients.test.ts` | 23 件。Map の順と値、問い合わせの回数、`inbox is null`。`remote-actor` は作者の判定で配送の区画に入らないため除く |
 | `job-cases.json` | `unit/job-queue/deliver.test.ts`・`integration/deliver-queue.test.ts` | 全件。job 名・内容・設定、queue の prefix、Worker の設定、backoff の表、再試行の判定（BullMQ の `Job.shouldRetryJob` に通す）。結合テストは実 Redis の BullMQ で、backoff の後の再試行と 4xx の停止を確かめる |

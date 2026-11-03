@@ -98,7 +98,9 @@ export function toHtml(
 		if (!node.props.text.match(/[\r\n]/)) {
 			return escapeHtml(node.props.text);
 		}
-		return node.props.text.split(/\r\n|\r|\n/).map(escapeHtml).join('<br />');
+		// 本家は行の間へ 'br' を挟んでから 'br' と等しい要素をすべて改行に置き換えるため、ちょうど "br" の行も改行になる。
+		// join だけにすると、その行の本文（AP の content と Digest）が本家と変わる。
+		return node.props.text.split(/\r\n|\r|\n/).map(escapeHtml).map(line => line === 'br' ? '<br />' : line).join('<br />');
 	}
 
 	function render(node: mfm.MfmNode): string {

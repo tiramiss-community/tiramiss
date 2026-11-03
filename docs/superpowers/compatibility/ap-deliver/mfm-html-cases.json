@@ -63,6 +63,22 @@
 				"text": "\n"
 			},
 			{
+				"id": "newline-line-br",
+				"text": "a\nbr\nb"
+			},
+			{
+				"id": "newline-line-br-first",
+				"text": "br\nx"
+			},
+			{
+				"id": "newline-line-br-like",
+				"text": "BR\n br\n<br>"
+			},
+			{
+				"id": "single-line-br",
+				"text": "br"
+			},
+			{
 				"id": "bold",
 				"text": "**bold** and __also__"
 			},
@@ -460,6 +476,38 @@
 				"text"
 			],
 			"content": "<br />",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "newline-line-br",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "a<br /><br /><br />b",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "newline-line-br-first",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "<br /><br />x",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "newline-line-br-like",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "BR<br /> br<br />&lt;br&gt;",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "single-line-br",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "br",
 			"noMisskeyContent": true
 		},
 		{
