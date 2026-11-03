@@ -8,6 +8,7 @@
 
 - 本家: `8e07cf085adf7009583d234a208e30436f020e26`。`backend-upstream/upstream-sync.json` と同じ SHA。fork の現在の `packages/backend` からは列挙しない。
 - 新実装: `6f62cb897d2a03e8fd7727eadf45c20d8bfcf206`（PR #213 マージ後）。判定と根拠はこの地点に固定する。
+  - 行の `implementation`/`verification` は `domains.json` の `implementationCommit` の木で存在を検査する。#216 の最初の PR で、外向き HTTP の行の根拠を参照できるよう `224416b352fa474a37fb286cd4838d8818947fc8` へ進めた。監査の判定（`audit`）はこの更新で変えていない。
 - 対象: 登録 API と非 API HTTP、WebSocket、AP 受信/公開/送信、業務保存・副作用、job/周期処理、CLI/運用。fork 固有機能は対象外。固定本家の機能を一括で見送らない。
 
 ## 現在の到達点

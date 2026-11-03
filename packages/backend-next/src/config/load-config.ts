@@ -8,7 +8,9 @@ import { resolve } from 'node:path';
 import { load } from 'js-yaml';
 import { idMethods, type IdMethod } from '../platform/id-codec.js';
 import { DiagnosticError } from '../platform/diagnostic-error.js';
-import type { RedisConfig, RuntimeConfig } from './types.js';
+import { parseAllowedPrivateNetworks } from '../platform/outbound-http/private-address.js';
+import { upstreamRelease } from './upstream-release.js';
+import type { OutboundHttpConfig, RedisConfig, RuntimeConfig } from './types.js';
 
 type ObjectValue = Record<string, unknown>;
 
@@ -31,6 +33,45 @@ function positive(value: unknown, name: string, max = Number.MAX_SAFE_INTEGER): 
 		throw new DiagnosticError('INVALID_CONFIG', { field: name });
 	}
 	return value as number;
+}
+
+function optional<T>(value: unknown, parse: (value: unknown) => T): T | undefined {
+	return value == null ? undefined : parse(value);
+}
+
+function texts(value: unknown, name: string): string[] {
+	if (!Array.isArray(value) || value.some(item => typeof item !== 'string')) {
+		throw new DiagnosticError('INVALID_CONFIG', { field: name });
+	}
+	return [...value];
+}
+
+function outboundHttp(source: ObjectValue): OutboundHttpConfig {
+	const allowedPrivateNetworks = optional(source.allowedPrivateNetworks, value => texts(value, 'allowedPrivateNetworks'));
+
+	// 本家は接続のたびに parse し、不正な CIDR では遮断前に未捕捉例外となって接続を通してしまう。
+	// backend-next は子プロセスごと停止するため、承認済みの差異として起動時に拒否する。
+	for (const [index, network] of (allowedPrivateNetworks ?? []).entries()) {
+		try {
+			parseAllowedPrivateNetworks([network]);
+		} catch {
+			throw new DiagnosticError('INVALID_CONFIG', { field: 'allowedPrivateNetworks', index });
+		}
+	}
+
+	return {
+		// 空文字は本家と同じく「指定なし」として扱われるので、ここでは拒否しない。
+		proxy: optional(source.proxy, value => text(value, 'proxy', true)),
+		proxyBypassHosts: optional(source.proxyBypassHosts, value => texts(value, 'proxyBypassHosts')),
+		allowedPrivateNetworks,
+		outgoingAddress: optional(source.outgoingAddress, value => text(value, 'outgoingAddress', true)),
+		deliverJobConcurrency: optional(source.deliverJobConcurrency, value => {
+			if (typeof value !== 'number') {
+				throw new DiagnosticError('INVALID_CONFIG', { field: 'deliverJobConcurrency' });
+			}
+			return value;
+		}),
+	};
 }
 
 function redis(value: unknown, host: string): RedisConfig {
@@ -89,6 +130,8 @@ export async function loadConfig(
 	return {
 		id,
 		url: url.origin,
+		userAgent: `Misskey/${upstreamRelease.version} (${source.url})`,
+		outboundHttp: outboundHttp(source),
 		roleCache: {
 			rolesTtlMs: positive(cache.rolesTtlMs ?? 30000, 'roleCache.rolesTtlMs'),
 			assignmentsTtlMs: positive(cache.assignmentsTtlMs ?? 30000, 'roleCache.assignmentsTtlMs'),

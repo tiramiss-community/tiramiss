@@ -810,21 +810,33 @@ importers:
       backend-upstream:
         specifier: workspace:*
         version: link:../backend-upstream
+      cacheable-lookup:
+        specifier: 7.0.0
+        version: 7.0.0
       hono:
         specifier: 4.13.13
         version: 4.13.13
+      hpagent:
+        specifier: 1.2.0
+        version: 1.2.0
       inversify:
         specifier: 8.2.3
         version: 8.2.3(reflect-metadata@0.2.2)
       ioredis:
         specifier: 5.11.1
         version: 5.11.1(supports-color@10.2.2)
+      ipaddr.js:
+        specifier: 2.5.0
+        version: 2.5.0
       js-yaml:
         specifier: 5.4.2
         version: 5.4.2
       mfm-js:
         specifier: 0.27.0
         version: 0.27.0
+      node-fetch:
+        specifier: 3.3.2
+        version: 3.3.2
       pg:
         specifier: 8.23.1
         version: 8.23.1

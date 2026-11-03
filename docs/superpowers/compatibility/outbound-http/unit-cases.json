@@ -1,0 +1,4837 @@
+{
+	"inputs": {
+		"addresses": [
+			"0.0.0.0",
+			"10.1.2.3",
+			"100.64.0.1",
+			"127.0.0.1",
+			"127.0.0.2",
+			"169.254.1.1",
+			"172.16.0.1",
+			"192.168.1.1",
+			"192.0.0.1",
+			"192.0.2.1",
+			"198.18.0.1",
+			"203.0.113.1",
+			"240.0.0.1",
+			"224.0.0.1",
+			"255.255.255.255",
+			"192.175.48.1",
+			"192.52.193.1",
+			"8.8.8.8",
+			"93.184.216.34",
+			"::",
+			"::1",
+			"fe80::1",
+			"fc00::1",
+			"fd12:3456::1",
+			"ff02::1",
+			"fec0::1",
+			"100::1",
+			"::ffff:127.0.0.1",
+			"::ffff:10.0.0.1",
+			"::ffff:8.8.8.8",
+			"::ffff:0:8.8.8.8",
+			"64:ff9b::808:808",
+			"64:ff9b:1::1",
+			"2002::1",
+			"2001::1",
+			"2001:2::1",
+			"2001:3::1",
+			"2001:4:112::1",
+			"2001:10::1",
+			"2001:20::1",
+			"2001:30::1",
+			"2001:db8::1",
+			"3fff::1",
+			"5f00::1",
+			"2606:4700:4700::1111",
+			"2001:4860:4860::8888"
+		],
+		"allowedNetworks": [
+			[],
+			[
+				"127.0.0.0/8"
+			],
+			[
+				"::1/128"
+			],
+			[
+				"::ffff:127.0.0.0/104"
+			],
+			[
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			[
+				"0.0.0.0/0"
+			],
+			[
+				"::/0"
+			]
+		],
+		"invalidNetworks": [
+			[
+				"10.0.0.1"
+			],
+			[
+				"not-a-cidr"
+			],
+			[
+				"10.0.0.0/33"
+			],
+			[
+				"fc00::/129"
+			],
+			[
+				"127.0.0.0/8",
+				""
+			]
+		],
+		"statusCodes": [
+			{
+				"status": 400,
+				"statusText": "Bad Request"
+			},
+			{
+				"status": 401,
+				"statusText": "Unauthorized"
+			},
+			{
+				"status": 404,
+				"statusText": "Not Found"
+			},
+			{
+				"status": 410,
+				"statusText": "Gone"
+			},
+			{
+				"status": 429,
+				"statusText": "Too Many Requests"
+			},
+			{
+				"status": 499,
+				"statusText": ""
+			},
+			{
+				"status": 500,
+				"statusText": "Internal Server Error"
+			},
+			{
+				"status": 502,
+				"statusText": "Bad Gateway"
+			},
+			{
+				"status": 503,
+				"statusText": "Service Unavailable"
+			},
+			{
+				"status": 300,
+				"statusText": "Multiple Choices"
+			}
+		],
+		"agentMatrix": {
+			"proxy": [
+				false,
+				true
+			],
+			"bypassListed": [
+				false,
+				true
+			],
+			"bypassProxy": [
+				false,
+				true
+			],
+			"allowLocalAddress": [
+				false,
+				true
+			],
+			"protocol": [
+				"http:",
+				"https:"
+			]
+		},
+		"configs": [
+			{
+				"name": "url-in-file",
+				"yaml": "url: https://example.test\n"
+			},
+			{
+				"name": "url-in-file-unnormalized",
+				"yaml": "url: https://Example.TEST:443/some/path/\n"
+			},
+			{
+				"name": "url-from-env",
+				"yaml": "{}\n",
+				"env": {
+					"MISSKEY_URL": "https://env.example.test"
+				}
+			},
+			{
+				"name": "outbound-keys",
+				"yaml": "url: https://example.test\nproxy: http://proxy.example.test:3128\nproxyBypassHosts: [api.deepl.com, api-free.deepl.com]\nallowedPrivateNetworks: [127.0.0.1/32, 'fc00::/7']\noutgoingAddress: 192.0.2.10\ndeliverJobConcurrency: 300\n"
+			},
+			{
+				"name": "outbound-keys-empty",
+				"yaml": "url: https://example.test\nproxy: ''\nproxyBypassHosts: null\nallowedPrivateNetworks: []\noutgoingAddress: null\n"
+			}
+		]
+	},
+	"cases": [
+		{
+			"fn": "agentByUrl",
+			"proxy": false,
+			"bypassListed": false,
+			"bypassProxy": false,
+			"allowLocalAddress": false,
+			"protocol": "http:",
+			"expected": "http"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": false,
+			"bypassListed": false,
+			"bypassProxy": false,
+			"allowLocalAddress": false,
+			"protocol": "https:",
+			"expected": "https"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": false,
+			"bypassListed": false,
+			"bypassProxy": false,
+			"allowLocalAddress": true,
+			"protocol": "http:",
+			"expected": "httpNative"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": false,
+			"bypassListed": false,
+			"bypassProxy": false,
+			"allowLocalAddress": true,
+			"protocol": "https:",
+			"expected": "httpsNative"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": false,
+			"bypassListed": false,
+			"bypassProxy": true,
+			"allowLocalAddress": false,
+			"protocol": "http:",
+			"expected": "http"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": false,
+			"bypassListed": false,
+			"bypassProxy": true,
+			"allowLocalAddress": false,
+			"protocol": "https:",
+			"expected": "https"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": false,
+			"bypassListed": false,
+			"bypassProxy": true,
+			"allowLocalAddress": true,
+			"protocol": "http:",
+			"expected": "httpNative"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": false,
+			"bypassListed": false,
+			"bypassProxy": true,
+			"allowLocalAddress": true,
+			"protocol": "https:",
+			"expected": "httpsNative"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": false,
+			"bypassListed": true,
+			"bypassProxy": false,
+			"allowLocalAddress": false,
+			"protocol": "http:",
+			"expected": "http"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": false,
+			"bypassListed": true,
+			"bypassProxy": false,
+			"allowLocalAddress": false,
+			"protocol": "https:",
+			"expected": "https"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": false,
+			"bypassListed": true,
+			"bypassProxy": false,
+			"allowLocalAddress": true,
+			"protocol": "http:",
+			"expected": "httpNative"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": false,
+			"bypassListed": true,
+			"bypassProxy": false,
+			"allowLocalAddress": true,
+			"protocol": "https:",
+			"expected": "httpsNative"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": false,
+			"bypassListed": true,
+			"bypassProxy": true,
+			"allowLocalAddress": false,
+			"protocol": "http:",
+			"expected": "http"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": false,
+			"bypassListed": true,
+			"bypassProxy": true,
+			"allowLocalAddress": false,
+			"protocol": "https:",
+			"expected": "https"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": false,
+			"bypassListed": true,
+			"bypassProxy": true,
+			"allowLocalAddress": true,
+			"protocol": "http:",
+			"expected": "httpNative"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": false,
+			"bypassListed": true,
+			"bypassProxy": true,
+			"allowLocalAddress": true,
+			"protocol": "https:",
+			"expected": "httpsNative"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": true,
+			"bypassListed": false,
+			"bypassProxy": false,
+			"allowLocalAddress": false,
+			"protocol": "http:",
+			"expected": "httpAgent"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": true,
+			"bypassListed": false,
+			"bypassProxy": false,
+			"allowLocalAddress": false,
+			"protocol": "https:",
+			"expected": "httpsAgent"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": true,
+			"bypassListed": false,
+			"bypassProxy": false,
+			"allowLocalAddress": true,
+			"protocol": "http:",
+			"expected": "httpAgent"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": true,
+			"bypassListed": false,
+			"bypassProxy": false,
+			"allowLocalAddress": true,
+			"protocol": "https:",
+			"expected": "httpsAgent"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": true,
+			"bypassListed": false,
+			"bypassProxy": true,
+			"allowLocalAddress": false,
+			"protocol": "http:",
+			"expected": "http"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": true,
+			"bypassListed": false,
+			"bypassProxy": true,
+			"allowLocalAddress": false,
+			"protocol": "https:",
+			"expected": "https"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": true,
+			"bypassListed": false,
+			"bypassProxy": true,
+			"allowLocalAddress": true,
+			"protocol": "http:",
+			"expected": "httpNative"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": true,
+			"bypassListed": false,
+			"bypassProxy": true,
+			"allowLocalAddress": true,
+			"protocol": "https:",
+			"expected": "httpsNative"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": true,
+			"bypassListed": true,
+			"bypassProxy": false,
+			"allowLocalAddress": false,
+			"protocol": "http:",
+			"expected": "http"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": true,
+			"bypassListed": true,
+			"bypassProxy": false,
+			"allowLocalAddress": false,
+			"protocol": "https:",
+			"expected": "https"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": true,
+			"bypassListed": true,
+			"bypassProxy": false,
+			"allowLocalAddress": true,
+			"protocol": "http:",
+			"expected": "httpNative"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": true,
+			"bypassListed": true,
+			"bypassProxy": false,
+			"allowLocalAddress": true,
+			"protocol": "https:",
+			"expected": "httpsNative"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": true,
+			"bypassListed": true,
+			"bypassProxy": true,
+			"allowLocalAddress": false,
+			"protocol": "http:",
+			"expected": "http"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": true,
+			"bypassListed": true,
+			"bypassProxy": true,
+			"allowLocalAddress": false,
+			"protocol": "https:",
+			"expected": "https"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": true,
+			"bypassListed": true,
+			"bypassProxy": true,
+			"allowLocalAddress": true,
+			"protocol": "http:",
+			"expected": "httpNative"
+		},
+		{
+			"fn": "agentByUrl",
+			"proxy": true,
+			"bypassListed": true,
+			"bypassProxy": true,
+			"allowLocalAddress": true,
+			"protocol": "https:",
+			"expected": "httpsNative"
+		},
+		{
+			"fn": "isPrivate",
+			"address": "0.0.0.0",
+			"allowed": [],
+			"range": {
+				"value": "unspecified"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "10.1.2.3",
+			"allowed": [],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "100.64.0.1",
+			"allowed": [],
+			"range": {
+				"value": "carrierGradeNat"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "127.0.0.1",
+			"allowed": [],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "127.0.0.2",
+			"allowed": [],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "169.254.1.1",
+			"allowed": [],
+			"range": {
+				"value": "linkLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "172.16.0.1",
+			"allowed": [],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.168.1.1",
+			"allowed": [],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.0.0.1",
+			"allowed": [],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.0.2.1",
+			"allowed": [],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "198.18.0.1",
+			"allowed": [],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "203.0.113.1",
+			"allowed": [],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "240.0.0.1",
+			"allowed": [],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "224.0.0.1",
+			"allowed": [],
+			"range": {
+				"value": "multicast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "255.255.255.255",
+			"allowed": [],
+			"range": {
+				"value": "broadcast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.175.48.1",
+			"allowed": [],
+			"range": {
+				"value": "as112"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.52.193.1",
+			"allowed": [],
+			"range": {
+				"value": "amt"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "8.8.8.8",
+			"allowed": [],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "93.184.216.34",
+			"allowed": [],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::",
+			"allowed": [],
+			"range": {
+				"value": "unspecified"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::1",
+			"allowed": [],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fe80::1",
+			"allowed": [],
+			"range": {
+				"value": "linkLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fc00::1",
+			"allowed": [],
+			"range": {
+				"value": "uniqueLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fd12:3456::1",
+			"allowed": [],
+			"range": {
+				"value": "uniqueLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "ff02::1",
+			"allowed": [],
+			"range": {
+				"value": "multicast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fec0::1",
+			"allowed": [],
+			"range": {
+				"value": "deprecatedSiteLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "100::1",
+			"allowed": [],
+			"range": {
+				"value": "discard"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:127.0.0.1",
+			"allowed": [],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:10.0.0.1",
+			"allowed": [],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:8.8.8.8",
+			"allowed": [],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:0:8.8.8.8",
+			"allowed": [],
+			"range": {
+				"value": "rfc6145"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "64:ff9b::808:808",
+			"allowed": [],
+			"range": {
+				"value": "rfc6052"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "64:ff9b:1::1",
+			"allowed": [],
+			"range": {
+				"value": "rfc6052"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2002::1",
+			"allowed": [],
+			"range": {
+				"value": "6to4"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001::1",
+			"allowed": [],
+			"range": {
+				"value": "teredo"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:2::1",
+			"allowed": [],
+			"range": {
+				"value": "benchmarking"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:3::1",
+			"allowed": [],
+			"range": {
+				"value": "amt"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:4:112::1",
+			"allowed": [],
+			"range": {
+				"value": "as112v6"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:10::1",
+			"allowed": [],
+			"range": {
+				"value": "deprecatedOrchid"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:20::1",
+			"allowed": [],
+			"range": {
+				"value": "orchid2"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:30::1",
+			"allowed": [],
+			"range": {
+				"value": "droneRemoteIdProtocolEntityTags"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:db8::1",
+			"allowed": [],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "3fff::1",
+			"allowed": [],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "5f00::1",
+			"allowed": [],
+			"range": {
+				"value": "segmentRouting"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2606:4700:4700::1111",
+			"allowed": [],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:4860:4860::8888",
+			"allowed": [],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "0.0.0.0",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "unspecified"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "10.1.2.3",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "100.64.0.1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "carrierGradeNat"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "127.0.0.1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "127.0.0.2",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "169.254.1.1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "linkLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "172.16.0.1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.168.1.1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.0.0.1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.0.2.1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "198.18.0.1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "203.0.113.1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "240.0.0.1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "224.0.0.1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "multicast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "255.255.255.255",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "broadcast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.175.48.1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "as112"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.52.193.1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "amt"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "8.8.8.8",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "93.184.216.34",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "unspecified"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fe80::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "linkLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fc00::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "uniqueLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fd12:3456::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "uniqueLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "ff02::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "multicast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fec0::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "deprecatedSiteLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "100::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "discard"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:127.0.0.1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:10.0.0.1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:8.8.8.8",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:0:8.8.8.8",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "rfc6145"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "64:ff9b::808:808",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "rfc6052"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "64:ff9b:1::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "rfc6052"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2002::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "6to4"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "teredo"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:2::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "benchmarking"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:3::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "amt"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:4:112::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "as112v6"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:10::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "deprecatedOrchid"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:20::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "orchid2"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:30::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "droneRemoteIdProtocolEntityTags"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:db8::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "3fff::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "5f00::1",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "segmentRouting"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2606:4700:4700::1111",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:4860:4860::8888",
+			"allowed": [
+				"127.0.0.0/8"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "0.0.0.0",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "unspecified"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "10.1.2.3",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "100.64.0.1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "carrierGradeNat"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "127.0.0.1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "127.0.0.2",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "169.254.1.1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "linkLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "172.16.0.1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.168.1.1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.0.0.1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.0.2.1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "198.18.0.1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "203.0.113.1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "240.0.0.1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "224.0.0.1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "multicast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "255.255.255.255",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "broadcast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.175.48.1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "as112"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.52.193.1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "amt"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "8.8.8.8",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "93.184.216.34",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "unspecified"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fe80::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "linkLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fc00::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "uniqueLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fd12:3456::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "uniqueLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "ff02::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "multicast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fec0::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "deprecatedSiteLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "100::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "discard"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:127.0.0.1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:10.0.0.1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:8.8.8.8",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:0:8.8.8.8",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "rfc6145"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "64:ff9b::808:808",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "rfc6052"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "64:ff9b:1::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "rfc6052"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2002::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "6to4"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "teredo"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:2::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "benchmarking"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:3::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "amt"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:4:112::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "as112v6"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:10::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "deprecatedOrchid"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:20::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "orchid2"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:30::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "droneRemoteIdProtocolEntityTags"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:db8::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "3fff::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "5f00::1",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "segmentRouting"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2606:4700:4700::1111",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:4860:4860::8888",
+			"allowed": [
+				"::1/128"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "0.0.0.0",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "unspecified"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "10.1.2.3",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "100.64.0.1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "carrierGradeNat"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "127.0.0.1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "127.0.0.2",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "169.254.1.1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "linkLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "172.16.0.1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.168.1.1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.0.0.1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.0.2.1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "198.18.0.1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "203.0.113.1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "240.0.0.1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "224.0.0.1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "multicast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "255.255.255.255",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "broadcast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.175.48.1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "as112"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.52.193.1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "amt"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "8.8.8.8",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "93.184.216.34",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "unspecified"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fe80::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "linkLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fc00::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "uniqueLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fd12:3456::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "uniqueLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "ff02::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "multicast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fec0::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "deprecatedSiteLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "100::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "discard"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:127.0.0.1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:10.0.0.1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:8.8.8.8",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:0:8.8.8.8",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "rfc6145"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "64:ff9b::808:808",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "rfc6052"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "64:ff9b:1::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "rfc6052"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2002::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "6to4"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "teredo"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:2::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "benchmarking"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:3::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "amt"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:4:112::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "as112v6"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:10::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "deprecatedOrchid"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:20::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "orchid2"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:30::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "droneRemoteIdProtocolEntityTags"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:db8::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "3fff::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "5f00::1",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "segmentRouting"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2606:4700:4700::1111",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:4860:4860::8888",
+			"allowed": [
+				"::ffff:127.0.0.0/104"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "0.0.0.0",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "unspecified"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "10.1.2.3",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "100.64.0.1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "carrierGradeNat"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "127.0.0.1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "127.0.0.2",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "169.254.1.1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "linkLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "172.16.0.1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.168.1.1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.0.0.1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.0.2.1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "198.18.0.1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "203.0.113.1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "240.0.0.1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "224.0.0.1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "multicast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "255.255.255.255",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "broadcast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.175.48.1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "as112"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.52.193.1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "amt"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "8.8.8.8",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "93.184.216.34",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "unspecified"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fe80::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "linkLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fc00::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "uniqueLocal"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fd12:3456::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "uniqueLocal"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "ff02::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "multicast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fec0::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "deprecatedSiteLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "100::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "discard"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:127.0.0.1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:10.0.0.1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:8.8.8.8",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:0:8.8.8.8",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "rfc6145"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "64:ff9b::808:808",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "rfc6052"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "64:ff9b:1::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "rfc6052"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2002::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "6to4"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "teredo"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:2::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "benchmarking"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:3::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "amt"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:4:112::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "as112v6"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:10::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "deprecatedOrchid"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:20::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "orchid2"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:30::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "droneRemoteIdProtocolEntityTags"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:db8::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "3fff::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "5f00::1",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "segmentRouting"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2606:4700:4700::1111",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:4860:4860::8888",
+			"allowed": [
+				"10.0.0.0/8",
+				"fc00::/7"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "0.0.0.0",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "unspecified"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "10.1.2.3",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "100.64.0.1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "carrierGradeNat"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "127.0.0.1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "127.0.0.2",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "169.254.1.1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "linkLocal"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "172.16.0.1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.168.1.1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.0.0.1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.0.2.1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "198.18.0.1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "203.0.113.1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "240.0.0.1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "224.0.0.1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "multicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "255.255.255.255",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "broadcast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.175.48.1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "as112"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.52.193.1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "amt"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "8.8.8.8",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "93.184.216.34",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "unspecified"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fe80::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "linkLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fc00::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "uniqueLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fd12:3456::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "uniqueLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "ff02::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "multicast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fec0::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "deprecatedSiteLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "100::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "discard"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:127.0.0.1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:10.0.0.1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:8.8.8.8",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:0:8.8.8.8",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "rfc6145"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "64:ff9b::808:808",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "rfc6052"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "64:ff9b:1::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "rfc6052"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2002::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "6to4"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "teredo"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:2::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "benchmarking"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:3::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "amt"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:4:112::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "as112v6"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:10::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "deprecatedOrchid"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:20::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "orchid2"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:30::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "droneRemoteIdProtocolEntityTags"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:db8::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "3fff::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "5f00::1",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "segmentRouting"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2606:4700:4700::1111",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:4860:4860::8888",
+			"allowed": [
+				"0.0.0.0/0"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "0.0.0.0",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "unspecified"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "10.1.2.3",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "100.64.0.1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "carrierGradeNat"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "127.0.0.1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "127.0.0.2",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "169.254.1.1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "linkLocal"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "172.16.0.1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.168.1.1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "private"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.0.0.1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.0.2.1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "198.18.0.1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "203.0.113.1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "240.0.0.1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "224.0.0.1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "multicast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "255.255.255.255",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "broadcast"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.175.48.1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "as112"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "192.52.193.1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "amt"
+			},
+			"expected": {
+				"value": true
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "8.8.8.8",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "93.184.216.34",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "unspecified"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "loopback"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fe80::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "linkLocal"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fc00::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "uniqueLocal"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fd12:3456::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "uniqueLocal"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "ff02::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "multicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "fec0::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "deprecatedSiteLocal"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "100::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "discard"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:127.0.0.1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:10.0.0.1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:8.8.8.8",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "ipv4Mapped"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "::ffff:0:8.8.8.8",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "rfc6145"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "64:ff9b::808:808",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "rfc6052"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "64:ff9b:1::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "rfc6052"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2002::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "6to4"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "teredo"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:2::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "benchmarking"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:3::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "amt"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:4:112::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "as112v6"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:10::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "deprecatedOrchid"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:20::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "orchid2"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:30::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "droneRemoteIdProtocolEntityTags"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:db8::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "3fff::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "reserved"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "5f00::1",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "segmentRouting"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2606:4700:4700::1111",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "isPrivate",
+			"address": "2001:4860:4860::8888",
+			"allowed": [
+				"::/0"
+			],
+			"range": {
+				"value": "unicast"
+			},
+			"expected": {
+				"value": false
+			}
+		},
+		{
+			"fn": "invalidNetworks",
+			"allowed": [
+				"10.0.0.1"
+			],
+			"expected": {
+				"error": "ipaddr: the address has neither IPv6 nor IPv4 CIDR format"
+			}
+		},
+		{
+			"fn": "invalidNetworks",
+			"allowed": [
+				"not-a-cidr"
+			],
+			"expected": {
+				"error": "ipaddr: the address has neither IPv6 nor IPv4 CIDR format"
+			}
+		},
+		{
+			"fn": "invalidNetworks",
+			"allowed": [
+				"10.0.0.0/33"
+			],
+			"expected": {
+				"error": "ipaddr: the address has neither IPv6 nor IPv4 CIDR format"
+			}
+		},
+		{
+			"fn": "invalidNetworks",
+			"allowed": [
+				"fc00::/129"
+			],
+			"expected": {
+				"error": "ipaddr: the address has neither IPv6 nor IPv4 CIDR format"
+			}
+		},
+		{
+			"fn": "invalidNetworks",
+			"allowed": [
+				"127.0.0.0/8",
+				""
+			],
+			"expected": {
+				"error": "ipaddr: the address has neither IPv6 nor IPv4 CIDR format"
+			}
+		},
+		{
+			"fn": "statusError",
+			"status": 400,
+			"statusText": "Bad Request",
+			"expected": {
+				"name": "StatusError",
+				"message": "400 Bad Request",
+				"statusCode": 400,
+				"statusMessage": "Bad Request",
+				"isClientError": true,
+				"isRetryable": false
+			}
+		},
+		{
+			"fn": "statusError",
+			"status": 401,
+			"statusText": "Unauthorized",
+			"expected": {
+				"name": "StatusError",
+				"message": "401 Unauthorized",
+				"statusCode": 401,
+				"statusMessage": "Unauthorized",
+				"isClientError": true,
+				"isRetryable": false
+			}
+		},
+		{
+			"fn": "statusError",
+			"status": 404,
+			"statusText": "Not Found",
+			"expected": {
+				"name": "StatusError",
+				"message": "404 Not Found",
+				"statusCode": 404,
+				"statusMessage": "Not Found",
+				"isClientError": true,
+				"isRetryable": false
+			}
+		},
+		{
+			"fn": "statusError",
+			"status": 410,
+			"statusText": "Gone",
+			"expected": {
+				"name": "StatusError",
+				"message": "410 Gone",
+				"statusCode": 410,
+				"statusMessage": "Gone",
+				"isClientError": true,
+				"isRetryable": false
+			}
+		},
+		{
+			"fn": "statusError",
+			"status": 429,
+			"statusText": "Too Many Requests",
+			"expected": {
+				"name": "StatusError",
+				"message": "429 Too Many Requests",
+				"statusCode": 429,
+				"statusMessage": "Too Many Requests",
+				"isClientError": true,
+				"isRetryable": true
+			}
+		},
+		{
+			"fn": "statusError",
+			"status": 499,
+			"statusText": "",
+			"expected": {
+				"name": "StatusError",
+				"message": "499 ",
+				"statusCode": 499,
+				"statusMessage": "",
+				"isClientError": true,
+				"isRetryable": false
+			}
+		},
+		{
+			"fn": "statusError",
+			"status": 500,
+			"statusText": "Internal Server Error",
+			"expected": {
+				"name": "StatusError",
+				"message": "500 Internal Server Error",
+				"statusCode": 500,
+				"statusMessage": "Internal Server Error",
+				"isClientError": false,
+				"isRetryable": true
+			}
+		},
+		{
+			"fn": "statusError",
+			"status": 502,
+			"statusText": "Bad Gateway",
+			"expected": {
+				"name": "StatusError",
+				"message": "502 Bad Gateway",
+				"statusCode": 502,
+				"statusMessage": "Bad Gateway",
+				"isClientError": false,
+				"isRetryable": true
+			}
+		},
+		{
+			"fn": "statusError",
+			"status": 503,
+			"statusText": "Service Unavailable",
+			"expected": {
+				"name": "StatusError",
+				"message": "503 Service Unavailable",
+				"statusCode": 503,
+				"statusMessage": "Service Unavailable",
+				"isClientError": false,
+				"isRetryable": true
+			}
+		},
+		{
+			"fn": "statusError",
+			"status": 300,
+			"statusText": "Multiple Choices",
+			"expected": {
+				"name": "StatusError",
+				"message": "300 Multiple Choices",
+				"statusCode": 300,
+				"statusMessage": "Multiple Choices",
+				"isClientError": false,
+				"isRetryable": true
+			}
+		},
+		{
+			"fn": "config",
+			"name": "url-in-file",
+			"expected": {
+				"userAgent": "Misskey/2026.10.1-alpha.0 (https://example.test)"
+			}
+		},
+		{
+			"fn": "config",
+			"name": "url-in-file-unnormalized",
+			"expected": {
+				"userAgent": "Misskey/2026.10.1-alpha.0 (https://Example.TEST:443/some/path/)"
+			}
+		},
+		{
+			"fn": "config",
+			"name": "url-from-env",
+			"expected": {
+				"userAgent": "Misskey/2026.10.1-alpha.0 (undefined)"
+			}
+		},
+		{
+			"fn": "config",
+			"name": "outbound-keys",
+			"expected": {
+				"userAgent": "Misskey/2026.10.1-alpha.0 (https://example.test)",
+				"proxy": "http://proxy.example.test:3128",
+				"proxyBypassHosts": [
+					"api.deepl.com",
+					"api-free.deepl.com"
+				],
+				"allowedPrivateNetworks": [
+					"127.0.0.1/32",
+					"fc00::/7"
+				],
+				"outgoingAddress": "192.0.2.10",
+				"deliverJobConcurrency": 300
+			}
+		},
+		{
+			"fn": "config",
+			"name": "outbound-keys-empty",
+			"expected": {
+				"userAgent": "Misskey/2026.10.1-alpha.0 (https://example.test)",
+				"proxy": "",
+				"proxyBypassHosts": null,
+				"allowedPrivateNetworks": [],
+				"outgoingAddress": null
+			}
+		}
+	]
+}
