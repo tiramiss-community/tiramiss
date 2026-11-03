@@ -56,7 +56,7 @@ adapter 専用の agent の窓口は、本家の規則ごとに分ける。業�
   - 新実装では、本番かどうかを composition から注入する。テストではこれで判定を有効にする。本番での結果は変わらないので、差異には数えない。
   - OAuth の client_id に対する事前の名前解決と検査（packages/backend/src/server/oauth/OAuth2ProviderService.ts:446-451）は本書の範囲外で、#179 が持つ。
 - **send**
-  - User-Agent は `Misskey/${version} (${url})`。headers はオブジェクトの spread で合成する（packages/backend/src/config.ts:352、HttpRequestService.ts:336-339）。キーが `User-Agent` と完全に一致すれば置き換わり、小文字の `user-agent` なら連結される点も本家どおりにする。
+  - User-Agent は `Misskey/${version} (${url})`。version は固定本家の version、url は設定ファイルの `url` の生の文字列を使う。url を環境変数で与えた場合の `(undefined)` も本家どおりにする。backend-next の設定は生の文字列も保持する（packages/backend/src/config.ts:274-275,352）。2026-11-03 にユーザーが当面の本家準拠を決定した。headers はオブジェクトの spread で合成する（HttpRequestService.ts:336-339）。キーが `User-Agent` と完全に一致すれば置き換わり、小文字の `user-agent` なら連結される点も本家どおりにする。
   - timeout は AbortController で実装し、本文の読み取りも打ち切る。
   - redirect は最大 20 回で、redirect 先ごとに agent を選び直す（:325-343）。
   - validator は ok のときだけ実行する（:346-354）。
@@ -81,7 +81,7 @@ adapter 専用の agent の窓口は、本家の規則ごとに分ける。業�
 
 - **最初の PR**
   - agent 群、private 判定、`send`、`getJson`、失敗クラス、User-Agent を入れる。
-  - 設定は `proxy`・`proxyBypassHosts`・`allowedPrivateNetworks`・`outgoingAddress`・`deliverJobConcurrency` を読む。
+  - 設定は `proxy`・`proxyBypassHosts`・`allowedPrivateNetworks`・`outgoingAddress`・`deliverJobConcurrency` を読む。`allowedPrivateNetworks` の CIDR は起動時に検査し、不正なら `INVALID_CONFIG` にする（下記の承認済み差異）。
   - 最初の利用者（#160 の fake inbox への署名送信、または #195 の WebFinger）と同じ PR か、その直前の PR で通常起動に接続する。利用者のいない送信基盤を先に積まない。
 - **後続**
   - `getHtml` は #215 のメタデータ取得と一緒に入れる。
@@ -128,19 +128,10 @@ misc-utils:30 のうち StatusError の型は #216 が定義する。同じ行�
 
 ## 意図的差異
 
-提案しない。ライブラリの置き換えや、private 判定を本番以外でも常に有効にすることは行わない。
+- **不正な `allowedPrivateNetworks` は起動時に `INVALID_CONFIG`**（2026-11-03 ユーザー承認）
+  - 本家では、本番で接続したときに CIDR の parse 例外が発生する。この例外は destroy より前に起きるため、その接続は遮断されない。プロセスは未捕捉例外として記録して動き続ける（HttpRequestService.ts:46-51,64-66、packages/backend/src/boot/process-error-handler.ts:56-58）。
+  - backend-next には未捕捉例外のハンドラがない。同じ実装にすると、子プロセスが落ちて全体が停止する。
+  - 起動時に検出すれば、設定の誤りをその場で直せる。遮断も弱まらない。
+  - 実装 PR で差異の台帳に記録する。
 
-## 判断が必要な事項
-
-1. **User-Agent の version と URL**
-   - 本家は `meta.version` と、設定ファイルにある url の生の文字列を使う。url を環境変数で与えると `(undefined)` になる（packages/backend/src/config.ts:274-275,352）。
-   - backend-next は url を URL として保持していて、version もまだ持っていない。
-   - 推奨: version は固定本家の version を使い、URL は設定の値をそのまま使う。環境変数から url を与えたときの `(undefined)` は再現しない（要承認の小さな差異）。
-2. **不正な `allowedPrivateNetworks`**
-   - 本家では、本番で接続したときに CIDR の parse 例外が発生する。この例外は destroy より前に起きるため、その接続は遮断されない。プロセスは未捕捉例外として記録して動き続ける（HttpRequestService.ts:46-51,64-66、packages/backend/src/boot/process-error-handler.ts:56-58）。
-   - backend-next には未捕捉例外のハンドラがない。同じ実装にすると、子プロセスが落ちて全体が停止する。
-   - 選択肢:
-     - (A) 起動時に `INVALID_CONFIG` とする。
-     - (B) 接続時に例外を握り、遮断する側に倒す。
-     - (C) 未捕捉例外のハンドラを導入して本家に寄せる（#138 との調整が必要）。
-   - 推奨: (A)（要承認の差異）。
+これ以外は提案しない。ライブラリの置き換えや、private 判定を本番以外でも常に有効にすることは行わない。

@@ -45,7 +45,8 @@ I/O を持たない判定は `src/modules/federation/` に置き、`public.ts` �
   - silenced による public→home と、mediaSilenced による絵文字の除外は、投稿者がリモートの場合だけ効く（packages/backend/src/core/NoteCreateService.ts:491-495,607）。これは #195 のリモート投稿の経路で接続する。
 - **Meta**
   - 本家は id DESC の先頭行を使う（packages/backend/src/GlobalModule.ts:100-127）。
-  - backend-next の既存の読み取り（note-reader・note-writer・role-authorization-facts）は順序を指定していない。最初の PR で、まとめて id DESC の先頭行を読むように揃える。
+  - backend-next の既存の読み取り（note-reader・note-writer・role-authorization-facts）は順序を指定せず、行がなければ失敗する。最初の PR で、まとめて id DESC の先頭行を読むように揃える。
+  - 行がなければ、本家と同じく id `'x'` を upsert してから読み直す（packages/backend/src/core/MetaService.ts:72-93）。同時に呼ばれても安全な upsert にする。2026-11-03 にユーザーが本家準拠を決定した。
   - 保存時の正規化（packages/backend/src/server/api/endpoints/admin/update-meta.ts:259-287,751-757）は #194 が持つ。
   - `enableStatsForFederatedInstances` の項目は analytics 領域が持つ。本書は読み取るだけ。
 - **システムアカウント**
@@ -94,7 +95,7 @@ Redis のキー名と値の形式は本家と揃える。こうしておけば�
 ## 実装の順序
 
 1. **ホスト正規化と連合可否（最初の PR）**
-   - 純関数、`readFederationPolicy`、絵文字のホスト正規化、既存の Meta 読み取りの統一を入れる。Entity の追加は不要。
+   - 純関数、`readFederationPolicy`、絵文字のホスト正規化、既存の Meta 読み取りの統一（行がない場合の初期化を含む）を入れる。Entity の追加は不要。
    - #170 が使うのは、自ホストの判定とホスト正規化だけ。backend-next の render-note と note-reader にある `domainToASCII` の直書きは、この関数に置き換える。
    - #160 と #195 の先行契約になる。
 2. **鍵とシステムアカウント**
@@ -135,7 +136,7 @@ backend-next の note-authors は、UserLite.instance を作るために instanc
 - **実 DB/Redis**
   - 5 表を同時に作成すること、2 回目は再作成しないこと、同時の初回作成、早期 return の分岐。
   - 旧名（instance.actor）で移行済みのデータ。
-  - Meta が複数行ある場合の選択。
+  - Meta が複数行ある場合の選択、行がない場合の初期化と同時呼び出し。
   - キャッシュのキー名・TTL・JSON。行がない場合は否定キャッシュしないこと、null のキャッシュ、Date の復元。
   - ロックのキー・TTL・取得をあきらめるまでの時間。
 - **偽の外部サーバー**
@@ -145,10 +146,3 @@ backend-next の note-authors は、UserLite.instance を作るために instanc
 ## 意図的差異
 
 提案しない。本家で待たない DB 更新とロック解放は、新実装では失敗を log に残す。外から観測できる結果は変わらないので、差異には数えない。
-
-## 判断が必要な事項
-
-1. **Meta の行がない場合**
-   - 本家は id `'x'` で upsert する（packages/backend/src/core/MetaService.ts:72-93）。backend-next の既存の読み取りは、行がなければ失敗する。
-   - 既存 DB を引き継ぐ切り替えでは行が必ずあるため、実害は新規構築時に限られる。
-   - 推奨: 新規構築時の初期化は #138 で本家と揃える。それまでは失敗を暫定制限として記録する。
