@@ -882,7 +882,7 @@
         162,
         166
       ],
-      "scope": "Supervisor/HTTP/worker・設定/DB/Redis・migration/check・CLI・healthz・配布/監視と完全停止切り替えを扱う。",
+      "scope": "Supervisor/HTTP/worker・設定/DB/Redis・migration/check・CLI・healthz・配布/監視と完全停止切り替えを扱う。本家設定キー・環境変数の互換、観測（Sentry/telemetry）の扱い、DB接続・ID形式など既存データ形式の互換もここで判断する。",
       "persistence": [
         "本家public履歴/独自履歴",
         "設定・接続"
@@ -907,6 +907,96 @@
       "differences": [
         "本家/独自migration分離、通常起動時自動migrationなし、完全停止切り替え。worker業務handlerと配布の統合は未完了。物理容量停止(#166)は保留。"
       ]
+    },
+    {
+      "id": "federation-base",
+      "title": "連合の共通土台（システムアカウント・鍵・ホスト判定・排他）",
+      "issue": 215,
+      "relatedIssues": [
+        195,
+        124,
+        160,
+        171
+      ],
+      "scope": "システムアカウントの遅延生成と鍵、ユーザー鍵/公開鍵と鍵形式、ホスト名の正規化と自ホスト判定、連合許可・ブロック・サイレンス・配信停止ソフトウェアの判定、連合インスタンス情報の取得・状態更新・自動停止、APオブジェクト単位の排他。AP受信(#195)・署名送信(#160)・投稿AP(#171)の先行契約。",
+      "persistence": [
+        "SystemAccount/UserKeypair/UserPublickey/Instance",
+        "Metaの連合設定",
+        "Redis lock/キャッシュ"
+      ],
+      "effects": [
+        "鍵生成・インスタンス状態更新・配送スキップ/自動停止"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/SystemAccountService.ts",
+        "packages/backend/src/core/UtilityService.ts",
+        "packages/backend/src/core/FederatedInstanceService.ts",
+        "packages/backend/src/core/FetchInstanceMetadataService.ts",
+        "packages/backend/src/misc/distributed-lock.ts"
+      ],
+      "apiPrefixes": [],
+      "apiNames": [],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "outbound-http",
+      "title": "外向きHTTPとSSRF対策",
+      "issue": 216,
+      "relatedIssues": [
+        160,
+        188,
+        195,
+        196,
+        197,
+        198
+      ],
+      "scope": "AP取得/配送・リモートファイル取得・URLプレビュー・webhook・Web Pushが共有する外向きHTTP。プライベートアドレス遮断とallowedPrivateNetworks、proxy/proxyBypassHosts/outgoingAddress、サイズ・時間・redirect制限。",
+      "persistence": [
+        "設定（proxy/allowedPrivateNetworks/outgoingAddress）"
+      ],
+      "effects": [
+        "外部HTTP・名前解決・一時ファイル"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/HttpRequestService.ts",
+        "packages/backend/src/core/DownloadService.ts"
+      ],
+      "apiPrefixes": [],
+      "apiNames": [],
+      "implementation": [],
+      "verification": [],
+      "differences": []
+    },
+    {
+      "id": "process-events",
+      "title": "プロセス間イベントとキャッシュ同期",
+      "issue": 217,
+      "relatedIssues": [
+        119,
+        178,
+        189
+      ],
+      "scope": "GlobalEventのRedis pub/sub形式、internalイベントの発行と購読、CacheService・Metaキャッシュ・Redis/メモリ二層キャッシュとTTL。各機能のキャッシュ自体は機能の領域が持ち、通知と反映の契約をここで揃える。Roleの無効化通知(#119)を一般化する。",
+      "persistence": [
+        "Redis pub/sub",
+        "Redis/メモリキャッシュ"
+      ],
+      "effects": [
+        "他プロセス・接続中streamへの状態反映"
+      ],
+      "upstreamReferences": [
+        "packages/backend/src/core/GlobalEventService.ts",
+        "packages/backend/src/core/CacheService.ts",
+        "packages/backend/src/misc/cache.ts",
+        "packages/backend/src/core/MetaService.ts"
+      ],
+      "apiPrefixes": [],
+      "apiNames": [],
+      "implementation": [],
+      "verification": [],
+      "differences": []
     }
   ],
   "sources": {
