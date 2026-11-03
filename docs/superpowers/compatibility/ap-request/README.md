@@ -89,5 +89,5 @@ probe は re2 を差し替える（federation-base と同じ理由）。slacc �
 
 ## 未検証・範囲外
 
-- **後続の PR へ**: 配送前の判定（連合の許可・停止中のホスト・停止中のソフトウェア）、instance の状態の更新（`isNotResponding`・7 日の自動停止・`goneSuspended` の書き込み）、チャート、`fetchInstanceMetadata` は、配送を接続する PR（#162・#171）で比べる。本 probe では `goneSuspended` を要求したかだけを記録し、その他の更新は記録しない。`signedGet` の応答処理（HTML の alternate、content-type の検証、`assertActivityMatchesUrl`）は #195。
+- **後続の PR へ**: 配送前の判定（連合の許可・停止中のホスト・停止中のソフトウェア）、instance の状態の更新（`isNotResponding`・7 日の自動停止・`goneSuspended` の書き込み）、チャート、`fetchInstanceMetadata` は、配送を接続する PR（#171）で比べる。本 probe では `goneSuspended` を要求したかだけを記録し、その他の更新は記録しない。`signedGet` の応答処理（HTML の alternate、content-type の検証、`assertActivityMatchesUrl`）は #195。
 - **観測していない**: https の inbox への送信と proxy 経由の送信（外向き HTTP の資料で agent の選択として比較済み）、timeout が本文の読み取り中に起きる場合（`signedPost` は本文を読まない）、`getUserKeypair` の失敗（分類だけを `keypair-missing` の入力で比較）、受信側の `@peertube/http-signature` による検証（`crypto.verify` で代える）、IDN の宛先への実際の送信（偽の DNS が持たない名前のため、署名だけを比較）。

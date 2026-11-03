@@ -4,7 +4,7 @@
 
 Misskeyバックエンド再設計の実行基盤・Role初期実装・投稿参照。
 既存トークンで `admin/roles/show` と `admin/roles/update` を利用できる。
-`notes/show` は保存済み本家データから取得・可視性判定・出力を提供する。その他のAPIと業務ジョブは後続の実装範囲。
+`notes/show` は保存済み本家データから取得・可視性判定・出力を提供する。通常workerは本家の投票終了ジョブだけを実行する。その他のAPIと業務ジョブは後続の実装範囲。
 
 全公開契約の移植状況・保存/副作用・担当Issueは[バックエンド対応表](../../docs/superpowers/compatibility/backend-inventory/README.md)を参照する。
 登録APIだけでなく、非API HTTP、stream、ActivityPub、定期/業務ジョブ、CLIも追跡する。
@@ -63,6 +63,11 @@ SupervisorはHTTP×1、worker×指定数を起動し、全子のreadyを待つ�
 
 プロセスを外部管理する場合は`start:http`、`start:worker`を使う。
 各子は独自のDB・Redis接続を持つ。Redisなしの縮退運転はしない。
+
+ジョブは本家と同じく`redisForJobQueue`（未指定なら`redis`）へBullMQの通常のQueue/Workerで接続する。
+queueごとのprefixは本家と同じ`<prefix>:queue:<queue名>`。各子は投入用のQueueを持ち、workerは実ジョブのあるqueueだけを取得する。
+本家と違い再接続せず、稼働中の切断は子の異常終了とする。workerの停止は取得の停止→実行中のジョブの完了→接続の解放で、
+停止期限を超えると異常終了する（止めたジョブはBullMQのstalled検査で戻る）。
 ログはstdoutへのJSON行で、設定全体や認証情報を出力しない。
 
 ## 検証
@@ -132,9 +137,10 @@ showはロールと有効な手動割り当て人数を取得した後、DBに�
 AP snapshot/page/host leaseと関連する通常起動のEntity登録も撤去した。
 APの宛先規則は[本家配送の引き継ぎ](../../docs/backend-next/ap-delivery-handoff.md)に残す。
 
-通常workerは起動・停止だけで実jobは未接続。AP・投票終了・webhook等の必要なjobと一緒に
-通常BullMQのadd/addBulk/Worker・retry/backoff/履歴/管理を接続する。
-基本text保存のためだけにjobやdispatcherを作らない。未使用になったBullMQ依存も一旦外し、実jobの実装時に導入する。
+通常workerは #162 で本家の投票終了ジョブ（`endedPollNotification`）を実行する。BullMQ依存は本家と同じ版で、このjobと一緒に導入した。
+期限のある投票の投稿は保存後の後続処理で投入し、期限後にworkerが作者とローカルの投票者へ`pollEnded`の通知をPGに保存する。
+配信（stream・未読・push）は#173/#177/#189、AP・webhook等のjobと本家のretry/backoff/limiterは各機能（AP配送は#171）で接続する。
+基本text保存のためだけにjobやdispatcherを作らない。queue・payload・保持の値は[投稿の最小契約](../../docs/backend-next/posting-contract.md#通常ジョブ162)を参照する。
 
 ## 通知のPostgreSQL保存
 
@@ -144,7 +150,7 @@ plain recordをcaller-owned transactionで保存する。`flush(manager, recipie
 両方ともawaitし、例外はtransaction外へ伝える。adapterは独自にtransactionを開始・確定しない。
 通知条件・認可をadapterへ隠さず、managerはcompositionから結び付けて業務コードへ公開しない。
 
-reply/mention/quote/renote/noteの保存列を保持。受信者別に既定500件をcreated_at/notification_idの降順で残す。
+reply/mention/quote/renote/note/pollEndedの保存列を保持。`notifier_id`はpollEndedだけ`NULL`（`PollEndedNotification1793706223869`。`down`はpollEndedの行を削除して以前の制約へ戻す）。受信者別に既定500件をcreated_at/notification_idの降順で残す。
 保持削除とflushの競合だけをtransaction advisory lockで直列化する（本家Redisの近似MAXLENとの差異）。
 request/claim/lease/effect/容量会計は不要で、同じ操作の一度だけ成立や自動再実行を保証しない。
 
@@ -196,5 +202,5 @@ DB失敗やクライアント切断を理由に自動再作成しない。通常
 指定宛先、MFM抽出（メンション・ハッシュタグ・絵文字）を接続した。メンションはローカルユーザーと登録済みリモートユーザーをDBで解決する。
 未登録のリモートユーザー宛ては、WebFingerによる解決（#195）まで501 `NOT_IMPLEMENTED`で保存前に拒否する。
 登録済みリモートユーザーも、#195までは `lastFetchedAt` が古くても再同期せずに使う（暫定制限）。
-AP/通知/stream/TL/検索/webhook・通常workerは未接続で、投稿領域全体の完成ではない。
+投票終了ジョブ（#162）以外のAP/通知/stream/TL/検索/webhookは未接続で、投稿領域全体の完成ではない。
 最小契約と既存実装の撤去順は[投稿の最小契約](../../docs/backend-next/posting-contract.md)を参照。

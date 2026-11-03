@@ -35,7 +35,26 @@ HTTP成功は保存とレスポンス生成の成功。AP配送や通知の完�
 - **保存後のcount**: user.notesCountに加え、返信先repliesCount、Renote対象renoteCount（他人の投稿・botでない投稿者のみ。引用も含む）、channelのnotesCount・lastNotedAt・usersCount（その投稿者のchannel内Noteが1件ならusersCount+1）を、保存後の原子的更新として行う。本家どおり削除では減らさない。作成応答の描画を終えてから開始し、応答の入れ子の返信先/Renote対象のcountを本家と同じく今回の加算前の値にする。
 - **メンション**: ローカルユーザーと登録済みリモートユーザーをDBで解決する。見つからないローカルユーザーは本家どおり無視する。自ホスト判定とホスト正規化は[連合の共通土台](federation-base-contract.md)を使う。登録済みリモートユーザーは `lastFetchedAt` に関係なく再同期せず使う。DBにない（未登録の）リモートユーザー宛ては、メンション解決の位置で保存前に501 `NOT_IMPLEMENTED`で拒否する。どちらも#195で除去する暫定制限であり、完成版の意図的差異にしない。
 - **指定宛先とMFM抽出**: 指定宛先は本家と同じく順序を付けずに取得し、存在しないIDは黙って除く（保存順は入力順を保証しない）。ハッシュタグの長さの上限は本家どおり正規化前の値で判定するため、NFKCで128文字を超えるタグは保存時のDBエラーで500になる。mediaSilencedによる絵文字の除外はリモート投稿にだけ効くため、ローカル投稿の経路には入れない。
-- **後続Issueの材料**: 投票終了のjob登録と通知は#173で、保存済みの `poll.expiresAt` を材料に実装する。#170では空のjobを作らない。通知・stream（#173）、hashtag表・ランキング・検索索引・TL・antenna（#174）、webhook（#175）、AP配送（#171）、チャートは本Issueで実装しない。いずれも保存済みのNote列（mentions・mentionedRemoteUsers・tags・reply/renote/channel）から判断できる。
+- **後続Issueの材料**: 投票終了のjob登録と通知は、保存済みの `poll.expiresAt` を材料に #162 の最初の PR で接続した（下記「通常ジョブ（#162）」）。#170では空のjobを作らない。通知・stream（#173）、hashtag表・ランキング・検索索引・TL・antenna（#174）、webhook（#175）、AP配送（#171）、チャートは本Issueで実装しない。いずれも保存済みのNote列（mentions・mentionedRemoteUsers・tags・reply/renote/channel）から判断できる。
+
+## 通常ジョブ（#162）
+
+2026-11-03 のユーザー決定で、通常 worker へ最初に接続する実ジョブは本家の投票終了（`endedPollNotification`）とした。本家との比較は[比較資料](../superpowers/compatibility/poll-ended/README.md)を参照する。
+
+- **投入**: 期限のある投票を持つ投稿だけ、作成応答を描画した後の後続処理で投入する。Noteと同じtransactionには入れない。名前と `data.noteId` は投稿の ID、遅延は後続処理の開始時刻から期限まで（負ならすぐに実行）。`removeOnComplete`・`removeOnFail` は本家と同じく 7 日・30 件／7 日・100 件で、試行は 1 回。投入の失敗は投稿の ID と期限を記録し、HTTP の応答は失敗にしない。
+- **実行**: worker 子が投稿と投票を読み直し、作者とローカルの投票者へ `pollEnded` の通知を PG に保存する。受信設定は `never` だけを見る。1 人分の保存の失敗は記録して他の受信者へ進み、プロフィールがなければジョブを失敗させる（本家と同じ）。
+- **接続と停止**: HTTP 子・worker 子とも、`redisForJobQueue` へ BullMQ の通常の Queue/Worker で接続する。本家と違い再接続せず、稼働中の切断は子の異常終了にする。worker の停止は取得の停止→実行中のジョブの完了→接続の解放で、既存の停止期限を超えたら異常終了する。
+- **後続へ渡すもの**: 配信（stream・未読・push）は #173/#177/#189、AP 配送の queue（12 回の試行・`httpRelatedBackoff`・limiter・concurrency）は #171 が同じ接続の上に足す。
+
+#163–#165 へ渡す実 queue の情報:
+
+| 項目 | 現在の値 |
+| --- | --- |
+| queue | `endedPollNotification` だけ（`src/platform/job-queue/ended-poll-notification.ts` の `ENDED_POLL_NOTIFICATION`）。本家の 10 queue のうち他は未接続 |
+| prefix | `<redisForJobQueue.prefix>:queue:<queue名>`（本家 `queue/const.ts` と同じ式。`src/platform/job-queue/connection.ts` の `baseQueueOptions`）。ioredis の `keyPrefix` は外す |
+| job | 名前は投稿の ID、`data` は `{ noteId }`。`jobId`・`attempts`・`backoff` なし |
+| 保持 | 投入時の `removeOnComplete: { age: 604800, count: 30 }`・`removeOnFail: { age: 604800, count: 100 }`。Worker 側の清掃はない |
+| Worker | `metrics: { maxDataPoints: 10080 }`、concurrency 1、limiter なし、`autorun: false` |
 
 ## 選択の理由
 
