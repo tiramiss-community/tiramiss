@@ -6,3 +6,4 @@ export { toPuny, toPunyNullable, punyHost, createHostRules } from './host.js';
 export type { HostRules } from './host.js';
 export { isBlockedHost, isSilencedHost, isMediaSilencedHost, isFederationAllowedHost, isDeliverSuspendedSoftware } from './policy.js';
 export type { FederationPolicy, SoftwareSuspension } from './policy.js';
+export { toSpkiPublicKeyPem } from './keys.js';

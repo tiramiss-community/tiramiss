@@ -810,6 +810,9 @@ importers:
       backend-upstream:
         specifier: workspace:*
         version: link:../backend-upstream
+      bcryptjs:
+        specifier: 3.0.3
+        version: 3.0.3
       cacheable-lookup:
         specifier: 7.0.0
         version: 7.0.0

@@ -8,7 +8,7 @@
 
 I/O を持たない判定は `src/modules/federation/` に置き、`public.ts` から公開する。DB と Redis の adapter は `src/platform/` に置き、`composition/` で関数として UseCase へ渡す。万能の FederationService、汎用のロック基盤やキャッシュ基盤は作らない。
 
-戻り値は平らな値型に限る。MiUser・MiInstance・EntityManager・ioredis 等の型は渡さない。鍵の素材は log・job payload・`DiagnosticError` の details へ入れない。現在の logger の伏せ字は `pass|token|secret|authorization|config` に一致するキーだけが対象なので、鍵の PR で `privateKey` を加える（packages/backend-next/src/platform/logger.ts:28）。
+戻り値は平らな値型に限る。MiUser・MiInstance・EntityManager・ioredis 等の型は渡さない。鍵の素材は log・job payload・`DiagnosticError` の details へ入れない。logger の伏せ字は、段階 2 で `privateKey` を加え、`pass|token|secret|authorization|config|privateKey` に一致するキーを対象とする（packages/backend-next/src/platform/logger.ts:28）。
 
 | 操作（入力 → 出力） | 失敗 | 置き場所 | 最初の利用 |
 | --- | --- | --- | --- |
@@ -103,6 +103,7 @@ Redis のキー名と値の形式は本家と揃える。こうしておけば�
    - SystemAccount・UserKeypair・UsedUsername と、UserProfile とそれが参照する Entity を同期で複製する。
    - `generateRsaKeyPair`・`readUserKeypair`・`toSpkiPublicKeyPem`・`ensureSystemAccount` を実装する。
    - #216 と合わせて、#160 の署名と、#195 の remote user 解決を解く。#170 のリモートメンションの 501 は、その後に #195 が除去する。
+   - 実装済み。4 つの関数は `src/composition/federation-keys.ts` の `createFederationKeys` で組み立てる。通常起動への接続は、最初の利用者（#160・#195）の PR で行う。検証は[比較資料](../superpowers/compatibility/federation-base/README.md#新実装への接続)を参照。
 3. **インスタンス台帳と配送による状態更新**: #160 の配送を接続する PR と同時に入れる。
 4. **リモート鍵の参照と AP オブジェクトの排他**: UserPublickey を複製する。#195 の受信実装と同時に入れる。
 5. **メタデータ取得**: #216 の `getHtml` と一緒に入れる。

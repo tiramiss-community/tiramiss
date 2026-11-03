@@ -40,7 +40,10 @@ test('loads copied entities without eagerly loading migration dependencies', asy
 	expect(source.getMetadata('MiPoll').relations.find(relation => relation.propertyName === 'note')?.inverseEntityMetadata.tableName).toBe('note');
 	expect(source.getMetadata('MiPollVote').tableName).toBe('poll_vote');
 	expect(source.getMetadata('MiNoteReaction').tableName).toBe('note_reaction');
-	expect(source.entityMetadatas).toHaveLength(23);
+	expect(source.entityMetadatas).toHaveLength(26);
 	expect(source.getMetadata('MiBlocking').tableName).toBe('blocking');
 	expect(source.getMetadata('MiUserProfile').tableName).toBe('user_profile');
+	expect(source.getMetadata('MiSystemAccount').tableName).toBe('system_account');
+	expect(source.getMetadata('MiUserKeypair').tableName).toBe('user_keypair');
+	expect(source.getMetadata('MiUsedUsername').tableName).toBe('used_username');
 });
