@@ -14,6 +14,12 @@
 		"src/models/Channel.ts",
 		"src/models/Following.ts",
 		"src/models/Relay.ts",
+		"src/models/Poll.ts",
+		"src/models/PollVote.ts",
+		"src/models/NoteReaction.ts",
+		"src/models/Emoji.ts",
+		"src/models/Instance.ts",
+		"src/models/AvatarDecoration.ts",
 		"src/types.ts",
 		"src/models/util/id.ts"
 	],

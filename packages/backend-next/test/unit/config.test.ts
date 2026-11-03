@@ -87,3 +87,11 @@ test.each(['aid', 'aidx', 'meid', 'meidg', 'ulid', 'objectid', 'AIDX'])('accepts
 test('rejects unknown ID methods at startup', async () => {
 	await expect(loadConfig({ configFile: await config('id: unknown'), env: { DATABASE_DB: 'test', DATABASE_USER: 'tester' } })).rejects.toThrow();
 });
+
+test('preserves dedicated reaction Redis and media settings used for existing note attachments', async () => {
+	const value = await loadConfig({ configFile: await config(`mediaProxy: https://media.test/
+videoThumbnailGenerator: https://video.test/
+redisForReactions: {host: reactions, port: 6381, db: 5, prefix: reaction-prefix}`), env: { DATABASE_DB: 'test', DATABASE_USER: 'tester' } });
+	expect(value.redisForReactions).toMatchObject({ host: 'reactions', port: 6381, db: 5, keyPrefix: 'reaction-prefix:' });
+	expect(value.noteMedia).toEqual({ mediaProxy: 'https://media.test', externalMediaProxyEnabled: true, videoThumbnailGenerator: 'https://video.test' });
+});

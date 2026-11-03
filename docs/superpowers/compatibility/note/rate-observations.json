@@ -1,0 +1,39 @@
+{
+  "C2-rate-first-invalid": {
+    "status": 400,
+    "body": {
+      "error": {
+        "message": "Invalid param.",
+        "code": "INVALID_PARAM",
+        "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+        "kind": "client",
+        "info": {
+          "param": "#/then/required",
+          "reason": "must have required property 'text'"
+        }
+      }
+    },
+    "wwwAuthenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\""
+  },
+  "C2-rate-before-input": {
+    "status": 429,
+    "body": {
+      "error": {
+        "message": "Rate limit exceeded. Please try again later.",
+        "code": "RATE_LIMIT_EXCEEDED",
+        "id": "d5826d14-3982-4d2e-8011-b9e9f02499ef",
+        "kind": "client",
+        "info": {
+          "remaining": 0,
+          "reset": "$future-epoch-seconds",
+          "resetMs": "$future-epoch-milliseconds",
+          "total": 1
+        }
+      }
+    },
+    "wwwAuthenticate": null
+  },
+  "C2-rate-db-delta": {
+    "notes": 0
+  }
+}

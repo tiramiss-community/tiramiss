@@ -20,6 +20,7 @@
 | 本家Entity・migrationの複製、同期スクリプト、公開入口 | [packages/backend-upstream/AGENTS.md](packages/backend-upstream/AGENTS.md) |
 
 - 新パッケージを調査・変更する前に、対象の運用ルールを読む。複製対象・依存関係を変更する場合は両方を読む。
+- 最初に [目的と初期完成条件](docs/backend-next/GOALS.md) と [全体計画](docs/backend-next/ROADMAP.md) を読む。詳細設計だけで初期範囲を拡張しない。2026-11-02の方針整理により、独自の耐障害・容量契約は初期必須か再評価する。
 - 実装計画の入口は [全体Issue #114](https://github.com/tiramiss-community/tiramiss/issues/114)。対象Issueだけでなく、親Issueの対応順・先行依存と関連する設計書を確認する。
 - `backend-upstream` の `src/`・`migration/`・`exports/`・`.managed-files.json` を手編集しない。本家との差分の移植と、定義の機械的な同期を混同しない。
 - 以下の `backend` 向けコマンドを新パッケージの検証の代用にしない。新パッケージには個別のビルド・テスト・migration検査があり、対象のガイドに従う。ルートの共通チェックも維持する。

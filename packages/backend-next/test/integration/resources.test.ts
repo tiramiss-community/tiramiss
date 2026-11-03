@@ -41,7 +41,7 @@ test('fails on unavailable database before opening Redis', async () => {
 	).rejects.toThrow();
 });
 
-test.each(['redis', 'redisForPubsub'] as const)('rejects and cleans up before startup deadline when %s accepts TCP but never responds', async redisField => {
+test.each(['redis', 'redisForPubsub', 'redisForReactions'] as const)('rejects and cleans up before startup deadline when %s accepts TCP but never responds', async redisField => {
 	const sockets = new Set<import('node:net').Socket>();
 	const server = createServer({ allowHalfOpen: true }, (socket) => {
 		socket.resume();
@@ -56,7 +56,7 @@ test.each(['redis', 'redisForPubsub'] as const)('rejects and cleans up before st
 	const config = {
 		...database.config,
 		processes: { ...database.config.processes, startupTimeoutMs: 100 },
-		[redisField]: { ...database.config[redisField], port: (server.address() as { port: number }).port },
+		[redisField]: { ...(database.config[redisField] ?? database.config.redis), port: (server.address() as { port: number }).port },
 	};
 	const attempt = connectResources(config, logger);
 	let result: 'pending' | 'resolved' | 'rejected' = 'pending';
@@ -104,4 +104,22 @@ test('publishes role notifications through the dedicated pubsub connection', asy
 	} finally {
 		await resources.close();
 	}
+});
+
+test('dedicated reaction Redis uses its configured namespace, reports loss, and closes all connections', async () => {
+	const resources = await connectResources({ ...database.config,
+		redisForReactions: { ...database.config.redis, db: 1, keyPrefix: 'note168-reactions:' } }, logger);
+	try {
+		await resources.reactionsRedis.set('probe', 'dedicated');
+		expect(await resources.redis.get('probe')).toBeNull();
+		expect(await resources.reactionsRedis.get('probe')).toBe('dedicated');
+		await resources.reactionsRedis.del('probe');
+		resources.reactionsRedis.disconnect();
+		expect((await resources.failure).message).toContain('REACTIONS_REDIS_ENDED');
+	} finally {
+		await resources.close();
+	}
+	expect(resources.reactionsRedis.status).toBe('end');
+	expect(resources.redis.status).toBe('end');
+	expect(resources.dataSource.isInitialized).toBe(false);
 });

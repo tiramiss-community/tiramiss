@@ -1,8 +1,10 @@
 # backend-next
 
-Misskeyバックエンド再設計の実行基盤とRole初期実装。
+[目的と初期完成条件](../../docs/backend-next/GOALS.md) / [全体計画と現在地](../../docs/backend-next/ROADMAP.md)。
+
+Misskeyバックエンド再設計の実行基盤・Role初期実装・投稿参照。
 既存トークンで `admin/roles/show` と `admin/roles/update` を利用できる。
-その他のAPIと業務ジョブは後続の実装範囲。
+`notes/show` は保存済み本家データから取得・可視性判定・出力を提供する。その他のAPIと業務ジョブは後続の実装範囲。
 
 全公開契約の移植状況・保存/副作用・担当Issueは[バックエンド対応表](../../docs/superpowers/compatibility/backend-inventory/README.md)を参照する。
 登録APIだけでなく、非API HTTP、stream、ActivityPub、定期/業務ジョブ、CLIも追跡する。
@@ -45,7 +47,7 @@ pnpm --filter backend-next start
 ```
 
 `migrate`は本家の`public.migrations`を引き継ぎ、全履歴の未適用分を実行した後、
-`backend_internal`とその独立した履歴、投稿の依頼・初期仕事・取消世代・論理容量テーブルを初期化する。
+`backend_internal`と独立した履歴、通知保存用テーブルを管理する。過去の独自ジョブ表は新migrationで検査して廃止する。
 本家の`MISSKEY_MIGRATION_CREATE_INDEX_CONCURRENTLY=1`指定も引き継ぐ。
 起動時は適用状況を確認するだけで、履歴やschemaを自動作成しない。
 
@@ -117,244 +119,76 @@ showはロールと有効な手動割り当て人数を取得した後、DBに�
 
 受け入れ比較の固定期待値は[Role比較資料](../../docs/superpowers/compatibility/role/README.md)を参照。`test:acceptance` は実トークンHTTP・保存/監査・次操作のポリシー評価・通知前停止とTTL回復を検証する。既存の `test:integration` はDB/Redisの障害・競合、`test:process` は起動停止・切断を担い、3つとも専用CIの必須step。固定期待値の変更もCIを起動する。本家比較と意図的差異・検証範囲は比較資料の#121受け入れ表を参照。
 
-## 投稿フローの後続設計
+## 投稿と非同期処理
 
-Role の次は [投稿フロー詳細設計](../../docs/superpowers/specs/2026-10-21-note-flow-design.md)（#126）を参照する。作成・取得・削除・配送の所有範囲、比較ケース、#123/#124 へ渡す実ジョブ条件、#127 の実装分割をまとめている。設計の存在は投稿 API・実ジョブの実装完了を意味しない。
+初期経路は[投稿の最小契約](../../docs/backend-next/posting-contract.md)を正とする。
+旧[ジョブ設計](../../docs/superpowers/specs/2026-10-21-job-persistence-design.md)の
+永続request・二重claim・容量・世代復旧は履歴であり、実行コードと専用テストは撤去した。
+AP snapshot/page/host leaseと関連する通常起動のEntity登録も撤去した。
+APの宛先規則は[本家配送の引き継ぎ](../../docs/backend-next/ap-delivery-handoff.md)に残す。
 
-[実ジョブの保存・再開・形式変更の契約](../../docs/superpowers/specs/2026-10-21-job-persistence-design.md)（#123）は、AP 配送とローカル通知を題材に、PostgreSQL の正本、投入/実行 claim、削除との競合、有限な試行・保持・容量、形式移行と #124 の受け入れ条件を定める。基盤実装は #124、投稿 API への接続と本家比較は #127 で行う。
+通常workerは起動・停止だけで実jobは未接続。AP・投票終了・webhook等の必要なjobと一緒に
+通常BullMQのadd/addBulk/Worker・retry/backoff/履歴/管理を接続する。
+基本text保存のためだけにjobやdispatcherを作らない。未使用になったBullMQ依存も一旦外し、実jobの実装時に導入する。
 
+## 通知のPostgreSQL保存
 
-## 投稿の永続依頼：J1 保存（#124）
+通知本体は承認済みの `backend_internal.notification` を維持する。
+`PostNotificationPersistence.save(manager, notification)` は、UseCase側で受信条件・ID・時刻を決めた
+plain recordをcaller-owned transactionで保存する。`flush(manager, recipientId)` は指定受信者の本体を削除する。
+両方ともawaitし、例外はtransaction外へ伝える。adapterは独自にtransactionを開始・確定しない。
+通知条件・認可をadapterへ隠さず、managerはcompositionから結び付けて業務コードへ公開しない。
 
-`modules/post-work/public` は `PostWorkRequests.append` と AP 展開・ローカル通知の型付き依頼を公開する。
-`platform/database/post-work/append` の `withPostWorkRequests(manager, callback)` を、呼び出し元が所有する transaction 内で使う。
-組み立て側で同じ manager に結び付けた業務更新窓口と requests を UseCase の scope へ渡す。UseCase に manager は渡さない。
-以下は adapter の組み込み形であり、投稿 UseCase/HTTP の実装は #127 で接続する。
+reply/mention/quote/renote/noteの保存列を保持。受信者別に既定500件をcreated_at/notification_idの降順で残す。
+保持削除とflushの競合だけをtransaction advisory lockで直列化する（本家Redisの近似MAXLENとの差異）。
+request/claim/lease/effect/容量会計は不要で、同じ操作の一度だけ成立や自動再実行を保証しない。
 
-```ts
-await source.transaction(manager =>
-  withPostWorkRequests(manager, requests => requests.append(confirmedPostWork)));
-```
+通知条件・stream/push接続は #173、閲覧/未読・既読/設定/清掃と既存Redis通知の移行は #177。
+この保存窓口だけで通知機能を完成扱いにしない。Redisは引き続き必須。
 
-callback が終了すると新しい append は拒否し、開始済みの append が全て終わってから呼び出し元へ戻る。
-append の失敗を callback が catch した場合も、scope 全体は失敗する。業務更新と同様に append を await する。
-adapter 自身は commit・enqueue・自動再試行をしない。COMMIT 応答不明のときも投稿を再作成せず、
-既知の requestId/eventId で保存結果を確認する。不在を一回読んだだけで rollback とは断定しない。
+## 旧内部ジョブ表を廃止するmigration
 
-初期形式は schemaVersion=1。AP は Create/Announce（世代1）、Delete/Undo（世代2）の固定 activity ID・
-JSON 本文と direct actor ID を受け、followers/relay 集合の固定は後続の実行時に行う。
-公開範囲・localOnly・channelId は作成時の確定値で、削除でも広げない。
-通知は候補 recipientId と reply/mention/quote/renote/note の組を受け、対象別の初期 item を同時保存する。
-本文中に秘密鍵・認証 token を渡さない。AP 全表現・署名・通知条件の本家互換性は N4/N6 の検証対象。
+`RetireDurableWork1793635233676` は完全停止下の `migrate` でのみ実行する。
+publicデータ・本家migration履歴・通知の全業務列/ID/日時を保持し、
+不要な9表と通知の課金2列を削除する。適用済み6migrationは編集せず履歴に残す。
 
-`(eventId, kind, noteGeneration)` が同じ依頼は、完全な immutable 内容と hash を照合し、
-既存 requestId を返す。新しい requestId で同じ仕事を増やさず、item の進捗・回数・期限を上書きしない。
-本文廃棄後、内容不一致、requestId の別業務キーへの再利用、削除後の新たな世代1依頼は拒否する。
-既存依頼の照合は削除後にも可能だが、世代を戻したり新しい item を生成したりしない。
+1. 旧新の全HTTP/worker/独自scannerを停止し、DBと使用していたRedisのバックアップを取る。
+2. 独自adapterを手動実行した環境では、呼出元が選んだBullMQ prefixにある旧 `deliver` / `postLocal` を通常Queue APIで照会する。
+   waiting/active/delayed/waiting-children等の未処理jobと `{workId,dispatchSeq,queueGeneration}` の旧payloadを確認し、残件を解決・退避する。
+   通常起動は旧adapterを接続していなかったため、共通の固定prefixはない。本家のdeliver queueや他アプリのRedisを一括消去しない。
+3. `migrate` → `check-migrations` → 検証DBで `check-schema`。通常起動はこのmigration未適用を拒否する。
 
-内部の4テーブルは `note_work_state` / `work_request` / `work_item` / `work_capacity`。
-独自 migration に up/down があり、通常起動は未適用を拒否する。`check-schema` は内部定義の差分も読み取り専用で検出する。
-100万行・20 GiB の論理予約に対して、通常は90%、削除は100%まで同一 transaction の条件付き更新で確保する。
-各行に算定版と予約 bytes を保存し、容量行自身の baseline も含める。依頼全体は UTF-8 で最大2 MiB。
-これは物理ディスク上限ではない。J1 の結合テストでは代表・最大本文の実 relation サイズと比較するが、全運用条件を保証しない。
+migrationは対象表を先にロックし、request非settled、item非成功/抑止/取消・残存owner、
+未解放dispatch、予約残数/復旧中、host ownership、未完了AP宛先があれば
+`DURABLE_WORK_REQUIRES_REVIEW` と種別ごとの件数で停止する。期限切れ・失敗・結果不明も自動破棄しない。
+検査・DDL・履歴更新は同じtransactionで、拒否時は元の状態を保持する。
+停止した場合は旧versionとバックアップ/保存payloadから処理の成否・残仕事を確認して対応を決める。
+検査を通すためだけにstateを書き換えない。DB検査はRedis内の残jobを直接検査したことにはならない。
 
-この段階では依頼は保存されるだけで実行されない。J2 は BullMQ・dispatch/実行 claim・recipient/通知成立記録・実 worker、
-J3 は管理操作・清掃・物理容量監視・形式移行/運用の検証へ進む。受理入口はまだ HTTP に公開せず、
-清掃による容量の解放もまだないため、J1 だけで運用可能なジョブ基盤や #124 全体の完了とは扱わない。
+成功時は完了済みjob/宛先/effect履歴も廃止する。以後それらを使う再実行・強いCreate/Delete順序は提供しない。
+`down` は空の旧schemaと保持中の通知の課金を復元するが、廃止したjob/effectデータは再生成しない。
+通知件数/容量が旧上限を超える場合は旧制約でdownも拒否される。完全な旧版への復元は停止時バックアップを使う。
+通知のRedis移行や未解決jobの自動変換を、このmigrationで実施したとは扱わない。
 
-## 投稿の投入アダプタ：J2a（#124）
+## 投稿参照（#168 / N1）
 
-`platform/database/post-work/dispatch` の `PostWorkDispatchStore` と `scanPostWork` は、
-J1の確定済みitemを最大100候補/回・候補ごとのtransactionで投入claimし、
-`platform/jobs/bullmq-dispatch` の `BullmqDispatch` へ渡す。
-AP展開/ページ・通知は `postLocal`、AP送信は `deliver`。展開のclaimはdeliverのpauseも確認する。
-物理queueのprefixは旧backendと分け、Redisの `keyPrefix` は指定しない。
+通常HTTP起動から `POST /api/notes/show` を利用できる。`{noteId,i?}` の既存tokenとBearerを扱い、guestのserver/作者制限と、閲覧者別のhiddenを区別する。Noteと関連factsは階層ごと/集合ごとにRepositoryで取得し、変換中はDB/Redisへ接続しない。replyは簡略、renoteは詳細を保つ。
 
-投入claimは30秒、開始未確認の再投入は60秒後。seqはclaimごとに増加する。
-各queueの未解放予約は最大10000件で、DBの行/bytes枠も同時に予約する。
-満杯の候補は `capacity_wait` として30秒待ち、後続候補の走査を続ける。
-投入回数は `attempt_count` を増やさない。保存したdispatch行は枠解放後もDB容量へ課金する。
+循環と64階層・256 Noteの予算超過はログ付き500とし、部分JSONを返さない。新実装の保護契約として[比較台帳D7](../../docs/superpowers/compatibility/note/intentional-differences.json)へ記録する。[本家比較資料のN1節](../../docs/superpowers/compatibility/note/README.md#n1-notesshow-の接続168)にN0期待値との照合範囲と未実測を残す。
 
-BullMQは6.3.11へ固定し、インストールされた `addStandardJob` Luaの前に
-queue世代・token・Redis時刻による絶対期限の検査を挿入する。
-検査と追加は同じRedis原子操作であり、通常の `add` の前に別操作で確認する方式ではない。
-tokenの期限はDB予約時刻+60秒から延長しない。DB/Redisの時計差が5秒超なら投入を拒否する。
-Redisに保存するdataはworkId/kind/schemaVersion/dispatchSeq/queueGenerationのみで、固定本文はDBから読む。
-BullMQ更新時にはこの内部スクリプト境界を再レビューするまで起動を拒否する。
+本家形式の `redisForReactions` を指定した場合は専用接続で反応bufferを読み、未指定なら通常Redisを使う。`mediaProxy` / `videoThumbnailGenerator` とDBの `proxyRemoteFiles` を添付URLに適用する。専用接続も起動・終了期限と必須接続の障害監視に参加する。
 
-`reconcilePostWork` は期限切れ予約を最大100件ずつ照合する。
-先にtokenを失効させ、entryの欠落/終了または除去を確認できたときだけDBのqueue枠を一度解放する。
-activeや応答不明では予約を残す。照合時刻を更新し、古いactive100件で後続の照合を止めない。
-DB確定前にenqueue応答が失われても、元のworkIdを保持したまま次のseqで回収する。
+投稿作成・削除・変更系API・実worker/配信は後続。保存済みデータのshow検証だけで投稿縦断の完成とは扱わない。
 
-**自動起動と実行UseCaseにはまだ接続していない。** `initialize(queue,generation)` は呼出側が
-DBと照合した世代を使う低層操作であり、Redis全喪失後に同じ世代で再初期化してはならない。
-worker起動前の世代切替/旧予約の照合は下記J2bの回復入口を使う。5秒周期の走査、実行claim/lease/試行予算、
-固定宛先・fake inboxへの配送、通知結果の同時確定、プロセス寿命への接続をJ2bで段階実装する。
-初期ローカル仕事のDB実行権は下記J2b1を参照。
-管理操作・清掃・形式移行などのJ3と合わせて、#124全体の完了条件を検証する。
+## 基本投稿作成（#169 / N2）
 
-## Redis消失後の起動調停（#124 / J2b）
+通常HTTPの `POST /api/notes/create` で基本text投稿を保存し、`createdNote`を返す。
+認証/production rate/停止・移行・scope/入力の順序、public→home補正、禁止語、
+CW/localOnly/reactionAcceptanceを扱う。保存直後にnotes/showで参照でき、投稿数は保存後に加算する。
+DB失敗やクライアント切断を理由に自動再作成しない。通常終了では開始済みの投稿数更新も待つ。
 
-`platform/database/post-work/recovery` の `recoverPostWork(source, transport)` は、将来の
-worker/HTTPのready、consumer、scanner開始より前に呼ぶ起動入口。現在のプロセス起動にはまだ接続しない。
-専用PostgreSQL接続のsession advisory lockで並行初期化を直列化し、正常なgateが両queueにあれば
-世代を維持する。gate欠落/旧世代では両queueのDB世代を進め、`recovery_pending`を同じtransactionで保存する。
-そのcommit後にRedis gateを観測値とのCASで進める。未知/未来のgateやCAS不一致は起動失敗とする。
-
-回復中は投入/ローカル実行claimを開始しない。旧世代の未解放予約はtoken期限に関係なく最大100件/回で
-照合し、Redis token失効とentry除去/終了の確認後だけ既存の条件付きreleaseでqueue枠を返す。
-全予約の照合と両gateの再確認が終わってから、両queueのpendingを同時に解除する。
-active entry・Redis応答不明・DB障害では起動失敗にし、予約をゼロ扱いしない。
-古いworkerの有効な業務実行lease、累積試行数、元の期限、保存行/bytesへの課金は変更しない。
-
-途中停止後はDBのpending世代を再利用して再開し、成功済みreleaseは二重計上しない。
-専用DB接続は失敗時も破棄するため、poolへadvisory lockを持ち帰らない。
-遅延した旧世代のenqueueはRedis gateで拒否される。古いcompleted/failed履歴や未知entryは業務結果と扱わず、
-将来のconsumerも必ずDBのenvelope/世代/保存形式検証を通す。
-この入口自体は稼働中Redis障害の監視・停止経路や既存起動期限への接続を行わず、
-通知/AP業務処理・実workerの寿命への接続と併せて後続J2で実装する。#124全体は未完了。
-
-## ローカル仕事の実行権：J2b1（#124）
-
-`platform/database/post-work/local-execution` の `PostWorkLocalExecutionStore` は、
-`ap.expand`・`ap.expand.page`・`notification.create` の DB 実行権を扱う。投入とは別の claim であり、
-保存済み dispatch・queue 世代・kind/版・request/item の本文/hash/対象を照合する。
-無関係な envelope や解放済み予約は保存状態を変えない。保存形式が壊れていれば隔離して確認対象にする。
-`ap.expand.page` の claim・renew・expire もこの adapter が扱う。送信itemの生成は
-後述の「AP 固定宛先のページ展開」を参照。
-`ap.send` は後続 adapter の担当であり、この adapter では実行権を取得しない。
-
-request の解析・正規化・hash 検証は queue 制御行をロックする前に行う。
-同じ store 内では直近の最大4依頼、保存元 JSON/メタデータ合計4 MiBまでの検証結果を再利用し、
-対象を Map で参照する。保存元の本文・hash・固定メタデータが変われば再検証し、item の
-本文/hash・対象・期限は毎回照合する。再利用する request は深く凍結し、claim 経由の変更を防ぐ。
-この上限は保存元データのサイズであり、解析後のオブジェクトや索引を含むヒープ使用量の上限ではない。
-DB からの本文取得と同一内容の文字列比較は残る。queue 制御は共有ロックで読むため、
-claim 同士の読み取りを妨げず、pause/世代変更や投入claimの排他ロックとは調停する。
-
-ロック順は note 状態→item→queue 制御。実行可能な claim だけが累積試行回数を一回増やし、
-60秒の lease と増加する epoch を取得する。ローカル仕事は合計8試行まで。
-pause・未来の item 時刻/依頼の not-before・有効 lease 中の重複では試行を消費しない。
-削除された投稿の未開始作成仕事は cancelled にする。AP 展開は deliver の pause も確認する。
-`renew` は既存の owner/epoch/有効 lease/期限を確認し、ロック待ち中に失効した lease を復活させない。
-
-業務結果の adapter は、呼出側が所有する同じ transaction の
-`withLocalWorkCompletion(manager, claim, work)` 内で DB 結果を書き、outcome を返す。
-先に note/item をロックして実行権と取消を検査し、callback 後も owner/epoch/lease/期限を
-条件付き更新で再確認する。失敗例外は transaction 境界まで伝播させ、結果と進捗をともに rollback する。
-DB 外への送信をこの callback に入れない。`finish` は業務結果の書込みを伴わない進捗更新用。
-COMMIT 応答不明で同じ callback を自動再実行せず、後続の成立記録から確認する。
-
-retry は DB 時刻から指数 backoff（60秒から最大1時間、0–20%加算 jitter）を保存し、
-8試行または元の期限に達する場合は exhausted にする。終端時は全子 item を確認して
-依頼を settled/needs_attention に集約する。`expire` は期限/予算切れで有効 lease のない
-ローカル item を最大100件/回で終端化する。投入 scanner が除外する期限切れもこの窓口で回収する。
-
-本家 Note と後続依頼の同時保存は `test/integration/post-work-note.test.ts` の producer fixture で検証する。
-同期した `MiNote` の保存・作者投稿数更新と AP/通知依頼を同じ transaction へ結び付け、
-途中例外・後続通知の容量不足・本家 FK 違反時には先行更新も rollback する。
-別接続からの commit 前後の可視性と、再接続後に未投入の仕事を dispatch claim で取得できることも確認する。
-この fixture は投稿 UseCase/HTTP、本家 AP 表現、通知条件の実装・互換性検証を代用しない。
-
-この段階では通常 worker は起動・停止の枠だけで、ジョブを実行しない。J2b の残りは、
-通知の全受信条件とworker接続、宛先固定/ページ/host lease と実配送、
-Redis 世代回復の起動接続、BullMQ worker・5秒走査/10秒 lease 更新・プロセス寿命への接続。
-通知条件/AP 表現の全移植は引き続き N4/N6、管理・清掃は J3 で扱い、#124 は完了にしない。
-
-## 通知の PostgreSQL 保存（#124 / J2）
-
-[保存設計](../../docs/superpowers/specs/2026-10-23-notification-persistence-design.md)に従い、
-本家の Redis Stream 正本から変更し、通知実体を `backend_internal.notification` に保存する。
-本家 public の Entity と migration は変更しない。Redis は引き続き必須であり、障害時の縮退保存ではない。
-
-`PostNotificationPersistence.complete(manager, claim, recheck)` は caller-owned transaction で必ず await し、
-例外を transaction 外へ伝える。Note/item のロック・owner/epoch/lease/deadline/取消確認後、保存済み依頼を再検証し、
-最新の実 Note と受信者を取得する。reply/mention/quote/renote/note を保存でき、renote の targetNoteId は実 Note から読む。
-候補は通知許可ではないため `recheck(facts)` は必須で、同じtransactionへ結び付けた読み取りで受信条件を再評価する。
-外部通信をこの callback に入れない。通知本体・effect・容量差分・item 成功/抑止は同時確定する。
-
-既定の受信者別上限は本家と同じ500件（構築時 `perUserNotificationsMaxCount` で変更可能）。
-本家の近似 MAXLEN と異なり、受信者単位の transaction advisory lock により厳密に制限する。
-保持上限を超える古い本体は削除し、成立記録は残す。`flush(manager, recipientId)` も本体だけを削除する。
-両操作は削除した本体の保存済み課金だけを解放し、二重に解放しない。通知本体と effect はどちらも通常作成用90%の論理容量枠へ算入する。
-
-`readEffect(manager, requestId, recipientId, type)` は再接続後も既存結果を照会でき、
-通知本体の削除後も保存済み通知ID/抑止理由を返す。同じ仕事を再成立させないため、本体への cascade FK は付けない。
-commit 応答不明を rollback 確定とせず、同じ通知を自動で作り直さない。
-
-実 DB テストは5種類の本体、同時確定/rollback、重複/並行実行、取消/lease失効、
-件数制限と容量差分、flush後の再生成防止、commit応答喪失後の照会、新migrationのup/downを検証する。
-通知API・既読・stream/push、受信条件の全移植、ユーザー/投稿削除と実体の清掃接続、既存Redis通知の移行は N6/#137 の残件。
-通常 worker への接続も後続J2で行い、この保存アダプタだけで実通知機能や #124 全体を完成扱いにしない。
-
-## AP 作成宛先の初回固定（#124 / J2）
-
-[固定設計](../../docs/superpowers/specs/2026-10-23-ap-recipient-snapshot-design.md)に従い、
-`PostApRecipientSnapshot.complete(manager, claim, recheck)` が Create/Announce の初回集合を保存する。
-activeなcaller-owned transactionでawaitし、例外はtransaction外まで伝える。
-最新の連合条件を同じtransactionで読む `recheck(request)` は必須で、callback内でHTTPを行わない。
-保存済request/itemを再検証し、note→itemのロック・取消/owner/epoch/lease/deadline確認を通す。
-
-followers（Followingの非正規化inbox/sharedInbox）・publicのaccepted relay・direct Userを
-単一statement snapshotで取得する。sharedInboxに含まれるdirectを除き、最終inboxを重複排除して
-`backend_internal.delivery_recipient`へ保存する。この集合とcoverage=fixed、root成功、
-先頭 `ap.expand.page` を同時確定する。空集合はpageを作らずfixedを記録する。
-localOnly/channelも0件。Delete/Undoは作成レシピで代用せず、このadapterでは拒否する。
-
-200000宛先を超えた場合は一件も保存せずrecipient_limitで確認対象とする。
-SQLは最大20秒（callerが短く設定したstatement_timeoutを優先）。容量不足・SQL失敗は全rollbackし、
-呼出側が既存の有限retry契約で扱う。台帳は90日保持し、本文は複製しない。
-通常90%のrow/byte枠へ台帳と初回pageを課金し、pageのdeadlineは元requestから延長しない。
-追加課金が0の完了は、削除予約によって通常枠を超えていても終端化できる。
-
-実DBテストは公開範囲別レシピ、重複排除、並行固定、固定中/固定後の関係変更、取消・lease失効、
-容量と件数制限、statement timeout、commit前不可視・再接続後の固定集合、migration up/downを検証する。
-**通常workerは未接続のまま。** pageの実行claim/固定cursor照合・最大100件ずつの送信item生成は次節を参照。
-Delete宛先復元、HTTP送信、N4の本家比較は後続。host lease の保存 adapter は後述する。
-このadapterだけでAP配信や#124全体を完成扱いにしない。
-
-## AP 固定宛先のページ展開（#124 / J2）
-
-[ページ設計](../../docs/superpowers/specs/2026-10-23-ap-recipient-pages-design.md)に従い、
-`PostApRecipientPages.complete(manager, claim)` が固定台帳をDBのinbox順で最大100件ずつ送信itemへ変換する。
-caller-owned transactionでawaitし、例外は外まで伝える。保存済request/pageの版・本文/hash・安定ID・
-元の期限、coverage=fixed、成功済rootを再検証する。継続cursorは成功済み前ページの100件目であることも
-最大101件の読み取りで照合し、任意の実在宛先から途中再開することを許さない。
-
-送信itemの `{inbox,shared}` は台帳から取得し、activity本文はrequestで共有する。
-最大100送信item・必要な次ページ・通常90%枠の容量課金・現在ページ成功を同時確定する。
-同一キーの既存itemはimmutable内容を照合し、一致すれば進捗を維持する。不一致は全rollbackし、課金は新規挿入分だけ。
-元requestのnot_before/deadlineを全子へ引き継ぎ、継続ごとに期限を延ばさない。
-各ページは独立した最大8試行で、成功済みページを再処理しない。commit応答不明時は元のIDで保存結果を照会する。
-
-local executionはpageのclaim/renew/expireに対応し、postLocalとdeliver双方のpause/recoveryを確認する。
-既存のnote→itemロックとowner/epoch/lease/deadline/取消fenceを使い、台帳の送信状態は変更しない。
-実DBテストで境界、1000件超の継続、失敗ページの再開、固定後の関係変更、不正cursor、容量とlease失効、
-並行・重複・commit応答不明を検証する。
-
-通常workerへの接続、ap.sendの実行claim・HTTP送信・署名、Delete/Undo展開、管理と周期清掃は後続。
-送信itemの生成だけでAP配送や#124全体の完了とは扱わない。
-
-## AP 送信の host 枠（#124 / J2）
-
-[host 枠設計](../../docs/superpowers/specs/2026-10-24-ap-host-leases-design.md)に従い、
-`PostApHostLeases` が `backend_internal.ap_host_lease` の host 当たり 2 枠を全 worker で共有する。
-`acquire(manager, {workId,owner,epoch})` は caller-owned transaction 内の `ap.send` 実行権と結び付ける。
-呼出側が同じ transaction で実行 claim と試行加算を行い、枠不足・失権の例外を外へ伝えて全 rollback する。
-枠が取れない場合の無消費の待機は、後続の送信 claim adapter が rollback 後に行う。
-
-保存済み inbox の URL.hostname を IDN/IPv6 の正規形・小文字・末尾 dot 除去でまとめ、scheme/path/port は枠を分けない。
-inbox 自体を変更せず、userinfo・HTTP(S) 以外を拒否する。送信先 DNS/IP 等の検査は HTTP adapter の別契約となる。
-note→item→capacity→host のロック順で実行 owner/epoch/期限・取消を確認し、lease は DB 時刻の最大 60 秒、
-item の実行 lease と deadline を超えない。同一実行の有効な再取得は同じ枠を返す。
-
-`renew(manager, lease)` は有効な実行権と枠を再確認する。呼出側の実行 lease 延長も同じ transaction で行う。
-期限切れは復活させず、`release(manager, lease)` は枠の epoch/token と実行識別が一致するときだけ解放する。
-行の回収・再作成後も UUID token により古い handle を拒否する。各動的行を formula 1・base 256 と
-host bytes + work ID 最大 128 bytes で課金し、枠の再利用時には重複課金しない。
-
-`cleanup(source, limit=100)` は同 host の全枠に有効 lease・未終端参照がなく、最後の利用と参照 work の
-終端の両方から 30 日後に、保存した行数/bytes を最大 100 行ずつ一度だけ戻す。
-解放後も work への参照が残るため、item 清掃は host 参照の回収を先に確認する。
-この入口の周期実行、送信 claim/開始/結果不明回収、HTTP/署名、worker への接続はまだ行わない。
+添付・投票・返信/Renote・channel・指定宛先・MFM抽出は#170で接続する。
+それらを含む入力は当面501 `NOT_IMPLEMENTED`で保存前に拒否する。
+noExtract*で抽出しないことを明示した本文は保存できる。
+AP/通知/stream/TL/検索/webhook・通常workerは未接続で、投稿領域全体の完成ではない。
+最小契約と既存実装の撤去順は[投稿の最小契約](../../docs/backend-next/posting-contract.md)を参照。

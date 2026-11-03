@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Redis } from 'ioredis';
+import { MiUser } from 'backend-upstream/entities';
+import { createNotePostSave } from './note-post-save.js';
 import { openRoleMaterials } from './role-materials.js';
 import { createRoleMaterialReader } from './database/role-materials.js';
 import { ResourceScope } from './resource-scope.js';
@@ -78,6 +80,34 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 
+		let reactionsRedis = redis;
+		if (config.redisForReactions) {
+			reactionsRedis = new Redis({
+				...config.redisForReactions, lazyConnect: true, retryStrategy: () => null,
+				maxRetriesPerRequest: 0, disconnectTimeout: 0, connectTimeout: config.processes.startupTimeoutMs,
+			});
+			reactionsRedis.on('error', error => logger.error('reactions-redis.error', { error }));
+			reactionsRedis.on('end', () => {
+				if (active && !closing) {
+					reportFailure(new DiagnosticError('REACTIONS_REDIS_ENDED', {}));
+				}
+			});
+			const connection = reactionsRedis;
+			scope.defer(async () => {
+				if (connection.status !== 'end') {
+					await new Promise<void>(resolve => {
+						connection.once('end', resolve);
+						connection.disconnect();
+					});
+				}
+			});
+			await reactionsRedis.connect();
+			await reactionsRedis.ping();
+			if (cancelled) {
+				throw timeout;
+			}
+		}
+
 		const rolePublisher = new Redis({
 			...config.redisForPubsub,
 			disconnectTimeout: 0,
@@ -120,8 +150,15 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 
+		const notePostSave = createNotePostSave(async userId => {
+			await dataSource.getRepository(MiUser).createQueryBuilder().update()
+				.set({ notesCount: () => '"notesCount" + 1', updatedAt: new Date() })
+				.where('id = :userId', { userId }).execute();
+		}, logger);
+		scope.defer(notePostSave.close);
+
 		active = true;
-		return { dataSource, redis, roleMaterials, logger, close, failure };
+		return { dataSource, redis, reactionsRedis, roleMaterials, notePostSave, logger, close, failure };
 	};
 
 	try {

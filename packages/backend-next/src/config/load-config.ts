@@ -105,6 +105,12 @@ export async function loadConfig(
 		redis: baseRedis,
 		redisForJobQueue: source.redisForJobQueue ? redis(source.redisForJobQueue, url.host) : baseRedis,
 		redisForPubsub: source.redisForPubsub ? redis(source.redisForPubsub, url.host) : baseRedis,
+		redisForReactions: source.redisForReactions ? redis(source.redisForReactions, url.host) : undefined,
+		noteMedia: {
+			mediaProxy: source.mediaProxy ? text(source.mediaProxy, 'mediaProxy').replace(/\/$/, '') : `${url.origin}/proxy`,
+			externalMediaProxyEnabled: Boolean(source.mediaProxy && text(source.mediaProxy, 'mediaProxy').replace(/\/$/, '') !== `${url.origin}/proxy`),
+			videoThumbnailGenerator: source.videoThumbnailGenerator ? text(source.videoThumbnailGenerator, 'videoThumbnailGenerator').replace(/\/$/, '') : undefined,
+		},
 		http: {
 			socket,
 			port: socket && port === undefined ? undefined : positive(port, 'port', 65535),

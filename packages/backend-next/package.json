@@ -32,7 +32,9 @@
 		"inversify": "8.2.3",
 		"ajv": "8.20.0",
 		"ulid": "3.0.2",
-		"bullmq": "6.3.11"
+		"ratelimiter": "3.4.1",
+		"re2": "1.27.0",
+		"mfm-js": "0.27.0"
 	},
 	"devDependencies": {
 		"@types/node": "26.6.4",
@@ -40,6 +42,7 @@
 		"eslint": "9.39.5",
 		"@typescript-eslint/parser": "8.71.0",
 		"vitest": "5.0.3",
-		"@types/js-yaml": "4.0.9"
+		"@types/js-yaml": "4.0.9",
+		"@types/ratelimiter": "3.4.6"
 	}
 }

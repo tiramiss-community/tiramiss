@@ -810,9 +810,6 @@ importers:
       backend-upstream:
         specifier: workspace:*
         version: link:../backend-upstream
-      bullmq:
-        specifier: 6.3.11
-        version: 6.3.11(ioredis@5.11.1(supports-color@10.2.2))(pg@8.23.1)
       hono:
         specifier: 4.13.13
         version: 4.13.13
@@ -825,9 +822,18 @@ importers:
       js-yaml:
         specifier: 5.4.2
         version: 5.4.2
+      mfm-js:
+        specifier: 0.27.0
+        version: 0.27.0
       pg:
         specifier: 8.23.1
         version: 8.23.1
+      ratelimiter:
+        specifier: 3.4.1
+        version: 3.4.1
+      re2:
+        specifier: 1.27.0
+        version: 1.27.0
       reflect-metadata:
         specifier: 0.2.2
         version: 0.2.2
@@ -844,6 +850,9 @@ importers:
       '@types/node':
         specifier: 26.6.4
         version: 26.6.4
+      '@types/ratelimiter':
+        specifier: 3.4.6
+        version: 3.4.6
       '@typescript-eslint/parser':
         specifier: 8.71.0
         version: 8.71.0(@typescript/typescript6@6.0.2)(eslint@9.39.5(supports-color@10.2.2))(supports-color@10.2.2)
@@ -13112,17 +13121,6 @@ snapshots:
     dependencies:
       node-gyp-build: 4.8.4
     optional: true
-
-  bullmq@6.3.11(ioredis@5.11.1(supports-color@10.2.2))(pg@8.23.1):
-    dependencies:
-      cron-parser: 5.10.1
-      msgpackr: 2.1.0
-      node-abort-controller: 3.1.1
-      semver: 7.8.5
-      tslib: 2.8.1
-    optionalDependencies:
-      ioredis: 5.11.1(supports-color@10.2.2)
-      pg: 8.23.1
 
   bullmq@6.3.11(ioredis@5.11.1(supports-color@8.1.1))(pg@8.23.1):
     dependencies:

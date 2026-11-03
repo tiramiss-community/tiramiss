@@ -32,6 +32,8 @@ export interface RuntimeConfig {
 	redis: RedisConfig;
 	redisForJobQueue: RedisConfig;
 	redisForPubsub: RedisConfig;
+	redisForReactions?: RedisConfig;
+	noteMedia?: { mediaProxy: string; externalMediaProxyEnabled: boolean; videoThumbnailGenerator?: string };
 	http: { port?: number; socket?: string; chmodSocket?: string };
 	processes: { workerCount: number; startupTimeoutMs: number; shutdownTimeoutMs: number };
 }
