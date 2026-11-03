@@ -5,6 +5,7 @@
 import { expect, test } from 'vitest';
 import { createNotePostSave, createNotePostSaveWork } from '../../../src/platform/note-post-save.js';
 import { createLogger } from '../../../src/platform/logger.js';
+import { NoteDeliveryError } from '../../../src/modules/federation/public.js';
 
 test('post-save failure is logged, does not escape to HTTP, and shutdown waits for started work', async () => {
 	const logs: string[] = [];
@@ -74,6 +75,7 @@ test('poll enqueue failure is logged with the note and deadline, and does not sk
 		schedulePollEnded: async () => {
 			throw new Error('queue unavailable');
 		},
+		deliver: async () => {},
 		currentTime: () => 1000,
 	}), createLogger('test', line => logs.push(line)));
 	effects.start({ noteId: 'n1', userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: 61000 });
@@ -95,10 +97,52 @@ test('counts failure does not prevent the poll-ended job from being enqueued wit
 		schedulePollEnded: async job => {
 			scheduled.push(job);
 		},
+		deliver: async () => {},
 		currentTime: () => 1000,
 	});
 	await expect(work({ noteId: 'n1', userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: 500 }))
 		.rejects.toMatchObject({ code: 'NOTE_POST_SAVE_FAILED', details: { failures: [expect.objectContaining({ step: 'counts' })] } });
 	// 期限を過ぎていても本家どおり負の遅延のまま投入する。
 	expect(scheduled).toEqual([{ noteId: 'n1', delayMs: -500 }]);
+});
+
+test('delivery failure is logged with the note and does not skip counts or the poll-ended job', async () => {
+	const logs: string[] = [];
+	const done: string[] = [];
+	const effects = createNotePostSave(createNotePostSaveWork({
+		counts: async ({ noteId }) => {
+			done.push(`counts:${noteId}`);
+		},
+		schedulePollEnded: async ({ noteId }) => {
+			done.push(`pollEnded:${noteId}`);
+		},
+		deliver: async () => {
+			throw new NoteDeliveryError('FOLLOWER_INBOX_MISSING', 'inbox is null');
+		},
+		currentTime: () => 1000,
+	}), createLogger('test', line => logs.push(line)));
+	effects.start({ noteId: 'n1', userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: 61000 });
+	await effects.idle();
+
+	expect(done).toEqual(['counts:n1', 'pollEnded:n1']);
+	expect(logs.map(line => JSON.parse(line)).filter(line => line.event === 'note-post-save.failed')).toEqual([expect.objectContaining({
+		noteId: 'n1', userId: 'author',
+		error: expect.objectContaining({ code: 'NOTE_POST_SAVE_FAILED', details: { failures: [{ step: 'deliver', error: { name: 'NoteDeliveryError', code: 'FOLLOWER_INBOX_MISSING' } }] } }),
+	})]);
+});
+
+test('every saved note is handed to the delivery step, which decides by itself whether to deliver', async () => {
+	const delivered: string[] = [];
+	const work = createNotePostSaveWork({
+		counts: async () => {},
+		schedulePollEnded: async () => {},
+		deliver: async noteId => {
+			delivered.push(noteId);
+		},
+		currentTime: () => 1000,
+	});
+
+	await work({ noteId: 'n1', userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: 'channel', pollExpiresAtMs: null });
+
+	expect(delivered).toEqual(['n1']);
 });

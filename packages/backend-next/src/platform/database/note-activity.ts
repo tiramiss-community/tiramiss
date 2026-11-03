@@ -7,12 +7,12 @@ import { MiDriveFile, MiEmoji, MiNote, MiPoll, MiUser } from 'backend-upstream/e
 import { readMeta } from './meta.js';
 import { publicFileUrl } from './note-files.js';
 import type { EntityManager } from 'typeorm';
-import type { NoteActivityMaterials } from '../../modules/federation/public.js';
+import type { NoteActivityMaterials, NoteDeliveryMaterials } from '../../modules/federation/public.js';
 import type { MentionedRemoteUser } from '../../modules/mfm/public.js';
 import type { NoteMediaOptions } from './note-files.js';
 
 /**
- * 保存済みの投稿を AP 表現の材料として読み直す。投稿が無ければ null。
+ * 保存済みの投稿を AP 表現と配送の材料として読み直す。投稿が無ければ null。
  * 本家 ApRendererService.renderNote と同じく、返信先・引用先・メンション・添付・投票・絵文字は表現の時点の行を使う。
  */
 export function createNoteActivityReader(manager: EntityManager, options: Pick<NoteMediaOptions, 'url' | 'mediaProxy' | 'externalMediaProxyEnabled' | 'createdAtFromId'>) {
@@ -84,7 +84,7 @@ export function createNoteActivityReader(manager: EntityManager, options: Pick<N
 		})));
 	}
 
-	return async (noteId: string): Promise<NoteActivityMaterials | null> => {
+	return async (noteId: string): Promise<NoteDeliveryMaterials | null> => {
 		const note = await manager.getRepository(MiNote).findOneBy({ id: noteId });
 		if (note === null) {
 			return null;
@@ -116,6 +116,15 @@ export function createNoteActivityReader(manager: EntityManager, options: Pick<N
 				mentionedRemoteUsers: JSON.parse(note.mentionedRemoteUsers) as MentionedRemoteUser[],
 			},
 			reply, renote, mentionedUsers, files, poll, emojis,
+			delivery: {
+				userHost: note.userHost,
+				localOnly: note.localOnly,
+				mentions: note.mentions,
+				replyUserId: note.replyUserId,
+				replyUserHost: note.replyUserHost,
+				renoteUserId: note.renoteUserId,
+				renoteUserHost: note.renoteUserHost,
+			},
 		};
 	};
 }

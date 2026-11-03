@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { readFileSync } from 'node:fs';
+import { publicFileUrl } from '../../src/platform/database/note-files.js';
+import { createIdCodec } from '../../src/platform/id-codec.js';
+import type { MiDriveFile } from 'backend-upstream/entities';
+import type { NoteActivityMaterials, NoteDeliveryFacts } from '../../src/modules/federation/public.js';
 
 const compatibility = new URL('../../../../docs/superpowers/compatibility/ap-deliver/', import.meta.url);
 
@@ -89,4 +93,57 @@ export function withMentionTagsAsSet(activity: string): string {
 		object.tag = object.tag.map(tag => tag.type === 'Mention' ? mentions.shift()! : tag);
 	}
 	return JSON.stringify(parsed);
+}
+
+type RenderCaseInput = RenderCases['inputs']['cases'][number];
+
+const codec = createIdCodec('aidx');
+
+/** 本家の probe と同じ行を、表現の時点で読めた材料に直す。消えた行と作者のいない返信先は読めなかったものとして扱う。 */
+export function renderMaterialsFor(inputs: RenderCases['inputs'], c: RenderCaseInput): NoteActivityMaterials {
+	const { note } = c;
+	const users = new Map(inputs.users.map(u => [u.id, u]));
+	const notes = new Map(inputs.notes.map(n => [n.id, n]));
+	const deleted = new Set(c.deletedBeforeRender);
+	const row = (id: string | null) => (id === null || deleted.has(id) ? undefined : notes.get(id));
+	const reply = row(note.replyId);
+	const renote = row(note.renoteId);
+	const poll = inputs.polls[note.id];
+
+	return {
+		note: {
+			id: note.id, userId: note.userId, createdAtMs: codec.createdAtFromId(note.id), text: note.text, cw: note.cw, visibility: note.visibility,
+			replyId: note.replyId, renoteId: note.renoteId, renoteUserHost: note.renoteId === null ? null : notes.get(note.renoteId)!.userHost,
+			fileIds: note.fileIds, hasPoll: note.hasPoll, tags: note.tags, mentionedRemoteUsers: JSON.parse(note.mentionedRemoteUsers),
+		},
+		reply: reply && users.has(reply.userId) ? { id: reply.id, uri: reply.uri } : null,
+		renote: renote ? { id: renote.id, uri: renote.uri } : null,
+		mentionedUsers: note.mentions.flatMap(id => inputs.users.filter(u => u.id === id)),
+		files: note.fileIds.flatMap(id => inputs.files.filter(f => f.id === id)).map(file => ({
+			type: file.type, webpublicType: file.webpublicType, url: publicFileUrl(file as unknown as MiDriveFile, true, { url: inputs.selfUrl }),
+			comment: file.comment, width: file.properties.width, height: file.properties.height, isSensitive: file.isSensitive,
+		})),
+		poll: note.hasPoll && poll ? { choices: poll.choices, multiple: poll.multiple, votes: poll.votes, expiresAtMs: poll.expiresAt === null ? null : Date.parse(poll.expiresAt) } : null,
+		emojis: note.emojis.flatMap(name => inputs.emojis.filter(e => e.name === name)).map(emoji => ({
+			name: emoji.name, type: emoji.type, publicUrl: emoji.publicUrl, originalUrl: emoji.originalUrl, license: emoji.license,
+			localOnly: emoji.localOnly, updatedAtMs: emoji.updatedAt === null ? null : Date.parse(emoji.updatedAt),
+		})),
+	};
+}
+
+/** 保存時に返信先・Renote 先から写した列。本家の入力 data と同じく、表現の前に消えた投稿の値も残る。 */
+export function deliveryFactsFor(inputs: RenderCases['inputs'], c: RenderCaseInput): NoteDeliveryFacts {
+	const { note } = c;
+	const target = (id: string | null) => (id === null ? undefined : inputs.notes.find(n => n.id === id));
+	const reply = target(note.replyId);
+	const renote = target(note.renoteId);
+	return {
+		userHost: note.userHost,
+		localOnly: note.localOnly,
+		mentions: note.mentions,
+		replyUserId: reply?.userId ?? null,
+		replyUserHost: reply?.userHost ?? null,
+		renoteUserId: renote?.userId ?? null,
+		renoteUserHost: renote?.userHost ?? null,
+	};
 }

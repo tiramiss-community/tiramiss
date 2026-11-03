@@ -3,14 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { afterAll, beforeAll, expect, test } from 'vitest';
-import { MiDriveFile, MiEmoji, MiMeta, MiNote, MiPoll, MiUser } from 'backend-upstream/entities';
-import { renderNoteActivity } from '../../src/modules/federation/public.js';
+import { MiDriveFile, MiEmoji, MiFollowing, MiMeta, MiNote, MiPoll, MiUser } from 'backend-upstream/entities';
+import { createDeliverCreatedNote, renderNoteActivity } from '../../src/modules/federation/public.js';
+import { createDeliveryRecipientReader } from '../../src/platform/database/delivery-recipients.js';
+import { deliverJobs } from '../../src/platform/job-queue/deliver.js';
+import type { DeliverBatch } from '../../src/modules/federation/public.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
 import { migrateDatabase } from '../../src/platform/database/migrate.js';
 import { createNoteActivityReader } from '../../src/platform/database/note-activity.js';
 import { createIdCodec } from '../../src/platform/id-codec.js';
 import { createTestDatabase } from '../helpers/database.js';
-import { loadApDeliverCases, withMentionTagsAsSet } from '../helpers/ap-deliver-cases.js';
+import { deliveryFactsFor, loadApDeliverCases, withMentionTagsAsSet } from '../helpers/ap-deliver-cases.js';
 import type { RenderCases } from '../helpers/ap-deliver-cases.js';
 import type { DataSource } from 'typeorm';
 
@@ -53,9 +56,11 @@ beforeAll(async () => {
 	for (const [i, { updatedAt, ...emoji }] of inputs.emojis.entries()) {
 		await source.getRepository(MiEmoji).insert({ ...emoji, id: `emoji${i}`, updatedAt: updatedAt === null ? null : new Date(updatedAt) });
 	}
-	for (const { note } of cases) {
-		const renoteUserHost = note.renoteId === null ? null : inputs.notes.find(n => n.id === note.renoteId)!.userHost;
-		await source.getRepository(MiNote).insert({ ...note, renoteUserHost });
+	for (const c of cases) {
+		const { note } = c;
+		// 本家と同じく、返信先・Renote 先の作者は保存時の値を列に写す。
+		const { replyUserId, replyUserHost, renoteUserId, renoteUserHost } = deliveryFactsFor(inputs, c);
+		await source.getRepository(MiNote).insert({ ...note, replyUserId, replyUserHost, renoteUserId, renoteUserHost });
 		const poll = inputs.polls[note.id];
 		if (note.hasPoll && poll) {
 			await source.getRepository(MiPoll).insert({
@@ -108,4 +113,42 @@ test('an expired remote file is linked through the local file proxy', async () =
 	const materials = await read('with-expired-file');
 
 	expect(materials?.files.map(file => file.url)).toEqual([`${inputs.selfUrl}/files/expired-key`]);
+});
+
+test.for(cases)('$id read back from the database is queued to the same inboxes as the pinned upstream (relay excluded)', async c => {
+	const upstream = expected.get(c.id)!;
+	const followings = source.getRepository(MiFollowing);
+	await followings.delete({ followeeId: c.note.userId });
+	for (const [i, followerId] of c.followers.entries()) {
+		const follower = inputs.users.find(u => u.id === followerId)!;
+		await followings.insert({
+			id: `following${i}`, followerId, followeeId: c.note.userId, followerHost: follower.host,
+			followerInbox: follower.inbox, followerSharedInbox: follower.sharedInbox, followeeHost: null,
+		});
+	}
+	const batches: DeliverBatch[] = [];
+	const recipients = createDeliveryRecipientReader(source.manager);
+	const deliver = createDeliverCreatedNote({
+		readNote: read, readUsers: recipients.readUsers, readFollowerInboxes: recipients.readFollowerInboxes,
+		enqueue: async batch => {
+			batches.push(batch);
+		},
+		selfUrl: inputs.selfUrl, currentTime: () => options.now,
+	});
+
+	if (c.id === 'public-follower-without-inbox') {
+		// 本家の probe は following の問い合わせを stub にした。実際の TypeORM は選んだ列がすべて null の行を返さないため、
+		// 本家も新実装も inbox のないフォロワーを飛ばし、`inbox is null` にはならない。
+		await deliver(c.note.id);
+		const reachable = c.followers.map(id => inputs.users.find(u => u.id === id)!).filter(u => (u.sharedInbox ?? u.inbox) !== null);
+		expect([...batches[0].inboxes]).toEqual(reachable.map(u => [u.sharedInbox ?? u.inbox, u.sharedInbox !== null]));
+		return;
+	}
+	if (upstream.addBulk === null) {
+		await expect(deliver(c.note.id)).rejects.toMatchObject({ name: 'NoteDeliveryError' });
+		expect(batches).toEqual([]);
+		return;
+	}
+	await deliver(c.note.id);
+	expect(deliverJobs(batches[0], {}).map(job => ({ name: job.name, to: job.data.to, isSharedInbox: job.data.isSharedInbox }))).toEqual(upstream.addBulk.jobs);
 });

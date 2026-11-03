@@ -5,7 +5,12 @@
 import { Redis } from 'ioredis';
 import { createNotePostSave, createNotePostSaveWork } from './note-post-save.js';
 import { createPollEndedQueue, ENDED_POLL_NOTIFICATION } from './job-queue/ended-poll-notification.js';
+import { createDeliverQueue, DELIVER } from './job-queue/deliver.js';
 import { createNotePostSaveCounts } from './database/note-post-save-counts.js';
+import { createNoteActivityReader } from './database/note-activity.js';
+import { createDeliveryRecipientReader } from './database/delivery-recipients.js';
+import { createIdCodec } from './id-codec.js';
+import { createDeliverCreatedNote } from '../modules/federation/public.js';
 import { openRoleMaterials } from './role-materials.js';
 import { createRoleMaterialReader } from './database/role-materials.js';
 import { ResourceScope } from './resource-scope.js';
@@ -166,9 +171,34 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 
+		const deliverQueue = createDeliverQueue({
+			redis: config.redisForJobQueue, connectTimeoutMs: config.processes.startupTimeoutMs, logger,
+			deliverJobMaxAttempts: config.deliverJob.deliverJobMaxAttempts,
+			onLost: () => {
+				if (active && !closing) {
+					reportFailure(new DiagnosticError('JOB_QUEUE_REDIS_ENDED', { queue: DELIVER }));
+				}
+			},
+		});
+		scope.defer(deliverQueue.close);
+		await deliverQueue.ready();
+		if (cancelled) {
+			throw timeout;
+		}
+
+		const recipients = createDeliveryRecipientReader(dataSource.manager);
 		const notePostSave = createNotePostSave(createNotePostSaveWork({
 			counts: createNotePostSaveCounts(dataSource.manager),
 			schedulePollEnded: pollEndedQueue.schedule,
+			// 本家と同じく投稿を受けた子で表現と宛先を決め、送信は worker の子に任せる。
+			deliver: createDeliverCreatedNote({
+				readNote: createNoteActivityReader(dataSource.manager, { ...config.noteMedia, url: config.url, createdAtFromId: createIdCodec(config.id).createdAtFromId }),
+				readUsers: recipients.readUsers,
+				readFollowerInboxes: recipients.readFollowerInboxes,
+				enqueue: deliverQueue.deliverMany,
+				selfUrl: config.url,
+				currentTime: Date.now,
+			}),
 			currentTime: Date.now,
 		}), logger);
 		scope.defer(notePostSave.close);
