@@ -116,3 +116,15 @@ test('verified or partial status requires existing implementation and test evide
 	contract.verification = ['missing-test.ts'];
 	assert.throws(() => validateCatalog(f.catalog, f.domains, f), /reference/);
 });
+
+test('audit rows keep their verdict and cannot pose as enumerated contracts', () => {
+	const f = fixture();
+	const row = { id: 'responsibility:x', kind: 'responsibility', domain: 'x', source: 'upstream.ts', line: 1, status: 'not_implemented', audit: { A: '曖昧', B: '計画なし' } };
+	f.catalog.contracts.push(row);
+	assert.doesNotThrow(() => validateCatalog(f.catalog, f.domains, f));
+	row.audit.A = '対象外';
+	assert.throws(() => validateCatalog(f.catalog, f.domains, f), /verdict/);
+	row.audit.A = '曖昧';
+	row.kind = 'api';
+	assert.throws(() => validateCatalog(f.catalog, f.domains, f), /enumerated/);
+});

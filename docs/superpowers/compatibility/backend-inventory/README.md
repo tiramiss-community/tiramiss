@@ -33,7 +33,15 @@ Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装
 | cli | 3 | boot/cli.ts のhelp/ping/reset-captcha。migration等は運用能力でも追跡。 |
 | capability | 39 | 領域の正本・副作用とqueue外timer/WS書込/static配信の明示的な確認単位。内部の全関数一覧ではない。 |
 
-**687行は独立した機能数でも PR 数でもなく、完成率の分母にしない。** 同じ機能が API・stream・job・共通能力の複数行に現れる。残作業は下表の28領域と各 Issue の完了条件で判断する。将来の本家更新で対象集合も変わる。
+### 監査で追加した行
+
+[網羅性監査](../../../backend-next/coverage-audit.md)（2026-11-03）で、上の機械列挙に現れない本家の機能・責務 1432 行を [audit-items.json](audit-items.json) に追加し、担当領域を割り当てた。種別は service・packer・entity・config・env・Meta 設定・stream/internal イベント・通知種別・webhook イベント・ロールポリシー/条件・モデレーションログ種別・AP の表現/送信箇所・queue 名/投入メソッド・timer・`responsibility`（暗黙の責務）など。
+
+- 監査時の判定（割り当て前）: 計画あり 1075 / 曖昧 341 / 計画なし 15 / 意図した後回し 1。対応表では計画あり以外に「（監査: 曖昧）」等を付ける。担当を割り当てたことは、その領域 Issue が中身を調査・実装することを意味し、移植済みを意味しない。
+- 機械列挙の行と違い、`--check` は再列挙しない。上流の場所・担当領域・判定値・重複を検査する。本家更新時は [#135](https://github.com/tiramiss-community/tiramiss/issues/135) の記録と合わせて人が見直す。
+- 横断的で既存領域に収まらない責務は、新しい 3 領域（連合の共通土台・外向きHTTPとSSRF対策・プロセス間イベントとキャッシュ同期）へ分けた。本家設定キー・環境変数・観測（Sentry/telemetry）・既存データ形式の互換は #138 に寄せた。Meta 設定・通知種別・stream イベントは、効き先または発行する機能の領域に置いた。
+
+**687行は独立した機能数でも PR 数でもなく、完成率の分母にしない。** 同じ機能が API・stream・job・共通能力の複数行に現れる。監査行を含む全行も同様。残作業は下表の31領域と各 Issue の完了条件で判断する。将来の本家更新で対象集合も変わる。
 
 全契約は生成された [対応表](contracts.md)、機械可読版は [contracts.json](contracts.json)。保存・副作用・実装・検証・既知差異は [domains.json](domains.json) にまとめ、各行の `domain` から引く。行の `source` と本家 SHA が本家参照、`issue` が担当、`implementation`/`verification` が新実装と根拠、`differences` が明示した差異を表す。
 
@@ -69,6 +77,9 @@ Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装
 | [charts・retention・統計](#domain-analytics) | 未実装 | [#200](https://github.com/tiramiss-community/tiramiss/issues/200) / #132, #133 |
 | [ジョブ管理・照会・制御](#domain-queue) | 未実装 | [#163](https://github.com/tiramiss-community/tiramiss/issues/163) / #124, #162, #164, #165 |
 | [起動・migration・CLI・配布](#domain-operations) | 部分実装 | [#138](https://github.com/tiramiss-community/tiramiss/issues/138) / #113, #135, #136, #137, #139, #162, #166 |
+| [連合の共通土台（システムアカウント・鍵・ホスト判定・排他）](#domain-federation-base) | 未実装（監査で追加） | [#215](https://github.com/tiramiss-community/tiramiss/issues/215) / #195, #124, #160, #171 |
+| [外向きHTTPとSSRF対策](#domain-outbound-http) | 未実装（監査で追加） | [#216](https://github.com/tiramiss-community/tiramiss/issues/216) / #160, #188, #195, #196, #197, #198 |
+| [プロセス間イベントとキャッシュ同期](#domain-process-events) | 未実装（監査で追加） | [#217](https://github.com/tiramiss-community/tiramiss/issues/217) / #119, #178, #189 |
 
 ## 対応順と依存の扱い
 
@@ -93,7 +104,8 @@ node scripts/backend-contract-inventory.mjs --check
 1. 本家更新の評価では先に #135 の記録で固定 SHA と差分の意味を確認する。`domains.json` の SHA を黙って進めない。
 2. 新規入口は既存領域へ責任を割り当てるか Issue を追加する。HTTP の動的 path/mount/Accept 分岐、channel内部の書込、coreのqueue外timer・外部保存/通信も読む。列挙スクリプトは業務の意味を自動判定しない。
 3. 実装が増えたら新実装監査 SHA を明示的に更新し、個別 contract の status と実装/比較テスト/意図的差異を記録する。ファイルが存在するだけで verified にしない。
-4. `node scripts/backend-contract-inventory.mjs --write` で両形式を更新し、差分をレビューして再度 `--check` を通す。対応 Issue と親の進捗も更新する。CIでもNodeテストと整合性検査を実行する。
+4. 監査行（`audit-items.json`）は手で編集する。担当を変えるときは `domain` を、実装したら `status`/`implementation`/`verification` を更新し、`audit` は監査時の値のまま残す。
+5. `node scripts/backend-contract-inventory.mjs --write` で両形式を更新し、差分をレビューして再度 `--check` を通す。対応 Issue と親の進捗も更新する。CIでもNodeテストと整合性検査を実行する。
 
 ## 領域ごとの保存・副作用・根拠
 
@@ -479,7 +491,7 @@ chart各系列/retention/statsと集計/tick/resync/clean、履歴的countと復
 
 ### 起動・migration・CLI・配布
 
-Supervisor/HTTP/worker・設定/DB/Redis・migration/check・CLI・healthz・配布/監視と完全停止切り替えを扱う。
+Supervisor/HTTP/worker・設定/DB/Redis・migration/check・CLI・healthz・配布/監視と完全停止切り替えを扱う。本家設定キー・環境変数の互換、観測（Sentry/telemetry）の扱い、DB接続・ID形式など既存データ形式の互換もここで判断する。
 
 - 担当: [#138](https://github.com/tiramiss-community/tiramiss/issues/138).
 - 正本/保存: 本家public履歴/独自履歴 / 設定・接続。
@@ -489,3 +501,47 @@ Supervisor/HTTP/worker・設定/DB/Redis・migration/check・CLI・healthz・配
 - 検証根拠: [children.test.ts](../../../../packages/backend-next/test/processes/children.test.ts)。
 - 既知差異: 本家/独自migration分離、通常起動時自動migrationなし、完全停止切り替え。worker業務handlerと配布の統合は未完了。物理容量停止(#166)は保留。
 
+<a id="domain-federation-base"></a>
+
+### 連合の共通土台（システムアカウント・鍵・ホスト判定・排他）
+
+システムアカウントの遅延生成と鍵、ユーザー鍵/公開鍵と鍵形式、ホスト名の正規化と自ホスト判定、連合許可・ブロック・サイレンス・配信停止ソフトウェアの判定、連合インスタンス情報の取得・状態更新・自動停止、APオブジェクト単位の排他。AP受信(#195)・署名送信(#160)・投稿AP(#171)の先行契約。
+
+- 担当: [#215](https://github.com/tiramiss-community/tiramiss/issues/215).
+- 正本/保存: SystemAccount/UserKeypair/UserPublickey/Instance / Metaの連合設定 / Redis lock/キャッシュ。
+- 副作用: 鍵生成・インスタンス状態更新・配送スキップ/自動停止。
+- 本家: [SystemAccountService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/SystemAccountService.ts)、[UtilityService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/UtilityService.ts)、[FederatedInstanceService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/FederatedInstanceService.ts)、[FetchInstanceMetadataService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/FetchInstanceMetadataService.ts)、[distributed-lock.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/misc/distributed-lock.ts)。
+- 新実装: 未実装。
+- 検証根拠: 未接続。担当 Issue で固定本家との比較 fixture と受け入れを追加。
+- 監査行: 32 行（うち監査時に計画あり以外 25 行）。
+- 既知差異: この棚卸しで新たな差異は採用していない。実装時の差異は個別に記録する。
+
+<a id="domain-outbound-http"></a>
+
+### 外向きHTTPとSSRF対策
+
+AP取得/配送・リモートファイル取得・URLプレビュー・webhook・Web Pushが共有する外向きHTTP。プライベートアドレス遮断とallowedPrivateNetworks、proxy/proxyBypassHosts/outgoingAddress、サイズ・時間・redirect制限。
+
+- 担当: [#216](https://github.com/tiramiss-community/tiramiss/issues/216).
+- 正本/保存: 設定（proxy/allowedPrivateNetworks/outgoingAddress）。
+- 副作用: 外部HTTP・名前解決・一時ファイル。
+- 本家: [HttpRequestService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/HttpRequestService.ts)、[DownloadService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/DownloadService.ts)。
+- 新実装: 未実装。
+- 検証根拠: 未接続。担当 Issue で固定本家との比較 fixture と受け入れを追加。
+- 監査行: 10 行（うち監査時に計画あり以外 9 行）。
+- 既知差異: この棚卸しで新たな差異は採用していない。実装時の差異は個別に記録する。
+
+<a id="domain-process-events"></a>
+
+### プロセス間イベントとキャッシュ同期
+
+GlobalEventのRedis pub/sub形式、internalイベントの発行と購読、CacheService・Metaキャッシュ・Redis/メモリ二層キャッシュとTTL。各機能のキャッシュ自体は機能の領域が持ち、通知と反映の契約をここで揃える。Roleの無効化通知(#119)を一般化する。
+
+- 担当: [#217](https://github.com/tiramiss-community/tiramiss/issues/217).
+- 正本/保存: Redis pub/sub / Redis/メモリキャッシュ。
+- 副作用: 他プロセス・接続中streamへの状態反映。
+- 本家: [GlobalEventService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/GlobalEventService.ts)、[CacheService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/CacheService.ts)、[cache.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/misc/cache.ts)、[MetaService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/MetaService.ts)。
+- 新実装: 未実装。
+- 検証根拠: 未接続。担当 Issue で固定本家との比較 fixture と受け入れを追加。
+- 監査行: 50 行（うち監査時に計画あり以外 38 行）。
+- 既知差異: この棚卸しで新たな差異は採用していない。実装時の差異は個別に記録する。

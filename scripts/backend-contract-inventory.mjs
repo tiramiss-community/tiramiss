@@ -12,6 +12,13 @@ import ts from 'typescript';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const directory = 'docs/superpowers/compatibility/backend-inventory';
 const backend = 'packages/backend/src/';
+const enumeratedKinds = new Set(['api', 'http', 'stream-channel', 'stream-command', 'ap-inbound', 'job', 'processor', 'schedule', 'cli', 'capability']);
+const auditKinds = new Set([
+	'service', 'packer', 'chart', 'entity', 'migration', 'config', 'env', 'meta-setting', 'timer', 'queue-name', 'queue-producer',
+	'stream-event', 'ap-render', 'ap-send-site', 'ap-module', 'http-mount', 'notification-type', 'user-webhook-event', 'system-webhook-event',
+	'role-policy', 'role-condition', 'moderation-log-type', 'responsibility',
+]);
+const auditVerdicts = new Set(['計画あり', '意図した後回し', '計画なし', '曖昧']);
 
 function parse(source) {
 	const tree = ts.createSourceFile('source.ts', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
@@ -240,6 +247,12 @@ export function validateCatalog(catalog, domains, { upstreamFiles, implementatio
 				throw new Error(`Invalid contract source reference: ${path}`);
 			}
 		}
+		if (contract.audit && (!auditVerdicts.has(contract.audit.A) || !auditVerdicts.has(contract.audit.B))) {
+			throw new Error(`Invalid audit verdict: ${contract.id}`);
+		}
+		if (contract.audit && enumeratedKinds.has(contract.kind)) {
+			throw new Error(`Audit rows must not reuse enumerated kinds: ${contract.id}`);
+		}
 		if (!['not_implemented', 'partial', 'verified'].includes(contract.status)) {
 			throw new Error(`Invalid status: ${contract.id}`);
 		}
@@ -256,7 +269,7 @@ function git(...args) {
 }
 
 export function buildCatalog(configuration) {
-	const { upstreamCommit, implementationCommit, domains, sources, capabilities, overrides } = configuration;
+	const { upstreamCommit, implementationCommit, domains, sources, capabilities, overrides, auditItems = [] } = configuration;
 	for (const commit of [upstreamCommit, implementationCommit]) {
 		if (!/^[a-f0-9]{40}$/.test(commit)) {
 			throw new Error('Inventory revisions must be full immutable SHAs');
@@ -320,6 +333,13 @@ export function buildCatalog(configuration) {
 	for (const capability of capabilities) {
 		add('capability', capability, capability.domain);
 	}
+	// 監査行は業務の意味を人が判断した割り当てなので、機械列挙の種別と混ぜず、再列挙の対象にもしない。
+	for (const item of auditItems) {
+		if (!auditKinds.has(item.kind)) {
+			throw new Error(`Invalid audit item kind: ${item.id}`);
+		}
+		contracts.push({ status: 'not_implemented', ...item });
+	}
 	for (const [id, override] of Object.entries(overrides)) {
 		const contract = contracts.find(c => c.id === id);
 		if (!contract) {
@@ -338,6 +358,7 @@ function renderTable(catalog, domains) {
 	const byId = new Map(domains.map(d => [d.id, d]));
 	const status = { not_implemented: '未実装', partial: '部分実装', verified: '検証根拠あり' };
 	const output = ['# 公開契約・保存/副作用の対応表', '', '`domains.json` と固定 Git オブジェクトから生成。入口・共通能力には重複があるため、行数は機能数でも進捗率の分母でもない。更新手順・状態の意味は [README](README.md)。', '',
+		'`responsibility` などの監査行は [audit-items.json](audit-items.json) から取り込む。「（監査: 曖昧）」等は [網羅性監査](../../../backend-next/coverage-audit.md) の割り当て前の判定。', '',
 		`本家: \`${catalog.upstreamCommit}\` / 新実装監査基準: \`${catalog.implementationCommit}\`。`, ''];
 	for (const kind of [...new Set(catalog.contracts.map(c => c.kind))].sort()) {
 		const contracts = catalog.contracts.filter(c => c.kind === kind);
@@ -347,7 +368,8 @@ function renderTable(catalog, domains) {
 			const source = `[source](https://github.com/misskey-dev/misskey/blob/${catalog.upstreamCommit}/${contract.source}#L${contract.line})`;
 			const refs = (contract.references ?? []).map(p => `[handler](https://github.com/misskey-dev/misskey/blob/${catalog.upstreamCommit}/${p})`).join(' ');
 			const evidence = [...(contract.implementation ?? []), ...(contract.verification ?? [])].map(p => `[${posix.basename(p)}](../../../../${p})`).join(' / ') || '—';
-			output.push(`| ${escape(contract.name)} | [${escape(domain.title)}](README.md#domain-${domain.id}) / [#${domain.issue}](https://github.com/tiramiss-community/tiramiss/issues/${domain.issue}) | ${status[contract.status]} | ${source} ${refs} | ${evidence} |`);
+			const audit = contract.audit && contract.audit.A !== '計画あり' ? `（監査: ${contract.audit.A}）` : '';
+			output.push(`| ${escape(contract.name)}${audit} | [${escape(domain.title)}](README.md#domain-${domain.id}) / [#${domain.issue}](https://github.com/tiramiss-community/tiramiss/issues/${domain.issue}) | ${status[contract.status]} | ${source} ${refs} | ${evidence} |`);
 		}
 		output.push('');
 	}
@@ -359,7 +381,8 @@ function main() {
 		throw new Error('Usage: node scripts/backend-contract-inventory.mjs --write|--check');
 	}
 	const configuration = JSON.parse(readFileSync(resolve(root, directory, 'domains.json'), 'utf8'));
-	const catalog = buildCatalog(configuration);
+	const { items: auditItems } = JSON.parse(readFileSync(resolve(root, directory, 'audit-items.json'), 'utf8'));
+	const catalog = buildCatalog({ ...configuration, auditItems });
 	const output = `${JSON.stringify({ ...catalog, contracts: undefined }, null, 2).slice(0, -2)},\n  "contracts": [\n${catalog.contracts.map(c => `    ${JSON.stringify(c)}`).join(',\n')}\n  ]\n}\n`;
 	for (const [name, contents] of [['contracts.json', output], ['contracts.md', renderTable(catalog, configuration.domains)]]) {
 		const target = resolve(root, directory, name);
