@@ -1,0 +1,1145 @@
+{
+	"inputs": {
+		"now": "2026-11-03T12:34:56.789Z",
+		"keyId": "https://probe.test/users/9zz0probe#main-key",
+		"cases": [
+			{
+				"id": "post-basic",
+				"method": "POST",
+				"url": "https://remote.example/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-query",
+				"method": "POST",
+				"url": "https://remote.example/users/alice/inbox?x=1&y=%20z",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-empty-query",
+				"method": "POST",
+				"url": "https://remote.example/inbox?",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-empty-query-fragment",
+				"method": "POST",
+				"url": "https://remote.example/inbox?#frag",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-fragment",
+				"method": "POST",
+				"url": "https://remote.example/inbox#frag",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-query-fragment",
+				"method": "POST",
+				"url": "https://remote.example/inbox?page=2#ignored",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-port",
+				"method": "POST",
+				"url": "https://remote.example:8443/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-default-port-https",
+				"method": "POST",
+				"url": "https://remote.example:443/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-default-port-http",
+				"method": "POST",
+				"url": "http://remote.example:80/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-non-default-port-http",
+				"method": "POST",
+				"url": "http://remote.example:8080/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-uppercase-host",
+				"method": "POST",
+				"url": "https://REMOTE.Example/Inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-idn",
+				"method": "POST",
+				"url": "https://ëxample.jp/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-idn-uppercase",
+				"method": "POST",
+				"url": "https://ËXAMPLE.jp/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-ipv6",
+				"method": "POST",
+				"url": "https://[::1]:8443/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-ipv4",
+				"method": "POST",
+				"url": "https://127.0.0.2/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-userinfo",
+				"method": "POST",
+				"url": "https://user:pass@remote.example/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-trailing-dot-host",
+				"method": "POST",
+				"url": "https://remote.example./inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-path-normalization",
+				"method": "POST",
+				"url": "https://remote.example/a/../users/./alice//inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-path-encoding",
+				"method": "POST",
+				"url": "https://remote.example/users/ä lice/%7e/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-backslash-path",
+				"method": "POST",
+				"url": "https://remote.example\\users\\alice\\inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-no-path",
+				"method": "POST",
+				"url": "https://remote.example",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-digest-given",
+				"method": "POST",
+				"url": "https://remote.example/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"digest": "SHA-256=given-and-not-checked",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-digest-empty-string",
+				"method": "POST",
+				"url": "https://remote.example/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"digest": "",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-empty-body",
+				"method": "POST",
+				"url": "https://remote.example/inbox",
+				"body": "",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-unicode-body",
+				"method": "POST",
+				"url": "https://remote.example/inbox",
+				"body": "{\"content\":\"こんにちは🍰\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-additional-user-agent",
+				"method": "POST",
+				"url": "https://remote.example/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {
+					"User-Agent": "UA"
+				}
+			},
+			{
+				"id": "post-additional-override-defaults",
+				"method": "POST",
+				"url": "https://remote.example/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {
+					"DATE": "Mon, 01 Jan 2024 00:00:00 GMT",
+					"host": "override.example",
+					"Content-Type": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"",
+					"digest": "SHA-256=override"
+				}
+			},
+			{
+				"id": "post-additional-signature",
+				"method": "POST",
+				"url": "https://remote.example/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {
+					"Signature": "bogus",
+					"X-Extra": "kept"
+				}
+			},
+			{
+				"id": "post-additional-same-name-different-case",
+				"method": "POST",
+				"url": "https://remote.example/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {
+					"X-Probe": "first",
+					"x-probe": "second",
+					"X-PROBE": "third"
+				}
+			},
+			{
+				"id": "post-additional-proto-and-non-string",
+				"method": "POST",
+				"url": "https://remote.example/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {
+					"__proto__": "skipped",
+					"X-Number": 1,
+					"X-Null": null,
+					"X-Bool": true,
+					"X-Object": {
+						"a": 1
+					},
+					"X-String": "kept",
+					"Date": 5
+				}
+			},
+			{
+				"id": "post-invalid-url",
+				"method": "POST",
+				"url": "not a url",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "post-relative-url",
+				"method": "POST",
+				"url": "/inbox",
+				"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\"}",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "get-basic",
+				"method": "GET",
+				"url": "https://remote.example/users/alice",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "get-query-fragment",
+				"method": "GET",
+				"url": "https://remote.example/users/alice?page=2#ignored",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "get-empty-query-fragment",
+				"method": "GET",
+				"url": "https://remote.example/outbox?#ignored",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "get-empty-query",
+				"method": "GET",
+				"url": "https://remote.example/outbox?",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "get-fragment",
+				"method": "GET",
+				"url": "https://remote.example/outbox#ignored",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "get-port",
+				"method": "GET",
+				"url": "https://remote.example:8443/users/alice",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "get-default-port",
+				"method": "GET",
+				"url": "https://remote.example:443/users/alice",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "get-idn",
+				"method": "GET",
+				"url": "https://ëxample.jp/users/alice",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "get-path-normalization",
+				"method": "GET",
+				"url": "https://remote.example/a/../users/./alice",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "get-path-encoding",
+				"method": "GET",
+				"url": "https://remote.example/@alice/ä?q=ä",
+				"additionalHeaders": {}
+			},
+			{
+				"id": "get-additional-accept",
+				"method": "GET",
+				"url": "https://remote.example/users/alice",
+				"additionalHeaders": {
+					"accept": "application/json"
+				}
+			},
+			{
+				"id": "get-additional-override-defaults",
+				"method": "GET",
+				"url": "https://remote.example/users/alice",
+				"additionalHeaders": {
+					"Date": "Mon, 01 Jan 2024 00:00:00 GMT",
+					"HOST": "override.example",
+					"User-Agent": "UA"
+				}
+			},
+			{
+				"id": "get-additional-proto-and-non-string",
+				"method": "GET",
+				"url": "https://remote.example/users/alice",
+				"additionalHeaders": {
+					"__proto__": "skipped",
+					"X-Number": 1,
+					"X-String": "kept"
+				}
+			},
+			{
+				"id": "get-invalid-url",
+				"method": "GET",
+				"url": "not a url",
+				"additionalHeaders": {}
+			}
+		]
+	},
+	"cases": [
+		{
+			"id": "post-basic",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+			}
+		},
+		{
+			"id": "post-query",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/users/alice/inbox?x=1&y=%20z",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"jMof/42lLEQxV3E5LwMXANjp0+K2aTS3p6TR04uRT1u0vNA2ZcC1LOtCMW0LNnsvwQsbWGJSWcYkwwa1J6GwFKANGBKmMOPtAQRCyDv58rWMeEAPlGFnqO5CPlbjjPeQHWc8cOYoThADEJLAtUGrf9hjQF46y7tfK03p4YcqjouqzEnqbZgPp3GRxt1/rgEsp3aaV36igUCOUoN4u6IvPREsL6Nux57nTCiAksYzu5SNh9ayci8nRB2Lre+gtxtfep3uWM+MOV3npOKz/UNxJZs9522QZJ0Rx84sbhJc590g9ZbVtYa3eQXL6E/OHBcbvgZwwenuq3Ggq9hgvMN4QQ==\""
+					}
+				},
+				"signingString": "(request-target): post /users/alice/inbox?x=1&y=%20z\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "jMof/42lLEQxV3E5LwMXANjp0+K2aTS3p6TR04uRT1u0vNA2ZcC1LOtCMW0LNnsvwQsbWGJSWcYkwwa1J6GwFKANGBKmMOPtAQRCyDv58rWMeEAPlGFnqO5CPlbjjPeQHWc8cOYoThADEJLAtUGrf9hjQF46y7tfK03p4YcqjouqzEnqbZgPp3GRxt1/rgEsp3aaV36igUCOUoN4u6IvPREsL6Nux57nTCiAksYzu5SNh9ayci8nRB2Lre+gtxtfep3uWM+MOV3npOKz/UNxJZs9522QZJ0Rx84sbhJc590g9ZbVtYa3eQXL6E/OHBcbvgZwwenuq3Ggq9hgvMN4QQ==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"jMof/42lLEQxV3E5LwMXANjp0+K2aTS3p6TR04uRT1u0vNA2ZcC1LOtCMW0LNnsvwQsbWGJSWcYkwwa1J6GwFKANGBKmMOPtAQRCyDv58rWMeEAPlGFnqO5CPlbjjPeQHWc8cOYoThADEJLAtUGrf9hjQF46y7tfK03p4YcqjouqzEnqbZgPp3GRxt1/rgEsp3aaV36igUCOUoN4u6IvPREsL6Nux57nTCiAksYzu5SNh9ayci8nRB2Lre+gtxtfep3uWM+MOV3npOKz/UNxJZs9522QZJ0Rx84sbhJc590g9ZbVtYa3eQXL6E/OHBcbvgZwwenuq3Ggq9hgvMN4QQ==\""
+			}
+		},
+		{
+			"id": "post-empty-query",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/inbox?",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"AemAEAZ64acsd6TiJM2/Tb1CE2on7tz0VXpS8KMFSD1YzyIlfurH/Hn23EvitTArcl15hChuugn84Tt/L0MbkYu67FegTTzSaPTr4+tJqnoYCoP54+cJ5NqoDLdSmBdZOpSNHppHNGyFFrw1uju6E9DfE4AxL/6t1Rly+34gXPg+ExRgyK9nzYsA2a8OtQeWf9+x867Zc2c/863SFvwh8ADK2RzxXdLmtvkVhok7ak2pM+PLqnr7LrX3C42kgojp5a29OP6NboiG1ZOhLFWseeceAM+lDckw+z6p6rJlbff9U32LQ0pWkfpdFuXYkX+l+7ZnVQlmmlRA+dmCBOt/lQ==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox?\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "AemAEAZ64acsd6TiJM2/Tb1CE2on7tz0VXpS8KMFSD1YzyIlfurH/Hn23EvitTArcl15hChuugn84Tt/L0MbkYu67FegTTzSaPTr4+tJqnoYCoP54+cJ5NqoDLdSmBdZOpSNHppHNGyFFrw1uju6E9DfE4AxL/6t1Rly+34gXPg+ExRgyK9nzYsA2a8OtQeWf9+x867Zc2c/863SFvwh8ADK2RzxXdLmtvkVhok7ak2pM+PLqnr7LrX3C42kgojp5a29OP6NboiG1ZOhLFWseeceAM+lDckw+z6p6rJlbff9U32LQ0pWkfpdFuXYkX+l+7ZnVQlmmlRA+dmCBOt/lQ==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"AemAEAZ64acsd6TiJM2/Tb1CE2on7tz0VXpS8KMFSD1YzyIlfurH/Hn23EvitTArcl15hChuugn84Tt/L0MbkYu67FegTTzSaPTr4+tJqnoYCoP54+cJ5NqoDLdSmBdZOpSNHppHNGyFFrw1uju6E9DfE4AxL/6t1Rly+34gXPg+ExRgyK9nzYsA2a8OtQeWf9+x867Zc2c/863SFvwh8ADK2RzxXdLmtvkVhok7ak2pM+PLqnr7LrX3C42kgojp5a29OP6NboiG1ZOhLFWseeceAM+lDckw+z6p6rJlbff9U32LQ0pWkfpdFuXYkX+l+7ZnVQlmmlRA+dmCBOt/lQ==\""
+			}
+		},
+		{
+			"id": "post-empty-query-fragment",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/inbox?#frag",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"AemAEAZ64acsd6TiJM2/Tb1CE2on7tz0VXpS8KMFSD1YzyIlfurH/Hn23EvitTArcl15hChuugn84Tt/L0MbkYu67FegTTzSaPTr4+tJqnoYCoP54+cJ5NqoDLdSmBdZOpSNHppHNGyFFrw1uju6E9DfE4AxL/6t1Rly+34gXPg+ExRgyK9nzYsA2a8OtQeWf9+x867Zc2c/863SFvwh8ADK2RzxXdLmtvkVhok7ak2pM+PLqnr7LrX3C42kgojp5a29OP6NboiG1ZOhLFWseeceAM+lDckw+z6p6rJlbff9U32LQ0pWkfpdFuXYkX+l+7ZnVQlmmlRA+dmCBOt/lQ==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox?\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "AemAEAZ64acsd6TiJM2/Tb1CE2on7tz0VXpS8KMFSD1YzyIlfurH/Hn23EvitTArcl15hChuugn84Tt/L0MbkYu67FegTTzSaPTr4+tJqnoYCoP54+cJ5NqoDLdSmBdZOpSNHppHNGyFFrw1uju6E9DfE4AxL/6t1Rly+34gXPg+ExRgyK9nzYsA2a8OtQeWf9+x867Zc2c/863SFvwh8ADK2RzxXdLmtvkVhok7ak2pM+PLqnr7LrX3C42kgojp5a29OP6NboiG1ZOhLFWseeceAM+lDckw+z6p6rJlbff9U32LQ0pWkfpdFuXYkX+l+7ZnVQlmmlRA+dmCBOt/lQ==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"AemAEAZ64acsd6TiJM2/Tb1CE2on7tz0VXpS8KMFSD1YzyIlfurH/Hn23EvitTArcl15hChuugn84Tt/L0MbkYu67FegTTzSaPTr4+tJqnoYCoP54+cJ5NqoDLdSmBdZOpSNHppHNGyFFrw1uju6E9DfE4AxL/6t1Rly+34gXPg+ExRgyK9nzYsA2a8OtQeWf9+x867Zc2c/863SFvwh8ADK2RzxXdLmtvkVhok7ak2pM+PLqnr7LrX3C42kgojp5a29OP6NboiG1ZOhLFWseeceAM+lDckw+z6p6rJlbff9U32LQ0pWkfpdFuXYkX+l+7ZnVQlmmlRA+dmCBOt/lQ==\""
+			}
+		},
+		{
+			"id": "post-fragment",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/inbox#frag",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+			}
+		},
+		{
+			"id": "post-query-fragment",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/inbox?page=2#ignored",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"sp5yxLmJzW/0jXIIBBu5U7iIY+M8Ab0YJYcZeQLmPhhBpbmvaR300FSOpkKZ7beB0vEoAyFsaDcClP220ignXdfE2ds0zAZbj3qyO8Ezh+n84PiX0EKQ+4NZOnGhVn5U3qdZw4GzVH5J8uYiUXUpQvc2O+Gsv0SPHBpMZyoUbdbJ6S8h7cMMPSWSadXNQx3KGCC/JZ1ZWXiVbyyiKsas2VabPml5gzfNoPCA0MS3DJzabh1KOT1xL2RFHSVvVDJYwOKxpaCxn6A9v7c9+38GWfxj8PVjrL+VAcff2MMHn9fwQwVX1nko2/aTF4Kb8YC/xlnOVjEQZbqZgg7wnqQq7A==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox?page=2\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "sp5yxLmJzW/0jXIIBBu5U7iIY+M8Ab0YJYcZeQLmPhhBpbmvaR300FSOpkKZ7beB0vEoAyFsaDcClP220ignXdfE2ds0zAZbj3qyO8Ezh+n84PiX0EKQ+4NZOnGhVn5U3qdZw4GzVH5J8uYiUXUpQvc2O+Gsv0SPHBpMZyoUbdbJ6S8h7cMMPSWSadXNQx3KGCC/JZ1ZWXiVbyyiKsas2VabPml5gzfNoPCA0MS3DJzabh1KOT1xL2RFHSVvVDJYwOKxpaCxn6A9v7c9+38GWfxj8PVjrL+VAcff2MMHn9fwQwVX1nko2/aTF4Kb8YC/xlnOVjEQZbqZgg7wnqQq7A==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"sp5yxLmJzW/0jXIIBBu5U7iIY+M8Ab0YJYcZeQLmPhhBpbmvaR300FSOpkKZ7beB0vEoAyFsaDcClP220ignXdfE2ds0zAZbj3qyO8Ezh+n84PiX0EKQ+4NZOnGhVn5U3qdZw4GzVH5J8uYiUXUpQvc2O+Gsv0SPHBpMZyoUbdbJ6S8h7cMMPSWSadXNQx3KGCC/JZ1ZWXiVbyyiKsas2VabPml5gzfNoPCA0MS3DJzabh1KOT1xL2RFHSVvVDJYwOKxpaCxn6A9v7c9+38GWfxj8PVjrL+VAcff2MMHn9fwQwVX1nko2/aTF4Kb8YC/xlnOVjEQZbqZgg7wnqQq7A==\""
+			}
+		},
+		{
+			"id": "post-port",
+			"expected": {
+				"request": {
+					"url": "https://remote.example:8443/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"e3Wz0CFdwAWEthjpnStfhCwt5S7f5tl9LwWUvMNmpmcADgSTzggQyBAo1l5bDCgJE0CKBDC9munPZ2C9n5c5Hi2tz5UdS0becYLV/BidMn0s2G2PLPclrxj9zmM/TSbdv8RZqoAJRBmZ0ySntEmL065/rC1+OnwqrVIw+R8motc5Zx8VKECjW5YsjQHhHsHYLTzqWVX7EJrsomwo+fCkk77Ghq9vXTtAG2kKa6NQFFDDDAady0zVHJ5cFpULQrlrC0riGFX7cC8cv5dXVDKTDW2TQU9EkeueOAHrvrPmoJBCaTRDE9HJT8x0D6UbodzXer8mq0ZkJjg52sjbZ9y5FA==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example:8443\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "e3Wz0CFdwAWEthjpnStfhCwt5S7f5tl9LwWUvMNmpmcADgSTzggQyBAo1l5bDCgJE0CKBDC9munPZ2C9n5c5Hi2tz5UdS0becYLV/BidMn0s2G2PLPclrxj9zmM/TSbdv8RZqoAJRBmZ0ySntEmL065/rC1+OnwqrVIw+R8motc5Zx8VKECjW5YsjQHhHsHYLTzqWVX7EJrsomwo+fCkk77Ghq9vXTtAG2kKa6NQFFDDDAady0zVHJ5cFpULQrlrC0riGFX7cC8cv5dXVDKTDW2TQU9EkeueOAHrvrPmoJBCaTRDE9HJT8x0D6UbodzXer8mq0ZkJjg52sjbZ9y5FA==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"e3Wz0CFdwAWEthjpnStfhCwt5S7f5tl9LwWUvMNmpmcADgSTzggQyBAo1l5bDCgJE0CKBDC9munPZ2C9n5c5Hi2tz5UdS0becYLV/BidMn0s2G2PLPclrxj9zmM/TSbdv8RZqoAJRBmZ0ySntEmL065/rC1+OnwqrVIw+R8motc5Zx8VKECjW5YsjQHhHsHYLTzqWVX7EJrsomwo+fCkk77Ghq9vXTtAG2kKa6NQFFDDDAady0zVHJ5cFpULQrlrC0riGFX7cC8cv5dXVDKTDW2TQU9EkeueOAHrvrPmoJBCaTRDE9HJT8x0D6UbodzXer8mq0ZkJjg52sjbZ9y5FA==\""
+			}
+		},
+		{
+			"id": "post-default-port-https",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+			}
+		},
+		{
+			"id": "post-default-port-http",
+			"expected": {
+				"request": {
+					"url": "http://remote.example/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+			}
+		},
+		{
+			"id": "post-non-default-port-http",
+			"expected": {
+				"request": {
+					"url": "http://remote.example:8080/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"Bo5Vw5G3wQuxeFH5NPygdKn/j09v4Kn8PK3X1RG2ctPP03TXm4nHoBuHvNDI/9MhEd2ziYDeojROK5f6nrQprylsAVpQUwojOBdAt3xdq/CnXf1EQGENjteO3f9ydQXVpWsRc/o8Xv7VzRA1qstoFaOpaR4aTIDzFm2EgutSbEG9UVhQ0irAlLA2aolpcLoc9k2xHnBLq7T1Iqfm594JimXIZXboy0tOwQdWkSP6OUIvalNUh7QzsCxeuxqhEQNI/h+/v0Twlhu4nGKsAKmp5ZaQCb2f+l3SWTDCAHM/gxv5cR9poZ/flv8AtdBOKZqnD7+2LVz2N0BoLQdOIuQCpA==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example:8080\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "Bo5Vw5G3wQuxeFH5NPygdKn/j09v4Kn8PK3X1RG2ctPP03TXm4nHoBuHvNDI/9MhEd2ziYDeojROK5f6nrQprylsAVpQUwojOBdAt3xdq/CnXf1EQGENjteO3f9ydQXVpWsRc/o8Xv7VzRA1qstoFaOpaR4aTIDzFm2EgutSbEG9UVhQ0irAlLA2aolpcLoc9k2xHnBLq7T1Iqfm594JimXIZXboy0tOwQdWkSP6OUIvalNUh7QzsCxeuxqhEQNI/h+/v0Twlhu4nGKsAKmp5ZaQCb2f+l3SWTDCAHM/gxv5cR9poZ/flv8AtdBOKZqnD7+2LVz2N0BoLQdOIuQCpA==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"Bo5Vw5G3wQuxeFH5NPygdKn/j09v4Kn8PK3X1RG2ctPP03TXm4nHoBuHvNDI/9MhEd2ziYDeojROK5f6nrQprylsAVpQUwojOBdAt3xdq/CnXf1EQGENjteO3f9ydQXVpWsRc/o8Xv7VzRA1qstoFaOpaR4aTIDzFm2EgutSbEG9UVhQ0irAlLA2aolpcLoc9k2xHnBLq7T1Iqfm594JimXIZXboy0tOwQdWkSP6OUIvalNUh7QzsCxeuxqhEQNI/h+/v0Twlhu4nGKsAKmp5ZaQCb2f+l3SWTDCAHM/gxv5cR9poZ/flv8AtdBOKZqnD7+2LVz2N0BoLQdOIuQCpA==\""
+			}
+		},
+		{
+			"id": "post-uppercase-host",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/Inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"Cj3Y35suUME7RacaH0XqB5ZUeFwxyyf+kUzZ9+6ESRvAuTcIXNPV4jA53FMNfkWQtBFue09YA2nLxYC1nM6Fuc8vyY/qluc2ScFPalVs488omjQpBfecXE9M9XjwxURUqqWReFo3jPY7vcZhEH1v7IFt+uWkzyhhexSKwPKpbSbI5btqZS6xWtVSgQI7XUBuV0k2xDBEQkN/s5KGEGG6ug5dAGgOfbYQUC7tGjXn6eyyRjdvNtLBoC0LwYyzu/pPnhVxu7LynoILYW2yMzMyRrnt/q9BomhikkMRbtClMN4MOg5LXKK21mhRkTQJxVwGJrIBtu8YhovuHSADaRmmsw==\""
+					}
+				},
+				"signingString": "(request-target): post /Inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "Cj3Y35suUME7RacaH0XqB5ZUeFwxyyf+kUzZ9+6ESRvAuTcIXNPV4jA53FMNfkWQtBFue09YA2nLxYC1nM6Fuc8vyY/qluc2ScFPalVs488omjQpBfecXE9M9XjwxURUqqWReFo3jPY7vcZhEH1v7IFt+uWkzyhhexSKwPKpbSbI5btqZS6xWtVSgQI7XUBuV0k2xDBEQkN/s5KGEGG6ug5dAGgOfbYQUC7tGjXn6eyyRjdvNtLBoC0LwYyzu/pPnhVxu7LynoILYW2yMzMyRrnt/q9BomhikkMRbtClMN4MOg5LXKK21mhRkTQJxVwGJrIBtu8YhovuHSADaRmmsw==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"Cj3Y35suUME7RacaH0XqB5ZUeFwxyyf+kUzZ9+6ESRvAuTcIXNPV4jA53FMNfkWQtBFue09YA2nLxYC1nM6Fuc8vyY/qluc2ScFPalVs488omjQpBfecXE9M9XjwxURUqqWReFo3jPY7vcZhEH1v7IFt+uWkzyhhexSKwPKpbSbI5btqZS6xWtVSgQI7XUBuV0k2xDBEQkN/s5KGEGG6ug5dAGgOfbYQUC7tGjXn6eyyRjdvNtLBoC0LwYyzu/pPnhVxu7LynoILYW2yMzMyRrnt/q9BomhikkMRbtClMN4MOg5LXKK21mhRkTQJxVwGJrIBtu8YhovuHSADaRmmsw==\""
+			}
+		},
+		{
+			"id": "post-idn",
+			"expected": {
+				"request": {
+					"url": "https://xn--xample-ova.jp/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"JMTSJbrVAWyCx2RRpPjT4APF9QW6Zv/VjUXBo/D+URa9n2wUB1ws23U8vfKFVzWxDCw32Ny9TMkFjWrNVdM0XZAmP77KDR5S9n3pmqQD3jhWR/f2o7tUoKmDWadBOH7RYguT+H1mKYNUbmi4jS/vpAhKUPe1a0EVf30B/KqbQ43JVKuhW7GaRJz9/NDCBIGCnKx/aOSqxc5teVHiwzrBDoi9GFGTqTufyC5LHn4jFctqgq2B+qwY08u+w2TR3TZAAb91KDgtQfQqTqQUdEsCFAyBo4YRCfX+aV9p2uPc/XeRhKHWvxSn4MblFCl2ozJnxls8RZFcgSV0dcUdYPiIGw==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: xn--xample-ova.jp\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "JMTSJbrVAWyCx2RRpPjT4APF9QW6Zv/VjUXBo/D+URa9n2wUB1ws23U8vfKFVzWxDCw32Ny9TMkFjWrNVdM0XZAmP77KDR5S9n3pmqQD3jhWR/f2o7tUoKmDWadBOH7RYguT+H1mKYNUbmi4jS/vpAhKUPe1a0EVf30B/KqbQ43JVKuhW7GaRJz9/NDCBIGCnKx/aOSqxc5teVHiwzrBDoi9GFGTqTufyC5LHn4jFctqgq2B+qwY08u+w2TR3TZAAb91KDgtQfQqTqQUdEsCFAyBo4YRCfX+aV9p2uPc/XeRhKHWvxSn4MblFCl2ozJnxls8RZFcgSV0dcUdYPiIGw==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"JMTSJbrVAWyCx2RRpPjT4APF9QW6Zv/VjUXBo/D+URa9n2wUB1ws23U8vfKFVzWxDCw32Ny9TMkFjWrNVdM0XZAmP77KDR5S9n3pmqQD3jhWR/f2o7tUoKmDWadBOH7RYguT+H1mKYNUbmi4jS/vpAhKUPe1a0EVf30B/KqbQ43JVKuhW7GaRJz9/NDCBIGCnKx/aOSqxc5teVHiwzrBDoi9GFGTqTufyC5LHn4jFctqgq2B+qwY08u+w2TR3TZAAb91KDgtQfQqTqQUdEsCFAyBo4YRCfX+aV9p2uPc/XeRhKHWvxSn4MblFCl2ozJnxls8RZFcgSV0dcUdYPiIGw==\""
+			}
+		},
+		{
+			"id": "post-idn-uppercase",
+			"expected": {
+				"request": {
+					"url": "https://xn--xample-ova.jp/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"JMTSJbrVAWyCx2RRpPjT4APF9QW6Zv/VjUXBo/D+URa9n2wUB1ws23U8vfKFVzWxDCw32Ny9TMkFjWrNVdM0XZAmP77KDR5S9n3pmqQD3jhWR/f2o7tUoKmDWadBOH7RYguT+H1mKYNUbmi4jS/vpAhKUPe1a0EVf30B/KqbQ43JVKuhW7GaRJz9/NDCBIGCnKx/aOSqxc5teVHiwzrBDoi9GFGTqTufyC5LHn4jFctqgq2B+qwY08u+w2TR3TZAAb91KDgtQfQqTqQUdEsCFAyBo4YRCfX+aV9p2uPc/XeRhKHWvxSn4MblFCl2ozJnxls8RZFcgSV0dcUdYPiIGw==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: xn--xample-ova.jp\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "JMTSJbrVAWyCx2RRpPjT4APF9QW6Zv/VjUXBo/D+URa9n2wUB1ws23U8vfKFVzWxDCw32Ny9TMkFjWrNVdM0XZAmP77KDR5S9n3pmqQD3jhWR/f2o7tUoKmDWadBOH7RYguT+H1mKYNUbmi4jS/vpAhKUPe1a0EVf30B/KqbQ43JVKuhW7GaRJz9/NDCBIGCnKx/aOSqxc5teVHiwzrBDoi9GFGTqTufyC5LHn4jFctqgq2B+qwY08u+w2TR3TZAAb91KDgtQfQqTqQUdEsCFAyBo4YRCfX+aV9p2uPc/XeRhKHWvxSn4MblFCl2ozJnxls8RZFcgSV0dcUdYPiIGw==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"JMTSJbrVAWyCx2RRpPjT4APF9QW6Zv/VjUXBo/D+URa9n2wUB1ws23U8vfKFVzWxDCw32Ny9TMkFjWrNVdM0XZAmP77KDR5S9n3pmqQD3jhWR/f2o7tUoKmDWadBOH7RYguT+H1mKYNUbmi4jS/vpAhKUPe1a0EVf30B/KqbQ43JVKuhW7GaRJz9/NDCBIGCnKx/aOSqxc5teVHiwzrBDoi9GFGTqTufyC5LHn4jFctqgq2B+qwY08u+w2TR3TZAAb91KDgtQfQqTqQUdEsCFAyBo4YRCfX+aV9p2uPc/XeRhKHWvxSn4MblFCl2ozJnxls8RZFcgSV0dcUdYPiIGw==\""
+			}
+		},
+		{
+			"id": "post-ipv6",
+			"expected": {
+				"request": {
+					"url": "https://[::1]:8443/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"OwdfgHinivduoXAwX/1gv8qUmBg1sPoMHP48M6tNiZbI81RYq1a7PkgDDqjLbL7KAOryEIE9HUfCcxvhsuRcng9qTF3Olpkn0p62M2AzS3ueDyVYAyW9nvY/xQp8MIXh4UVD5aNsXaUshHCqIAWUaaoPaUJRqShw3oMw0q+DojmB9zwgbecWwV0wrXdckWHXg9QpjrrsSR7jCK+GOIWaNI35nSQEkrsp6MrptI1Az7V75yL7ZbVkMzA9xdrdvNTm1oenlUzuKvSx6YmIfKvpxBvMmmhy1gz9uunKk9C/6gYUI92u03kkpgFaRu00YIzBcscII/3UMKj7B1gCSFFe7w==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: [::1]:8443\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "OwdfgHinivduoXAwX/1gv8qUmBg1sPoMHP48M6tNiZbI81RYq1a7PkgDDqjLbL7KAOryEIE9HUfCcxvhsuRcng9qTF3Olpkn0p62M2AzS3ueDyVYAyW9nvY/xQp8MIXh4UVD5aNsXaUshHCqIAWUaaoPaUJRqShw3oMw0q+DojmB9zwgbecWwV0wrXdckWHXg9QpjrrsSR7jCK+GOIWaNI35nSQEkrsp6MrptI1Az7V75yL7ZbVkMzA9xdrdvNTm1oenlUzuKvSx6YmIfKvpxBvMmmhy1gz9uunKk9C/6gYUI92u03kkpgFaRu00YIzBcscII/3UMKj7B1gCSFFe7w==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"OwdfgHinivduoXAwX/1gv8qUmBg1sPoMHP48M6tNiZbI81RYq1a7PkgDDqjLbL7KAOryEIE9HUfCcxvhsuRcng9qTF3Olpkn0p62M2AzS3ueDyVYAyW9nvY/xQp8MIXh4UVD5aNsXaUshHCqIAWUaaoPaUJRqShw3oMw0q+DojmB9zwgbecWwV0wrXdckWHXg9QpjrrsSR7jCK+GOIWaNI35nSQEkrsp6MrptI1Az7V75yL7ZbVkMzA9xdrdvNTm1oenlUzuKvSx6YmIfKvpxBvMmmhy1gz9uunKk9C/6gYUI92u03kkpgFaRu00YIzBcscII/3UMKj7B1gCSFFe7w==\""
+			}
+		},
+		{
+			"id": "post-ipv4",
+			"expected": {
+				"request": {
+					"url": "https://127.0.0.2/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"pFVMhQRdBuXCUkr9yd1DgmLRsWnQ8mk0GEQs3cn6FJP/j4Yvme0Itvkx/OrVw5SDnUZq05GUk/ovXeQl9wU+ZoiHRo1xYmioyvNAdrerafzNSgrq3HzYh34Ma7VhkmxjNDAAVZvvsvZ/VbXoNpX3k+81AWb5KX5As3vHVZlwN4SCBicZoaAsKQOp6yLWCqFgVVMs1Vc+sQAePw+PGi69rqNdPY15ys34kK4VN9ikiMl+NVWhV/qEG7tLu6/tVBx99D3ayRk+Qo47bB8GCBUXlKr9zuLxDrzqypT9XKBywCZ6Q6c/w5fu/CAvzguCug85+q95St7ht9vrHe/5rIM03w==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: 127.0.0.2\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "pFVMhQRdBuXCUkr9yd1DgmLRsWnQ8mk0GEQs3cn6FJP/j4Yvme0Itvkx/OrVw5SDnUZq05GUk/ovXeQl9wU+ZoiHRo1xYmioyvNAdrerafzNSgrq3HzYh34Ma7VhkmxjNDAAVZvvsvZ/VbXoNpX3k+81AWb5KX5As3vHVZlwN4SCBicZoaAsKQOp6yLWCqFgVVMs1Vc+sQAePw+PGi69rqNdPY15ys34kK4VN9ikiMl+NVWhV/qEG7tLu6/tVBx99D3ayRk+Qo47bB8GCBUXlKr9zuLxDrzqypT9XKBywCZ6Q6c/w5fu/CAvzguCug85+q95St7ht9vrHe/5rIM03w==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"pFVMhQRdBuXCUkr9yd1DgmLRsWnQ8mk0GEQs3cn6FJP/j4Yvme0Itvkx/OrVw5SDnUZq05GUk/ovXeQl9wU+ZoiHRo1xYmioyvNAdrerafzNSgrq3HzYh34Ma7VhkmxjNDAAVZvvsvZ/VbXoNpX3k+81AWb5KX5As3vHVZlwN4SCBicZoaAsKQOp6yLWCqFgVVMs1Vc+sQAePw+PGi69rqNdPY15ys34kK4VN9ikiMl+NVWhV/qEG7tLu6/tVBx99D3ayRk+Qo47bB8GCBUXlKr9zuLxDrzqypT9XKBywCZ6Q6c/w5fu/CAvzguCug85+q95St7ht9vrHe/5rIM03w==\""
+			}
+		},
+		{
+			"id": "post-userinfo",
+			"expected": {
+				"request": {
+					"url": "https://user:pass@remote.example/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+			}
+		},
+		{
+			"id": "post-trailing-dot-host",
+			"expected": {
+				"request": {
+					"url": "https://remote.example./inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"Msr70yAecF27i6gegIPU4BcGDhNwVkXgZOG/l35RxuifnKmbzqGtQhJRPbwaKDQwQf3Rvcrl0y9x2XvkUiFvq2wDG0f0uxdnqaOankc6YEAVxopA3NEdCWBcDVxa3Iqptyf09TTF4Q4AJcWfTeCYYB8HmlaN8KfzVoUbb9XGPgmv3Fc4lIdQ0A7OJ8a8X/rFl4cnIrGADxuxs6ix7PcWbkVPXdhVqOIE8RpzGVaMmb931+LvLzrMh3jMdPgPBQieZrKNZUasXxVEBUIBdyEwIOz9YbJhfeyRdl4m2TeC31zFLY2MW9xI5bchJuuBejiSAF/9cXio6ClysU2FgU2cDg==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example.\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "Msr70yAecF27i6gegIPU4BcGDhNwVkXgZOG/l35RxuifnKmbzqGtQhJRPbwaKDQwQf3Rvcrl0y9x2XvkUiFvq2wDG0f0uxdnqaOankc6YEAVxopA3NEdCWBcDVxa3Iqptyf09TTF4Q4AJcWfTeCYYB8HmlaN8KfzVoUbb9XGPgmv3Fc4lIdQ0A7OJ8a8X/rFl4cnIrGADxuxs6ix7PcWbkVPXdhVqOIE8RpzGVaMmb931+LvLzrMh3jMdPgPBQieZrKNZUasXxVEBUIBdyEwIOz9YbJhfeyRdl4m2TeC31zFLY2MW9xI5bchJuuBejiSAF/9cXio6ClysU2FgU2cDg==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"Msr70yAecF27i6gegIPU4BcGDhNwVkXgZOG/l35RxuifnKmbzqGtQhJRPbwaKDQwQf3Rvcrl0y9x2XvkUiFvq2wDG0f0uxdnqaOankc6YEAVxopA3NEdCWBcDVxa3Iqptyf09TTF4Q4AJcWfTeCYYB8HmlaN8KfzVoUbb9XGPgmv3Fc4lIdQ0A7OJ8a8X/rFl4cnIrGADxuxs6ix7PcWbkVPXdhVqOIE8RpzGVaMmb931+LvLzrMh3jMdPgPBQieZrKNZUasXxVEBUIBdyEwIOz9YbJhfeyRdl4m2TeC31zFLY2MW9xI5bchJuuBejiSAF/9cXio6ClysU2FgU2cDg==\""
+			}
+		},
+		{
+			"id": "post-path-normalization",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/users/alice//inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"L7rKzMgdtikAa8v1rutUP3dl+3DmtiQ179aHaTFc4BKGSsZm6kgPoaWM37xOKdGc23sTJHqzH+ljO1TxA42k5VETXwBlJNG0IIMS7/07CIlfc8P4dnzkhWZ/6cZhw1LR9ARgusVUe7pv2FvBWSb7uANDHEkb7j8VR+v4Dk3xceazHpV/5JW3ZoapYHNdMKsnb6GVir69R8eq7M1DiV1ckkzEH55Qolucl5JMM3JnFx9xrwjiKhUE95CqPfdpyKeeu9jKvPbiW7wiYk79+gkVc/tAIQgM+YW4+/3VJlOw2SyiQZINVFGmnns4CKqbNSR7Pceqzbl5DBeRwqWN2EqZtg==\""
+					}
+				},
+				"signingString": "(request-target): post /users/alice//inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "L7rKzMgdtikAa8v1rutUP3dl+3DmtiQ179aHaTFc4BKGSsZm6kgPoaWM37xOKdGc23sTJHqzH+ljO1TxA42k5VETXwBlJNG0IIMS7/07CIlfc8P4dnzkhWZ/6cZhw1LR9ARgusVUe7pv2FvBWSb7uANDHEkb7j8VR+v4Dk3xceazHpV/5JW3ZoapYHNdMKsnb6GVir69R8eq7M1DiV1ckkzEH55Qolucl5JMM3JnFx9xrwjiKhUE95CqPfdpyKeeu9jKvPbiW7wiYk79+gkVc/tAIQgM+YW4+/3VJlOw2SyiQZINVFGmnns4CKqbNSR7Pceqzbl5DBeRwqWN2EqZtg==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"L7rKzMgdtikAa8v1rutUP3dl+3DmtiQ179aHaTFc4BKGSsZm6kgPoaWM37xOKdGc23sTJHqzH+ljO1TxA42k5VETXwBlJNG0IIMS7/07CIlfc8P4dnzkhWZ/6cZhw1LR9ARgusVUe7pv2FvBWSb7uANDHEkb7j8VR+v4Dk3xceazHpV/5JW3ZoapYHNdMKsnb6GVir69R8eq7M1DiV1ckkzEH55Qolucl5JMM3JnFx9xrwjiKhUE95CqPfdpyKeeu9jKvPbiW7wiYk79+gkVc/tAIQgM+YW4+/3VJlOw2SyiQZINVFGmnns4CKqbNSR7Pceqzbl5DBeRwqWN2EqZtg==\""
+			}
+		},
+		{
+			"id": "post-path-encoding",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/users/%C3%A4%20lice/%7e/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"ezpF6mqhC63fSwm1X83LayW4iuQ6wb1itGOw+pVkbn+HYvpimshNmLMVftoIMx3iz0mx5Nscyf1YNVlgv9essCNXm1pa8w3piz6ZxCuBWArpokGUr598Gh5PwAlBGzDg6SNNIN9MVreTTII/pfPbTHO2c6rtytQ8nR+Nlc+KL9l7kjwHPN6OLdeXhRrtnreXRBXgo52mpDYVvIoFNR3GwhuDTCQyzLgYbXdoLZcAwkRk3HekzwmDgpzRyjES0pPbf99Ntxyeyoilqps54EQE53vvufzXDv/IpsU/2naJ+jO3bCgGDWRVYKe8zh/oMgl4qe5cJaD2URa9JF0wxoXSaA==\""
+					}
+				},
+				"signingString": "(request-target): post /users/%C3%A4%20lice/%7e/inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "ezpF6mqhC63fSwm1X83LayW4iuQ6wb1itGOw+pVkbn+HYvpimshNmLMVftoIMx3iz0mx5Nscyf1YNVlgv9essCNXm1pa8w3piz6ZxCuBWArpokGUr598Gh5PwAlBGzDg6SNNIN9MVreTTII/pfPbTHO2c6rtytQ8nR+Nlc+KL9l7kjwHPN6OLdeXhRrtnreXRBXgo52mpDYVvIoFNR3GwhuDTCQyzLgYbXdoLZcAwkRk3HekzwmDgpzRyjES0pPbf99Ntxyeyoilqps54EQE53vvufzXDv/IpsU/2naJ+jO3bCgGDWRVYKe8zh/oMgl4qe5cJaD2URa9JF0wxoXSaA==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"ezpF6mqhC63fSwm1X83LayW4iuQ6wb1itGOw+pVkbn+HYvpimshNmLMVftoIMx3iz0mx5Nscyf1YNVlgv9essCNXm1pa8w3piz6ZxCuBWArpokGUr598Gh5PwAlBGzDg6SNNIN9MVreTTII/pfPbTHO2c6rtytQ8nR+Nlc+KL9l7kjwHPN6OLdeXhRrtnreXRBXgo52mpDYVvIoFNR3GwhuDTCQyzLgYbXdoLZcAwkRk3HekzwmDgpzRyjES0pPbf99Ntxyeyoilqps54EQE53vvufzXDv/IpsU/2naJ+jO3bCgGDWRVYKe8zh/oMgl4qe5cJaD2URa9JF0wxoXSaA==\""
+			}
+		},
+		{
+			"id": "post-backslash-path",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/users/alice/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"g8brvoriGHpIKs910OaSQRuUrRQwsWkJk61z3BzVyv9whfNMNheVuN1MsjjcZ7qHk+/t7PMfaYNANOOG+e5ShNUBTKsKNpMwV5i1wECfZaaQ82Dn4F2UzPn4uea6LTDCkd4uAaYnBMoKLjyYPRCxsT7b3tISoBBAsdhOZQQeKP6fguNnzPNRDtY6iHgGciFGmDOpU/gx+/AIY1SKZ7ZHWuP2v0IllhAoTWNgRTfPfarZAuK5nLaH+hk2s9hmoKhLcvhzbyVf7/2DIkLjdOgXx/pRYQxiIJQ3gUZTVlM7B+qVPgnyMJ6CE2mcgDPV2QC/UhToydaDZ2rCTXON5wN8bg==\""
+					}
+				},
+				"signingString": "(request-target): post /users/alice/inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "g8brvoriGHpIKs910OaSQRuUrRQwsWkJk61z3BzVyv9whfNMNheVuN1MsjjcZ7qHk+/t7PMfaYNANOOG+e5ShNUBTKsKNpMwV5i1wECfZaaQ82Dn4F2UzPn4uea6LTDCkd4uAaYnBMoKLjyYPRCxsT7b3tISoBBAsdhOZQQeKP6fguNnzPNRDtY6iHgGciFGmDOpU/gx+/AIY1SKZ7ZHWuP2v0IllhAoTWNgRTfPfarZAuK5nLaH+hk2s9hmoKhLcvhzbyVf7/2DIkLjdOgXx/pRYQxiIJQ3gUZTVlM7B+qVPgnyMJ6CE2mcgDPV2QC/UhToydaDZ2rCTXON5wN8bg==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"g8brvoriGHpIKs910OaSQRuUrRQwsWkJk61z3BzVyv9whfNMNheVuN1MsjjcZ7qHk+/t7PMfaYNANOOG+e5ShNUBTKsKNpMwV5i1wECfZaaQ82Dn4F2UzPn4uea6LTDCkd4uAaYnBMoKLjyYPRCxsT7b3tISoBBAsdhOZQQeKP6fguNnzPNRDtY6iHgGciFGmDOpU/gx+/AIY1SKZ7ZHWuP2v0IllhAoTWNgRTfPfarZAuK5nLaH+hk2s9hmoKhLcvhzbyVf7/2DIkLjdOgXx/pRYQxiIJQ3gUZTVlM7B+qVPgnyMJ6CE2mcgDPV2QC/UhToydaDZ2rCTXON5wN8bg==\""
+			}
+		},
+		{
+			"id": "post-no-path",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"CC4fj5OCNOvFqHRupKpdJXujvvb6aYVKmAt7BmZOKki//+CyeSNkf5VhT/x44/O6kj30fiUpy2r4+pkZCrmC+D4cU/ZS46xt1OsIUu8+ukgkw0StyLm/Y6RYtW/0RDOsxAkwy+XYePiVumo/ECBM/n+uKNuDUvrX2t/ZvQvLBN4MICq7h0kl0cLIWYcT6tW6axQcThtrv6mxAgWtzFwhn7EBIDdOixi6rSOZnAZj9n+NPNnAXtEkGvnY5tejgYce63HbVcmSBqk8TZgoYpAPv1wi5E5owJMPm9KB3CIzYth6LQo1rOPzbXtIoQzyx3po5aV1TuUjH6gl771ENF/Z/A==\""
+					}
+				},
+				"signingString": "(request-target): post /\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "CC4fj5OCNOvFqHRupKpdJXujvvb6aYVKmAt7BmZOKki//+CyeSNkf5VhT/x44/O6kj30fiUpy2r4+pkZCrmC+D4cU/ZS46xt1OsIUu8+ukgkw0StyLm/Y6RYtW/0RDOsxAkwy+XYePiVumo/ECBM/n+uKNuDUvrX2t/ZvQvLBN4MICq7h0kl0cLIWYcT6tW6axQcThtrv6mxAgWtzFwhn7EBIDdOixi6rSOZnAZj9n+NPNnAXtEkGvnY5tejgYce63HbVcmSBqk8TZgoYpAPv1wi5E5owJMPm9KB3CIzYth6LQo1rOPzbXtIoQzyx3po5aV1TuUjH6gl771ENF/Z/A==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"CC4fj5OCNOvFqHRupKpdJXujvvb6aYVKmAt7BmZOKki//+CyeSNkf5VhT/x44/O6kj30fiUpy2r4+pkZCrmC+D4cU/ZS46xt1OsIUu8+ukgkw0StyLm/Y6RYtW/0RDOsxAkwy+XYePiVumo/ECBM/n+uKNuDUvrX2t/ZvQvLBN4MICq7h0kl0cLIWYcT6tW6axQcThtrv6mxAgWtzFwhn7EBIDdOixi6rSOZnAZj9n+NPNnAXtEkGvnY5tejgYce63HbVcmSBqk8TZgoYpAPv1wi5E5owJMPm9KB3CIzYth6LQo1rOPzbXtIoQzyx3po5aV1TuUjH6gl771ENF/Z/A==\""
+			}
+		},
+		{
+			"id": "post-digest-given",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=given-and-not-checked",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"n3oJC/rIXNiGT1zu44LtjmhNt7GBft4CWxL8QwBM6xq8rKFPoZ04ZTPFvXnQJUo5EnMBtxNb1AniJxtgRV4PBF96nHq72GmlCLx6AaMA+8TVP6FQB65CbLeMMqJVyC++ZAu8Pf1SS2Uchp1z/x4Y9VHjT1Fg/8e6BmhmR7yQ6+AQhcLSZulyW4631IgydGET/SLeQ+OGqUECijdwHeLZ8uF4neW9511fulGvvtIKPHrqiFWxbqmoOK0U2fbhueVicKfKgeV9YsH+jVSQLwxOYzsIH9NDdh0ctOOX8ZEIys2QH0XeJbNH3Nwm/kOsdOO0tNJLbM/G0K5+EzTbklRkgw==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=given-and-not-checked",
+				"signature": "n3oJC/rIXNiGT1zu44LtjmhNt7GBft4CWxL8QwBM6xq8rKFPoZ04ZTPFvXnQJUo5EnMBtxNb1AniJxtgRV4PBF96nHq72GmlCLx6AaMA+8TVP6FQB65CbLeMMqJVyC++ZAu8Pf1SS2Uchp1z/x4Y9VHjT1Fg/8e6BmhmR7yQ6+AQhcLSZulyW4631IgydGET/SLeQ+OGqUECijdwHeLZ8uF4neW9511fulGvvtIKPHrqiFWxbqmoOK0U2fbhueVicKfKgeV9YsH+jVSQLwxOYzsIH9NDdh0ctOOX8ZEIys2QH0XeJbNH3Nwm/kOsdOO0tNJLbM/G0K5+EzTbklRkgw==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"n3oJC/rIXNiGT1zu44LtjmhNt7GBft4CWxL8QwBM6xq8rKFPoZ04ZTPFvXnQJUo5EnMBtxNb1AniJxtgRV4PBF96nHq72GmlCLx6AaMA+8TVP6FQB65CbLeMMqJVyC++ZAu8Pf1SS2Uchp1z/x4Y9VHjT1Fg/8e6BmhmR7yQ6+AQhcLSZulyW4631IgydGET/SLeQ+OGqUECijdwHeLZ8uF4neW9511fulGvvtIKPHrqiFWxbqmoOK0U2fbhueVicKfKgeV9YsH+jVSQLwxOYzsIH9NDdh0ctOOX8ZEIys2QH0XeJbNH3Nwm/kOsdOO0tNJLbM/G0K5+EzTbklRkgw==\""
+			}
+		},
+		{
+			"id": "post-digest-empty-string",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"CzBIaHhfFQwWOcijZO+O8zqAJz6qrX3slR9FU74vRkn9V0G/U7UuEllomptn8fSPAbgZhwqiOS332vE8wHiMpjcpQ6dNIwgJM54SO1biO222wAdr2GjG1/77F8wjQy8d0jwEVZFj6nW6UGszF7EnXsdg9oRpUxoYXACPDwO5iv0j881OMQyTl6tpak3mnl6XMxP5MoEX6TuPKBFdpSRfsZWsIui+4GiawRNDnA9AVYSXaSYq0cQfgBa0rAlA7XMbnf4F2rbh+0Cr7NWJH6gsmrVSZQNdtW6zPbE4ZiV/7Rj0j0cDkuhcEsKA/AK4RGq4CHQ+1Q6PJFfOf37VfVZFGQ==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: ",
+				"signature": "CzBIaHhfFQwWOcijZO+O8zqAJz6qrX3slR9FU74vRkn9V0G/U7UuEllomptn8fSPAbgZhwqiOS332vE8wHiMpjcpQ6dNIwgJM54SO1biO222wAdr2GjG1/77F8wjQy8d0jwEVZFj6nW6UGszF7EnXsdg9oRpUxoYXACPDwO5iv0j881OMQyTl6tpak3mnl6XMxP5MoEX6TuPKBFdpSRfsZWsIui+4GiawRNDnA9AVYSXaSYq0cQfgBa0rAlA7XMbnf4F2rbh+0Cr7NWJH6gsmrVSZQNdtW6zPbE4ZiV/7Rj0j0cDkuhcEsKA/AK4RGq4CHQ+1Q6PJFfOf37VfVZFGQ==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"CzBIaHhfFQwWOcijZO+O8zqAJz6qrX3slR9FU74vRkn9V0G/U7UuEllomptn8fSPAbgZhwqiOS332vE8wHiMpjcpQ6dNIwgJM54SO1biO222wAdr2GjG1/77F8wjQy8d0jwEVZFj6nW6UGszF7EnXsdg9oRpUxoYXACPDwO5iv0j881OMQyTl6tpak3mnl6XMxP5MoEX6TuPKBFdpSRfsZWsIui+4GiawRNDnA9AVYSXaSYq0cQfgBa0rAlA7XMbnf4F2rbh+0Cr7NWJH6gsmrVSZQNdtW6zPbE4ZiV/7Rj0j0cDkuhcEsKA/AK4RGq4CHQ+1Q6PJFfOf37VfVZFGQ==\""
+			}
+		},
+		{
+			"id": "post-empty-body",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"ud7hljZd3WWM8RpKhmr9EmxRaK4SWBlqo0KeTwC7wpbTV7cLRml5SLxj7hps6WdrYwwfqXiSnwOEZ0JaThfx0HkTTk9KV45MEEEvsk/NZ0CbSPtLz6xecO2ausi68WncoC0wGhvt7ptM2HRSO8mSPbf+x+Lwi+iKllKYrICjMI0uqelRdHoQUV46WiMcRylHQaWQB366pgJpOhPfVxsbbGwEH8y9lh5IjOvEZYJCBfTdT5LcStU2ytUrl2Ov1c12XsPbKDaTjoh6im268zpttU1Vfm6yoG9YHD4BfU1g7W94OBasBdclqz2x6nOZxzKZSmH+3M3uDwllLjK0DRBaKg==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+				"signature": "ud7hljZd3WWM8RpKhmr9EmxRaK4SWBlqo0KeTwC7wpbTV7cLRml5SLxj7hps6WdrYwwfqXiSnwOEZ0JaThfx0HkTTk9KV45MEEEvsk/NZ0CbSPtLz6xecO2ausi68WncoC0wGhvt7ptM2HRSO8mSPbf+x+Lwi+iKllKYrICjMI0uqelRdHoQUV46WiMcRylHQaWQB366pgJpOhPfVxsbbGwEH8y9lh5IjOvEZYJCBfTdT5LcStU2ytUrl2Ov1c12XsPbKDaTjoh6im268zpttU1Vfm6yoG9YHD4BfU1g7W94OBasBdclqz2x6nOZxzKZSmH+3M3uDwllLjK0DRBaKg==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"ud7hljZd3WWM8RpKhmr9EmxRaK4SWBlqo0KeTwC7wpbTV7cLRml5SLxj7hps6WdrYwwfqXiSnwOEZ0JaThfx0HkTTk9KV45MEEEvsk/NZ0CbSPtLz6xecO2ausi68WncoC0wGhvt7ptM2HRSO8mSPbf+x+Lwi+iKllKYrICjMI0uqelRdHoQUV46WiMcRylHQaWQB366pgJpOhPfVxsbbGwEH8y9lh5IjOvEZYJCBfTdT5LcStU2ytUrl2Ov1c12XsPbKDaTjoh6im268zpttU1Vfm6yoG9YHD4BfU1g7W94OBasBdclqz2x6nOZxzKZSmH+3M3uDwllLjK0DRBaKg==\""
+			}
+		},
+		{
+			"id": "post-unicode-body",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=tmcNUoUGe/2Vc4ygauQ0SO5wIdgDclDcCSnafcznOus=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"CQe6nlLyPweDXiyeNw85s7TyvtwB9om85Ii8IMYKaFtaj5z59NDAJ9IWaLvlL89vDP/sqvlSVIFdewSWhELmK3pCA+qhJlcwp6XXtLgAD+Nl/gNkAq0Z15JllEijvM0EYg8Lngq90f364p+KndVMzxjfsEIixS3KfyhHVll09RNe0TWM1QXv+6A4WV6AP89+47KQoZPNjAxAdzHSSkDjGNLHgmSJ1tLOdapuzshBvTH+xKDFsX01N1bwiPH2c+Izy2LZdh+8k2aO4n7jBNQ8XDElNMSZe96S2ca2Qw2vOe5aJq1kVvyTPpi3Rjd9R9yxLUpfXj1sMoYYxwQR9j31tA==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=tmcNUoUGe/2Vc4ygauQ0SO5wIdgDclDcCSnafcznOus=",
+				"signature": "CQe6nlLyPweDXiyeNw85s7TyvtwB9om85Ii8IMYKaFtaj5z59NDAJ9IWaLvlL89vDP/sqvlSVIFdewSWhELmK3pCA+qhJlcwp6XXtLgAD+Nl/gNkAq0Z15JllEijvM0EYg8Lngq90f364p+KndVMzxjfsEIixS3KfyhHVll09RNe0TWM1QXv+6A4WV6AP89+47KQoZPNjAxAdzHSSkDjGNLHgmSJ1tLOdapuzshBvTH+xKDFsX01N1bwiPH2c+Izy2LZdh+8k2aO4n7jBNQ8XDElNMSZe96S2ca2Qw2vOe5aJq1kVvyTPpi3Rjd9R9yxLUpfXj1sMoYYxwQR9j31tA==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"CQe6nlLyPweDXiyeNw85s7TyvtwB9om85Ii8IMYKaFtaj5z59NDAJ9IWaLvlL89vDP/sqvlSVIFdewSWhELmK3pCA+qhJlcwp6XXtLgAD+Nl/gNkAq0Z15JllEijvM0EYg8Lngq90f364p+KndVMzxjfsEIixS3KfyhHVll09RNe0TWM1QXv+6A4WV6AP89+47KQoZPNjAxAdzHSSkDjGNLHgmSJ1tLOdapuzshBvTH+xKDFsX01N1bwiPH2c+Izy2LZdh+8k2aO4n7jBNQ8XDElNMSZe96S2ca2Qw2vOe5aJq1kVvyTPpi3Rjd9R9yxLUpfXj1sMoYYxwQR9j31tA==\""
+			}
+		},
+		{
+			"id": "post-additional-user-agent",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"user-agent": "UA",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+			}
+		},
+		{
+			"id": "post-additional-override-defaults",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Mon, 01 Jan 2024 00:00:00 GMT",
+						"content-type": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"",
+						"digest": "SHA-256=override",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"VYM7Zp7EJG2lK3sZ1iwDOhLxs1DRZOVc86OFYy2CWQ2YHX7gXk1hNmYUbR/gb+rxU6ZZaaeSRdMGbaMnfYfDac8K0tRZXN966GrxrhgBc4kBy0lu/hgjw8OMLobjnzkWqWU/SRTJi/g4IUQwNTPUZbNmVbV1/3O5K6YSYIyCuDAHJUZRQaNRO5EeL/miuclozswUMJU4WmHhqYRek384Pyy5xtc1v2uj6cG4X3W0S3sLhM/xDRMihiNd6Zq0Aqfy1vHPdHI9MhoHyH1eDFKUZLy+/8OfzzYCvYpIsNg2gN59XZ0ychosvffspr0tUjd0oC9+df29kYlEs9NIF1Kb3g==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Mon, 01 Jan 2024 00:00:00 GMT\nhost: override.example\ndigest: SHA-256=override",
+				"signature": "VYM7Zp7EJG2lK3sZ1iwDOhLxs1DRZOVc86OFYy2CWQ2YHX7gXk1hNmYUbR/gb+rxU6ZZaaeSRdMGbaMnfYfDac8K0tRZXN966GrxrhgBc4kBy0lu/hgjw8OMLobjnzkWqWU/SRTJi/g4IUQwNTPUZbNmVbV1/3O5K6YSYIyCuDAHJUZRQaNRO5EeL/miuclozswUMJU4WmHhqYRek384Pyy5xtc1v2uj6cG4X3W0S3sLhM/xDRMihiNd6Zq0Aqfy1vHPdHI9MhoHyH1eDFKUZLy+/8OfzzYCvYpIsNg2gN59XZ0ychosvffspr0tUjd0oC9+df29kYlEs9NIF1Kb3g==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"VYM7Zp7EJG2lK3sZ1iwDOhLxs1DRZOVc86OFYy2CWQ2YHX7gXk1hNmYUbR/gb+rxU6ZZaaeSRdMGbaMnfYfDac8K0tRZXN966GrxrhgBc4kBy0lu/hgjw8OMLobjnzkWqWU/SRTJi/g4IUQwNTPUZbNmVbV1/3O5K6YSYIyCuDAHJUZRQaNRO5EeL/miuclozswUMJU4WmHhqYRek384Pyy5xtc1v2uj6cG4X3W0S3sLhM/xDRMihiNd6Zq0Aqfy1vHPdHI9MhoHyH1eDFKUZLy+/8OfzzYCvYpIsNg2gN59XZ0ychosvffspr0tUjd0oC9+df29kYlEs9NIF1Kb3g==\""
+			}
+		},
+		{
+			"id": "post-additional-signature",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\"",
+						"x-extra": "kept"
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+			}
+		},
+		{
+			"id": "post-additional-same-name-different-case",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"x-probe": "third",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+			}
+		},
+		{
+			"id": "post-additional-proto-and-non-string",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/inbox",
+					"method": "POST",
+					"headers": {
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"content-type": "application/activity+json",
+						"digest": "SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+						"x-string": "kept",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+					}
+				},
+				"signingString": "(request-target): post /inbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example\ndigest: SHA-256=6gODDyoyLvu7HrV8HgB/wQ5hZ8le2p9ck8vC51+u1gw=",
+				"signature": "G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"G/WJlBub6PAFUmbD4vL0mQzuz+fBWkvfgXnOLfpu8nolSPB0bEJX8Ftig1PIXSbRL7Q8xcqkR4R1P4EgQyBrx/8d/ySoX6NebWqZqLAt3c1W3TzdPJEsbHqrb5ys0n1zMHZRLZxRVtTCDTsliKbCUrrmqtCF1IXn5x5jLaEhhhTWp8Zfqi+5YGZru90w5aAi1cRml6usG3fiHUFJAHb8SA4g6XjSKTt/ziJRzQ1Fw5GiDzbfcONwZT1e8+RGefxSG1vO1UzzOazI52X/J7Coy+crFpbw7vjgLaT3uoUlmtUbYfaZtoRR64ORvKPSxOL0lRSFDcXCyvGHO9xxKXqfiw==\""
+			}
+		},
+		{
+			"id": "post-invalid-url",
+			"error": {
+				"name": "TypeError",
+				"message": "Invalid URL",
+				"code": "ERR_INVALID_URL"
+			}
+		},
+		{
+			"id": "post-relative-url",
+			"error": {
+				"name": "TypeError",
+				"message": "Invalid URL",
+				"code": "ERR_INVALID_URL"
+			}
+		},
+		{
+			"id": "get-basic",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/users/alice",
+					"method": "GET",
+					"headers": {
+						"accept": "application/activity+json, application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"HF8o5NmRK88D6u1BhMQU1aUPyx1waPLzUneoR9QvVRgbJugHfTX3fhfMQzyLTaEpeDzdTdXlYUE2+603VkZRJVn9JFBmIyVRl5sDMy4pZsZDLMWDJEwFJKWRUUR8Op5qtzVSRzGJVm4znEHjoFQih7/admUGWWbmXOj9ezUgAjRI0amhouL+askcrr3bnL8c0CTjLjFaclz9V9ifzOhz0C8tr++Y8bqYCko3Ym2Nv3AZnZNbFwuGEhXygyf/eN0VlywZAxPjjtX3AXlBA+SKdy5QGvTnzVc4pXfXWfeXCePxJCWSZ2RdrviemNKL1qFBYSsdwiH6WJcYKJkeWAYNRA==\""
+					}
+				},
+				"signingString": "(request-target): get /users/alice\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example",
+				"signature": "HF8o5NmRK88D6u1BhMQU1aUPyx1waPLzUneoR9QvVRgbJugHfTX3fhfMQzyLTaEpeDzdTdXlYUE2+603VkZRJVn9JFBmIyVRl5sDMy4pZsZDLMWDJEwFJKWRUUR8Op5qtzVSRzGJVm4znEHjoFQih7/admUGWWbmXOj9ezUgAjRI0amhouL+askcrr3bnL8c0CTjLjFaclz9V9ifzOhz0C8tr++Y8bqYCko3Ym2Nv3AZnZNbFwuGEhXygyf/eN0VlywZAxPjjtX3AXlBA+SKdy5QGvTnzVc4pXfXWfeXCePxJCWSZ2RdrviemNKL1qFBYSsdwiH6WJcYKJkeWAYNRA==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"HF8o5NmRK88D6u1BhMQU1aUPyx1waPLzUneoR9QvVRgbJugHfTX3fhfMQzyLTaEpeDzdTdXlYUE2+603VkZRJVn9JFBmIyVRl5sDMy4pZsZDLMWDJEwFJKWRUUR8Op5qtzVSRzGJVm4znEHjoFQih7/admUGWWbmXOj9ezUgAjRI0amhouL+askcrr3bnL8c0CTjLjFaclz9V9ifzOhz0C8tr++Y8bqYCko3Ym2Nv3AZnZNbFwuGEhXygyf/eN0VlywZAxPjjtX3AXlBA+SKdy5QGvTnzVc4pXfXWfeXCePxJCWSZ2RdrviemNKL1qFBYSsdwiH6WJcYKJkeWAYNRA==\""
+			}
+		},
+		{
+			"id": "get-query-fragment",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/users/alice?page=2#ignored",
+					"method": "GET",
+					"headers": {
+						"accept": "application/activity+json, application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"a5SyBtIXct9LixNU2LAF8oS6KhzClxNbbnba8fA3+cKkiebNTGUQCLixnk0N4PJYvYHm7NiwA157mdG/vKdm/Er2Azlr9LYgJh94gWcyBIVYpYiEt9h495oYx2pXK6Mq1RN5eF5BM1NSDYSfqKUPgWbfkLMERzyitPH6A5KBMTYnG7bzzhdC00qAhTSxbRVoXla562oB1e4lbOxvL+C28hjgAT3HFSGrGzgChW04QmVAEZoOGB2YOIBIQj/liWk1p3YG9gmw1qz/T4gelZqIEW4UTd917j00k9CHjJGaGswgK7wkN0E07YWHZEyWohOSnEySdJ8uJYjQU3LKBtG4Kg==\""
+					}
+				},
+				"signingString": "(request-target): get /users/alice?page=2\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example",
+				"signature": "a5SyBtIXct9LixNU2LAF8oS6KhzClxNbbnba8fA3+cKkiebNTGUQCLixnk0N4PJYvYHm7NiwA157mdG/vKdm/Er2Azlr9LYgJh94gWcyBIVYpYiEt9h495oYx2pXK6Mq1RN5eF5BM1NSDYSfqKUPgWbfkLMERzyitPH6A5KBMTYnG7bzzhdC00qAhTSxbRVoXla562oB1e4lbOxvL+C28hjgAT3HFSGrGzgChW04QmVAEZoOGB2YOIBIQj/liWk1p3YG9gmw1qz/T4gelZqIEW4UTd917j00k9CHjJGaGswgK7wkN0E07YWHZEyWohOSnEySdJ8uJYjQU3LKBtG4Kg==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"a5SyBtIXct9LixNU2LAF8oS6KhzClxNbbnba8fA3+cKkiebNTGUQCLixnk0N4PJYvYHm7NiwA157mdG/vKdm/Er2Azlr9LYgJh94gWcyBIVYpYiEt9h495oYx2pXK6Mq1RN5eF5BM1NSDYSfqKUPgWbfkLMERzyitPH6A5KBMTYnG7bzzhdC00qAhTSxbRVoXla562oB1e4lbOxvL+C28hjgAT3HFSGrGzgChW04QmVAEZoOGB2YOIBIQj/liWk1p3YG9gmw1qz/T4gelZqIEW4UTd917j00k9CHjJGaGswgK7wkN0E07YWHZEyWohOSnEySdJ8uJYjQU3LKBtG4Kg==\""
+			}
+		},
+		{
+			"id": "get-empty-query-fragment",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/outbox?#ignored",
+					"method": "GET",
+					"headers": {
+						"accept": "application/activity+json, application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"D5m/+OkaQuzDU2SNjxYMS/LUgSpy4eQbwSNlnio3LL7Htd5U2Pc1NIP4g2JChRHVTqFG2w+Nx7m/Quc8Sgusxtw81LX/CBHyRdKb3HlBztC45U4TT9RjPWVhVzT4tYx0voLjIeTompzHMhqD9j2FOcUjH23iDIjxWcfEksWd9E3XeG2Fgqyn1b9knPMnoMJaLaNMrpPYbf1+s2vr7Jcn+jodWs1ZvmJGwMtWYgXHe3najSmfraYj0j8+r5L6Lq/s/o6Y8SsbN8ndcbnUfqN6OsUsXx6G45hzsiXVuyv2oZ17CCj8GDPyMJNCsummvOGVJ1soW7vDbW95CZ1HzPE8jg==\""
+					}
+				},
+				"signingString": "(request-target): get /outbox?\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example",
+				"signature": "D5m/+OkaQuzDU2SNjxYMS/LUgSpy4eQbwSNlnio3LL7Htd5U2Pc1NIP4g2JChRHVTqFG2w+Nx7m/Quc8Sgusxtw81LX/CBHyRdKb3HlBztC45U4TT9RjPWVhVzT4tYx0voLjIeTompzHMhqD9j2FOcUjH23iDIjxWcfEksWd9E3XeG2Fgqyn1b9knPMnoMJaLaNMrpPYbf1+s2vr7Jcn+jodWs1ZvmJGwMtWYgXHe3najSmfraYj0j8+r5L6Lq/s/o6Y8SsbN8ndcbnUfqN6OsUsXx6G45hzsiXVuyv2oZ17CCj8GDPyMJNCsummvOGVJ1soW7vDbW95CZ1HzPE8jg==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"D5m/+OkaQuzDU2SNjxYMS/LUgSpy4eQbwSNlnio3LL7Htd5U2Pc1NIP4g2JChRHVTqFG2w+Nx7m/Quc8Sgusxtw81LX/CBHyRdKb3HlBztC45U4TT9RjPWVhVzT4tYx0voLjIeTompzHMhqD9j2FOcUjH23iDIjxWcfEksWd9E3XeG2Fgqyn1b9knPMnoMJaLaNMrpPYbf1+s2vr7Jcn+jodWs1ZvmJGwMtWYgXHe3najSmfraYj0j8+r5L6Lq/s/o6Y8SsbN8ndcbnUfqN6OsUsXx6G45hzsiXVuyv2oZ17CCj8GDPyMJNCsummvOGVJ1soW7vDbW95CZ1HzPE8jg==\""
+			}
+		},
+		{
+			"id": "get-empty-query",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/outbox?",
+					"method": "GET",
+					"headers": {
+						"accept": "application/activity+json, application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"D5m/+OkaQuzDU2SNjxYMS/LUgSpy4eQbwSNlnio3LL7Htd5U2Pc1NIP4g2JChRHVTqFG2w+Nx7m/Quc8Sgusxtw81LX/CBHyRdKb3HlBztC45U4TT9RjPWVhVzT4tYx0voLjIeTompzHMhqD9j2FOcUjH23iDIjxWcfEksWd9E3XeG2Fgqyn1b9knPMnoMJaLaNMrpPYbf1+s2vr7Jcn+jodWs1ZvmJGwMtWYgXHe3najSmfraYj0j8+r5L6Lq/s/o6Y8SsbN8ndcbnUfqN6OsUsXx6G45hzsiXVuyv2oZ17CCj8GDPyMJNCsummvOGVJ1soW7vDbW95CZ1HzPE8jg==\""
+					}
+				},
+				"signingString": "(request-target): get /outbox?\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example",
+				"signature": "D5m/+OkaQuzDU2SNjxYMS/LUgSpy4eQbwSNlnio3LL7Htd5U2Pc1NIP4g2JChRHVTqFG2w+Nx7m/Quc8Sgusxtw81LX/CBHyRdKb3HlBztC45U4TT9RjPWVhVzT4tYx0voLjIeTompzHMhqD9j2FOcUjH23iDIjxWcfEksWd9E3XeG2Fgqyn1b9knPMnoMJaLaNMrpPYbf1+s2vr7Jcn+jodWs1ZvmJGwMtWYgXHe3najSmfraYj0j8+r5L6Lq/s/o6Y8SsbN8ndcbnUfqN6OsUsXx6G45hzsiXVuyv2oZ17CCj8GDPyMJNCsummvOGVJ1soW7vDbW95CZ1HzPE8jg==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"D5m/+OkaQuzDU2SNjxYMS/LUgSpy4eQbwSNlnio3LL7Htd5U2Pc1NIP4g2JChRHVTqFG2w+Nx7m/Quc8Sgusxtw81LX/CBHyRdKb3HlBztC45U4TT9RjPWVhVzT4tYx0voLjIeTompzHMhqD9j2FOcUjH23iDIjxWcfEksWd9E3XeG2Fgqyn1b9knPMnoMJaLaNMrpPYbf1+s2vr7Jcn+jodWs1ZvmJGwMtWYgXHe3najSmfraYj0j8+r5L6Lq/s/o6Y8SsbN8ndcbnUfqN6OsUsXx6G45hzsiXVuyv2oZ17CCj8GDPyMJNCsummvOGVJ1soW7vDbW95CZ1HzPE8jg==\""
+			}
+		},
+		{
+			"id": "get-fragment",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/outbox#ignored",
+					"method": "GET",
+					"headers": {
+						"accept": "application/activity+json, application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"Zig7cMWEoOYHtmOIUde+Lz0By1mLhnsotSS0/XdjnwGdGBnpCi3a/f4rv2E+CObOX7SUE1/hNASKPGGwG3LqB+SLQVseOcXvx4sh4/ue/dx3E12uhiEaH0H2zvEyKRcuXEhE1ZJPkurI17PwDjwcp0V3bzJjiv5vChbdXFCHHzwX/Q7qaXqh/M3Rrah45UVS0xCdFuuBjwUjz94FQ3G5Q7nXLZ86H4I8Pm6SZLP4d6LZsJg+DuCjh0EUXdrYBnrwxmn7MeSsmiMgbzCkIPyZ8WRhhHkuVPmJJzrtUexE5de2w+mAqIY36n1w3ueHMPYJQPtjRYJw9VZZL7lhhkanbw==\""
+					}
+				},
+				"signingString": "(request-target): get /outbox\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example",
+				"signature": "Zig7cMWEoOYHtmOIUde+Lz0By1mLhnsotSS0/XdjnwGdGBnpCi3a/f4rv2E+CObOX7SUE1/hNASKPGGwG3LqB+SLQVseOcXvx4sh4/ue/dx3E12uhiEaH0H2zvEyKRcuXEhE1ZJPkurI17PwDjwcp0V3bzJjiv5vChbdXFCHHzwX/Q7qaXqh/M3Rrah45UVS0xCdFuuBjwUjz94FQ3G5Q7nXLZ86H4I8Pm6SZLP4d6LZsJg+DuCjh0EUXdrYBnrwxmn7MeSsmiMgbzCkIPyZ8WRhhHkuVPmJJzrtUexE5de2w+mAqIY36n1w3ueHMPYJQPtjRYJw9VZZL7lhhkanbw==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"Zig7cMWEoOYHtmOIUde+Lz0By1mLhnsotSS0/XdjnwGdGBnpCi3a/f4rv2E+CObOX7SUE1/hNASKPGGwG3LqB+SLQVseOcXvx4sh4/ue/dx3E12uhiEaH0H2zvEyKRcuXEhE1ZJPkurI17PwDjwcp0V3bzJjiv5vChbdXFCHHzwX/Q7qaXqh/M3Rrah45UVS0xCdFuuBjwUjz94FQ3G5Q7nXLZ86H4I8Pm6SZLP4d6LZsJg+DuCjh0EUXdrYBnrwxmn7MeSsmiMgbzCkIPyZ8WRhhHkuVPmJJzrtUexE5de2w+mAqIY36n1w3ueHMPYJQPtjRYJw9VZZL7lhhkanbw==\""
+			}
+		},
+		{
+			"id": "get-port",
+			"expected": {
+				"request": {
+					"url": "https://remote.example:8443/users/alice",
+					"method": "GET",
+					"headers": {
+						"accept": "application/activity+json, application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"ubIUe0u7XWNBhMUp3WuN7fmin/oyHOjUvXRzEFVwT5hMhRYFl0+n0GV6vjKqhNFwU2PbfkUMx5ld2MbmyVLGwwpjXb2EJmk57frDO0shgen9XhhrgKcVWWxX2pxBEf8xJG8oyWEDGXgbeiozzD1656etADdyTHohj2TVdwhs+9juPm42J8GEjbt1oXXNV3JO/B9BoeV8CI6U1ETvZrpErt44itF7JZ+/VTzJAmkNlGfJHBRqlKfsjr2oasbHsfgxq4XYdTpDbnlYRLKYv/D9OPYNERz4+W+woa/rQepJFTh6Zi211uRzJIVUeGTgchAlsvcWFM/5HeDYuwffxoNOhQ==\""
+					}
+				},
+				"signingString": "(request-target): get /users/alice\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example:8443",
+				"signature": "ubIUe0u7XWNBhMUp3WuN7fmin/oyHOjUvXRzEFVwT5hMhRYFl0+n0GV6vjKqhNFwU2PbfkUMx5ld2MbmyVLGwwpjXb2EJmk57frDO0shgen9XhhrgKcVWWxX2pxBEf8xJG8oyWEDGXgbeiozzD1656etADdyTHohj2TVdwhs+9juPm42J8GEjbt1oXXNV3JO/B9BoeV8CI6U1ETvZrpErt44itF7JZ+/VTzJAmkNlGfJHBRqlKfsjr2oasbHsfgxq4XYdTpDbnlYRLKYv/D9OPYNERz4+W+woa/rQepJFTh6Zi211uRzJIVUeGTgchAlsvcWFM/5HeDYuwffxoNOhQ==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"ubIUe0u7XWNBhMUp3WuN7fmin/oyHOjUvXRzEFVwT5hMhRYFl0+n0GV6vjKqhNFwU2PbfkUMx5ld2MbmyVLGwwpjXb2EJmk57frDO0shgen9XhhrgKcVWWxX2pxBEf8xJG8oyWEDGXgbeiozzD1656etADdyTHohj2TVdwhs+9juPm42J8GEjbt1oXXNV3JO/B9BoeV8CI6U1ETvZrpErt44itF7JZ+/VTzJAmkNlGfJHBRqlKfsjr2oasbHsfgxq4XYdTpDbnlYRLKYv/D9OPYNERz4+W+woa/rQepJFTh6Zi211uRzJIVUeGTgchAlsvcWFM/5HeDYuwffxoNOhQ==\""
+			}
+		},
+		{
+			"id": "get-default-port",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/users/alice",
+					"method": "GET",
+					"headers": {
+						"accept": "application/activity+json, application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"HF8o5NmRK88D6u1BhMQU1aUPyx1waPLzUneoR9QvVRgbJugHfTX3fhfMQzyLTaEpeDzdTdXlYUE2+603VkZRJVn9JFBmIyVRl5sDMy4pZsZDLMWDJEwFJKWRUUR8Op5qtzVSRzGJVm4znEHjoFQih7/admUGWWbmXOj9ezUgAjRI0amhouL+askcrr3bnL8c0CTjLjFaclz9V9ifzOhz0C8tr++Y8bqYCko3Ym2Nv3AZnZNbFwuGEhXygyf/eN0VlywZAxPjjtX3AXlBA+SKdy5QGvTnzVc4pXfXWfeXCePxJCWSZ2RdrviemNKL1qFBYSsdwiH6WJcYKJkeWAYNRA==\""
+					}
+				},
+				"signingString": "(request-target): get /users/alice\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example",
+				"signature": "HF8o5NmRK88D6u1BhMQU1aUPyx1waPLzUneoR9QvVRgbJugHfTX3fhfMQzyLTaEpeDzdTdXlYUE2+603VkZRJVn9JFBmIyVRl5sDMy4pZsZDLMWDJEwFJKWRUUR8Op5qtzVSRzGJVm4znEHjoFQih7/admUGWWbmXOj9ezUgAjRI0amhouL+askcrr3bnL8c0CTjLjFaclz9V9ifzOhz0C8tr++Y8bqYCko3Ym2Nv3AZnZNbFwuGEhXygyf/eN0VlywZAxPjjtX3AXlBA+SKdy5QGvTnzVc4pXfXWfeXCePxJCWSZ2RdrviemNKL1qFBYSsdwiH6WJcYKJkeWAYNRA==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"HF8o5NmRK88D6u1BhMQU1aUPyx1waPLzUneoR9QvVRgbJugHfTX3fhfMQzyLTaEpeDzdTdXlYUE2+603VkZRJVn9JFBmIyVRl5sDMy4pZsZDLMWDJEwFJKWRUUR8Op5qtzVSRzGJVm4znEHjoFQih7/admUGWWbmXOj9ezUgAjRI0amhouL+askcrr3bnL8c0CTjLjFaclz9V9ifzOhz0C8tr++Y8bqYCko3Ym2Nv3AZnZNbFwuGEhXygyf/eN0VlywZAxPjjtX3AXlBA+SKdy5QGvTnzVc4pXfXWfeXCePxJCWSZ2RdrviemNKL1qFBYSsdwiH6WJcYKJkeWAYNRA==\""
+			}
+		},
+		{
+			"id": "get-idn",
+			"expected": {
+				"request": {
+					"url": "https://xn--xample-ova.jp/users/alice",
+					"method": "GET",
+					"headers": {
+						"accept": "application/activity+json, application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"qd0OqeuDMcx7oFn5kA8Xb32OPnbavvqBcXgEH+AFTziLgk6k+7VbttvhfqTYh9gE/V8L3Lhnbuoff6bsNU268NSC7DuiXYMWggrp/irBVhbF2zam8uMIVmfgXsLnvHXnW9IoY/3p5nbxBybOpkYRsJJbZnXy+Md/5MDTUu8GuVXsRSS2axQeAM85IObY/hkyHxgEZk1/2SaPrJH19bG8iJEKWR0Bj2nywczhyw/kthOtlbR6aRt+DHlKXNYAdia7nTp3/aDJa7rH+wGIX9w+wEEqGW/EXvcB52UzCfmIDGYqGhnIv7X6LEjam3sroqRyxME/7Xw6U3XP4jO5j5/sxg==\""
+					}
+				},
+				"signingString": "(request-target): get /users/alice\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: xn--xample-ova.jp",
+				"signature": "qd0OqeuDMcx7oFn5kA8Xb32OPnbavvqBcXgEH+AFTziLgk6k+7VbttvhfqTYh9gE/V8L3Lhnbuoff6bsNU268NSC7DuiXYMWggrp/irBVhbF2zam8uMIVmfgXsLnvHXnW9IoY/3p5nbxBybOpkYRsJJbZnXy+Md/5MDTUu8GuVXsRSS2axQeAM85IObY/hkyHxgEZk1/2SaPrJH19bG8iJEKWR0Bj2nywczhyw/kthOtlbR6aRt+DHlKXNYAdia7nTp3/aDJa7rH+wGIX9w+wEEqGW/EXvcB52UzCfmIDGYqGhnIv7X6LEjam3sroqRyxME/7Xw6U3XP4jO5j5/sxg==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"qd0OqeuDMcx7oFn5kA8Xb32OPnbavvqBcXgEH+AFTziLgk6k+7VbttvhfqTYh9gE/V8L3Lhnbuoff6bsNU268NSC7DuiXYMWggrp/irBVhbF2zam8uMIVmfgXsLnvHXnW9IoY/3p5nbxBybOpkYRsJJbZnXy+Md/5MDTUu8GuVXsRSS2axQeAM85IObY/hkyHxgEZk1/2SaPrJH19bG8iJEKWR0Bj2nywczhyw/kthOtlbR6aRt+DHlKXNYAdia7nTp3/aDJa7rH+wGIX9w+wEEqGW/EXvcB52UzCfmIDGYqGhnIv7X6LEjam3sroqRyxME/7Xw6U3XP4jO5j5/sxg==\""
+			}
+		},
+		{
+			"id": "get-path-normalization",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/users/alice",
+					"method": "GET",
+					"headers": {
+						"accept": "application/activity+json, application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"HF8o5NmRK88D6u1BhMQU1aUPyx1waPLzUneoR9QvVRgbJugHfTX3fhfMQzyLTaEpeDzdTdXlYUE2+603VkZRJVn9JFBmIyVRl5sDMy4pZsZDLMWDJEwFJKWRUUR8Op5qtzVSRzGJVm4znEHjoFQih7/admUGWWbmXOj9ezUgAjRI0amhouL+askcrr3bnL8c0CTjLjFaclz9V9ifzOhz0C8tr++Y8bqYCko3Ym2Nv3AZnZNbFwuGEhXygyf/eN0VlywZAxPjjtX3AXlBA+SKdy5QGvTnzVc4pXfXWfeXCePxJCWSZ2RdrviemNKL1qFBYSsdwiH6WJcYKJkeWAYNRA==\""
+					}
+				},
+				"signingString": "(request-target): get /users/alice\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example",
+				"signature": "HF8o5NmRK88D6u1BhMQU1aUPyx1waPLzUneoR9QvVRgbJugHfTX3fhfMQzyLTaEpeDzdTdXlYUE2+603VkZRJVn9JFBmIyVRl5sDMy4pZsZDLMWDJEwFJKWRUUR8Op5qtzVSRzGJVm4znEHjoFQih7/admUGWWbmXOj9ezUgAjRI0amhouL+askcrr3bnL8c0CTjLjFaclz9V9ifzOhz0C8tr++Y8bqYCko3Ym2Nv3AZnZNbFwuGEhXygyf/eN0VlywZAxPjjtX3AXlBA+SKdy5QGvTnzVc4pXfXWfeXCePxJCWSZ2RdrviemNKL1qFBYSsdwiH6WJcYKJkeWAYNRA==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"HF8o5NmRK88D6u1BhMQU1aUPyx1waPLzUneoR9QvVRgbJugHfTX3fhfMQzyLTaEpeDzdTdXlYUE2+603VkZRJVn9JFBmIyVRl5sDMy4pZsZDLMWDJEwFJKWRUUR8Op5qtzVSRzGJVm4znEHjoFQih7/admUGWWbmXOj9ezUgAjRI0amhouL+askcrr3bnL8c0CTjLjFaclz9V9ifzOhz0C8tr++Y8bqYCko3Ym2Nv3AZnZNbFwuGEhXygyf/eN0VlywZAxPjjtX3AXlBA+SKdy5QGvTnzVc4pXfXWfeXCePxJCWSZ2RdrviemNKL1qFBYSsdwiH6WJcYKJkeWAYNRA==\""
+			}
+		},
+		{
+			"id": "get-path-encoding",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/@alice/%C3%A4?q=%C3%A4",
+					"method": "GET",
+					"headers": {
+						"accept": "application/activity+json, application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"LMcG6FKlw93VC8YYFSGi0PU76wr4wyJAr6Np/QVvNwy6W8NvkPQVlEyIPaOuRs+XVrT2V9T8DT/ArupdeWmHx1ZgQ5haVanQiCdVQv4CsywNZJ10hhiV8v+QwNCSi81b47b0KLOIWbA7pWHSY0px2gpOwoZ2t4494c4mcYNJIUYLh1rDyeDm89Jy6J0apQg+JL0DvX5I9AvnWWP2x/YAJqDwszqA+gxUESDh02CehvL4f3Lx8MQugUR6nytbbGBC3Bv+yakGdvTTCpmOvgt/5ddj+VHvs5NJsIS9JBdyiQYiIGwxBvZiVGmceZRuPz9MGQQAKPT+lBLNNFXWhXglAg==\""
+					}
+				},
+				"signingString": "(request-target): get /@alice/%C3%A4?q=%C3%A4\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example",
+				"signature": "LMcG6FKlw93VC8YYFSGi0PU76wr4wyJAr6Np/QVvNwy6W8NvkPQVlEyIPaOuRs+XVrT2V9T8DT/ArupdeWmHx1ZgQ5haVanQiCdVQv4CsywNZJ10hhiV8v+QwNCSi81b47b0KLOIWbA7pWHSY0px2gpOwoZ2t4494c4mcYNJIUYLh1rDyeDm89Jy6J0apQg+JL0DvX5I9AvnWWP2x/YAJqDwszqA+gxUESDh02CehvL4f3Lx8MQugUR6nytbbGBC3Bv+yakGdvTTCpmOvgt/5ddj+VHvs5NJsIS9JBdyiQYiIGwxBvZiVGmceZRuPz9MGQQAKPT+lBLNNFXWhXglAg==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"LMcG6FKlw93VC8YYFSGi0PU76wr4wyJAr6Np/QVvNwy6W8NvkPQVlEyIPaOuRs+XVrT2V9T8DT/ArupdeWmHx1ZgQ5haVanQiCdVQv4CsywNZJ10hhiV8v+QwNCSi81b47b0KLOIWbA7pWHSY0px2gpOwoZ2t4494c4mcYNJIUYLh1rDyeDm89Jy6J0apQg+JL0DvX5I9AvnWWP2x/YAJqDwszqA+gxUESDh02CehvL4f3Lx8MQugUR6nytbbGBC3Bv+yakGdvTTCpmOvgt/5ddj+VHvs5NJsIS9JBdyiQYiIGwxBvZiVGmceZRuPz9MGQQAKPT+lBLNNFXWhXglAg==\""
+			}
+		},
+		{
+			"id": "get-additional-accept",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/users/alice",
+					"method": "GET",
+					"headers": {
+						"accept": "application/json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"HF8o5NmRK88D6u1BhMQU1aUPyx1waPLzUneoR9QvVRgbJugHfTX3fhfMQzyLTaEpeDzdTdXlYUE2+603VkZRJVn9JFBmIyVRl5sDMy4pZsZDLMWDJEwFJKWRUUR8Op5qtzVSRzGJVm4znEHjoFQih7/admUGWWbmXOj9ezUgAjRI0amhouL+askcrr3bnL8c0CTjLjFaclz9V9ifzOhz0C8tr++Y8bqYCko3Ym2Nv3AZnZNbFwuGEhXygyf/eN0VlywZAxPjjtX3AXlBA+SKdy5QGvTnzVc4pXfXWfeXCePxJCWSZ2RdrviemNKL1qFBYSsdwiH6WJcYKJkeWAYNRA==\""
+					}
+				},
+				"signingString": "(request-target): get /users/alice\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example",
+				"signature": "HF8o5NmRK88D6u1BhMQU1aUPyx1waPLzUneoR9QvVRgbJugHfTX3fhfMQzyLTaEpeDzdTdXlYUE2+603VkZRJVn9JFBmIyVRl5sDMy4pZsZDLMWDJEwFJKWRUUR8Op5qtzVSRzGJVm4znEHjoFQih7/admUGWWbmXOj9ezUgAjRI0amhouL+askcrr3bnL8c0CTjLjFaclz9V9ifzOhz0C8tr++Y8bqYCko3Ym2Nv3AZnZNbFwuGEhXygyf/eN0VlywZAxPjjtX3AXlBA+SKdy5QGvTnzVc4pXfXWfeXCePxJCWSZ2RdrviemNKL1qFBYSsdwiH6WJcYKJkeWAYNRA==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"HF8o5NmRK88D6u1BhMQU1aUPyx1waPLzUneoR9QvVRgbJugHfTX3fhfMQzyLTaEpeDzdTdXlYUE2+603VkZRJVn9JFBmIyVRl5sDMy4pZsZDLMWDJEwFJKWRUUR8Op5qtzVSRzGJVm4znEHjoFQih7/admUGWWbmXOj9ezUgAjRI0amhouL+askcrr3bnL8c0CTjLjFaclz9V9ifzOhz0C8tr++Y8bqYCko3Ym2Nv3AZnZNbFwuGEhXygyf/eN0VlywZAxPjjtX3AXlBA+SKdy5QGvTnzVc4pXfXWfeXCePxJCWSZ2RdrviemNKL1qFBYSsdwiH6WJcYKJkeWAYNRA==\""
+			}
+		},
+		{
+			"id": "get-additional-override-defaults",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/users/alice",
+					"method": "GET",
+					"headers": {
+						"accept": "application/activity+json, application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"",
+						"date": "Mon, 01 Jan 2024 00:00:00 GMT",
+						"user-agent": "UA",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"fe33MwJMYfHUORUSRbF6hlUTkSNcEP/CRnKn2WBUh4DDtRYrXXhFr8gAZvlKNA21W6odZP/xlzNthsLVqfteIspPh4tQC+/VVXiWjFYoeVXcJ3GEkfosKC/m/4gydw0isb6AKLu4cfHgmyzif5s48STh3t0lY8Zz6TEtZqrdE4G1wbjvco55af94GFDkBn86RvM5TG0LRHdcc7fCSP6s32iQeEEUkQYbYIWECwSZ7ddF2GIBXcQqaS4D5AnUhlVlBEvLRvtITgR0B/vFhusMKu4Ku0uwv5Kz4zxZoYDnHr0h/FVvNP6BNbB+yMjMJoKWEKAr7/h4Id+uGDJN7vuAGQ==\""
+					}
+				},
+				"signingString": "(request-target): get /users/alice\ndate: Mon, 01 Jan 2024 00:00:00 GMT\nhost: override.example",
+				"signature": "fe33MwJMYfHUORUSRbF6hlUTkSNcEP/CRnKn2WBUh4DDtRYrXXhFr8gAZvlKNA21W6odZP/xlzNthsLVqfteIspPh4tQC+/VVXiWjFYoeVXcJ3GEkfosKC/m/4gydw0isb6AKLu4cfHgmyzif5s48STh3t0lY8Zz6TEtZqrdE4G1wbjvco55af94GFDkBn86RvM5TG0LRHdcc7fCSP6s32iQeEEUkQYbYIWECwSZ7ddF2GIBXcQqaS4D5AnUhlVlBEvLRvtITgR0B/vFhusMKu4Ku0uwv5Kz4zxZoYDnHr0h/FVvNP6BNbB+yMjMJoKWEKAr7/h4Id+uGDJN7vuAGQ==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"fe33MwJMYfHUORUSRbF6hlUTkSNcEP/CRnKn2WBUh4DDtRYrXXhFr8gAZvlKNA21W6odZP/xlzNthsLVqfteIspPh4tQC+/VVXiWjFYoeVXcJ3GEkfosKC/m/4gydw0isb6AKLu4cfHgmyzif5s48STh3t0lY8Zz6TEtZqrdE4G1wbjvco55af94GFDkBn86RvM5TG0LRHdcc7fCSP6s32iQeEEUkQYbYIWECwSZ7ddF2GIBXcQqaS4D5AnUhlVlBEvLRvtITgR0B/vFhusMKu4Ku0uwv5Kz4zxZoYDnHr0h/FVvNP6BNbB+yMjMJoKWEKAr7/h4Id+uGDJN7vuAGQ==\""
+			}
+		},
+		{
+			"id": "get-additional-proto-and-non-string",
+			"expected": {
+				"request": {
+					"url": "https://remote.example/users/alice",
+					"method": "GET",
+					"headers": {
+						"accept": "application/activity+json, application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"x-string": "kept",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"HF8o5NmRK88D6u1BhMQU1aUPyx1waPLzUneoR9QvVRgbJugHfTX3fhfMQzyLTaEpeDzdTdXlYUE2+603VkZRJVn9JFBmIyVRl5sDMy4pZsZDLMWDJEwFJKWRUUR8Op5qtzVSRzGJVm4znEHjoFQih7/admUGWWbmXOj9ezUgAjRI0amhouL+askcrr3bnL8c0CTjLjFaclz9V9ifzOhz0C8tr++Y8bqYCko3Ym2Nv3AZnZNbFwuGEhXygyf/eN0VlywZAxPjjtX3AXlBA+SKdy5QGvTnzVc4pXfXWfeXCePxJCWSZ2RdrviemNKL1qFBYSsdwiH6WJcYKJkeWAYNRA==\""
+					}
+				},
+				"signingString": "(request-target): get /users/alice\ndate: Tue, 03 Nov 2026 12:34:56 GMT\nhost: remote.example",
+				"signature": "HF8o5NmRK88D6u1BhMQU1aUPyx1waPLzUneoR9QvVRgbJugHfTX3fhfMQzyLTaEpeDzdTdXlYUE2+603VkZRJVn9JFBmIyVRl5sDMy4pZsZDLMWDJEwFJKWRUUR8Op5qtzVSRzGJVm4znEHjoFQih7/admUGWWbmXOj9ezUgAjRI0amhouL+askcrr3bnL8c0CTjLjFaclz9V9ifzOhz0C8tr++Y8bqYCko3Ym2Nv3AZnZNbFwuGEhXygyf/eN0VlywZAxPjjtX3AXlBA+SKdy5QGvTnzVc4pXfXWfeXCePxJCWSZ2RdrviemNKL1qFBYSsdwiH6WJcYKJkeWAYNRA==",
+				"signatureHeader": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host\",signature=\"HF8o5NmRK88D6u1BhMQU1aUPyx1waPLzUneoR9QvVRgbJugHfTX3fhfMQzyLTaEpeDzdTdXlYUE2+603VkZRJVn9JFBmIyVRl5sDMy4pZsZDLMWDJEwFJKWRUUR8Op5qtzVSRzGJVm4znEHjoFQih7/admUGWWbmXOj9ezUgAjRI0amhouL+askcrr3bnL8c0CTjLjFaclz9V9ifzOhz0C8tr++Y8bqYCko3Ym2Nv3AZnZNbFwuGEhXygyf/eN0VlywZAxPjjtX3AXlBA+SKdy5QGvTnzVc4pXfXWfeXCePxJCWSZ2RdrviemNKL1qFBYSsdwiH6WJcYKJkeWAYNRA==\""
+			}
+		},
+		{
+			"id": "get-invalid-url",
+			"error": {
+				"name": "TypeError",
+				"message": "Invalid URL",
+				"code": "ERR_INVALID_URL"
+			}
+		}
+	]
+}

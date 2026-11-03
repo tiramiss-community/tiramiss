@@ -16,11 +16,13 @@ type HostInputs = {
 	hosts: (string | null)[];
 	urls: string[];
 	emojis: { name: string; noteUserHost: string | null }[];
+	dbHostUris: string[];
 };
 type PolicyInputs = {
 	selfHost: string;
 	policies: Record<string, Record<string, unknown>>;
 	hosts: (string | null)[];
+	uris: string[];
 	deliverSuspendedSoftware: { software: string; versionRange: string }[];
 	software: { softwareName: string | null; softwareVersion: string | null }[];
 };
@@ -78,6 +80,9 @@ test('pinned upstream host normalization and self-host rules', () => {
 			actual.push({ fn: 'emojiHost', selfHost, name, noteUserHost, expected: emojis.parseEmojiStr(name, noteUserHost).host });
 		}
 	}
+	for (const uri of inputs.dbHostUris) {
+		actual.push({ fn: 'extractDbHost', uri, expected: plain.extractDbHost(uri) });
+	}
 
 	settle(path, inputs, cases, actual);
 });
@@ -99,6 +104,9 @@ test('pinned upstream federation policy predicates', () => {
 					isMediaSilencedHost: service.isMediaSilencedHost(meta.mediaSilencedHosts as string[], host),
 				},
 			});
+		}
+		for (const uri of inputs.uris) {
+			actual.push({ fn: 'isFederationAllowedUri', policy, uri, expected: service.isFederationAllowedUri(uri) });
 		}
 	}
 

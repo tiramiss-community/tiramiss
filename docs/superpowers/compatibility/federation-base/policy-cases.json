@@ -72,6 +72,22 @@
 			"MEDIA.example",
 			null
 		],
+		"uris": [
+			"https://misskey.example/inbox",
+			"https://MISSKEY.example/inbox",
+			"https://misskey.example:443/inbox",
+			"https://misskey.example:3000/inbox",
+			"https://blocked.example/inbox",
+			"https://BLOCKED.example/inbox",
+			"https://sub.blocked.example/inbox",
+			"https://blocked.example:8443/inbox",
+			"https://notblocked.example/inbox",
+			"https://allowed.example/inbox",
+			"https://sub.allowed.example/inbox",
+			"https://allowed.example:8443/inbox",
+			"https://other.example/inbox",
+			"https://other.example:8443/inbox"
+		],
 		"deliverSuspendedSoftware": [
 			{
 				"software": "misskey",
@@ -293,6 +309,90 @@
 			}
 		},
 		{
+			"fn": "isFederationAllowedUri",
+			"policy": "all",
+			"uri": "https://misskey.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "all",
+			"uri": "https://MISSKEY.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "all",
+			"uri": "https://misskey.example:443/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "all",
+			"uri": "https://misskey.example:3000/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "all",
+			"uri": "https://blocked.example/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "all",
+			"uri": "https://BLOCKED.example/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "all",
+			"uri": "https://sub.blocked.example/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "all",
+			"uri": "https://blocked.example:8443/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "all",
+			"uri": "https://notblocked.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "all",
+			"uri": "https://allowed.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "all",
+			"uri": "https://sub.allowed.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "all",
+			"uri": "https://allowed.example:8443/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "all",
+			"uri": "https://other.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "all",
+			"uri": "https://other.example:8443/inbox",
+			"expected": true
+		},
+		{
 			"policy": "allUpperCaseLists",
 			"host": "misskey.example",
 			"expected": {
@@ -443,6 +543,90 @@
 			}
 		},
 		{
+			"fn": "isFederationAllowedUri",
+			"policy": "allUpperCaseLists",
+			"uri": "https://misskey.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "allUpperCaseLists",
+			"uri": "https://MISSKEY.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "allUpperCaseLists",
+			"uri": "https://misskey.example:443/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "allUpperCaseLists",
+			"uri": "https://misskey.example:3000/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "allUpperCaseLists",
+			"uri": "https://blocked.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "allUpperCaseLists",
+			"uri": "https://BLOCKED.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "allUpperCaseLists",
+			"uri": "https://sub.blocked.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "allUpperCaseLists",
+			"uri": "https://blocked.example:8443/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "allUpperCaseLists",
+			"uri": "https://notblocked.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "allUpperCaseLists",
+			"uri": "https://allowed.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "allUpperCaseLists",
+			"uri": "https://sub.allowed.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "allUpperCaseLists",
+			"uri": "https://allowed.example:8443/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "allUpperCaseLists",
+			"uri": "https://other.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "allUpperCaseLists",
+			"uri": "https://other.example:8443/inbox",
+			"expected": true
+		},
+		{
 			"policy": "none",
 			"host": "misskey.example",
 			"expected": {
@@ -593,6 +777,90 @@
 			}
 		},
 		{
+			"fn": "isFederationAllowedUri",
+			"policy": "none",
+			"uri": "https://misskey.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "none",
+			"uri": "https://MISSKEY.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "none",
+			"uri": "https://misskey.example:443/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "none",
+			"uri": "https://misskey.example:3000/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "none",
+			"uri": "https://blocked.example/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "none",
+			"uri": "https://BLOCKED.example/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "none",
+			"uri": "https://sub.blocked.example/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "none",
+			"uri": "https://blocked.example:8443/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "none",
+			"uri": "https://notblocked.example/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "none",
+			"uri": "https://allowed.example/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "none",
+			"uri": "https://sub.allowed.example/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "none",
+			"uri": "https://allowed.example:8443/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "none",
+			"uri": "https://other.example/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "none",
+			"uri": "https://other.example:8443/inbox",
+			"expected": false
+		},
+		{
 			"policy": "specified",
 			"host": "misskey.example",
 			"expected": {
@@ -741,6 +1009,90 @@
 				"isSilencedHost": false,
 				"isMediaSilencedHost": false
 			}
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "specified",
+			"uri": "https://misskey.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "specified",
+			"uri": "https://MISSKEY.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "specified",
+			"uri": "https://misskey.example:443/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "specified",
+			"uri": "https://misskey.example:3000/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "specified",
+			"uri": "https://blocked.example/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "specified",
+			"uri": "https://BLOCKED.example/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "specified",
+			"uri": "https://sub.blocked.example/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "specified",
+			"uri": "https://blocked.example:8443/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "specified",
+			"uri": "https://notblocked.example/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "specified",
+			"uri": "https://allowed.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "specified",
+			"uri": "https://sub.allowed.example/inbox",
+			"expected": true
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "specified",
+			"uri": "https://allowed.example:8443/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "specified",
+			"uri": "https://other.example/inbox",
+			"expected": false
+		},
+		{
+			"fn": "isFederationAllowedUri",
+			"policy": "specified",
+			"uri": "https://other.example:8443/inbox",
+			"expected": false
 		},
 		{
 			"software": {
