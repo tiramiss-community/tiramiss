@@ -13,7 +13,7 @@ I/O を持たない判定は `src/modules/federation/` に置き、`public.ts` �
 | 操作（入力 → 出力） | 失敗 | 置き場所 | 最初の利用 |
 | --- | --- | --- | --- |
 | `toPuny(host)`/`toPunyNullable` | なし | modules | #170 #195 |
-| `extractDbHost(uri)`/`punyHost(url)` | URL が不正なら TypeError | modules | #195 #160 |
+| `extractDbHost(uri)`/`punyHost(url)` | URL が不正なら TypeError | modules | #160 #195 |
 | `createHostRules(selfHost)` → `isSelfHost`・`isUriLocal`・`fullApAccount`・`emojiHost(src, noteUserHost)` | なし | modules | #170 #195 |
 | `FederationPolicy` と、`isFederationAllowedHost/Uri`・`isBlockedHost`・`isSilencedHost`・`isMediaSilencedHost`・`isDeliverSuspendedSoftware` | なし（純関数） | modules | #160 #171 #195 |
 | `readFederationPolicy()` → FederationPolicy | DB 例外を伝播 | platform/database | 上記 |
@@ -22,10 +22,10 @@ I/O を持たない判定は `src/modules/federation/` に置き、`public.ts` �
 | `readUserKeypair(userId)` → `{publicKeyPem, privateKeyPem}` | 行がなければ例外 | platform | #160 #195 |
 | `toSpkiPublicKeyPem(pem)` | PEM が不正なら例外 | modules | #195（actor 公開） |
 | `findPublicKeyByKeyId(keyId)`/`findPublicKeyByUserId(userId)` | DB 例外 | platform/database | #195 |
-| `fetchInstance(host)`/`fetchOrRegisterInstance(host)` → InstanceFacts/null、`updateInstance(id, patch)`、`listSuspendedHosts()` | DB 例外（初回登録の競合を含む）を伝播 | platform | #160 #195 |
-| `deliverSuccessPatch`/`deliverFailurePatch(instance, now, policy)`、`packInstanceState(instance, policy)` | なし（純関数） | modules | #160 #195 |
+| `fetchInstance(host)`/`fetchOrRegisterInstance(host)` → InstanceFacts/null、`updateInstance(id, patch)`、`listSuspendedHosts()` | DB 例外（初回登録の競合を含む）を伝播 | platform | 配送を接続する PR（#162・#171）、#195 |
+| `deliverSuccessPatch`/`deliverFailurePatch(instance, now, policy)`、`packInstanceState(instance, policy)` | なし（純関数） | modules | 配送を接続する PR（#162・#171）、#195 |
 | `acquireApObjectLock(uri)` → `release()` | 約 5 秒で取得できなければ例外 | platform | #195 |
-| `fetchInstanceMetadata(instance, {force})` | 取得・更新の例外は記録して握る | platform（判断は modules） | #160 #195 |
+| `fetchInstanceMetadata(instance, {force})` | 取得・更新の例外は記録して握る | platform（判断は modules） | 配送を接続する PR（#162・#171）、#195 |
 
 `ensureSystemAccount` は、呼び出し元の transaction には参加しない。本家と同じく、自前の transaction で作成を確定する。UseCase は自分の transaction を開く前に呼ぶ。[backend-next の運用ルール](../../packages/backend-next/AGENTS.md)は共有 Service による transaction 開始を禁じているが、本家と同じ遅延作成にはこの例外が必要になる。例外はこの 1 操作に限る。
 
@@ -79,7 +79,7 @@ I/O を持たない判定は `src/modules/federation/` に置き、`public.ts` �
     - 不通でなかった場合は、不通を記録する。
     - 不通なのに開始時刻がない場合は、開始時刻だけを設定する。
     - 不通になってから 7 日（`<=`）経過し、停止状態が none なら autoSuspended にする。
-  - sharedInbox への 410 で goneSuspended にするのは #160。状態値の型は本書が持つ。
+  - sharedInbox への 410 で goneSuspended にする判定は #160 が持つ（`classifyDeliveryFailure` の `hostGone`）。書き込みは配送を接続する PR で行う。状態値の型は本書が持つ。
   - 受信による更新と自動解除は #195 が受け持つ（packages/backend/src/queue/processors/InboxProcessorService.ts:232-248）。
 - **排他**
   - キーは `lock:ap-object:<uri>`。SET PX 30000 NX で取得し、100ms 間隔で 50 回まで試みる。
@@ -96,15 +96,15 @@ Redis のキー名と値の形式は本家と揃える。こうしておけば�
 
 1. **ホスト正規化と連合可否（最初の PR）**
    - 純関数、`readFederationPolicy`、絵文字のホスト正規化、既存の Meta 読み取りの統一（行がない場合の初期化を含む）を入れる。Entity の追加は不要。
-   - URI からホストを取り出す `extractDbHost` と `isFederationAllowedUri` は、最初の利用者（#160・#195）と同じ PR で入れる。
+   - URI からホストを取り出す `extractDbHost` と `isFederationAllowedUri` は、#160 の最初の PR で入れた。本家の probe でポート付きの URI も比べた。
    - #170 が使うのは、自ホストの判定とホスト正規化だけ。backend-next の render-note と note-reader にある `domainToASCII` の直書きは、この関数に置き換える。
    - #160 と #195 の先行契約になる。
 2. **鍵とシステムアカウント**
    - SystemAccount・UserKeypair・UsedUsername と、UserProfile とそれが参照する Entity を同期で複製する。
    - `generateRsaKeyPair`・`readUserKeypair`・`toSpkiPublicKeyPem`・`ensureSystemAccount` を実装する。
    - #216 と合わせて、#160 の署名と、#195 の remote user 解決を解く。#170 のリモートメンションの 501 は、その後に #195 が除去する。
-   - 実装済み。4 つの関数は `src/composition/federation-keys.ts` の `createFederationKeys` で組み立てる。通常起動への接続は、最初の利用者（#160・#195）の PR で行う。検証は[比較資料](../superpowers/compatibility/federation-base/README.md#新実装への接続)を参照。
-3. **インスタンス台帳と配送による状態更新**: #160 の配送を接続する PR と同時に入れる。
+   - 実装済み。4 つの関数は `src/composition/federation-keys.ts` の `createFederationKeys` で組み立てる。#160 の最初の PR は `readUserKeypair` を署名付き送信に使うが、通常起動からは呼ばない。通常起動への接続は、配送を接続する PR（#162・#171）か #195 の PR で行う。検証は[比較資料](../superpowers/compatibility/federation-base/README.md#新実装への接続)を参照。
+3. **インスタンス台帳と配送による状態更新**: 配送を接続する PR（#162・#171）と同時に入れる。#160 の最初の PR は署名と結果の分類だけを持ち、台帳と状態の書き込みは入れない（2026-11-03 ユーザー決定）。
 4. **リモート鍵の参照と AP オブジェクトの排他**: UserPublickey を複製する。#195 の受信実装と同時に入れる。
 5. **メタデータ取得**: #216 の `getHtml` と一緒に入れる。
 
@@ -119,7 +119,7 @@ Redis のキー名と値の形式は本家と揃える。こうしておけば�
 | 3 | entity:instance、service:FederatedInstanceService、responsibility:instance-moderation:48・job-processors:01・02・03・packers:39 |
 | 4 | entity:user_publickey、responsibility:activitypub:30・misc-utils:03 の AP 部分 |
 | 5 | service:FetchInstanceMetadataService、responsibility:instance-moderation:49・50 |
-| 他 Issue | instance-moderation:26 の名前連動と update-proxy-account は #194。activitypub:12 の resolver と `signToActivityPubGet` の切り替えは #195、signedGet は #160。misc-utils:03 の chart のロックは #200。proxy アカウントによる follow は、list が #187、アカウント移動が #199。nodeinfo と /api/meta での proxy 名の公開は、各配布経路の担当が `ensureSystemAccount` を使う |
+| 他 Issue | instance-moderation:26 の名前連動と update-proxy-account は #194。activitypub:12 の resolver と `signToActivityPubGet` の切り替え、signedGet 本体（HTML の alternate・content-type の検証・`assertActivityMatchesUrl`）は #195。#160 は署名付き GET の組み立て（`createSignedGet`）だけを持つ。misc-utils:03 の chart のロックは #200。proxy アカウントによる follow は、list が #187、アカウント移動が #199。nodeinfo と /api/meta での proxy 名の公開は、各配布経路の担当が `ensureSystemAccount` を使う |
 
 backend-next の note-authors は、UserLite.instance を作るために instance 表を直接読んでいる。段階 3 で `fetchInstance` に置き換える（本家は packages/backend/src/core/entities/UserEntityService.ts:506 でキャッシュを使う）。
 
@@ -143,7 +143,7 @@ backend-next の note-authors は、UserLite.instance を作るために instanc
   - ロックのキー・TTL・取得をあきらめるまでの時間。
 - **偽の外部サーバー**
   - メタデータ取得: nodeinfo のバージョン選択、404、HTML・manifest・favicon、24 時間の省略、force。
-  - 署名の検証は、#160 と #195 の fake inbox で行う。
+  - 送信する署名の検証は、#160 の fake inbox で行った（[比較資料](../superpowers/compatibility/ap-request/README.md)）。受信側の検証は #195 が持つ。
 
 ## 意図的差異
 

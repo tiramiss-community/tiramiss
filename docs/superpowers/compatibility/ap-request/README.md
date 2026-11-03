@@ -78,13 +78,14 @@ probe は re2 を差し替える（federation-base と同じ理由）。slacc �
 
 ## 新実装への接続
 
-新実装のテストは次の PR の段階で追加する。接続する期待値は次のとおり。
-
-| 新テスト（`packages/backend-next/test/`） | 接続する期待値 |
+| 新テスト（`packages/backend-next/test/`） | 接続した期待値 |
 | --- | --- |
-| 署名の単体テスト | `signing-cases.json` の全件。`signature` を byte 単位で比べる |
-| 配送結果の分類の単体テスト | `delivery-cases.json` の全件 |
-| 偽の inbox の単体テスト | `inbox-cases.json` の全件。`verified` の署名・Digest の検証を含む |
+| `unit/federation/http-signature.test.ts` | `signing-cases.json` の全件。`signature` を byte 単位で比べ、公開鍵で `crypto.verify` する |
+| `unit/federation/delivery-result.test.ts` | `delivery-cases.json` の全件。読み替えは `test/helpers/ap-delivery.ts` |
+| `unit/federation/signed-post.test.ts` | `inbox-cases.json` の全件。受信した要求（`verified` の署名・Digest の検証を含む）と、timeout・DNS・遮断を含む分類 |
+| `integration/ap-request.test.ts` | 実 DB/Redis。`createFederationKeys` が読む保存済みの鍵（PKCS#1 を含む）で `createApRequest` の `signedPost` が署名し、保存した公開鍵で偽の inbox が検証できること。共有 inbox の 410 と、鍵の行がない場合の分類 |
+
+新実装の対象は `packages/backend-next/src/modules/federation/` の `http-signature.ts`・`signed-post.ts`・`delivery-result.ts` と、`src/composition/ap-request.ts`。通常起動からはまだ呼ばない。
 
 ## 未検証・範囲外
 

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import semver from 'semver';
+import { extractDbHost } from './host.js';
 import type { HostRules } from './host.js';
 
 export type SoftwareSuspension = {
@@ -47,6 +48,10 @@ export function isFederationAllowedHost(policy: FederationPolicy, rules: HostRul
 		return false;
 	}
 	return !isBlockedHost(policy, host);
+}
+
+export function isFederationAllowedUri(policy: FederationPolicy, rules: HostRules, uri: string): boolean {
+	return isFederationAllowedHost(policy, rules, extractDbHost(uri));
 }
 
 export function isDeliverSuspendedSoftware(

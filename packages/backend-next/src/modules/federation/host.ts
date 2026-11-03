@@ -15,6 +15,11 @@ export function toPunyNullable(host: string | null | undefined): string | null {
 	return toPuny(host);
 }
 
+// url.host はポートを含み、既定でないポート付きでは toPuny が '' を返す。本家の DB 用ホストと揃えるため、ポートを外して補正しない。
+export function extractDbHost(uri: string): string {
+	return toPuny(new URL(uri).host);
+}
+
 export function punyHost(url: string): string {
 	const parsed = new URL(url);
 	return `${toPuny(parsed.hostname)}${parsed.port.length > 0 ? ':' + parsed.port : ''}`;

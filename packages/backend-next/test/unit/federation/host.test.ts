@@ -4,7 +4,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { expect, test } from 'vitest';
-import { createHostRules, punyHost, toPuny, toPunyNullable } from '../../../src/modules/federation/public.js';
+import { createHostRules, extractDbHost, punyHost, toPuny, toPunyNullable } from '../../../src/modules/federation/public.js';
 
 type HostCase =
 	| { fn: 'toPuny'; host: string; expected: string }
@@ -13,7 +13,8 @@ type HostCase =
 	| { fn: 'isSelfHost'; selfHost: string; host: string | null; expected: boolean }
 	| { fn: 'fullApAccount'; selfHost: string; host: string | null; expected: string }
 	| { fn: 'isUriLocal'; selfHost: string; url: string; expected: boolean }
-	| { fn: 'emojiHost'; selfHost: string; name: string; noteUserHost: string | null; expected: string | null };
+	| { fn: 'emojiHost'; selfHost: string; name: string; noteUserHost: string | null; expected: string | null }
+	| { fn: 'extractDbHost'; uri: string; expected: string };
 
 const { cases } = JSON.parse(readFileSync(new URL('../../../../../docs/superpowers/compatibility/federation-base/host-cases.json', import.meta.url), 'utf8')) as { cases: HostCase[] };
 
@@ -39,17 +40,20 @@ function evaluate(c: HostCase): unknown {
 			}
 			return createHostRules(c.selfHost).emojiHost(match[2], c.noteUserHost);
 		}
+		case 'extractDbHost':
+			return extractDbHost(c.uri);
 	}
 }
 
 test('host fixture covers every recorded function', () => {
-	expect(new Set(cases.map(c => c.fn))).toEqual(new Set(['toPuny', 'toPunyNullable', 'punyHost', 'isSelfHost', 'fullApAccount', 'isUriLocal', 'emojiHost']));
+	expect(new Set(cases.map(c => c.fn))).toEqual(new Set(['toPuny', 'toPunyNullable', 'punyHost', 'isSelfHost', 'fullApAccount', 'isUriLocal', 'emojiHost', 'extractDbHost']));
 });
 
 test.each(cases.map(c => [JSON.stringify(c), c] as const))('matches pinned upstream: %s', (_, c) => {
 	expect(evaluate(c)).toEqual(c.expected);
 });
 
-test('punyHost rejects an invalid URL like upstream', () => {
+test('punyHost and extractDbHost reject an invalid URL like upstream', () => {
 	expect(() => punyHost('not a url')).toThrow(TypeError);
+	expect(() => extractDbHost('not a url')).toThrow(TypeError);
 });

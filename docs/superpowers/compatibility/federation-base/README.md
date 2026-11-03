@@ -33,8 +33,8 @@ probe は re2 を差し替える。対象の関数は re2 を使わず、ネイ�
 
 | 新テスト（`packages/backend-next/test/`） | 接続した期待値 |
 | --- | --- |
-| `unit/federation/host.test.ts` | `host-cases.json` の全件 |
-| `unit/federation/policy.test.ts` | `policy-cases.json` の全件。自ホストが none・blocked より優先されること |
+| `unit/federation/host.test.ts` | `host-cases.json` の全件（`extractDbHost` を含む） |
+| `unit/federation/policy.test.ts` | `policy-cases.json` の全件（`isFederationAllowedUri` を含む）。自ホストが none・blocked より優先されること |
 | `integration/meta.test.ts` | 本家の `MetaService.fetch` と同じ Meta の選び方（id の大きい行）、行がない場合の id `'x'` の作成と同時呼び出し、`readFederationPolicy` |
 | `unit/federation/keys.test.ts` | `genRsaKeyPair` の形式（RSA 2048・SPKI・PKCS#8）と生成した鍵での署名・検証、`UserKeypairService.fetcher` の PKCS#1→PKCS#8 変換、`ApRendererService.renderKey` の SPKI 化 |
 | `unit/logger.test.ts` | `privateKey` を含むキーの伏せ字（log・`DiagnosticError` の details） |
@@ -42,4 +42,4 @@ probe は re2 を差し替える。対象の関数は re2 を使わず、ネイ�
 
 鍵とシステムアカウントは Node の `crypto` と DB・Redis の状態だけで比較できるため、本家 probe は追加していない。Redis の値の形は、同じ本家 Entity を TypeORM で読んだ値の JSON と一致することで確かめた。
 
-URI からホストを取り出す `extractDbHost` と `isFederationAllowedUri` は、最初の利用者の #160 で入れる。入力表は #160 で追加した。新実装の `host.test.ts`・`policy.test.ts` が新しい case を読むのは、#160 の実装と同じ PR の段階から。
+URI からホストを取り出す `extractDbHost` と `isFederationAllowedUri` は、最初の利用者の #160 で入れた。入力表も #160 で追加し、`host.test.ts`・`policy.test.ts` が全件を読む。

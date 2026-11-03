@@ -27,7 +27,7 @@ DNS キャッシュはプロセス内のものなので、#217 の同期対象�
 
 | 操作 | 入力 → 出力／失敗 | 利用 |
 | --- | --- | --- |
-| `send(url, {method='GET', headers, body, timeoutMs=5000, maxBytes=10MiB, allowLocalAddress=false}, {okOnly=true})` | `{status, statusText, finalUrl, header(name), text(), json()}`。本文は遅延して読み、maxBytes を超えると読み取り時に失敗する。okOnly で非 2xx なら `OutboundStatusError` | #160 signedPost/signedGet、#215 favicon の HEAD、#188 センシティブ画像判定（multipart）、#197/#198 webhook、#179 captcha・OAuth の client_id・メール検証、#183 翻訳、#196 fetch-external-resources |
+| `send(url, {method='GET', headers, body, timeoutMs=5000, maxBytes=10MiB, allowLocalAddress=false}, {okOnly=true})` | `{status, statusText, finalUrl, header(name), text(), json()}`。本文は遅延して読み、maxBytes を超えると読み取り時に失敗する。okOnly で非 2xx なら `OutboundStatusError` | #160 signedPost、#195 signedGet、#215 favicon の HEAD、#188 センシティブ画像判定（multipart）、#197/#198 webhook、#179 captcha・OAuth の client_id・メール検証、#183 翻訳、#196 fetch-external-resources |
 | `getJson(url, accept='application/json, */*', headers?)` | 5000ms・256KiB で JSON を返す | #195 WebFinger、#215 nodeinfo・manifest、#196 |
 | `getHtml(url, accept='text/html, */*', headers?)` | 5000ms・10MiB で text を返す | #215 インスタンス情報、rel=me 検証の担当 |
 | `download(url, destPath)`/`downloadText(url)` | `{filename}`／UTF-8 文字列。非 2xx は `OutboundStatusError`、それ以外は元の例外 | #188 URL からのアップロード・/proxy、#199 import/export・絵文字 |
@@ -63,7 +63,7 @@ adapter 専用の agent の窓口は、本家の規則ごとに分ける。業�
   - 展開は既定で有効にする。
 - **Activity の取得**（#195 への引き継ぎ）
   - Accept は `application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"`。5000ms・256KiB で、本文を読む前に content-type を検証する（HttpRequestService.ts:257-278）。
-  - signedGet は既定の 10MiB を使い、HTML の alternate link を 1 回だけたどる（packages/backend/src/core/activitypub/ApRequestService.ts:207-247）。これは #160 に引き継ぐ。
+  - signedGet は既定の 10MiB を使い、HTML の alternate link を 1 回だけたどる（packages/backend/src/core/activitypub/ApRequestService.ts:207-247）。これは最初の利用者の #195 に引き継ぐ。#160 は署名付き GET の組み立て（`createSignedGet`）だけを提供する。
 - **download**
   - timeout は段階ごとに 30 秒、全体で 60 秒。retry は 0 回、http2 は使わず、unix socket は不可。
   - redirect の上限は got の既定の 10 回で、`beforeRedirect` のたびに agent を選び直す（packages/backend/src/core/DownloadService.ts:42-84）。
@@ -83,13 +83,14 @@ adapter 専用の agent の窓口は、本家の規則ごとに分ける。業�
   - agent 群、private 判定、`send`、`getJson`、失敗クラス、User-Agent を入れる。
   - 設定は `proxy`・`proxyBypassHosts`・`allowedPrivateNetworks`・`outgoingAddress`・`deliverJobConcurrency` を読む。`allowedPrivateNetworks` の CIDR は起動時に検査し、不正なら `INVALID_CONFIG` にする（下記の承認済み差異）。
   - 最初の利用者（#160 の fake inbox への署名送信、または #195 の WebFinger）と同じ PR か、その直前の PR で通常起動に接続する。利用者のいない送信基盤を先に積まない。
+  - #160 の最初の PR は `send` を署名付き送信に使うが、配送ジョブがまだないため通常起動からは呼ばない。通常起動への接続は、配送を接続する PR（#162・#171）か #195 の WebFinger の PR で行う。
 - **後続**
   - `getHtml` は #215 のメタデータ取得と一緒に入れる。
   - `download`・`downloadText`・`maxFileSize` は #188 の最初の URL 取得 PR で入れる。
   - adapter 用の agent の窓口は、#188・#177・#196 が必要になった時点で公開する。
   - `proxySmtp` は #179 の EmailService で nodemailer へ渡す（packages/backend/src/core/EmailService.ts:51-61）。
 - **依存**
-  - #195 の remote user 解決には、#216 に加えて #215 の鍵と #160 の signedGet も要る（`signToActivityPubGet` の既定値は true。packages/backend/src/models/Meta.ts:721-723）。
+  - #195 の remote user 解決には、#216 に加えて #215 の鍵と #160 の GET の署名も要る（`signToActivityPubGet` の既定値は true。packages/backend/src/models/Meta.ts:721-723）。signedGet 本体は #195 が持つ。
   - #170 の暫定の 501 を外すには、#195 の解決処理が要る。#216 だけでは外せない。
 
 ## 監査行の割り当て（outbound-http 10 行）
@@ -98,14 +99,14 @@ adapter 専用の agent の窓口は、本家の規則ごとに分ける。業�
 | --- | --- |
 | config:proxy・proxyBypassHosts・allowedPrivateNetworks・outgoingAddress | 最初の PR（キーの互換は #138 でも照合する） |
 | config:proxySmtp | #179 |
-| responsibility:drive-media-http:27・28、service:HttpRequestService | 最初の PR。Activity の検証は #195、signedGet は #160 |
+| responsibility:drive-media-http:27・28、service:HttpRequestService | 最初の PR。Activity の検証と signedGet は #195（GET の署名は #160） |
 | responsibility:drive-media-http:26、service:DownloadService | #188 の最初の URL 取得 PR |
 
 misc-utils:30 のうち StatusError の型は #216 が定義する。同じ行のほかの例外型は、引き続き現在の担当が持つ。
 
 ## 比較と検証
 
-この層は DB と Redis を使わない。そのため、#216 の完了条件にある実 DB/Redis の検証は、#160 と #195 の結合テストで代える。実装した PR で、対応表の該当行の status・実装・検証を更新する。
+この層は DB と Redis を使わない。そのため、#216 の完了条件にある実 DB/Redis の検証は、#160 と #195 の結合テストで代える。実装した PR で、対応表の該当行の status・実装・検証を更新する。#160 の分は `packages/backend-next/test/integration/ap-request.test.ts` で行った。`createFederationKeys` が DB の鍵を読み、`createOutboundHttpClient` で偽の inbox へ送り、保存した公開鍵で署名を検証する。
 
 - **単体**（HTTP と DI なし）
   - agent 選択の真理値表（bypass、proxy、allowLocalAddress、http/https、3 種類の窓口）。

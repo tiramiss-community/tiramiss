@@ -14,7 +14,7 @@
 | [observations.json](observations.json) | 上記入力と追加シナリオの正規化済み実測89件。HTTP本文/エラー/WWW-Authenticate、Note/Poll差分、保存字段、show、カウント、AP受信、削除stream/監査 |
 | [rate-observations.json](rate-observations.json) | productionモードの本家HTTPでのレート制限実測3件 |
 | [coverage.json](coverage.json) | C1–C10/F1–F8の根拠キー・本家ソース・担当Issue・未測定/未接続。`measured`は記載範囲を実測した意味で全組合せの網羅ではない |
-| [intentional-differences.json](intentional-differences.json) | 既存合意の差異D1–D6と、N1の参照予算D7。D7のみ新実装の検証済み。未実装を差異へ読み替えない |
+| [intentional-differences.json](intentional-differences.json) | 既存合意の差異D1–D6と、N1の参照予算D7。D7のみ新実装の検証済み。未実装を差異へ読み替えない。所有者の再評価は各項目の`reevaluations`に理由と日付を残す（D4の#160） |
 | [reference-note.e2e.ts](reference-note.e2e.ts) | 本家テストサーバーへのprobe。JSON入力を解決し、別接続のDBと受信結果を期待値に照合 |
 | [reference-note.setup.ts](reference-note.setup.ts) / [reference-note.config.mjs](reference-note.config.mjs) | 本家e2e設定の上書き。HTTPサーバー側の署名用native poolも初期化する |
 | [reference-note-rate.mjs](reference-note-rate.mjs) | e2e終了後、同じ専用DBでproduction HTTPプロセスを起動し、本物のレート制限を確認。自身の子だけを停止 |
