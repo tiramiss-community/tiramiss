@@ -1,0 +1,3506 @@
+{
+	"inputs": {
+		"cases": [
+			{
+				"id": "address-ip-public-stand-in",
+				"op": "send",
+				"url": "{publicIp}/echo",
+				"read": "json"
+			},
+			{
+				"id": "address-ip-private",
+				"op": "send",
+				"url": "{privateIp}/echo",
+				"read": "json"
+			},
+			{
+				"id": "address-dns-public-stand-in",
+				"op": "send",
+				"url": "{public}/echo",
+				"read": "json"
+			},
+			{
+				"id": "address-dns-private",
+				"op": "send",
+				"url": "{private}/echo",
+				"read": "json"
+			},
+			{
+				"id": "address-dns-private-allow-local",
+				"op": "send",
+				"url": "{private}/echo",
+				"options": {
+					"allowLocalAddress": true
+				},
+				"read": "json"
+			},
+			{
+				"id": "address-no-allowed-networks",
+				"config": {
+					"allowedPrivateNetworks": []
+				},
+				"op": "send",
+				"url": "{public}/echo",
+				"read": "json"
+			},
+			{
+				"id": "address-mapped-cidr-family-mismatch",
+				"config": {
+					"allowedPrivateNetworks": [
+						"::ffff:127.0.0.0/104"
+					]
+				},
+				"op": "send",
+				"url": "{publicIp}/echo",
+				"read": "json"
+			},
+			{
+				"id": "address-tls-public-stand-in",
+				"op": "send",
+				"url": "{tlsPublic}/echo",
+				"read": "json"
+			},
+			{
+				"id": "address-tls-private",
+				"op": "send",
+				"url": "{tlsPrivate}/echo",
+				"read": "json"
+			},
+			{
+				"id": "dns-localhost-without-hosts-fallback",
+				"op": "send",
+				"url": "{localhost}/echo",
+				"read": "json"
+			},
+			{
+				"id": "dns-localhost-allow-local",
+				"op": "send",
+				"url": "{localhost}/echo",
+				"options": {
+					"allowLocalAddress": true
+				},
+				"read": "json"
+			},
+			{
+				"id": "redirect-to-private-dns",
+				"op": "send",
+				"url": "{public}/redirect?to={private}/echo",
+				"read": "json"
+			},
+			{
+				"id": "redirect-to-private-ip",
+				"op": "send",
+				"url": "{public}/redirect?to={privateIp}/echo",
+				"read": "json"
+			},
+			{
+				"id": "redirect-to-private-allow-local",
+				"op": "send",
+				"url": "{public}/redirect?to={private}/echo",
+				"options": {
+					"allowLocalAddress": true
+				},
+				"read": "json"
+			},
+			{
+				"id": "redirect-proxy-to-bypass-private",
+				"config": {
+					"proxy": true,
+					"proxyBypassHosts": [
+						"private.outbound.test"
+					]
+				},
+				"op": "send",
+				"url": "{public}/redirect?to={private}/echo",
+				"read": "json"
+			},
+			{
+				"id": "redirect-bypass-to-proxy-private",
+				"config": {
+					"proxy": true,
+					"proxyBypassHosts": [
+						"public.outbound.test"
+					]
+				},
+				"op": "send",
+				"url": "{public}/redirect?to={private}/echo",
+				"read": "json"
+			},
+			{
+				"id": "redirect-hops-20",
+				"op": "send",
+				"url": "{public}/hops/20",
+				"read": "json"
+			},
+			{
+				"id": "redirect-hops-21",
+				"op": "send",
+				"url": "{public}/hops/21",
+				"read": "json"
+			},
+			{
+				"id": "redirect-headers-same-host",
+				"op": "send",
+				"url": "{public}/redirect?to={public}/echo",
+				"options": {
+					"headers": {
+						"Authorization": "Bearer secret",
+						"Cookie": "session=1",
+						"X-Probe": "kept"
+					}
+				},
+				"read": "json"
+			},
+			{
+				"id": "redirect-headers-subdomain",
+				"op": "send",
+				"url": "{public}/redirect?to={sub}/echo",
+				"options": {
+					"headers": {
+						"Authorization": "Bearer secret",
+						"Cookie": "session=1",
+						"X-Probe": "kept"
+					}
+				},
+				"read": "json"
+			},
+			{
+				"id": "redirect-headers-parent-domain",
+				"op": "send",
+				"url": "{sub}/redirect?to={public}/echo",
+				"options": {
+					"headers": {
+						"Authorization": "Bearer secret",
+						"Cookie": "session=1",
+						"X-Probe": "kept"
+					}
+				},
+				"read": "json"
+			},
+			{
+				"id": "redirect-headers-cross-domain",
+				"op": "send",
+				"url": "{public}/redirect?to={other}/echo",
+				"options": {
+					"headers": {
+						"Authorization": "Bearer secret",
+						"Cookie": "session=1",
+						"X-Probe": "kept"
+					}
+				},
+				"read": "json"
+			},
+			{
+				"id": "redirect-headers-https-to-http",
+				"op": "send",
+				"url": "{tlsPublic}/redirect?to={public}/echo",
+				"options": {
+					"headers": {
+						"Authorization": "Bearer secret",
+						"Cookie": "session=1",
+						"X-Probe": "kept"
+					}
+				},
+				"read": "json"
+			},
+			{
+				"id": "redirect-headers-http-to-https",
+				"op": "send",
+				"url": "{public}/redirect?to={tlsPublic}/echo",
+				"options": {
+					"headers": {
+						"Authorization": "Bearer secret",
+						"Cookie": "session=1",
+						"X-Probe": "kept"
+					}
+				},
+				"read": "json"
+			},
+			{
+				"id": "redirect-post-303",
+				"op": "send",
+				"url": "{public}/redirect?status=303&to={public}/echo",
+				"options": {
+					"method": "POST",
+					"headers": {
+						"Content-Type": "text/plain"
+					},
+					"body": {
+						"kind": "text",
+						"value": "payload"
+					}
+				},
+				"read": "json"
+			},
+			{
+				"id": "redirect-post-307",
+				"op": "send",
+				"url": "{public}/redirect?status=307&to={public}/echo",
+				"options": {
+					"method": "POST",
+					"headers": {
+						"Content-Type": "text/plain"
+					},
+					"body": {
+						"kind": "text",
+						"value": "payload"
+					}
+				},
+				"read": "json"
+			},
+			{
+				"id": "proxy-private-dns",
+				"config": {
+					"proxy": true
+				},
+				"op": "send",
+				"url": "{private}/echo",
+				"read": "json"
+			},
+			{
+				"id": "proxy-private-ip",
+				"config": {
+					"proxy": true
+				},
+				"op": "send",
+				"url": "{privateIp}/echo",
+				"read": "json"
+			},
+			{
+				"id": "proxy-private-tls",
+				"config": {
+					"proxy": true
+				},
+				"op": "send",
+				"url": "{tlsPrivate}/echo",
+				"read": "json"
+			},
+			{
+				"id": "proxy-allow-local",
+				"config": {
+					"proxy": true
+				},
+				"op": "send",
+				"url": "{private}/echo",
+				"options": {
+					"allowLocalAddress": true
+				},
+				"read": "json"
+			},
+			{
+				"id": "proxy-bypass-private",
+				"config": {
+					"proxy": true,
+					"proxyBypassHosts": [
+						"private.outbound.test"
+					]
+				},
+				"op": "send",
+				"url": "{private}/echo",
+				"read": "json"
+			},
+			{
+				"id": "proxy-bypass-allow-local",
+				"config": {
+					"proxy": true,
+					"proxyBypassHosts": [
+						"private.outbound.test"
+					]
+				},
+				"op": "send",
+				"url": "{private}/echo",
+				"options": {
+					"allowLocalAddress": true
+				},
+				"read": "json"
+			},
+			{
+				"id": "proxy-bypass-ip-literal-not-listed",
+				"config": {
+					"proxy": true,
+					"proxyBypassHosts": [
+						"private.outbound.test"
+					]
+				},
+				"op": "send",
+				"url": "{privateIp}/echo",
+				"read": "json"
+			},
+			{
+				"id": "outgoing-address-direct",
+				"config": {
+					"outgoingAddress": "127.0.0.3"
+				},
+				"op": "send",
+				"url": "{public}/echo",
+				"read": "json"
+			},
+			{
+				"id": "outgoing-address-proxy",
+				"config": {
+					"proxy": true,
+					"outgoingAddress": "127.0.0.3"
+				},
+				"op": "send",
+				"url": "{public}/echo",
+				"read": "json"
+			},
+			{
+				"id": "timeout-before-headers",
+				"op": "send",
+				"url": "{public}/stall-headers",
+				"options": {
+					"timeoutMs": 300
+				},
+				"read": "text"
+			},
+			{
+				"id": "timeout-during-body",
+				"op": "send",
+				"url": "{public}/stall-body",
+				"options": {
+					"timeoutMs": 300
+				},
+				"read": "text"
+			},
+			{
+				"id": "size-json-at-limit",
+				"op": "getJson",
+				"url": "{public}/bytes/262144"
+			},
+			{
+				"id": "size-json-over-limit",
+				"op": "getJson",
+				"url": "{public}/bytes/262145"
+			},
+			{
+				"id": "size-json-gzip-at-limit",
+				"op": "getJson",
+				"url": "{public}/gzip/262144"
+			},
+			{
+				"id": "size-json-gzip-over-limit",
+				"op": "getJson",
+				"url": "{public}/gzip/262145"
+			},
+			{
+				"id": "size-send-at-limit",
+				"op": "send",
+				"url": "{public}/bytes/10485760",
+				"read": "text"
+			},
+			{
+				"id": "size-send-over-limit",
+				"op": "send",
+				"url": "{public}/bytes/10485761",
+				"read": "text"
+			},
+			{
+				"id": "size-send-gzip-over-limit",
+				"op": "send",
+				"url": "{public}/gzip/10485761",
+				"read": "text"
+			},
+			{
+				"id": "size-send-custom-limit",
+				"op": "send",
+				"url": "{public}/bytes/11",
+				"options": {
+					"maxBytes": 10
+				},
+				"read": "text"
+			},
+			{
+				"id": "size-send-gzip-compressed-over-expanded-at-limit",
+				"op": "send",
+				"url": "{public}/gzip-incompressible/65536",
+				"options": {
+					"maxBytes": 65536
+				},
+				"read": "text"
+			},
+			{
+				"id": "status-400",
+				"op": "send",
+				"url": "{public}/status/400",
+				"read": "json"
+			},
+			{
+				"id": "status-410",
+				"op": "send",
+				"url": "{public}/status/410",
+				"read": "json"
+			},
+			{
+				"id": "status-429",
+				"op": "send",
+				"url": "{public}/status/429",
+				"read": "json"
+			},
+			{
+				"id": "status-500",
+				"op": "send",
+				"url": "{public}/status/500",
+				"read": "json"
+			},
+			{
+				"id": "status-503",
+				"op": "send",
+				"url": "{public}/status/503",
+				"read": "json"
+			},
+			{
+				"id": "status-404-not-ok-only",
+				"op": "send",
+				"url": "{public}/status/404",
+				"extra": {
+					"okOnly": false
+				},
+				"read": "json"
+			},
+			{
+				"id": "status-get-json-404",
+				"op": "getJson",
+				"url": "{public}/status/404"
+			},
+			{
+				"id": "get-json-invalid",
+				"op": "getJson",
+				"url": "{public}/text"
+			},
+			{
+				"id": "headers-default-user-agent",
+				"op": "send",
+				"url": "{public}/echo",
+				"read": "json"
+			},
+			{
+				"id": "headers-user-agent-exact-key",
+				"op": "send",
+				"url": "{public}/echo",
+				"options": {
+					"headers": {
+						"User-Agent": "custom"
+					}
+				},
+				"read": "json"
+			},
+			{
+				"id": "headers-user-agent-lowercase-key",
+				"op": "send",
+				"url": "{public}/echo",
+				"options": {
+					"headers": {
+						"user-agent": "custom"
+					}
+				},
+				"read": "json"
+			},
+			{
+				"id": "headers-user-agent-uppercase-key",
+				"op": "send",
+				"url": "{public}/echo",
+				"options": {
+					"headers": {
+						"USER-AGENT": "custom"
+					}
+				},
+				"read": "json"
+			},
+			{
+				"id": "headers-get-json-default-accept",
+				"op": "getJson",
+				"url": "{public}/echo"
+			},
+			{
+				"id": "headers-get-json-custom-accept",
+				"op": "getJson",
+				"url": "{public}/echo",
+				"accept": "application/jrd+json"
+			},
+			{
+				"id": "headers-get-json-lowercase-accept-header",
+				"op": "getJson",
+				"url": "{public}/echo",
+				"headers": {
+					"accept": "text/plain"
+				}
+			},
+			{
+				"id": "method-head",
+				"op": "send",
+				"url": "{public}/echo",
+				"options": {
+					"method": "HEAD"
+				},
+				"read": "text"
+			},
+			{
+				"id": "body-text",
+				"op": "send",
+				"url": "{public}/echo",
+				"options": {
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/activity+json"
+					},
+					"body": {
+						"kind": "text",
+						"value": "{\"type\":\"Create\"}"
+					}
+				},
+				"read": "json"
+			},
+			{
+				"id": "body-bytes",
+				"op": "send",
+				"url": "{public}/echo",
+				"options": {
+					"method": "POST",
+					"body": {
+						"kind": "bytes",
+						"value": "raw bytes"
+					}
+				},
+				"read": "json"
+			},
+			{
+				"id": "body-urlencoded",
+				"op": "send",
+				"url": "{public}/echo",
+				"options": {
+					"method": "POST",
+					"body": {
+						"kind": "urlencoded",
+						"fields": {
+							"secret": "s",
+							"response": "r"
+						}
+					}
+				},
+				"read": "json"
+			},
+			{
+				"id": "body-form",
+				"op": "send",
+				"url": "{public}/echo",
+				"options": {
+					"method": "POST",
+					"body": {
+						"kind": "form",
+						"fields": {
+							"name": "value"
+						}
+					}
+				},
+				"read": "json"
+			}
+		]
+	},
+	"cases": [
+		{
+			"id": "address-ip-public-stand-in",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{publicIp}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "address-ip-private",
+			"error": {
+				"name": "FetchError",
+				"message": "request to {privateIp}/echo failed, reason: Blocked address: 127.0.0.1",
+				"type": "system"
+			},
+			"requests": [],
+			"connects": []
+		},
+		{
+			"id": "address-dns-public-stand-in",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "address-dns-private",
+			"error": {
+				"name": "FetchError",
+				"message": "request to {private}/echo failed, reason: Blocked address: 127.0.0.1",
+				"type": "system"
+			},
+			"requests": [],
+			"connects": []
+		},
+		{
+			"id": "address-dns-private-allow-local",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{private}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "private",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "address-no-allowed-networks",
+			"error": {
+				"name": "FetchError",
+				"message": "request to {public}/echo failed, reason: Blocked address: 127.0.0.2",
+				"type": "system"
+			},
+			"requests": [],
+			"connects": []
+		},
+		{
+			"id": "address-mapped-cidr-family-mismatch",
+			"error": {
+				"name": "FetchError",
+				"message": "request to {publicIp}/echo failed, reason: Blocked address: 127.0.0.2",
+				"type": "system"
+			},
+			"requests": [],
+			"connects": []
+		},
+		{
+			"id": "address-tls-public-stand-in",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{tlsPublic}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "tlsPublic",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "address-tls-private",
+			"error": {
+				"name": "FetchError",
+				"message": "request to {tlsPrivate}/echo failed, reason: Blocked address: 127.0.0.1",
+				"type": "system"
+			},
+			"requests": [],
+			"connects": []
+		},
+		{
+			"id": "dns-localhost-without-hosts-fallback",
+			"error": {
+				"name": "FetchError",
+				"message": "request to {localhost}/echo failed, reason: cacheableLookup ENOTFOUND localhost",
+				"type": "system",
+				"code": "ENOTFOUND"
+			},
+			"requests": [],
+			"connects": []
+		},
+		{
+			"id": "dns-localhost-allow-local",
+			"error": {
+				"name": "FetchError",
+				"message": "request to {localhost}/echo failed, reason: cacheableLookup ENOTFOUND localhost",
+				"type": "system",
+				"code": "ENOTFOUND"
+			},
+			"requests": [],
+			"connects": []
+		},
+		{
+			"id": "redirect-to-private-dns",
+			"error": {
+				"name": "FetchError",
+				"message": "request to {private}/echo failed, reason: Blocked address: 127.0.0.1",
+				"type": "system"
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/redirect?to={private}/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "redirect-to-private-ip",
+			"error": {
+				"name": "FetchError",
+				"message": "request to {privateIp}/echo failed, reason: Blocked address: 127.0.0.1",
+				"type": "system"
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/redirect?to={privateIp}/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "redirect-to-private-allow-local",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{private}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/redirect?to={private}/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "private",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "redirect-proxy-to-bypass-private",
+			"error": {
+				"name": "FetchError",
+				"message": "request to {private}/echo failed, reason: Blocked address: 127.0.0.1",
+				"type": "system"
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/redirect?to={private}/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": [
+				{
+					"authority": "public.outbound.test:{port:public}",
+					"remoteAddress": "127.0.0.1"
+				}
+			]
+		},
+		{
+			"id": "redirect-bypass-to-proxy-private",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{private}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/redirect?to={private}/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "private",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": [
+				{
+					"authority": "private.outbound.test:{port:private}",
+					"remoteAddress": "127.0.0.1"
+				}
+			]
+		},
+		{
+			"id": "redirect-hops-20",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/hops/0"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/20",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/19",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/18",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/17",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/16",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/15",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/14",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/13",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/12",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/11",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/10",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/9",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/8",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/7",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/6",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/5",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/4",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/3",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/2",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/1",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/0",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "redirect-hops-21",
+			"error": {
+				"name": "FetchError",
+				"message": "maximum redirect reached at: {public}/hops/1",
+				"type": "max-redirect"
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/21",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/20",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/19",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/18",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/17",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/16",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/15",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/14",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/13",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/12",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/11",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/10",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/9",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/8",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/7",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/6",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/5",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/4",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/3",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/2",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/hops/1",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "redirect-headers-same-host",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/redirect?to={public}/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"authorization",
+							"Bearer secret"
+						],
+						[
+							"cookie",
+							"session=1"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						],
+						[
+							"x-probe",
+							"kept"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"authorization",
+							"Bearer secret"
+						],
+						[
+							"cookie",
+							"session=1"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						],
+						[
+							"x-probe",
+							"kept"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "redirect-headers-subdomain",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{sub}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/redirect?to={sub}/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"authorization",
+							"Bearer secret"
+						],
+						[
+							"cookie",
+							"session=1"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						],
+						[
+							"x-probe",
+							"kept"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"authorization",
+							"Bearer secret"
+						],
+						[
+							"cookie",
+							"session=1"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						],
+						[
+							"x-probe",
+							"kept"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "redirect-headers-parent-domain",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/redirect?to={public}/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"authorization",
+							"Bearer secret"
+						],
+						[
+							"cookie",
+							"session=1"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						],
+						[
+							"x-probe",
+							"kept"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						],
+						[
+							"x-probe",
+							"kept"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "redirect-headers-cross-domain",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{other}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/redirect?to={other}/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"authorization",
+							"Bearer secret"
+						],
+						[
+							"cookie",
+							"session=1"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						],
+						[
+							"x-probe",
+							"kept"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						],
+						[
+							"x-probe",
+							"kept"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "redirect-headers-https-to-http",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "tlsPublic",
+					"method": "GET",
+					"path": "/redirect?to={public}/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"authorization",
+							"Bearer secret"
+						],
+						[
+							"cookie",
+							"session=1"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						],
+						[
+							"x-probe",
+							"kept"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						],
+						[
+							"x-probe",
+							"kept"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "redirect-headers-http-to-https",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{tlsPublic}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/redirect?to={tlsPublic}/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"authorization",
+							"Bearer secret"
+						],
+						[
+							"cookie",
+							"session=1"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						],
+						[
+							"x-probe",
+							"kept"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				},
+				{
+					"listener": "tlsPublic",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						],
+						[
+							"x-probe",
+							"kept"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "redirect-post-303",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/redirect?status=303&to={public}/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"content-length",
+							"7"
+						],
+						[
+							"content-type",
+							"text/plain"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": "payload"
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"content-type",
+							"text/plain"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "redirect-post-307",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/redirect?status=307&to={public}/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"content-length",
+							"7"
+						],
+						[
+							"content-type",
+							"text/plain"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": "payload"
+				},
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"content-length",
+							"7"
+						],
+						[
+							"content-type",
+							"text/plain"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": "payload"
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "proxy-private-dns",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{private}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "private",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": [
+				{
+					"authority": "private.outbound.test:{port:private}",
+					"remoteAddress": "127.0.0.1"
+				}
+			]
+		},
+		{
+			"id": "proxy-private-ip",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{privateIp}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "private",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": [
+				{
+					"authority": "127.0.0.1:{port:private}",
+					"remoteAddress": "127.0.0.1"
+				}
+			]
+		},
+		{
+			"id": "proxy-private-tls",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{tlsPrivate}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "tlsPrivate",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": [
+				{
+					"authority": "private.outbound.test:{port:tlsPrivate}",
+					"remoteAddress": "127.0.0.1"
+				}
+			]
+		},
+		{
+			"id": "proxy-allow-local",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{private}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "private",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": [
+				{
+					"authority": "private.outbound.test:{port:private}",
+					"remoteAddress": "127.0.0.1"
+				}
+			]
+		},
+		{
+			"id": "proxy-bypass-private",
+			"error": {
+				"name": "FetchError",
+				"message": "request to {private}/echo failed, reason: Blocked address: 127.0.0.1",
+				"type": "system"
+			},
+			"requests": [],
+			"connects": []
+		},
+		{
+			"id": "proxy-bypass-allow-local",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{private}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "private",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "proxy-bypass-ip-literal-not-listed",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{privateIp}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "private",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": [
+				{
+					"authority": "127.0.0.1:{port:private}",
+					"remoteAddress": "127.0.0.1"
+				}
+			]
+		},
+		{
+			"id": "outgoing-address-direct",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.3",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "outgoing-address-proxy",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": [
+				{
+					"authority": "public.outbound.test:{port:public}",
+					"remoteAddress": "127.0.0.1"
+				}
+			]
+		},
+		{
+			"id": "timeout-before-headers",
+			"error": {
+				"name": "AbortError",
+				"message": "The operation was aborted.",
+				"type": "aborted"
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/stall-headers",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "timeout-during-body",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/stall-body"
+			},
+			"readError": {
+				"name": "AbortError",
+				"message": "The operation was aborted.",
+				"type": "aborted"
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/stall-body",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "size-json-at-limit",
+			"json": {
+				"stringLength": 262142
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/bytes/262144",
+					"headers": [
+						[
+							"accept",
+							"application/json, */*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "size-json-over-limit",
+			"error": {
+				"name": "FetchError",
+				"message": "content size at {public}/bytes/262145 over limit: 262144",
+				"type": "max-size"
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/bytes/262145",
+					"headers": [
+						[
+							"accept",
+							"application/json, */*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "size-json-gzip-at-limit",
+			"json": {
+				"stringLength": 262142
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/gzip/262144",
+					"headers": [
+						[
+							"accept",
+							"application/json, */*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "size-json-gzip-over-limit",
+			"error": {
+				"name": "FetchError",
+				"message": "content size at {public}/gzip/262145 over limit: 262144",
+				"type": "max-size"
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/gzip/262145",
+					"headers": [
+						[
+							"accept",
+							"application/json, */*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "size-send-at-limit",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/bytes/10485760"
+			},
+			"body": {
+				"stringLength": 10485760
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/bytes/10485760",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "size-send-over-limit",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/bytes/10485761"
+			},
+			"readError": {
+				"name": "FetchError",
+				"message": "content size at {public}/bytes/10485761 over limit: 10485760",
+				"type": "max-size"
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/bytes/10485761",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "size-send-gzip-over-limit",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/gzip/10485761"
+			},
+			"readError": {
+				"name": "FetchError",
+				"message": "content size at {public}/gzip/10485761 over limit: 10485760",
+				"type": "max-size"
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/gzip/10485761",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "size-send-custom-limit",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/bytes/11"
+			},
+			"readError": {
+				"name": "FetchError",
+				"message": "content size at {public}/bytes/11 over limit: 10",
+				"type": "max-size"
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/bytes/11",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "size-send-gzip-compressed-over-expanded-at-limit",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/gzip-incompressible/65536"
+			},
+			"body": {
+				"stringLength": 62102
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/gzip-incompressible/65536",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "status-400",
+			"error": {
+				"name": "StatusError",
+				"message": "400 Bad Request",
+				"statusCode": 400,
+				"statusMessage": "Bad Request",
+				"isClientError": true,
+				"isRetryable": false
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/status/400",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "status-410",
+			"error": {
+				"name": "StatusError",
+				"message": "410 Gone",
+				"statusCode": 410,
+				"statusMessage": "Gone",
+				"isClientError": true,
+				"isRetryable": false
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/status/410",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "status-429",
+			"error": {
+				"name": "StatusError",
+				"message": "429 Too Many Requests",
+				"statusCode": 429,
+				"statusMessage": "Too Many Requests",
+				"isClientError": true,
+				"isRetryable": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/status/429",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "status-500",
+			"error": {
+				"name": "StatusError",
+				"message": "500 Internal Server Error",
+				"statusCode": 500,
+				"statusMessage": "Internal Server Error",
+				"isClientError": false,
+				"isRetryable": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/status/500",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "status-503",
+			"error": {
+				"name": "StatusError",
+				"message": "503 Service Unavailable",
+				"statusCode": 503,
+				"statusMessage": "Service Unavailable",
+				"isClientError": false,
+				"isRetryable": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/status/503",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "status-404-not-ok-only",
+			"response": {
+				"status": 404,
+				"statusText": "Not Found",
+				"finalUrl": "{public}/status/404"
+			},
+			"body": {
+				"status": 404
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/status/404",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "status-get-json-404",
+			"error": {
+				"name": "StatusError",
+				"message": "404 Not Found",
+				"statusCode": 404,
+				"statusMessage": "Not Found",
+				"isClientError": true,
+				"isRetryable": false
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/status/404",
+					"headers": [
+						[
+							"accept",
+							"application/json, */*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "get-json-invalid",
+			"error": {
+				"name": "SyntaxError",
+				"message": "Unexpected token 'o', \"not json\" is not valid JSON"
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/text",
+					"headers": [
+						[
+							"accept",
+							"application/json, */*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "headers-default-user-agent",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "headers-user-agent-exact-key",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"custom"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "headers-user-agent-lowercase-key",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						],
+						[
+							"user-agent",
+							"custom"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "headers-user-agent-uppercase-key",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						],
+						[
+							"user-agent",
+							"custom"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "headers-get-json-default-accept",
+			"json": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"application/json, */*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "headers-get-json-custom-accept",
+			"json": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"application/jrd+json"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "headers-get-json-lowercase-accept-header",
+			"json": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"application/json, */*"
+						],
+						[
+							"accept",
+							"text/plain"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "method-head",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"stringLength": 0
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "HEAD",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": ""
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "body-text",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"content-length",
+							"17"
+						],
+						[
+							"content-type",
+							"application/activity+json"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": "{\"type\":\"Create\"}"
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "body-bytes",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"content-length",
+							"9"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": "raw bytes"
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "body-urlencoded",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"content-length",
+							"19"
+						],
+						[
+							"content-type",
+							"application/x-www-form-urlencoded;charset=UTF-8"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": "secret=s&response=r"
+				}
+			],
+			"connects": []
+		},
+		{
+			"id": "body-form",
+			"response": {
+				"status": 200,
+				"statusText": "OK",
+				"finalUrl": "{public}/echo"
+			},
+			"body": {
+				"ok": true
+			},
+			"requests": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/echo",
+					"headers": [
+						[
+							"accept",
+							"*/*"
+						],
+						[
+							"content-type",
+							"multipart/form-data; boundary={boundary}"
+						],
+						[
+							"user-agent",
+							"Misskey/probe (https://probe.test)"
+						]
+					],
+					"remoteAddress": "127.0.0.1",
+					"body": "--{boundary}\r\nContent-Disposition: form-data; name=\"name\"\r\n\r\nvalue\r\n--{boundary}--"
+				}
+			],
+			"connects": []
+		}
+	]
+}

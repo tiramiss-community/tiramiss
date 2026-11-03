@@ -37,6 +37,11 @@ backendNext:
   shutdownTimeoutMs: 30000
 ```
 
+外向きHTTPは本家と同じキー `proxy`・`proxyBypassHosts`・`allowedPrivateNetworks`・`outgoingAddress`・`deliverJobConcurrency`（proxy接続数の算出）を読む。
+既定値は本家と同じく未指定。private宛ての遮断は `NODE_ENV=production` のときだけ行う。
+`allowedPrivateNetworks` の不正なCIDRは、本家と異なり起動時に `INVALID_CONFIG` で拒否する（承認済みの差異）。
+User-Agentは `Misskey/<固定本家のversion> (<設定ファイルのurlそのまま>)`。比較資料は[外向きHTTP](../../docs/superpowers/compatibility/outbound-http/README.md)を参照。
+
 サービスを完全停止した状態で、先にマイグレーションを適用する。
 既存MisskeyのDB・データは事前にバックアップし、稼働中の旧backendへ接続して適用しない。
 

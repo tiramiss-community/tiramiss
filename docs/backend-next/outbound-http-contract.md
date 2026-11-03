@@ -132,6 +132,6 @@ misc-utils:30 のうち StatusError の型は #216 が定義する。同じ行�
   - 本家では、本番で接続したときに CIDR の parse 例外が発生する。この例外は destroy より前に起きるため、その接続は遮断されない。プロセスは未捕捉例外として記録して動き続ける（HttpRequestService.ts:46-51,64-66、packages/backend/src/boot/process-error-handler.ts:56-58）。
   - backend-next には未捕捉例外のハンドラがない。同じ実装にすると、子プロセスが落ちて全体が停止する。
   - 起動時に検出すれば、設定の誤りをその場で直せる。遮断も弱まらない。
-  - 実装 PR で差異の台帳に記録する。
+  - 差異の台帳は [compatibility/outbound-http/intentional-differences.json](../superpowers/compatibility/outbound-http/intentional-differences.json) の H1。最初の実装 PR で記録し、検証した。
 
 これ以外は提案しない。ライブラリの置き換えや、private 判定を本番以外でも常に有効にすることは行わない。
