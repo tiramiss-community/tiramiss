@@ -39,6 +39,8 @@ export async function configuration(config: RuntimeConfig) {
 			},
 			redis: config.redis,
 			redisForPubsub: config.redisForPubsub,
+			// 試験ごとに queue の prefix を分け、別の試験が投入したジョブを取得しないようにする。
+			redisForJobQueue: config.redisForJobQueue,
 			backendNext: config.processes,
 		}),
 	);

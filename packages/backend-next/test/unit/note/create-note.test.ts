@@ -131,7 +131,7 @@ test('text is trimmed and plain persisted fields do not depend on HTTP or ORM', 
 		renoteUserId: null, renoteUserHost: null, renoteChannelId: null, visibleUserIds: [], mentions: [], mentionedRemoteUsers: [], tags: [], emojis: [],
 	}]);
 	expect(polls).toEqual([]);
-	expect(after).toEqual([{ noteId: 'new', userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null }]);
+	expect(after).toEqual([{ noteId: 'new', userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: null }]);
 	// 本家 NoteCreateService.ts:704-726: 投票なしは transaction を使わない単独 insert。
 	expect(events).toEqual(['root:note', 'render:new:author', 'after']);
 });
@@ -334,6 +334,17 @@ test('a poll is saved with its Note in one transaction and copies corrected Note
 	expect(notes[0]).toMatchObject({ visibility: 'home', hasPoll: true });
 	expect(polls).toEqual([{ noteId: 'new', choices: ['a', 'b', 'c'], multiple: false, expiresAtMs: null, votes: [0, 0, 0], noteVisibility: 'home', userId: 'author', userHost: null, channelId: null }]);
 	expect(events).toEqual(['begin', 'tx:note', 'tx:poll', 'commit', 'render:new:author', 'after']);
+});
+
+// 本家 NoteCreateService.ts:819-834: 期限のある投票だけが投票終了ジョブの投入対象になる。
+test.each([
+	[{ choices: ['a', 'b'] }, null],
+	[{ choices: ['a', 'b'], expiresAt: now + 60000 }, now + 60000],
+	[{ choices: ['a', 'b'], expiredAfter: 60000 }, now + 60000],
+])('post-save work receives the poll deadline of %j', async (poll, expected) => {
+	const { createNote, after } = setup();
+	await createNote({ text: 'poll', poll });
+	expect(after).toEqual([expect.objectContaining({ noteId: 'new', pollExpiresAtMs: expected })]);
 });
 
 test('a failing poll insert surfaces before rendering or post-save work', async () => {

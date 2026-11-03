@@ -22,10 +22,10 @@ I/O を持たない判定は `src/modules/federation/` に置き、`public.ts` �
 | `readUserKeypair(userId)` → `{publicKeyPem, privateKeyPem}` | 行がなければ例外 | platform | #160 #195 |
 | `toSpkiPublicKeyPem(pem)` | PEM が不正なら例外 | modules | #195（actor 公開） |
 | `findPublicKeyByKeyId(keyId)`/`findPublicKeyByUserId(userId)` | DB 例外 | platform/database | #195 |
-| `fetchInstance(host)`/`fetchOrRegisterInstance(host)` → InstanceFacts/null、`updateInstance(id, patch)`、`listSuspendedHosts()` | DB 例外（初回登録の競合を含む）を伝播 | platform | 配送を接続する PR（#162・#171）、#195 |
-| `deliverSuccessPatch`/`deliverFailurePatch(instance, now, policy)`、`packInstanceState(instance, policy)` | なし（純関数） | modules | 配送を接続する PR（#162・#171）、#195 |
+| `fetchInstance(host)`/`fetchOrRegisterInstance(host)` → InstanceFacts/null、`updateInstance(id, patch)`、`listSuspendedHosts()` | DB 例外（初回登録の競合を含む）を伝播 | platform | 配送を接続する PR（#171）、#195 |
+| `deliverSuccessPatch`/`deliverFailurePatch(instance, now, policy)`、`packInstanceState(instance, policy)` | なし（純関数） | modules | 配送を接続する PR（#171）、#195 |
 | `acquireApObjectLock(uri)` → `release()` | 約 5 秒で取得できなければ例外 | platform | #195 |
-| `fetchInstanceMetadata(instance, {force})` | 取得・更新の例外は記録して握る | platform（判断は modules） | 配送を接続する PR（#162・#171）、#195 |
+| `fetchInstanceMetadata(instance, {force})` | 取得・更新の例外は記録して握る | platform（判断は modules） | 配送を接続する PR（#171）、#195 |
 
 `ensureSystemAccount` は、呼び出し元の transaction には参加しない。本家と同じく、自前の transaction で作成を確定する。UseCase は自分の transaction を開く前に呼ぶ。[backend-next の運用ルール](../../packages/backend-next/AGENTS.md)は共有 Service による transaction 開始を禁じているが、本家と同じ遅延作成にはこの例外が必要になる。例外はこの 1 操作に限る。
 
@@ -103,8 +103,8 @@ Redis のキー名と値の形式は本家と揃える。こうしておけば�
    - SystemAccount・UserKeypair・UsedUsername と、UserProfile とそれが参照する Entity を同期で複製する。
    - `generateRsaKeyPair`・`readUserKeypair`・`toSpkiPublicKeyPem`・`ensureSystemAccount` を実装する。
    - #216 と合わせて、#160 の署名と、#195 の remote user 解決を解く。#170 のリモートメンションの 501 は、その後に #195 が除去する。
-   - 実装済み。4 つの関数は `src/composition/federation-keys.ts` の `createFederationKeys` で組み立てる。#160 の最初の PR は `readUserKeypair` を署名付き送信に使うが、通常起動からは呼ばない。通常起動への接続は、配送を接続する PR（#162・#171）か #195 の PR で行う。検証は[比較資料](../superpowers/compatibility/federation-base/README.md#新実装への接続)を参照。
-3. **インスタンス台帳と配送による状態更新**: 配送を接続する PR（#162・#171）と同時に入れる。#160 の最初の PR は署名と結果の分類だけを持ち、台帳と状態の書き込みは入れない（2026-11-03 ユーザー決定）。
+   - 実装済み。4 つの関数は `src/composition/federation-keys.ts` の `createFederationKeys` で組み立てる。#160 の最初の PR は `readUserKeypair` を署名付き送信に使うが、通常起動からは呼ばない。通常起動への接続は、配送を接続する PR（#171）か #195 の PR で行う。検証は[比較資料](../superpowers/compatibility/federation-base/README.md#新実装への接続)を参照。
+3. **インスタンス台帳と配送による状態更新**: 配送を接続する PR（#171）と同時に入れる。#160 の最初の PR は署名と結果の分類だけを持ち、台帳と状態の書き込みは入れない（2026-11-03 ユーザー決定）。
 4. **リモート鍵の参照と AP オブジェクトの排他**: UserPublickey を複製する。#195 の受信実装と同時に入れる。
 5. **メタデータ取得**: #216 の `getHtml` と一緒に入れる。
 

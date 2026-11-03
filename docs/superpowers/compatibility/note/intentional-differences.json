@@ -5,10 +5,17 @@
     "owners": [
       169,
       170,
-      162,
       176
     ],
-    "newImplementationVerified": false
+    "newImplementationVerified": false,
+    "reevaluations": [
+      {
+        "date": "2026-11-03",
+        "issue": 162,
+        "decision": "owners から #162 を外す",
+        "reason": "#162 の最初の PR は、本家と同じく投票終了ジョブの投入を Note の保存後の後続処理として始め、Note と同じ transaction には入れない（docs/backend-next/posting-contract.md で同時保存の契約は撤回済み）。投入の失敗は ID と期限を記録して捨て、停止中に投入済みのジョブは BullMQ の通常の遅延・stalled 検査で再開する。#162 は D1 の追加保証を実装しない（GOALS.md の初期範囲）。D1 自体の扱いは残りの所有者が再評価する。"
+      }
+    ]
   },
   {
     "id": "D2",
@@ -48,6 +55,12 @@
         "issue": 160,
         "decision": "owners から #160 を外す",
         "reason": "#160 の最初の PR は署名・署名付き送信・配送結果の分類だけを持ち、本家と同じく分類の結果（止める・再試行する）を返すだけにした。試行回数・backoff は #162 が本家相当（既定 12 回・httpRelatedBackoff）で扱い、期限・容量・保持・未知 schema の隔離は #160 の範囲に入らない（GOALS.md の初期範囲）。D4 自体の扱いは残りの所有者が再評価する。"
+      },
+      {
+        "date": "2026-11-03",
+        "issue": 162,
+        "decision": "#160 の再評価で #162 に割り当てた試行回数・backoff を #171 へ移す",
+        "reason": "2026-11-03 のユーザー決定で、#162 の最初の PR は試行が 1 回の本家の投票終了ジョブで通常の Queue/Worker を接続した。AP 配送の 12 回の試行・httpRelatedBackoff・limiter は、#162 の queue・Worker の上に #171 の配送と一緒に接続して本家と比べる（docs/backend-next/ap-delivery-handoff.md）。owners は変えない。"
       }
     ]
   },

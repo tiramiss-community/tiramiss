@@ -11,12 +11,13 @@ import { ApHostLease1792815498061 } from './ap/host-migration.js';
 import { ApRecipientSnapshot1792734340852 } from './ap/migration.js';
 import { notificationEntities } from './notification/schema.js';
 import { PostNotification1792732433541 } from './notification/migration.js';
+import { PollEndedNotification1793706223869 } from './notification/poll-ended-migration.js';
 import { PostWorkPersistence1792590060271 } from './post-work/migrations.js';
 import { PostWorkDispatch1792643873727 } from './post-work/dispatch-migration.js';
 import { PostWorkRecovery1792665615537 } from './post-work/recovery-migration.js';
 import { RetireDurableWork1793635233676 } from './retire-durable-work-migration.js';
 
-export const internalMigrations = [PostWorkPersistence1792590060271, PostWorkDispatch1792643873727, PostWorkRecovery1792665615537, PostNotification1792732433541, ApRecipientSnapshot1792734340852, ApHostLease1792815498061, RetireDurableWork1793635233676];
+export const internalMigrations = [PostWorkPersistence1792590060271, PostWorkDispatch1792643873727, PostWorkRecovery1792665615537, PostNotification1792732433541, ApRecipientSnapshot1792734340852, ApHostLease1792815498061, RetireDurableWork1793635233676, PollEndedNotification1793706223869];
 export function migrationSources(config: DatabaseConfig) {
 	const options = databaseOptions(config);
 	return {

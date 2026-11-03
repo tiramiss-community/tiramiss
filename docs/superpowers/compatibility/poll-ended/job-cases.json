@@ -1,0 +1,243 @@
+{
+	"inputs": {
+		"now": "2026-11-03T00:00:00.000Z",
+		"noteId": "9zz0note",
+		"polls": [
+			{
+				"id": "expires-in-90-seconds",
+				"poll": {
+					"expiresAt": "2026-11-03T00:01:30.000Z"
+				}
+			},
+			{
+				"id": "expires-in-1-ms",
+				"poll": {
+					"expiresAt": "2026-11-03T00:00:00.001Z"
+				}
+			},
+			{
+				"id": "expires-now",
+				"poll": {
+					"expiresAt": "2026-11-03T00:00:00.000Z"
+				}
+			},
+			{
+				"id": "expired-1-second-ago",
+				"poll": {
+					"expiresAt": "2026-11-02T23:59:59.000Z"
+				}
+			},
+			{
+				"id": "no-expiry",
+				"poll": {
+					"expiresAt": null
+				}
+			},
+			{
+				"id": "no-poll",
+				"poll": null
+			}
+		],
+		"redisForJobQueue": [
+			{
+				"id": "host-prefix",
+				"options": {
+					"host": "redis.internal",
+					"port": 6379,
+					"family": 0,
+					"db": 2,
+					"password": "test-only",
+					"prefix": "example.tld",
+					"keyPrefix": "example.tld:"
+				}
+			},
+			{
+				"id": "custom-prefix",
+				"options": {
+					"host": "redis.internal",
+					"port": 6380,
+					"family": 0,
+					"db": 0,
+					"prefix": "jobs",
+					"keyPrefix": "jobs:"
+				}
+			}
+		]
+	},
+	"cases": {
+		"enqueue": [
+			{
+				"id": "expires-in-90-seconds",
+				"calls": [
+					[
+						"9zz0note",
+						{
+							"noteId": "9zz0note"
+						},
+						{
+							"delay": 90000,
+							"removeOnComplete": {
+								"age": 604800,
+								"count": 30
+							},
+							"removeOnFail": {
+								"age": 604800,
+								"count": 100
+							}
+						}
+					]
+				]
+			},
+			{
+				"id": "expires-in-1-ms",
+				"calls": [
+					[
+						"9zz0note",
+						{
+							"noteId": "9zz0note"
+						},
+						{
+							"delay": 1,
+							"removeOnComplete": {
+								"age": 604800,
+								"count": 30
+							},
+							"removeOnFail": {
+								"age": 604800,
+								"count": 100
+							}
+						}
+					]
+				]
+			},
+			{
+				"id": "expires-now",
+				"calls": [
+					[
+						"9zz0note",
+						{
+							"noteId": "9zz0note"
+						},
+						{
+							"delay": 0,
+							"removeOnComplete": {
+								"age": 604800,
+								"count": 30
+							},
+							"removeOnFail": {
+								"age": 604800,
+								"count": 100
+							}
+						}
+					]
+				]
+			},
+			{
+				"id": "expired-1-second-ago",
+				"calls": [
+					[
+						"9zz0note",
+						{
+							"noteId": "9zz0note"
+						},
+						{
+							"delay": -1000,
+							"removeOnComplete": {
+								"age": 604800,
+								"count": 30
+							},
+							"removeOnFail": {
+								"age": 604800,
+								"count": 100
+							}
+						}
+					]
+				]
+			},
+			{
+				"id": "no-expiry",
+				"calls": []
+			},
+			{
+				"id": "no-poll",
+				"calls": []
+			}
+		],
+		"queues": [
+			{
+				"id": "host-prefix",
+				"queueName": "endedPollNotification",
+				"queueOptions": {
+					"connection": {
+						"host": "redis.internal",
+						"port": 6379,
+						"family": 0,
+						"db": 2,
+						"password": "test-only",
+						"prefix": "example.tld"
+					},
+					"prefix": "example.tld:queue:endedPollNotification"
+				},
+				"connectionKeyPrefix": null
+			},
+			{
+				"id": "custom-prefix",
+				"queueName": "endedPollNotification",
+				"queueOptions": {
+					"connection": {
+						"host": "redis.internal",
+						"port": 6380,
+						"family": 0,
+						"db": 0,
+						"prefix": "jobs"
+					},
+					"prefix": "jobs:queue:endedPollNotification"
+				},
+				"connectionKeyPrefix": null
+			}
+		],
+		"worker": {
+			"name": "endedPollNotification",
+			"opts": {
+				"connection": {
+					"host": "redis.internal",
+					"port": 6379,
+					"family": 0,
+					"db": 2,
+					"password": "test-only",
+					"prefix": "example.tld"
+				},
+				"prefix": "example.tld:queue:endedPollNotification",
+				"metrics": {
+					"maxDataPoints": 10080
+				},
+				"autorun": false
+			},
+			"events": [],
+			"onFailure": {
+				"logs": [
+					[
+						"error",
+						"failed(Error: probe processor failure) id=1"
+					]
+				],
+				"captured": [
+					"Queue: EndedPollNotification: Error: probe processor failure"
+				],
+				"rethrowsOriginal": true
+			}
+		},
+		"workerNames": [
+			"system",
+			"db",
+			"deliver",
+			"inbox",
+			"userWebhookDeliver",
+			"systemWebhookDeliver",
+			"relationship",
+			"objectStorage",
+			"endedPollNotification",
+			"postScheduledNote"
+		]
+	}
+}

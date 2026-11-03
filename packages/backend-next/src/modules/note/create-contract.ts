@@ -130,15 +130,17 @@ export interface NoteWrites {
 	insertPoll(poll: NewPoll): Promise<void>;
 }
 
-// Note 全体を渡すと後続処理が DB の読み直しや描画用の値に依存するため、加算の判断に使う値だけを渡す。
+// Note 全体を渡すと後続処理が DB の読み直しや描画用の値に依存するため、加算とジョブの投入に使う値だけを渡す。
 export interface NotePostSaveInput {
-	// 加算には使わない。失敗時にどの投稿の加算が欠けたかを記録するために渡す。
+	// 投票終了ジョブの名前と内容。失敗時にどの投稿の後続処理が欠けたかの記録にも使う。
 	noteId: string;
 	userId: string;
 	// 加算の要否は作成時の事実で決まるため、後続処理では判断し直さず ID の有無だけを見る。
 	repliedNoteId: string | null;
 	renotedNoteId: string | null;
 	channelId: string | null;
+	// 期限のある投票を持つときだけ値を持ち、投票終了ジョブを投入する。
+	pollExpiresAtMs: number | null;
 }
 
 export type NoteCreateErrorCode =

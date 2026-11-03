@@ -15,16 +15,21 @@ export interface RunningProcess {
 export async function startManagedProcess(
 	role: 'http' | 'worker',
 	config: RuntimeConfig,
-	start: (resources: RuntimeResources) => Promise<() => Promise<void>>,
+	// reportFailure は起動後に役割固有の接続・処理を失ったときに呼ぶ。共有の接続の喪失は resources が報告する。
+	start: (resources: RuntimeResources, reportFailure: (error: Error) => void) => Promise<() => Promise<void>>,
 ): Promise<RunningProcess> {
 	const resources = await createRuntime(config, role);
 	const scope = new ResourceScope();
 	scope.defer(resources.close);
+	let reportFailure!: (error: Error) => void;
+	const roleFailure = new Promise<Error>(resolve => {
+		reportFailure = resolve;
+	});
 
 	try {
 		await assertMigrationsApplied(config.database);
-		scope.defer(await start(resources));
-		return { stop: () => scope.close(), failure: resources.failure };
+		scope.defer(await start(resources, reportFailure));
+		return { stop: () => scope.close(), failure: Promise.race([resources.failure, roleFailure]) };
 	} catch (error) {
 		try {
 			await scope.close();
