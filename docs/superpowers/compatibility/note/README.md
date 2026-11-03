@@ -52,7 +52,7 @@ F1–F7は新しい同時確定/永続request/所有世代/有限回復を要求
 | --- | --- |
 | [#168 N1](https://github.com/tiramiss-community/tiramiss/issues/168) | C1-show/C5全件、Note/Poll/関連facts、集合取得と純粋変換、query数非比例。追加のnested/時刻/remote表示はcoverage参照 |
 | [#169 N2](https://github.com/tiramiss-community/tiramiss/issues/169) | C1/C2/C4、共通gate、成功/拒否HTTPとDB。D1/D2、F1/F3、容量413/503は新設計の追加期待値 |
-| [#170 N3](https://github.com/tiramiss-community/tiramiss/issues/170) | C3/C6/C7/C8、添付・poll・reply/Renote・channel・MFM、同時変更。channel人数とcountの判断を明記 |
+| [#170 N3](https://github.com/tiramiss-community/tiramiss/issues/170) | C3/C6/C7/C8、添付・poll・reply/Renote・channel・MFM、同時変更。channel人数とcountの判断を明記。2026-11-03の段階1でC3の添付ケースとC7の全件、段階3でC8の全件（C8-channel・C8-archived・C8-external-renote・C8-extract・C8-no-extract・C8-specified）と追加実測N3の全102件を `test/integration/note-create.test.ts`・`test/integration/note-create-relations.test.ts` へ接続（`BACKEND_NEXT_TEST_DB_PORT=… BACKEND_NEXT_TEST_REDIS_PORT=… pnpm --filter backend-next test:integration <file>` でPASS）。未登録リモートユーザーへのメンションは#195まで501、登録済みリモートユーザーは#195まで再同期しない |
 | [#171 N4](https://github.com/tiramiss-community/tiramiss/issues/171) | C9 AP全本文/audience/宛先、C6/C8の配送条件。#159/#160/#162の実送信/workerに接続し署名検証・HTTP分類・停止を追加 |
 | [#172 N5](https://github.com/tiramiss-community/tiramiss/issues/172) | C10認可/監査/DB/Undo fallback、F8の本家差異。新取消/unknown/過去宛先を#161と検証 |
 | [#173–#175 N6](https://github.com/tiramiss-community/tiramiss/issues/173) | 通知条件/stream、派生更新、webhookの公開契約と有限配送。Redis publish観測を実WebSocket成立としない |
@@ -196,3 +196,9 @@ notes/create/delete、投票・reaction・follow等の変更API、TL/検索API�
 基本text保存だけのためのPG依頼は作らず、本家同様に保存後のcount更新を開始する。添付・投票・返信/Renote・channel・指定宛先・MFM抽出は#170まで明示501で保存前に拒否する。noExtract*で抽出を無効にした本文は保存できる。AP/通知/stream/TL/検索/webhook/通常workerの一致や投稿領域全体の完成を示さない。
 
 旧D1/D2/F群の強い同時確定・容量・復旧を初期必須の期待値にしない。[最小契約](../../../backend-next/posting-contract.md)と[実装計画](../../plans/2026-11-03-note-create-169.md)に判断・検証・撤去範囲を記録する。
+
+## N3: 関連入力の接続（#170 段階1–3）
+
+`test/integration/note-create.test.ts` で、段階1から C3 の添付ケース（C3-missing-file・C3-foreign-file・C3-file-precedence・C3-empty-file-precedence・C3-media-alias）と C7 の全5件（C7-default・C7-expired・C7-relative-priority・C7-duplicate・C7-one）を照合する。C7-relative-priority の `expiresAt` は要求の前後の時刻から求めた範囲で比べる（相対期限のため完全一致にしない）。同じファイルで C6 の全9件と C8 の全6件（C8-channel・C8-archived・C8-external-renote・C8-extract・C8-no-extract・C8-specified）を他のケースと同じく照合する（各ケースの後で保存後処理の完了を待つ）。C6-counts は probe の C5 と同じ2件目の返信（show-reply）を作った後の値、C8-channel-counts は削除APIが未接続のため `before` だけを照合する。初期データの `private` も probe と同じく `notes/create` で作る。追加の実測（N3）は [n3/README.md](n3/README.md#新実装への接続先) を参照。
+
+未登録のリモートユーザーへのメンション（本家ではWebFingerで解決し、失敗すれば無視する）は#195まで、メンション解決の位置で保存前に501 `NOT_IMPLEMENTED`を返す。登録済みリモートユーザーは、#195までは `lastFetchedAt` が古くても再同期せずに使う（同じく暫定制限）。同じファイルで、本文・CW・選択肢・指定宛先との組み合わせで保存されないことと、ポート付きの設定URL（`http://127.0.0.1:61167`）では `@probe_alice@127.0.0.1` が本家と同じく自ホストと判定されずこの501になることを確かめる。これは新実装の試験で、固定本家の実測ではない。

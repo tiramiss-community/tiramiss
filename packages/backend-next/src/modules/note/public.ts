@@ -11,4 +11,4 @@ export type { NoteFacts, NoteFactsReader, NoteViewMaterials, AuthorFacts, JsonOb
 export { createCreateNote } from './create-note.js';
 export { matchesWords } from './keywords.js';
 export { NoteCreateError } from './create-contract.js';
-export type { NoteCreateActor, NoteCreateAuthor, NewTextNote, NoteCreateErrorCode } from './create-contract.js';
+export type { NoteCreateActor, NoteCreateAuthor, NoteAttachableFile, NewNote, NewPoll, NoteWrites, NotePostSaveInput, NoteCreateErrorCode, RelatedNote, RelatedChannel, MentionedRemoteUser } from './create-contract.js';

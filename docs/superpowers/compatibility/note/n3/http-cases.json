@@ -1,0 +1,1218 @@
+[
+  {
+    "id": "N3-FP-poll-no-text",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "poll": {
+        "choices": [
+          "a",
+          "b"
+        ]
+      }
+    }
+  },
+  {
+    "id": "N3-FP-whitespace-file",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "   ",
+      "fileIds": [
+        "$aliceImage"
+      ]
+    }
+  },
+  {
+    "id": "N3-FP-whitespace-poll",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": " \n ",
+      "poll": {
+        "choices": [
+          "a",
+          "b"
+        ]
+      }
+    }
+  },
+  {
+    "id": "N3-FP-multiple",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "multi",
+      "poll": {
+        "choices": [
+          "a",
+          "b",
+          "c"
+        ],
+        "multiple": true
+      }
+    }
+  },
+  {
+    "id": "N3-FP-future-absolute",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "future",
+      "poll": {
+        "choices": [
+          "a",
+          "b"
+        ],
+        "expiresAt": 4102444800000
+      }
+    },
+    "exactExpiresAt": true
+  },
+  {
+    "id": "N3-FP-expires-zero",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "zero",
+      "poll": {
+        "choices": [
+          "a",
+          "b"
+        ],
+        "expiresAt": 0
+      }
+    }
+  },
+  {
+    "id": "N3-FP-prohibited-choice",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "ok",
+      "poll": {
+        "choices": [
+          "has forbidden word",
+          "b"
+        ]
+      }
+    },
+    "setup": "prohibited"
+  },
+  {
+    "id": "N3-FP-missing-file-and-renote",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "fileIds": [
+        "$missing"
+      ],
+      "renoteId": "$missing"
+    }
+  },
+  {
+    "id": "N3-FP-files-17",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "x",
+      "fileIds": [
+        "a00000000000000000000000",
+        "a00000000000000000000001",
+        "a00000000000000000000002",
+        "a00000000000000000000003",
+        "a00000000000000000000004",
+        "a00000000000000000000005",
+        "a00000000000000000000006",
+        "a00000000000000000000007",
+        "a00000000000000000000008",
+        "a00000000000000000000009",
+        "a00000000000000000000010",
+        "a00000000000000000000011",
+        "a00000000000000000000012",
+        "a00000000000000000000013",
+        "a00000000000000000000014",
+        "a00000000000000000000015",
+        "a00000000000000000000016"
+      ]
+    }
+  },
+  {
+    "id": "N3-FP-files-duplicate",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "x",
+      "fileIds": [
+        "$aliceImage",
+        "$aliceImage"
+      ]
+    }
+  },
+  {
+    "id": "N3-FP-media-empty",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "x",
+      "mediaIds": []
+    }
+  },
+  {
+    "id": "N3-FP-attached-types",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "types",
+      "fileIds": [
+        "$aliceVideo",
+        "$aliceImage"
+      ]
+    }
+  },
+  {
+    "id": "N3-FP-poll-sensitive-home",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "needle poll",
+      "poll": {
+        "choices": [
+          "a",
+          "b"
+        ]
+      }
+    },
+    "setup": "sensitive"
+  },
+  {
+    "id": "N3-FP-poll-channel",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "channel poll",
+      "channelId": "$chOpen",
+      "poll": {
+        "choices": [
+          "a",
+          "b"
+        ]
+      }
+    }
+  },
+  {
+    "id": "N3-FP-poll-specified",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "specified poll",
+      "visibility": "specified",
+      "visibleUserIds": [
+        "$bob"
+      ],
+      "poll": {
+        "choices": [
+          "a",
+          "b"
+        ]
+      }
+    }
+  },
+  {
+    "id": "N3-RR-renote-other-followers",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$bobFollowers"
+    }
+  },
+  {
+    "id": "N3-RR-renote-own-followers",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$aliceFollowers"
+    }
+  },
+  {
+    "id": "N3-RR-renote-own-specified",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$aliceSpecified"
+    }
+  },
+  {
+    "id": "N3-RR-renote-blocked",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$blockerNote"
+    }
+  },
+  {
+    "id": "N3-RR-quote-blocked",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$blockerNote",
+      "text": "quote"
+    }
+  },
+  {
+    "id": "N3-RR-reply-blocked",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$blockerNote",
+      "text": "reply"
+    }
+  },
+  {
+    "id": "N3-RR-renote-blocking",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$blockeeNote"
+    }
+  },
+  {
+    "id": "N3-RR-reply-blocking",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$blockeeNote",
+      "text": "reply"
+    }
+  },
+  {
+    "id": "N3-RR-reply-specified-public",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$bobSpecified",
+      "text": "reply"
+    }
+  },
+  {
+    "id": "N3-RR-reply-specified",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$bobSpecified",
+      "text": "reply",
+      "visibility": "specified",
+      "visibleUserIds": [
+        "$carol"
+      ]
+    }
+  },
+  {
+    "id": "N3-RR-reply-own-specified",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$aliceSpecified",
+      "text": "reply",
+      "visibility": "specified"
+    }
+  },
+  {
+    "id": "N3-RR-reply-home",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$bobHome",
+      "text": "reply"
+    }
+  },
+  {
+    "id": "N3-RR-reply-followers",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$bobFollowers",
+      "text": "reply",
+      "visibility": "home"
+    }
+  },
+  {
+    "id": "N3-RR-renote-home",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$bobHome"
+    }
+  },
+  {
+    "id": "N3-RR-quote-home",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$bobHome",
+      "text": "quote"
+    }
+  },
+  {
+    "id": "N3-RR-reply-localonly",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$bobLocal",
+      "text": "reply"
+    }
+  },
+  {
+    "id": "N3-RR-renote-localonly",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$bobLocal"
+    }
+  },
+  {
+    "id": "N3-RR-reply-and-renote",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$bobPublic",
+      "renoteId": "$bobOther"
+    }
+  },
+  {
+    "id": "N3-RR-reply-and-renote-missing",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$missing",
+      "renoteId": "$missing"
+    }
+  },
+  {
+    "id": "N3-RR-renote-whitespace",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$bobWhitespaceTarget",
+      "text": "   "
+    }
+  },
+  {
+    "id": "N3-RR-quote-pure",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$bobPure",
+      "text": "quote"
+    }
+  },
+  {
+    "id": "N3-RR-reply-invisible-pure",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$bobPureSpecified",
+      "text": "reply"
+    }
+  },
+  {
+    "id": "N3-RR-bot-renote",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "botter",
+    "params": {
+      "renoteId": "$countBotRenote"
+    },
+    "watch": {
+      "notes": [
+        "$countBotRenote"
+      ]
+    }
+  },
+  {
+    "id": "N3-RR-bot-reply",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "botter",
+    "params": {
+      "replyId": "$countBotReply",
+      "text": "bot reply"
+    },
+    "watch": {
+      "notes": [
+        "$countBotReply"
+      ]
+    }
+  },
+  {
+    "id": "N3-RR-self-reply",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$countSelfReply",
+      "text": "self reply"
+    },
+    "watch": {
+      "notes": [
+        "$countSelfReply"
+      ]
+    }
+  },
+  {
+    "id": "N3-RR-self-quote",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$countSelfQuote",
+      "text": "self quote"
+    },
+    "watch": {
+      "notes": [
+        "$countSelfQuote"
+      ]
+    }
+  },
+  {
+    "id": "N3-RR-other-quote",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$countOtherQuote",
+      "text": "other quote"
+    },
+    "watch": {
+      "notes": [
+        "$countOtherQuote"
+      ]
+    }
+  },
+  {
+    "id": "N3-RR-other-pure",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$countOtherPure"
+    },
+    "watch": {
+      "notes": [
+        "$countOtherPure"
+      ]
+    }
+  },
+  {
+    "id": "N3-RR-thread-first",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$bobThreadRoot",
+      "text": "thread 1"
+    }
+  },
+  {
+    "id": "N3-RR-thread-nested",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "bob",
+    "params": {
+      "replyId": "$N3-RR-thread-first",
+      "text": "thread 2"
+    }
+  },
+  {
+    "id": "N3-RR-reply-remote",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$remoteNote",
+      "text": "reply remote"
+    }
+  },
+  {
+    "id": "N3-RR-renote-remote",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$remoteNote"
+    }
+  },
+  {
+    "id": "N3-CH-missing",
+    "group": "channel",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "x",
+      "channelId": "$missing"
+    }
+  },
+  {
+    "id": "N3-CH-null",
+    "group": "channel",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "x",
+      "channelId": null
+    }
+  },
+  {
+    "id": "N3-CH-closed-internal-renote",
+    "group": "channel",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$chClosedNote",
+      "channelId": "$chClosed"
+    }
+  },
+  {
+    "id": "N3-CH-open-external-renote",
+    "group": "channel",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$chOpenNote"
+    }
+  },
+  {
+    "id": "N3-CH-reply-adopt",
+    "group": "channel",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$chOpenNote",
+      "text": "reply"
+    }
+  },
+  {
+    "id": "N3-CH-reply-other-channel",
+    "group": "channel",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$chOpenNote",
+      "text": "reply",
+      "channelId": "$chClosed"
+    }
+  },
+  {
+    "id": "N3-CH-reply-outside-with-channel",
+    "group": "channel",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$bobPublic",
+      "text": "reply",
+      "channelId": "$chOpen"
+    }
+  },
+  {
+    "id": "N3-CH-reply-archived",
+    "group": "channel",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$chArchivedNote",
+      "text": "reply"
+    },
+    "watch": {
+      "channels": [
+        "$chArchived"
+      ]
+    }
+  },
+  {
+    "id": "N3-CH-sensitive-skip",
+    "group": "channel",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "needle",
+      "channelId": "$chOpen"
+    },
+    "setup": "sensitive"
+  },
+  {
+    "id": "N3-CH-renote-home",
+    "group": "channel",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$bobHome",
+      "channelId": "$chOpen"
+    }
+  },
+  {
+    "id": "N3-CH-count-note",
+    "group": "channel",
+    "endpoint": "create",
+    "actor": "bob",
+    "params": {
+      "text": "first",
+      "channelId": "$chCount"
+    },
+    "watch": {
+      "channels": [
+        "$chCount"
+      ]
+    }
+  },
+  {
+    "id": "N3-CH-count-pure",
+    "group": "channel",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$N3-CH-count-note",
+      "channelId": "$chCount"
+    },
+    "watch": {
+      "channels": [
+        "$chCount"
+      ]
+    }
+  },
+  {
+    "id": "N3-CH-count-reply",
+    "group": "channel",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$N3-CH-count-note",
+      "text": "reply"
+    },
+    "watch": {
+      "channels": [
+        "$chCount"
+      ]
+    }
+  },
+  {
+    "id": "N3-MN-visible-missing",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "x",
+      "visibility": "specified",
+      "visibleUserIds": [
+        "$bob",
+        "$missing"
+      ]
+    }
+  },
+  {
+    "id": "N3-MN-specified-empty",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "x",
+      "visibility": "specified"
+    }
+  },
+  {
+    "id": "N3-MN-visible-order",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "x",
+      "visibility": "specified",
+      "visibleUserIds": [
+        "$carol",
+        "$bob"
+      ]
+    }
+  },
+  {
+    "id": "N3-MN-dedupe",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "@Probe_Bob @probe_bob"
+    }
+  },
+  {
+    "id": "N3-MN-missing-local",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "@probe_nobody hi"
+    }
+  },
+  {
+    "id": "N3-MN-suspended",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "@probe_suspended hi"
+    }
+  },
+  {
+    "id": "N3-MN-remote",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "@rwithurl@remote.example @rnourl@remote.example"
+    }
+  },
+  {
+    "id": "N3-MN-remote-visible",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "x",
+      "visibility": "specified",
+      "visibleUserIds": [
+        "$rnourl"
+      ]
+    }
+  },
+  {
+    "id": "N3-MN-limit-boundary",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "limiter",
+    "params": {
+      "text": "@probe_bob @probe_carol"
+    }
+  },
+  {
+    "id": "N3-MN-limit-over",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "limiter",
+    "params": {
+      "text": "@probe_bob @probe_carol @probe_alice"
+    }
+  },
+  {
+    "id": "N3-MN-limit-dedupe",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "limiter",
+    "params": {
+      "text": "@probe_bob @Probe_Bob @probe_carol"
+    }
+  },
+  {
+    "id": "N3-MN-limit-self",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "limiter",
+    "params": {
+      "text": "@probe_limiter @probe_bob @probe_carol"
+    }
+  },
+  {
+    "id": "N3-MN-limit-reply-boundary",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "limiter",
+    "params": {
+      "replyId": "$bobPublic",
+      "text": "@probe_carol"
+    }
+  },
+  {
+    "id": "N3-MN-limit-reply-over",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "limiter",
+    "params": {
+      "replyId": "$bobPublic",
+      "text": "@probe_carol @probe_alice"
+    }
+  },
+  {
+    "id": "N3-MN-limit-visible-boundary",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "limiter",
+    "params": {
+      "text": "@probe_alice",
+      "visibility": "specified",
+      "visibleUserIds": [
+        "$bob"
+      ]
+    }
+  },
+  {
+    "id": "N3-MN-limit-visible-over",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "limiter",
+    "params": {
+      "text": "@probe_alice",
+      "visibility": "specified",
+      "visibleUserIds": [
+        "$bob",
+        "$carol"
+      ]
+    }
+  },
+  {
+    "id": "N3-MN-noextract-reply",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$bobPublic",
+      "text": "@probe_carol",
+      "noExtractMentions": true
+    }
+  },
+  {
+    "id": "N3-MN-cw-choice",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "body",
+      "cw": "@probe_bob",
+      "poll": {
+        "choices": [
+          "@probe_carol",
+          "b"
+        ]
+      }
+    }
+  },
+  {
+    "id": "N3-HE-case-dup",
+    "group": "hashtags-emojis",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "#Foo #foo"
+    }
+  },
+  {
+    "id": "N3-HE-cw-choice",
+    "group": "hashtags-emojis",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "#texttag :textemoji:",
+      "cw": "#cwtag :cwemoji: #texttag",
+      "poll": {
+        "choices": [
+          "#choicetag :choiceemoji:",
+          "#cwtag :textemoji:"
+        ]
+      }
+    }
+  },
+  {
+    "id": "N3-HE-over-32",
+    "group": "hashtags-emojis",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "#t01 #t02 #t03 #t04 #t05 #t06 #t07 #t08 #t09 #t10 #t11 #t12 #t13 #t14 #t15 #t16 #t17 #t18 #t19 #t20 #t21 #t22 #t23 #t24 #t25 #t26 #t27 #t28 #t29 #t30 #t31 #t32 #t33 #t34"
+    }
+  },
+  {
+    "id": "N3-HE-length",
+    "group": "hashtags-emojis",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa #bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  },
+  {
+    "id": "N3-HE-fullwidth",
+    "group": "hashtags-emojis",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "#ＡＢＣ #１２３ #Ｆoo"
+    }
+  },
+  {
+    "id": "N3-HE-only-hashtags-off",
+    "group": "hashtags-emojis",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "#tag :emo: @probe_bob",
+      "noExtractHashtags": true
+    }
+  },
+  {
+    "id": "N3-HE-emoji-case-dup",
+    "group": "hashtags-emojis",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": ":Blob: :blob: :Blob:"
+    }
+  },
+  {
+    "id": "N3-HE-inline-code",
+    "group": "hashtags-emojis",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "`#code :code: @probe_bob` #real"
+    }
+  },
+  {
+    "id": "N3-HE-nfkc-expanding",
+    "group": "hashtags-emojis",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "#㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿㍿"
+    },
+    "allowServerError": true
+  },
+  {
+    "id": "N3-FP-choices-11",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "x",
+      "poll": {
+        "choices": [
+          "c0",
+          "c1",
+          "c2",
+          "c3",
+          "c4",
+          "c5",
+          "c6",
+          "c7",
+          "c8",
+          "c9",
+          "c10"
+        ]
+      }
+    }
+  },
+  {
+    "id": "N3-FP-choice-empty",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "x",
+      "poll": {
+        "choices": [
+          "",
+          "b"
+        ]
+      }
+    }
+  },
+  {
+    "id": "N3-FP-choice-51",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "x",
+      "poll": {
+        "choices": [
+          "ccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "b"
+        ]
+      }
+    }
+  },
+  {
+    "id": "N3-FP-expired-after-zero",
+    "group": "files-poll",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "x",
+      "poll": {
+        "choices": [
+          "a",
+          "b"
+        ],
+        "expiredAfter": 0
+      }
+    }
+  },
+  {
+    "id": "N3-MN-visible-duplicate",
+    "group": "mentions",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "x",
+      "visibility": "specified",
+      "visibleUserIds": [
+        "$bob",
+        "$bob"
+      ]
+    }
+  },
+  {
+    "id": "N3-RR-renote-null-no-text",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": null
+    }
+  },
+  {
+    "id": "N3-RR-renote-empty-text",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$bobPublic",
+      "text": ""
+    }
+  },
+  {
+    "id": "N3-RR-renote-duplicate",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$bobWhitespaceTarget"
+    }
+  },
+  {
+    "id": "N3-RR-renote-quote",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$N3-RR-other-quote"
+    }
+  },
+  {
+    "id": "N3-RR-reply-mentioned-only-specified",
+    "group": "reply-renote",
+    "endpoint": "create",
+    "actor": "bob",
+    "params": {
+      "replyId": "$aliceSpecifiedMention",
+      "text": "reply",
+      "visibility": "specified"
+    }
+  },
+  {
+    "id": "N3-CH-quote-closed-external",
+    "group": "channel",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "renoteId": "$chClosedNote",
+      "text": "quote"
+    }
+  },
+  {
+    "id": "N3-ORD-reply-before-expired",
+    "group": "order",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "replyId": "$missing",
+      "text": "x",
+      "poll": {
+        "choices": [
+          "a",
+          "b"
+        ],
+        "expiresAt": 1000
+      }
+    }
+  },
+  {
+    "id": "N3-ORD-expired-before-channel",
+    "group": "order",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "x",
+      "poll": {
+        "choices": [
+          "a",
+          "b"
+        ],
+        "expiresAt": 1000
+      },
+      "channelId": "$missing"
+    }
+  },
+  {
+    "id": "N3-ORD-channel-before-prohibited",
+    "group": "order",
+    "endpoint": "create",
+    "actor": "alice",
+    "params": {
+      "text": "forbidden",
+      "channelId": "$missing"
+    },
+    "setup": "prohibited"
+  },
+  {
+    "id": "N3-ORD-prohibited-before-mentions",
+    "group": "order",
+    "endpoint": "create",
+    "actor": "limiter",
+    "params": {
+      "text": "forbidden @probe_bob @probe_carol @probe_alice"
+    },
+    "setup": "prohibited"
+  }
+]

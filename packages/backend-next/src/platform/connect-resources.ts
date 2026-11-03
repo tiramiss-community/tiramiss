@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Redis } from 'ioredis';
-import { MiUser } from 'backend-upstream/entities';
 import { createNotePostSave } from './note-post-save.js';
+import { createNotePostSaveCounts } from './database/note-post-save-counts.js';
 import { openRoleMaterials } from './role-materials.js';
 import { createRoleMaterialReader } from './database/role-materials.js';
 import { ResourceScope } from './resource-scope.js';
@@ -150,11 +150,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 
-		const notePostSave = createNotePostSave(async userId => {
-			await dataSource.getRepository(MiUser).createQueryBuilder().update()
-				.set({ notesCount: () => '"notesCount" + 1', updatedAt: new Date() })
-				.where('id = :userId', { userId }).execute();
-		}, logger);
+		const notePostSave = createNotePostSave(createNotePostSaveCounts(dataSource.manager), logger);
 		scope.defer(notePostSave.close);
 
 		active = true;
