@@ -35,14 +35,21 @@
     "id": "D4",
     "contract": "有限試行・期限・容量・保持・未知schema隔離。上限の413/503は本家のHTTP互換とは別の受理制御契約。",
     "owners": [
-      160,
       163,
       164,
       165,
       166,
       169
     ],
-    "newImplementationVerified": false
+    "newImplementationVerified": false,
+    "reevaluations": [
+      {
+        "date": "2026-11-03",
+        "issue": 160,
+        "decision": "owners から #160 を外す",
+        "reason": "#160 の最初の PR は署名・署名付き送信・配送結果の分類だけを持ち、本家と同じく分類の結果（止める・再試行する）を返すだけにした。試行回数・backoff は #162 が本家相当（既定 12 回・httpRelatedBackoff）で扱い、期限・容量・保持・未知 schema の隔離は #160 の範囲に入らない（GOALS.md の初期範囲）。D4 自体の扱いは残りの所有者が再評価する。"
+      }
+    ]
   },
   {
     "id": "D5",

@@ -4,8 +4,9 @@
  */
 
 // 外向き HTTP の比較用の偽サーバーと case の実行器。
-// 本家の probe（docs/superpowers/compatibility/outbound-http/）も同じファイルを写して使うため、node の組み込みだけに依存する。
+// 本家の probe（docs/superpowers/compatibility/outbound-http/・ap-request/）も同じファイルを写して使うため、node の組み込みだけに依存する。
 import { execFileSync } from 'node:child_process';
+import { createHash, verify } from 'node:crypto';
 import * as dns from 'node:dns';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import * as http from 'node:http';
@@ -81,6 +82,64 @@ interface RecordedRequest {
 
 const recordedHeaders = new Set(['user-agent', 'accept', 'authorization', 'cookie', 'content-type', 'content-length', 'x-probe']);
 
+/** 署名付きの送信先（偽の inbox）へ渡す case。`object` は本家の signedPost と同じく、文字列ならそのまま、それ以外は JSON にして送る。 */
+export interface InboxCase {
+	id: string;
+	url: string;
+	object: unknown;
+	digest?: string;
+}
+
+/** 本家の ApRequestService.signedPost に相当する送信。失敗は送信元の例外をそのまま投げる。 */
+export type InboxPost = (settings: ClientSettings, url: string, object: unknown, digest: string | undefined) => Promise<void>;
+
+/** 偽の inbox が受け取った要求。署名と Digest は受信した値のまま検証してから、ポートと署名値を名前へ置き換える。 */
+export interface InboxRequest {
+	listener: string;
+	method: string;
+	path: string;
+	headers: Record<string, string | string[]>;
+	body: string;
+	verified: { signature: boolean | null; digest: boolean | null };
+}
+
+export interface InboxObservation {
+	id: string;
+	error?: Record<string, unknown>;
+	received: InboxRequest[];
+}
+
+interface ReceivedRequest {
+	listener: string;
+	method: string;
+	path: string;
+	headers: Record<string, string | string[]>;
+	body: Buffer;
+}
+
+const inboxHeaders = new Set(['accept', 'content-length', 'content-type', 'date', 'digest', 'host', 'signature', 'user-agent']);
+
+function single(value: string | string[] | undefined): string | undefined {
+	return Array.isArray(value) ? value[0] : value;
+}
+
+/** 受信側と同じ材料（method・受信した path・ヘッダー・本文）だけで、draft-cavage の署名と SHA-256 の Digest を検証する。 */
+function verifyReceived(request: ReceivedRequest, publicKeyPem: string): InboxRequest['verified'] {
+	const signatureHeader = single(request.headers.signature);
+	let signature: boolean | null = null;
+	if (signatureHeader !== undefined) {
+		const params = Object.fromEntries([...signatureHeader.matchAll(/(\w+)="([^"]*)"/g)].map(match => [match[1], match[2]]));
+		const lines = (params.headers ?? '').split(' ').map(name => (name === '(request-target)'
+			? `(request-target): ${request.method.toLowerCase()} ${request.path}`
+			: `${name}: ${single(request.headers[name])}`));
+		signature = verify('sha256', Buffer.from(lines.join('\n')), publicKeyPem, Buffer.from(params.signature ?? '', 'base64'));
+	}
+
+	const digestHeader = single(request.headers.digest);
+	const digest = digestHeader === undefined ? null : digestHeader === `SHA-256=${createHash('sha256').update(request.body).digest('base64')}`;
+	return { signature, digest };
+}
+
 /**
  * cacheable-lookup は生成時に dns.promises.Resolver の resolve4/resolve6 を束縛する。
  * 生成前に差し替えると、実 DNS を使わずに名前を 127.0.0.x へ向けられる。表にない名前（localhost を含む）は見つからない扱いにする。
@@ -140,12 +199,17 @@ function createTlsMaterial(): { cert: string; key: string } | null {
 export interface FakeServers {
 	tls: boolean;
 	expand(value: string): string;
+	/** 実行ごとに変わるポートを名前へ戻す。 */
+	normalize(value: string): string;
 	run(c: HttpCase, client: (settings: ClientSettings) => ProbeClient): Promise<unknown>;
+	/** 送信の観測と、送信が投げた例外そのもの（成功なら null）を返す。例外は配送結果の分類へ渡すために返す。 */
+	runInbox(c: InboxCase, post: InboxPost, publicKeyPem: string): Promise<{ observation: InboxObservation; failure: { error: unknown } | null }>;
 	close(): Promise<void>;
 }
 
 export async function startFakeServers(): Promise<FakeServers> {
 	const requests: RecordedRequest[] = [];
+	const received: ReceivedRequest[] = [];
 	const connects: { authority: string; remoteAddress: string | undefined }[] = [];
 	const tunnels = new Set<net.Socket>();
 
@@ -162,6 +226,14 @@ export async function startFakeServers(): Promise<FakeServers> {
 			}
 		}
 		requests.push({ listener, method: req.method ?? '', path: req.url ?? '', headers, remoteAddress: req.socket.remoteAddress ?? '', body: body.length <= 1024 ? body.toString('utf8') : { length: body.length } });
+
+		const allHeaders: Record<string, string | string[]> = {};
+		for (let i = 0; i < req.rawHeaders.length; i += 2) {
+			const name = req.rawHeaders[i].toLowerCase();
+			const previous = allHeaders[name];
+			allHeaders[name] = previous === undefined ? req.rawHeaders[i + 1] : [previous, req.rawHeaders[i + 1]].flat();
+		}
+		received.push({ listener, method: req.method ?? '', path: req.url ?? '', headers: allHeaders, body });
 
 		const url = new URL(req.url ?? '/', 'http://fake');
 		const [route, param] = url.pathname.split('/').filter(Boolean);
@@ -214,6 +286,14 @@ export async function startFakeServers(): Promise<FakeServers> {
 			case 'text':
 				res.writeHead(200, { 'content-type': 'text/plain' });
 				res.end('not json');
+				return;
+			case 'inbox':
+				// 本家の signedPost は応答本文を読まないため、状態だけを返す。stall は応答しない。
+				if (param === 'stall') {
+					return;
+				}
+				res.writeHead(size);
+				res.end();
 				return;
 			default:
 				res.writeHead(404);
@@ -354,21 +434,44 @@ export async function startFakeServers(): Promise<FakeServers> {
 		};
 	};
 
+	const settingsFor = (config: HttpCase['config']): ClientSettings => ({
+		userAgent: probeUserAgent,
+		allowedPrivateNetworks: config?.allowedPrivateNetworks ?? publicStandIn,
+		proxy: config?.proxy ? origins.proxy : undefined,
+		proxyBypassHosts: config?.proxyBypassHosts,
+		outgoingAddress: config?.outgoingAddress,
+	});
+
+	const inboxRequest = (request: ReceivedRequest, publicKeyPem: string): InboxRequest => {
+		const headers: Record<string, string | string[]> = {};
+		for (const [name, value] of Object.entries(request.headers)) {
+			if (!inboxHeaders.has(name)) {
+				continue;
+			}
+			// 署名値は Host のポートで変わる。検証済みの結果を別に残し、値は名前へ置き換える。
+			const settle = (v: string) => (name === 'signature' ? normalize(v).replace(/signature="[^"]*"/, 'signature="{signature}"') : normalize(v));
+			headers[name] = Array.isArray(value) ? value.map(settle) : settle(value);
+		}
+		return {
+			listener: request.listener,
+			method: request.method,
+			path: normalize(request.path),
+			headers,
+			body: request.body.toString('utf8'),
+			verified: verifyReceived(request, publicKeyPem),
+		};
+	};
+
 	return {
 		tls: material !== null,
 		expand,
+		normalize,
 		async run(c, client) {
 			requests.length = 0;
+			received.length = 0;
 			connects.length = 0;
 
-			const settings: ClientSettings = {
-				userAgent: probeUserAgent,
-				allowedPrivateNetworks: c.config?.allowedPrivateNetworks ?? publicStandIn,
-				proxy: c.config?.proxy ? origins.proxy : undefined,
-				proxyBypassHosts: c.config?.proxyBypassHosts,
-				outgoingAddress: c.config?.outgoingAddress,
-			};
-			const instance = client(settings);
+			const instance = client(settingsFor(c.config));
 			const url = expand(c.url);
 			const result: Record<string, unknown> = { id: c.id };
 
@@ -394,6 +497,22 @@ export async function startFakeServers(): Promise<FakeServers> {
 			result.requests = requests.map(normalizeRequest);
 			result.connects = connects.map(entry => ({ ...entry, authority: normalize(entry.authority) }));
 			return result;
+		},
+		async runInbox(c, post, publicKeyPem) {
+			received.length = 0;
+
+			let failure: { error: unknown } | null = null;
+			try {
+				await post(settingsFor(undefined), expand(c.url), c.object, c.digest);
+			} catch (error) {
+				failure = { error };
+			}
+
+			const observation: InboxObservation = { id: c.id, received: received.map(request => inboxRequest(request, publicKeyPem)) };
+			if (failure) {
+				observation.error = describe(failure.error);
+			}
+			return { observation, failure };
 		},
 		async close() {
 			for (const socket of tunnels) {

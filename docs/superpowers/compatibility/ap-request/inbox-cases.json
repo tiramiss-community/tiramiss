@@ -1,0 +1,1206 @@
+{
+	"inputs": {
+		"selfUrl": "https://probe.test",
+		"userId": "9zz0probe",
+		"now": "2026-11-03T12:34:56.789Z",
+		"cases": [
+			{
+				"id": "accepted-object",
+				"url": "{public}/inbox/202",
+				"object": {
+					"@context": "https://www.w3.org/ns/activitystreams",
+					"type": "Create",
+					"actor": "https://probe.test/users/9zz0probe",
+					"object": {
+						"type": "Note",
+						"content": "こんにちは🍰"
+					}
+				}
+			},
+			{
+				"id": "accepted-string",
+				"url": "{public}/inbox/202",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "ok-200",
+				"url": "{public}/inbox/200",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "no-content-204",
+				"url": "{public}/inbox/204",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "ip-literal",
+				"url": "{publicIp}/inbox/202",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "query",
+				"url": "{public}/inbox/202?x=1&y=%20z",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "empty-query-fragment",
+				"url": "{public}/inbox/202?#frag",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "digest-given-matching",
+				"url": "{public}/inbox/202",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+				"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo="
+			},
+			{
+				"id": "digest-given-mismatch",
+				"url": "{public}/inbox/202",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+				"digest": "SHA-256=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+			},
+			{
+				"id": "status-400",
+				"url": "{public}/inbox/400",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "status-401",
+				"url": "{public}/inbox/401",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "status-403",
+				"url": "{public}/inbox/403",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "status-404",
+				"url": "{public}/inbox/404",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "status-410",
+				"url": "{public}/inbox/410",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "status-429",
+				"url": "{public}/inbox/429",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "status-500",
+				"url": "{public}/inbox/500",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "status-502",
+				"url": "{public}/inbox/502",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "status-503",
+				"url": "{public}/inbox/503",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "redirect-307-same-host",
+				"url": "{public}/redirect?status=307&to=%2Finbox%2F202",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "redirect-302-same-host",
+				"url": "{public}/redirect?status=302&to=%2Finbox%2F202",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "redirect-307-other-host",
+				"url": "{public}/redirect?status=307&to={other}/inbox/202",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "stall-timeout",
+				"url": "{public}/inbox/stall",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "dns-not-found",
+				"url": "http://missing.outbound.test/inbox/202",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			},
+			{
+				"id": "blocked-private",
+				"url": "{private}/inbox/202",
+				"object": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}"
+			}
+		]
+	},
+	"cases": [
+		{
+			"id": "accepted-object",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/202",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"delivery": {
+				"personalInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "accepted-string",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/202",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"delivery": {
+				"personalInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "ok-200",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/200",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"delivery": {
+				"personalInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "no-content-204",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/204",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"delivery": {
+				"personalInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "ip-literal",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/202",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "127.0.0.2:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"delivery": {
+				"personalInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "query",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/202?x=1&y=%20z",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"delivery": {
+				"personalInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "empty-query-fragment",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/202?",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"delivery": {
+				"personalInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "digest-given-matching",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/202",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"delivery": {
+				"personalInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "digest-given-mismatch",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/202",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": false
+					}
+				}
+			],
+			"delivery": {
+				"personalInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "status-400",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/400",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"error": {
+				"name": "StatusError",
+				"message": "400 Bad Request",
+				"statusCode": 400,
+				"statusMessage": "Bad Request",
+				"isClientError": true,
+				"isRetryable": false
+			},
+			"delivery": {
+				"personalInbox": {
+					"thrown": {
+						"name": "UnrecoverableError",
+						"message": "400 Bad Request",
+						"unrecoverable": true,
+						"original": false
+					},
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"thrown": {
+						"name": "UnrecoverableError",
+						"message": "400 Bad Request",
+						"unrecoverable": true,
+						"original": false
+					},
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "status-401",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/401",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"error": {
+				"name": "StatusError",
+				"message": "401 Unauthorized",
+				"statusCode": 401,
+				"statusMessage": "Unauthorized",
+				"isClientError": true,
+				"isRetryable": false
+			},
+			"delivery": {
+				"personalInbox": {
+					"thrown": {
+						"name": "UnrecoverableError",
+						"message": "401 Unauthorized",
+						"unrecoverable": true,
+						"original": false
+					},
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"thrown": {
+						"name": "UnrecoverableError",
+						"message": "401 Unauthorized",
+						"unrecoverable": true,
+						"original": false
+					},
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "status-403",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/403",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"error": {
+				"name": "StatusError",
+				"message": "403 Forbidden",
+				"statusCode": 403,
+				"statusMessage": "Forbidden",
+				"isClientError": true,
+				"isRetryable": false
+			},
+			"delivery": {
+				"personalInbox": {
+					"thrown": {
+						"name": "UnrecoverableError",
+						"message": "403 Forbidden",
+						"unrecoverable": true,
+						"original": false
+					},
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"thrown": {
+						"name": "UnrecoverableError",
+						"message": "403 Forbidden",
+						"unrecoverable": true,
+						"original": false
+					},
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "status-404",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/404",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"error": {
+				"name": "StatusError",
+				"message": "404 Not Found",
+				"statusCode": 404,
+				"statusMessage": "Not Found",
+				"isClientError": true,
+				"isRetryable": false
+			},
+			"delivery": {
+				"personalInbox": {
+					"thrown": {
+						"name": "UnrecoverableError",
+						"message": "404 Not Found",
+						"unrecoverable": true,
+						"original": false
+					},
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"thrown": {
+						"name": "UnrecoverableError",
+						"message": "404 Not Found",
+						"unrecoverable": true,
+						"original": false
+					},
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "status-410",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/410",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"error": {
+				"name": "StatusError",
+				"message": "410 Gone",
+				"statusCode": 410,
+				"statusMessage": "Gone",
+				"isClientError": true,
+				"isRetryable": false
+			},
+			"delivery": {
+				"personalInbox": {
+					"thrown": {
+						"name": "UnrecoverableError",
+						"message": "410 Gone",
+						"unrecoverable": true,
+						"original": false
+					},
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"thrown": {
+						"name": "UnrecoverableError",
+						"message": "public.outbound.test:{port:public} is gone",
+						"unrecoverable": true,
+						"original": false
+					},
+					"goneSuspended": true
+				}
+			}
+		},
+		{
+			"id": "status-429",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/429",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"error": {
+				"name": "StatusError",
+				"message": "429 Too Many Requests",
+				"statusCode": 429,
+				"statusMessage": "Too Many Requests",
+				"isClientError": true,
+				"isRetryable": true
+			},
+			"delivery": {
+				"personalInbox": {
+					"thrown": {
+						"name": "Error",
+						"message": "429 Too Many Requests",
+						"unrecoverable": false,
+						"original": false
+					},
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"thrown": {
+						"name": "Error",
+						"message": "429 Too Many Requests",
+						"unrecoverable": false,
+						"original": false
+					},
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "status-500",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/500",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"error": {
+				"name": "StatusError",
+				"message": "500 Internal Server Error",
+				"statusCode": 500,
+				"statusMessage": "Internal Server Error",
+				"isClientError": false,
+				"isRetryable": true
+			},
+			"delivery": {
+				"personalInbox": {
+					"thrown": {
+						"name": "Error",
+						"message": "500 Internal Server Error",
+						"unrecoverable": false,
+						"original": false
+					},
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"thrown": {
+						"name": "Error",
+						"message": "500 Internal Server Error",
+						"unrecoverable": false,
+						"original": false
+					},
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "status-502",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/502",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"error": {
+				"name": "StatusError",
+				"message": "502 Bad Gateway",
+				"statusCode": 502,
+				"statusMessage": "Bad Gateway",
+				"isClientError": false,
+				"isRetryable": true
+			},
+			"delivery": {
+				"personalInbox": {
+					"thrown": {
+						"name": "Error",
+						"message": "502 Bad Gateway",
+						"unrecoverable": false,
+						"original": false
+					},
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"thrown": {
+						"name": "Error",
+						"message": "502 Bad Gateway",
+						"unrecoverable": false,
+						"original": false
+					},
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "status-503",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/503",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"error": {
+				"name": "StatusError",
+				"message": "503 Service Unavailable",
+				"statusCode": 503,
+				"statusMessage": "Service Unavailable",
+				"isClientError": false,
+				"isRetryable": true
+			},
+			"delivery": {
+				"personalInbox": {
+					"thrown": {
+						"name": "Error",
+						"message": "503 Service Unavailable",
+						"unrecoverable": false,
+						"original": false
+					},
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"thrown": {
+						"name": "Error",
+						"message": "503 Service Unavailable",
+						"unrecoverable": false,
+						"original": false
+					},
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "redirect-307-same-host",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/redirect?status=307&to=%2Finbox%2F202",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				},
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/202",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": false,
+						"digest": true
+					}
+				}
+			],
+			"delivery": {
+				"personalInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "redirect-302-same-host",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/redirect?status=302&to=%2Finbox%2F202",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				},
+				{
+					"listener": "public",
+					"method": "GET",
+					"path": "/inbox/202",
+					"headers": {
+						"accept": "*/*",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "",
+					"verified": {
+						"signature": false,
+						"digest": false
+					}
+				}
+			],
+			"delivery": {
+				"personalInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "redirect-307-other-host",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/redirect?status=307&to={other}/inbox/202",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				},
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/202",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "other.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": false,
+						"digest": true
+					}
+				}
+			],
+			"delivery": {
+				"personalInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"returned": "Success",
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "stall-timeout",
+			"received": [
+				{
+					"listener": "public",
+					"method": "POST",
+					"path": "/inbox/stall",
+					"headers": {
+						"accept": "*/*",
+						"content-length": "170",
+						"content-type": "application/activity+json",
+						"date": "Tue, 03 Nov 2026 12:34:56 GMT",
+						"digest": "SHA-256=Y/MngGW7HO1d5NegpghtdVGy1cCkVfHR/ZvV5MVA7Uo=",
+						"signature": "keyId=\"https://probe.test/users/9zz0probe#main-key\",algorithm=\"rsa-sha256\",headers=\"(request-target) date host digest\",signature=\"{signature}\"",
+						"user-agent": "Misskey/probe (https://probe.test)",
+						"host": "public.outbound.test:{port:public}"
+					},
+					"body": "{\"@context\":\"https://www.w3.org/ns/activitystreams\",\"type\":\"Create\",\"actor\":\"https://probe.test/users/9zz0probe\",\"object\":{\"type\":\"Note\",\"content\":\"こんにちは🍰\"}}",
+					"verified": {
+						"signature": true,
+						"digest": true
+					}
+				}
+			],
+			"error": {
+				"name": "AbortError",
+				"message": "The operation was aborted.",
+				"type": "aborted"
+			},
+			"delivery": {
+				"personalInbox": {
+					"thrown": {
+						"name": "AbortError",
+						"message": "The operation was aborted.",
+						"unrecoverable": false,
+						"original": true
+					},
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"thrown": {
+						"name": "AbortError",
+						"message": "The operation was aborted.",
+						"unrecoverable": false,
+						"original": true
+					},
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "dns-not-found",
+			"received": [],
+			"error": {
+				"name": "FetchError",
+				"message": "request to http://missing.outbound.test/inbox/202 failed, reason: cacheableLookup ENOTFOUND missing.outbound.test",
+				"type": "system",
+				"code": "ENOTFOUND"
+			},
+			"delivery": {
+				"personalInbox": {
+					"thrown": {
+						"name": "FetchError",
+						"message": "request to http://missing.outbound.test/inbox/202 failed, reason: cacheableLookup ENOTFOUND missing.outbound.test",
+						"unrecoverable": false,
+						"original": true
+					},
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"thrown": {
+						"name": "FetchError",
+						"message": "request to http://missing.outbound.test/inbox/202 failed, reason: cacheableLookup ENOTFOUND missing.outbound.test",
+						"unrecoverable": false,
+						"original": true
+					},
+					"goneSuspended": false
+				}
+			}
+		},
+		{
+			"id": "blocked-private",
+			"received": [],
+			"error": {
+				"name": "FetchError",
+				"message": "request to {private}/inbox/202 failed, reason: Blocked address: 127.0.0.1",
+				"type": "system"
+			},
+			"delivery": {
+				"personalInbox": {
+					"thrown": {
+						"name": "FetchError",
+						"message": "request to {private}/inbox/202 failed, reason: Blocked address: 127.0.0.1",
+						"unrecoverable": false,
+						"original": true
+					},
+					"goneSuspended": false
+				},
+				"sharedInbox": {
+					"thrown": {
+						"name": "FetchError",
+						"message": "request to {private}/inbox/202 failed, reason: Blocked address: 127.0.0.1",
+						"unrecoverable": false,
+						"original": true
+					},
+					"goneSuspended": false
+				}
+			}
+		}
+	]
+}

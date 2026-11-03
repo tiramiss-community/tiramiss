@@ -1,0 +1,2233 @@
+{
+	"inputs": {
+		"inboxes": [
+			{
+				"to": "https://remote.example/users/alice/inbox",
+				"isSharedInbox": false
+			},
+			{
+				"to": "https://remote.example/inbox",
+				"isSharedInbox": true
+			},
+			{
+				"to": "https://Remote.Example:8443/inbox",
+				"isSharedInbox": true
+			},
+			{
+				"to": "https://ëxample.jp/inbox",
+				"isSharedInbox": true
+			}
+		],
+		"failures": [
+			{
+				"id": "none",
+				"kind": "none"
+			},
+			{
+				"id": "status-300",
+				"kind": "status",
+				"statusCode": 300,
+				"statusMessage": "Multiple Choices"
+			},
+			{
+				"id": "status-304",
+				"kind": "status",
+				"statusCode": 304,
+				"statusMessage": "Not Modified"
+			},
+			{
+				"id": "status-400",
+				"kind": "status",
+				"statusCode": 400,
+				"statusMessage": "Bad Request"
+			},
+			{
+				"id": "status-401",
+				"kind": "status",
+				"statusCode": 401,
+				"statusMessage": "Unauthorized"
+			},
+			{
+				"id": "status-403",
+				"kind": "status",
+				"statusCode": 403,
+				"statusMessage": "Forbidden"
+			},
+			{
+				"id": "status-404",
+				"kind": "status",
+				"statusCode": 404,
+				"statusMessage": "Not Found"
+			},
+			{
+				"id": "status-408",
+				"kind": "status",
+				"statusCode": 408,
+				"statusMessage": "Request Timeout"
+			},
+			{
+				"id": "status-409",
+				"kind": "status",
+				"statusCode": 409,
+				"statusMessage": "Conflict"
+			},
+			{
+				"id": "status-410",
+				"kind": "status",
+				"statusCode": 410,
+				"statusMessage": "Gone"
+			},
+			{
+				"id": "status-413",
+				"kind": "status",
+				"statusCode": 413,
+				"statusMessage": "Payload Too Large"
+			},
+			{
+				"id": "status-422",
+				"kind": "status",
+				"statusCode": 422,
+				"statusMessage": "Unprocessable Entity"
+			},
+			{
+				"id": "status-429",
+				"kind": "status",
+				"statusCode": 429,
+				"statusMessage": "Too Many Requests"
+			},
+			{
+				"id": "status-499",
+				"kind": "status",
+				"statusCode": 499,
+				"statusMessage": ""
+			},
+			{
+				"id": "status-500",
+				"kind": "status",
+				"statusCode": 500,
+				"statusMessage": "Internal Server Error"
+			},
+			{
+				"id": "status-502",
+				"kind": "status",
+				"statusCode": 502,
+				"statusMessage": "Bad Gateway"
+			},
+			{
+				"id": "status-503",
+				"kind": "status",
+				"statusCode": 503,
+				"statusMessage": "Service Unavailable"
+			},
+			{
+				"id": "status-504",
+				"kind": "status",
+				"statusCode": 504,
+				"statusMessage": "Gateway Timeout"
+			},
+			{
+				"id": "status-599",
+				"kind": "status",
+				"statusCode": 599,
+				"statusMessage": ""
+			},
+			{
+				"id": "status-410-no-message",
+				"kind": "status",
+				"statusCode": 410
+			},
+			{
+				"id": "fetch-error-dns",
+				"kind": "error",
+				"name": "FetchError",
+				"message": "request to https://remote.example/inbox failed, reason: cacheableLookup ENOTFOUND remote.example",
+				"props": {
+					"type": "system",
+					"code": "ENOTFOUND"
+				}
+			},
+			{
+				"id": "fetch-error-blocked",
+				"kind": "error",
+				"name": "FetchError",
+				"message": "request to https://remote.example/inbox failed, reason: Blocked address: 127.0.0.1",
+				"props": {
+					"type": "system"
+				}
+			},
+			{
+				"id": "abort-error",
+				"kind": "error",
+				"name": "AbortError",
+				"message": "The operation was aborted.",
+				"props": {
+					"type": "aborted"
+				}
+			},
+			{
+				"id": "type-error",
+				"kind": "error",
+				"name": "TypeError",
+				"message": "Invalid URL",
+				"props": {
+					"code": "ERR_INVALID_URL"
+				}
+			},
+			{
+				"id": "keypair-missing",
+				"kind": "error",
+				"name": "DiagnosticError",
+				"message": "USER_KEYPAIR_NOT_FOUND",
+				"props": {
+					"code": "USER_KEYPAIR_NOT_FOUND"
+				}
+			},
+			{
+				"id": "status-like-plain-error",
+				"kind": "error",
+				"name": "StatusError",
+				"message": "410 Gone",
+				"props": {
+					"statusCode": 410,
+					"statusMessage": "Gone",
+					"isClientError": true,
+					"isRetryable": false
+				}
+			}
+		]
+	},
+	"cases": [
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "none",
+				"kind": "none"
+			},
+			"expected": {
+				"returned": "Success",
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-300",
+				"kind": "status",
+				"statusCode": 300,
+				"statusMessage": "Multiple Choices"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "300 Multiple Choices",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-304",
+				"kind": "status",
+				"statusCode": 304,
+				"statusMessage": "Not Modified"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "304 Not Modified",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-400",
+				"kind": "status",
+				"statusCode": 400,
+				"statusMessage": "Bad Request"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "400 Bad Request",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-401",
+				"kind": "status",
+				"statusCode": 401,
+				"statusMessage": "Unauthorized"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "401 Unauthorized",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-403",
+				"kind": "status",
+				"statusCode": 403,
+				"statusMessage": "Forbidden"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "403 Forbidden",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-404",
+				"kind": "status",
+				"statusCode": 404,
+				"statusMessage": "Not Found"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "404 Not Found",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-408",
+				"kind": "status",
+				"statusCode": 408,
+				"statusMessage": "Request Timeout"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "408 Request Timeout",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-409",
+				"kind": "status",
+				"statusCode": 409,
+				"statusMessage": "Conflict"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "409 Conflict",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-410",
+				"kind": "status",
+				"statusCode": 410,
+				"statusMessage": "Gone"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "410 Gone",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-413",
+				"kind": "status",
+				"statusCode": 413,
+				"statusMessage": "Payload Too Large"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "413 Payload Too Large",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-422",
+				"kind": "status",
+				"statusCode": 422,
+				"statusMessage": "Unprocessable Entity"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "422 Unprocessable Entity",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-429",
+				"kind": "status",
+				"statusCode": 429,
+				"statusMessage": "Too Many Requests"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "429 Too Many Requests",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-499",
+				"kind": "status",
+				"statusCode": 499,
+				"statusMessage": ""
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "499 ",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-500",
+				"kind": "status",
+				"statusCode": 500,
+				"statusMessage": "Internal Server Error"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "500 Internal Server Error",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-502",
+				"kind": "status",
+				"statusCode": 502,
+				"statusMessage": "Bad Gateway"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "502 Bad Gateway",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-503",
+				"kind": "status",
+				"statusCode": 503,
+				"statusMessage": "Service Unavailable"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "503 Service Unavailable",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-504",
+				"kind": "status",
+				"statusCode": 504,
+				"statusMessage": "Gateway Timeout"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "504 Gateway Timeout",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-599",
+				"kind": "status",
+				"statusCode": 599,
+				"statusMessage": ""
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "599 ",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-410-no-message",
+				"kind": "status",
+				"statusCode": 410
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "410 undefined",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "fetch-error-dns",
+				"kind": "error",
+				"name": "FetchError",
+				"message": "request to https://remote.example/inbox failed, reason: cacheableLookup ENOTFOUND remote.example",
+				"props": {
+					"type": "system",
+					"code": "ENOTFOUND"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "FetchError",
+					"message": "request to https://remote.example/inbox failed, reason: cacheableLookup ENOTFOUND remote.example",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "fetch-error-blocked",
+				"kind": "error",
+				"name": "FetchError",
+				"message": "request to https://remote.example/inbox failed, reason: Blocked address: 127.0.0.1",
+				"props": {
+					"type": "system"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "FetchError",
+					"message": "request to https://remote.example/inbox failed, reason: Blocked address: 127.0.0.1",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "abort-error",
+				"kind": "error",
+				"name": "AbortError",
+				"message": "The operation was aborted.",
+				"props": {
+					"type": "aborted"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "AbortError",
+					"message": "The operation was aborted.",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "type-error",
+				"kind": "error",
+				"name": "TypeError",
+				"message": "Invalid URL",
+				"props": {
+					"code": "ERR_INVALID_URL"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "TypeError",
+					"message": "Invalid URL",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "keypair-missing",
+				"kind": "error",
+				"name": "DiagnosticError",
+				"message": "USER_KEYPAIR_NOT_FOUND",
+				"props": {
+					"code": "USER_KEYPAIR_NOT_FOUND"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "DiagnosticError",
+					"message": "USER_KEYPAIR_NOT_FOUND",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/users/alice/inbox",
+			"isSharedInbox": false,
+			"failure": {
+				"id": "status-like-plain-error",
+				"kind": "error",
+				"name": "StatusError",
+				"message": "410 Gone",
+				"props": {
+					"statusCode": 410,
+					"statusMessage": "Gone",
+					"isClientError": true,
+					"isRetryable": false
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "StatusError",
+					"message": "410 Gone",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "none",
+				"kind": "none"
+			},
+			"expected": {
+				"returned": "Success",
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-300",
+				"kind": "status",
+				"statusCode": 300,
+				"statusMessage": "Multiple Choices"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "300 Multiple Choices",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-304",
+				"kind": "status",
+				"statusCode": 304,
+				"statusMessage": "Not Modified"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "304 Not Modified",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-400",
+				"kind": "status",
+				"statusCode": 400,
+				"statusMessage": "Bad Request"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "400 Bad Request",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-401",
+				"kind": "status",
+				"statusCode": 401,
+				"statusMessage": "Unauthorized"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "401 Unauthorized",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-403",
+				"kind": "status",
+				"statusCode": 403,
+				"statusMessage": "Forbidden"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "403 Forbidden",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-404",
+				"kind": "status",
+				"statusCode": 404,
+				"statusMessage": "Not Found"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "404 Not Found",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-408",
+				"kind": "status",
+				"statusCode": 408,
+				"statusMessage": "Request Timeout"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "408 Request Timeout",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-409",
+				"kind": "status",
+				"statusCode": 409,
+				"statusMessage": "Conflict"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "409 Conflict",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-410",
+				"kind": "status",
+				"statusCode": 410,
+				"statusMessage": "Gone"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "remote.example is gone",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": true
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-413",
+				"kind": "status",
+				"statusCode": 413,
+				"statusMessage": "Payload Too Large"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "413 Payload Too Large",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-422",
+				"kind": "status",
+				"statusCode": 422,
+				"statusMessage": "Unprocessable Entity"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "422 Unprocessable Entity",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-429",
+				"kind": "status",
+				"statusCode": 429,
+				"statusMessage": "Too Many Requests"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "429 Too Many Requests",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-499",
+				"kind": "status",
+				"statusCode": 499,
+				"statusMessage": ""
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "499 ",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-500",
+				"kind": "status",
+				"statusCode": 500,
+				"statusMessage": "Internal Server Error"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "500 Internal Server Error",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-502",
+				"kind": "status",
+				"statusCode": 502,
+				"statusMessage": "Bad Gateway"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "502 Bad Gateway",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-503",
+				"kind": "status",
+				"statusCode": 503,
+				"statusMessage": "Service Unavailable"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "503 Service Unavailable",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-504",
+				"kind": "status",
+				"statusCode": 504,
+				"statusMessage": "Gateway Timeout"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "504 Gateway Timeout",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-599",
+				"kind": "status",
+				"statusCode": 599,
+				"statusMessage": ""
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "599 ",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-410-no-message",
+				"kind": "status",
+				"statusCode": 410
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "remote.example is gone",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": true
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "fetch-error-dns",
+				"kind": "error",
+				"name": "FetchError",
+				"message": "request to https://remote.example/inbox failed, reason: cacheableLookup ENOTFOUND remote.example",
+				"props": {
+					"type": "system",
+					"code": "ENOTFOUND"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "FetchError",
+					"message": "request to https://remote.example/inbox failed, reason: cacheableLookup ENOTFOUND remote.example",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "fetch-error-blocked",
+				"kind": "error",
+				"name": "FetchError",
+				"message": "request to https://remote.example/inbox failed, reason: Blocked address: 127.0.0.1",
+				"props": {
+					"type": "system"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "FetchError",
+					"message": "request to https://remote.example/inbox failed, reason: Blocked address: 127.0.0.1",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "abort-error",
+				"kind": "error",
+				"name": "AbortError",
+				"message": "The operation was aborted.",
+				"props": {
+					"type": "aborted"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "AbortError",
+					"message": "The operation was aborted.",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "type-error",
+				"kind": "error",
+				"name": "TypeError",
+				"message": "Invalid URL",
+				"props": {
+					"code": "ERR_INVALID_URL"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "TypeError",
+					"message": "Invalid URL",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "keypair-missing",
+				"kind": "error",
+				"name": "DiagnosticError",
+				"message": "USER_KEYPAIR_NOT_FOUND",
+				"props": {
+					"code": "USER_KEYPAIR_NOT_FOUND"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "DiagnosticError",
+					"message": "USER_KEYPAIR_NOT_FOUND",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://remote.example/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-like-plain-error",
+				"kind": "error",
+				"name": "StatusError",
+				"message": "410 Gone",
+				"props": {
+					"statusCode": 410,
+					"statusMessage": "Gone",
+					"isClientError": true,
+					"isRetryable": false
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "StatusError",
+					"message": "410 Gone",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "none",
+				"kind": "none"
+			},
+			"expected": {
+				"returned": "Success",
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-300",
+				"kind": "status",
+				"statusCode": 300,
+				"statusMessage": "Multiple Choices"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "300 Multiple Choices",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-304",
+				"kind": "status",
+				"statusCode": 304,
+				"statusMessage": "Not Modified"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "304 Not Modified",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-400",
+				"kind": "status",
+				"statusCode": 400,
+				"statusMessage": "Bad Request"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "400 Bad Request",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-401",
+				"kind": "status",
+				"statusCode": 401,
+				"statusMessage": "Unauthorized"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "401 Unauthorized",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-403",
+				"kind": "status",
+				"statusCode": 403,
+				"statusMessage": "Forbidden"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "403 Forbidden",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-404",
+				"kind": "status",
+				"statusCode": 404,
+				"statusMessage": "Not Found"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "404 Not Found",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-408",
+				"kind": "status",
+				"statusCode": 408,
+				"statusMessage": "Request Timeout"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "408 Request Timeout",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-409",
+				"kind": "status",
+				"statusCode": 409,
+				"statusMessage": "Conflict"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "409 Conflict",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-410",
+				"kind": "status",
+				"statusCode": 410,
+				"statusMessage": "Gone"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "remote.example:8443 is gone",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": true
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-413",
+				"kind": "status",
+				"statusCode": 413,
+				"statusMessage": "Payload Too Large"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "413 Payload Too Large",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-422",
+				"kind": "status",
+				"statusCode": 422,
+				"statusMessage": "Unprocessable Entity"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "422 Unprocessable Entity",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-429",
+				"kind": "status",
+				"statusCode": 429,
+				"statusMessage": "Too Many Requests"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "429 Too Many Requests",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-499",
+				"kind": "status",
+				"statusCode": 499,
+				"statusMessage": ""
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "499 ",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-500",
+				"kind": "status",
+				"statusCode": 500,
+				"statusMessage": "Internal Server Error"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "500 Internal Server Error",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-502",
+				"kind": "status",
+				"statusCode": 502,
+				"statusMessage": "Bad Gateway"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "502 Bad Gateway",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-503",
+				"kind": "status",
+				"statusCode": 503,
+				"statusMessage": "Service Unavailable"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "503 Service Unavailable",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-504",
+				"kind": "status",
+				"statusCode": 504,
+				"statusMessage": "Gateway Timeout"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "504 Gateway Timeout",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-599",
+				"kind": "status",
+				"statusCode": 599,
+				"statusMessage": ""
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "599 ",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-410-no-message",
+				"kind": "status",
+				"statusCode": 410
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "remote.example:8443 is gone",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": true
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "fetch-error-dns",
+				"kind": "error",
+				"name": "FetchError",
+				"message": "request to https://remote.example/inbox failed, reason: cacheableLookup ENOTFOUND remote.example",
+				"props": {
+					"type": "system",
+					"code": "ENOTFOUND"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "FetchError",
+					"message": "request to https://remote.example/inbox failed, reason: cacheableLookup ENOTFOUND remote.example",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "fetch-error-blocked",
+				"kind": "error",
+				"name": "FetchError",
+				"message": "request to https://remote.example/inbox failed, reason: Blocked address: 127.0.0.1",
+				"props": {
+					"type": "system"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "FetchError",
+					"message": "request to https://remote.example/inbox failed, reason: Blocked address: 127.0.0.1",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "abort-error",
+				"kind": "error",
+				"name": "AbortError",
+				"message": "The operation was aborted.",
+				"props": {
+					"type": "aborted"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "AbortError",
+					"message": "The operation was aborted.",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "type-error",
+				"kind": "error",
+				"name": "TypeError",
+				"message": "Invalid URL",
+				"props": {
+					"code": "ERR_INVALID_URL"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "TypeError",
+					"message": "Invalid URL",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "keypair-missing",
+				"kind": "error",
+				"name": "DiagnosticError",
+				"message": "USER_KEYPAIR_NOT_FOUND",
+				"props": {
+					"code": "USER_KEYPAIR_NOT_FOUND"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "DiagnosticError",
+					"message": "USER_KEYPAIR_NOT_FOUND",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://Remote.Example:8443/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-like-plain-error",
+				"kind": "error",
+				"name": "StatusError",
+				"message": "410 Gone",
+				"props": {
+					"statusCode": 410,
+					"statusMessage": "Gone",
+					"isClientError": true,
+					"isRetryable": false
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "StatusError",
+					"message": "410 Gone",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "none",
+				"kind": "none"
+			},
+			"expected": {
+				"returned": "Success",
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-300",
+				"kind": "status",
+				"statusCode": 300,
+				"statusMessage": "Multiple Choices"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "300 Multiple Choices",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-304",
+				"kind": "status",
+				"statusCode": 304,
+				"statusMessage": "Not Modified"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "304 Not Modified",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-400",
+				"kind": "status",
+				"statusCode": 400,
+				"statusMessage": "Bad Request"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "400 Bad Request",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-401",
+				"kind": "status",
+				"statusCode": 401,
+				"statusMessage": "Unauthorized"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "401 Unauthorized",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-403",
+				"kind": "status",
+				"statusCode": 403,
+				"statusMessage": "Forbidden"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "403 Forbidden",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-404",
+				"kind": "status",
+				"statusCode": 404,
+				"statusMessage": "Not Found"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "404 Not Found",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-408",
+				"kind": "status",
+				"statusCode": 408,
+				"statusMessage": "Request Timeout"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "408 Request Timeout",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-409",
+				"kind": "status",
+				"statusCode": 409,
+				"statusMessage": "Conflict"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "409 Conflict",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-410",
+				"kind": "status",
+				"statusCode": 410,
+				"statusMessage": "Gone"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "xn--xample-ova.jp is gone",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": true
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-413",
+				"kind": "status",
+				"statusCode": 413,
+				"statusMessage": "Payload Too Large"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "413 Payload Too Large",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-422",
+				"kind": "status",
+				"statusCode": 422,
+				"statusMessage": "Unprocessable Entity"
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "422 Unprocessable Entity",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-429",
+				"kind": "status",
+				"statusCode": 429,
+				"statusMessage": "Too Many Requests"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "429 Too Many Requests",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-499",
+				"kind": "status",
+				"statusCode": 499,
+				"statusMessage": ""
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "499 ",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-500",
+				"kind": "status",
+				"statusCode": 500,
+				"statusMessage": "Internal Server Error"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "500 Internal Server Error",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-502",
+				"kind": "status",
+				"statusCode": 502,
+				"statusMessage": "Bad Gateway"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "502 Bad Gateway",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-503",
+				"kind": "status",
+				"statusCode": 503,
+				"statusMessage": "Service Unavailable"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "503 Service Unavailable",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-504",
+				"kind": "status",
+				"statusCode": 504,
+				"statusMessage": "Gateway Timeout"
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "504 Gateway Timeout",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-599",
+				"kind": "status",
+				"statusCode": 599,
+				"statusMessage": ""
+			},
+			"expected": {
+				"thrown": {
+					"name": "Error",
+					"message": "599 ",
+					"unrecoverable": false,
+					"original": false
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-410-no-message",
+				"kind": "status",
+				"statusCode": 410
+			},
+			"expected": {
+				"thrown": {
+					"name": "UnrecoverableError",
+					"message": "xn--xample-ova.jp is gone",
+					"unrecoverable": true,
+					"original": false
+				},
+				"goneSuspended": true
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "fetch-error-dns",
+				"kind": "error",
+				"name": "FetchError",
+				"message": "request to https://remote.example/inbox failed, reason: cacheableLookup ENOTFOUND remote.example",
+				"props": {
+					"type": "system",
+					"code": "ENOTFOUND"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "FetchError",
+					"message": "request to https://remote.example/inbox failed, reason: cacheableLookup ENOTFOUND remote.example",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "fetch-error-blocked",
+				"kind": "error",
+				"name": "FetchError",
+				"message": "request to https://remote.example/inbox failed, reason: Blocked address: 127.0.0.1",
+				"props": {
+					"type": "system"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "FetchError",
+					"message": "request to https://remote.example/inbox failed, reason: Blocked address: 127.0.0.1",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "abort-error",
+				"kind": "error",
+				"name": "AbortError",
+				"message": "The operation was aborted.",
+				"props": {
+					"type": "aborted"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "AbortError",
+					"message": "The operation was aborted.",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "type-error",
+				"kind": "error",
+				"name": "TypeError",
+				"message": "Invalid URL",
+				"props": {
+					"code": "ERR_INVALID_URL"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "TypeError",
+					"message": "Invalid URL",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "keypair-missing",
+				"kind": "error",
+				"name": "DiagnosticError",
+				"message": "USER_KEYPAIR_NOT_FOUND",
+				"props": {
+					"code": "USER_KEYPAIR_NOT_FOUND"
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "DiagnosticError",
+					"message": "USER_KEYPAIR_NOT_FOUND",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		},
+		{
+			"to": "https://ëxample.jp/inbox",
+			"isSharedInbox": true,
+			"failure": {
+				"id": "status-like-plain-error",
+				"kind": "error",
+				"name": "StatusError",
+				"message": "410 Gone",
+				"props": {
+					"statusCode": 410,
+					"statusMessage": "Gone",
+					"isClientError": true,
+					"isRetryable": false
+				}
+			},
+			"expected": {
+				"thrown": {
+					"name": "StatusError",
+					"message": "410 Gone",
+					"unrecoverable": false,
+					"original": true
+				},
+				"goneSuspended": false
+			}
+		}
+	]
+}

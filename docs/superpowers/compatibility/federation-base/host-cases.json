@@ -75,6 +75,24 @@
 				"name": "blob@localhost",
 				"noteUserHost": "remote.example"
 			}
+		],
+		"dbHostUris": [
+			"https://remote.example/inbox",
+			"https://Remote.Example/inbox",
+			"https://remote.example:8443/inbox",
+			"https://remote.example:443/inbox",
+			"http://remote.example:80/inbox",
+			"http://localhost:3000/x",
+			"https://ëxample.jp/x",
+			"https://ËXAMPLE.jp/x",
+			"https://xn--xample-ova.jp/x",
+			"https://日本語.jp:8443/x",
+			"https://user:pass@remote.example/x",
+			"https://remote.example./x",
+			"https://127.0.0.2/x",
+			"https://[::1]/x",
+			"https://[::1]:8443/x",
+			"https://a_b.example/x"
 		]
 	},
 	"cases": [
@@ -1085,6 +1103,86 @@
 			"name": "blob@localhost",
 			"noteUserHost": "remote.example",
 			"expected": "localhost"
+		},
+		{
+			"fn": "extractDbHost",
+			"uri": "https://remote.example/inbox",
+			"expected": "remote.example"
+		},
+		{
+			"fn": "extractDbHost",
+			"uri": "https://Remote.Example/inbox",
+			"expected": "remote.example"
+		},
+		{
+			"fn": "extractDbHost",
+			"uri": "https://remote.example:8443/inbox",
+			"expected": ""
+		},
+		{
+			"fn": "extractDbHost",
+			"uri": "https://remote.example:443/inbox",
+			"expected": "remote.example"
+		},
+		{
+			"fn": "extractDbHost",
+			"uri": "http://remote.example:80/inbox",
+			"expected": "remote.example"
+		},
+		{
+			"fn": "extractDbHost",
+			"uri": "http://localhost:3000/x",
+			"expected": ""
+		},
+		{
+			"fn": "extractDbHost",
+			"uri": "https://ëxample.jp/x",
+			"expected": "xn--xample-ova.jp"
+		},
+		{
+			"fn": "extractDbHost",
+			"uri": "https://ËXAMPLE.jp/x",
+			"expected": "xn--xample-ova.jp"
+		},
+		{
+			"fn": "extractDbHost",
+			"uri": "https://xn--xample-ova.jp/x",
+			"expected": "xn--xample-ova.jp"
+		},
+		{
+			"fn": "extractDbHost",
+			"uri": "https://日本語.jp:8443/x",
+			"expected": ""
+		},
+		{
+			"fn": "extractDbHost",
+			"uri": "https://user:pass@remote.example/x",
+			"expected": "remote.example"
+		},
+		{
+			"fn": "extractDbHost",
+			"uri": "https://remote.example./x",
+			"expected": "remote.example."
+		},
+		{
+			"fn": "extractDbHost",
+			"uri": "https://127.0.0.2/x",
+			"expected": "127.0.0.2"
+		},
+		{
+			"fn": "extractDbHost",
+			"uri": "https://[::1]/x",
+			"expected": "[::1]"
+		},
+		{
+			"fn": "extractDbHost",
+			"uri": "https://[::1]:8443/x",
+			"expected": ""
+		},
+		{
+			"fn": "extractDbHost",
+			"uri": "https://a_b.example/x",
+			"expected": "a_b.example"
 		}
 	]
 }
