@@ -85,9 +85,9 @@ probe は re2 を差し替える（federation-base と同じ理由）。slacc �
 | `unit/federation/signed-post.test.ts` | `inbox-cases.json` の全件。受信した要求（`verified` の署名・Digest の検証を含む）と、timeout・DNS・遮断を含む分類 |
 | `integration/ap-request.test.ts` | 実 DB/Redis。`createFederationKeys` が読む保存済みの鍵（PKCS#1 を含む）で `createApRequest` の `signedPost` が署名し、保存した公開鍵で偽の inbox が検証できること。共有 inbox の 410 と、鍵の行がない場合の分類 |
 
-新実装の対象は `packages/backend-next/src/modules/federation/` の `http-signature.ts`・`signed-post.ts`・`delivery-result.ts` と、`src/composition/ap-request.ts`。通常起動からはまだ呼ばない。
+新実装の対象は `packages/backend-next/src/modules/federation/` の `http-signature.ts`・`signed-post.ts`・`delivery-result.ts` と、`src/composition/ap-request.ts`。#160 の最初の PR では通常起動から呼ばなかった。#171 の最初の PR で、worker 子の配送ジョブから呼ぶようにした（[ap-deliver](../ap-deliver/README.md)）。
 
 ## 未検証・範囲外
 
-- **後続の PR へ**: 配送前の判定（連合の許可・停止中のホスト・停止中のソフトウェア）、instance の状態の更新（`isNotResponding`・7 日の自動停止・`goneSuspended` の書き込み）、チャート、`fetchInstanceMetadata` は、配送を接続する PR（#171）で比べる。本 probe では `goneSuspended` を要求したかだけを記録し、その他の更新は記録しない。`signedGet` の応答処理（HTML の alternate、content-type の検証、`assertActivityMatchesUrl`）は #195。
+- **後続の PR へ**: 配送前の判定（連合の許可・停止中のホスト・停止中のソフトウェア）と instance の状態の更新（`isNotResponding`・7 日の自動停止・`goneSuspended` の書き込み）は、#171 の最初の PR で [ap-deliver](../ap-deliver/README.md) の `processor-cases.json` と比べた。配送の成功・失敗によるチャートは #200、成功時の `fetchInstanceMetadata` は連合の共通土台の段階 5（#216 の getHtml と一緒に）で比べる。本 probe では `goneSuspended` を要求したかだけを記録し、その他の更新は記録しない。`signedGet` の応答処理（HTML の alternate、content-type の検証、`assertActivityMatchesUrl`）は #195。
 - **観測していない**: https の inbox への送信と proxy 経由の送信（外向き HTTP の資料で agent の選択として比較済み）、timeout が本文の読み取り中に起きる場合（`signedPost` は本文を読まない）、`getUserKeypair` の失敗（分類だけを `keypair-missing` の入力で比較）、受信側の `@peertube/http-signature` による検証（`crypto.verify` で代える）、IDN の宛先への実際の送信（偽の DNS が持たない名前のため、署名だけを比較）。

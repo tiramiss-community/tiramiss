@@ -42,7 +42,7 @@
 - `inputs.cases[]`: `{ id, note, followers, deletedBeforeRender, author }`。
   - `note`: 作成して保存した投稿の列。`mentionedRemoteUsers` は本家の `insertNote` と同じ組み立て（リモートの利用者を `mentions` の順に `{ uri, url, username, host }`）で作った文字列。
   - `followers`: 作者をフォローするリモートの利用者。following の行の `followerSharedInbox`・`followerInbox` は利用者の `sharedInbox`・`inbox` と同じにする。
-  - `deletedBeforeRender`: 作成後、表現の前に消えた投稿。本家の入力 `data` には残り、表現の再読み込みでは見つからない。
+  - `deletedBeforeRender`: 作成後、表現の前に消えた投稿。本家の入力 `data` には残り、表現の再読み込みでは見つからない。本家は migration `1753868431598-remove_note_constraints` で `note.replyId`・`note.renoteId` の外部キーを外したため、返信先・Renote 先だけが消えて投稿が残ることは実 DB でも起きる。作者の行（`note.userId`）は今も cascade で消えるため、`reply-author-missing` は実 DB では作れない。
   - `author`: 投稿の作者。
 - `cases[]`: `{ id, reachedDeliver, activity, relay, directUserLookups, followingsQueries, addBulk, unhandledRejections }`。
   - `reachedDeliver`: activity を作り、宛先の選定に入ったか。
@@ -115,7 +115,7 @@ instance 表の stub は PostgreSQL と同じく `host` の一意制約を持ち
 - Map の順は followers（問い合わせの返却順、同じ URL は最初の位置のまま値だけ後勝ち）→ direct（メンションの順 → 返信先の作者 → Renote 先の作者）。
 - 返信先・Renote 先の作者は、入力 `data` の `userHost` が `null` でないときだけ利用者を読み直して direct に足す。
 - direct は、その利用者の `sharedInbox` が Map にあれば足さない。Map の値が個人の inbox でも同じ（`direct-shared-inbox-from-individual-follower`）。`inbox` が `null` なら黙って足さない。足すときは常に個人の inbox で `isSharedInbox: false`。follower の shared inbox と同じ URL なら値を `false` に上書きする。
-- followers の行に `sharedInbox` も `inbox` もなければ `inbox is null` を投げ、1 件も投入しない。relay の呼び出しはその前に済んでいる（`public-follower-without-inbox`）。
+- followers の行に `sharedInbox` も `inbox` もなければ `inbox is null` を投げ、1 件も投入しない。relay の呼び出しはその前に済んでいる（`public-follower-without-inbox`）。ただし、これは問い合わせを stub にした場合の結果。本家の問い合わせは主キーを選ばないため、TypeORM 1.1.1 は選んだ 2 列がともに `null` の行を返さない。実 DB ではそのフォロワーは黙って飛ばされ、他の宛先には届く（新実装も同じ問い合わせで、結合テストで確かめた）。
 - 宛先が空でも `addBulk([])` を呼ぶ。specified は followers を問い合わせない。localOnly・channel・リモートの作者の投稿は配送の区画に入らない。
 
 ### 投入と Worker
@@ -151,27 +151,34 @@ probe は re2 を差し替える（federation-base と同じ理由）。`postNot
 
 ## 新実装への接続
 
-新実装のテストはこの PR の後続のコミットで追加し、この表に接続先を書く。
+新実装のテストは各 JSON の `cases` を読み込む。パスは `packages/backend-next/test/` から。
 
-| 資料 | 新実装で比べること |
-| --- | --- |
-| `mfm-html-cases.json` | MFM → HTML の純関数と `noMisskeyContent` の判定。`content` は byte 単位、例外は名前とメッセージ |
-| `render-cases.json` | 保存済みの列と関連の行からの activity（文字列で一致。メンションの `tag` だけは集合で比べる）、宛先と job の順、配送しない場合 |
-| `recipient-cases.json` | 宛先の純関数の Map の順と値、`inbox is null` |
-| `job-cases.json` | job 名・内容・設定、queue の prefix、Worker の設定、backoff の表、再試行の判定（実 Redis の BullMQ で確かめる） |
-| `processor-cases.json` | skip の結果、送信、instance の読み書き（キャッシュのキーと形を含む）、例外の写像（`UnrecoverableError`・再試行） |
-| [note/observations.json](../note/observations.json) | C9-home・C9-followers・C9-specified・C9-localOnly の全件と、C9-public・C9-pure・C9-quote の `/inbox/shared` 分。`/inbox/relay` 分は 2 番目の PR で比べる |
+| 資料 | 新実装のテスト | 比べること |
+| --- | --- | --- |
+| `mfm-html-cases.json` | `unit/mfm/note-html.test.ts` | 全 86 件。MFM → HTML の純関数と `noMisskeyContent` の判定。`content` は byte 単位、例外は名前とメッセージ |
+| `render-cases.json` | `unit/federation/note-activity.test.ts`・`unit/federation/note-delivery.test.ts`・`integration/note-activity.test.ts` | 全 63 件。保存済みの列と関連の行からの activity（文字列で一致。メンションの `tag` だけは集合で比べる）、宛先と job の順・digest・本文、配送しない場合。結合テストは行を PostgreSQL へ入れて読み取りから通す（`reply-author-missing` など実 DB で作れない行を除く） |
+| `recipient-cases.json` | `unit/federation/deliver-recipients.test.ts` | 23 件。Map の順と値、問い合わせの回数、`inbox is null`。`remote-actor` は作者の判定で配送の区画に入らないため除く |
+| `job-cases.json` | `unit/job-queue/deliver.test.ts`・`integration/deliver-queue.test.ts` | 全件。job 名・内容・設定、queue の prefix、Worker の設定、backoff の表、再試行の判定（BullMQ の `Job.shouldRetryJob` に通す）。結合テストは実 Redis の BullMQ で、backoff の後の再試行と 4xx の停止を確かめる |
+| `processor-cases.json` | `integration/deliver-processor.test.ts`（純関数は `unit/federation/deliver-job.test.ts`） | 全 54 件・60 ジョブ。実 PostgreSQL・Redis の台帳で、戻り値か例外、送信、instance の読み書きと最終の行、Redis のキー・TTL・JSON。`fail-410-shared-unknown-stats-off` は下記の差異のとおり `goneSuspended` も残る |
+| [note/observations.json](../note/observations.json) | `processes/note-deliver.test.ts` | ビルド後の HTTP 子・worker 子を通し、C9-home・C9-followers・C9-specified・C9-localOnly の全件と、C9-public・C9-pure・C9-quote の `/inbox/shared` 分。ID・ポート・時刻を置き換えて本文が一致し、署名を `crypto.verify` で、Digest を本文で確かめる。`/inbox/relay` 分は 2 番目の PR で比べる |
 
 ## 意図的な差異
 
-2026-11-03 のユーザー決定と #171 の設計で決めたもの。新実装の接続の時に、根拠とともに更新する。
+2026-11-03 のユーザー決定と #171 の設計・実装で決めたもの。
 
 - **relay と JSON-LD 署名**: 最初の PR では配送しない。移行データに accepted の relay があっても、public の投稿は relay へ届かない。2 番目の #171 PR までの一時的な差異。
 - **成功時の `fetchInstanceMetadata`**: 呼ばない。連合の共通土台の段階 5（#216 の getHtml と一緒に）までの一時的な差異。
 - **チャート**: `apRequestChart`・`federationChart`・`instanceChart` を更新しない。#200 が扱う。
 - **メンションの `tag` の順**: 本家は問い合わせの返却順で決まらない。新実装は保存した `mentions` の順にし、比較は集合で行う。
 - **ローカルの絵文字**: 本家は Redis（30 分）とメモリ（3 分）のキャッシュから引く。新実装は DB から直接読む。選ぶ規則（ローカル・`localOnly` でない・`updatedAt` がなければ表現の時刻）は同じで、鮮度だけが違う。時刻は明示的に渡す。
-- **表現の失敗**: 本家は specified の pure Renote・MFM の ruby の例外・followers の `inbox is null` を待たない Promise で捨てる。新実装も配送しない結果は同じにし、投稿の後続処理の失敗として記録する。プロセス外へ例外を出さない。
+- **表現の失敗**: 本家は specified の pure Renote・MFM の ruby の例外を待たない Promise で捨てる。新実装も配送しない結果は同じにし、投稿の後続処理の失敗（`note-post-save.failed`）として記録する。プロセス外へ例外を出さない。
+- **後続処理の前に消えた投稿**: 新実装は保存済みの投稿を読み直すため、後続処理の前に消えた投稿は配送しない。本家は作成時のメモリ上の値から配送する。消えた投稿の扱いは削除の配送（#172）に任せる。
+- **表現の前に消えたリモートの Renote 先**: pure Renote の Renote 先がリモートで、表現の前に行が消えた場合は `renderAnnounce: renote target is gone` を投げ、配送しない（後続処理の失敗として記録する）。本家はメモリ上の URI で Announce を送る。ローカルの Renote 先は `${url}/notes/<id>` で作れるため、本家と同じ Announce になる（`renote-deleted-before-render`）。
+- **shared inbox の 410**: 新実装は不通の記録の後に `goneSuspended` を書く。未登録の host でも両方が残る。本家は並行に書き、初回登録の競合で `goneSuspended` を失うことがある（`fail-410-shared-unknown-stats-off`）。
+- **同じ host の初回登録**: 新実装は `INSERT … ON CONFLICT DO NOTHING` の後に読み直し、並行する配送ジョブの初回登録が重なっても失敗しない。本家は一意制約の違反でジョブが送信前に失敗する（再試行で回復する）。
+- **Meta の読み取り**: 配送ジョブごとに DB から読む。本家は更新の通知で保つメモリ上の Meta を使う。プロセス間の通知（#217）がまだないためで、管理者の変更が本家より早く効くだけ。
+- **待たない instance の更新**: 本家と同じくジョブの結果を待たせないが、停止時には完了を待つ。失敗は `deliver.instance-update-failed` に記録する。消えた行の更新は本家の TypeError ではなく `INSTANCE_NOT_FOUND` になる。
+- **Worker のログ**: 本家の `active`・`completed`・`stalled` の記録（debug）は移植しない。失敗した試行ごとに `job.failed` を、`to` と停止の理由とともに記録して元の例外を投げ直す。
 - **Redis の再接続**: deliver の queue と Worker も #162 と同じく再接続せず、稼働中の切断で全体を止める。
 
 ## 未検証・範囲外

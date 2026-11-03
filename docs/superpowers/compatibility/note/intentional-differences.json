@@ -33,10 +33,17 @@
     "owners": [
       159,
       161,
-      171,
       172
     ],
-    "newImplementationVerified": false
+    "newImplementationVerified": false,
+    "reevaluations": [
+      {
+        "date": "2026-11-03",
+        "issue": 171,
+        "decision": "owners から #171 を外す",
+        "reason": "#171 の最初の PR は本家と同じく、作成時に followers・direct の宛先を選んで通常の BullMQ へ投入するだけで、宛先の固定集合・送信実績・取消世代を記録しない（docs/backend-next/ap-delivery-handoff.md）。D3 は新設計の追加保証で、本家相当を移植する #171 は実装しない（GOALS.md の初期範囲）。D3 自体の扱いは残りの所有者が再評価する。"
+      }
+    ]
   },
   {
     "id": "D4",
