@@ -34,7 +34,8 @@
 		"ulid": "3.0.2",
 		"ratelimiter": "3.4.1",
 		"re2": "1.27.0",
-		"mfm-js": "0.27.0"
+		"mfm-js": "0.27.0",
+		"semver": "7.8.5"
 	},
 	"devDependencies": {
 		"@types/node": "26.6.4",
@@ -43,6 +44,7 @@
 		"@typescript-eslint/parser": "8.71.0",
 		"vitest": "5.0.3",
 		"@types/js-yaml": "4.0.9",
-		"@types/ratelimiter": "3.4.6"
+		"@types/ratelimiter": "3.4.6",
+		"@types/semver": "7.8.0"
 	}
 }

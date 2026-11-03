@@ -2,11 +2,12 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { MiMeta, MiRole, MiRoleAssignment, MiUser } from 'backend-upstream/entities';
+import { MiRole, MiRoleAssignment, MiUser } from 'backend-upstream/entities';
 import type { EntityManager } from 'typeorm';
 import type { RoleAuthorizationFacts } from '../../modules/role/public.js';
 import { ActorNotFound } from '../../modules/role/public.js';
 import { roleDefinition } from './role-mapping.js';
+import { readMeta } from './meta.js';
 
 export async function readRoleAuthorizationFacts(
 	manager: EntityManager,
@@ -17,7 +18,7 @@ export async function readRoleAuthorizationFacts(
 	if (user === null) {
 		throw new ActorNotFound();
 	}
-	const instance = await manager.getRepository(MiMeta).findOneByOrFail({});
+	const instance = await readMeta(manager);
 	const roles = await manager.getRepository(MiRole).find();
 	const assignments = await manager.getRepository(MiRoleAssignment).findBy({ userId: actorId });
 	return {

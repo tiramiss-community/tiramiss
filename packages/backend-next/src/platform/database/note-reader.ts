@@ -2,11 +2,12 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { domainToASCII } from 'node:url';
 import { In } from 'typeorm';
-import { MiNote, MiUser, MiMeta, MiPoll, MiPollVote, MiNoteReaction, MiFollowing, MiDriveFile, MiChannel, MiEmoji } from 'backend-upstream/entities';
+import { MiNote, MiUser, MiPoll, MiPollVote, MiNoteReaction, MiFollowing, MiDriveFile, MiChannel, MiEmoji } from 'backend-upstream/entities';
 import { readNoteAuthors } from './note-authors.js';
 import { noteFileView } from './note-files.js';
+import { readMeta } from './meta.js';
+import { toPuny } from '../../modules/federation/public.js';
 import type { NoteMediaOptions } from './note-files.js';
 import type { EntityManager } from 'typeorm';
 import type { Redis } from 'ioredis';
@@ -30,7 +31,7 @@ export function createNoteReader(manager: EntityManager, redis: Redis, options: 
 		},
 		async readGuestAccess(note) {
 			const author = await manager.getRepository(MiUser).findOneByOrFail({ id: note.userId });
-			const meta = await manager.getRepository(MiMeta).findOneByOrFail({});
+			const meta = await readMeta(manager);
 			return { authorRequiresSignin: author.requireSigninToViewContents, ugcVisibilityForVisitor: meta.ugcVisibilityForVisitor };
 		},
 		async readMaterials(notes, viewerId, now): Promise<NoteViewMaterials> {
@@ -40,7 +41,7 @@ export function createNoteReader(manager: EntityManager, redis: Redis, options: 
 			const fileIds = [...new Set(rows.flatMap(n => n.fileIds))];
 			const channelIds = [...new Set(rows.flatMap(n => n.channelId ? [n.channelId] : []))];
 			const pollIds = rows.filter(n => n.hasPoll).map(n => n.id);
-			const meta = await manager.getRepository(MiMeta).findOneByOrFail({});
+			const meta = await readMeta(manager);
 			const buffered = new Map<string, { deltas: Record<string, number>; pairs: string[] }>();
 			if (meta.enableReactionsBuffering && ids.length > 0) {
 				const pipeline = redis.pipeline();
@@ -72,7 +73,7 @@ export function createNoteReader(manager: EntityManager, redis: Redis, options: 
 				emojiNames.add(bareName.split('@')[0]);
 				const match = name.match(/@([\w.-]+):?$/);
 				if (match && match[1] !== '.') {
-					const host = domainToASCII(match[1].toLowerCase());
+					const host = toPuny(match[1]);
 					if (host) {
 						hosts.push(host);
 					}

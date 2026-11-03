@@ -2,8 +2,9 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { MiUser, MiMeta, MiNote } from 'backend-upstream/entities';
+import { MiUser, MiNote } from 'backend-upstream/entities';
 import { evaluatePolicies, selectApplicableRoles } from '../../modules/role/public.js';
+import { readMeta } from './meta.js';
 import type { EntityManager } from 'typeorm';
 import type { NewTextNote, NoteCreateAuthor } from '../../modules/note/public.js';
 import type { RoleMaterialReader } from '../role-material-cache.js';
@@ -16,7 +17,7 @@ export function createNoteWriter(manager: EntityManager, roles: RoleMaterialRead
 				return null;
 			}
 			const [meta, definitions, assignments] = await Promise.all([
-				manager.getRepository(MiMeta).findOneByOrFail({}), roles.readRoles(), roles.readAssignments(id),
+				readMeta(manager), roles.readRoles(), roles.readAssignments(id),
 			]);
 			const applicable = selectApplicableRoles(definitions, assignments, {
 				userId: id, host: user.host, createdAtMs: createdAtFromId(id), isSuspended: user.isSuspended,

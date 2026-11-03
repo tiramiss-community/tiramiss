@@ -1,0 +1,848 @@
+{
+	"inputs": {
+		"selfHost": "misskey.example",
+		"policies": {
+			"all": {
+				"federation": "all",
+				"federationHosts": [],
+				"blockedHosts": [
+					"blocked.example",
+					"misskey.example"
+				],
+				"silencedHosts": [
+					"silenced.example"
+				],
+				"mediaSilencedHosts": [
+					"media.example"
+				],
+				"deliverSuspendedSoftware": []
+			},
+			"allUpperCaseLists": {
+				"federation": "all",
+				"federationHosts": [],
+				"blockedHosts": [
+					"Blocked.example"
+				],
+				"silencedHosts": [
+					"Silenced.example"
+				],
+				"mediaSilencedHosts": [
+					"Media.example"
+				],
+				"deliverSuspendedSoftware": []
+			},
+			"none": {
+				"federation": "none",
+				"federationHosts": [
+					"allowed.example"
+				],
+				"blockedHosts": [],
+				"silencedHosts": [],
+				"mediaSilencedHosts": [],
+				"deliverSuspendedSoftware": []
+			},
+			"specified": {
+				"federation": "specified",
+				"federationHosts": [
+					"allowed.example",
+					"blocked.example"
+				],
+				"blockedHosts": [
+					"blocked.example"
+				],
+				"silencedHosts": [],
+				"mediaSilencedHosts": [],
+				"deliverSuspendedSoftware": []
+			}
+		},
+		"hosts": [
+			"misskey.example",
+			"MISSKEY.example",
+			"blocked.example",
+			"sub.blocked.example",
+			"notblocked.example",
+			"BLOCKED.example",
+			"allowed.example",
+			"sub.allowed.example",
+			"other.example",
+			"silenced.example",
+			"sub.silenced.example",
+			"media.example",
+			"sub.media.example",
+			"MEDIA.example",
+			null
+		],
+		"deliverSuspendedSoftware": [
+			{
+				"software": "misskey",
+				"versionRange": "< 2024.1.0"
+			},
+			{
+				"software": "foo",
+				"versionRange": "*"
+			},
+			{
+				"software": "bar",
+				"versionRange": " * "
+			},
+			{
+				"software": "baz",
+				"versionRange": ">= 1.0.0"
+			}
+		],
+		"software": [
+			{
+				"softwareName": null,
+				"softwareVersion": "1.0.0"
+			},
+			{
+				"softwareName": "misskey",
+				"softwareVersion": "2023.12.0"
+			},
+			{
+				"softwareName": "misskey",
+				"softwareVersion": "2024.1.0-beta.1"
+			},
+			{
+				"softwareName": "misskey",
+				"softwareVersion": "2024.1.0"
+			},
+			{
+				"softwareName": "misskey",
+				"softwareVersion": null
+			},
+			{
+				"softwareName": "misskey",
+				"softwareVersion": "not-a-version"
+			},
+			{
+				"softwareName": "Misskey",
+				"softwareVersion": "2023.1.0"
+			},
+			{
+				"softwareName": "foo",
+				"softwareVersion": null
+			},
+			{
+				"softwareName": "foo",
+				"softwareVersion": "9.9.9"
+			},
+			{
+				"softwareName": "bar",
+				"softwareVersion": null
+			},
+			{
+				"softwareName": "baz",
+				"softwareVersion": null
+			},
+			{
+				"softwareName": "baz",
+				"softwareVersion": "1.2.3"
+			}
+		]
+	},
+	"cases": [
+		{
+			"policy": "all",
+			"host": "misskey.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": true,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "all",
+			"host": "MISSKEY.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": true,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "all",
+			"host": "blocked.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": true,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "all",
+			"host": "sub.blocked.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": true,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "all",
+			"host": "notblocked.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "all",
+			"host": "BLOCKED.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": true,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "all",
+			"host": "allowed.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "all",
+			"host": "sub.allowed.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "all",
+			"host": "other.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "all",
+			"host": "silenced.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": true,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "all",
+			"host": "sub.silenced.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": true,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "all",
+			"host": "media.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": true
+			}
+		},
+		{
+			"policy": "all",
+			"host": "sub.media.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "all",
+			"host": "MEDIA.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": true
+			}
+		},
+		{
+			"policy": "all",
+			"host": null,
+			"expected": {
+				"isFederationAllowedHost": null,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "allUpperCaseLists",
+			"host": "misskey.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "allUpperCaseLists",
+			"host": "MISSKEY.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "allUpperCaseLists",
+			"host": "blocked.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "allUpperCaseLists",
+			"host": "sub.blocked.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "allUpperCaseLists",
+			"host": "notblocked.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "allUpperCaseLists",
+			"host": "BLOCKED.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "allUpperCaseLists",
+			"host": "allowed.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "allUpperCaseLists",
+			"host": "sub.allowed.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "allUpperCaseLists",
+			"host": "other.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "allUpperCaseLists",
+			"host": "silenced.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "allUpperCaseLists",
+			"host": "sub.silenced.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "allUpperCaseLists",
+			"host": "media.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "allUpperCaseLists",
+			"host": "sub.media.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "allUpperCaseLists",
+			"host": "MEDIA.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "allUpperCaseLists",
+			"host": null,
+			"expected": {
+				"isFederationAllowedHost": null,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "none",
+			"host": "misskey.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "none",
+			"host": "MISSKEY.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "none",
+			"host": "blocked.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "none",
+			"host": "sub.blocked.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "none",
+			"host": "notblocked.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "none",
+			"host": "BLOCKED.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "none",
+			"host": "allowed.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "none",
+			"host": "sub.allowed.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "none",
+			"host": "other.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "none",
+			"host": "silenced.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "none",
+			"host": "sub.silenced.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "none",
+			"host": "media.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "none",
+			"host": "sub.media.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "none",
+			"host": "MEDIA.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "none",
+			"host": null,
+			"expected": {
+				"isFederationAllowedHost": null,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "specified",
+			"host": "misskey.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "specified",
+			"host": "MISSKEY.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "specified",
+			"host": "blocked.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": true,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "specified",
+			"host": "sub.blocked.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": true,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "specified",
+			"host": "notblocked.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "specified",
+			"host": "BLOCKED.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": true,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "specified",
+			"host": "allowed.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "specified",
+			"host": "sub.allowed.example",
+			"expected": {
+				"isFederationAllowedHost": true,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "specified",
+			"host": "other.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "specified",
+			"host": "silenced.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "specified",
+			"host": "sub.silenced.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "specified",
+			"host": "media.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "specified",
+			"host": "sub.media.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "specified",
+			"host": "MEDIA.example",
+			"expected": {
+				"isFederationAllowedHost": false,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"policy": "specified",
+			"host": null,
+			"expected": {
+				"isFederationAllowedHost": null,
+				"isBlockedHost": false,
+				"isSilencedHost": false,
+				"isMediaSilencedHost": false
+			}
+		},
+		{
+			"software": {
+				"softwareName": null,
+				"softwareVersion": "1.0.0"
+			},
+			"expected": null
+		},
+		{
+			"software": {
+				"softwareName": "misskey",
+				"softwareVersion": "2023.12.0"
+			},
+			"expected": {
+				"software": "misskey",
+				"versionRange": "< 2024.1.0"
+			}
+		},
+		{
+			"software": {
+				"softwareName": "misskey",
+				"softwareVersion": "2024.1.0-beta.1"
+			},
+			"expected": {
+				"software": "misskey",
+				"versionRange": "< 2024.1.0"
+			}
+		},
+		{
+			"software": {
+				"softwareName": "misskey",
+				"softwareVersion": "2024.1.0"
+			},
+			"expected": null
+		},
+		{
+			"software": {
+				"softwareName": "misskey",
+				"softwareVersion": null
+			},
+			"expected": null
+		},
+		{
+			"software": {
+				"softwareName": "misskey",
+				"softwareVersion": "not-a-version"
+			},
+			"expected": null
+		},
+		{
+			"software": {
+				"softwareName": "Misskey",
+				"softwareVersion": "2023.1.0"
+			},
+			"expected": null
+		},
+		{
+			"software": {
+				"softwareName": "foo",
+				"softwareVersion": null
+			},
+			"expected": {
+				"software": "foo",
+				"versionRange": "*"
+			}
+		},
+		{
+			"software": {
+				"softwareName": "foo",
+				"softwareVersion": "9.9.9"
+			},
+			"expected": {
+				"software": "foo",
+				"versionRange": "*"
+			}
+		},
+		{
+			"software": {
+				"softwareName": "bar",
+				"softwareVersion": null
+			},
+			"expected": {
+				"software": "bar",
+				"versionRange": " * "
+			}
+		},
+		{
+			"software": {
+				"softwareName": "baz",
+				"softwareVersion": null
+			},
+			"expected": null
+		},
+		{
+			"software": {
+				"softwareName": "baz",
+				"softwareVersion": "1.2.3"
+			},
+			"expected": {
+				"software": "baz",
+				"versionRange": ">= 1.0.0"
+			}
+		}
+	]
+}
