@@ -35,6 +35,20 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 	let timer: NodeJS.Timeout | undefined;
 	const timeout = new DiagnosticError('STARTUP_TIMEOUT', { timeoutMs: config.processes.startupTimeoutMs });
 
+	// 投入口の接続は再接続しない。起動を終えるまでは failure を見張る側がいないため、起動中に失った接続は覚えておき、起動を失敗させる。
+	// 見逃すと、子は投入できない投入口のまま ready を返し、後続処理の失敗ログだけを残して動き続ける。
+	let lostQueue: string | undefined;
+	const onQueueLost = (queue: string) => () => {
+		if (closing) {
+			return;
+		}
+		if (active) {
+			reportFailure(new DiagnosticError('JOB_QUEUE_REDIS_ENDED', { queue }));
+		} else {
+			lostQueue ??= queue;
+		}
+	};
+
 	const initialize = async () => {
 		const dataSource = createDataSource(config.database, config.processes.startupTimeoutMs);
 		scope.defer(async () => {
@@ -159,11 +173,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		// 本家と同じくどの子も投入口を持つ。後続処理より先に登録し、後続処理の完了を待ってから閉じる。
 		const pollEndedQueue = createPollEndedQueue({
 			redis: config.redisForJobQueue, connectTimeoutMs: config.processes.startupTimeoutMs, logger,
-			onLost: () => {
-				if (active && !closing) {
-					reportFailure(new DiagnosticError('JOB_QUEUE_REDIS_ENDED', { queue: ENDED_POLL_NOTIFICATION }));
-				}
-			},
+			onLost: onQueueLost(ENDED_POLL_NOTIFICATION),
 		});
 		scope.defer(pollEndedQueue.close);
 		await pollEndedQueue.ready();
@@ -174,11 +184,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		const deliverQueue = createDeliverQueue({
 			redis: config.redisForJobQueue, connectTimeoutMs: config.processes.startupTimeoutMs, logger,
 			deliverJobMaxAttempts: config.deliverJob.deliverJobMaxAttempts,
-			onLost: () => {
-				if (active && !closing) {
-					reportFailure(new DiagnosticError('JOB_QUEUE_REDIS_ENDED', { queue: DELIVER }));
-				}
-			},
+			onLost: onQueueLost(DELIVER),
 		});
 		scope.defer(deliverQueue.close);
 		await deliverQueue.ready();
@@ -203,6 +209,9 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		}), logger);
 		scope.defer(notePostSave.close);
 
+		if (lostQueue !== undefined) {
+			throw new DiagnosticError('JOB_QUEUE_REDIS_ENDED', { queue: lostQueue });
+		}
 		active = true;
 		return { dataSource, redis, reactionsRedis, roleMaterials, notePostSave, logger, close, failure };
 	};

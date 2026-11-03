@@ -7,6 +7,25 @@ import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { createTestDatabase } from '../helpers/database.js';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createLogger } from '../../src/platform/logger.js';
+
+const deliverQueueHooks = vi.hoisted(() => ({ beforeReady: undefined as undefined | (() => Promise<void>) }));
+vi.mock('../../src/platform/job-queue/deliver.js', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('../../src/platform/job-queue/deliver.js')>();
+	return {
+		...actual,
+		createDeliverQueue: (options: Parameters<typeof actual.createDeliverQueue>[0]) => {
+			const queue = actual.createDeliverQueue(options);
+			return {
+				...queue,
+				async ready() {
+					await deliverQueueHooks.beforeReady?.();
+					await queue.ready();
+				},
+			};
+		},
+	};
+});
+
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 beforeAll(async () => {
 	database = await createTestDatabase();
@@ -71,6 +90,40 @@ test('reports loss of the job queue connection and closes it normally without a 
 	await healthy.close();
 	await new Promise(resolve => setTimeout(resolve, 50));
 	expect(reported).toBe(false);
+});
+
+test('fails startup when a job queue connection is lost while later connections are still opening', async () => {
+	const { Redis } = await import('ioredis');
+	const { randomUUID } = await import('node:crypto');
+	const connectionName = `job-queue-${randomUUID()}`;
+	const control = new Redis(database.config.redis);
+	deliverQueueHooks.beforeReady = async () => {
+		// 投入口の Queue は接続に名前を付けないため connectionName で見分ける。先に開いた投票終了の投入口が最小の ID を持つ。
+		const ids = String(await control.client('LIST')).split('\n')
+			.filter(line => line.includes(`name=${connectionName} `))
+			.map(line => Number(line.match(/^id=(\d+)/)![1]));
+		expect(ids).not.toHaveLength(0);
+		await control.client('KILL', 'ID', String(Math.min(...ids)));
+		await new Promise(resolve => setTimeout(resolve, 100));
+	};
+	try {
+		const outcome = await connectResources({ ...database.config, redisForJobQueue: { ...database.config.redisForJobQueue, connectionName } }, logger)
+			.then(async (resources) => {
+				await resources.close();
+				return 'started';
+			}, (error: unknown) => error);
+		expect(outcome).toMatchObject({ code: 'JOB_QUEUE_REDIS_ENDED', details: { queue: 'endedPollNotification' } });
+	} finally {
+		deliverQueueHooks.beforeReady = undefined;
+		control.disconnect();
+	}
+
+	const check = await connectResources(database.config, logger);
+	const rows = await check.dataSource.query(
+		'SELECT count(*)::int AS count FROM pg_stat_activity WHERE datname = current_database()',
+	);
+	expect(rows[0].count).toBe(1);
+	await check.close();
 });
 
 test('fails on unavailable database before opening Redis', async () => {
