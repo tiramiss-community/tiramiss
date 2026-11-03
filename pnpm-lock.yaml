@@ -837,6 +837,9 @@ importers:
       reflect-metadata:
         specifier: 0.2.2
         version: 0.2.2
+      semver:
+        specifier: 7.8.5
+        version: 7.8.5
       typeorm:
         specifier: 1.1.1
         version: 1.1.1(ioredis@5.11.1(supports-color@10.2.2))(pg@8.23.1)(supports-color@10.2.2)
@@ -853,6 +856,9 @@ importers:
       '@types/ratelimiter':
         specifier: 3.4.6
         version: 3.4.6
+      '@types/semver':
+        specifier: 7.8.0
+        version: 7.8.0
       '@typescript-eslint/parser':
         specifier: 8.71.0
         version: 8.71.0(@typescript/typescript6@6.0.2)(eslint@9.39.5(supports-color@10.2.2))(supports-color@10.2.2)

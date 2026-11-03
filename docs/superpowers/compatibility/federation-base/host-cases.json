@@ -1,0 +1,1090 @@
+{
+	"inputs": {
+		"selfHosts": [
+			"misskey.example",
+			"xn--xample-ova.jp",
+			"localhost:3000"
+		],
+		"hosts": [
+			"misskey.example",
+			"MISSKEY.Example",
+			"remote.example",
+			"ëxample.jp",
+			"ËXAMPLE.jp",
+			"xn--xample-ova.jp",
+			"日本語.jp",
+			"localhost",
+			"localhost:3000",
+			"a_b.example",
+			"trailing.example.",
+			"",
+			null
+		],
+		"urls": [
+			"https://misskey.example/notes/1",
+			"https://MISSKEY.Example/x",
+			"https://ëxample.jp/x",
+			"https://xn--xample-ova.jp/x",
+			"http://localhost/x",
+			"http://localhost:3000/x",
+			"https://remote.example:8443/x",
+			"https://remote.example:443/x"
+		],
+		"emojis": [
+			{
+				"name": "blob",
+				"noteUserHost": null
+			},
+			{
+				"name": "blob",
+				"noteUserHost": "remote.example"
+			},
+			{
+				"name": "blob",
+				"noteUserHost": "xn--xample-ova.jp"
+			},
+			{
+				"name": "blob@.",
+				"noteUserHost": null
+			},
+			{
+				"name": "blob@.",
+				"noteUserHost": "remote.example"
+			},
+			{
+				"name": "blob@remote.example",
+				"noteUserHost": null
+			},
+			{
+				"name": "blob@REMOTE.Example",
+				"noteUserHost": "other.example"
+			},
+			{
+				"name": "blob@misskey.example",
+				"noteUserHost": "remote.example"
+			},
+			{
+				"name": "blob@MISSKEY.example",
+				"noteUserHost": null
+			},
+			{
+				"name": "blob@xn--xample-ova.jp",
+				"noteUserHost": "remote.example"
+			},
+			{
+				"name": "blob@localhost",
+				"noteUserHost": "remote.example"
+			}
+		]
+	},
+	"cases": [
+		{
+			"fn": "toPuny",
+			"host": "misskey.example",
+			"expected": "misskey.example"
+		},
+		{
+			"fn": "toPunyNullable",
+			"host": "misskey.example",
+			"expected": "misskey.example"
+		},
+		{
+			"fn": "toPuny",
+			"host": "MISSKEY.Example",
+			"expected": "misskey.example"
+		},
+		{
+			"fn": "toPunyNullable",
+			"host": "MISSKEY.Example",
+			"expected": "misskey.example"
+		},
+		{
+			"fn": "toPuny",
+			"host": "remote.example",
+			"expected": "remote.example"
+		},
+		{
+			"fn": "toPunyNullable",
+			"host": "remote.example",
+			"expected": "remote.example"
+		},
+		{
+			"fn": "toPuny",
+			"host": "ëxample.jp",
+			"expected": "xn--xample-ova.jp"
+		},
+		{
+			"fn": "toPunyNullable",
+			"host": "ëxample.jp",
+			"expected": "xn--xample-ova.jp"
+		},
+		{
+			"fn": "toPuny",
+			"host": "ËXAMPLE.jp",
+			"expected": "xn--xample-ova.jp"
+		},
+		{
+			"fn": "toPunyNullable",
+			"host": "ËXAMPLE.jp",
+			"expected": "xn--xample-ova.jp"
+		},
+		{
+			"fn": "toPuny",
+			"host": "xn--xample-ova.jp",
+			"expected": "xn--xample-ova.jp"
+		},
+		{
+			"fn": "toPunyNullable",
+			"host": "xn--xample-ova.jp",
+			"expected": "xn--xample-ova.jp"
+		},
+		{
+			"fn": "toPuny",
+			"host": "日本語.jp",
+			"expected": "xn--wgv71a119e.jp"
+		},
+		{
+			"fn": "toPunyNullable",
+			"host": "日本語.jp",
+			"expected": "xn--wgv71a119e.jp"
+		},
+		{
+			"fn": "toPuny",
+			"host": "localhost",
+			"expected": "localhost"
+		},
+		{
+			"fn": "toPunyNullable",
+			"host": "localhost",
+			"expected": "localhost"
+		},
+		{
+			"fn": "toPuny",
+			"host": "localhost:3000",
+			"expected": ""
+		},
+		{
+			"fn": "toPunyNullable",
+			"host": "localhost:3000",
+			"expected": ""
+		},
+		{
+			"fn": "toPuny",
+			"host": "a_b.example",
+			"expected": "a_b.example"
+		},
+		{
+			"fn": "toPunyNullable",
+			"host": "a_b.example",
+			"expected": "a_b.example"
+		},
+		{
+			"fn": "toPuny",
+			"host": "trailing.example.",
+			"expected": "trailing.example."
+		},
+		{
+			"fn": "toPunyNullable",
+			"host": "trailing.example.",
+			"expected": "trailing.example."
+		},
+		{
+			"fn": "toPuny",
+			"host": "",
+			"expected": ""
+		},
+		{
+			"fn": "toPunyNullable",
+			"host": "",
+			"expected": ""
+		},
+		{
+			"fn": "toPunyNullable",
+			"host": null,
+			"expected": null
+		},
+		{
+			"fn": "punyHost",
+			"url": "https://misskey.example/notes/1",
+			"expected": "misskey.example"
+		},
+		{
+			"fn": "punyHost",
+			"url": "https://MISSKEY.Example/x",
+			"expected": "misskey.example"
+		},
+		{
+			"fn": "punyHost",
+			"url": "https://ëxample.jp/x",
+			"expected": "xn--xample-ova.jp"
+		},
+		{
+			"fn": "punyHost",
+			"url": "https://xn--xample-ova.jp/x",
+			"expected": "xn--xample-ova.jp"
+		},
+		{
+			"fn": "punyHost",
+			"url": "http://localhost/x",
+			"expected": "localhost"
+		},
+		{
+			"fn": "punyHost",
+			"url": "http://localhost:3000/x",
+			"expected": "localhost:3000"
+		},
+		{
+			"fn": "punyHost",
+			"url": "https://remote.example:8443/x",
+			"expected": "remote.example:8443"
+		},
+		{
+			"fn": "punyHost",
+			"url": "https://remote.example:443/x",
+			"expected": "remote.example"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "misskey.example",
+			"host": "misskey.example",
+			"expected": true
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "misskey.example",
+			"host": "misskey.example",
+			"expected": "alice@misskey.example"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "misskey.example",
+			"host": "MISSKEY.Example",
+			"expected": true
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "misskey.example",
+			"host": "MISSKEY.Example",
+			"expected": "alice@misskey.example"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "misskey.example",
+			"host": "remote.example",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "misskey.example",
+			"host": "remote.example",
+			"expected": "alice@remote.example"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "misskey.example",
+			"host": "ëxample.jp",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "misskey.example",
+			"host": "ëxample.jp",
+			"expected": "alice@xn--xample-ova.jp"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "misskey.example",
+			"host": "ËXAMPLE.jp",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "misskey.example",
+			"host": "ËXAMPLE.jp",
+			"expected": "alice@xn--xample-ova.jp"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "misskey.example",
+			"host": "xn--xample-ova.jp",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "misskey.example",
+			"host": "xn--xample-ova.jp",
+			"expected": "alice@xn--xample-ova.jp"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "misskey.example",
+			"host": "日本語.jp",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "misskey.example",
+			"host": "日本語.jp",
+			"expected": "alice@xn--wgv71a119e.jp"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "misskey.example",
+			"host": "localhost",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "misskey.example",
+			"host": "localhost",
+			"expected": "alice@localhost"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "misskey.example",
+			"host": "localhost:3000",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "misskey.example",
+			"host": "localhost:3000",
+			"expected": "alice@"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "misskey.example",
+			"host": "a_b.example",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "misskey.example",
+			"host": "a_b.example",
+			"expected": "alice@a_b.example"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "misskey.example",
+			"host": "trailing.example.",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "misskey.example",
+			"host": "trailing.example.",
+			"expected": "alice@trailing.example."
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "misskey.example",
+			"host": "",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "misskey.example",
+			"host": "",
+			"expected": "alice@misskey.example"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "misskey.example",
+			"host": null,
+			"expected": true
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "misskey.example",
+			"host": null,
+			"expected": "alice@misskey.example"
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "misskey.example",
+			"url": "https://misskey.example/notes/1",
+			"expected": true
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "misskey.example",
+			"url": "https://MISSKEY.Example/x",
+			"expected": true
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "misskey.example",
+			"url": "https://ëxample.jp/x",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "misskey.example",
+			"url": "https://xn--xample-ova.jp/x",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "misskey.example",
+			"url": "http://localhost/x",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "misskey.example",
+			"url": "http://localhost:3000/x",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "misskey.example",
+			"url": "https://remote.example:8443/x",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "misskey.example",
+			"url": "https://remote.example:443/x",
+			"expected": false
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "misskey.example",
+			"name": "blob",
+			"noteUserHost": null,
+			"expected": null
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "misskey.example",
+			"name": "blob",
+			"noteUserHost": "remote.example",
+			"expected": "remote.example"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "misskey.example",
+			"name": "blob",
+			"noteUserHost": "xn--xample-ova.jp",
+			"expected": "xn--xample-ova.jp"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "misskey.example",
+			"name": "blob@.",
+			"noteUserHost": null,
+			"expected": null
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "misskey.example",
+			"name": "blob@.",
+			"noteUserHost": "remote.example",
+			"expected": null
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "misskey.example",
+			"name": "blob@remote.example",
+			"noteUserHost": null,
+			"expected": "remote.example"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "misskey.example",
+			"name": "blob@REMOTE.Example",
+			"noteUserHost": "other.example",
+			"expected": "remote.example"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "misskey.example",
+			"name": "blob@misskey.example",
+			"noteUserHost": "remote.example",
+			"expected": null
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "misskey.example",
+			"name": "blob@MISSKEY.example",
+			"noteUserHost": null,
+			"expected": null
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "misskey.example",
+			"name": "blob@xn--xample-ova.jp",
+			"noteUserHost": "remote.example",
+			"expected": "xn--xample-ova.jp"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "misskey.example",
+			"name": "blob@localhost",
+			"noteUserHost": "remote.example",
+			"expected": "localhost"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "misskey.example",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "misskey.example",
+			"expected": "alice@misskey.example"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "MISSKEY.Example",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "MISSKEY.Example",
+			"expected": "alice@misskey.example"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "remote.example",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "remote.example",
+			"expected": "alice@remote.example"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "ëxample.jp",
+			"expected": true
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "ëxample.jp",
+			"expected": "alice@xn--xample-ova.jp"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "ËXAMPLE.jp",
+			"expected": true
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "ËXAMPLE.jp",
+			"expected": "alice@xn--xample-ova.jp"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "xn--xample-ova.jp",
+			"expected": true
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "xn--xample-ova.jp",
+			"expected": "alice@xn--xample-ova.jp"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "日本語.jp",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "日本語.jp",
+			"expected": "alice@xn--wgv71a119e.jp"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "localhost",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "localhost",
+			"expected": "alice@localhost"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "localhost:3000",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "localhost:3000",
+			"expected": "alice@"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "a_b.example",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "a_b.example",
+			"expected": "alice@a_b.example"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "trailing.example.",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "trailing.example.",
+			"expected": "alice@trailing.example."
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "xn--xample-ova.jp",
+			"host": "",
+			"expected": "alice@xn--xample-ova.jp"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "xn--xample-ova.jp",
+			"host": null,
+			"expected": true
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "xn--xample-ova.jp",
+			"host": null,
+			"expected": "alice@xn--xample-ova.jp"
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "xn--xample-ova.jp",
+			"url": "https://misskey.example/notes/1",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "xn--xample-ova.jp",
+			"url": "https://MISSKEY.Example/x",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "xn--xample-ova.jp",
+			"url": "https://ëxample.jp/x",
+			"expected": true
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "xn--xample-ova.jp",
+			"url": "https://xn--xample-ova.jp/x",
+			"expected": true
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "xn--xample-ova.jp",
+			"url": "http://localhost/x",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "xn--xample-ova.jp",
+			"url": "http://localhost:3000/x",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "xn--xample-ova.jp",
+			"url": "https://remote.example:8443/x",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "xn--xample-ova.jp",
+			"url": "https://remote.example:443/x",
+			"expected": false
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "xn--xample-ova.jp",
+			"name": "blob",
+			"noteUserHost": null,
+			"expected": null
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "xn--xample-ova.jp",
+			"name": "blob",
+			"noteUserHost": "remote.example",
+			"expected": "remote.example"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "xn--xample-ova.jp",
+			"name": "blob",
+			"noteUserHost": "xn--xample-ova.jp",
+			"expected": "xn--xample-ova.jp"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "xn--xample-ova.jp",
+			"name": "blob@.",
+			"noteUserHost": null,
+			"expected": null
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "xn--xample-ova.jp",
+			"name": "blob@.",
+			"noteUserHost": "remote.example",
+			"expected": null
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "xn--xample-ova.jp",
+			"name": "blob@remote.example",
+			"noteUserHost": null,
+			"expected": "remote.example"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "xn--xample-ova.jp",
+			"name": "blob@REMOTE.Example",
+			"noteUserHost": "other.example",
+			"expected": "remote.example"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "xn--xample-ova.jp",
+			"name": "blob@misskey.example",
+			"noteUserHost": "remote.example",
+			"expected": "misskey.example"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "xn--xample-ova.jp",
+			"name": "blob@MISSKEY.example",
+			"noteUserHost": null,
+			"expected": "misskey.example"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "xn--xample-ova.jp",
+			"name": "blob@xn--xample-ova.jp",
+			"noteUserHost": "remote.example",
+			"expected": null
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "xn--xample-ova.jp",
+			"name": "blob@localhost",
+			"noteUserHost": "remote.example",
+			"expected": "localhost"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "localhost:3000",
+			"host": "misskey.example",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "localhost:3000",
+			"host": "misskey.example",
+			"expected": "alice@misskey.example"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "localhost:3000",
+			"host": "MISSKEY.Example",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "localhost:3000",
+			"host": "MISSKEY.Example",
+			"expected": "alice@misskey.example"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "localhost:3000",
+			"host": "remote.example",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "localhost:3000",
+			"host": "remote.example",
+			"expected": "alice@remote.example"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "localhost:3000",
+			"host": "ëxample.jp",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "localhost:3000",
+			"host": "ëxample.jp",
+			"expected": "alice@xn--xample-ova.jp"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "localhost:3000",
+			"host": "ËXAMPLE.jp",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "localhost:3000",
+			"host": "ËXAMPLE.jp",
+			"expected": "alice@xn--xample-ova.jp"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "localhost:3000",
+			"host": "xn--xample-ova.jp",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "localhost:3000",
+			"host": "xn--xample-ova.jp",
+			"expected": "alice@xn--xample-ova.jp"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "localhost:3000",
+			"host": "日本語.jp",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "localhost:3000",
+			"host": "日本語.jp",
+			"expected": "alice@xn--wgv71a119e.jp"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "localhost:3000",
+			"host": "localhost",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "localhost:3000",
+			"host": "localhost",
+			"expected": "alice@localhost"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "localhost:3000",
+			"host": "localhost:3000",
+			"expected": true
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "localhost:3000",
+			"host": "localhost:3000",
+			"expected": "alice@"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "localhost:3000",
+			"host": "a_b.example",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "localhost:3000",
+			"host": "a_b.example",
+			"expected": "alice@a_b.example"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "localhost:3000",
+			"host": "trailing.example.",
+			"expected": false
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "localhost:3000",
+			"host": "trailing.example.",
+			"expected": "alice@trailing.example."
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "localhost:3000",
+			"host": "",
+			"expected": true
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "localhost:3000",
+			"host": "",
+			"expected": "alice@"
+		},
+		{
+			"fn": "isSelfHost",
+			"selfHost": "localhost:3000",
+			"host": null,
+			"expected": true
+		},
+		{
+			"fn": "fullApAccount",
+			"selfHost": "localhost:3000",
+			"host": null,
+			"expected": "alice@"
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "localhost:3000",
+			"url": "https://misskey.example/notes/1",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "localhost:3000",
+			"url": "https://MISSKEY.Example/x",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "localhost:3000",
+			"url": "https://ëxample.jp/x",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "localhost:3000",
+			"url": "https://xn--xample-ova.jp/x",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "localhost:3000",
+			"url": "http://localhost/x",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "localhost:3000",
+			"url": "http://localhost:3000/x",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "localhost:3000",
+			"url": "https://remote.example:8443/x",
+			"expected": false
+		},
+		{
+			"fn": "isUriLocal",
+			"selfHost": "localhost:3000",
+			"url": "https://remote.example:443/x",
+			"expected": false
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "localhost:3000",
+			"name": "blob",
+			"noteUserHost": null,
+			"expected": null
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "localhost:3000",
+			"name": "blob",
+			"noteUserHost": "remote.example",
+			"expected": "remote.example"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "localhost:3000",
+			"name": "blob",
+			"noteUserHost": "xn--xample-ova.jp",
+			"expected": "xn--xample-ova.jp"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "localhost:3000",
+			"name": "blob@.",
+			"noteUserHost": null,
+			"expected": null
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "localhost:3000",
+			"name": "blob@.",
+			"noteUserHost": "remote.example",
+			"expected": null
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "localhost:3000",
+			"name": "blob@remote.example",
+			"noteUserHost": null,
+			"expected": "remote.example"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "localhost:3000",
+			"name": "blob@REMOTE.Example",
+			"noteUserHost": "other.example",
+			"expected": "remote.example"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "localhost:3000",
+			"name": "blob@misskey.example",
+			"noteUserHost": "remote.example",
+			"expected": "misskey.example"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "localhost:3000",
+			"name": "blob@MISSKEY.example",
+			"noteUserHost": null,
+			"expected": "misskey.example"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "localhost:3000",
+			"name": "blob@xn--xample-ova.jp",
+			"noteUserHost": "remote.example",
+			"expected": "xn--xample-ova.jp"
+		},
+		{
+			"fn": "emojiHost",
+			"selfHost": "localhost:3000",
+			"name": "blob@localhost",
+			"noteUserHost": "remote.example",
+			"expected": "localhost"
+		}
+	]
+}

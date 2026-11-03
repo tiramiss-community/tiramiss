@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { domainToASCII } from 'node:url';
+import { createHostRules } from '../federation/public.js';
 import { noteVisibility, shouldHideNote } from './visibility.js';
 import { mergeReactions, normalizeReaction } from './reactions.js';
 import type { JsonObject, NoteViewMaterials } from './model.js';
@@ -10,16 +10,17 @@ import type { JsonObject, NoteViewMaterials } from './model.js';
 class NoteMaterialMissing extends Error {}
 
 export function populateEmojis(names: readonly string[], host: string | null, materials: Pick<NoteViewMaterials, 'emojiUrls' | 'localHost'>): Record<string, string> {
+	const rules = createHostRules(materials.localHost);
 	return Object.fromEntries(names.flatMap(value => {
 		const match = value.match(/^([-\w]+)(?:@([\w.-]+))?$/);
 		if (!match) {
 			return [];
 		}
-		const target = match[2] ?? host;
-		if (!target || target === '.' || domainToASCII(target.toLowerCase()) === domainToASCII(materials.localHost.toLowerCase())) {
+		const target = rules.emojiHost(match[2], host);
+		if (target === null) {
 			return [];
 		}
-		const url = materials.emojiUrls.get(`${match[1]}@${domainToASCII(target.toLowerCase())}`);
+		const url = materials.emojiUrls.get(`${match[1]}@${target}`);
 		return url ? [[value, url]] : [];
 	}));
 }

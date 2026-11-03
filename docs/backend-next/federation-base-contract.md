@@ -36,7 +36,7 @@ I/O を持たない判定は `src/modules/federation/` に置き、`public.ts` �
   - `extractDbHost` は `url.host` を、`punyHost` は hostname とポートを使う（:110-114,127-132）。
   - `isSelfHost(null)` は true（:32-36）。
   - 絵文字のホストの正規化は packages/backend/src/core/CustomEmojiService.ts:346-355 に従う。
-  - ポート付きの入力と、ポート付きの自ホストの結果は、最初の PR の前に本家の probe で固定し、扱いを決める。
+  - ポート付きの入力と、ポート付きの自ホストの結果は本家の probe で固定し、本家と同じ結果に揃える（[比較資料](../superpowers/compatibility/federation-base/README.md)）。
 - **連合可否**
   - blocked・silenced・federationHosts は、`.${host 小文字}` に対する後方一致で判定する。リスト側は小文字化しない（UtilityService.ts:51-61,134-142）。
   - mediaSilenced は完全一致（:63-67）。
@@ -96,6 +96,7 @@ Redis のキー名と値の形式は本家と揃える。こうしておけば�
 
 1. **ホスト正規化と連合可否（最初の PR）**
    - 純関数、`readFederationPolicy`、絵文字のホスト正規化、既存の Meta 読み取りの統一（行がない場合の初期化を含む）を入れる。Entity の追加は不要。
+   - URI からホストを取り出す `extractDbHost` と `isFederationAllowedUri` は、最初の利用者（#160・#195）と同じ PR で入れる。
    - #170 が使うのは、自ホストの判定とホスト正規化だけ。backend-next の render-note と note-reader にある `domainToASCII` の直書きは、この関数に置き換える。
    - #160 と #195 の先行契約になる。
 2. **鍵とシステムアカウント**
