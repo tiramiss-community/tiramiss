@@ -34,6 +34,7 @@ test.each(recorded.inputs.polls.map((input, index) => [input.id, input, recorded
 			const { name, data, opts } = pollEndedJobOptions(job);
 			calls.push([name, data, opts]);
 		},
+		deliver: async () => {},
 		currentTime: () => Date.parse(recorded.inputs.now),
 	});
 	await work({

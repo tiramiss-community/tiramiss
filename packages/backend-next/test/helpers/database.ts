@@ -17,6 +17,7 @@ export function testConfig(): RuntimeConfig {
 		url: 'http://example.test',
 		userAgent: 'Misskey/test (http://example.test)',
 		outboundHttp: {},
+		deliverJob: {},
 		id: 'aidx',
 		roleCache: { rolesTtlMs: 30000, assignmentsTtlMs: 30000, assignmentsMaxEntries: 10000 },
 		database: {

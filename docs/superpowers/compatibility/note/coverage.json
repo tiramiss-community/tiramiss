@@ -483,7 +483,8 @@
         }
       ],
       "remaining": [
-        "署名/Digestのheader存在を確認し実受信本文を記録。暗号署名の検証、非同期worker停止、遅い再送、host制限/HTTP分類は#159/#160/#162/#171。localOnlyの0件は正の配送drain後300msの有限観測。"
+        "署名/Digestのheader存在を確認し実受信本文を記録。暗号署名の検証、非同期worker停止、遅い再送、host制限/HTTP分類は#159/#160/#162/#171。localOnlyの0件は正の配送drain後300msの有限観測。",
+        "2026-11-03の#171最初のPRで、C9-home・C9-followers・C9-specified・C9-localOnlyの全件と、C9-public・C9-pure・C9-quoteの/inbox/shared分をtest/processes/note-deliver.test.tsで新実装と照合（署名はcrypto.verify、Digestも検証）。/inbox/relay分（LD署名付き）は#171の2番目のPRで照合する。"
       ]
     },
     {
@@ -595,7 +596,6 @@
       "owners": [
         159,
         161,
-        171,
         172
       ],
       "upstream": [
@@ -604,7 +604,15 @@
       ],
       "evidence": [],
       "remaining": [
-        "HTTP送信権/unknown/取消世代とDelete順序は新設計。応答喪失の外部重複・旧owner継続をfake inboxで#159/#161/N4/N5が実測する。"
+        "HTTP送信権/unknown/取消世代とDelete順序は新設計。応答喪失の外部重複・旧owner継続をfake inboxで#159/#161/N5が実測する。"
+      ],
+      "reevaluations": [
+        {
+          "date": "2026-11-03",
+          "issue": 171,
+          "decision": "owners から #171 を外す",
+          "reason": "#171 は本家相当の配送（通常の BullMQ の投入と再試行）を移植し、HTTP 送信権・結果不明・取消世代・Delete の順序という新設計の保証は持たない。これらは保留の #159/#161 と、削除を扱う #172 に属する（GOALS.md の初期範囲）。F4 自体の扱いは残りの所有者が再評価する。"
+        }
       ]
     },
     {
@@ -667,7 +675,6 @@
       "status": "measured",
       "owners": [
         161,
-        171,
         172
       ],
       "upstream": [
@@ -688,7 +695,15 @@
         }
       ],
       "remaining": [
-        "本家は作成後のlate followerとrelayへ非publicのDeleteも送ると実受信で確認。新実装は固定集合へ限定（D3）。展開前/途中の削除とunknown宛先はN4/N5で追加。"
+        "本家は作成後のlate followerとrelayへ非publicのDeleteも送ると実受信で確認。新設計では固定集合へ限定する（D3。新実装では未実装）。展開前/途中の削除とunknown宛先はN5で追加。"
+      ],
+      "reevaluations": [
+        {
+          "date": "2026-11-03",
+          "issue": 171,
+          "decision": "owners から #171 を外す",
+          "reason": "F8 は削除の配送の観測で、Delete の宛先は #172 が扱う。新実装の固定集合への限定（D3）は新設計の追加保証で、本家相当の作成時の配送を移植する #171 は実装しない。relay 部分の材料（relay への配送と LD 署名）は #171 の 2 番目の PR が作るが、Delete の relay 宛ては #172 で照合する。"
+        }
       ]
     }
   ]

@@ -157,7 +157,7 @@ test.each([false, true])('SIGTERM waits for a running job within the shutdown de
 	}
 });
 
-test('losing the job queue connection of a worker stops the whole process tree abnormally', async () => {
+test('losing the poll-ended queue connection of a worker stops the whole process tree abnormally', async () => {
 	const value = processConfig({ http: { port: await freePort() } });
 	const config = await configuration(value);
 	const control = new Redis(database.config.redis);
@@ -169,13 +169,14 @@ test('losing the job queue connection of a worker stops the whole process tree a
 		let blocking: string | undefined;
 		await vi.waitFor(async () => {
 			blocking = String(await control.client('LIST')).split('\n')
-				.find(line => line.includes(`name=${value.redisForJobQueue.prefix}:`) && line.includes('cmd=bzpopmin'));
+				.find(line => line.includes(`name=${value.redisForJobQueue.prefix}:queue:endedPollNotification:`) && line.includes('cmd=bzpopmin'));
 			expect(blocking).toBeDefined();
 		}, { timeout: 5000, interval: 50 });
 		await control.client('KILL', 'ID', blocking!.match(/^id=(\d+)/)![1]);
 
 		expect((await supervisor.exit).code, supervisor.output()).toBe(1);
 		expect(supervisor.output()).toContain('JOB_QUEUE_REDIS_ENDED');
+		expect(supervisor.output()).toContain('"queue":"endedPollNotification"');
 		for (const child of children) {
 			expect(() => process.kill(child.pid, 0)).toThrow();
 		}

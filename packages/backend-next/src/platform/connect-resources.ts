@@ -5,7 +5,12 @@
 import { Redis } from 'ioredis';
 import { createNotePostSave, createNotePostSaveWork } from './note-post-save.js';
 import { createPollEndedQueue, ENDED_POLL_NOTIFICATION } from './job-queue/ended-poll-notification.js';
+import { createDeliverQueue, DELIVER } from './job-queue/deliver.js';
 import { createNotePostSaveCounts } from './database/note-post-save-counts.js';
+import { createNoteActivityReader } from './database/note-activity.js';
+import { createDeliveryRecipientReader } from './database/delivery-recipients.js';
+import { createIdCodec } from './id-codec.js';
+import { createDeliverCreatedNote } from '../modules/federation/public.js';
 import { openRoleMaterials } from './role-materials.js';
 import { createRoleMaterialReader } from './database/role-materials.js';
 import { ResourceScope } from './resource-scope.js';
@@ -29,6 +34,20 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 	};
 	let timer: NodeJS.Timeout | undefined;
 	const timeout = new DiagnosticError('STARTUP_TIMEOUT', { timeoutMs: config.processes.startupTimeoutMs });
+
+	// 投入口の接続は再接続しない。起動を終えるまでは failure を見張る側がいないため、起動中に失った接続は覚えておき、起動を失敗させる。
+	// 見逃すと、子は投入できない投入口のまま ready を返し、後続処理の失敗ログだけを残して動き続ける。
+	let lostQueue: string | undefined;
+	const onQueueLost = (queue: string) => () => {
+		if (closing) {
+			return;
+		}
+		if (active) {
+			reportFailure(new DiagnosticError('JOB_QUEUE_REDIS_ENDED', { queue }));
+		} else {
+			lostQueue ??= queue;
+		}
+	};
 
 	const initialize = async () => {
 		const dataSource = createDataSource(config.database, config.processes.startupTimeoutMs);
@@ -154,11 +173,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		// 本家と同じくどの子も投入口を持つ。後続処理より先に登録し、後続処理の完了を待ってから閉じる。
 		const pollEndedQueue = createPollEndedQueue({
 			redis: config.redisForJobQueue, connectTimeoutMs: config.processes.startupTimeoutMs, logger,
-			onLost: () => {
-				if (active && !closing) {
-					reportFailure(new DiagnosticError('JOB_QUEUE_REDIS_ENDED', { queue: ENDED_POLL_NOTIFICATION }));
-				}
-			},
+			onLost: onQueueLost(ENDED_POLL_NOTIFICATION),
 		});
 		scope.defer(pollEndedQueue.close);
 		await pollEndedQueue.ready();
@@ -166,13 +181,37 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 
+		const deliverQueue = createDeliverQueue({
+			redis: config.redisForJobQueue, connectTimeoutMs: config.processes.startupTimeoutMs, logger,
+			deliverJobMaxAttempts: config.deliverJob.deliverJobMaxAttempts,
+			onLost: onQueueLost(DELIVER),
+		});
+		scope.defer(deliverQueue.close);
+		await deliverQueue.ready();
+		if (cancelled) {
+			throw timeout;
+		}
+
+		const recipients = createDeliveryRecipientReader(dataSource.manager);
 		const notePostSave = createNotePostSave(createNotePostSaveWork({
 			counts: createNotePostSaveCounts(dataSource.manager),
 			schedulePollEnded: pollEndedQueue.schedule,
+			// 本家と同じく投稿を受けた子で表現と宛先を決め、送信は worker の子に任せる。
+			deliver: createDeliverCreatedNote({
+				readNote: createNoteActivityReader(dataSource.manager, { ...config.noteMedia, url: config.url, createdAtFromId: createIdCodec(config.id).createdAtFromId }),
+				readUsers: recipients.readUsers,
+				readFollowerInboxes: recipients.readFollowerInboxes,
+				enqueue: deliverQueue.deliverMany,
+				selfUrl: config.url,
+				currentTime: Date.now,
+			}),
 			currentTime: Date.now,
 		}), logger);
 		scope.defer(notePostSave.close);
 
+		if (lostQueue !== undefined) {
+			throw new DiagnosticError('JOB_QUEUE_REDIS_ENDED', { queue: lostQueue });
+		}
 		active = true;
 		return { dataSource, redis, reactionsRedis, roleMaterials, notePostSave, logger, close, failure };
 	};

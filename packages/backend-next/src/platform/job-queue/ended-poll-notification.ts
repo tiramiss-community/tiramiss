@@ -4,7 +4,7 @@
  */
 import { Queue, Worker } from 'bullmq';
 import { DiagnosticError } from '../diagnostic-error.js';
-import { baseQueueOptions, baseWorkerOptions, onConnectionEnd } from './connection.js';
+import { baseQueueOptions, baseWorkerOptions, onConnectionEnd, runWorker } from './connection.js';
 import type { RedisConfig } from '../../config/types.js';
 import type { Logger } from '../logger.js';
 
@@ -94,42 +94,9 @@ export async function startPollEndedWorker(options: QueueConnection & {
 	handle(job: PollEndedJob): Promise<void>;
 	reportFailure(error: Error): void;
 }): Promise<() => Promise<void>> {
-	const { logger } = options;
-	let closing = false;
-	const fail = (error: Error) => {
-		if (!closing) {
-			options.reportFailure(error);
-		}
-	};
-
-	const worker = new Worker(ENDED_POLL_NOTIFICATION, createPollEndedProcessor(options.handle, logger), {
+	const worker = new Worker(ENDED_POLL_NOTIFICATION, createPollEndedProcessor(options.handle, options.logger), {
 		...baseWorkerOptions(options.redis, ENDED_POLL_NOTIFICATION, options.connectTimeoutMs),
 		autorun: false,
 	});
-	// 'error' の受け手がないと EventEmitter が例外を投げ、取得ループの外でプロセスが落ちる。
-	worker.on('error', error => {
-		logger.error('job-queue.error', { queue: ENDED_POLL_NOTIFICATION, error });
-	});
-	const stop = async () => {
-		closing = true;
-		await worker.close();
-	};
-
-	try {
-		await worker.waitUntilReady();
-		await onConnectionEnd(worker, () => {
-			fail(new DiagnosticError('JOB_QUEUE_REDIS_ENDED', { queue: ENDED_POLL_NOTIFICATION }));
-		});
-	} catch (error) {
-		await stop();
-		throw error;
-	}
-
-	// run() は close() まで解決しない。待つと起動が終わらないため、結果だけを見張る。
-	void worker.run().then(() => {
-		fail(new DiagnosticError('JOB_WORKER_STOPPED', { queue: ENDED_POLL_NOTIFICATION }));
-	}, (error: unknown) => {
-		fail(new DiagnosticError('JOB_WORKER_FAILED', { queue: ENDED_POLL_NOTIFICATION, error }));
-	});
-	return stop;
+	return await runWorker(worker, { queue: ENDED_POLL_NOTIFICATION, logger: options.logger, reportFailure: options.reportFailure });
 }

@@ -44,17 +44,21 @@ HTTP成功は保存とレスポンス生成の成功。AP配送や通知の完�
 - **投入**: 期限のある投票を持つ投稿だけ、作成応答を描画した後の後続処理で投入する。Noteと同じtransactionには入れない。名前と `data.noteId` は投稿の ID、遅延は後続処理の開始時刻から期限まで（負ならすぐに実行）。`removeOnComplete`・`removeOnFail` は本家と同じく 7 日・30 件／7 日・100 件で、試行は 1 回。投入の失敗は投稿の ID と期限を記録し、HTTP の応答は失敗にしない。
 - **実行**: worker 子が投稿と投票を読み直し、作者とローカルの投票者へ `pollEnded` の通知を PG に保存する。受信設定は `never` だけを見る。1 人分の保存の失敗は記録して他の受信者へ進み、プロフィールがなければジョブを失敗させる（本家と同じ）。
 - **接続と停止**: HTTP 子・worker 子とも、`redisForJobQueue` へ BullMQ の通常の Queue/Worker で接続する。本家と違い再接続せず、稼働中の切断は子の異常終了にする。worker の停止は取得の停止→実行中のジョブの完了→接続の解放で、既存の停止期限を超えたら異常終了する。
-- **後続へ渡すもの**: 配信（stream・未読・push）は #173/#177/#189、AP 配送の queue（12 回の試行・`httpRelatedBackoff`・limiter・concurrency）は #171 が同じ接続の上に足す。
+- **後続へ渡すもの**: 配信（stream・未読・push）は #173/#177/#189。
+- **AP 配送（#171）**: #171 の最初の PR で、同じ接続の上に本家の `deliver` queue を足した。投稿の後続処理の 3 つ目の仕事として、HTTP 子が保存済みの投稿を読み直し、表現と宛先を決めて `addBulk` で投入する。ローカルの作者で localOnly でない投稿だけが対象（channel の投稿は #170 で localOnly になる）。宛先が空でも本家どおり `addBulk([])` を呼ぶ。表現・宛先・投入の失敗は投稿の ID とともに `note-post-save.failed` に記録し、HTTP の応答は失敗にしない。worker 子は投票終了と同じ子で deliver の Worker も動かし、どちらかの接続を失えば子を異常終了にする。relay への配送は #171 の 2 番目の PR（[引き継ぎ](ap-delivery-handoff.md#171-の最初の-pr-で入れたもの)）。
 
 #163–#165 へ渡す実 queue の情報:
 
-| 項目 | 現在の値 |
-| --- | --- |
-| queue | `endedPollNotification` だけ（`src/platform/job-queue/ended-poll-notification.ts` の `ENDED_POLL_NOTIFICATION`）。本家の 10 queue のうち他は未接続 |
-| prefix | `<redisForJobQueue.prefix>:queue:<queue名>`（本家 `queue/const.ts` と同じ式。`src/platform/job-queue/connection.ts` の `baseQueueOptions`）。ioredis の `keyPrefix` は外す |
-| job | 名前は投稿の ID、`data` は `{ noteId }`。`jobId`・`attempts`・`backoff` なし |
-| 保持 | 投入時の `removeOnComplete: { age: 604800, count: 30 }`・`removeOnFail: { age: 604800, count: 100 }`。Worker 側の清掃はない |
-| Worker | `metrics: { maxDataPoints: 10080 }`、concurrency 1、limiter なし、`autorun: false` |
+| 項目 | `endedPollNotification`（#162） | `deliver`（#171） |
+| --- | --- | --- |
+| 定義 | `src/platform/job-queue/ended-poll-notification.ts` の `ENDED_POLL_NOTIFICATION` | `src/platform/job-queue/deliver.ts` の `DELIVER` |
+| prefix | `<redisForJobQueue.prefix>:queue:<queue名>`（本家 `queue/const.ts` と同じ式。`src/platform/job-queue/connection.ts` の `baseQueueOptions`）。ioredis の `keyPrefix` は外す | 同左 |
+| job | 名前は投稿の ID、`data` は `{ noteId }`。`jobId`・`attempts`・`backoff` なし | 名前は `to.replace('https://', '').replace('/inbox', '')`（最初の一致だけ）。`data` は `{ user: { id }, content, digest, to, isSharedInbox }`。`content` は activity の JSON 文字列で、`content`・`digest` は全 job で同じ。`attempts: deliverJobMaxAttempts ?? 12`、`backoff: { type: 'custom' }`。`jobId` なし |
+| 保持 | 投入時の `removeOnComplete: { age: 604800, count: 30 }`・`removeOnFail: { age: 604800, count: 100 }`。Worker 側の清掃はない | 同左 |
+| Worker | `metrics: { maxDataPoints: 10080 }`、concurrency 1、limiter なし、`autorun: false` | `metrics` 同左、`concurrency: deliverJobConcurrency ?? 128`、`limiter: { max: deliverJobPerSec ?? 128, duration: 1000 }`、`settings.backoffStrategy` は本家の `httpRelatedBackoff`、`autorun: false` |
+| 結果 | なし | `'Success'`・`'skip (blocked)'`・`'skip (suspended)'`・`'skip (software suspended)'`。止める失敗は `UnrecoverableError`、再試行する失敗は分類した例外 |
+
+本家の 10 queue のうち、他は未接続。
 
 ## 選択の理由
 

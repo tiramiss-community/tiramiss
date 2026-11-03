@@ -1,0 +1,1193 @@
+{
+	"inputs": {
+		"selfUrl": "https://local.example",
+		"mentionedRemoteUsers": [
+			{
+				"uri": "https://remote.example/users/alice",
+				"url": "https://remote.example/@alice",
+				"username": "alice",
+				"host": "remote.example"
+			},
+			{
+				"uri": "https://remote.example/users/bob",
+				"username": "Bob",
+				"host": "Remote.Example"
+			},
+			{
+				"uri": "https://other.example/users/carol",
+				"url": "not a url",
+				"username": "carol",
+				"host": "other.example"
+			},
+			{
+				"uri": "https://xn--xample-ova.jp/users/dave",
+				"username": "dave",
+				"host": "xn--xample-ova.jp"
+			}
+		],
+		"cases": [
+			{
+				"id": "empty",
+				"text": ""
+			},
+			{
+				"id": "null-text",
+				"text": null
+			},
+			{
+				"id": "text-plain",
+				"text": "hello"
+			},
+			{
+				"id": "html-specials",
+				"text": "<script>alert(\"x\") & 'y'</script>"
+			},
+			{
+				"id": "newline-lf",
+				"text": "a\nb"
+			},
+			{
+				"id": "newline-crlf",
+				"text": "a\r\nb"
+			},
+			{
+				"id": "newline-cr",
+				"text": "a\rb"
+			},
+			{
+				"id": "newline-blank-lines",
+				"text": "a\n\n\nb\n"
+			},
+			{
+				"id": "newline-only",
+				"text": "\n"
+			},
+			{
+				"id": "newline-line-br",
+				"text": "a\nbr\nb"
+			},
+			{
+				"id": "newline-line-br-first",
+				"text": "br\nx"
+			},
+			{
+				"id": "newline-line-br-like",
+				"text": "BR\n br\n<br>"
+			},
+			{
+				"id": "single-line-br",
+				"text": "br"
+			},
+			{
+				"id": "bold",
+				"text": "**bold** and __also__"
+			},
+			{
+				"id": "bold-tag",
+				"text": "<b>b</b>"
+			},
+			{
+				"id": "small",
+				"text": "<small>small</small>"
+			},
+			{
+				"id": "strike",
+				"text": "~~strike~~ <s>s</s>"
+			},
+			{
+				"id": "italic",
+				"text": "<i>i</i> *i2* _i3_"
+			},
+			{
+				"id": "nested",
+				"text": "**<i>~~x~~</i>**"
+			},
+			{
+				"id": "fn-default",
+				"text": "$[x2 big] $[tada.speed=2s t]"
+			},
+			{
+				"id": "fn-flip-args",
+				"text": "$[flip.h,v <b>x</b>]"
+			},
+			{
+				"id": "fn-unixtime",
+				"text": "$[unixtime 1700000000]"
+			},
+			{
+				"id": "fn-unixtime-zero",
+				"text": "$[unixtime 0]"
+			},
+			{
+				"id": "fn-unixtime-negative",
+				"text": "$[unixtime -1]"
+			},
+			{
+				"id": "fn-unixtime-fraction",
+				"text": "$[unixtime 1700000000.9]"
+			},
+			{
+				"id": "fn-unixtime-invalid",
+				"text": "$[unixtime abc]"
+			},
+			{
+				"id": "fn-unixtime-out-of-range",
+				"text": "$[unixtime 99999999999999]"
+			},
+			{
+				"id": "fn-unixtime-non-text",
+				"text": "$[unixtime **1700000000**]"
+			},
+			{
+				"id": "fn-unixtime-html",
+				"text": "$[unixtime 1<b>]"
+			},
+			{
+				"id": "fn-ruby-two-words",
+				"text": "$[ruby 漢字 かんじ]"
+			},
+			{
+				"id": "fn-ruby-three-words",
+				"text": "$[ruby a b c]"
+			},
+			{
+				"id": "fn-ruby-html",
+				"text": "$[ruby <a> \"b\"]"
+			},
+			{
+				"id": "fn-ruby-one-word",
+				"text": "$[ruby 漢字]"
+			},
+			{
+				"id": "fn-ruby-non-text-single",
+				"text": "$[ruby **a**]"
+			},
+			{
+				"id": "fn-ruby-children",
+				"text": "$[ruby **漢字** かんじ]"
+			},
+			{
+				"id": "fn-ruby-children-last-non-text",
+				"text": "$[ruby a **b**]"
+			},
+			{
+				"id": "fn-ruby-children-rt-spaces",
+				"text": "$[ruby **a**   b c  ]"
+			},
+			{
+				"id": "block-code",
+				"text": "```js\nconst a = \"<x>\" && 'y';\n```"
+			},
+			{
+				"id": "block-code-no-lang",
+				"text": "```\nline1\nline2\n```"
+			},
+			{
+				"id": "center",
+				"text": "<center>centered **b**</center>"
+			},
+			{
+				"id": "emoji-code",
+				"text": ":blobcat: :a_b:"
+			},
+			{
+				"id": "unicode-emoji",
+				"text": "😀👍🏽"
+			},
+			{
+				"id": "hashtag-ascii",
+				"text": "#misskey"
+			},
+			{
+				"id": "hashtag-unicode",
+				"text": "#タグ"
+			},
+			{
+				"id": "hashtag-mixed-case",
+				"text": "#MissKey"
+			},
+			{
+				"id": "hashtag-symbols",
+				"text": "#a_b-c"
+			},
+			{
+				"id": "hashtag-after-text",
+				"text": "see #tag here"
+			},
+			{
+				"id": "inline-code",
+				"text": "`a<b && \"c\"`"
+			},
+			{
+				"id": "math-inline",
+				"text": "\\(x^2 < y\\)"
+			},
+			{
+				"id": "math-block",
+				"text": "\\[\\frac{a}{b} & c\\]"
+			},
+			{
+				"id": "link",
+				"text": "[label **b**](https://example.com/path?q=1&r=2)"
+			},
+			{
+				"id": "link-angle-bracket-in-url",
+				"text": "[label](https://example.com/path?q=1&r=<2>)"
+			},
+			{
+				"id": "link-idn-punycode",
+				"text": "[x](https://xn--xample-ova.jp/)"
+			},
+			{
+				"id": "link-silent",
+				"text": "?[silent](https://example.com)"
+			},
+			{
+				"id": "link-invalid-port",
+				"text": "[bad](https://example.com:99999/)"
+			},
+			{
+				"id": "link-host-case",
+				"text": "[x](https://EXAMPLE.com/A)"
+			},
+			{
+				"id": "link-idn",
+				"text": "[x](https://ëxample.jp/パス)"
+			},
+			{
+				"id": "mention-local",
+				"text": "@alice"
+			},
+			{
+				"id": "mention-local-self-host",
+				"text": "@alice@local.example"
+			},
+			{
+				"id": "mention-remote-with-url",
+				"text": "@alice@remote.example"
+			},
+			{
+				"id": "mention-remote-without-url",
+				"text": "@bob@remote.example"
+			},
+			{
+				"id": "mention-remote-case-insensitive",
+				"text": "@BOB@REMOTE.EXAMPLE"
+			},
+			{
+				"id": "mention-remote-invalid-url",
+				"text": "@carol@other.example"
+			},
+			{
+				"id": "mention-remote-idn",
+				"text": "@dave@xn--xample-ova.jp"
+			},
+			{
+				"id": "mention-remote-unknown",
+				"text": "@eve@unknown.example"
+			},
+			{
+				"id": "mention-remote-unknown-mixed-case",
+				"text": "@Eve@Unknown.Example"
+			},
+			{
+				"id": "quote",
+				"text": "> quoted **b**\n> second"
+			},
+			{
+				"id": "quote-then-text",
+				"text": "> q\nnext"
+			},
+			{
+				"id": "search",
+				"text": "misskey 検索"
+			},
+			{
+				"id": "search-specials",
+				"text": "a&b<c> search"
+			},
+			{
+				"id": "plain",
+				"text": "<plain>**not bold** #notag</plain>"
+			},
+			{
+				"id": "url",
+				"text": "https://example.com/path"
+			},
+			{
+				"id": "url-query-amp",
+				"text": "https://example.com/?a=1&b=2"
+			},
+			{
+				"id": "url-parens",
+				"text": "https://example.com/(paren)"
+			},
+			{
+				"id": "url-host-case",
+				"text": "https://EXAMPLE.com/Path"
+			},
+			{
+				"id": "url-default-port",
+				"text": "https://example.com:443/x"
+			},
+			{
+				"id": "url-invalid-port",
+				"text": "https://example.com:99999/x"
+			},
+			{
+				"id": "url-percent",
+				"text": "https://example.com/%E3%81%82?q=%3C"
+			},
+			{
+				"id": "url-brackets",
+				"text": "<https://example.com/a b>"
+			},
+			{
+				"id": "url-ipv6",
+				"text": "http://[::1]/x"
+			},
+			{
+				"id": "url-trailing-punct",
+				"text": "https://example.com/a."
+			},
+			{
+				"id": "url-japanese-path",
+				"text": "https://example.com/パス"
+			},
+			{
+				"id": "mixed-only-simple",
+				"text": "hi @alice@remote.example #tag :blobcat: 😀 https://example.com"
+			},
+			{
+				"id": "mixed-with-bold",
+				"text": "hi **@alice@remote.example**"
+			},
+			{
+				"id": "long-mixed",
+				"text": "line1 **b**\n> q\n```\ncode\n```\n<center>c</center>\n$[x2 big]\nend"
+			},
+			{
+				"id": "extra-html-empty-text",
+				"text": null,
+				"mentionedRemoteUsers": [],
+				"extraHtml": "<br><br><span class=\"quote-inline\">RE: <a href=\"https://local.example/notes/x\">https://local.example/notes/x</a></span>"
+			},
+			{
+				"id": "extra-html-simple-text",
+				"text": "quote",
+				"mentionedRemoteUsers": [],
+				"extraHtml": "<br><br><span class=\"quote-inline\">RE: <a href=\"https://local.example/notes/x\">https://local.example/notes/x</a></span>"
+			},
+			{
+				"id": "extra-html-empty-string",
+				"text": "quote",
+				"mentionedRemoteUsers": [],
+				"extraHtml": ""
+			},
+			{
+				"id": "no-mentioned-remote-users",
+				"text": "@alice@remote.example",
+				"mentionedRemoteUsers": [],
+				"extraHtml": null
+			},
+			{
+				"id": "mentioned-remote-users-duplicate",
+				"text": "@alice@remote.example",
+				"mentionedRemoteUsers": [
+					{
+						"uri": "https://remote.example/users/first",
+						"username": "alice",
+						"host": "remote.example"
+					},
+					{
+						"uri": "https://remote.example/users/second",
+						"username": "alice",
+						"host": "remote.example"
+					}
+				],
+				"extraHtml": null
+			}
+		]
+	},
+	"cases": [
+		{
+			"id": "empty",
+			"nodeTypes": [],
+			"content": "",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "null-text",
+			"nodeTypes": [],
+			"content": "",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "text-plain",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "hello",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "html-specials",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "&lt;script&gt;alert(&quot;x&quot;) &amp; &#039;y&#039;&lt;/script&gt;",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "newline-lf",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "a<br />b",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "newline-crlf",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "a<br />b",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "newline-cr",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "a<br />b",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "newline-blank-lines",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "a<br /><br /><br />b<br />",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "newline-only",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "<br />",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "newline-line-br",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "a<br /><br /><br />b",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "newline-line-br-first",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "<br /><br />x",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "newline-line-br-like",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "BR<br /> br<br />&lt;br&gt;",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "single-line-br",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "br",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "bold",
+			"nodeTypes": [
+				"bold",
+				"text"
+			],
+			"content": "<b>bold</b> and <b>also</b>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "bold-tag",
+			"nodeTypes": [
+				"bold",
+				"text"
+			],
+			"content": "<b>b</b>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "small",
+			"nodeTypes": [
+				"small",
+				"text"
+			],
+			"content": "<small>small</small>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "strike",
+			"nodeTypes": [
+				"strike",
+				"text"
+			],
+			"content": "<del>strike</del> <del>s</del>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "italic",
+			"nodeTypes": [
+				"italic",
+				"text"
+			],
+			"content": "<i>i</i> <i>i2</i> <i>i3</i>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "nested",
+			"nodeTypes": [
+				"bold",
+				"italic",
+				"strike",
+				"text"
+			],
+			"content": "<b><i><del>x</del></i></b>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "fn-default",
+			"nodeTypes": [
+				"fn",
+				"text"
+			],
+			"content": "<i>big</i> <i>t</i>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "fn-flip-args",
+			"nodeTypes": [
+				"bold",
+				"fn",
+				"text"
+			],
+			"content": "<i><b>x</b></i>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "fn-unixtime",
+			"nodeTypes": [
+				"fn",
+				"text"
+			],
+			"content": "<time datetime=\"2023-11-14T22:13:20.000Z\">2023-11-14T22:13:20.000Z</time>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "fn-unixtime-zero",
+			"nodeTypes": [
+				"fn",
+				"text"
+			],
+			"content": "<time datetime=\"1970-01-01T00:00:00.000Z\">1970-01-01T00:00:00.000Z</time>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "fn-unixtime-negative",
+			"nodeTypes": [
+				"fn",
+				"text"
+			],
+			"content": "<time datetime=\"1969-12-31T23:59:59.000Z\">1969-12-31T23:59:59.000Z</time>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "fn-unixtime-fraction",
+			"nodeTypes": [
+				"fn",
+				"text"
+			],
+			"content": "<time datetime=\"2023-11-14T22:13:20.000Z\">2023-11-14T22:13:20.000Z</time>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "fn-unixtime-invalid",
+			"nodeTypes": [
+				"fn",
+				"text"
+			],
+			"content": "<i>abc</i>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "fn-unixtime-out-of-range",
+			"nodeTypes": [
+				"fn",
+				"text"
+			],
+			"content": "<i>99999999999999</i>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "fn-unixtime-non-text",
+			"nodeTypes": [
+				"bold",
+				"fn",
+				"text"
+			],
+			"content": "<i><b>1700000000</b></i>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "fn-unixtime-html",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "$[unixtime 1&lt;b&gt;]",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "fn-ruby-two-words",
+			"nodeTypes": [
+				"fn",
+				"text"
+			],
+			"content": "<ruby>漢字<rp>(</rp><rt>かんじ</rt><rp>)</rp></ruby>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "fn-ruby-three-words",
+			"nodeTypes": [
+				"fn",
+				"text"
+			],
+			"content": "<ruby>a<rp>(</rp><rt>b</rt><rp>)</rp></ruby>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "fn-ruby-html",
+			"nodeTypes": [
+				"fn",
+				"text"
+			],
+			"content": "<ruby>&lt;a&gt;<rp>(</rp><rt>&quot;b&quot;</rt><rp>)</rp></ruby>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "fn-ruby-one-word",
+			"nodeTypes": [
+				"fn",
+				"text"
+			],
+			"error": {
+				"name": "TypeError",
+				"message": "Cannot read properties of undefined (reading 'replace')"
+			}
+		},
+		{
+			"id": "fn-ruby-non-text-single",
+			"nodeTypes": [
+				"bold",
+				"fn",
+				"text"
+			],
+			"error": {
+				"name": "TypeError",
+				"message": "Cannot read properties of undefined (reading 'replace')"
+			}
+		},
+		{
+			"id": "fn-ruby-children",
+			"nodeTypes": [
+				"bold",
+				"fn",
+				"text"
+			],
+			"content": "<ruby><b>漢字</b><rp>(</rp><rt>かんじ</rt><rp>)</rp></ruby>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "fn-ruby-children-last-non-text",
+			"nodeTypes": [
+				"bold",
+				"fn",
+				"text"
+			],
+			"content": "<ruby>a <rp>(</rp><rt></rt><rp>)</rp></ruby>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "fn-ruby-children-rt-spaces",
+			"nodeTypes": [
+				"bold",
+				"fn",
+				"text"
+			],
+			"content": "<ruby><b>a</b><rp>(</rp><rt>b c</rt><rp>)</rp></ruby>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "block-code",
+			"nodeTypes": [
+				"blockCode"
+			],
+			"content": "<pre><code>const a = &quot;&lt;x&gt;&quot; &amp;&amp; &#039;y&#039;;</code></pre>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "block-code-no-lang",
+			"nodeTypes": [
+				"blockCode"
+			],
+			"content": "<pre><code>line1\nline2</code></pre>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "center",
+			"nodeTypes": [
+				"bold",
+				"center",
+				"text"
+			],
+			"content": "<div style=\"text-align: center;\">centered <b>b</b></div>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "emoji-code",
+			"nodeTypes": [
+				"emojiCode",
+				"text"
+			],
+			"content": "​:blobcat:​ ​:a_b:​",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "unicode-emoji",
+			"nodeTypes": [
+				"unicodeEmoji"
+			],
+			"content": "😀👍🏽",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "hashtag-ascii",
+			"nodeTypes": [
+				"hashtag"
+			],
+			"content": "<a href=\"https://local.example/tags/misskey\" rel=\"tag\">#misskey</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "hashtag-unicode",
+			"nodeTypes": [
+				"hashtag"
+			],
+			"content": "<a href=\"https://local.example/tags/%E3%82%BF%E3%82%B0\" rel=\"tag\">#タグ</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "hashtag-mixed-case",
+			"nodeTypes": [
+				"hashtag"
+			],
+			"content": "<a href=\"https://local.example/tags/MissKey\" rel=\"tag\">#MissKey</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "hashtag-symbols",
+			"nodeTypes": [
+				"hashtag"
+			],
+			"content": "<a href=\"https://local.example/tags/a_b-c\" rel=\"tag\">#a_b-c</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "hashtag-after-text",
+			"nodeTypes": [
+				"hashtag",
+				"text"
+			],
+			"content": "see <a href=\"https://local.example/tags/tag\" rel=\"tag\">#tag</a> here",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "inline-code",
+			"nodeTypes": [
+				"inlineCode"
+			],
+			"content": "<code>a&lt;b &amp;&amp; &quot;c&quot;</code>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "math-inline",
+			"nodeTypes": [
+				"mathInline"
+			],
+			"content": "<code>x^2 &lt; y</code>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "math-block",
+			"nodeTypes": [
+				"mathBlock"
+			],
+			"content": "<pre><code>\\frac{a}{b} &amp; c</code></pre>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "link",
+			"nodeTypes": [
+				"bold",
+				"link",
+				"text"
+			],
+			"content": "<a href=\"https://example.com/path?q=1&amp;r=2\">label <b>b</b></a>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "link-angle-bracket-in-url",
+			"nodeTypes": [
+				"text",
+				"url"
+			],
+			"content": "[label](<a href=\"https://example.com/path?q=1&amp;r=\">https://example.com/path?q=1&amp;r=</a>&lt;2&gt;)",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "link-idn-punycode",
+			"nodeTypes": [
+				"link",
+				"text"
+			],
+			"content": "<a href=\"https://xn--xample-ova.jp/\">x</a>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "link-silent",
+			"nodeTypes": [
+				"link",
+				"text"
+			],
+			"content": "<a href=\"https://example.com/\">silent</a>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "link-invalid-port",
+			"nodeTypes": [
+				"link",
+				"text"
+			],
+			"content": "[bad](https://example.com:99999/)",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "link-host-case",
+			"nodeTypes": [
+				"link",
+				"text"
+			],
+			"content": "<a href=\"https://example.com/A\">x</a>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "link-idn",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "[x](https://ëxample.jp/パス)",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "mention-local",
+			"nodeTypes": [
+				"mention"
+			],
+			"content": "<a href=\"https://local.example/@alice\" class=\"u-url mention\">@alice</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "mention-local-self-host",
+			"nodeTypes": [
+				"mention"
+			],
+			"content": "<a href=\"https://local.example/@alice@local.example\" class=\"u-url mention\">@alice@local.example</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "mention-remote-with-url",
+			"nodeTypes": [
+				"mention"
+			],
+			"content": "<a href=\"https://remote.example/@alice\" class=\"u-url mention\">@alice@remote.example</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "mention-remote-without-url",
+			"nodeTypes": [
+				"mention"
+			],
+			"content": "<a href=\"https://remote.example/users/bob\" class=\"u-url mention\">@bob@remote.example</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "mention-remote-case-insensitive",
+			"nodeTypes": [
+				"mention"
+			],
+			"content": "<a href=\"https://remote.example/users/bob\" class=\"u-url mention\">@BOB@REMOTE.EXAMPLE</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "mention-remote-invalid-url",
+			"nodeTypes": [
+				"mention"
+			],
+			"content": "@carol@other.example",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "mention-remote-idn",
+			"nodeTypes": [
+				"mention"
+			],
+			"content": "<a href=\"https://xn--xample-ova.jp/users/dave\" class=\"u-url mention\">@dave@xn--xample-ova.jp</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "mention-remote-unknown",
+			"nodeTypes": [
+				"mention"
+			],
+			"content": "<a href=\"https://local.example/@eve@unknown.example\" class=\"u-url mention\">@eve@unknown.example</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "mention-remote-unknown-mixed-case",
+			"nodeTypes": [
+				"mention"
+			],
+			"content": "<a href=\"https://local.example/@Eve@Unknown.Example\" class=\"u-url mention\">@Eve@Unknown.Example</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "quote",
+			"nodeTypes": [
+				"bold",
+				"quote",
+				"text"
+			],
+			"content": "<blockquote>quoted <b>b</b><br />second</blockquote>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "quote-then-text",
+			"nodeTypes": [
+				"quote",
+				"text"
+			],
+			"content": "<blockquote>q</blockquote>next",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "search",
+			"nodeTypes": [
+				"search"
+			],
+			"content": "<a href=\"https://www.google.com/search?q=misskey\">misskey 検索</a>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "search-specials",
+			"nodeTypes": [
+				"search"
+			],
+			"content": "<a href=\"https://www.google.com/search?q=a%26b%3Cc%3E\">a&amp;b&lt;c&gt; search</a>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "plain",
+			"nodeTypes": [
+				"plain",
+				"text"
+			],
+			"content": "<span>**not bold** #notag</span>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "url",
+			"nodeTypes": [
+				"url"
+			],
+			"content": "<a href=\"https://example.com/path\">https://example.com/path</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "url-query-amp",
+			"nodeTypes": [
+				"url"
+			],
+			"content": "<a href=\"https://example.com/?a=1&amp;b=2\">https://example.com/?a=1&amp;b=2</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "url-parens",
+			"nodeTypes": [
+				"url"
+			],
+			"content": "<a href=\"https://example.com/(paren)\">https://example.com/(paren)</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "url-host-case",
+			"nodeTypes": [
+				"url"
+			],
+			"content": "<a href=\"https://example.com/Path\">https://EXAMPLE.com/Path</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "url-default-port",
+			"nodeTypes": [
+				"url"
+			],
+			"content": "<a href=\"https://example.com/x\">https://example.com:443/x</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "url-invalid-port",
+			"nodeTypes": [
+				"url"
+			],
+			"content": "https://example.com:99999/x",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "url-percent",
+			"nodeTypes": [
+				"url"
+			],
+			"content": "<a href=\"https://example.com/%E3%81%82?q=%3C\">https://example.com/%E3%81%82?q=%3C</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "url-brackets",
+			"nodeTypes": [
+				"text",
+				"url"
+			],
+			"content": "&lt;<a href=\"https://example.com/a\">https://example.com/a</a> b&gt;",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "url-ipv6",
+			"nodeTypes": [
+				"url"
+			],
+			"content": "<a href=\"http://[::1]/x\">http://[::1]/x</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "url-trailing-punct",
+			"nodeTypes": [
+				"text",
+				"url"
+			],
+			"content": "<a href=\"https://example.com/a\">https://example.com/a</a>.",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "url-japanese-path",
+			"nodeTypes": [
+				"text",
+				"url"
+			],
+			"content": "<a href=\"https://example.com/\">https://example.com/</a>パス",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "mixed-only-simple",
+			"nodeTypes": [
+				"emojiCode",
+				"hashtag",
+				"mention",
+				"text",
+				"unicodeEmoji",
+				"url"
+			],
+			"content": "hi <a href=\"https://remote.example/@alice\" class=\"u-url mention\">@alice@remote.example</a> <a href=\"https://local.example/tags/tag\" rel=\"tag\">#tag</a> ​:blobcat:​ 😀 <a href=\"https://example.com/\">https://example.com</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "mixed-with-bold",
+			"nodeTypes": [
+				"bold",
+				"mention",
+				"text"
+			],
+			"content": "hi <b><a href=\"https://remote.example/@alice\" class=\"u-url mention\">@alice@remote.example</a></b>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "long-mixed",
+			"nodeTypes": [
+				"blockCode",
+				"bold",
+				"center",
+				"fn",
+				"quote",
+				"text"
+			],
+			"content": "line1 <b>b</b><blockquote>q</blockquote><pre><code>code</code></pre><div style=\"text-align: center;\">c</div><i>big</i><br />end",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "extra-html-empty-text",
+			"nodeTypes": [],
+			"content": "<br><br><span class=\"quote-inline\">RE: <a href=\"https://local.example/notes/x\">https://local.example/notes/x</a></span>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "extra-html-simple-text",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "quote<br><br><span class=\"quote-inline\">RE: <a href=\"https://local.example/notes/x\">https://local.example/notes/x</a></span>",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "extra-html-empty-string",
+			"nodeTypes": [
+				"text"
+			],
+			"content": "quote",
+			"noMisskeyContent": false
+		},
+		{
+			"id": "no-mentioned-remote-users",
+			"nodeTypes": [
+				"mention"
+			],
+			"content": "<a href=\"https://local.example/@alice@remote.example\" class=\"u-url mention\">@alice@remote.example</a>",
+			"noMisskeyContent": true
+		},
+		{
+			"id": "mentioned-remote-users-duplicate",
+			"nodeTypes": [
+				"mention"
+			],
+			"content": "<a href=\"https://remote.example/users/first\" class=\"u-url mention\">@alice@remote.example</a>",
+			"noMisskeyContent": true
+		}
+	]
+}

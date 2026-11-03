@@ -4,7 +4,7 @@
 
 Misskeyバックエンド再設計の実行基盤・Role初期実装・投稿参照。
 既存トークンで `admin/roles/show` と `admin/roles/update` を利用できる。
-`notes/show` は保存済み本家データから取得・可視性判定・出力を提供する。通常workerは本家の投票終了ジョブだけを実行する。その他のAPIと業務ジョブは後続の実装範囲。
+`notes/show` は保存済み本家データから取得・可視性判定・出力を提供する。通常workerは本家の投票終了ジョブとAP配送ジョブ（relayを除く）を実行する。その他のAPIと業務ジョブは後続の実装範囲。
 
 全公開契約の移植状況・保存/副作用・担当Issueは[バックエンド対応表](../../docs/superpowers/compatibility/backend-inventory/README.md)を参照する。
 登録APIだけでなく、非API HTTP、stream、ActivityPub、定期/業務ジョブ、CLIも追跡する。
@@ -37,7 +37,8 @@ backendNext:
   shutdownTimeoutMs: 30000
 ```
 
-外向きHTTPは本家と同じキー `proxy`・`proxyBypassHosts`・`allowedPrivateNetworks`・`outgoingAddress`・`deliverJobConcurrency`（proxy接続数の算出）を読む。
+外向きHTTPは本家と同じキー `proxy`・`proxyBypassHosts`・`allowedPrivateNetworks`・`outgoingAddress`・`deliverJobConcurrency`（proxy接続数の算出とdeliver Workerの並行度）を読む。
+AP配送は本家と同じキー `deliverJobPerSec`（既定128）・`deliverJobMaxAttempts`（既定12）も読む。本家と同じく`??`で既定値を補うため、0はそのまま使う。
 既定値は本家と同じく未指定。private宛ての遮断は `NODE_ENV=production` のときだけ行う。
 `allowedPrivateNetworks` の不正なCIDRは、本家と異なり起動時に `INVALID_CONFIG` で拒否する（承認済みの差異）。
 User-Agentは `Misskey/<固定本家のversion> (<設定ファイルのurlそのまま>)`。比較資料は[外向きHTTP](../../docs/superpowers/compatibility/outbound-http/README.md)を参照。
@@ -139,7 +140,12 @@ APの宛先規則は[本家配送の引き継ぎ](../../docs/backend-next/ap-del
 
 通常workerは #162 で本家の投票終了ジョブ（`endedPollNotification`）を実行する。BullMQ依存は本家と同じ版で、このjobと一緒に導入した。
 期限のある投票の投稿は保存後の後続処理で投入し、期限後にworkerが作者とローカルの投票者へ`pollEnded`の通知をPGに保存する。
-配信（stream・未読・push）は#173/#177/#189、AP・webhook等のjobと本家のretry/backoff/limiterは各機能（AP配送は#171）で接続する。
+配信（stream・未読・push）は#173/#177/#189、webhook等のjobと本家のretry/backoff/limiterは各機能で接続する。
+
+AP配送は #171 の最初の PR で接続した。HTTP子が投稿の後続処理で保存済みの投稿を読み直し、Create/Announceの表現と宛先を決めて `deliver` queueへ投入する。
+worker子は投票終了と同じ子で `deliver` のWorkerも動かし、本家どおりスキップ判定・署名付き送信・instance台帳の更新を行う。
+鍵・外向きHTTP・署名付き送信はworker子だけが作る。relayへの配送とJSON-LD署名は#171の2番目のPR、チャートは#200。
+本家との比較は[AP配送の比較資料](../../docs/superpowers/compatibility/ap-deliver/README.md)、業務規則と残りは[本家配送の引き継ぎ](../../docs/backend-next/ap-delivery-handoff.md)を参照する。
 基本text保存のためだけにjobやdispatcherを作らない。queue・payload・保持の値は[投稿の最小契約](../../docs/backend-next/posting-contract.md#通常ジョブ162)を参照する。
 
 ## 通知のPostgreSQL保存
@@ -189,7 +195,7 @@ migrationは対象表を先にロックし、request非settled、item非成功/�
 
 本家形式の `redisForReactions` を指定した場合は専用接続で反応bufferを読み、未指定なら通常Redisを使う。`mediaProxy` / `videoThumbnailGenerator` とDBの `proxyRemoteFiles` を添付URLに適用する。専用接続も起動・終了期限と必須接続の障害監視に参加する。
 
-投稿作成・削除・変更系API・実worker/配信は後続。保存済みデータのshow検証だけで投稿縦断の完成とは扱わない。
+投稿作成・削除・変更系API・実worker/配信は後続（作成は#169/#170、AP配送は#171で接続）。保存済みデータのshow検証だけで投稿縦断の完成とは扱わない。
 
 ## 基本投稿作成（#169 / N2）
 
@@ -202,5 +208,5 @@ DB失敗やクライアント切断を理由に自動再作成しない。通常
 指定宛先、MFM抽出（メンション・ハッシュタグ・絵文字）を接続した。メンションはローカルユーザーと登録済みリモートユーザーをDBで解決する。
 未登録のリモートユーザー宛ては、WebFingerによる解決（#195）まで501 `NOT_IMPLEMENTED`で保存前に拒否する。
 登録済みリモートユーザーも、#195までは `lastFetchedAt` が古くても再同期せずに使う（暫定制限）。
-投票終了ジョブ（#162）以外のAP/通知/stream/TL/検索/webhookは未接続で、投稿領域全体の完成ではない。
+投票終了ジョブ（#162）とAP配送（#171。relayを除く）以外の通知/stream/TL/検索/webhookは未接続で、投稿領域全体の完成ではない。
 最小契約と既存実装の撤去順は[投稿の最小契約](../../docs/backend-next/posting-contract.md)を参照。
