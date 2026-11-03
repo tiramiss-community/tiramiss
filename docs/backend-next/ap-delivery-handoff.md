@@ -4,7 +4,7 @@
 未使用の配送実装は追加しない。固定本家は `8e07cf085adf7009583d234a208e30436f020e26`。
 
 - [NoteCreateService](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/NoteCreateService.ts)のローカル作者かつ非localOnlyの配送分岐を起点にする。remote mention・reply作者・renote作者がdirect候補、public/home/followersがfollowers対象、publicがrelay対象。channel等の入力補正と最新の連合条件も接続時に照合する。
-- [ApDeliverManagerService](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/activitypub/ApDeliverManagerService.ts)はfollowersを先に処理し、Followingの非正規化sharedInboxを優先、なければindividual inboxをMapへ登録する。両方nullなら例外。directはsharedInboxが既登録なら省略、individual inboxがnullなら省略し、それ以外はindividual inboxへ登録する。同じURLでは後のMap更新が優先される。
+- [ApDeliverManagerService](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/activitypub/ApDeliverManagerService.ts)はfollowersを先に処理し、Followingの非正規化sharedInboxを優先、なければindividual inboxをMapへ登録する。両方nullなら例外になるのは問い合わせをstubにした場合だけ。本家の問い合わせは主キーを選ばないため、実DBではTypeORMが2列ともnullの行を返さず、そのフォロワーは飛ばされて他の宛先には届く（[比較資料の宛先](../superpowers/compatibility/ap-deliver/README.md#宛先)）。directはsharedInboxが既登録なら省略、individual inboxがnullなら省略し、それ以外はindividual inboxへ登録する。同じURLでは後のMap更新が優先される。
 - [RelayService](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/RelayService.ts)はaccepted relayへ別copyのactivityを配送する。to欠落時のPublic補完とLD署名があり、followers/directの集合へ単純に統合・重複排除しない。
 - [QueueService](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/QueueService.ts)の通常add/addBulk、AP既定12試行・backoff・履歴と、配送processorの停止host/連合条件/結果分類をその機能の実装時に比較する。永続snapshot/page/host leaseは初期前提にしない。
 
@@ -43,7 +43,7 @@
 2026-11-03 のユーザー決定で、#171 の最初の PR は relay を除くノート作成の配送を通常起動へ接続した。本家との比較は[比較資料](../superpowers/compatibility/ap-deliver/README.md)を参照。
 
 - **表現**: `src/modules/mfm/`（本家の `MfmService.toHtml`・`ApMfmService.getNoteHtml`）と `src/modules/federation/note-activity.ts`（`renderNote` の dive=false の経路・`renderCreate`・`renderAnnounce`・`@context`）。材料は `src/platform/database/note-activity.ts` が投稿の ID から読み直す。
-- **配送の分岐と宛先**: `src/modules/federation/note-delivery.ts` と `deliver-recipients.ts`。投稿の後続処理の 3 つ目の仕事として HTTP 子で動く。ローカルの作者で localOnly でない投稿だけを配送する。followers・direct の規則は上の DeliverManager のとおり。
+- **配送の分岐と宛先**: `src/modules/federation/note-delivery.ts` と `deliver-recipients.ts`。投稿の後続処理の 3 つ目の仕事として HTTP 子で動く。ローカルの作者で localOnly でない投稿だけを配送する。followers・direct の規則は上の DeliverManager のとおりで、inbox のないフォロワーも本家と同じく飛ばす。
 - **投入**: `src/platform/job-queue/deliver.ts`。job 名・`data`・`attempts`（`deliverJobMaxAttempts ?? 12`）・backoff・履歴は本家と同じ（[投稿の最小契約](posting-contract.md#通常ジョブ162)）。
 - **処理**: worker 子が投票終了と同じ子で deliver の Worker も動かす。`src/modules/federation/deliver-job.ts` が本家 `DeliverProcessorService` の順にスキップ判定・送信・instance の更新を行い、結果の写像（`UnrecoverableError`・再試行）は platform が持つ。
 - **インスタンス台帳**: [連合の共通土台](federation-base-contract.md)の段階 3（`src/platform/instance-ledger.ts`、`src/modules/federation/instance.ts`）。
