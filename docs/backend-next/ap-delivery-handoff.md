@@ -34,6 +34,6 @@
 2026-11-03 のユーザー決定で、#162 の最初の PR は本家の投票終了ジョブで通常の BullMQ の Queue/Worker を接続した（[比較資料](../superpowers/compatibility/poll-ended/README.md)、[投稿の最小契約](posting-contract.md#通常ジョブ162)）。AP の deliver queue・Worker、webhook、試行回数・backoff・limiter はこの PR に入れず、#171 の配送と一緒に比べて接続する。#162 の「AP slice は #160 の署名 HTTP と偽の inbox まで通す」も #171 へ移した。
 
 - 接続は本家と同じく `redisForJobQueue` の設定から `keyPrefix` を外し、queue ごとに `<prefix>:queue:<queue名>` の prefix を使う（`src/platform/job-queue/connection.ts`）。deliver も同じ関数で作る。
-- Redis の接続は再接続しない（`retryStrategy` は `null`）。稼働中に Queue・Worker の接続を失うと子を異常終了し、Supervisor が全体を止める。本家は ioredis の既定で再接続する（意図的な差異）。
+- Redis の接続は再接続しない（`retryStrategy` は `null`）。稼働中に Queue・Worker の接続を失うと子を異常終了し、Supervisor が全体を止める。本家は BullMQ の既定の `retryStrategy`（1〜20 秒の指数待ちで無期限）で再接続し続ける（意図的な差異）。
 - Worker は `autorun: false` で作り、接続の準備を待ってから `run()` を始める。停止は `close()`（取得の停止→実行中のジョブの完了→接続の解放）で、既存の停止期限を超えたら異常終了する。期限を超えて止めたジョブは本家と同じく stalled 検査で戻る。
 - 役割固有の接続の喪失は `startManagedProcess` の `reportFailure` へ渡す。deliver の Worker も同じ経路を使う。

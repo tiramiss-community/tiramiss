@@ -15,7 +15,7 @@ export function baseQueueOptions(redis: RedisConfig, queueName: string, connectT
 	const connection: RedisOptions = {
 		...options,
 		connectTimeout: connectTimeoutMs,
-		// 本家は ioredis の既定で再接続し続ける。他の必須接続と同じく再接続せず、切断は子の停止として扱う。
+		// 本家は BullMQ の既定の retryStrategy（1〜20 秒の指数待ちで無期限）で再接続し続ける。他の必須接続と同じく再接続せず、切断は子の停止として扱う。
 		retryStrategy: () => null,
 		// BullMQ は待ち受け用の接続に null を求める。再接続しないため、切断後のコマンドは待たずに失敗する。
 		maxRetriesPerRequest: null,

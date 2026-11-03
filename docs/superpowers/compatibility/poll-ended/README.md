@@ -82,7 +82,7 @@ probe は re2 を差し替える（federation-base と同じ理由）。`Notific
 
 ## 意図的な差異
 
-- **再接続**: 本家の queue の接続は ioredis の既定で再接続し続ける。新実装は他の必須 Redis 接続と同じく再接続せず（`retryStrategy` は `null`）、稼働中の切断を子プロセスの異常終了とし、Supervisor が全体を止める。起動は既存の起動期限で区切る。
+- **再接続**: 本家の queue の接続は、設定に `retryStrategy` がないため BullMQ の既定の `retryStrategy`（1〜20 秒の指数待ちで無期限）で再接続し続ける。新実装は他の必須 Redis 接続と同じく再接続せず（`retryStrategy` は `null`）、稼働中の切断を子プロセスの異常終了とし、Supervisor が全体を止める。起動は既存の起動期限で区切る。
 - **停止**: 本家の通常の停止（シグナル）は Worker を閉じず、実行中のジョブは BullMQ の stalled 検査で戻る。新実装は取得の停止→実行中のジョブの完了→接続の解放の順に止め、既存の停止期限を超えたら異常終了する。期限を超えて止めたジョブは本家と同じく stalled 検査で戻る。
 - **通知の保存先**: 本家は Redis の `notificationTimeline:<userId>` へ保存する。新実装は承認済みの `backend_internal.notification` へ保存し、`notifier_id` を `NULL` にする（受信者ごとに 1 transaction）。
 - **'error' の受け手**: 本家はこの Worker にイベントの受け手を登録しない。新実装は `error` を記録する受け手を登録する（受け手がないとプロセス外へ例外が出るため）。
