@@ -25,15 +25,13 @@ interface Fixture {
 const n3 = '../../../../docs/superpowers/compatibility/note/n3/';
 const golden = JSON.parse(readFileSync(new URL(`${n3}observations.json`, import.meta.url), 'utf8'));
 const cases: Fixture[] = JSON.parse(readFileSync(new URL(`${n3}http-cases.json`, import.meta.url), 'utf8'));
-// 指定宛先の解決と MFM 抽出（メンション・ハッシュタグ・絵文字）が要るケースは、それらを実装する段階で接続する。
-const deferred = new Set(cases.map(c => c.id).filter(id =>
-	id === 'N3-FP-poll-specified' || id === 'N3-RR-reply-specified' ||
-	(/^N3-(MN|HE)-/.test(id) && !['N3-MN-specified-empty', 'N3-MN-visible-duplicate', 'N3-MN-noextract-reply'].includes(id))));
-// 後続の段階のケースは保存されないため、本家で後のケースから見える副作用だけを DB に再現し、実測値は書き換えずに比べる。
-const deferredEffects: Record<string, () => Promise<unknown>> = {
-	// 本家はこの返信を保存して bobPublic の repliesCount を加算し、N3-MN-noextract-reply の入れ子の値に現れる。
-	'N3-MN-limit-reply-boundary': () => resources.dataSource.getRepository(MiNote).increment({ id: ids.bobPublic }, 'repliesCount', 1),
-};
+// 本家も新実装も指定宛先を順序なしの findBy(In) で取得するため、宛先が複数のケースでは保存順が DB の返却順に依存する。
+// 本家の実測は入力順だったが保証されないので、宛先とメンションは集合として比べる。
+const unorderedRecipients = new Set(['N3-MN-visible-order']);
+// 500 の info.e は DB エラーの文言とリクエストごとの UUID を持つ動的な内部情報なので、完全一致の期待値にしない（Role 互換契約と同じ）。
+const internalErrors = new Set(['N3-HE-nfkc-expanding']);
+// HTTP の 500 は原因を応答に含めないため、ログへ出た例外で原因を確かめる。
+const logLines: string[] = [];
 const metaSetups = { sensitive: { sensitiveWords: ['needle'] }, prohibited: { prohibitedWords: ['forbidden'] } };
 
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
@@ -99,9 +97,21 @@ async function prepare(name: string, input: object, actor: string) {
 	await resources.notePostSave.idle();
 }
 
-// 指定宛先の解決は後続の段階なので、本家が保存する列を直接入れる。本家は指定宛先を mentions にも入れる。
-async function insertSpecified(name: string, actor: string, text: string, visibleUserIds: string[], mentions: string[]) {
-	await resources.dataSource.getRepository(MiNote).insert({ id: remember(name, codec.newId(Date.now())), userId: ids[actor], userHost: null, text, visibility: 'specified', visibleUserIds, mentions });
+function sortRecipients(value: unknown, key = ''): unknown {
+	if (Array.isArray(value)) {
+		const items = value.map(v => sortRecipients(v, key));
+		return key === 'visibleUserIds' || key === 'mentions' ? items.sort() : items;
+	}
+	if (value !== null && typeof value === 'object') {
+		return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, sortRecipients(v, k)]));
+	}
+	return value;
+}
+
+function withoutInternalErrorInfo(value: unknown) {
+	const { body, ...rest } = value as { body: { error: Record<string, unknown> } };
+	const { info: _, ...error } = body.error;
+	return { ...rest, body: { error } };
 }
 
 async function saved(noteId: string) {
@@ -134,7 +144,9 @@ beforeAll(async () => {
 	database = await createTestDatabase();
 	database.config.url = 'http://127.0.0.1:61167';
 	await migrateDatabase(database.config.database);
-	resources = await connectResources(database.config, createLogger('note-create-relations-test', () => {}));
+	resources = await connectResources(database.config, createLogger('note-create-relations-test', line => {
+		logLines.push(line);
+	}));
 	const db = resources.dataSource;
 	await db.getRepository(MiMeta).insert({ id: 'singleton' });
 
@@ -174,14 +186,13 @@ beforeAll(async () => {
 	await prepare('bobWhitespaceTarget', { text: 'whitespace target' }, 'bob');
 	await prepare('bobHome', { text: 'bob home', visibility: 'home' }, 'bob');
 	await prepare('bobFollowers', { text: 'bob followers', visibility: 'followers' }, 'bob');
-	await insertSpecified('bobSpecified', 'bob', 'bob specified', [ids.alice], [ids.alice]);
+	await prepare('bobSpecified', { text: 'bob specified', visibility: 'specified', visibleUserIds: [ids.alice] }, 'bob');
 	await prepare('bobLocal', { text: 'bob local', localOnly: true }, 'bob');
 	await prepare('bobPure', { renoteId: ids.bobPublic }, 'bob');
 	await prepare('bobPureSpecified', { renoteId: ids.bobPublic, visibility: 'specified', localOnly: true }, 'bob');
 	await prepare('aliceFollowers', { text: 'alice followers', visibility: 'followers' }, 'alice');
-	await insertSpecified('aliceSpecified', 'alice', 'alice specified', [ids.bob], [ids.bob]);
-	// 本文のメンションが先、指定宛先が後の順で mentions に入る。
-	await insertSpecified('aliceSpecifiedMention', 'alice', 'only mentioned @probe_bob', [ids.carol], [ids.bob, ids.carol]);
+	await prepare('aliceSpecified', { text: 'alice specified', visibility: 'specified', visibleUserIds: [ids.bob] }, 'alice');
+	await prepare('aliceSpecifiedMention', { text: 'only mentioned @probe_bob', visibility: 'specified', visibleUserIds: [ids.carol] }, 'alice');
 	await prepare('blockerNote', { text: 'blocker' }, 'blocker');
 	await prepare('blockeeNote', { text: 'blockee' }, 'blockee');
 	await prepare('chClosedNote', { text: 'closed channel', channelId: ids.chClosed }, 'bob');
@@ -197,12 +208,13 @@ afterAll(async () => {
 	await database?.close();
 });
 
-// 本家 probe と同じ順に送る。後続の段階のケースも送って、黙って保存せず 501 で拒否することを確かめる。
+// 本家 probe と同じ順に送る。
 test.each(cases.map(fixture => [fixture.id, fixture] as const))('%s', async (name, fixture) => {
 	const db = resources.dataSource;
 	await db.getRepository(MiMeta).update('singleton', { sensitiveWords: [], prohibitedWords: [], ...(fixture.setup ? metaSetups[fixture.setup] : {}) });
 	try {
 		const before = { notes: await db.getRepository(MiNote).count(), polls: await db.getRepository(MiPoll).count() };
+		logLines.length = 0;
 		const response = await call('create', resolve(fixture.params) as object, fixture.actor);
 		const body = await response.json();
 		const note = body.createdNote;
@@ -212,11 +224,6 @@ test.each(cases.map(fixture => [fixture.id, fixture] as const))('%s', async (nam
 		await resources.notePostSave.idle();
 		const after = { notes: await db.getRepository(MiNote).count(), polls: await db.getRepository(MiPoll).count() };
 		const delta = { notes: after.notes - before.notes, polls: after.polls - before.polls };
-		if (deferred.has(name) && !(response.status === 400 && body.error.code === 'INVALID_PARAM')) {
-			expect({ status: response.status, code: body.error?.code, delta }).toEqual({ status: 501, code: 'NOT_IMPLEMENTED', delta: { notes: 0, polls: 0 } });
-			await deferredEffects[name]?.();
-			return;
-		}
 
 		const persisted = note ? await saved(note.id) : null;
 		const result: Record<string, unknown> = { status: response.status, body, wwwAuthenticate: response.headers.get('www-authenticate'), delta, saved: persisted };
@@ -226,7 +233,17 @@ test.each(cases.map(fixture => [fixture.id, fixture] as const))('%s', async (nam
 		if (fixture.watch) {
 			result.counts = await counters(fixture.watch);
 		}
-		expect(normalize(result)).toEqual(golden[name]);
+		if (unorderedRecipients.has(name)) {
+			expect(sortRecipients(normalize(result))).toEqual(sortRecipients(golden[name]));
+		} else if (internalErrors.has(name)) {
+			expect(golden[name].body.error.info.e.code).toBe('QueryFailedError');
+			// 新実装も同じ原因（varchar の長さ超過 22001）で失敗したことを確かめる。別の例外の 500 では通さない。
+			expect(logLines.map(line => JSON.parse(line)).filter(line => line.event === 'note-create.failed').map(line => line.error))
+				.toEqual([{ name: 'QueryFailedError', code: '22001' }]);
+			expect(withoutInternalErrorInfo(normalize(result))).toEqual(withoutInternalErrorInfo(golden[name]));
+		} else {
+			expect(normalize(result)).toEqual(golden[name]);
+		}
 
 		if (note) {
 			const show = await call('show', { noteId: note.id }, fixture.actor);
@@ -237,13 +254,6 @@ test.each(cases.map(fixture => [fixture.id, fixture] as const))('%s', async (nam
 	}
 });
 
-test('every recorded case is either compared or deferred to a later stage', () => {
+test('every recorded case is compared', () => {
 	expect(Object.keys(golden).sort()).toEqual(cases.map(c => c.id).sort());
-	expect([...deferred].sort()).toEqual([
-		'N3-FP-poll-specified', 'N3-HE-case-dup', 'N3-HE-cw-choice', 'N3-HE-emoji-case-dup', 'N3-HE-fullwidth', 'N3-HE-inline-code', 'N3-HE-length',
-		'N3-HE-nfkc-expanding', 'N3-HE-only-hashtags-off', 'N3-HE-over-32', 'N3-MN-cw-choice', 'N3-MN-dedupe', 'N3-MN-limit-boundary', 'N3-MN-limit-dedupe',
-		'N3-MN-limit-over', 'N3-MN-limit-reply-boundary', 'N3-MN-limit-reply-over', 'N3-MN-limit-self', 'N3-MN-limit-visible-boundary',
-		'N3-MN-limit-visible-over', 'N3-MN-missing-local', 'N3-MN-remote', 'N3-MN-remote-visible', 'N3-MN-suspended',
-		'N3-MN-visible-missing', 'N3-MN-visible-order', 'N3-RR-reply-specified',
-	]);
 });

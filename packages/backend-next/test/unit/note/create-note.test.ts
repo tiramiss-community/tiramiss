@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { expect, test } from 'vitest';
+import { createHostRules } from '../../../src/modules/federation/public.js';
 import { createCreateNote } from '../../../src/modules/note/create-note.js';
 import { concatNoteContentsForKeywordCheck, matchesWords } from '../../../src/modules/note/keywords.js';
 import type { MentionedRemoteUser, NewNote, NewPoll, NoteAttachableFile, NoteCreateAuthor, NotePostSaveInput, NoteWrites, RelatedChannel, RelatedNote } from '../../../src/modules/note/create-contract.js';
@@ -14,6 +15,7 @@ const now = 1_000_000;
 const noRelations = {
 	readNote: async () => null, isBlocking: async () => false, isFollowing: async () => false,
 	readChannel: async () => null, readMentionedRemoteUsers: async () => [],
+	readUserIds: async () => [], findUsersByAccount: async () => [], isSelfHost: (host: string | null) => host === null,
 };
 
 interface World {
@@ -24,6 +26,8 @@ interface World {
 	followings?: [string, string][];
 	channels?: (RelatedChannel & { isArchived?: boolean })[];
 	remoteUsers?: (MentionedRemoteUser & { id: string })[];
+	// この並びを DB の返却順とみなす。
+	users?: { id: string; username: string; host: string | null }[];
 }
 
 function related(id: string, facts: Partial<RelatedNote> = {}): RelatedNote {
@@ -40,6 +44,7 @@ function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteA
 	const polls: NewPoll[] = [];
 	const after: NotePostSaveInput[] = [];
 	const fileReads: [string, string[]][] = [];
+	const accountReads: { usernameLower: string; host: string | null }[][] = [];
 	const files = options.files ?? ownedFiles;
 	const writes = (scope: string): NoteWrites => ({
 		insertNote: async note => {
@@ -80,6 +85,18 @@ function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteA
 			return channel ? { id: channel.id, allowRenoteToExternal: channel.allowRenoteToExternal } : null;
 		},
 		readMentionedRemoteUsers: async ids => ids.flatMap(id => (world.remoteUsers ?? []).filter(user => user.id === id).map(({ id: _, ...user }) => user)),
+		readUserIds: async ids => {
+			events.push('users');
+			return (world.users ?? []).filter(user => ids.includes(user.id)).map(user => user.id);
+		},
+		findUsersByAccount: async accounts => {
+			accountReads.push(accounts);
+			// 返却順に依存しないことを確かめるため、問い合わせ順と逆に返す。
+			return accounts.flatMap(account => (world.users ?? [])
+				.filter(user => user.username.toLowerCase() === account.usernameLower && user.host === account.host)
+				.map(user => ({ id: user.id, usernameLower: account.usernameLower, host: account.host }))).reverse();
+		},
+		isSelfHost: createHostRules('example.com').isSelfHost,
 		writes: writes('root'),
 		transactions: { run: async work => {
 			events.push('begin');
@@ -101,7 +118,7 @@ function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteA
 		}
 		return { id };
 	};
-	return { createNote: (input: unknown, credential: typeof actor | null = actor) => create.createNote(credential, input, now, render), events, notes, polls, after, fileReads };
+	return { createNote: (input: unknown, credential: typeof actor | null = actor) => create.createNote(credential, input, now, render), events, notes, polls, after, fileReads, accountReads };
 }
 
 test('text is trimmed and plain persisted fields do not depend on HTTP or ORM', async () => {
@@ -110,7 +127,7 @@ test('text is trimmed and plain persisted fields do not depend on HTTP or ORM', 
 	expect(notes).toEqual([{
 		id: 'new', userId: 'author', userHost: null, text: 'hello', cw: null, visibility: 'public', localOnly: false, reactionAcceptance: null, channelId: null,
 		fileIds: [], attachedFileTypes: [], hasPoll: false, replyId: null, renoteId: null, threadId: null, replyUserId: null, replyUserHost: null,
-		renoteUserId: null, renoteUserHost: null, renoteChannelId: null, visibleUserIds: [], mentions: [], mentionedRemoteUsers: [],
+		renoteUserId: null, renoteUserHost: null, renoteChannelId: null, visibleUserIds: [], mentions: [], mentionedRemoteUsers: [], tags: [], emojis: [],
 	}]);
 	expect(polls).toEqual([]);
 	expect(after).toEqual([{ userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null }]);
@@ -223,10 +240,11 @@ test('post-save work starts after rendering, even when rendering a saved Note fa
 	expect(events).toEqual(['root:note', 'render:new:author', 'after']);
 });
 
-test('MFM detection uses trimmed text so whitespace around fenced literal mentions is accepted', async () => {
-	const { createNote, notes } = setup();
+// 本家 NoteCreateService.ts:573-591: trim 前の text では行頭にならないコードブロックが、trim 後はコードブロックになる。
+test('MFM extraction parses trimmed text so a fenced mention stays literal', async () => {
+	const { createNote, notes } = setup(author, { world: { users: [{ id: 'foo', username: 'foo', host: null }] } });
 	await expect(createNote({ text: '  ```\n@foo\n``` ' })).resolves.toEqual({ id: 'new' });
-	expect(notes[0].text).toBe('```\n@foo\n```');
+	expect(notes[0]).toMatchObject({ text: '```\n@foo\n```', mentions: [] });
 });
 
 // 本家 notes/create.ts:226 と NoteCreateService.ts:304-317,648,673。
@@ -262,8 +280,8 @@ test.each([
 	[{ text: 'forbidden', fileIds: ['missing'], renoteId: 'x', poll: { choices: ['a', 'b'], expiresAt: 1 } }, 'NO_SUCH_FILE'],
 	[{ text: 'forbidden', fileIds: ['img'], renoteId: 'x', poll: { choices: ['a', 'b'], expiresAt: 1 } }, 'NO_SUCH_RENOTE_TARGET'],
 	[{ text: 'forbidden', fileIds: ['img'], poll: { choices: ['a', 'b'], expiresAt: 1 }, channelId: 'x' }, 'CANNOT_CREATE_ALREADY_EXPIRED_POLL'],
-	[{ text: 'forbidden', poll: { choices: ['@probe', 'b'] } }, 'CONTAINS_PROHIBITED_WORDS'],
-	[{ text: 'fine', poll: { choices: ['@probe', 'b'] } }, 'NOT_IMPLEMENTED'],
+	[{ text: 'forbidden', poll: { choices: ['@probe@unknown.test', 'b'] } }, 'CONTAINS_PROHIBITED_WORDS'],
+	[{ text: 'fine', poll: { choices: ['@probe@unknown.test', 'b'] } }, 'NOT_IMPLEMENTED'],
 	[{ text: 'fine', poll: { choices: ['#tag', 'b'] }, noExtractHashtags: true }, null],
 ] as const)('related checks precede word checks: %j', async (input, code) => {
 	const { createNote, notes } = setup({ ...author, prohibitedWords: ['forbidden'] });
@@ -322,6 +340,10 @@ const relationWorld: World = {
 	blockings: [['blocker', 'author'], ['author', 'other']],
 	channels: [{ id: 'closedCh', allowRenoteToExternal: false }, { id: 'openCh', allowRenoteToExternal: true }, { id: 'archivedCh', allowRenoteToExternal: true, isArchived: true }],
 	remoteUsers: [{ id: 'remoteUser', uri: 'https://remote.test/users/r', username: 'r', host: 'remote.test' }],
+	users: [
+		{ id: 'carol', username: 'carol', host: null }, { id: 'bob', username: 'bob', host: null }, { id: 'author', username: 'author', host: null },
+		{ id: 'other', username: 'other', host: null }, { id: 'remoteUser', username: 'r', host: 'remote.test' },
+	],
 };
 
 // 本家 NoteCreateService.ts:320-420。Renote 対象→返信先→投票期限→channel の順に、最初の誤りを返す。
@@ -380,7 +402,9 @@ test.each([
 	[{ renoteId: 'public', text: '   ' }, { text: null, renoteId: 'public', mentions: [] }],
 	[{ replyId: 'nested', text: 'x' }, { threadId: 'root', replyUserId: 'other', mentions: ['other'] }],
 	[{ text: 'x', visibleUserIds: ['someone'] }, { visibility: 'public', visibleUserIds: [] }],
-	[{ text: 'x', visibility: 'specified', visibleUserIds: ['someone'], channelId: 'openCh' }, { visibility: 'public', visibleUserIds: [] }],
+	[{ text: 'x', visibility: 'specified', visibleUserIds: ['bob'], channelId: 'openCh' }, { visibility: 'public', visibleUserIds: [], mentions: [] }],
+	[{ text: 'x', visibility: 'home', visibleUserIds: ['bob'] }, { visibility: 'home', visibleUserIds: [], mentions: [] }],
+	[{ text: 'x', visibility: 'specified', visibleUserIds: ['bob', 'someone'] }, { visibility: 'specified', visibleUserIds: ['bob'], mentions: ['bob'] }],
 ] as const)('input %j is corrected to %j', async (input, expected) => {
 	const { createNote, notes } = setup({ ...author, sensitiveWords: ['needle'] }, { world: relationWorld });
 	await createNote(input);
@@ -406,12 +430,6 @@ test('the reply author counts toward the mention limit', async () => {
 	expect(notes).toHaveLength(1);
 });
 
-test('specified recipients stay unimplemented until they can be resolved', async () => {
-	const { createNote, notes } = setup(author, { world: relationWorld });
-	await expect(createNote({ text: 'x', visibility: 'specified', visibleUserIds: ['someone'] })).rejects.toMatchObject({ code: 'NOT_IMPLEMENTED' });
-	expect(notes).toEqual([]);
-});
-
 // 本家 NoteCreateService.ts:786-788,815-817,927-944。
 test.each([
 	[author, { replyId: 'public', renoteId: 'home', channelId: 'openCh' }, { repliedNoteId: 'public', renotedNoteId: 'home', channelId: null }],
@@ -423,4 +441,109 @@ test.each([
 	const { createNote, after } = setup(facts, { world: relationWorld });
 	await createNote(input);
 	expect(after).toEqual([expect.objectContaining({ userId: 'author', ...expected })]);
+});
+
+// 本家 NoteCreateService.ts:590-609,661 と misc/extract-*.ts。
+test('hashtags and emojis are extracted from text, CW and choices in that order with upstream limits', async () => {
+	const { createNote, notes } = setup();
+	const longTag = '😀'.repeat(129);
+	const longEmoji = 'e'.repeat(101);
+	await createNote({ text: `#B #b #${longTag} #${'😀'.repeat(128)} :e1: :E1: :e1: :${longEmoji}: \`#code :code:\``, cw: '#cw :cw:', poll: { choices: ['#Ｃhoice :choice:', 'x'] } });
+	expect(notes[0]).toMatchObject({ tags: ['b', 'b', '😀'.repeat(128), 'cw', 'choice'], emojis: ['e1', 'E1', 'cw', 'choice'] });
+
+	const many = setup();
+	await many.createNote({ text: Array.from({ length: 33 }, (_, i) => `#t${i}`).join(' ') });
+	expect(many.notes[0].tags).toEqual(Array.from({ length: 32 }, (_, i) => `t${i}`));
+});
+
+// 本家 NoteCreateService.ts:609,661。上限は正規化前の長さで判定するため、NFKC で伸びるタグは 128 文字を超えたまま保存へ渡る。
+// varchar(128) の tags に入らず DB エラーになるのが本家の挙動（n3 の N3-HE-nfkc-expanding）。
+test('the hashtag length limit is applied before normalization', async () => {
+	const { createNote, notes } = setup();
+	await createNote({ text: `#${'㍿'.repeat(128)} #${'㍿'.repeat(129)}` });
+	expect(notes[0].tags).toEqual(['株式会社'.repeat(128)]);
+});
+
+test.each([
+	[{ noExtractHashtags: true }, { tags: [], emojis: ['e'], mentions: ['bob'] }],
+	[{ noExtractEmojis: true }, { tags: ['t'], emojis: [], mentions: ['bob'] }],
+	[{ noExtractMentions: true }, { tags: ['t'], emojis: ['e'], mentions: [] }],
+	[{ noExtractMentions: true, noExtractHashtags: true, noExtractEmojis: true }, { tags: [], emojis: [], mentions: [] }],
+])('%j clears only the matching extraction', async (flags, expected) => {
+	const { createNote, notes } = setup(author, { world: relationWorld });
+	await createNote({ text: '#t :e: @bob', ...flags });
+	expect(notes[0]).toMatchObject(expected);
+});
+
+// 本家 NoteCreateService.ts:1051-1064 と RemoteUserResolveService.ts:43-70,140-141。
+test('mentions resolve local, self-host and registered remote accounts in order of appearance without duplicates', async () => {
+	const { createNote, notes, accountReads } = setup(author, { world: relationWorld });
+	await createNote({ text: '@Bob @nobody @R@REMOTE.TEST @bob@Example.COM @carol @bob' });
+	expect(notes[0]).toMatchObject({
+		mentions: ['bob', 'remoteUser', 'carol'],
+		mentionedRemoteUsers: [{ uri: 'https://remote.test/users/r', username: 'r', host: 'remote.test' }],
+	});
+	// 表記違い・自サーバーの host 付きは同じアカウントにまとめ、1 回で問い合わせる。
+	expect(accountReads).toEqual([[
+		{ usernameLower: 'bob', host: null }, { usernameLower: 'nobody', host: null }, { usernameLower: 'r', host: 'remote.test' }, { usernameLower: 'carol', host: null },
+	]]);
+});
+
+// 本家は未登録のリモートユーザーを WebFinger で取得する。#195 まではメンション解決の位置で保存前に拒否する。
+test.each([
+	[{ text: '@nobody@unknown.test' }, author, 'NOT_IMPLEMENTED'],
+	[{ text: 'x', cw: '@nobody@unknown.test' }, author, 'NOT_IMPLEMENTED'],
+	[{ text: '@nobody@unknown.test forbidden' }, { ...author, prohibitedWords: ['forbidden'] }, 'CONTAINS_PROHIBITED_WORDS'],
+	[{ text: '@bob @carol @nobody@unknown.test' }, { ...author, mentionLimit: 1 }, 'NOT_IMPLEMENTED'],
+	[{ text: '@bob @carol' }, { ...author, mentionLimit: 1 }, 'CONTAINS_TOO_MANY_MENTIONS'],
+] as const)('%j by %j is rejected with %s without saving', async (input, facts, code) => {
+	const { createNote, notes, polls } = setup({ ...facts, prohibitedWords: [...facts.prohibitedWords] }, { world: relationWorld });
+	await expect(createNote({ ...input, poll: { choices: ['a', 'b'] } })).rejects.toMatchObject({ code });
+	expect([notes, polls]).toEqual([[], []]);
+});
+
+test('an unregistered remote mention is saved as text when mentions are not extracted', async () => {
+	const { createNote, notes } = setup(author, { world: relationWorld });
+	await createNote({ text: '@nobody@unknown.test', noExtractMentions: true });
+	expect(notes[0]).toMatchObject({ text: '@nobody@unknown.test', mentions: [], mentionedRemoteUsers: [] });
+});
+
+// 本家 NoteCreateService.ts:300-302,611-627,667-671。指定宛先は DB の返却順（ここでは carol が先）のまま使う。
+test('mentions list MFM users, then the reply author, then recipients; the reply author is appended to recipients', async () => {
+	const { createNote, notes } = setup(author, { world: relationWorld });
+	await createNote({ replyId: 'specified', text: '@carol', visibility: 'specified', visibleUserIds: ['bob', 'carol'] });
+	expect(notes[0]).toMatchObject({ mentions: ['carol', 'other', 'bob'], visibleUserIds: ['carol', 'bob', 'other'] });
+});
+
+// 本家 NoteCreateService.ts:629-632。重複を除いた件数が上限を超えたら拒否し、ちょうど上限は許可する。
+test.each([
+	[{ text: '@bob @Bob @carol' }, null],
+	[{ text: '@carol', visibility: 'specified', visibleUserIds: ['bob'] }, null],
+	[{ text: '@carol', visibility: 'specified', visibleUserIds: ['bob', 'author'] }, 'CONTAINS_TOO_MANY_MENTIONS'],
+	[{ replyId: 'public', text: '@carol' }, null],
+	[{ replyId: 'public', text: '@carol @bob' }, 'CONTAINS_TOO_MANY_MENTIONS'],
+	[{ replyId: 'public', text: '@other @carol' }, null],
+] as const)('with mentionLimit 2, %j fails with %s', async (input, code) => {
+	const { createNote, notes } = setup({ ...author, mentionLimit: 2 }, { world: relationWorld });
+	if (code === null) {
+		await createNote(input);
+		expect(notes).toHaveLength(1);
+		return;
+	}
+	await expect(createNote(input)).rejects.toMatchObject({ code });
+	expect(notes).toEqual([]);
+});
+
+// 自分の Note への specified 返信で宛先へ足される自分は、メンション数に数えない。
+test('a specified reply to an own Note adds the author as recipient without counting a mention', async () => {
+	const { createNote, notes } = setup({ ...author, mentionLimit: 0 }, { world: relationWorld });
+	await createNote({ replyId: 'ownSpecified', text: 'x', visibility: 'specified' });
+	expect(notes[0]).toMatchObject({ visibleUserIds: ['author'], mentions: [] });
+});
+
+// 本家 NoteCreateService.ts:300-302 は他の確認より先に指定宛先を取得する。
+test('recipients are read before attachments', async () => {
+	const { createNote, events } = setup(author, { world: relationWorld });
+	await createNote({ text: 'x', fileIds: ['img'], visibility: 'specified', visibleUserIds: ['bob'] });
+	expect(events.slice(0, 2)).toEqual(['users', 'files']);
 });

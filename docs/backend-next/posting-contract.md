@@ -34,6 +34,7 @@ HTTP成功は保存とレスポンス生成の成功。AP配送や通知の完�
 - **保存**: 投票ありはNoteとPollを、UseCaseが所有する1つのtransactionで保存する。投票なしはNoteの単純insert。非正規化列（threadId・replyUserId/Host・renoteUserId/Host・renoteChannelId・attachedFileTypes・mentionedRemoteUsers）も本家と同じ値で保存する。
 - **保存後のcount**: user.notesCountに加え、返信先repliesCount、Renote対象renoteCount（他人の投稿・botでない投稿者のみ。引用も含む）、channelのnotesCount・lastNotedAt・usersCount（その投稿者のchannel内Noteが1件ならusersCount+1）を、保存後の原子的更新として行う。本家どおり削除では減らさない。作成応答の描画を終えてから開始し、応答の入れ子の返信先/Renote対象のcountを本家と同じく今回の加算前の値にする。
 - **メンション**: ローカルユーザーと登録済みリモートユーザーをDBで解決する。見つからないローカルユーザーは本家どおり無視する。自ホスト判定とホスト正規化は[連合の共通土台](federation-base-contract.md)を使う。登録済みリモートユーザーは `lastFetchedAt` に関係なく再同期せず使う。DBにない（未登録の）リモートユーザー宛ては、メンション解決の位置で保存前に501 `NOT_IMPLEMENTED`で拒否する。どちらも#195で除去する暫定制限であり、完成版の意図的差異にしない。
+- **指定宛先とMFM抽出**: 指定宛先は本家と同じく順序を付けずに取得し、存在しないIDは黙って除く（保存順は入力順を保証しない）。ハッシュタグの長さの上限は本家どおり正規化前の値で判定するため、NFKCで128文字を超えるタグは保存時のDBエラーで500になる。mediaSilencedによる絵文字の除外はリモート投稿にだけ効くため、ローカル投稿の経路には入れない。
 - **後続Issueの材料**: 投票終了のjob登録と通知は#173で、保存済みの `poll.expiresAt` を材料に実装する。#170では空のjobを作らない。通知・stream（#173）、hashtag表・ランキング・検索索引・TL・antenna（#174）、webhook（#175）、AP配送（#171）、チャートは本Issueで実装しない。いずれも保存済みのNote列（mentions・mentionedRemoteUsers・tags・reply/renote/channel）から判断できる。
 
 ## 選択の理由

@@ -120,8 +120,7 @@ beforeAll(async () => {
 	}
 	await prepare('base', { text: 'base' }, 'bob');
 	await prepare('pure', { renoteId: ids.base }, 'bob');
-	// 指定宛先の解決は後続の段階なので、本家が保存する列（宛先は mentions にも入る）を直接入れる。
-	await db.getRepository(MiNote).insert({ id: remember('private', codec.newId(Date.now())), userId: actors.bob.id, userHost: null, text: 'private', visibility: 'specified', visibleUserIds: [actors.bob.id], mentions: [actors.bob.id] });
+	await prepare('private', { text: 'private', visibility: 'specified', visibleUserIds: [actors.bob.id] }, 'bob');
 	await prepare('channelNote', { text: 'channel', channelId: ids.channel }, 'bob');
 });
 
@@ -148,7 +147,7 @@ const pinned = [
 	'C3-missing-file', 'C3-foreign-file', 'C3-file-precedence', 'C3-empty-file-precedence', 'C3-media-alias',
 	'C7-default', 'C7-expired', 'C7-relative-priority', 'C7-duplicate', 'C7-one',
 	'C6-missing-reply', 'C6-missing-renote', 'C6-reply', 'C6-pure-renote', 'C6-quote', 'C6-reply-pure', 'C6-renote-pure', 'C6-invisible-reply', 'C6-invisible-renote',
-	'C8-channel', 'C8-archived', 'C8-external-renote', 'C8-no-extract',
+	'C8-channel', 'C8-archived', 'C8-external-renote', 'C8-extract', 'C8-no-extract', 'C8-specified',
 ];
 test.each(pinned)('%s matches fixed upstream HTTP, saved Note and immediate show', async name => {
 	const fixture = cases.find((c: { id: string }) => c.id === name);
@@ -231,10 +230,16 @@ test('concurrent creates increment the author count once each after saving', asy
 	});
 });
 
-test.each([{ visibleUserIds: ['missing'], visibility: 'specified' }, { text: '@probe_alice' }, { text: '#tag' }, { cw: ':blob:' }, { poll: { choices: ['@probe_alice', 'b'] } }])('unsupported input %j is refused without saving a partial post', async params => {
+// 本家は未登録のリモートユーザーを WebFinger で取得する。#195 で接続するまでは、黙って捨てずに保存前に拒否する。
+// 設定 URL にポートがあると本家の自ホスト判定は一致しないため、'@probe_alice@127.0.0.1' もローカルの alice にならない。
+test.each([
+	{ text: '@nobody@unknown.example' }, { text: '@probe_alice@127.0.0.1' }, { cw: '@nobody@unknown.example' },
+	{ poll: { choices: ['@nobody@unknown.example', 'b'] } }, { text: '@probe_bob @nobody@unknown.example', visibility: 'specified', visibleUserIds: ['$bob'] },
+])('a mention of an unregistered remote user in %j is refused without saving a partial post', async params => {
+	expect(database.config.url).toBe('http://127.0.0.1:61167');
 	const before = await resources.dataSource.getRepository(MiNote).count();
 	const polls = await resources.dataSource.getRepository(MiPoll).count();
-	const response = await call({ text: 'do not discard input', ...params });
+	const response = await call({ text: 'do not discard input', ...resolveParams(params) as object });
 	expect(response.status).toBe(501);
 	expect(await response.json()).toMatchObject({ error: { code: 'NOT_IMPLEMENTED' } });
 	expect(await resources.dataSource.getRepository(MiNote).count()).toBe(before);
@@ -332,7 +337,7 @@ test('rejects note writes after their transaction has ended', async () => {
 	await expect(ended.insertNote({
 		id: noteId, userId: actors.alice.id, userHost: null, text: 'ended', cw: null, visibility: 'public', localOnly: false, reactionAcceptance: null, channelId: null,
 		fileIds: [], attachedFileTypes: [], hasPoll: true, replyId: null, renoteId: null, threadId: null, replyUserId: null, replyUserHost: null,
-		renoteUserId: null, renoteUserHost: null, renoteChannelId: null, visibleUserIds: [], mentions: [], mentionedRemoteUsers: [],
+		renoteUserId: null, renoteUserHost: null, renoteChannelId: null, visibleUserIds: [], mentions: [], mentionedRemoteUsers: [], tags: [], emojis: [],
 	})).rejects.toThrow('ended');
 	await expect(ended.insertPoll({ noteId, choices: ['a', 'b'], multiple: false, expiresAtMs: null, votes: [0, 0], noteVisibility: 'public', userId: actors.alice.id, userHost: null, channelId: null })).rejects.toThrow('ended');
 	expect(await db.getRepository(MiNote).count()).toBe(notes);

@@ -31,6 +31,28 @@ export function createNoteWriter(manager: EntityManager, roles: RoleMaterialRead
 			return { id, host: user.host, isSuspended: user.isSuspended, movedToUri: user.movedToUri, isBot: user.isBot, canPublicNote: policies.canPublicNote,
 				mentionLimit: policies.mentionLimit, rateLimitFactor: policies.rateLimitFactor, sensitiveWords: meta.sensitiveWords, prohibitedWords: meta.prohibitedWords };
 		},
+		async readUserIds(ids: string[]): Promise<string[]> {
+			const users = await manager.getRepository(MiUser).find({ where: { id: In(ids) }, select: { id: true } });
+			return users.map(user => user.id);
+		},
+		async findUsersByAccount(accounts: { usernameLower: string; host: string | null }[]): Promise<{ id: string; usernameLower: string; host: string | null }[]> {
+			// (usernameLower, host) の一意索引を使う 1 回の問い合わせにまとめる。名前と host の組み合わせ違いで余分に返る行はここで捨てる。
+			const names = [...new Set(accounts.map(account => account.usernameLower))];
+			const hosts = [...new Set(accounts.flatMap(account => account.host === null ? [] : [account.host]))];
+			const hostConditions = [
+				...(accounts.some(account => account.host === null) ? ['user.host IS NULL'] : []),
+				...(hosts.length > 0 ? ['user.host IN (:...hosts)'] : []),
+			];
+			const users = await manager.getRepository(MiUser).createQueryBuilder('user')
+				.select(['user.id', 'user.usernameLower', 'user.host'])
+				.where('user.usernameLower IN (:...names)', { names })
+				.andWhere(`(${hostConditions.join(' OR ')})`, { hosts })
+				.getMany();
+			const requested = new Set(accounts.map(account => `${account.usernameLower}@${account.host ?? ''}`));
+			return users
+				.filter(user => requested.has(`${user.usernameLower}@${user.host ?? ''}`))
+				.map(user => ({ id: user.id, usernameLower: user.usernameLower, host: user.host }));
+		},
 		async readOwnedFiles(userId: string, fileIds: string[]): Promise<NoteAttachableFile[]> {
 			// 本家と同じく所有者と ID だけで絞る。ID の生成順ではなく指定順で返すため array_position で並べる。
 			const files = await manager.getRepository(MiDriveFile).createQueryBuilder('file')

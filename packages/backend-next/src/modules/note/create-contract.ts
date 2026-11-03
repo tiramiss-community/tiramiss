@@ -109,6 +109,8 @@ export interface NewNote {
 	visibleUserIds: string[];
 	mentions: string[];
 	mentionedRemoteUsers: MentionedRemoteUser[];
+	tags: string[];
+	emojis: string[];
 }
 
 export interface NewPoll {
