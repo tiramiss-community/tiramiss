@@ -196,3 +196,7 @@ notes/create/delete、投票・reaction・follow等の変更API、TL/検索API�
 基本text保存だけのためのPG依頼は作らず、本家同様に保存後のcount更新を開始する。添付・投票・返信/Renote・channel・指定宛先・MFM抽出は#170まで明示501で保存前に拒否する。noExtract*で抽出を無効にした本文は保存できる。AP/通知/stream/TL/検索/webhook/通常workerの一致や投稿領域全体の完成を示さない。
 
 旧D1/D2/F群の強い同時確定・容量・復旧を初期必須の期待値にしない。[最小契約](../../../backend-next/posting-contract.md)と[実装計画](../../plans/2026-11-03-note-create-169.md)に判断・検証・撤去範囲を記録する。
+
+## N3: 関連入力の接続（#170 段階2）
+
+`test/integration/note-create.test.ts` で C6 の全9件、C8-channel・C8-archived・C8-external-renote・C8-no-extract を他のケースと同じく照合する（各ケースの後で保存後処理の完了を待つ）。C6-counts は probe の C5 と同じ2件目の返信（show-reply）を作った後の値、C8-channel-counts は削除APIが未接続のため `before` だけを照合する。初期データのうち指定宛先を持つ `private` は本家が保存する列をDBへ直接入れている。追加の実測（N3）は [n3/README.md](n3/README.md#新実装への接続先) を参照。

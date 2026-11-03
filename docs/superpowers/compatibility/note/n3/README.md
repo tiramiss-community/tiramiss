@@ -234,9 +234,11 @@ BACKEND_NEXT_TEST_DB_PORT=55167 BACKEND_NEXT_TEST_REDIS_PORT=56167 \
 
 | 領域 | ケース | 接続先テスト | コマンド・結果 |
 | --- | --- | --- | --- |
-| 添付・投票 | `N3-FP-*` |  |  |
-| 返信・Renote | `N3-RR-*` |  |  |
-| channel | `N3-CH-*` |  |  |
-| 指定宛先・メンション | `N3-MN-*` |  |  |
-| ハッシュタグ・絵文字 | `N3-HE-*` |  |  |
-| エラーの優先順 | `N3-ORD-*` |  |  |
+| 添付・投票 | `N3-FP-*`（`N3-FP-poll-specified` を除く） | `packages/backend-next/test/integration/note-create-relations.test.ts` | `BACKEND_NEXT_TEST_DB_PORT=… BACKEND_NEXT_TEST_REDIS_PORT=… pnpm --filter backend-next test:integration test/integration/note-create-relations.test.ts`。2026-11-03 #170段階2でPASS |
+| 返信・Renote | `N3-RR-*`（`N3-RR-reply-specified` を除く） | 同上 | 同上 |
+| channel | `N3-CH-*` | 同上 | 同上 |
+| 指定宛先・メンション | `N3-MN-specified-empty`・`N3-MN-visible-duplicate`・`N3-MN-noextract-reply` | 同上 | 同上。`noextract-reply` の入れ子の `repliesCount` には未接続の `N3-MN-limit-reply-boundary` の返信が含まれるため、テストはそのケースの501の後に本家の加算（bobPublic の `repliesCount` +1）だけをDBに再現し、実測値は変えずに比べる |
+| ハッシュタグ・絵文字 | なし | — | 段階3（MFM抽出）で接続する |
+| エラーの優先順 | `N3-ORD-*` | 同上 | 同上 |
+
+接続したケースは probe と同じ順に送り、各ケースの後で保存後処理の完了を待ってから、HTTP応答・Note/Poll増分・保存列・`watch` のcountを `observations.json` と照合する。成功したケースは、作成直後の `notes/show` が作成応答に今回の返信先 `repliesCount`・Renote対象 `renoteCount` の加算を足した値と一致することも確かめる。残りの `N3-MN-*`・`N3-HE-*` と上記2件（指定宛先の解決・MFM抽出が必要）は段階3で接続する。現時点では同じ順で送り、保存せず501 `NOT_IMPLEMENTED` を返すことだけを確かめている。初期データのうち指定宛先を持つ `bobSpecified`・`aliceSpecified`・`aliceSpecifiedMention` は、本家が保存する列（宛先は `mentions` にも入る）をDBへ直接入れている。

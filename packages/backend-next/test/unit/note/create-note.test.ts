@@ -5,14 +5,36 @@
 import { expect, test } from 'vitest';
 import { createCreateNote } from '../../../src/modules/note/create-note.js';
 import { concatNoteContentsForKeywordCheck, matchesWords } from '../../../src/modules/note/keywords.js';
-import type { NewNote, NewPoll, NoteAttachableFile, NoteCreateAuthor, NotePostSaveInput, NoteWrites } from '../../../src/modules/note/create-contract.js';
+import type { MentionedRemoteUser, NewNote, NewPoll, NoteAttachableFile, NoteCreateAuthor, NotePostSaveInput, NoteWrites, RelatedChannel, RelatedNote } from '../../../src/modules/note/create-contract.js';
 
-const author: NoteCreateAuthor = { id: 'author', host: null, isSuspended: false, movedToUri: null, canPublicNote: true, rateLimitFactor: 1, sensitiveWords: [], prohibitedWords: [] };
+const author: NoteCreateAuthor = { id: 'author', host: null, isSuspended: false, movedToUri: null, isBot: false, canPublicNote: true, mentionLimit: 20, rateLimitFactor: 1, sensitiveWords: [], prohibitedWords: [] };
 const actor = { userId: 'author', canWriteNote: true };
 const ownedFiles: NoteAttachableFile[] = [{ id: 'img', type: 'image/png' }, { id: 'vid', type: 'video/mp4' }];
 const now = 1_000_000;
+const noRelations = {
+	readNote: async () => null, isBlocking: async () => false, isFollowing: async () => false,
+	readChannel: async () => null, readMentionedRemoteUsers: async () => [],
+};
 
-function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteAttachableFile[]; failPoll?: boolean; failRender?: boolean } = {}) {
+interface World {
+	notes?: RelatedNote[];
+	// [blocker, blockee]
+	blockings?: [string, string][];
+	// [follower, followee]
+	followings?: [string, string][];
+	channels?: (RelatedChannel & { isArchived?: boolean })[];
+	remoteUsers?: (MentionedRemoteUser & { id: string })[];
+}
+
+function related(id: string, facts: Partial<RelatedNote> = {}): RelatedNote {
+	return {
+		id, userId: 'other', userHost: null, text: id, cw: null, fileIds: [], hasPoll: false, replyId: null, renoteId: null, threadId: null,
+		channelId: null, visibility: 'public', visibleUserIds: [], mentions: [], replyUserId: null, localOnly: false, ...facts,
+	};
+}
+
+function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteAttachableFile[]; failPoll?: boolean; failRender?: boolean; world?: World } = {}) {
+	const world = options.world ?? {};
 	const events: string[] = [];
 	const notes: NewNote[] = [];
 	const polls: NewPoll[] = [];
@@ -40,6 +62,24 @@ function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteA
 			fileReads.push([userId, ids]);
 			return ids.flatMap(id => files.filter(file => file.id === id));
 		},
+		readNote: async id => {
+			events.push(`note:${id}`);
+			return world.notes?.find(note => note.id === id) ?? null;
+		},
+		isBlocking: async (blocker, blockee) => {
+			events.push(`blocking:${blocker}:${blockee}`);
+			return world.blockings?.some(([a, b]) => a === blocker && b === blockee) ?? false;
+		},
+		isFollowing: async (follower, followee) => {
+			events.push(`following:${follower}:${followee}`);
+			return world.followings?.some(([a, b]) => a === follower && b === followee) ?? false;
+		},
+		readChannel: async (id, { includeArchived }) => {
+			events.push(`channel:${id}:${includeArchived ? 'any' : 'active'}`);
+			const channel = world.channels?.find(c => c.id === id && (includeArchived || !c.isArchived));
+			return channel ? { id: channel.id, allowRenoteToExternal: channel.allowRenoteToExternal } : null;
+		},
+		readMentionedRemoteUsers: async ids => ids.flatMap(id => (world.remoteUsers ?? []).filter(user => user.id === id).map(({ id: _, ...user }) => user)),
 		writes: writes('root'),
 		transactions: { run: async work => {
 			events.push('begin');
@@ -67,9 +107,13 @@ function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteA
 test('text is trimmed and plain persisted fields do not depend on HTTP or ORM', async () => {
 	const { createNote, notes, polls, after, events } = setup();
 	expect(await createNote({ text: '  hello  ' })).toEqual({ id: 'new' });
-	expect(notes).toEqual([{ id: 'new', userId: 'author', userHost: null, text: 'hello', cw: null, visibility: 'public', localOnly: false, reactionAcceptance: null, channelId: null, fileIds: [], attachedFileTypes: [], hasPoll: false }]);
+	expect(notes).toEqual([{
+		id: 'new', userId: 'author', userHost: null, text: 'hello', cw: null, visibility: 'public', localOnly: false, reactionAcceptance: null, channelId: null,
+		fileIds: [], attachedFileTypes: [], hasPoll: false, replyId: null, renoteId: null, threadId: null, replyUserId: null, replyUserHost: null,
+		renoteUserId: null, renoteUserHost: null, renoteChannelId: null, visibleUserIds: [], mentions: [], mentionedRemoteUsers: [],
+	}]);
 	expect(polls).toEqual([]);
-	expect(after).toEqual([{ userId: 'author' }]);
+	expect(after).toEqual([{ userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null }]);
 	// 本家 NoteCreateService.ts:704-726: 投票なしは transaction を使わない単独 insert。
 	expect(events).toEqual(['root:note', 'render:new:author', 'after']);
 });
@@ -124,7 +168,7 @@ test('rate executes before suspended, moved, scope and schema; factor<=0 skips r
 		events.push('insert');
 	}, insertPoll: async () => {} };
 	const dependencies = {
-		readOwnedFiles: async () => [], writes, transactions: { run: async <T>(work: (scope: NoteWrites) => Promise<T>) => work(writes) },
+		...noRelations, readOwnedFiles: async () => [], writes, transactions: { run: async <T>(work: (scope: NoteWrites) => Promise<T>) => work(writes) },
 		afterSaved: () => {}, newId: () => 'new', matchesWords,
 	};
 	const create = createCreateNote({
@@ -161,7 +205,7 @@ test('an insert failure is not retried and never renders or starts post-save wor
 	const writes: NoteWrites = { insertNote: async () => {
 		inserts++; throw new Error('DB outcome unknown');
 	}, insertPoll: async () => {} };
-	const create = createCreateNote({ readAuthor: async () => author, readOwnedFiles: async () => [], writes, transactions: { run: work => work(writes) }, afterSaved: () => {
+	const create = createCreateNote({ ...noRelations, readAuthor: async () => author, readOwnedFiles: async () => [], writes, transactions: { run: work => work(writes) }, afterSaved: () => {
 		events.push('after');
 	}, newId: () => 'new', limit: async () => {}, matchesWords });
 	await expect(create.createNote(actor, { text: 'hello' }, 123, async id => {
@@ -216,7 +260,7 @@ test('missing or foreign attachments are indistinguishable and save nothing', as
 // 本家 NoteCreateService.ts:300-420 の後に create() の 481-489 が来る。
 test.each([
 	[{ text: 'forbidden', fileIds: ['missing'], renoteId: 'x', poll: { choices: ['a', 'b'], expiresAt: 1 } }, 'NO_SUCH_FILE'],
-	[{ text: 'forbidden', fileIds: ['img'], renoteId: 'x', poll: { choices: ['a', 'b'], expiresAt: 1 } }, 'NOT_IMPLEMENTED'],
+	[{ text: 'forbidden', fileIds: ['img'], renoteId: 'x', poll: { choices: ['a', 'b'], expiresAt: 1 } }, 'NO_SUCH_RENOTE_TARGET'],
 	[{ text: 'forbidden', fileIds: ['img'], poll: { choices: ['a', 'b'], expiresAt: 1 }, channelId: 'x' }, 'CANNOT_CREATE_ALREADY_EXPIRED_POLL'],
 	[{ text: 'forbidden', poll: { choices: ['@probe', 'b'] } }, 'CONTAINS_PROHIBITED_WORDS'],
 	[{ text: 'fine', poll: { choices: ['@probe', 'b'] } }, 'NOT_IMPLEMENTED'],
@@ -263,4 +307,120 @@ test('a failing poll insert surfaces before rendering or post-save work', async 
 	const { createNote, events } = setup(author, { failPoll: true });
 	await expect(createNote({ text: 'poll', poll: { choices: ['a', 'b'] } })).rejects.toThrow('poll insert failed');
 	expect(events).toEqual(['begin', 'tx:note', 'tx:poll']);
+});
+
+const relationWorld: World = {
+	notes: [
+		related('public'), related('home', { visibility: 'home' }), related('local', { localOnly: true }),
+		related('followers', { visibility: 'followers' }), related('ownFollowers', { userId: 'author', visibility: 'followers' }),
+		related('specified', { visibility: 'specified', visibleUserIds: ['author'] }), related('ownSpecified', { userId: 'author', visibility: 'specified' }),
+		related('pure', { text: null, renoteId: 'public' }), related('quote', { text: null, renoteId: 'public', replyId: 'public' }),
+		related('blocker', { userId: 'blocker' }), related('closed', { channelId: 'closedCh' }), related('open', { channelId: 'openCh' }),
+		related('archivedNote', { channelId: 'archivedCh' }), related('orphan', { channelId: 'goneCh' }),
+		related('nested', { replyId: 'public', threadId: 'root' }), related('remote', { userId: 'remoteUser', userHost: 'remote.test' }),
+	],
+	blockings: [['blocker', 'author'], ['author', 'other']],
+	channels: [{ id: 'closedCh', allowRenoteToExternal: false }, { id: 'openCh', allowRenoteToExternal: true }, { id: 'archivedCh', allowRenoteToExternal: true, isArchived: true }],
+	remoteUsers: [{ id: 'remoteUser', uri: 'https://remote.test/users/r', username: 'r', host: 'remote.test' }],
+};
+
+// 本家 NoteCreateService.ts:320-420。Renote 対象→返信先→投票期限→channel の順に、最初の誤りを返す。
+test.each([
+	[{ renoteId: 'missing', replyId: 'missing' }, 'NO_SUCH_RENOTE_TARGET'],
+	[{ renoteId: 'pure', text: 'quote' }, 'CANNOT_RENOTE_TO_A_PURE_RENOTE'],
+	[{ renoteId: 'blocker' }, 'YOU_HAVE_BEEN_BLOCKED'],
+	[{ renoteId: 'blocker', text: 'quote' }, 'YOU_HAVE_BEEN_BLOCKED'],
+	[{ renoteId: 'followers' }, 'CANNOT_RENOTE_DUE_TO_VISIBILITY'],
+	[{ renoteId: 'ownSpecified' }, 'CANNOT_RENOTE_DUE_TO_VISIBILITY'],
+	[{ renoteId: 'closed', text: 'quote' }, 'CANNOT_RENOTE_OUTSIDE_OF_CHANNEL'],
+	[{ renoteId: 'closed', channelId: 'openCh' }, 'CANNOT_RENOTE_OUTSIDE_OF_CHANNEL'],
+	[{ renoteId: 'orphan' }, 'NO_SUCH_CHANNEL'],
+	[{ renoteId: 'public', replyId: 'missing' }, 'NO_SUCH_REPLY_TARGET'],
+	[{ replyId: 'pure', text: 'x' }, 'CANNOT_REPLY_TO_A_PURE_RENOTE'],
+	[{ replyId: 'followers', text: 'x' }, 'CANNOT_REPLY_TO_AN_INVISIBLE_NOTE'],
+	[{ replyId: 'specified', text: 'x' }, 'CANNOT_REPLY_TO_SPECIFIED_VISIBILITY_NOTE_WITH_EXTENDED_VISIBILITY'],
+	[{ replyId: 'blocker', text: 'x' }, 'YOU_HAVE_BEEN_BLOCKED'],
+	[{ replyId: 'missing', text: 'x', poll: { choices: ['a', 'b'], expiresAt: 1 } }, 'NO_SUCH_REPLY_TARGET'],
+	[{ text: 'x', poll: { choices: ['a', 'b'], expiresAt: 1 }, channelId: 'missing' }, 'CANNOT_CREATE_ALREADY_EXPIRED_POLL'],
+	[{ text: 'forbidden', channelId: 'archivedCh' }, 'NO_SUCH_CHANNEL'],
+	[{ replyId: 'public', text: 'x', channelId: 'missing' }, 'NO_SUCH_CHANNEL'],
+] as const)('relation checks %j fail with %s before saving', async (input, code) => {
+	const { createNote, notes } = setup({ ...author, prohibitedWords: ['forbidden'] }, { world: relationWorld });
+	await expect(createNote(input)).rejects.toMatchObject({ code });
+	expect(notes).toEqual([]);
+});
+
+// 本家 NoteEntityService.isVisibleForMe と NoteCreateService.ts:338-349。逆方向のブロックは見ない。
+test.each([
+	[{ replyId: 'followers', text: 'x' }, { followings: [['author', 'other']] }],
+	[{ replyId: 'followers', text: 'x' }, { notes: [related('followers', { visibility: 'followers', mentions: ['author'] })] }],
+	[{ replyId: 'ownFollowers', text: 'x' }, {}],
+	[{ renoteId: 'ownFollowers' }, {}],
+	[{ renoteId: 'public', replyId: 'public' }, { blockings: [['author', 'other']] }],
+	[{ replyId: 'quote', text: 'x' }, {}],
+] as const)('relation %j is accepted with %j', async (input, extra) => {
+	const { createNote, notes } = setup(author, { world: { ...relationWorld, ...extra } as World });
+	await createNote(input);
+	expect(notes).toHaveLength(1);
+});
+
+// 本家 NoteCreateService.ts:449-570。channel の強制の後で Renote 対象→返信先の順に公開範囲を狭め、localOnly は channel なしのときだけ継承する。
+test.each([
+	[{ renoteId: 'home' }, { visibility: 'home', localOnly: false, channelId: null }],
+	[{ renoteId: 'ownFollowers', visibility: 'home' }, { visibility: 'followers', localOnly: false, channelId: null }],
+	[{ replyId: 'ownSpecified', text: 'x', visibility: 'specified' }, { visibility: 'specified', visibleUserIds: ['author'], mentions: [] }],
+	[{ replyId: 'local', text: 'x' }, { localOnly: true }],
+	[{ renoteId: 'local' }, { localOnly: true }],
+	[{ renoteId: 'home', channelId: 'openCh', visibility: 'specified' }, { visibility: 'home', localOnly: true, channelId: 'openCh' }],
+	[{ replyId: 'open', text: 'x', channelId: 'closedCh' }, { channelId: 'openCh', localOnly: true, visibility: 'public', threadId: 'open' }],
+	[{ replyId: 'public', text: 'x', channelId: 'openCh' }, { channelId: null, localOnly: false }],
+	[{ replyId: 'archivedNote', text: 'x' }, { channelId: 'archivedCh', localOnly: true }],
+	[{ text: 'needle', channelId: 'openCh' }, { visibility: 'public', channelId: 'openCh' }],
+	[{ renoteId: 'open' }, { channelId: null, localOnly: false, renoteChannelId: 'openCh' }],
+	[{ renoteId: 'public', text: '   ' }, { text: null, renoteId: 'public', mentions: [] }],
+	[{ replyId: 'nested', text: 'x' }, { threadId: 'root', replyUserId: 'other', mentions: ['other'] }],
+	[{ text: 'x', visibleUserIds: ['someone'] }, { visibility: 'public', visibleUserIds: [] }],
+	[{ text: 'x', visibility: 'specified', visibleUserIds: ['someone'], channelId: 'openCh' }, { visibility: 'public', visibleUserIds: [] }],
+] as const)('input %j is corrected to %j', async (input, expected) => {
+	const { createNote, notes } = setup({ ...author, sensitiveWords: ['needle'] }, { world: relationWorld });
+	await createNote(input);
+	expect(notes[0]).toMatchObject(expected);
+});
+
+test('a reply to a remote author stores the remote mention and denormalized reply and Renote columns', async () => {
+	const { createNote, notes, polls } = setup(author, { world: relationWorld });
+	await createNote({ replyId: 'remote', renoteId: 'open', channelId: 'openCh', poll: { choices: ['a', 'b'] } });
+	expect(notes[0]).toMatchObject({
+		replyId: 'remote', renoteId: 'open', threadId: 'remote', replyUserId: 'remoteUser', replyUserHost: 'remote.test', renoteUserId: 'other',
+		renoteUserHost: null, renoteChannelId: 'openCh', channelId: null, mentions: ['remoteUser'],
+		mentionedRemoteUsers: [{ uri: 'https://remote.test/users/r', username: 'r', host: 'remote.test' }],
+	});
+	expect(polls[0]).toMatchObject({ noteVisibility: 'public', channelId: null });
+});
+
+// 本家 NoteCreateService.ts:611-613,629-632: 返信先の作者もメンション数に数える。
+test('the reply author counts toward the mention limit', async () => {
+	const { createNote, notes } = setup({ ...author, mentionLimit: 0 }, { world: relationWorld });
+	await expect(createNote({ replyId: 'public', text: 'x' })).rejects.toMatchObject({ code: 'CONTAINS_TOO_MANY_MENTIONS' });
+	await createNote({ replyId: 'ownFollowers', text: 'x' });
+	expect(notes).toHaveLength(1);
+});
+
+test('specified recipients stay unimplemented until they can be resolved', async () => {
+	const { createNote, notes } = setup(author, { world: relationWorld });
+	await expect(createNote({ text: 'x', visibility: 'specified', visibleUserIds: ['someone'] })).rejects.toMatchObject({ code: 'NOT_IMPLEMENTED' });
+	expect(notes).toEqual([]);
+});
+
+// 本家 NoteCreateService.ts:786-788,815-817,927-944。
+test.each([
+	[author, { replyId: 'public', renoteId: 'home', channelId: 'openCh' }, { repliedNoteId: 'public', renotedNoteId: 'home', channelId: null }],
+	[author, { renoteId: 'ownFollowers' }, { repliedNoteId: null, renotedNoteId: null }],
+	[{ ...author, isBot: true }, { renoteId: 'public' }, { renotedNoteId: null }],
+	[{ ...author, isBot: true }, { replyId: 'public', text: 'x' }, { repliedNoteId: 'public' }],
+	[author, { replyId: 'open', text: 'x' }, { repliedNoteId: 'open', channelId: 'openCh' }],
+] as const)('post-save counts for %j and %j', async (facts, input, expected) => {
+	const { createNote, after } = setup(facts, { world: relationWorld });
+	await createNote(input);
+	expect(after).toEqual([expect.objectContaining({ userId: 'author', ...expected })]);
 });

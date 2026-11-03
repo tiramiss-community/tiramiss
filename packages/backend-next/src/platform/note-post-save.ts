@@ -8,6 +8,14 @@ import type { Logger } from './logger.js';
 
 export function createNotePostSave(run: (input: NotePostSaveInput) => Promise<void>, logger: Logger) {
 	const pending = new Set<Promise<void>>();
+
+	// 待つ間に開始された処理も待つ。
+	async function idle(): Promise<void> {
+		while (pending.size > 0) {
+			await Promise.all([...pending]);
+		}
+	}
+
 	return {
 		start(input: NotePostSaveInput): void {
 			const work = setImmediate().then(() => run(input)).catch(error => {
@@ -16,8 +24,8 @@ export function createNotePostSave(run: (input: NotePostSaveInput) => Promise<vo
 			pending.add(work);
 			void work.then(() => pending.delete(work));
 		},
-		async close(): Promise<void> {
-			await Promise.all([...pending]);
-		},
+		// 開始済みの後続処理がすべて終わるまで待つ。
+		idle,
+		close: idle,
 	};
 }

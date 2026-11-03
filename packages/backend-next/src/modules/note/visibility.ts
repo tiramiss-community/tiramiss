@@ -38,7 +38,7 @@ export function shouldHideNote(note: NoteFacts, author: AuthorFacts, viewerId: s
 }
 
 // 作成対象の可視性と出力のhiddenは、本家でも別の判定を使う。
-export function isVisibleForViewer(note: NoteFacts, viewer: { id: string; host: string | null } | null, following: boolean): boolean {
+export function isVisibleForViewer(note: Pick<NoteFacts, 'visibility' | 'userId' | 'userHost' | 'visibleUserIds' | 'replyUserId' | 'mentions'>, viewer: { id: string; host: string | null } | null, following: boolean): boolean {
 	if (note.visibility === 'specified') {
 		return viewer !== null && (viewer.id === note.userId || note.visibleUserIds.includes(viewer.id));
 	}

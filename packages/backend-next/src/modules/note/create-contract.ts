@@ -39,7 +39,9 @@ export interface NoteCreateAuthor {
 	host: string | null;
 	isSuspended: boolean;
 	movedToUri: string | null;
+	isBot: boolean;
 	canPublicNote: boolean;
+	mentionLimit: number;
 	rateLimitFactor: number;
 	sensitiveWords: string[];
 	prohibitedWords: string[];
@@ -48,6 +50,39 @@ export interface NoteCreateAuthor {
 export interface NoteAttachableFile {
 	id: string;
 	type: string;
+}
+
+// 返信先・Renote 対象の判定と非正規化列に使う値。保存済みの pure Renote 判定のため本文の有無も持つ。
+export interface RelatedNote {
+	id: string;
+	userId: string;
+	userHost: string | null;
+	text: string | null;
+	cw: string | null;
+	fileIds: string[];
+	hasPoll: boolean;
+	replyId: string | null;
+	renoteId: string | null;
+	threadId: string | null;
+	channelId: string | null;
+	visibility: NoteVisibility;
+	visibleUserIds: string[];
+	mentions: string[];
+	replyUserId: string | null;
+	localOnly: boolean;
+}
+
+export interface RelatedChannel {
+	id: string;
+	allowRenoteToExternal: boolean;
+}
+
+// 本家 Note.mentionedRemoteUsers の要素。url は profile に無ければキーごと省く。
+export interface MentionedRemoteUser {
+	uri: string;
+	url?: string;
+	username: string;
+	host: string;
 }
 
 export interface NewNote {
@@ -63,6 +98,17 @@ export interface NewNote {
 	fileIds: string[];
 	attachedFileTypes: string[];
 	hasPoll: boolean;
+	replyId: string | null;
+	renoteId: string | null;
+	threadId: string | null;
+	replyUserId: string | null;
+	replyUserHost: string | null;
+	renoteUserId: string | null;
+	renoteUserHost: string | null;
+	renoteChannelId: string | null;
+	visibleUserIds: string[];
+	mentions: string[];
+	mentionedRemoteUsers: MentionedRemoteUser[];
 }
 
 export interface NewPoll {
@@ -85,6 +131,10 @@ export interface NoteWrites {
 // Note 全体を渡すと後続処理が DB の読み直しや描画用の値に依存するため、加算の判断に使う値だけを渡す。
 export interface NotePostSaveInput {
 	userId: string;
+	// 加算の要否は作成時の事実で決まるため、後続処理では判断し直さず ID の有無だけを見る。
+	repliedNoteId: string | null;
+	renotedNoteId: string | null;
+	channelId: string | null;
 }
 
 export type NoteCreateErrorCode =
