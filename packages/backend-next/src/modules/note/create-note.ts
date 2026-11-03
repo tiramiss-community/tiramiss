@@ -353,6 +353,7 @@ export function createCreateNote(dependencies: {
 					// 本家は自分の Note の Renote と bot による Renote を数えない。返信は bot・自分宛てでも数える。
 					renotedNoteId: related.renote !== null && related.renote.userId !== author.id && !author.isBot ? related.renote.id : null,
 					channelId: note.channelId,
+					pollExpiresAtMs: poll?.expiresAtMs ?? null,
 				});
 			}
 		},

@@ -25,6 +25,7 @@
 		"typeorm": "1.1.1",
 		"pg": "8.23.1",
 		"ioredis": "5.11.1",
+		"bullmq": "6.3.11",
 		"reflect-metadata": "0.2.2",
 		"js-yaml": "5.4.2",
 		"hono": "4.13.13",

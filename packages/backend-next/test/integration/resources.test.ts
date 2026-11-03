@@ -35,13 +35,51 @@ test('fails fast on an unavailable Redis without retaining database connections'
 	expect(rows[0].count).toBe(1);
 	await check.close();
 });
+test('fails fast on an unavailable job queue Redis without retaining database connections', async () => {
+	await expect(
+		connectResources({ ...database.config, redisForJobQueue: { ...database.config.redisForJobQueue, port: 1 } }, logger),
+	).rejects.toThrow();
+	const check = await connectResources(database.config, logger);
+	const rows = await check.dataSource.query(
+		'SELECT count(*)::int AS count FROM pg_stat_activity WHERE datname = current_database()',
+	);
+	expect(rows[0].count).toBe(1);
+	await check.close();
+});
+
+test('reports loss of the job queue connection and closes it normally without a report', async () => {
+	const { Redis } = await import('ioredis');
+	const { randomUUID } = await import('node:crypto');
+	const connectionName = `job-queue-${randomUUID()}`;
+	const control = new Redis(database.config.redis);
+	const resources = await connectResources({ ...database.config, redisForJobQueue: { ...database.config.redisForJobQueue, connectionName } }, logger);
+	try {
+		const line = String(await control.client('LIST')).split('\n').find(entry => entry.includes(`name=${connectionName} `));
+		expect(line).toBeDefined();
+		await control.client('KILL', 'ID', line!.match(/^id=(\d+)/)![1]);
+		expect((await resources.failure).message).toContain('JOB_QUEUE_REDIS_ENDED');
+	} finally {
+		await resources.close();
+		control.disconnect();
+	}
+
+	const healthy = await connectResources(database.config, logger);
+	let reported = false;
+	void healthy.failure.then(() => {
+		reported = true;
+	});
+	await healthy.close();
+	await new Promise(resolve => setTimeout(resolve, 50));
+	expect(reported).toBe(false);
+});
+
 test('fails on unavailable database before opening Redis', async () => {
 	await expect(
 		connectResources({ ...database.config, database: { ...database.config.database, port: 1 } }, logger),
 	).rejects.toThrow();
 });
 
-test.each(['redis', 'redisForPubsub', 'redisForReactions'] as const)('rejects and cleans up before startup deadline when %s accepts TCP but never responds', async redisField => {
+test.each(['redis', 'redisForPubsub', 'redisForReactions', 'redisForJobQueue'] as const)('rejects and cleans up before startup deadline when %s accepts TCP but never responds', async redisField => {
 	const sockets = new Set<import('node:net').Socket>();
 	const server = createServer({ allowHalfOpen: true }, (socket) => {
 		socket.resume();

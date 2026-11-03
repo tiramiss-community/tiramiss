@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { expect, test } from 'vitest';
-import { createNotePostSave } from '../../../src/platform/note-post-save.js';
+import { createNotePostSave, createNotePostSaveWork } from '../../../src/platform/note-post-save.js';
 import { createLogger } from '../../../src/platform/logger.js';
 
 test('post-save failure is logged, does not escape to HTTP, and shutdown waits for started work', async () => {
@@ -20,8 +20,8 @@ test('post-save failure is logged, does not escape to HTTP, and shutdown waits f
 		}
 		updated.push(userId);
 	}, createLogger('test', line => logs.push(line)));
-	effects.start({ noteId: 'n1', userId: 'saved', repliedNoteId: null, renotedNoteId: null, channelId: null });
-	effects.start({ noteId: 'n2', userId: 'broken', repliedNoteId: 'replied', renotedNoteId: 'renoted', channelId: 'channel' });
+	effects.start({ noteId: 'n1', userId: 'saved', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: null });
+	effects.start({ noteId: 'n2', userId: 'broken', repliedNoteId: 'replied', renotedNoteId: 'renoted', channelId: 'channel', pollExpiresAtMs: null });
 	let closed = false;
 	const closing = effects.close().then(() => {
 		closed = true;
@@ -45,13 +45,13 @@ test('idle waits for post-save work started while it is waiting', async () => {
 	const finished: string[] = [];
 	const effects = createNotePostSave(async ({ userId }) => {
 		if (userId === 'first') {
-			effects.start({ noteId: 'n2', userId: 'second', repliedNoteId: null, renotedNoteId: null, channelId: null });
+			effects.start({ noteId: 'n2', userId: 'second', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: null });
 		} else {
 			await second;
 		}
 		finished.push(userId);
 	}, createLogger('test', () => {}));
-	effects.start({ noteId: 'n1', userId: 'first', repliedNoteId: null, renotedNoteId: null, channelId: null });
+	effects.start({ noteId: 'n1', userId: 'first', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: null });
 	let idle = false;
 	const waiting = effects.idle().then(() => {
 		idle = true;
@@ -62,4 +62,43 @@ test('idle waits for post-save work started while it is waiting', async () => {
 	releaseSecond();
 	await waiting;
 	expect(finished).toEqual(['first', 'second']);
+});
+
+test('poll enqueue failure is logged with the note and deadline, and does not skip or fail on counts', async () => {
+	const logs: string[] = [];
+	const counted: string[] = [];
+	const effects = createNotePostSave(createNotePostSaveWork({
+		counts: async ({ noteId }) => {
+			counted.push(noteId);
+		},
+		schedulePollEnded: async () => {
+			throw new Error('queue unavailable');
+		},
+		currentTime: () => 1000,
+	}), createLogger('test', line => logs.push(line)));
+	effects.start({ noteId: 'n1', userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: 61000 });
+	await effects.idle();
+
+	expect(counted).toEqual(['n1']);
+	expect(logs.map(line => JSON.parse(line)).filter(line => line.event === 'note-post-save.failed')).toEqual([expect.objectContaining({
+		noteId: 'n1', userId: 'author', pollExpiresAtMs: 61000,
+		error: expect.objectContaining({ code: 'NOTE_POST_SAVE_FAILED', details: { failures: [{ step: 'pollEnded', error: { name: 'Error' } }] } }),
+	})]);
+});
+
+test('counts failure does not prevent the poll-ended job from being enqueued with the remaining delay', async () => {
+	const scheduled: unknown[] = [];
+	const work = createNotePostSaveWork({
+		counts: async () => {
+			throw new Error('count unavailable');
+		},
+		schedulePollEnded: async job => {
+			scheduled.push(job);
+		},
+		currentTime: () => 1000,
+	});
+	await expect(work({ noteId: 'n1', userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: 500 }))
+		.rejects.toMatchObject({ code: 'NOTE_POST_SAVE_FAILED', details: { failures: [expect.objectContaining({ step: 'counts' })] } });
+	// 期限を過ぎていても本家どおり負の遅延のまま投入する。
+	expect(scheduled).toEqual([{ noteId: 'n1', delayMs: -500 }]);
 });

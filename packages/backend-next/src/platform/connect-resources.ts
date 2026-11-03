@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Redis } from 'ioredis';
-import { createNotePostSave } from './note-post-save.js';
+import { createNotePostSave, createNotePostSaveWork } from './note-post-save.js';
+import { createPollEndedQueue, ENDED_POLL_NOTIFICATION } from './job-queue/ended-poll-notification.js';
 import { createNotePostSaveCounts } from './database/note-post-save-counts.js';
 import { openRoleMaterials } from './role-materials.js';
 import { createRoleMaterialReader } from './database/role-materials.js';
@@ -150,7 +151,26 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 
-		const notePostSave = createNotePostSave(createNotePostSaveCounts(dataSource.manager), logger);
+		// 本家と同じくどの子も投入口を持つ。後続処理より先に登録し、後続処理の完了を待ってから閉じる。
+		const pollEndedQueue = createPollEndedQueue({
+			redis: config.redisForJobQueue, connectTimeoutMs: config.processes.startupTimeoutMs, logger,
+			onLost: () => {
+				if (active && !closing) {
+					reportFailure(new DiagnosticError('JOB_QUEUE_REDIS_ENDED', { queue: ENDED_POLL_NOTIFICATION }));
+				}
+			},
+		});
+		scope.defer(pollEndedQueue.close);
+		await pollEndedQueue.ready();
+		if (cancelled) {
+			throw timeout;
+		}
+
+		const notePostSave = createNotePostSave(createNotePostSaveWork({
+			counts: createNotePostSaveCounts(dataSource.manager),
+			schedulePollEnded: pollEndedQueue.schedule,
+			currentTime: Date.now,
+		}), logger);
 		scope.defer(notePostSave.close);
 
 		active = true;

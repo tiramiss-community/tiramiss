@@ -3,8 +3,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { setImmediate } from 'node:timers/promises';
+import { DiagnosticError } from './diagnostic-error.js';
 import type { NotePostSaveInput } from '../modules/note/public.js';
 import type { Logger } from './logger.js';
+
+/** 本家 NoteCreateService.postNoteCreated のうち、実装済みの後続処理をまとめる。 */
+export function createNotePostSaveWork(steps: {
+	counts(input: NotePostSaveInput): Promise<void>;
+	schedulePollEnded(job: { noteId: string; delayMs: number }): Promise<void>;
+	currentTime(): number;
+}) {
+	return async (input: NotePostSaveInput): Promise<void> => {
+		const work = new Map<string, Promise<void>>([['counts', steps.counts(input)]]);
+		if (input.pollExpiresAtMs !== null) {
+			// 本家どおり後続処理の開始時刻から遅延を決める。期限を過ぎていても負の遅延のまま投入し、BullMQ はすぐに実行する。
+			work.set('pollEnded', steps.schedulePollEnded({ noteId: input.noteId, delayMs: input.pollExpiresAtMs - steps.currentTime() }));
+		}
+
+		// 本家の加算と投入は互いに独立しているため、1 つの失敗で他を省かない。
+		const names = [...work.keys()];
+		const results = await Promise.allSettled(work.values());
+		const failures = results.flatMap((result, index) => result.status === 'rejected' ? [{ step: names[index], error: result.reason }] : []);
+		if (failures.length > 0) {
+			throw new DiagnosticError('NOTE_POST_SAVE_FAILED', { failures });
+		}
+	};
+}
 
 export function createNotePostSave(run: (input: NotePostSaveInput) => Promise<void>, logger: Logger) {
 	const pending = new Set<Promise<void>>();
@@ -19,7 +43,7 @@ export function createNotePostSave(run: (input: NotePostSaveInput) => Promise<vo
 	return {
 		start(input: NotePostSaveInput): void {
 			const work = setImmediate().then(() => run(input)).catch(error => {
-				// 加算の欠けた行を後から補えるよう、対象の ID をすべて残す。
+				// 加算の欠けた行や投入されなかった投票終了ジョブを後から補えるよう、対象の ID と期限をすべて残す。
 				logger.error('note-post-save.failed', { error, ...input });
 			});
 			pending.add(work);

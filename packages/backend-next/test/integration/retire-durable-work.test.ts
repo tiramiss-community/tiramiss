@@ -51,11 +51,20 @@ beforeEach(async () => {
 	await source.query(`INSERT INTO backend_internal.notification_effect(request_id,recipient_id,notification_type,notification_id,formed_at,charged_bytes)
 		VALUES ('request','recipient','renote','notification',now(),2048)`);
 });
-afterEach(async () => {
-	const [latest] = await source.query('SELECT name FROM backend_internal.migrations ORDER BY id DESC LIMIT 1');
-	if (latest.name.startsWith('RetireDurableWork')) {
+
+// Undo the retirement and every migration added after it, returning to the schema shipped by PR #212.
+async function undoRetirement() {
+	for (;;) {
+		const [latest] = await source.query('SELECT name FROM backend_internal.migrations ORDER BY id DESC LIMIT 1');
+		if (latest.name.startsWith('ApHostLease')) {
+			return;
+		}
 		await internal.undoLastMigration();
 	}
+}
+
+afterEach(async () => {
+	await undoRetirement();
 });
 afterAll(async () => {
 	await internal?.destroy();
@@ -108,7 +117,7 @@ test.each(blockers)('refuses unresolved %s state even after its deadline, withou
 test('down restores empty legacy tables and accounts for retained notifications; up remains repeatable', async () => {
 	const before = await bodies();
 	await internal.runMigrations();
-	await internal.undoLastMigration();
+	await undoRetirement();
 	expect(await bodies()).toEqual(before);
 	expect(await source.query('SELECT count(*)::int AS count FROM backend_internal.work_request')).toEqual([{ count: 0 }]);
 	expect(await source.query('SELECT count(*)::int AS count FROM backend_internal.notification_effect')).toEqual([{ count: 0 }]);
