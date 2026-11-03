@@ -15,3 +15,5 @@ export { createSignedPostSender } from './signed-post.js';
 export type { SignedPost } from './signed-post.js';
 export { deliverySucceeded, classifyDeliveryFailure } from './delivery-result.js';
 export type { DeliveryFailure } from './delivery-result.js';
+export { isPureRenote, renderApNote, renderNoteActivity } from './note-activity.js';
+export type { NoteActivityMaterials, NoteActivityNote, ApDocumentFacts, ApEmojiFacts } from './note-activity.js';

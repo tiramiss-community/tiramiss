@@ -13,13 +13,26 @@ export interface NoteMediaOptions {
 	createdAtFromId(id: string): number;
 }
 
+function query(params: Record<string, string>): string {
+	return Object.entries(params).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+}
+
+/** 本家 DriveFileEntityService.getPublicUrl（mode なし）。 */
+export function publicFileUrl(file: MiDriveFile, proxyRemoteFiles: boolean, options: Pick<NoteMediaOptions, 'url' | 'mediaProxy' | 'externalMediaProxyEnabled'>): string {
+	if (file.uri !== null && file.userHost !== null && options.externalMediaProxyEnabled) {
+		return `${options.mediaProxy}/image.webp?${query({ url: file.uri })}`;
+	}
+	if (file.uri !== null && file.isLink && proxyRemoteFiles && file.webpublicAccessKey && !file.webpublicAccessKey.includes('/')) {
+		return `${options.url}/files/${file.webpublicAccessKey}`;
+	}
+	return file.webpublicUrl ?? file.url;
+}
+
 export function noteFileView(file: MiDriveFile, proxyRemoteFiles: boolean, options: NoteMediaOptions): JsonObject {
-	const query = (params: Record<string, string>) => Object.entries(params).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
 	const proxied = (url: string) => `${options.mediaProxy ?? `${options.url}/proxy`}/static.webp?${query({ url, static: '1' })}`;
 	const isExternal = file.uri !== null && file.userHost !== null && options.externalMediaProxyEnabled;
 	const isExpired = file.uri !== null && file.isLink && proxyRemoteFiles;
-	const publicUrl = isExternal ? `${options.mediaProxy}/image.webp?${query({ url: file.uri! })}`
-		: isExpired && file.webpublicAccessKey && !file.webpublicAccessKey.includes('/') ? `${options.url}/files/${file.webpublicAccessKey}` : file.webpublicUrl ?? file.url;
+	const publicUrl = publicFileUrl(file, proxyRemoteFiles, options);
 	const properties = { ...file.properties };
 	if (properties.orientation != null) {
 		if (properties.orientation >= 5) {
