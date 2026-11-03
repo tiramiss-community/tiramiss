@@ -8,14 +8,14 @@
 
 - 本家: `8e07cf085adf7009583d234a208e30436f020e26`。`backend-upstream/upstream-sync.json` と同じ SHA。fork の現在の `packages/backend` からは列挙しない。
 - 新実装: `6f62cb897d2a03e8fd7727eadf45c20d8bfcf206`（PR #213 マージ後）。判定と根拠はこの地点に固定する。
-  - 行の `implementation`/`verification` は `domains.json` の `implementationCommit` の木で存在を検査する。#216 の最初の PR で外向き HTTP の行の根拠を参照できるよう `224416b352fa474a37fb286cd4838d8818947fc8` へ、#215 段階 2 の PR で連合の共通土台の行の根拠も参照できるよう、両方を含む `36cad9edcbfd2b990d36b2f6645b677b1e54f0e4` へ、#160 の最初の PR で AP の署名・配送結果の分類の行の根拠も参照できるよう `02612df99fe3c529fc692d76b3bd37498a2e0e1a` へ進めた。監査の判定（`audit`）はこの更新で変えていない。
+  - 行の `implementation`/`verification` は `domains.json` の `implementationCommit` の木で存在を検査する。#216 の最初の PR で外向き HTTP の行の根拠を参照できるよう `224416b352fa474a37fb286cd4838d8818947fc8` へ、#215 段階 2 の PR で連合の共通土台の行の根拠も参照できるよう、両方を含む `36cad9edcbfd2b990d36b2f6645b677b1e54f0e4` へ、#160 の最初の PR で AP の署名・配送結果の分類の行の根拠も参照できるよう `02612df99fe3c529fc692d76b3bd37498a2e0e1a` へ、#162 の最初の PR で投票終了ジョブと通常 worker の行の根拠も参照できるよう `00c6b5b75ddcf4bb9e5e79291e2f54a9dd4933e4` へ進めた。監査の判定（`audit`）はこの更新で変えていない。
 - 対象: 登録 API と非 API HTTP、WebSocket、AP 受信/公開/送信、業務保存・副作用、job/周期処理、CLI/運用。fork 固有機能は対象外。固定本家の機能を一括で見送らない。
 
 ## 現在の到達点
 
 Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装・本家比較資料・HTTP/受け入れテストに接続済み。これを `verified`（検証根拠あり）とする。他の Role API は未実装。根拠は [Role 比較資料](../role/README.md)、[#115](https://github.com/tiramiss-community/tiramiss/issues/115) と #116–#121。
 
-`notes/show` は固定本家の観測 JSON と照合済みで `verified`。`notes/create` は基本 text だけを実装した `partial` で、添付・投票・返信等は #170 まで保存前に 501 で拒否する。PG 通知保存と起動・migration の基盤は `partial`。旧 PG ジョブ基盤と AP 宛先 snapshot/page/host lease は PR #212/#213 で撤去したため、AP 送信とジョブ管理は `not_implemented` に戻した。**通常 worker は業務 handler 未接続で、AP 送信は通常起動から呼ばれない。** #160 の最初の PR で、AP の署名・署名付き送信・配送結果の分類を本家と比較して `partial` にした。配送前の判定・インスタンス台帳・ジョブへの接続は、配送を接続する PR（#162・#171）が持つ。 部分実装から公開機能全体の完成を推測しない。
+`notes/show` は固定本家の観測 JSON と照合済みで `verified`。`notes/create` は基本 text だけを実装した `partial` で、添付・投票・返信等は #170 まで保存前に 501 で拒否する。PG 通知保存と起動・migration の基盤は `partial`。旧 PG ジョブ基盤と AP 宛先 snapshot/page/host lease は PR #212/#213 で撤去したため、AP 送信とジョブ管理は `not_implemented` に戻した。**通常 worker は #162 の最初の PR で本家の投票終了ジョブ（`endedPollNotification`）だけを実行し、AP 送信は通常起動から呼ばれない。** 投票終了ジョブの投入・queue と Worker の設定・受信者の選定と PG への保存は本家 probe と比較して `partial` にした（[比較資料](../poll-ended/README.md)）。 #160 の最初の PR で、AP の署名・署名付き送信・配送結果の分類を本家と比較して `partial` にした。配送前の判定・インスタンス台帳・ジョブへの接続は、配送を接続する PR（#171）が持つ。 部分実装から公開機能全体の完成を推測しない。
 
 それ以外の入口は `not_implemented`（未実装）。これは見送りではなく、担当 Issue による設計・実装・比較が必要な状態。今回の検査は棚卸しの整合性検査であり、各 HTTP/連合機能の比較テストを再実行して `verified` を付けたものではない。
 
@@ -85,7 +85,7 @@ Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装
 ## 対応順と依存の扱い
 
 1. 投稿は #167（比較契約）・#168（show）・#169（基本作成）まで完了。次は #170（関連入力）。既存トークンによる参照は全ログイン/トークン発行の移植を待たせない。
-2. 実配送は #160（署名 HTTP）と #162（通常 worker）を、必要な実仕事（#171/#172）と合わせて接続する。縦断比較は #176。#159/#161/#166 は追加保証として保留し、初期完成の依存にしない。
+2. 実配送は #160（署名 HTTP）と #162（通常 worker。投票終了ジョブで接続済み）の上に、必要な実仕事（#171/#172）と合わせて接続する。縦断比較は #176。#159/#161/#166 は追加保証として保留し、初期完成の依存にしない。
 3. 次にユーザーの取得と関係 facts、一覧/TL、通知/streamを接続すると、投稿→閲覧→通知まで使える範囲を増やせる。公開情報・ユーザー参照・検索の設計は独立した部分から進めてよい。
 4. Drive の外部保存やアカウント削除等は #130 の機能別回復設計を先に切り出す。#130を全参照 API の一括 blocker にしない。派生状態の通常更新は #174、正本/再構築は #132/#133、TL/検索の閲覧は各領域が所有する。
 5. 認証発行、social graph、AP inboundは、狭い facts・署名/remote解決・個別activityを下位 Issue に分ける。親領域同士の全完了を相互に要求する循環を作らない。
@@ -274,9 +274,9 @@ PG保存と分けて全通知条件、一覧/grouping/cursor/未読/既読/flush
 - 正本/保存: 本家Redis通知/未読 / 新PG notification。
 - 副作用: stream・push配信・遅延未読処理。
 - 本家: [NotificationService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/NotificationService.ts)、[PushNotificationService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/PushNotificationService.ts)。
-- 新実装: [persistence.ts](../../../../packages/backend-next/src/platform/database/notification/persistence.ts)。
-- 検証根拠: [notification.test.ts](../../../../packages/backend-next/test/integration/notification.test.ts)。
-- 既知差異: 本家Redis StreamからPG保存へ変更（ユーザー承認済み）。effect/容量課金への依存はPR #213で撤去。閲覧/既読/移行は#177。
+- 新実装: [persistence.ts](../../../../packages/backend-next/src/platform/database/notification/persistence.ts)、[poll-ended.ts](../../../../packages/backend-next/src/modules/notification/poll-ended.ts)。
+- 検証根拠: [notification.test.ts](../../../../packages/backend-next/test/integration/notification.test.ts)、[poll-ended-job.test.ts](../../../../packages/backend-next/test/integration/poll-ended-job.test.ts)。
+- 既知差異: 本家Redis StreamからPG保存へ変更（ユーザー承認済み）。effect/容量課金への依存はPR #213で撤去。閲覧/既読/移行は#177。pollEndedは#162で通知元なしのPG保存まで接続（配信は#173）。
 
 <a id="domain-drive"></a>
 
@@ -484,9 +484,9 @@ chart各系列/retention/statsと集計/tick/resync/clean、履歴的countと復
 - 正本/保存: BullMQ/Redisのqueue状態 / ModerationLog。
 - 副作用: pause/resume/retry/promote/remove/clean・監査。
 - 本家: [QueueService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/QueueService.ts)、[show-job.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/server/api/endpoints/admin/queue/show-job.ts)。
-- 新実装: 未実装。
-- 検証根拠: 未接続。担当 Issue で固定本家との比較 fixture と受け入れを追加。
-- 既知差異: 独自PG実行基盤（依頼/claim/復旧）はPR #212/#213で撤去。
+- 新実装: [connection.ts](../../../../packages/backend-next/src/platform/job-queue/connection.ts)、[ended-poll-notification.ts](../../../../packages/backend-next/src/platform/job-queue/ended-poll-notification.ts)。
+- 検証根拠: [poll-ended-job.test.ts](../../../../packages/backend-next/test/integration/poll-ended-job.test.ts)。
+- 既知差異: 独自PG実行基盤（依頼/claim/復旧）はPR #212/#213で撤去。#162で通常BullMQのQueue/Workerを投票終了ジョブから接続。Redis接続は再接続せず、稼働中の切断を子の異常終了にする（本家はioredisの既定で再接続）。管理API・QueueStatsは未実装。
 
 <a id="domain-operations"></a>
 
@@ -500,7 +500,7 @@ Supervisor/HTTP/worker・設定/DB/Redis・migration/check・CLI・healthz・配
 - 本家: [cli.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/boot/cli.ts)、[HealthServerService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/server/HealthServerService.ts)。
 - 新実装: [supervisor.ts](../../../../packages/backend-next/src/processes/supervisor.ts)、[lifecycle.ts](../../../../packages/backend-next/src/processes/lifecycle.ts)、[migrate.ts](../../../../packages/backend-next/src/platform/database/migrate.ts)。
 - 検証根拠: [children.test.ts](../../../../packages/backend-next/test/processes/children.test.ts)。
-- 既知差異: 本家/独自migration分離、通常起動時自動migrationなし、完全停止切り替え。worker業務handlerと配布の統合は未完了。物理容量停止(#166)は保留。
+- 既知差異: 本家/独自migration分離、通常起動時自動migrationなし、完全停止切り替え。通常workerは#162で投票終了ジョブだけを実行する。他の業務handlerと配布の統合は未完了。物理容量停止(#166)は保留。
 
 <a id="domain-federation-base"></a>
 

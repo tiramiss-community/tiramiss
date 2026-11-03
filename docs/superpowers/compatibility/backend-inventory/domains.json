@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "02612df99fe3c529fc692d76b3bd37498a2e0e1a",
+  "implementationCommit": "00c6b5b75ddcf4bb9e5e79291e2f54a9dd4933e4",
   "domains": [
     {
       "id": "api-common",
@@ -415,13 +415,15 @@
         "i/notifications-grouped"
       ],
       "implementation": [
-        "packages/backend-next/src/platform/database/notification/persistence.ts"
+        "packages/backend-next/src/platform/database/notification/persistence.ts",
+        "packages/backend-next/src/modules/notification/poll-ended.ts"
       ],
       "verification": [
-        "packages/backend-next/test/integration/notification.test.ts"
+        "packages/backend-next/test/integration/notification.test.ts",
+        "packages/backend-next/test/integration/poll-ended-job.test.ts"
       ],
       "differences": [
-        "本家Redis StreamからPG保存へ変更（ユーザー承認済み）。effect/容量課金への依存はPR #213で撤去。閲覧/既読/移行は#177。"
+        "本家Redis StreamからPG保存へ変更（ユーザー承認済み）。effect/容量課金への依存はPR #213で撤去。閲覧/既読/移行は#177。pollEndedは#162で通知元なしのPG保存まで接続（配信は#173）。"
       ]
     },
     {
@@ -863,10 +865,15 @@
         "admin/queue/"
       ],
       "apiNames": [],
-      "implementation": [],
-      "verification": [],
+      "implementation": [
+        "packages/backend-next/src/platform/job-queue/connection.ts",
+        "packages/backend-next/src/platform/job-queue/ended-poll-notification.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/poll-ended-job.test.ts"
+      ],
       "differences": [
-        "独自PG実行基盤（依頼/claim/復旧）はPR #212/#213で撤去。"
+        "独自PG実行基盤（依頼/claim/復旧）はPR #212/#213で撤去。#162で通常BullMQのQueue/Workerを投票終了ジョブから接続。Redis接続は再接続せず、稼働中の切断を子の異常終了にする（本家はioredisの既定で再接続）。管理API・QueueStatsは未実装。"
       ]
     },
     {
@@ -905,7 +912,7 @@
         "packages/backend-next/test/processes/children.test.ts"
       ],
       "differences": [
-        "本家/独自migration分離、通常起動時自動migrationなし、完全停止切り替え。worker業務handlerと配布の統合は未完了。物理容量停止(#166)は保留。"
+        "本家/独自migration分離、通常起動時自動migrationなし、完全停止切り替え。通常workerは#162で投票終了ジョブだけを実行する。他の業務handlerと配布の統合は未完了。物理容量停止(#166)は保留。"
       ]
     },
     {
@@ -1435,7 +1442,8 @@
         "packages/backend-next/src/platform/database/migrate.ts"
       ],
       "verification": [
-        "packages/backend-next/test/processes/children.test.ts"
+        "packages/backend-next/test/processes/children.test.ts",
+        "packages/backend-next/test/processes/poll-ended.test.ts"
       ]
     },
     "api:admin/roles/show": {
@@ -1494,6 +1502,20 @@
       "differences": [
         "基本textのみ。添付・投票・返信/Renote・channel・指定宛先・MFM抽出は#170まで保存前に501 NOT_IMPLEMENTEDで拒否する暫定制限（docs/backend-next/posting-contract.md）。完成版の意図的差異ではない。"
       ]
+    },
+    "processor:EndedPollNotification": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/notification/poll-ended.ts",
+        "packages/backend-next/src/platform/job-queue/ended-poll-notification.ts",
+        "packages/backend-next/src/composition/poll-ended-job.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/notification/poll-ended.test.ts",
+        "packages/backend-next/test/integration/poll-ended-job.test.ts",
+        "packages/backend-next/test/processes/poll-ended.test.ts"
+      ],
+      "note": "#162で通常workerへ接続し、受信者の選定とPGへの保存まで本家probeと比較。stream配信・未読/pushは#173/#177/#189"
     }
   }
 }
