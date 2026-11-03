@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "00c6b5b75ddcf4bb9e5e79291e2f54a9dd4933e4",
+  "implementationCommit": "ae30e864a06baf64a793d10ab6fb844ee3821502",
   "domains": [
     {
       "id": "api-common",
@@ -873,7 +873,7 @@
         "packages/backend-next/test/integration/poll-ended-job.test.ts"
       ],
       "differences": [
-        "独自PG実行基盤（依頼/claim/復旧）はPR #212/#213で撤去。#162で通常BullMQのQueue/Workerを投票終了ジョブから接続。Redis接続は再接続せず、稼働中の切断を子の異常終了にする（本家はioredisの既定で再接続）。管理API・QueueStatsは未実装。"
+        "独自PG実行基盤（依頼/claim/復旧）はPR #212/#213で撤去。#162で通常BullMQのQueue/Workerを投票終了ジョブから接続。Redis接続は再接続せず、稼働中の切断を子の異常終了にする（本家はBullMQの既定のretryStrategyで1〜20秒の指数待ちにより無期限に再接続）。管理API・QueueStatsは未実装。"
       ]
     },
     {
@@ -1500,7 +1500,7 @@
         "packages/backend-next/test/processes/note-create.test.ts"
       ],
       "differences": [
-        "基本textのみ。添付・投票・返信/Renote・channel・指定宛先・MFM抽出は#170まで保存前に501 NOT_IMPLEMENTEDで拒否する暫定制限（docs/backend-next/posting-contract.md）。完成版の意図的差異ではない。"
+        "添付・投票・返信/Renote・channel・指定宛先・MFM抽出は#170で接続済み。未登録リモートユーザー宛てのメンションは#195まで保存前に501 NOT_IMPLEMENTEDで拒否し、登録済みリモートユーザーも#195まで再同期しない暫定制限（docs/backend-next/posting-contract.md）。完成版の意図的差異ではない。"
       ]
     },
     "processor:EndedPollNotification": {

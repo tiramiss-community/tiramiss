@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "00c6b5b75ddcf4bb9e5e79291e2f54a9dd4933e4",
+  "implementationCommit": "ae30e864a06baf64a793d10ab6fb844ee3821502",
   "contracts": [
     {"name":"Accept","line":154,"id":"ap-inbound:Accept","source":"packages/backend/src/core/activitypub/ApInboxService.ts","kind":"ap-inbound","domain":"federation","status":"not_implemented"},
     {"name":"Add","line":158,"id":"ap-inbound:Add","source":"packages/backend/src/core/activitypub/ApInboxService.ts","kind":"ap-inbound","domain":"federation","status":"not_implemented"},
@@ -429,7 +429,7 @@
     {"id":"api:notes/children","name":"notes/children","source":"packages/backend/src/server/api/endpoints/notes/children.ts","line":1,"registryLine":316,"kind":"api","domain":"notes-extra","status":"not_implemented"},
     {"id":"api:notes/clips","name":"notes/clips","source":"packages/backend/src/server/api/endpoints/notes/clips.ts","line":1,"registryLine":317,"kind":"api","domain":"collections","status":"not_implemented"},
     {"id":"api:notes/conversation","name":"notes/conversation","source":"packages/backend/src/server/api/endpoints/notes/conversation.ts","line":1,"registryLine":318,"kind":"api","domain":"notes-extra","status":"not_implemented"},
-    {"id":"api:notes/create","name":"notes/create","source":"packages/backend/src/server/api/endpoints/notes/create.ts","line":1,"registryLine":319,"kind":"api","domain":"notes","status":"partial","implementation":["packages/backend-next/src/http/note-create-api.ts","packages/backend-next/src/modules/note/create-note.ts","packages/backend-next/src/platform/database/note-writer.ts"],"verification":["packages/backend-next/test/integration/note-create.test.ts","packages/backend-next/test/processes/note-create.test.ts"],"differences":["基本textのみ。添付・投票・返信/Renote・channel・指定宛先・MFM抽出は#170まで保存前に501 NOT_IMPLEMENTEDで拒否する暫定制限（docs/backend-next/posting-contract.md）。完成版の意図的差異ではない。"]},
+    {"id":"api:notes/create","name":"notes/create","source":"packages/backend/src/server/api/endpoints/notes/create.ts","line":1,"registryLine":319,"kind":"api","domain":"notes","status":"partial","implementation":["packages/backend-next/src/http/note-create-api.ts","packages/backend-next/src/modules/note/create-note.ts","packages/backend-next/src/platform/database/note-writer.ts"],"verification":["packages/backend-next/test/integration/note-create.test.ts","packages/backend-next/test/processes/note-create.test.ts"],"differences":["添付・投票・返信/Renote・channel・指定宛先・MFM抽出は#170で接続済み。未登録リモートユーザー宛てのメンションは#195まで保存前に501 NOT_IMPLEMENTEDで拒否し、登録済みリモートユーザーも#195まで再同期しない暫定制限（docs/backend-next/posting-contract.md）。完成版の意図的差異ではない。"]},
     {"id":"api:notes/delete","name":"notes/delete","source":"packages/backend/src/server/api/endpoints/notes/delete.ts","line":1,"registryLine":320,"kind":"api","domain":"notes","status":"not_implemented"},
     {"id":"api:notes/drafts/count","name":"notes/drafts/count","source":"packages/backend/src/server/api/endpoints/notes/drafts/count.ts","line":1,"registryLine":325,"kind":"api","domain":"notes-extra","status":"not_implemented"},
     {"id":"api:notes/drafts/create","name":"notes/drafts/create","source":"packages/backend/src/server/api/endpoints/notes/drafts/create.ts","line":1,"registryLine":322,"kind":"api","domain":"notes-extra","status":"not_implemented"},
