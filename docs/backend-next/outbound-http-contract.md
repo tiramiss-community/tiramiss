@@ -83,7 +83,8 @@ adapter 専用の agent の窓口は、本家の規則ごとに分ける。業�
   - agent 群、private 判定、`send`、`getJson`、失敗クラス、User-Agent を入れる。
   - 設定は `proxy`・`proxyBypassHosts`・`allowedPrivateNetworks`・`outgoingAddress`・`deliverJobConcurrency` を読む。`allowedPrivateNetworks` の CIDR は起動時に検査し、不正なら `INVALID_CONFIG` にする（下記の承認済み差異）。
   - 最初の利用者（#160 の fake inbox への署名送信、または #195 の WebFinger）と同じ PR か、その直前の PR で通常起動に接続する。利用者のいない送信基盤を先に積まない。
-  - #160 の最初の PR は `send` を署名付き送信に使うが、配送ジョブがまだないため通常起動からは呼ばない。通常起動への接続は、配送を接続する PR（#171）か #195 の WebFinger の PR で行う。
+  - #160 の最初の PR は `send` を署名付き送信に使うが、配送ジョブがまだないため通常起動からは呼ばなかった。#171 の最初の PR で、worker 子の配送ジョブから通常起動へ接続した（`src/composition/deliver-job.ts`）。HTTP 子は外向き HTTP を作らない。
+  - `deliverJobConcurrency` は、#171 で deliver の Worker の並行度（`?? 128`）にも使う。
 - **後続**
   - `getHtml` は #215 のメタデータ取得と一緒に入れる。
   - `download`・`downloadText`・`maxFileSize` は #188 の最初の URL 取得 PR で入れる。

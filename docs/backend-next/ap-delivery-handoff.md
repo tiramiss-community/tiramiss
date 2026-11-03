@@ -1,7 +1,7 @@
 # AP配送の業務規則と削減後の引き継ぎ
 
-#171/#160/#162で実際のAP表現・署名HTTP・通常BullMQを接続するための入力。#162 の通常 BullMQ は投票終了ジョブで接続済み（下記）。
-今回、未使用の配送実装は追加しない。固定本家は `8e07cf085adf7009583d234a208e30436f020e26`。
+#171/#160/#162で実際のAP表現・署名HTTP・通常BullMQを接続するための入力。#162 の通常 BullMQ は投票終了ジョブで接続済み、#171 の最初の PR で relay を除くノート作成の配送を接続済み（下記）。
+未使用の配送実装は追加しない。固定本家は `8e07cf085adf7009583d234a208e30436f020e26`。
 
 - [NoteCreateService](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/NoteCreateService.ts)のローカル作者かつ非localOnlyの配送分岐を起点にする。remote mention・reply作者・renote作者がdirect候補、public/home/followersがfollowers対象、publicがrelay対象。channel等の入力補正と最新の連合条件も接続時に照合する。
 - [ApDeliverManagerService](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/activitypub/ApDeliverManagerService.ts)はfollowersを先に処理し、Followingの非正規化sharedInboxを優先、なければindividual inboxをMapへ登録する。両方nullなら例外。directはsharedInboxが既登録なら省略、individual inboxがnullなら省略し、それ以外はindividual inboxへ登録する。同じURLでは後のMap更新が優先される。
@@ -37,3 +37,29 @@
 - Redis の接続は再接続しない（`retryStrategy` は `null`）。稼働中に Queue・Worker の接続を失うと子を異常終了し、Supervisor が全体を止める。本家は BullMQ の既定の `retryStrategy`（1〜20 秒の指数待ちで無期限）で再接続し続ける（意図的な差異）。
 - Worker は `autorun: false` で作り、接続の準備を待ってから `run()` を始める。停止は `close()`（取得の停止→実行中のジョブの完了→接続の解放）で、既存の停止期限を超えたら異常終了する。期限を超えて止めたジョブは本家と同じく stalled 検査で戻る。
 - 役割固有の接続の喪失は `startManagedProcess` の `reportFailure` へ渡す。deliver の Worker も同じ経路を使う。
+
+## #171 の最初の PR で入れたもの
+
+2026-11-03 のユーザー決定で、#171 の最初の PR は relay を除くノート作成の配送を通常起動へ接続した。本家との比較は[比較資料](../superpowers/compatibility/ap-deliver/README.md)を参照。
+
+- **表現**: `src/modules/mfm/`（本家の `MfmService.toHtml`・`ApMfmService.getNoteHtml`）と `src/modules/federation/note-activity.ts`（`renderNote` の dive=false の経路・`renderCreate`・`renderAnnounce`・`@context`）。材料は `src/platform/database/note-activity.ts` が投稿の ID から読み直す。
+- **配送の分岐と宛先**: `src/modules/federation/note-delivery.ts` と `deliver-recipients.ts`。投稿の後続処理の 3 つ目の仕事として HTTP 子で動く。ローカルの作者で localOnly でない投稿だけを配送する。followers・direct の規則は上の DeliverManager のとおり。
+- **投入**: `src/platform/job-queue/deliver.ts`。job 名・`data`・`attempts`（`deliverJobMaxAttempts ?? 12`）・backoff・履歴は本家と同じ（[投稿の最小契約](posting-contract.md#通常ジョブ162)）。
+- **処理**: worker 子が投票終了と同じ子で deliver の Worker も動かす。`src/modules/federation/deliver-job.ts` が本家 `DeliverProcessorService` の順にスキップ判定・送信・instance の更新を行い、結果の写像（`UnrecoverableError`・再試行）は platform が持つ。
+- **インスタンス台帳**: [連合の共通土台](federation-base-contract.md)の段階 3（`src/platform/instance-ledger.ts`、`src/modules/federation/instance.ts`）。
+- **通常起動への接続**: 鍵（`createFederationKeys`）・外向き HTTP（`createOutboundHttpClient`）・署名付き送信（`createApRequest`）・Meta の連合設定は worker 子の配送ジョブから使う。HTTP 子は表現・宛先の読み取りと deliver queue への投入だけを持つ。
+- **設定**: `deliverJobPerSec`・`deliverJobMaxAttempts` を本家と同じ名前・既定値で読む。キーの互換の照合は #138。
+
+本家と異なる点（理由は比較資料の「意図的な差異」）:
+
+- 表現の失敗（specified の pure Renote・MFM の ruby の例外）は、何も配送しない結果は同じで、投稿の後続処理の失敗として記録する。本家は待たない Promise で捨てる。
+- 後続処理の前に消えた投稿は配送しない。Renote 先がリモートで、表現の前に消えた pure Renote も配送しない。本家は作成時のメモリ上の値から配送する。
+- shared inbox の 410 では、不通の記録と `goneSuspended` を順に書く。同じ host の初回登録が重なっても失敗しない。本家は並行に書き、未登録の host では競合で片方を失う。
+- 配送ジョブは Meta をジョブごとに DB から読む。本家は更新の通知で保つメモリ上の値を使う（プロセス間の通知は #217）。
+
+残るもの:
+
+- relay への配送と JSON-LD 署名（`jsonld`・context の複製・Public の補完・別 copy・`isSharedInbox: false`）は #171 の 2 番目の PR。note の C9 の `/inbox/relay` 分もそこで比べる。
+- 配送の成功・失敗によるチャートの更新は #200。成功時の `fetchInstanceMetadata` は連合の共通土台の段階 5（#216 の `getHtml` と一緒に）。
+- Delete・Undo の表現と削除の配送は #172。縦断の確認は #176。
+- note-authors による instance 表の直接読みを `fetchInstance` へ置き換えることと、`packInstanceState` は最初の利用者の PR へ回した。

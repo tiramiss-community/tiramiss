@@ -22,10 +22,10 @@ I/O を持たない判定は `src/modules/federation/` に置き、`public.ts` �
 | `readUserKeypair(userId)` → `{publicKeyPem, privateKeyPem}` | 行がなければ例外 | platform | #160 #195 |
 | `toSpkiPublicKeyPem(pem)` | PEM が不正なら例外 | modules | #195（actor 公開） |
 | `findPublicKeyByKeyId(keyId)`/`findPublicKeyByUserId(userId)` | DB 例外 | platform/database | #195 |
-| `fetchInstance(host)`/`fetchOrRegisterInstance(host)` → InstanceFacts/null、`updateInstance(id, patch)`、`listSuspendedHosts()` | DB 例外（初回登録の競合を含む）を伝播 | platform | 配送を接続する PR（#171）、#195 |
-| `deliverSuccessPatch`/`deliverFailurePatch(instance, now, policy)`、`packInstanceState(instance, policy)` | なし（純関数） | modules | 配送を接続する PR（#171）、#195 |
+| `fetchInstance(host)`/`fetchOrRegisterInstance(host)` → InstanceFacts/null、`updateInstance(id, patch)`、`listSuspendedHosts()` | DB 例外を伝播。初回登録の競合は例外にせず、登録済みの行を返す（下記の意図的差異） | platform | #171（実装済み）、#195 |
+| `deliverSuccessPatch(instance)`/`deliverFailurePatch(instance, now)`、`packInstanceState(instance, policy)` | なし（純関数） | modules | patch は #171（実装済み）。`packInstanceState` は最初の利用者（#195 など）の PR |
 | `acquireApObjectLock(uri)` → `release()` | 約 5 秒で取得できなければ例外 | platform | #195 |
-| `fetchInstanceMetadata(instance, {force})` | 取得・更新の例外は記録して握る | platform（判断は modules） | 配送を接続する PR（#171）、#195 |
+| `fetchInstanceMetadata(instance, {force})` | 取得・更新の例外は記録して握る | platform（判断は modules） | 段階 5（#216 の `getHtml` と一緒に）。配送の成功時の呼び出しも段階 5 で足す。#195 |
 
 `ensureSystemAccount` は、呼び出し元の transaction には参加しない。本家と同じく、自前の transaction で作成を確定する。UseCase は自分の transaction を開く前に呼ぶ。[backend-next の運用ルール](../../packages/backend-next/AGENTS.md)は共有 Service による transaction 開始を禁じているが、本家と同じ遅延作成にはこの例外が必要になる。例外はこの 1 操作に限る。
 
@@ -79,7 +79,7 @@ I/O を持たない判定は `src/modules/federation/` に置き、`public.ts` �
     - 不通でなかった場合は、不通を記録する。
     - 不通なのに開始時刻がない場合は、開始時刻だけを設定する。
     - 不通になってから 7 日（`<=`）経過し、停止状態が none なら autoSuspended にする。
-  - sharedInbox への 410 で goneSuspended にする判定は #160 が持つ（`classifyDeliveryFailure` の `hostGone`）。書き込みは配送を接続する PR で行う。状態値の型は本書が持つ。
+  - sharedInbox への 410 で goneSuspended にする判定は #160 が持つ（`classifyDeliveryFailure` の `hostGone`）。書き込みは #171 の最初の PR で入れた。状態値の型は本書が持つ。
   - 受信による更新と自動解除は #195 が受け持つ（packages/backend/src/queue/processors/InboxProcessorService.ts:232-248）。
 - **排他**
   - キーは `lock:ap-object:<uri>`。SET PX 30000 NX で取得し、100ms 間隔で 50 回まで試みる。
@@ -103,8 +103,10 @@ Redis のキー名と値の形式は本家と揃える。こうしておけば�
    - SystemAccount・UserKeypair・UsedUsername と、UserProfile とそれが参照する Entity を同期で複製する。
    - `generateRsaKeyPair`・`readUserKeypair`・`toSpkiPublicKeyPem`・`ensureSystemAccount` を実装する。
    - #216 と合わせて、#160 の署名と、#195 の remote user 解決を解く。#170 のリモートメンションの 501 は、その後に #195 が除去する。
-   - 実装済み。4 つの関数は `src/composition/federation-keys.ts` の `createFederationKeys` で組み立てる。#160 の最初の PR は `readUserKeypair` を署名付き送信に使うが、通常起動からは呼ばない。通常起動への接続は、配送を接続する PR（#171）か #195 の PR で行う。検証は[比較資料](../superpowers/compatibility/federation-base/README.md#新実装への接続)を参照。
+   - 実装済み。4 つの関数は `src/composition/federation-keys.ts` の `createFederationKeys` で組み立てる。#160 の最初の PR は `readUserKeypair` を署名付き送信に使うが、通常起動からは呼ばない。#171 の最初の PR で、worker 子の配送ジョブから通常起動へ接続した。検証は[比較資料](../superpowers/compatibility/federation-base/README.md#新実装への接続)を参照。
 3. **インスタンス台帳と配送による状態更新**: 配送を接続する PR（#171）と同時に入れる。#160 の最初の PR は署名と結果の分類だけを持ち、台帳と状態の書き込みは入れない（2026-11-03 ユーザー決定）。
+   - #171 の最初の PR で実装済み。台帳は `src/platform/instance-ledger.ts`、成功・失敗の patch は `src/modules/federation/instance.ts`、スキップ判定と書き込みの順は `src/modules/federation/deliver-job.ts`。本家の probe と実 DB/Redis で比べた（[比較資料](../superpowers/compatibility/ap-deliver/README.md)）。
+   - 成功時の `fetchInstanceMetadata` は段階 5 まで呼ばない（一時的な差異）。チャートの更新は #200。
 4. **リモート鍵の参照と AP オブジェクトの排他**: UserPublickey を複製する。#195 の受信実装と同時に入れる。
 5. **メタデータ取得**: #216 の `getHtml` と一緒に入れる。
 
@@ -121,7 +123,7 @@ Redis のキー名と値の形式は本家と揃える。こうしておけば�
 | 5 | service:FetchInstanceMetadataService、responsibility:instance-moderation:49・50 |
 | 他 Issue | instance-moderation:26 の名前連動と update-proxy-account は #194。activitypub:12 の resolver と `signToActivityPubGet` の切り替え、signedGet 本体（HTML の alternate・content-type の検証・`assertActivityMatchesUrl`）は #195。#160 は署名付き GET の組み立て（`createSignedGet`）だけを持つ。misc-utils:03 の chart のロックは #200。proxy アカウントによる follow は、list が #187、アカウント移動が #199。nodeinfo と /api/meta での proxy 名の公開は、各配布経路の担当が `ensureSystemAccount` を使う |
 
-backend-next の note-authors は、UserLite.instance を作るために instance 表を直接読んでいる。段階 3 で `fetchInstance` に置き換える（本家は packages/backend/src/core/entities/UserEntityService.ts:506 でキャッシュを使う）。
+backend-next の note-authors は、UserLite.instance を作るために instance 表を直接読んでいる。本家は packages/backend/src/core/entities/UserEntityService.ts:506 でキャッシュを使う。段階 3 の PR（#171）では置き換えなかった。投稿の読み取りへ Redis を渡す必要があり、配送の範囲を超えるため。`fetchInstance` への置き換えは、次に note-authors を変える PR で行う。
 
 ## 比較と検証
 
@@ -147,4 +149,11 @@ backend-next の note-authors は、UserLite.instance を作るために instanc
 
 ## 意図的差異
 
-提案しない。本家で待たない DB 更新とロック解放は、新実装では失敗を log に残す。外から観測できる結果は変わらないので、差異には数えない。
+本家で待たない DB 更新とロック解放は、新実装では失敗を log に残す。外から観測できる結果は変わらないので、差異には数えない。
+
+段階 3（#171）で次の差異を採った。詳細は[比較資料](../superpowers/compatibility/ap-deliver/README.md#意図的な差異)を参照。
+
+- `fetchOrRegisterInstance` は `INSERT … ON CONFLICT DO NOTHING` の後に読み直す。同じ host の初回登録が重なっても、本家のような一意制約の違反でジョブを失敗させない。
+- sharedInbox への 410 では、不通の記録と goneSuspended を順に書く。本家は並行に書き、未登録の host では初回登録の競合で goneSuspended を失うことがある。
+- 配送ジョブは Meta をジョブごとに DB から読む。本家は更新の通知で保つメモリ上の Meta を使う。プロセス間の通知（#217）ができるまでの扱いで、変更の反映が本家より早いだけ。
+- 消えた instance の行を更新しようとすると `INSTANCE_NOT_FOUND` を投げる。本家は TypeError になる。どちらも待たない更新の中で起き、新実装は log に残す。
