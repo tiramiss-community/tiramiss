@@ -33,6 +33,12 @@ export interface OutboundHttpConfig {
 	deliverJobConcurrency?: number;
 }
 
+/** 本家と同じ名前・意味の deliver queue の設定キー。未指定は undefined のまま持ち、使う側で本家と同じく `??` で既定値を決める。 */
+export interface DeliverJobConfig {
+	deliverJobPerSec?: number;
+	deliverJobMaxAttempts?: number;
+}
+
 export interface RuntimeConfig {
 	id: IdMethod;
 	roleCache: RoleCacheConfig;
@@ -40,6 +46,7 @@ export interface RuntimeConfig {
 	/** 本家どおり、url は正規化前の設定ファイルの値を使う。環境変数で与えた場合は `(undefined)` になる。 */
 	userAgent: string;
 	outboundHttp: OutboundHttpConfig;
+	deliverJob: DeliverJobConfig;
 	database: DatabaseConfig;
 	redis: RedisConfig;
 	redisForJobQueue: RedisConfig;

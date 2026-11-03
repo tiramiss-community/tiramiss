@@ -10,7 +10,7 @@ import { idMethods, type IdMethod } from '../platform/id-codec.js';
 import { DiagnosticError } from '../platform/diagnostic-error.js';
 import { parseAllowedPrivateNetworks } from '../platform/outbound-http/private-address.js';
 import { upstreamRelease } from './upstream-release.js';
-import type { OutboundHttpConfig, RedisConfig, RuntimeConfig } from './types.js';
+import type { DeliverJobConfig, OutboundHttpConfig, RedisConfig, RuntimeConfig } from './types.js';
 
 type ObjectValue = Record<string, unknown>;
 
@@ -46,6 +46,14 @@ function texts(value: unknown, name: string): string[] {
 	return [...value];
 }
 
+// 本家は値を検査せずに `??` で既定値を補う。0 も既定値に置き換えないため、ここでも数であることだけを確かめる。
+function number(value: unknown, name: string): number {
+	if (typeof value !== 'number') {
+		throw new DiagnosticError('INVALID_CONFIG', { field: name });
+	}
+	return value;
+}
+
 function outboundHttp(source: ObjectValue): OutboundHttpConfig {
 	const allowedPrivateNetworks = optional(source.allowedPrivateNetworks, value => texts(value, 'allowedPrivateNetworks'));
 
@@ -65,12 +73,14 @@ function outboundHttp(source: ObjectValue): OutboundHttpConfig {
 		proxyBypassHosts: optional(source.proxyBypassHosts, value => texts(value, 'proxyBypassHosts')),
 		allowedPrivateNetworks,
 		outgoingAddress: optional(source.outgoingAddress, value => text(value, 'outgoingAddress', true)),
-		deliverJobConcurrency: optional(source.deliverJobConcurrency, value => {
-			if (typeof value !== 'number') {
-				throw new DiagnosticError('INVALID_CONFIG', { field: 'deliverJobConcurrency' });
-			}
-			return value;
-		}),
+		deliverJobConcurrency: optional(source.deliverJobConcurrency, value => number(value, 'deliverJobConcurrency')),
+	};
+}
+
+function deliverJob(source: ObjectValue): DeliverJobConfig {
+	return {
+		deliverJobPerSec: optional(source.deliverJobPerSec, value => number(value, 'deliverJobPerSec')),
+		deliverJobMaxAttempts: optional(source.deliverJobMaxAttempts, value => number(value, 'deliverJobMaxAttempts')),
 	};
 }
 
@@ -132,6 +142,7 @@ export async function loadConfig(
 		url: url.origin,
 		userAgent: `Misskey/${upstreamRelease.version} (${source.url})`,
 		outboundHttp: outboundHttp(source),
+		deliverJob: deliverJob(source),
 		roleCache: {
 			rolesTtlMs: positive(cache.rolesTtlMs ?? 30000, 'roleCache.rolesTtlMs'),
 			assignmentsTtlMs: positive(cache.assignmentsTtlMs ?? 30000, 'roleCache.assignmentsTtlMs'),

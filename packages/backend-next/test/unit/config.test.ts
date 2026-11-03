@@ -136,7 +136,7 @@ test.each(outboundCases.inputs.invalidNetworks.map(networks => ({ networks })))(
 	expect(outboundDifferences.find(entry => entry.id === 'H1')?.newImplementationVerified).toBe(true);
 });
 
-test.each(['proxy: 1', 'proxyBypassHosts: api.deepl.com', 'proxyBypassHosts: [1]', 'allowedPrivateNetworks: 10.0.0.0/8', 'outgoingAddress: 1', "deliverJobConcurrency: '300'"])(
+test.each(['proxy: 1', 'proxyBypassHosts: api.deepl.com', 'proxyBypassHosts: [1]', 'allowedPrivateNetworks: 10.0.0.0/8', 'outgoingAddress: 1', "deliverJobConcurrency: '300'", "deliverJobPerSec: '128'", 'deliverJobMaxAttempts: true'])(
 	'rejects outbound keys of the wrong type: %s', async setting => {
 		await expect(loadConfig({
 			configFile: await config(setting),
