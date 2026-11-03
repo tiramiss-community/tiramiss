@@ -7,14 +7,14 @@
 ## 監査基準
 
 - 本家: `8e07cf085adf7009583d234a208e30436f020e26`。`backend-upstream/upstream-sync.json` と同じ SHA。fork の現在の `packages/backend` からは列挙しない。
-- 新実装: `a5840cc43089ea49c9f3ac14444390b0a809953f`（PR #158 マージ後）。判定と根拠はこの地点に固定する。
+- 新実装: `6f62cb897d2a03e8fd7727eadf45c20d8bfcf206`（PR #213 マージ後）。判定と根拠はこの地点に固定する。
 - 対象: 登録 API と非 API HTTP、WebSocket、AP 受信/公開/送信、業務保存・副作用、job/周期処理、CLI/運用。fork 固有機能は対象外。固定本家の機能を一括で見送らない。
 
 ## 現在の到達点
 
 Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装・本家比較資料・HTTP/受け入れテストに接続済み。これを `verified`（検証根拠あり）とする。他の Role API は未実装。根拠は [Role 比較資料](../role/README.md)、[#115](https://github.com/tiramiss-community/tiramiss/issues/115) と #116–#121。
 
-ジョブの保存/投入/local 実行 claim/Redis 復旧、実 Note の producer fixture、PG 通知保存、AP 宛先 snapshot/page/host lease は部分実装（`partial`）。**通常 worker は業務 handler 未接続で、投稿 HTTP と AP 送信は未実装。** アダプタのテスト成功から公開機能全体の完成を推測しない。
+`notes/show` は固定本家の観測 JSON と照合済みで `verified`。`notes/create` は基本 text だけを実装した `partial` で、添付・投票・返信等は #170 まで保存前に 501 で拒否する。PG 通知保存と起動・migration の基盤は `partial`。旧 PG ジョブ基盤と AP 宛先 snapshot/page/host lease は PR #212/#213 で撤去したため、AP 送信とジョブ管理は `not_implemented` に戻した。**通常 worker は業務 handler 未接続で、AP 送信は未実装。** 部分実装から公開機能全体の完成を推測しない。
 
 それ以外の入口は `not_implemented`（未実装）。これは見送りではなく、担当 Issue による設計・実装・比較が必要な状態。今回の検査は棚卸しの整合性検査であり、各 HTTP/連合機能の比較テストを再実行して `verified` を付けたものではない。
 
@@ -61,19 +61,19 @@ Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装
 | [instance公開情報・emoji・announcement](#domain-discovery) | 未実装 | [#193](https://github.com/tiramiss-community/tiramiss/issues/193) |
 | [管理・モデレーション・設定](#domain-moderation) | 未実装 | [#194](https://github.com/tiramiss-community/tiramiss/issues/194) |
 | [AP受信・remote解決・actor公開](#domain-federation) | 未実装 | [#195](https://github.com/tiramiss-community/tiramiss/issues/195) / #160, #171 |
-| [投稿AP送信・宛先・結果不明](#domain-ap-outbound) | 部分実装 | [#124](https://github.com/tiramiss-community/tiramiss/issues/124) / #159, #160, #161, #162, #171, #172 |
+| [投稿AP送信・宛先](#domain-ap-outbound) | 未実装 | [#124](https://github.com/tiramiss-community/tiramiss/issues/124) / #159, #160, #161, #162, #171, #172 |
 | [HTML・feed・preview・公開配布経路](#domain-web) | 未実装 | [#196](https://github.com/tiramiss-community/tiramiss/issues/196) |
 | [user webhook設定・全イベント配送](#domain-user-webhook) | 未実装 | [#197](https://github.com/tiramiss-community/tiramiss/issues/197) / #163, #175 |
 | [system webhook設定・配送](#domain-system-webhook) | 未実装 | [#198](https://github.com/tiramiss-community/tiramiss/issues/198) |
 | [import/export・移動/削除・保守ジョブ](#domain-maintenance) | 未実装 | [#199](https://github.com/tiramiss-community/tiramiss/issues/199) / #130, #139 |
 | [charts・retention・統計](#domain-analytics) | 未実装 | [#200](https://github.com/tiramiss-community/tiramiss/issues/200) / #132, #133 |
-| [ジョブ管理・照会・制御](#domain-queue) | 部分実装 | [#163](https://github.com/tiramiss-community/tiramiss/issues/163) / #124, #162, #164, #165 |
+| [ジョブ管理・照会・制御](#domain-queue) | 未実装 | [#163](https://github.com/tiramiss-community/tiramiss/issues/163) / #124, #162, #164, #165 |
 | [起動・migration・CLI・配布](#domain-operations) | 部分実装 | [#138](https://github.com/tiramiss-community/tiramiss/issues/138) / #113, #135, #136, #137, #139, #162, #166 |
 
 ## 対応順と依存の扱い
 
-1. 投稿の比較契約 [#167](https://github.com/tiramiss-community/tiramiss/issues/167) を先に確定し、#168（show）→#169（基本作成）→#170（関連入力）へ進む。既存トークンによる参照は全ログイン/トークン発行の移植を待たせない。
-2. 実配送の線は #159（AP 実行状態）と #160（署名 HTTP）、#166（物理容量）から進め、#161（削除配送）→#162（通常 worker）へ接続する。投稿本文/縦断は #171/#172/#176。
+1. 投稿は #167（比較契約）・#168（show）・#169（基本作成）まで完了。次は #170（関連入力）。既存トークンによる参照は全ログイン/トークン発行の移植を待たせない。
+2. 実配送は #160（署名 HTTP）と #162（通常 worker）を、必要な実仕事（#171/#172）と合わせて接続する。縦断比較は #176。#159/#161/#166 は追加保証として保留し、初期完成の依存にしない。
 3. 次にユーザーの取得と関係 facts、一覧/TL、通知/streamを接続すると、投稿→閲覧→通知まで使える範囲を増やせる。公開情報・ユーザー参照・検索の設計は独立した部分から進めてよい。
 4. Drive の外部保存やアカウント削除等は #130 の機能別回復設計を先に切り出す。#130を全参照 API の一括 blocker にしない。派生状態の通常更新は #174、正本/再構築は #132/#133、TL/検索の閲覧は各領域が所有する。
 5. 認証発行、social graph、AP inboundは、狭い facts・署名/remote解決・個別activityを下位 Issue に分ける。親領域同士の全完了を相互に要求する循環を作らない。
@@ -171,15 +171,15 @@ follow/request/取消・承認・reject、block/mute/renote mute、期限・AP�
 
 ### 投稿初期フロー
 
-notes/create/show/deleteと関連入力・純粋出力。producer fixtureはHTTP実装ではない。
+notes/create/show/deleteと関連入力・純粋出力。
 
 - 担当: [#127](https://github.com/tiramiss-community/tiramiss/issues/127).
-- 正本/保存: Note/Poll/count/取消世代/固定依頼。
-- 副作用: 通知・AP・stream・TL/検索・webhookへの依頼。
+- 正本/保存: Note/Poll/count。
+- 副作用: 通知・AP・stream・TL/検索・webhookの後続処理開始。
 - 本家: [NoteCreateService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/NoteCreateService.ts)、[NoteDeleteService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/NoteDeleteService.ts)、[NoteEntityService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/entities/NoteEntityService.ts)。
-- 新実装: [append.ts](../../../../packages/backend-next/src/platform/database/post-work/append.ts)。
-- 検証根拠: [post-work-note.test.ts](../../../../packages/backend-next/test/integration/post-work-note.test.ts)。
-- 既知差異: Note/依頼/整合countを同時確定。client再送の独自冪等APIは追加しない。投稿設計§7/ジョブ設計§4.1。
+- 新実装: [create-note.ts](../../../../packages/backend-next/src/modules/note/create-note.ts)、[show-note.ts](../../../../packages/backend-next/src/modules/note/show-note.ts)、[note-writer.ts](../../../../packages/backend-next/src/platform/database/note-writer.ts)、[note-reader.ts](../../../../packages/backend-next/src/platform/database/note-reader.ts)。
+- 検証根拠: [note-create.test.ts](../../../../packages/backend-next/test/integration/note-create.test.ts)、[note-show.test.ts](../../../../packages/backend-next/test/integration/note-show.test.ts)。
+- 既知差異: 保存と後続開始を分け、独自依頼との同時保存はしない（docs/backend-next/posting-contract.md）。notes/showの参照予算D7。
 
 <a id="domain-notes-extra"></a>
 
@@ -258,12 +258,12 @@ Note/User/タグ検索・タグ一覧/トレンド等の入力・cursor・可視
 PG保存と分けて全通知条件、一覧/grouping/cursor/未読/既読/flush/設定、Service Worker push、旧Redis移行を追跡する。
 
 - 担当: [#177](https://github.com/tiramiss-community/tiramiss/issues/177).
-- 正本/保存: 本家Redis通知/未読 / 新PG notification/effect。
+- 正本/保存: 本家Redis通知/未読 / 新PG notification。
 - 副作用: stream・push配信・遅延未読処理。
 - 本家: [NotificationService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/NotificationService.ts)、[PushNotificationService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/PushNotificationService.ts)。
 - 新実装: [persistence.ts](../../../../packages/backend-next/src/platform/database/notification/persistence.ts)。
-- 検証根拠: [post-work-notification.test.ts](../../../../packages/backend-next/test/integration/post-work-notification.test.ts)。
-- 既知差異: 本家Redis StreamからPG本体+成立記録へ変更（ユーザー承認済み）。notification-persistence-design.md参照。
+- 検証根拠: [notification.test.ts](../../../../packages/backend-next/test/integration/notification.test.ts)。
+- 既知差異: 本家Redis StreamからPG保存へ変更（ユーザー承認済み）。effect/容量課金への依存はPR #213で撤去。閲覧/既読/移行は#177。
 
 <a id="domain-drive"></a>
 
@@ -379,17 +379,17 @@ inbox全activity・検証/remote actor/Note解決・照会、AP actor/object/out
 
 <a id="domain-ap-outbound"></a>
 
-### 投稿AP送信・宛先・結果不明
+### 投稿AP送信・宛先
 
-固定本文から宛先snapshot/page/claim/host lease/署名送信/取消世代/Delete-Undoまで。HTTP搬送と投稿表現を別Issueで接続。
+投稿のAP本文・宛先選定・署名送信・Delete/Undo。署名HTTP(#160)・通常worker(#162)・投稿表現(#171/#172)で接続する。永続宛先台帳・host lease・結果不明の追跡は保留(#159/#161)。
 
 - 担当: [#124](https://github.com/tiramiss-community/tiramiss/issues/124).
-- 正本/保存: work_request/item/recipient/host lease。
-- 副作用: 外部AP HTTP・有限retry・unknown/順序制約。
+- 正本/保存: 本家相当の通常BullMQ deliver queue。
+- 副作用: 外部AP HTTP・本家相当のretry/backoff。
 - 本家: [ApDeliverManagerService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/activitypub/ApDeliverManagerService.ts)、[ApRequestService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/activitypub/ApRequestService.ts)。
-- 新実装: [snapshot.ts](../../../../packages/backend-next/src/platform/database/ap/snapshot.ts)、[pages.ts](../../../../packages/backend-next/src/platform/database/ap/pages.ts)、[host-leases.ts](../../../../packages/backend-next/src/platform/database/ap/host-leases.ts)。
-- 検証根拠: [post-work-ap-snapshot.test.ts](../../../../packages/backend-next/test/integration/post-work-ap-snapshot.test.ts)、[post-work-ap-pages.test.ts](../../../../packages/backend-next/test/integration/post-work-ap-pages.test.ts)、[ap-host-leases.test.ts](../../../../packages/backend-next/test/integration/ap-host-leases.test.ts)。
-- 既知差異: DB正本と固定宛先集合・有限保持/再試行・削除台帳復元制限。外部の厳密一回配送は保証しない。
+- 新実装: 未実装。
+- 検証根拠: 未接続。担当 Issue で固定本家との比較 fixture と受け入れを追加。
+- 既知差異: 旧PG宛先snapshot/page/host leaseはPR #212/#213で撤去。本家の業務規則はdocs/backend-next/ap-delivery-handoff.mdに残す。
 
 <a id="domain-web"></a>
 
@@ -465,15 +465,15 @@ chart各系列/retention/statsと集計/tick/resync/clean、履歴的countと復
 
 ### ジョブ管理・照会・制御
 
-本家queue単位管理と新DB正本の差異、認可/マスキング/rate limit/監査/有限再実行を扱う。
+本家queue単位の照会・制御・retry・QueueStats・履歴/清掃を通常BullMQ公開APIで移植する。
 
 - 担当: [#163](https://github.com/tiramiss-community/tiramiss/issues/163).
-- 正本/保存: work/dispatch/control/管理操作進捗/ModerationLog。
-- 副作用: BullMQ制御とDB先行調停・手動retry/取消。
+- 正本/保存: BullMQ/Redisのqueue状態 / ModerationLog。
+- 副作用: pause/resume/retry/promote/remove/clean・監査。
 - 本家: [QueueService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/QueueService.ts)、[show-job.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/server/api/endpoints/admin/queue/show-job.ts)。
-- 新実装: [dispatch.ts](../../../../packages/backend-next/src/platform/database/post-work/dispatch.ts)、[local-execution.ts](../../../../packages/backend-next/src/platform/database/post-work/local-execution.ts)、[recovery.ts](../../../../packages/backend-next/src/platform/database/post-work/recovery.ts)。
-- 検証根拠: [post-work-dispatch.test.ts](../../../../packages/backend-next/test/integration/post-work-dispatch.test.ts)、[post-work-local-execution.test.ts](../../../../packages/backend-next/test/integration/post-work-local-execution.test.ts)、[post-work-recovery.test.ts](../../../../packages/backend-next/test/integration/post-work-recovery.test.ts)。
-- 既知差異: BullMQは輸送、DBは業務正本。管理の表示/取消/監査はジョブ設計§7に従う。未実装部分を互換完了としない。
+- 新実装: 未実装。
+- 検証根拠: 未接続。担当 Issue で固定本家との比較 fixture と受け入れを追加。
+- 既知差異: 独自PG実行基盤（依頼/claim/復旧）はPR #212/#213で撤去。
 
 <a id="domain-operations"></a>
 
@@ -483,8 +483,9 @@ Supervisor/HTTP/worker・設定/DB/Redis・migration/check・CLI・healthz・配
 
 - 担当: [#138](https://github.com/tiramiss-community/tiramiss/issues/138).
 - 正本/保存: 本家public履歴/独自履歴 / 設定・接続。
-- 副作用: 起動終了・CLI・観測・物理容量停止・リリース判定。
+- 副作用: 起動終了・CLI・観測・リリース判定。
 - 本家: [cli.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/boot/cli.ts)、[HealthServerService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/server/HealthServerService.ts)。
 - 新実装: [supervisor.ts](../../../../packages/backend-next/src/processes/supervisor.ts)、[lifecycle.ts](../../../../packages/backend-next/src/processes/lifecycle.ts)、[migrate.ts](../../../../packages/backend-next/src/platform/database/migrate.ts)。
 - 検証根拠: [children.test.ts](../../../../packages/backend-next/test/processes/children.test.ts)。
-- 既知差異: 本家/独自migration分離、通常起動時自動migrationなし、完全停止切り替え。worker業務handlerと配布の統合は未完了。
+- 既知差異: 本家/独自migration分離、通常起動時自動migrationなし、完全停止切り替え。worker業務handlerと配布の統合は未完了。物理容量停止(#166)は保留。
+
