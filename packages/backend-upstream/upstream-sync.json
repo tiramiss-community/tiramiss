@@ -24,6 +24,9 @@
 		"src/models/UserProfile.ts",
 		"src/models/Page.ts",
 		"src/models/UserList.ts",
+		"src/models/SystemAccount.ts",
+		"src/models/UserKeypair.ts",
+		"src/models/UsedUsername.ts",
 		"src/types.ts",
 		"src/models/util/id.ts"
 	],

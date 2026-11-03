@@ -34,5 +34,10 @@ probe は re2 を差し替える。対象の関数は re2 を使わず、ネイ�
 | `unit/federation/host.test.ts` | `host-cases.json` の全件 |
 | `unit/federation/policy.test.ts` | `policy-cases.json` の全件。自ホストが none・blocked より優先されること |
 | `integration/meta.test.ts` | 本家の `MetaService.fetch` と同じ Meta の選び方（id の大きい行）、行がない場合の id `'x'` の作成と同時呼び出し、`readFederationPolicy` |
+| `unit/federation/keys.test.ts` | `genRsaKeyPair` の形式（RSA 2048・SPKI・PKCS#8）と生成した鍵での署名・検証、`UserKeypairService.fetcher` の PKCS#1→PKCS#8 変換、`ApRendererService.renderKey` の SPKI 化 |
+| `unit/logger.test.ts` | `privateKey` を含むキーの伏せ字（log・`DiagnosticError` の details） |
+| `integration/federation-keys.test.ts` | `SystemAccountService`: 5 表の同時作成と作成時の値、2 回目は再作成しないこと、途中失敗で全行が戻ること、同名ユーザーでの早期 return、`instance.actor`・`relay.actor` の移行済みデータ、同時の初回作成（片方が `user` の一意制約違反 23505 で失敗し、1 組だけ残る）、10 分のキャッシュ。`UserKeypairService`: `kvcache:userKeypair:v2:<userId>`（Redis 24 時間、値は TypeORM が読んだ `MiUserKeypair` の JSON と一致）、Redis の値の優先とメモリ 1 時間、行がない場合に否定キャッシュしないこと、PKCS#1 の変換と待たない DB 更新、その失敗が鍵を含まずに log に残ること |
+
+鍵とシステムアカウントは Node の `crypto` と DB・Redis の状態だけで比較できるため、本家 probe は追加していない。Redis の値の形は、同じ本家 Entity を TypeORM で読んだ値の JSON と一致することで確かめた。
 
 URI からホストを取り出す `extractDbHost` と `isFederationAllowedUri` は、最初の利用者（#160・#195）と同じ PR で入れ、そのときに入力表を追加する。

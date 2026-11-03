@@ -25,7 +25,7 @@ function sanitize(value: unknown): unknown {
 		return Object.fromEntries(
 			Object.entries(value).map(([key, item]) => [
 				key,
-				/pass|token|secret|authorization|config/i.test(key) ? '[REDACTED]' : sanitize(item),
+				/pass|token|secret|authorization|config|privateKey/i.test(key) ? '[REDACTED]' : sanitize(item),
 			]),
 		);
 	}
