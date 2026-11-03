@@ -24,10 +24,22 @@ export interface RoleCacheConfig {
 	assignmentsMaxEntries: number;
 }
 
+/** 本家と同じ名前・意味の設定キー。未指定は undefined のまま持ち、使う側で既定値を決める。 */
+export interface OutboundHttpConfig {
+	proxy?: string;
+	proxyBypassHosts?: string[];
+	allowedPrivateNetworks?: string[];
+	outgoingAddress?: string;
+	deliverJobConcurrency?: number;
+}
+
 export interface RuntimeConfig {
 	id: IdMethod;
 	roleCache: RoleCacheConfig;
 	url: string;
+	/** 本家どおり、url は正規化前の設定ファイルの値を使う。環境変数で与えた場合は `(undefined)` になる。 */
+	userAgent: string;
+	outboundHttp: OutboundHttpConfig;
 	database: DatabaseConfig;
 	redis: RedisConfig;
 	redisForJobQueue: RedisConfig;

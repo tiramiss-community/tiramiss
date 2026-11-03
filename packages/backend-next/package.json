@@ -35,7 +35,11 @@
 		"ratelimiter": "3.4.1",
 		"re2": "1.27.0",
 		"mfm-js": "0.27.0",
-		"semver": "7.8.5"
+		"semver": "7.8.5",
+		"node-fetch": "3.3.2",
+		"hpagent": "1.2.0",
+		"cacheable-lookup": "7.0.0",
+		"ipaddr.js": "2.5.0"
 	},
 	"devDependencies": {
 		"@types/node": "26.6.4",

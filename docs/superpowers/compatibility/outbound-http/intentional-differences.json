@@ -1,0 +1,12 @@
+[
+	{
+		"id": "H1",
+		"contract": "不正な allowedPrivateNetworks は起動時に INVALID_CONFIG（field と不正な要素の index）で拒否する。本家は本番の接続時に CIDR の parse 例外が destroy より前に起き、その接続を遮断しないまま未捕捉例外として記録して動き続ける。backend-next には未捕捉例外のハンドラがなく、同じ実装では子プロセスが落ちて全体が停止するため。",
+		"approvedAt": "2026-11-03",
+		"upstreamEvidence": "unit-cases.json の fn=invalidNetworks（本家 isPrivateIp が投げる parse 例外）",
+		"owners": [
+			216
+		],
+		"newImplementationVerified": true
+	}
+]

@@ -2,33 +2,37 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { readFileSync } from 'node:fs';
 import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import ipaddr from 'ipaddr.js';
 import { load, dump } from 'js-yaml';
 import { afterEach, expect, test } from 'vitest';
 import { loadConfig } from '../../src/config/load-config.js';
+import { upstreamRelease } from '../../src/config/upstream-release.js';
 const dirs: string[] = [];
 afterEach(async () => {
 	await Promise.all(dirs.splice(0).map((d) => rm(d, { recursive: true, force: true })));
 });
 
-async function config(extra = '') {
+async function configFrom(source: object) {
 	const dir = await mkdtemp(join(tmpdir(), 'backend-config-'));
 	dirs.push(dir);
 	const file = join(dir, 'test.yml');
-	await writeFile(
-		file,
-		dump({
-			...(load(`url: https://example.test
+	await writeFile(file, dump(source));
+	return file;
+}
+
+async function config(extra = '') {
+	return configFrom({
+		...(load(`url: https://example.test
 port: 3000
 db: {host: localhost, port: 5432}
 redis: {host: localhost, port: 6379, pass: secret}
 `) as object),
-			...(load(extra) as object),
-		}),
-	);
-	return file;
+		...(load(extra) as object),
+	});
 }
 
 test('loads existing YAML names, environment fallbacks and Redis normalization', async () => {
@@ -95,3 +99,48 @@ redisForReactions: {host: reactions, port: 6381, db: 5, prefix: reaction-prefix}
 	expect(value.redisForReactions).toMatchObject({ host: 'reactions', port: 6381, db: 5, keyPrefix: 'reaction-prefix:' });
 	expect(value.noteMedia).toEqual({ mediaProxy: 'https://media.test', externalMediaProxyEnabled: true, videoThumbnailGenerator: 'https://video.test' });
 });
+
+const outboundCases = JSON.parse(readFileSync(new URL('../../../../docs/superpowers/compatibility/outbound-http/unit-cases.json', import.meta.url), 'utf8')) as {
+	inputs: { configs: { name: string; yaml: string; env?: Record<string, string> }[]; invalidNetworks: string[][] };
+	cases: { fn: string; name?: string; expected: Record<string, unknown> }[];
+};
+const outboundDifferences = JSON.parse(readFileSync(new URL('../../../../docs/superpowers/compatibility/outbound-http/intentional-differences.json', import.meta.url), 'utf8')) as { id: string; newImplementationVerified: boolean }[];
+const requiredOnly = { port: 3000, db: { host: 'localhost', port: 5432 }, redis: { host: 'localhost', port: 6379 } };
+
+test('pins the upstream version to the same commit as the copied upstream definitions', () => {
+	const sync = JSON.parse(readFileSync(new URL('../../../backend-upstream/upstream-sync.json', import.meta.url), 'utf8')) as { commit: string };
+
+	expect(upstreamRelease.commit).toBe(sync.commit);
+});
+
+test.each(outboundCases.cases.filter(c => c.fn === 'config'))('builds the upstream User-Agent and outbound keys: $name', async c => {
+	const input = outboundCases.inputs.configs.find(entry => entry.name === c.name)!;
+	const value = await loadConfig({
+		configFile: await configFrom({ ...requiredOnly, ...(load(input.yaml) as object) }),
+		env: { DATABASE_DB: 'test', DATABASE_USER: 'tester', ...input.env },
+	});
+	const { userAgent, ...keys } = c.expected;
+
+	expect(value.userAgent).toBe(userAgent);
+	// 本家は null をそのまま持つが、使う側はどれも `??` で扱うため undefined と区別されない。
+	expect(value.outboundHttp).toEqual(Object.fromEntries(Object.entries(keys).map(([key, entry]) => [key, entry ?? undefined])));
+});
+
+test.each(outboundCases.inputs.invalidNetworks.map(networks => ({ networks })))('rejects invalid allowedPrivateNetworks at startup (approved difference H1): $networks', async ({ networks }) => {
+	const index = networks.findIndex(network => !ipaddr.isValidCIDR(network));
+
+	await expect(loadConfig({
+		configFile: await config(dump({ allowedPrivateNetworks: networks })),
+		env: { DATABASE_DB: 'test', DATABASE_USER: 'tester' },
+	})).rejects.toMatchObject({ code: 'INVALID_CONFIG', details: { field: 'allowedPrivateNetworks', index } });
+	expect(outboundDifferences.find(entry => entry.id === 'H1')?.newImplementationVerified).toBe(true);
+});
+
+test.each(['proxy: 1', 'proxyBypassHosts: api.deepl.com', 'proxyBypassHosts: [1]', 'allowedPrivateNetworks: 10.0.0.0/8', 'outgoingAddress: 1', "deliverJobConcurrency: '300'"])(
+	'rejects outbound keys of the wrong type: %s', async setting => {
+		await expect(loadConfig({
+			configFile: await config(setting),
+			env: { DATABASE_DB: 'test', DATABASE_USER: 'tester' },
+		})).rejects.toMatchObject({ code: 'INVALID_CONFIG', details: { field: setting.split(':')[0] } });
+	},
+);
