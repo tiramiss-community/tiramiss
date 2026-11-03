@@ -695,7 +695,7 @@
         }
       ],
       "remaining": [
-        "本家は作成後のlate followerとrelayへ非publicのDeleteも送ると実受信で確認。新実装は固定集合へ限定（D3）。展開前/途中の削除とunknown宛先はN5で追加。"
+        "本家は作成後のlate followerとrelayへ非publicのDeleteも送ると実受信で確認。新設計では固定集合へ限定する（D3。新実装では未実装）。展開前/途中の削除とunknown宛先はN5で追加。"
       ],
       "reevaluations": [
         {
