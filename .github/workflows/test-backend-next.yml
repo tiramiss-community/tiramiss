@@ -5,6 +5,8 @@ on:
     branches: [master, develop]
     paths:
       - 'docs/superpowers/compatibility/role/**'
+      - 'docs/superpowers/compatibility/backend-inventory/**'
+      - 'scripts/backend-contract-inventory*.mjs'
       - 'docs/superpowers/compatibility/note/**'
       - 'scripts/note-contract-*.test.mjs'
       - 'packages/backend-next/**'
@@ -18,6 +20,8 @@ on:
   pull_request:
     paths:
       - 'docs/superpowers/compatibility/role/**'
+      - 'docs/superpowers/compatibility/backend-inventory/**'
+      - 'scripts/backend-contract-inventory*.mjs'
       - 'docs/superpowers/compatibility/note/**'
       - 'scripts/note-contract-*.test.mjs'
       - 'packages/backend-next/**'
@@ -61,6 +65,10 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile --filter backend-next...
       - run: git diff --exit-code pnpm-lock.yaml
+      - name: Backend public contract inventory
+        run: |
+          node --test scripts/backend-contract-inventory.test.mjs
+          node scripts/backend-contract-inventory.mjs --check
       - name: Note comparison fixture references and contracts
         run: node --test scripts/note-contract-*.test.mjs
       - run: pnpm --filter backend-upstream sync:check
