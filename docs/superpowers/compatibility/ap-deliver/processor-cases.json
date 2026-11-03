@@ -1,0 +1,7224 @@
+{
+	"inputs": {
+		"now": "2026-11-03T00:00:00.000Z",
+		"selfHost": "local.example",
+		"job": {
+			"user": {
+				"id": "alice"
+			},
+			"content": "{\"type\":\"Create\"}",
+			"digest": "SHA-256=probe"
+		},
+		"meta": {
+			"federation": "all",
+			"federationHosts": [],
+			"blockedHosts": [],
+			"deliverSuspendedSoftware": [],
+			"enableStatsForFederatedInstances": true,
+			"enableChartsForFederatedInstances": true
+		},
+		"cases": [
+			{
+				"id": "success-unknown-stats-on",
+				"meta": {},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "success-unknown-stats-off",
+				"meta": {
+					"enableStatsForFederatedInstances": false
+				},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "success-known-responding",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "success-clears-not-responding-stats-on",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": true,
+						"notRespondingSince": "2026-10-31T00:00:00.000Z",
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "success-clears-not-responding-stats-off",
+				"meta": {
+					"enableStatsForFederatedInstances": false
+				},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": true,
+						"notRespondingSince": "2026-10-31T00:00:00.000Z",
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "success-charts-off",
+				"meta": {
+					"enableChartsForFederatedInstances": false
+				},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "blocked-federation-none",
+				"meta": {
+					"federation": "none"
+				},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "blocked-federation-specified-miss",
+				"meta": {
+					"federation": "specified",
+					"federationHosts": [
+						"other.example"
+					]
+				},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "allowed-federation-specified-hit",
+				"meta": {
+					"federation": "specified",
+					"federationHosts": [
+						"remote.example"
+					]
+				},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "allowed-federation-specified-parent",
+				"meta": {
+					"federation": "specified",
+					"federationHosts": [
+						"example"
+					]
+				},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "blocked-host",
+				"meta": {
+					"blockedHosts": [
+						"remote.example"
+					]
+				},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "blocked-host-parent-domain",
+				"meta": {
+					"blockedHosts": [
+						"example"
+					]
+				},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://sub.remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "blocked-host-mixed-case-url",
+				"meta": {
+					"blockedHosts": [
+						"remote.example"
+					]
+				},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://REMOTE.Example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "blocked-host-port-not-matched",
+				"meta": {
+					"blockedHosts": [
+						"remote.example"
+					]
+				},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://remote.example:8443/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "blocked-specified-port",
+				"meta": {
+					"federation": "specified",
+					"federationHosts": [
+						"remote.example"
+					]
+				},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://remote.example:8443/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "self-host-always-allowed",
+				"meta": {
+					"federation": "none"
+				},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://local.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "blocked-before-suspended",
+				"meta": {
+					"blockedHosts": [
+						"remote.example"
+					]
+				},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "manuallySuspended",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "suspended-manually",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "manuallySuspended",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "suspended-gone",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "goneSuspended",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/users/alice/inbox",
+						"isSharedInbox": false,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "suspended-auto",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "autoSuspendedForNotResponding",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "suspended-idn",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-xn--xample-ova.jp",
+						"host": "xn--xample-ova.jp",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "manuallySuspended",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://ëxample.jp/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "suspended-port-host-not-matched",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "manuallySuspended",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example:8443/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "suspended-empty-host-matches-port",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-empty",
+						"host": "",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "manuallySuspended",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example:8443/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "suspended-before-software",
+				"meta": {
+					"deliverSuspendedSoftware": [
+						{
+							"software": "misskey",
+							"versionRange": "*"
+						}
+					]
+				},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "manuallySuspended",
+						"softwareName": "misskey",
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "software-any-version-null",
+				"meta": {
+					"deliverSuspendedSoftware": [
+						{
+							"software": "misskey",
+							"versionRange": " * "
+						}
+					]
+				},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": "misskey",
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "software-range-version-null",
+				"meta": {
+					"deliverSuspendedSoftware": [
+						{
+							"software": "misskey",
+							"versionRange": ">=1.0.0"
+						}
+					]
+				},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": "misskey",
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "software-range-match",
+				"meta": {
+					"deliverSuspendedSoftware": [
+						{
+							"software": "misskey",
+							"versionRange": "<2024.0.0"
+						}
+					]
+				},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": "misskey",
+						"softwareVersion": "2023.12.2"
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "software-range-prerelease",
+				"meta": {
+					"deliverSuspendedSoftware": [
+						{
+							"software": "misskey",
+							"versionRange": "<2024.0.0"
+						}
+					]
+				},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": "misskey",
+						"softwareVersion": "2023.12.2-beta.1"
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "software-range-miss",
+				"meta": {
+					"deliverSuspendedSoftware": [
+						{
+							"software": "misskey",
+							"versionRange": "<2024.0.0"
+						}
+					]
+				},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": "misskey",
+						"softwareVersion": "2024.1.0"
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "software-name-case-sensitive",
+				"meta": {
+					"deliverSuspendedSoftware": [
+						{
+							"software": "Misskey",
+							"versionRange": "*"
+						}
+					]
+				},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": "misskey",
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "software-name-null",
+				"meta": {
+					"deliverSuspendedSoftware": [
+						{
+							"software": "misskey",
+							"versionRange": "*"
+						}
+					]
+				},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "software-stats-off-unknown",
+				"meta": {
+					"enableStatsForFederatedInstances": false,
+					"deliverSuspendedSoftware": [
+						{
+							"software": "misskey",
+							"versionRange": "*"
+						}
+					]
+				},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "software-stats-off-known",
+				"meta": {
+					"enableStatsForFederatedInstances": false,
+					"deliverSuspendedSoftware": [
+						{
+							"software": "misskey",
+							"versionRange": "*"
+						}
+					]
+				},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": "misskey",
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "fail-500-first",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "status",
+							"statusCode": 500,
+							"statusMessage": "Internal Server Error"
+						}
+					}
+				]
+			},
+			{
+				"id": "fail-500-unknown-stats-off",
+				"meta": {
+					"enableStatsForFederatedInstances": false
+				},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "status",
+							"statusCode": 500,
+							"statusMessage": "Internal Server Error"
+						}
+					}
+				]
+			},
+			{
+				"id": "fail-429",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "status",
+							"statusCode": 429,
+							"statusMessage": "Too Many Requests"
+						}
+					}
+				]
+			},
+			{
+				"id": "fail-404",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/users/alice/inbox",
+						"isSharedInbox": false,
+						"failure": {
+							"kind": "status",
+							"statusCode": 404,
+							"statusMessage": "Not Found"
+						}
+					}
+				]
+			},
+			{
+				"id": "fail-410-personal",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/users/alice/inbox",
+						"isSharedInbox": false,
+						"failure": {
+							"kind": "status",
+							"statusCode": 410,
+							"statusMessage": "Gone"
+						}
+					}
+				]
+			},
+			{
+				"id": "fail-410-shared",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "status",
+							"statusCode": 410,
+							"statusMessage": "Gone"
+						}
+					}
+				]
+			},
+			{
+				"id": "fail-410-shared-unknown-stats-off",
+				"meta": {
+					"enableStatsForFederatedInstances": false
+				},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "status",
+							"statusCode": 410,
+							"statusMessage": "Gone"
+						}
+					}
+				]
+			},
+			{
+				"id": "fail-410-shared-port",
+				"meta": {},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://remote.example:8443/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "status",
+							"statusCode": 410,
+							"statusMessage": "Gone"
+						}
+					}
+				]
+			},
+			{
+				"id": "fail-network",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "error",
+							"name": "FetchError",
+							"message": "getaddrinfo ENOTFOUND remote.example",
+							"props": {
+								"code": "ENOTFOUND"
+							}
+						}
+					}
+				]
+			},
+			{
+				"id": "fail-already-not-responding-6d",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": true,
+						"notRespondingSince": "2026-10-28T00:00:00.000Z",
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "status",
+							"statusCode": 503,
+							"statusMessage": "Service Unavailable"
+						}
+					}
+				]
+			},
+			{
+				"id": "fail-already-not-responding-7d-minus-1ms",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": true,
+						"notRespondingSince": "2026-10-27T00:00:00.001Z",
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "status",
+							"statusCode": 503,
+							"statusMessage": "Service Unavailable"
+						}
+					}
+				]
+			},
+			{
+				"id": "fail-already-not-responding-7d-exact",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": true,
+						"notRespondingSince": "2026-10-27T00:00:00.000Z",
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "status",
+							"statusCode": 503,
+							"statusMessage": "Service Unavailable"
+						}
+					}
+				]
+			},
+			{
+				"id": "fail-already-not-responding-30d",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": true,
+						"notRespondingSince": "2026-10-04T00:00:00.000Z",
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "error",
+							"name": "FetchError",
+							"message": "getaddrinfo ENOTFOUND remote.example",
+							"props": {
+								"code": "ENOTFOUND"
+							}
+						}
+					}
+				]
+			},
+			{
+				"id": "fail-not-responding-since-null",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": true,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "status",
+							"statusCode": 503,
+							"statusMessage": "Service Unavailable"
+						}
+					}
+				]
+			},
+			{
+				"id": "fail-not-responding-suspended-stale-cache",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": true,
+						"notRespondingSince": "2026-10-04T00:00:00.000Z",
+						"suspensionState": "manuallySuspended",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"suspendedHostsCache": [],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "status",
+							"statusCode": 503,
+							"statusMessage": "Service Unavailable"
+						}
+					}
+				]
+			},
+			{
+				"id": "fail-charts-off",
+				"meta": {
+					"enableChartsForFederatedInstances": false
+				},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "status",
+							"statusCode": 500,
+							"statusMessage": "Internal Server Error"
+						}
+					}
+				]
+			},
+			{
+				"id": "port-host-success-registers-empty-host",
+				"meta": {},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://remote.example:8443/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "idn-host-success",
+				"meta": {},
+				"instances": [],
+				"steps": [
+					{
+						"to": "https://ëxample.jp/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						}
+					}
+				]
+			},
+			{
+				"id": "sequence-gone-then-cached-suspended-list",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "status",
+							"statusCode": 410,
+							"statusMessage": "Gone"
+						}
+					},
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						},
+						"advanceMs": 3600000
+					},
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						},
+						"advanceMs": 1
+					}
+				]
+			},
+			{
+				"id": "sequence-not-responding-to-auto-suspend",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "status",
+							"statusCode": 500,
+							"statusMessage": "Internal Server Error"
+						}
+					},
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "status",
+							"statusCode": 500,
+							"statusMessage": "Internal Server Error"
+						},
+						"advanceMs": 604800000
+					},
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						},
+						"advanceMs": 1
+					}
+				]
+			},
+			{
+				"id": "sequence-recover",
+				"meta": {},
+				"instances": [
+					{
+						"id": "instance-remote.example",
+						"host": "remote.example",
+						"isNotResponding": false,
+						"notRespondingSince": null,
+						"suspensionState": "none",
+						"softwareName": null,
+						"softwareVersion": null
+					}
+				],
+				"steps": [
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "error",
+							"name": "FetchError",
+							"message": "getaddrinfo ENOTFOUND remote.example",
+							"props": {
+								"code": "ENOTFOUND"
+							}
+						}
+					},
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "none"
+						},
+						"advanceMs": 60000
+					},
+					{
+						"to": "https://remote.example/inbox",
+						"isSharedInbox": true,
+						"failure": {
+							"kind": "error",
+							"name": "FetchError",
+							"message": "getaddrinfo ENOTFOUND remote.example",
+							"props": {
+								"code": "ENOTFOUND"
+							}
+						},
+						"advanceMs": 60000
+					}
+				]
+			}
+		]
+	},
+	"cases": [
+		{
+			"id": "success-unknown-stats-on",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"insertOne",
+							{
+								"id": "registered-1",
+								"host": "remote.example",
+								"firstRetrievedAt": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"firstRetrievedAt\":\"2026-11-03T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\",\"id\":\"registered-1\",\"host\":\"remote.example\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							"remote.example"
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"firstRetrievedAt": "2026-11-03T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": "",
+					"id": "registered-1",
+					"host": "remote.example"
+				}
+			]
+		},
+		{
+			"id": "success-unknown-stats-off",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetch",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"null",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": []
+		},
+		{
+			"id": "success-known-responding",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							"remote.example"
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "success-clears-not-responding-stats-on",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": false,
+								"notRespondingSince": null
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": false,
+								"notRespondingSince": null
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-10-31T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							"remote.example"
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "success-clears-not-responding-stats-off",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetch",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": false,
+								"notRespondingSince": null
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": false,
+								"notRespondingSince": null
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-10-31T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							true
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "success-charts-off",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							"remote.example"
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "blocked-federation-none",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (blocked)",
+					"signedPosts": [],
+					"instanceServiceCalls": [],
+					"db": [],
+					"redisSets": [],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": []
+		},
+		{
+			"id": "blocked-federation-specified-miss",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (blocked)",
+					"signedPosts": [],
+					"instanceServiceCalls": [],
+					"db": [],
+					"redisSets": [],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": []
+		},
+		{
+			"id": "allowed-federation-specified-hit",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"insertOne",
+							{
+								"id": "registered-1",
+								"host": "remote.example",
+								"firstRetrievedAt": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"firstRetrievedAt\":\"2026-11-03T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\",\"id\":\"registered-1\",\"host\":\"remote.example\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							"remote.example"
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"firstRetrievedAt": "2026-11-03T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": "",
+					"id": "registered-1",
+					"host": "remote.example"
+				}
+			]
+		},
+		{
+			"id": "allowed-federation-specified-parent",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"insertOne",
+							{
+								"id": "registered-1",
+								"host": "remote.example",
+								"firstRetrievedAt": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"firstRetrievedAt\":\"2026-11-03T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\",\"id\":\"registered-1\",\"host\":\"remote.example\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							"remote.example"
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"firstRetrievedAt": "2026-11-03T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": "",
+					"id": "registered-1",
+					"host": "remote.example"
+				}
+			]
+		},
+		{
+			"id": "blocked-host",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (blocked)",
+					"signedPosts": [],
+					"instanceServiceCalls": [],
+					"db": [],
+					"redisSets": [],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": []
+		},
+		{
+			"id": "blocked-host-parent-domain",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://sub.remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (blocked)",
+					"signedPosts": [],
+					"instanceServiceCalls": [],
+					"db": [],
+					"redisSets": [],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": []
+		},
+		{
+			"id": "blocked-host-mixed-case-url",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://REMOTE.Example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (blocked)",
+					"signedPosts": [],
+					"instanceServiceCalls": [],
+					"db": [],
+					"redisSets": [],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": []
+		},
+		{
+			"id": "blocked-host-port-not-matched",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example:8443/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example:8443/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example:8443"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": ""
+							}
+						],
+						[
+							"insertOne",
+							{
+								"id": "registered-1",
+								"host": "",
+								"firstRetrievedAt": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:",
+							"{\"firstRetrievedAt\":\"2026-11-03T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\",\"id\":\"registered-1\",\"host\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example:8443",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							""
+						],
+						[
+							"instanceChart.requestSent",
+							"",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"firstRetrievedAt": "2026-11-03T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": "",
+					"id": "registered-1",
+					"host": ""
+				}
+			]
+		},
+		{
+			"id": "blocked-specified-port",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example:8443/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (blocked)",
+					"signedPosts": [],
+					"instanceServiceCalls": [],
+					"db": [],
+					"redisSets": [],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": []
+		},
+		{
+			"id": "self-host-always-allowed",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://local.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://local.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"local.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "local.example"
+							}
+						],
+						[
+							"insertOne",
+							{
+								"id": "registered-1",
+								"host": "local.example",
+								"firstRetrievedAt": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:local.example",
+							"{\"firstRetrievedAt\":\"2026-11-03T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\",\"id\":\"registered-1\",\"host\":\"local.example\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"local.example",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							"local.example"
+						],
+						[
+							"instanceChart.requestSent",
+							"local.example",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"firstRetrievedAt": "2026-11-03T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": "",
+					"id": "registered-1",
+					"host": "local.example"
+				}
+			]
+		},
+		{
+			"id": "blocked-before-suspended",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (blocked)",
+					"signedPosts": [],
+					"instanceServiceCalls": [],
+					"db": [],
+					"redisSets": [],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "manuallySuspended",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "suspended-manually",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (suspended)",
+					"signedPosts": [],
+					"instanceServiceCalls": [],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						]
+					],
+					"redisSets": [],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "manuallySuspended",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "suspended-gone",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/users/alice/inbox",
+					"isSharedInbox": false,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (suspended)",
+					"signedPosts": [],
+					"instanceServiceCalls": [],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						]
+					],
+					"redisSets": [],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "goneSuspended",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "suspended-auto",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (suspended)",
+					"signedPosts": [],
+					"instanceServiceCalls": [],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						]
+					],
+					"redisSets": [],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "autoSuspendedForNotResponding",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "suspended-idn",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://ëxample.jp/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (suspended)",
+					"signedPosts": [],
+					"instanceServiceCalls": [],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						]
+					],
+					"redisSets": [],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-xn--xample-ova.jp",
+					"host": "xn--xample-ova.jp",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "manuallySuspended",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "suspended-port-host-not-matched",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example:8443/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example:8443/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example:8443"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": ""
+							}
+						],
+						[
+							"insertOne",
+							{
+								"id": "registered-1",
+								"host": "",
+								"firstRetrievedAt": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:",
+							"{\"firstRetrievedAt\":\"2026-11-03T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\",\"id\":\"registered-1\",\"host\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example:8443",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							""
+						],
+						[
+							"instanceChart.requestSent",
+							"",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"firstRetrievedAt": "2026-11-03T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": "",
+					"id": "registered-1",
+					"host": ""
+				},
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "manuallySuspended",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "suspended-empty-host-matches-port",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example:8443/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (suspended)",
+					"signedPosts": [],
+					"instanceServiceCalls": [],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						]
+					],
+					"redisSets": [],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-empty",
+					"host": "",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "manuallySuspended",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "suspended-before-software",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (suspended)",
+					"signedPosts": [],
+					"instanceServiceCalls": [],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						]
+					],
+					"redisSets": [],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "manuallySuspended",
+					"softwareName": "misskey",
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "software-any-version-null",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (software suspended)",
+					"signedPosts": [],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":\"misskey\",\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": "misskey",
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "software-range-version-null",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":\"misskey\",\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							"remote.example"
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": "misskey",
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "software-range-match",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (software suspended)",
+					"signedPosts": [],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":\"misskey\",\"softwareVersion\":\"2023.12.2\",\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": "misskey",
+					"softwareVersion": "2023.12.2",
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "software-range-prerelease",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (software suspended)",
+					"signedPosts": [],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":\"misskey\",\"softwareVersion\":\"2023.12.2-beta.1\",\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": "misskey",
+					"softwareVersion": "2023.12.2-beta.1",
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "software-range-miss",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":\"misskey\",\"softwareVersion\":\"2024.1.0\",\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							"remote.example"
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": "misskey",
+					"softwareVersion": "2024.1.0",
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "software-name-case-sensitive",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":\"misskey\",\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							"remote.example"
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": "misskey",
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "software-name-null",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							"remote.example"
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "software-stats-off-unknown",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetch",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"null",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": []
+		},
+		{
+			"id": "software-stats-off-known",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (software suspended)",
+					"signedPosts": [],
+					"instanceServiceCalls": [
+						[
+							"fetch",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":\"misskey\",\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": "misskey",
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "fail-500-first",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "status",
+						"statusCode": 500,
+						"statusMessage": "Internal Server Error"
+					},
+					"thrown": {
+						"name": "Error",
+						"message": "500 Internal Server Error",
+						"unrecoverable": false,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-11-03T00:00:00.000Z",
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "fail-500-unknown-stats-off",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "status",
+						"statusCode": 500,
+						"statusMessage": "Internal Server Error"
+					},
+					"thrown": {
+						"name": "Error",
+						"message": "500 Internal Server Error",
+						"unrecoverable": false,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetch",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"registered-1",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"insertOne",
+							{
+								"id": "registered-1",
+								"host": "remote.example",
+								"firstRetrievedAt": "2026-11-03T00:00:00.000Z"
+							}
+						],
+						[
+							"update",
+							"registered-1",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"null",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"firstRetrievedAt\":\"2026-11-03T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\",\"id\":\"registered-1\",\"host\":\"remote.example\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"firstRetrievedAt\":\"2026-11-03T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\",\"id\":\"registered-1\",\"host\":\"remote.example\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"firstRetrievedAt": "2026-11-03T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-11-03T00:00:00.000Z",
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": "",
+					"id": "registered-1",
+					"host": "remote.example"
+				}
+			]
+		},
+		{
+			"id": "fail-429",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "status",
+						"statusCode": 429,
+						"statusMessage": "Too Many Requests"
+					},
+					"thrown": {
+						"name": "Error",
+						"message": "429 Too Many Requests",
+						"unrecoverable": false,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-11-03T00:00:00.000Z",
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "fail-404",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/users/alice/inbox",
+					"isSharedInbox": false,
+					"failure": {
+						"kind": "status",
+						"statusCode": 404,
+						"statusMessage": "Not Found"
+					},
+					"thrown": {
+						"name": "UnrecoverableError",
+						"message": "404 Not Found",
+						"unrecoverable": true,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/users/alice/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-11-03T00:00:00.000Z",
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "fail-410-personal",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/users/alice/inbox",
+					"isSharedInbox": false,
+					"failure": {
+						"kind": "status",
+						"statusCode": 410,
+						"statusMessage": "Gone"
+					},
+					"thrown": {
+						"name": "UnrecoverableError",
+						"message": "410 Gone",
+						"unrecoverable": true,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/users/alice/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-11-03T00:00:00.000Z",
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "fail-410-shared",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "status",
+						"statusCode": 410,
+						"statusMessage": "Gone"
+					},
+					"thrown": {
+						"name": "UnrecoverableError",
+						"message": "remote.example is gone",
+						"unrecoverable": true,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"suspensionState": "goneSuspended"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"suspensionState": "goneSuspended"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"goneSuspended\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-11-03T00:00:00.000Z",
+					"suspensionState": "goneSuspended",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "fail-410-shared-unknown-stats-off",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "status",
+						"statusCode": 410,
+						"statusMessage": "Gone"
+					},
+					"thrown": {
+						"name": "UnrecoverableError",
+						"message": "remote.example is gone",
+						"unrecoverable": true,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetch",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"registered-1",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"insertOne",
+							{
+								"id": "registered-1",
+								"host": "remote.example",
+								"firstRetrievedAt": "2026-11-03T00:00:00.000Z"
+							}
+						],
+						[
+							"insertOne",
+							{
+								"id": "registered-2",
+								"host": "remote.example",
+								"firstRetrievedAt": "2026-11-03T00:00:00.000Z"
+							}
+						],
+						[
+							"update",
+							"registered-1",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"null",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"firstRetrievedAt\":\"2026-11-03T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\",\"id\":\"registered-1\",\"host\":\"remote.example\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"firstRetrievedAt\":\"2026-11-03T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\",\"id\":\"registered-1\",\"host\":\"remote.example\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": [
+						"duplicate key value violates unique constraint"
+					]
+				}
+			],
+			"instances": [
+				{
+					"firstRetrievedAt": "2026-11-03T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-11-03T00:00:00.000Z",
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": "",
+					"id": "registered-1",
+					"host": "remote.example"
+				}
+			]
+		},
+		{
+			"id": "fail-410-shared-port",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example:8443/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "status",
+						"statusCode": 410,
+						"statusMessage": "Gone"
+					},
+					"thrown": {
+						"name": "UnrecoverableError",
+						"message": "remote.example:8443 is gone",
+						"unrecoverable": true,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example:8443/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example:8443"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example:8443"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example:8443"
+						],
+						[
+							"update",
+							"registered-1",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						],
+						[
+							"update",
+							"registered-1",
+							{
+								"suspensionState": "goneSuspended"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": ""
+							}
+						],
+						[
+							"insertOne",
+							{
+								"id": "registered-1",
+								"host": "",
+								"firstRetrievedAt": "2026-11-03T00:00:00.000Z"
+							}
+						],
+						[
+							"update",
+							"registered-1",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						],
+						[
+							"update",
+							"registered-1",
+							{
+								"suspensionState": "goneSuspended"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:",
+							"{\"firstRetrievedAt\":\"2026-11-03T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\",\"id\":\"registered-1\",\"host\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:",
+							"{\"firstRetrievedAt\":\"2026-11-03T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\",\"id\":\"registered-1\",\"host\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:",
+							"{\"firstRetrievedAt\":\"2026-11-03T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"goneSuspended\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\",\"id\":\"registered-1\",\"host\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example:8443",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"",
+							false
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"firstRetrievedAt": "2026-11-03T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-11-03T00:00:00.000Z",
+					"suspensionState": "goneSuspended",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": "",
+					"id": "registered-1",
+					"host": ""
+				}
+			]
+		},
+		{
+			"id": "fail-network",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "error",
+						"name": "FetchError",
+						"message": "getaddrinfo ENOTFOUND remote.example",
+						"props": {
+							"code": "ENOTFOUND"
+						}
+					},
+					"thrown": {
+						"name": "FetchError",
+						"message": "getaddrinfo ENOTFOUND remote.example",
+						"unrecoverable": false,
+						"original": true
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-11-03T00:00:00.000Z",
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "fail-already-not-responding-6d",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "status",
+						"statusCode": 503,
+						"statusMessage": "Service Unavailable"
+					},
+					"thrown": {
+						"name": "Error",
+						"message": "503 Service Unavailable",
+						"unrecoverable": false,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-10-28T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-10-28T00:00:00.000Z",
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "fail-already-not-responding-7d-minus-1ms",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "status",
+						"statusCode": 503,
+						"statusMessage": "Service Unavailable"
+					},
+					"thrown": {
+						"name": "Error",
+						"message": "503 Service Unavailable",
+						"unrecoverable": false,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-10-27T00:00:00.001Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-10-27T00:00:00.001Z",
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "fail-already-not-responding-7d-exact",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "status",
+						"statusCode": 503,
+						"statusMessage": "Service Unavailable"
+					},
+					"thrown": {
+						"name": "Error",
+						"message": "503 Service Unavailable",
+						"unrecoverable": false,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"suspensionState": "autoSuspendedForNotResponding"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"suspensionState": "autoSuspendedForNotResponding"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-10-27T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-10-27T00:00:00.000Z\",\"suspensionState\":\"autoSuspendedForNotResponding\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-10-27T00:00:00.000Z",
+					"suspensionState": "autoSuspendedForNotResponding",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "fail-already-not-responding-30d",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "error",
+						"name": "FetchError",
+						"message": "getaddrinfo ENOTFOUND remote.example",
+						"props": {
+							"code": "ENOTFOUND"
+						}
+					},
+					"thrown": {
+						"name": "FetchError",
+						"message": "getaddrinfo ENOTFOUND remote.example",
+						"unrecoverable": false,
+						"original": true
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"suspensionState": "autoSuspendedForNotResponding"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"suspensionState": "autoSuspendedForNotResponding"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-10-04T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-10-04T00:00:00.000Z\",\"suspensionState\":\"autoSuspendedForNotResponding\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-10-04T00:00:00.000Z",
+					"suspensionState": "autoSuspendedForNotResponding",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "fail-not-responding-since-null",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "status",
+						"statusCode": 503,
+						"statusMessage": "Service Unavailable"
+					},
+					"thrown": {
+						"name": "Error",
+						"message": "503 Service Unavailable",
+						"unrecoverable": false,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-11-03T00:00:00.000Z",
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "fail-not-responding-suspended-stale-cache",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "status",
+						"statusCode": 503,
+						"statusMessage": "Service Unavailable"
+					},
+					"thrown": {
+						"name": "Error",
+						"message": "503 Service Unavailable",
+						"unrecoverable": false,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						]
+					],
+					"db": [
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-10-04T00:00:00.000Z\",\"suspensionState\":\"manuallySuspended\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-10-04T00:00:00.000Z",
+					"suspensionState": "manuallySuspended",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "fail-charts-off",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "status",
+						"statusCode": 500,
+						"statusMessage": "Internal Server Error"
+					},
+					"thrown": {
+						"name": "Error",
+						"message": "500 Internal Server Error",
+						"unrecoverable": false,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-11-03T00:00:00.000Z",
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "port-host-success-registers-empty-host",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example:8443/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example:8443/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example:8443"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": ""
+							}
+						],
+						[
+							"insertOne",
+							{
+								"id": "registered-1",
+								"host": "",
+								"firstRetrievedAt": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:",
+							"{\"firstRetrievedAt\":\"2026-11-03T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\",\"id\":\"registered-1\",\"host\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example:8443",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							""
+						],
+						[
+							"instanceChart.requestSent",
+							"",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"firstRetrievedAt": "2026-11-03T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": "",
+					"id": "registered-1",
+					"host": ""
+				}
+			]
+		},
+		{
+			"id": "idn-host-success",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://ëxample.jp/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://ëxample.jp/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"xn--xample-ova.jp"
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "xn--xample-ova.jp"
+							}
+						],
+						[
+							"insertOne",
+							{
+								"id": "registered-1",
+								"host": "xn--xample-ova.jp",
+								"firstRetrievedAt": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:xn--xample-ova.jp",
+							"{\"firstRetrievedAt\":\"2026-11-03T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\",\"id\":\"registered-1\",\"host\":\"xn--xample-ova.jp\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"xn--xample-ova.jp",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							"xn--xample-ova.jp"
+						],
+						[
+							"instanceChart.requestSent",
+							"xn--xample-ova.jp",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"firstRetrievedAt": "2026-11-03T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": "",
+					"id": "registered-1",
+					"host": "xn--xample-ova.jp"
+				}
+			]
+		},
+		{
+			"id": "sequence-gone-then-cached-suspended-list",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "status",
+						"statusCode": 410,
+						"statusMessage": "Gone"
+					},
+					"thrown": {
+						"name": "UnrecoverableError",
+						"message": "remote.example is gone",
+						"unrecoverable": true,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"suspensionState": "goneSuspended"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"suspensionState": "goneSuspended"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"goneSuspended\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				},
+				{
+					"at": "2026-11-03T01:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": false,
+								"notRespondingSince": null
+							}
+						]
+					],
+					"db": [
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": false,
+								"notRespondingSince": null
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"goneSuspended\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"goneSuspended\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							"remote.example"
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							true
+						]
+					],
+					"unhandledRejections": []
+				},
+				{
+					"at": "2026-11-03T01:00:00.001Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "skip (suspended)",
+					"signedPosts": [],
+					"instanceServiceCalls": [],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						]
+					],
+					"redisSets": [],
+					"outOfScope": [],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "goneSuspended",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "sequence-not-responding-to-auto-suspend",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "status",
+						"statusCode": 500,
+						"statusMessage": "Internal Server Error"
+					},
+					"thrown": {
+						"name": "Error",
+						"message": "500 Internal Server Error",
+						"unrecoverable": false,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				},
+				{
+					"at": "2026-11-10T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "status",
+						"statusCode": 500,
+						"statusMessage": "Internal Server Error"
+					},
+					"thrown": {
+						"name": "Error",
+						"message": "500 Internal Server Error",
+						"unrecoverable": false,
+						"original": false
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"suspensionState": "autoSuspendedForNotResponding"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"suspensionState": "autoSuspendedForNotResponding"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"autoSuspendedForNotResponding\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				},
+				{
+					"at": "2026-11-10T00:00:00.001Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": false,
+								"notRespondingSince": null
+							}
+						]
+					],
+					"db": [
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": false,
+								"notRespondingSince": null
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"autoSuspendedForNotResponding\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							"remote.example"
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							true
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": false,
+					"notRespondingSince": null,
+					"suspensionState": "autoSuspendedForNotResponding",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		},
+		{
+			"id": "sequence-recover",
+			"steps": [
+				{
+					"at": "2026-11-03T00:00:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "error",
+						"name": "FetchError",
+						"message": "getaddrinfo ENOTFOUND remote.example",
+						"props": {
+							"code": "ENOTFOUND"
+						}
+					},
+					"thrown": {
+						"name": "FetchError",
+						"message": "getaddrinfo ENOTFOUND remote.example",
+						"unrecoverable": false,
+						"original": true
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"db": [
+						[
+							"find",
+							{
+								"where": {
+									"suspensionState": {
+										"operator": "not",
+										"value": "none"
+									}
+								}
+							}
+						],
+						[
+							"findOneBy",
+							{
+								"host": "remote.example"
+							}
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:00:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						],
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:00:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				},
+				{
+					"at": "2026-11-03T00:01:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "none"
+					},
+					"returned": "Success",
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": false,
+								"notRespondingSince": null
+							}
+						]
+					],
+					"db": [
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": false,
+								"notRespondingSince": null
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":false,\"notRespondingSince\":null,\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverSucc"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							true
+						],
+						[
+							"fetchInstanceMetadata",
+							"remote.example"
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							true
+						]
+					],
+					"unhandledRejections": []
+				},
+				{
+					"at": "2026-11-03T00:02:00.000Z",
+					"to": "https://remote.example/inbox",
+					"isSharedInbox": true,
+					"failure": {
+						"kind": "error",
+						"name": "FetchError",
+						"message": "getaddrinfo ENOTFOUND remote.example",
+						"props": {
+							"code": "ENOTFOUND"
+						}
+					},
+					"thrown": {
+						"name": "FetchError",
+						"message": "getaddrinfo ENOTFOUND remote.example",
+						"unrecoverable": false,
+						"original": true
+					},
+					"signedPosts": [
+						[
+							{
+								"id": "alice"
+							},
+							"https://remote.example/inbox",
+							"{\"type\":\"Create\"}",
+							"SHA-256=probe"
+						]
+					],
+					"instanceServiceCalls": [
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"fetchOrRegister",
+							"remote.example"
+						],
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:02:00.000Z"
+							}
+						]
+					],
+					"db": [
+						[
+							"update",
+							"instance-remote.example",
+							{
+								"isNotResponding": true,
+								"notRespondingSince": "2026-11-03T00:02:00.000Z"
+							}
+						]
+					],
+					"redisSets": [
+						[
+							"set",
+							"kvcache:federatedInstance:remote.example",
+							"{\"id\":\"instance-remote.example\",\"host\":\"remote.example\",\"firstRetrievedAt\":\"2026-01-01T00:00:00.000Z\",\"usersCount\":0,\"notesCount\":0,\"followingCount\":0,\"followersCount\":0,\"latestRequestReceivedAt\":null,\"isNotResponding\":true,\"notRespondingSince\":\"2026-11-03T00:02:00.000Z\",\"suspensionState\":\"none\",\"softwareName\":null,\"softwareVersion\":null,\"openRegistrations\":null,\"name\":null,\"description\":null,\"maintainerName\":null,\"maintainerEmail\":null,\"iconUrl\":null,\"faviconUrl\":null,\"themeColor\":null,\"infoUpdatedAt\":null,\"moderationNote\":\"\"}",
+							"EX",
+							1800
+						]
+					],
+					"outOfScope": [
+						[
+							"apRequestChart.deliverFail"
+						],
+						[
+							"federationChart.deliverd",
+							"remote.example",
+							false
+						],
+						[
+							"instanceChart.requestSent",
+							"remote.example",
+							false
+						]
+					],
+					"unhandledRejections": []
+				}
+			],
+			"instances": [
+				{
+					"id": "instance-remote.example",
+					"host": "remote.example",
+					"firstRetrievedAt": "2026-01-01T00:00:00.000Z",
+					"usersCount": 0,
+					"notesCount": 0,
+					"followingCount": 0,
+					"followersCount": 0,
+					"latestRequestReceivedAt": null,
+					"isNotResponding": true,
+					"notRespondingSince": "2026-11-03T00:02:00.000Z",
+					"suspensionState": "none",
+					"softwareName": null,
+					"softwareVersion": null,
+					"openRegistrations": null,
+					"name": null,
+					"description": null,
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"iconUrl": null,
+					"faviconUrl": null,
+					"themeColor": null,
+					"infoUpdatedAt": null,
+					"moderationNote": ""
+				}
+			]
+		}
+	]
+}

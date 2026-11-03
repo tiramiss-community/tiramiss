@@ -1,0 +1,1822 @@
+{
+	"inputs": {
+		"now": "2026-11-03T00:00:00.000Z",
+		"user": {
+			"id": "alice"
+		},
+		"activity": {
+			"@context": [
+				"https://www.w3.org/ns/activitystreams"
+			],
+			"id": "https://local.example/notes/x/activity",
+			"type": "Create",
+			"object": {
+				"content": "あ <b>&</b> 😀",
+				"summary": null,
+				"inReplyTo": null,
+				"quoteUrl": null
+			}
+		},
+		"inboxes": [
+			[
+				"https://remote.example/inbox",
+				true
+			],
+			[
+				"https://remote.example/users/alice/inbox",
+				false
+			],
+			[
+				"http://plain.example/inbox",
+				true
+			],
+			[
+				"https://remote.example/inbox/inbox",
+				false
+			],
+			[
+				"https://remote.example/inboxes",
+				false
+			],
+			[
+				"https://remote.example:8443/inbox?next=https://other.example/inbox",
+				true
+			],
+			[
+				"https://remote.example/shared-inbox",
+				true
+			],
+			[
+				"https://xn--xample-ova.jp/inbox",
+				true
+			]
+		],
+		"deliver": [
+			{
+				"id": "relay-inbox",
+				"to": "https://relay.example/inbox",
+				"isSharedInbox": false
+			},
+			{
+				"id": "to-null",
+				"to": null,
+				"isSharedInbox": false
+			},
+			{
+				"id": "content-null",
+				"to": "https://relay.example/inbox",
+				"isSharedInbox": false,
+				"contentNull": true
+			}
+		],
+		"configs": [
+			{
+				"id": "defaults",
+				"config": {}
+			},
+			{
+				"id": "custom",
+				"config": {
+					"deliverJobConcurrency": 16,
+					"deliverJobPerSec": 32,
+					"deliverJobMaxAttempts": 5
+				}
+			},
+			{
+				"id": "zeros",
+				"config": {
+					"deliverJobConcurrency": 0,
+					"deliverJobPerSec": 0,
+					"deliverJobMaxAttempts": 0
+				}
+			},
+			{
+				"id": "nulls",
+				"config": {
+					"deliverJobConcurrency": null,
+					"deliverJobPerSec": null,
+					"deliverJobMaxAttempts": null
+				}
+			}
+		],
+		"redisForJobQueue": [
+			{
+				"id": "host-prefix",
+				"options": {
+					"host": "redis.internal",
+					"port": 6379,
+					"family": 0,
+					"db": 2,
+					"password": "test-only",
+					"prefix": "example.tld",
+					"keyPrefix": "example.tld:"
+				}
+			},
+			{
+				"id": "no-prefix",
+				"options": {
+					"host": "redis.internal",
+					"port": 6380,
+					"family": 0,
+					"db": 0
+				}
+			}
+		],
+		"backoff": {
+			"attemptsMade": [
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14
+			],
+			"random": [
+				0,
+				0.5,
+				0.9999999999999999
+			]
+		},
+		"retry": {
+			"attempts": [
+				12,
+				1,
+				3
+			],
+			"errors": [
+				{
+					"id": "error",
+					"name": "Error",
+					"message": "500 Internal Server Error"
+				},
+				{
+					"id": "unrecoverable",
+					"unrecoverable": true,
+					"message": "404 Not Found"
+				},
+				{
+					"id": "unrecoverable-by-name",
+					"name": "UnrecoverableError",
+					"message": "renamed"
+				}
+			],
+			"random": 0
+		}
+	},
+	"cases": {
+		"enqueue": [
+			{
+				"id": "defaults",
+				"deliverMany": [
+					[
+						"addBulk",
+						[
+							{
+								"name": "remote.example",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.example/users/alice",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/users/alice/inbox",
+									"isSharedInbox": false
+								},
+								"opts": {
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "http://plain.example",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "http://plain.example/inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.example/inbox",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/inbox/inbox",
+									"isSharedInbox": false
+								},
+								"opts": {
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.examplees",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/inboxes",
+									"isSharedInbox": false
+								},
+								"opts": {
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.example:8443?next=https://other.example/inbox",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example:8443/inbox?next=https://other.example/inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.example/shared-inbox",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/shared-inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "xn--xample-ova.jp",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://xn--xample-ova.jp/inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							}
+						]
+					]
+				],
+				"deliverManyEmpty": [
+					[
+						"addBulk",
+						[]
+					]
+				],
+				"deliverManyNullActivity": {
+					"returnedNull": true,
+					"calls": []
+				},
+				"deliver": [
+					{
+						"id": "relay-inbox",
+						"returnedNull": false,
+						"calls": [
+							[
+								"add",
+								"relay.example",
+								{
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://relay.example/inbox",
+									"isSharedInbox": false
+								},
+								{
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							]
+						]
+					},
+					{
+						"id": "to-null",
+						"returnedNull": true,
+						"calls": []
+					},
+					{
+						"id": "content-null",
+						"returnedNull": true,
+						"calls": []
+					}
+				]
+			},
+			{
+				"id": "custom",
+				"deliverMany": [
+					[
+						"addBulk",
+						[
+							{
+								"name": "remote.example",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 5,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.example/users/alice",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/users/alice/inbox",
+									"isSharedInbox": false
+								},
+								"opts": {
+									"attempts": 5,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "http://plain.example",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "http://plain.example/inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 5,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.example/inbox",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/inbox/inbox",
+									"isSharedInbox": false
+								},
+								"opts": {
+									"attempts": 5,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.examplees",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/inboxes",
+									"isSharedInbox": false
+								},
+								"opts": {
+									"attempts": 5,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.example:8443?next=https://other.example/inbox",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example:8443/inbox?next=https://other.example/inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 5,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.example/shared-inbox",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/shared-inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 5,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "xn--xample-ova.jp",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://xn--xample-ova.jp/inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 5,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							}
+						]
+					]
+				],
+				"deliverManyEmpty": [
+					[
+						"addBulk",
+						[]
+					]
+				],
+				"deliverManyNullActivity": {
+					"returnedNull": true,
+					"calls": []
+				},
+				"deliver": [
+					{
+						"id": "relay-inbox",
+						"returnedNull": false,
+						"calls": [
+							[
+								"add",
+								"relay.example",
+								{
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://relay.example/inbox",
+									"isSharedInbox": false
+								},
+								{
+									"attempts": 5,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							]
+						]
+					},
+					{
+						"id": "to-null",
+						"returnedNull": true,
+						"calls": []
+					},
+					{
+						"id": "content-null",
+						"returnedNull": true,
+						"calls": []
+					}
+				]
+			},
+			{
+				"id": "zeros",
+				"deliverMany": [
+					[
+						"addBulk",
+						[
+							{
+								"name": "remote.example",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 0,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.example/users/alice",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/users/alice/inbox",
+									"isSharedInbox": false
+								},
+								"opts": {
+									"attempts": 0,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "http://plain.example",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "http://plain.example/inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 0,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.example/inbox",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/inbox/inbox",
+									"isSharedInbox": false
+								},
+								"opts": {
+									"attempts": 0,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.examplees",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/inboxes",
+									"isSharedInbox": false
+								},
+								"opts": {
+									"attempts": 0,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.example:8443?next=https://other.example/inbox",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example:8443/inbox?next=https://other.example/inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 0,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.example/shared-inbox",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/shared-inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 0,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "xn--xample-ova.jp",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://xn--xample-ova.jp/inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 0,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							}
+						]
+					]
+				],
+				"deliverManyEmpty": [
+					[
+						"addBulk",
+						[]
+					]
+				],
+				"deliverManyNullActivity": {
+					"returnedNull": true,
+					"calls": []
+				},
+				"deliver": [
+					{
+						"id": "relay-inbox",
+						"returnedNull": false,
+						"calls": [
+							[
+								"add",
+								"relay.example",
+								{
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://relay.example/inbox",
+									"isSharedInbox": false
+								},
+								{
+									"attempts": 0,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							]
+						]
+					},
+					{
+						"id": "to-null",
+						"returnedNull": true,
+						"calls": []
+					},
+					{
+						"id": "content-null",
+						"returnedNull": true,
+						"calls": []
+					}
+				]
+			},
+			{
+				"id": "nulls",
+				"deliverMany": [
+					[
+						"addBulk",
+						[
+							{
+								"name": "remote.example",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.example/users/alice",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/users/alice/inbox",
+									"isSharedInbox": false
+								},
+								"opts": {
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "http://plain.example",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "http://plain.example/inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.example/inbox",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/inbox/inbox",
+									"isSharedInbox": false
+								},
+								"opts": {
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.examplees",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/inboxes",
+									"isSharedInbox": false
+								},
+								"opts": {
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.example:8443?next=https://other.example/inbox",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example:8443/inbox?next=https://other.example/inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "remote.example/shared-inbox",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://remote.example/shared-inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							},
+							{
+								"name": "xn--xample-ova.jp",
+								"data": {
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://xn--xample-ova.jp/inbox",
+									"isSharedInbox": true
+								},
+								"opts": {
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							}
+						]
+					]
+				],
+				"deliverManyEmpty": [
+					[
+						"addBulk",
+						[]
+					]
+				],
+				"deliverManyNullActivity": {
+					"returnedNull": true,
+					"calls": []
+				},
+				"deliver": [
+					{
+						"id": "relay-inbox",
+						"returnedNull": false,
+						"calls": [
+							[
+								"add",
+								"relay.example",
+								{
+									"user": {
+										"id": "alice"
+									},
+									"content": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\"],\"id\":\"https://local.example/notes/x/activity\",\"type\":\"Create\",\"object\":{\"content\":\"あ <b>&</b> 😀\",\"summary\":null,\"inReplyTo\":null,\"quoteUrl\":null}}",
+									"digest": "SHA-256=boSNBhlgIicUI1W2KmWGnKrJnOQdSwM39zFOGWpfr6Y=",
+									"to": "https://relay.example/inbox",
+									"isSharedInbox": false
+								},
+								{
+									"attempts": 12,
+									"backoff": {
+										"type": "custom"
+									},
+									"removeOnComplete": {
+										"age": 604800,
+										"count": 30
+									},
+									"removeOnFail": {
+										"age": 604800,
+										"count": 100
+									}
+								}
+							]
+						]
+					},
+					{
+						"id": "to-null",
+						"returnedNull": true,
+						"calls": []
+					},
+					{
+						"id": "content-null",
+						"returnedNull": true,
+						"calls": []
+					}
+				]
+			}
+		],
+		"queues": [
+			{
+				"id": "host-prefix",
+				"queueName": "deliver",
+				"queueOptions": {
+					"connection": {
+						"host": "redis.internal",
+						"port": 6379,
+						"family": 0,
+						"db": 2,
+						"password": "test-only",
+						"prefix": "example.tld"
+					},
+					"prefix": "example.tld:queue:deliver"
+				},
+				"connectionKeyPrefix": null
+			},
+			{
+				"id": "no-prefix",
+				"queueName": "deliver",
+				"queueOptions": {
+					"connection": {
+						"host": "redis.internal",
+						"port": 6380,
+						"family": 0,
+						"db": 0
+					},
+					"prefix": "queue:deliver"
+				},
+				"connectionKeyPrefix": null
+			}
+		],
+		"workerOptions": [
+			{
+				"id": "defaults",
+				"opts": {
+					"connection": {
+						"host": "redis.internal",
+						"port": 6379,
+						"family": 0,
+						"db": 2,
+						"password": "test-only",
+						"prefix": "example.tld"
+					},
+					"prefix": "example.tld:queue:deliver",
+					"metrics": {
+						"maxDataPoints": 10080
+					},
+					"autorun": false,
+					"concurrency": 128,
+					"limiter": {
+						"max": 128,
+						"duration": 1000
+					},
+					"settings": {}
+				},
+				"backoffStrategy": "function"
+			},
+			{
+				"id": "custom",
+				"opts": {
+					"connection": {
+						"host": "redis.internal",
+						"port": 6379,
+						"family": 0,
+						"db": 2,
+						"password": "test-only",
+						"prefix": "example.tld"
+					},
+					"prefix": "example.tld:queue:deliver",
+					"metrics": {
+						"maxDataPoints": 10080
+					},
+					"autorun": false,
+					"concurrency": 16,
+					"limiter": {
+						"max": 32,
+						"duration": 1000
+					},
+					"settings": {}
+				},
+				"backoffStrategy": "function"
+			},
+			{
+				"id": "zeros",
+				"opts": {
+					"connection": {
+						"host": "redis.internal",
+						"port": 6379,
+						"family": 0,
+						"db": 2,
+						"password": "test-only",
+						"prefix": "example.tld"
+					},
+					"prefix": "example.tld:queue:deliver",
+					"metrics": {
+						"maxDataPoints": 10080
+					},
+					"autorun": false,
+					"concurrency": 0,
+					"limiter": {
+						"max": 0,
+						"duration": 1000
+					},
+					"settings": {}
+				},
+				"backoffStrategy": "function"
+			},
+			{
+				"id": "nulls",
+				"opts": {
+					"connection": {
+						"host": "redis.internal",
+						"port": 6379,
+						"family": 0,
+						"db": 2,
+						"password": "test-only",
+						"prefix": "example.tld"
+					},
+					"prefix": "example.tld:queue:deliver",
+					"metrics": {
+						"maxDataPoints": 10080
+					},
+					"autorun": false,
+					"concurrency": 128,
+					"limiter": {
+						"max": 128,
+						"duration": 1000
+					},
+					"settings": {}
+				},
+				"backoffStrategy": "function"
+			}
+		],
+		"worker": {
+			"name": "deliver",
+			"events": [
+				"active",
+				"completed",
+				"error",
+				"stalled"
+			],
+			"onFailure": {
+				"logs": [
+					[
+						"error",
+						"failed(Error: probe processor failure) id=1 attempts=0/12 age=1m to=https://remote.example/inbox",
+						{
+							"name": "Error",
+							"message": "probe processor failure"
+						}
+					]
+				],
+				"captured": [
+					"Queue: Deliver: Error: probe processor failure"
+				],
+				"rethrowsOriginal": true
+			},
+			"eventLogs": [
+				[
+					"debug",
+					"active id=1 attempts=1/12 age=1m to=https://remote.example/inbox"
+				],
+				[
+					"debug",
+					"completed(Success) id=1 attempts=1/12 age=1m to=https://remote.example/inbox"
+				],
+				[
+					"error",
+					"error Error: probe worker error",
+					{
+						"name": "Error",
+						"message": "probe worker error"
+					}
+				],
+				[
+					"warn",
+					"stalled id=1"
+				]
+			]
+		},
+		"workerNames": [
+			"system",
+			"db",
+			"deliver",
+			"inbox",
+			"userWebhookDeliver",
+			"systemWebhookDeliver",
+			"relationship",
+			"objectStorage",
+			"endedPollNotification",
+			"postScheduledNote"
+		],
+		"backoff": [
+			{
+				"random": 0,
+				"delays": [
+					0,
+					60000,
+					180000,
+					420000,
+					900000,
+					1860000,
+					3780000,
+					7620000,
+					15300000,
+					28800000,
+					28800000,
+					28800000,
+					28800000,
+					28800000,
+					28800000
+				]
+			},
+			{
+				"random": 0.5,
+				"delays": [
+					0,
+					66000,
+					198000,
+					462000,
+					990000,
+					2046000,
+					4158000,
+					8382000,
+					16830000,
+					31680000,
+					31680000,
+					31680000,
+					31680000,
+					31680000,
+					31680000
+				]
+			},
+			{
+				"random": 0.9999999999999999,
+				"delays": [
+					0,
+					72000,
+					216000,
+					504000,
+					1080000,
+					2232000,
+					4536000,
+					9144000,
+					18360000,
+					34560000,
+					34560000,
+					34560000,
+					34560000,
+					34560000,
+					34560000
+				]
+			}
+		],
+		"retry": [
+			{
+				"attempts": 12,
+				"error": "error",
+				"decisions": [
+					{
+						"attemptsMade": 0,
+						"shouldRetry": true,
+						"delay": 60000
+					},
+					{
+						"attemptsMade": 1,
+						"shouldRetry": true,
+						"delay": 180000
+					},
+					{
+						"attemptsMade": 2,
+						"shouldRetry": true,
+						"delay": 420000
+					},
+					{
+						"attemptsMade": 3,
+						"shouldRetry": true,
+						"delay": 900000
+					},
+					{
+						"attemptsMade": 4,
+						"shouldRetry": true,
+						"delay": 1860000
+					},
+					{
+						"attemptsMade": 5,
+						"shouldRetry": true,
+						"delay": 3780000
+					},
+					{
+						"attemptsMade": 6,
+						"shouldRetry": true,
+						"delay": 7620000
+					},
+					{
+						"attemptsMade": 7,
+						"shouldRetry": true,
+						"delay": 15300000
+					},
+					{
+						"attemptsMade": 8,
+						"shouldRetry": true,
+						"delay": 28800000
+					},
+					{
+						"attemptsMade": 9,
+						"shouldRetry": true,
+						"delay": 28800000
+					},
+					{
+						"attemptsMade": 10,
+						"shouldRetry": true,
+						"delay": 28800000
+					},
+					{
+						"attemptsMade": 11,
+						"shouldRetry": false,
+						"delay": 0
+					}
+				]
+			},
+			{
+				"attempts": 12,
+				"error": "unrecoverable",
+				"decisions": [
+					{
+						"attemptsMade": 0,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 1,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 2,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 3,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 4,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 5,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 6,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 7,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 8,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 9,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 10,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 11,
+						"shouldRetry": false,
+						"delay": 0
+					}
+				]
+			},
+			{
+				"attempts": 12,
+				"error": "unrecoverable-by-name",
+				"decisions": [
+					{
+						"attemptsMade": 0,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 1,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 2,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 3,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 4,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 5,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 6,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 7,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 8,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 9,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 10,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 11,
+						"shouldRetry": false,
+						"delay": 0
+					}
+				]
+			},
+			{
+				"attempts": 1,
+				"error": "error",
+				"decisions": [
+					{
+						"attemptsMade": 0,
+						"shouldRetry": false,
+						"delay": 0
+					}
+				]
+			},
+			{
+				"attempts": 1,
+				"error": "unrecoverable",
+				"decisions": [
+					{
+						"attemptsMade": 0,
+						"shouldRetry": false,
+						"delay": 0
+					}
+				]
+			},
+			{
+				"attempts": 1,
+				"error": "unrecoverable-by-name",
+				"decisions": [
+					{
+						"attemptsMade": 0,
+						"shouldRetry": false,
+						"delay": 0
+					}
+				]
+			},
+			{
+				"attempts": 3,
+				"error": "error",
+				"decisions": [
+					{
+						"attemptsMade": 0,
+						"shouldRetry": true,
+						"delay": 60000
+					},
+					{
+						"attemptsMade": 1,
+						"shouldRetry": true,
+						"delay": 180000
+					},
+					{
+						"attemptsMade": 2,
+						"shouldRetry": false,
+						"delay": 0
+					}
+				]
+			},
+			{
+				"attempts": 3,
+				"error": "unrecoverable",
+				"decisions": [
+					{
+						"attemptsMade": 0,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 1,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 2,
+						"shouldRetry": false,
+						"delay": 0
+					}
+				]
+			},
+			{
+				"attempts": 3,
+				"error": "unrecoverable-by-name",
+				"decisions": [
+					{
+						"attemptsMade": 0,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 1,
+						"shouldRetry": false,
+						"delay": 0
+					},
+					{
+						"attemptsMade": 2,
+						"shouldRetry": false,
+						"delay": 0
+					}
+				]
+			}
+		]
+	}
+}

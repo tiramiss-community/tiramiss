@@ -1,0 +1,1243 @@
+{
+	"inputs": {
+		"actorId": "alice",
+		"activity": {
+			"id": "https://local.example/notes/x/activity",
+			"type": "Create"
+		},
+		"cases": [
+			{
+				"id": "no-recipes",
+				"recipes": [],
+				"followings": []
+			},
+			{
+				"id": "followers-none",
+				"recipes": [
+					{
+						"type": "Followers"
+					}
+				],
+				"followings": []
+			},
+			{
+				"id": "followers-shared-dedupe",
+				"recipes": [
+					{
+						"type": "Followers"
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": "https://a.example/users/1/inbox"
+					},
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": "https://a.example/users/2/inbox"
+					},
+					{
+						"followerSharedInbox": "https://b.example/inbox",
+						"followerInbox": "https://b.example/users/1/inbox"
+					}
+				]
+			},
+			{
+				"id": "followers-individual",
+				"recipes": [
+					{
+						"type": "Followers"
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": null,
+						"followerInbox": "https://c.example/users/1/inbox"
+					},
+					{
+						"followerSharedInbox": null,
+						"followerInbox": "https://c.example/users/2/inbox"
+					}
+				]
+			},
+			{
+				"id": "followers-db-order-kept",
+				"recipes": [
+					{
+						"type": "Followers"
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": "https://z.example/inbox",
+						"followerInbox": "https://z.example/u/inbox"
+					},
+					{
+						"followerSharedInbox": null,
+						"followerInbox": "https://m.example/u/inbox"
+					},
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": "https://a.example/u/inbox"
+					}
+				]
+			},
+			{
+				"id": "followers-same-url-shared-then-individual",
+				"recipes": [
+					{
+						"type": "Followers"
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": "https://a.example/users/1/inbox"
+					},
+					{
+						"followerSharedInbox": "https://b.example/inbox",
+						"followerInbox": "https://b.example/users/1/inbox"
+					},
+					{
+						"followerSharedInbox": null,
+						"followerInbox": "https://a.example/inbox"
+					}
+				]
+			},
+			{
+				"id": "followers-same-url-individual-then-shared",
+				"recipes": [
+					{
+						"type": "Followers"
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": null,
+						"followerInbox": "https://a.example/inbox"
+					},
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": "https://a.example/users/1/inbox"
+					}
+				]
+			},
+			{
+				"id": "followers-inbox-null-first",
+				"recipes": [
+					{
+						"type": "Followers"
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": null,
+						"followerInbox": null
+					},
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": "https://a.example/users/1/inbox"
+					}
+				]
+			},
+			{
+				"id": "followers-inbox-null-last",
+				"recipes": [
+					{
+						"type": "Followers"
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": "https://a.example/users/1/inbox"
+					},
+					{
+						"followerSharedInbox": null,
+						"followerInbox": null
+					}
+				]
+			},
+			{
+				"id": "followers-shared-only",
+				"recipes": [
+					{
+						"type": "Followers"
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": null
+					}
+				]
+			},
+			{
+				"id": "followers-recipe-twice",
+				"recipes": [
+					{
+						"type": "Followers"
+					},
+					{
+						"type": "Followers"
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": "https://a.example/users/1/inbox"
+					}
+				]
+			},
+			{
+				"id": "direct-only",
+				"recipes": [
+					{
+						"type": "Direct",
+						"to": {
+							"inbox": "https://d.example/users/1/inbox",
+							"sharedInbox": "https://d.example/inbox"
+						}
+					},
+					{
+						"type": "Direct",
+						"to": {
+							"inbox": "https://e.example/users/1/inbox",
+							"sharedInbox": null
+						}
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": "https://a.example/users/1/inbox"
+					}
+				]
+			},
+			{
+				"id": "direct-shared-inbox-already-added",
+				"recipes": [
+					{
+						"type": "Followers"
+					},
+					{
+						"type": "Direct",
+						"to": {
+							"inbox": "https://a.example/users/9/inbox",
+							"sharedInbox": "https://a.example/inbox"
+						}
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": "https://a.example/users/1/inbox"
+					}
+				]
+			},
+			{
+				"id": "direct-before-followers-recipe",
+				"recipes": [
+					{
+						"type": "Direct",
+						"to": {
+							"inbox": "https://a.example/users/9/inbox",
+							"sharedInbox": "https://a.example/inbox"
+						}
+					},
+					{
+						"type": "Direct",
+						"to": {
+							"inbox": "https://d.example/users/1/inbox",
+							"sharedInbox": null
+						}
+					},
+					{
+						"type": "Followers"
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": "https://a.example/users/1/inbox"
+					}
+				]
+			},
+			{
+				"id": "direct-shared-inbox-not-added",
+				"recipes": [
+					{
+						"type": "Followers"
+					},
+					{
+						"type": "Direct",
+						"to": {
+							"inbox": "https://d.example/users/1/inbox",
+							"sharedInbox": "https://d.example/inbox"
+						}
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": "https://a.example/users/1/inbox"
+					}
+				]
+			},
+			{
+				"id": "direct-shared-inbox-from-individual-follower",
+				"recipes": [
+					{
+						"type": "Followers"
+					},
+					{
+						"type": "Direct",
+						"to": {
+							"inbox": "https://c.example/users/2/inbox",
+							"sharedInbox": "https://c.example/users/1/inbox"
+						}
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": null,
+						"followerInbox": "https://c.example/users/1/inbox"
+					}
+				]
+			},
+			{
+				"id": "direct-inbox-null",
+				"recipes": [
+					{
+						"type": "Followers"
+					},
+					{
+						"type": "Direct",
+						"to": {
+							"inbox": null,
+							"sharedInbox": "https://d.example/inbox"
+						}
+					},
+					{
+						"type": "Direct",
+						"to": {
+							"inbox": null,
+							"sharedInbox": null
+						}
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": "https://a.example/users/1/inbox"
+					}
+				]
+			},
+			{
+				"id": "direct-inbox-null-shared-added",
+				"recipes": [
+					{
+						"type": "Followers"
+					},
+					{
+						"type": "Direct",
+						"to": {
+							"inbox": null,
+							"sharedInbox": "https://a.example/inbox"
+						}
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": "https://a.example/users/1/inbox"
+					}
+				]
+			},
+			{
+				"id": "direct-inbox-equals-follower-shared-inbox",
+				"recipes": [
+					{
+						"type": "Followers"
+					},
+					{
+						"type": "Direct",
+						"to": {
+							"inbox": "https://a.example/inbox",
+							"sharedInbox": null
+						}
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": "https://a.example/users/1/inbox"
+					},
+					{
+						"followerSharedInbox": "https://b.example/inbox",
+						"followerInbox": "https://b.example/users/1/inbox"
+					}
+				]
+			},
+			{
+				"id": "direct-inbox-equals-follower-individual-inbox",
+				"recipes": [
+					{
+						"type": "Followers"
+					},
+					{
+						"type": "Direct",
+						"to": {
+							"inbox": "https://c.example/users/1/inbox",
+							"sharedInbox": null
+						}
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": null,
+						"followerInbox": "https://c.example/users/1/inbox"
+					}
+				]
+			},
+			{
+				"id": "direct-duplicate-user",
+				"recipes": [
+					{
+						"type": "Direct",
+						"to": {
+							"inbox": "https://d.example/users/1/inbox",
+							"sharedInbox": null
+						}
+					},
+					{
+						"type": "Direct",
+						"to": {
+							"inbox": "https://e.example/users/1/inbox",
+							"sharedInbox": null
+						}
+					},
+					{
+						"type": "Direct",
+						"to": {
+							"inbox": "https://d.example/users/1/inbox",
+							"sharedInbox": null
+						}
+					}
+				],
+				"followings": []
+			},
+			{
+				"id": "direct-after-inbox-null-follower",
+				"recipes": [
+					{
+						"type": "Followers"
+					},
+					{
+						"type": "Direct",
+						"to": {
+							"inbox": "https://d.example/users/1/inbox",
+							"sharedInbox": null
+						}
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": null,
+						"followerInbox": null
+					}
+				]
+			},
+			{
+				"id": "activity-null",
+				"recipes": [
+					{
+						"type": "Followers"
+					}
+				],
+				"followings": [
+					{
+						"followerSharedInbox": "https://a.example/inbox",
+						"followerInbox": "https://a.example/users/1/inbox"
+					}
+				],
+				"activity": null
+			},
+			{
+				"id": "remote-actor",
+				"recipes": [
+					{
+						"type": "Followers"
+					}
+				],
+				"followings": [],
+				"actorHost": "remote.example"
+			}
+		]
+	},
+	"cases": [
+		{
+			"id": "no-recipes",
+			"followingsQueries": [],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": []
+			}
+		},
+		{
+			"id": "followers-none",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": []
+			}
+		},
+		{
+			"id": "followers-shared-dedupe",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://a.example/inbox",
+						true
+					],
+					[
+						"https://b.example/inbox",
+						true
+					]
+				]
+			}
+		},
+		{
+			"id": "followers-individual",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://c.example/users/1/inbox",
+						false
+					],
+					[
+						"https://c.example/users/2/inbox",
+						false
+					]
+				]
+			}
+		},
+		{
+			"id": "followers-db-order-kept",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://z.example/inbox",
+						true
+					],
+					[
+						"https://m.example/u/inbox",
+						false
+					],
+					[
+						"https://a.example/inbox",
+						true
+					]
+				]
+			}
+		},
+		{
+			"id": "followers-same-url-shared-then-individual",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://a.example/inbox",
+						false
+					],
+					[
+						"https://b.example/inbox",
+						true
+					]
+				]
+			}
+		},
+		{
+			"id": "followers-same-url-individual-then-shared",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://a.example/inbox",
+						true
+					]
+				]
+			}
+		},
+		{
+			"id": "followers-inbox-null-first",
+			"error": {
+				"name": "Error",
+				"message": "inbox is null"
+			},
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": null
+		},
+		{
+			"id": "followers-inbox-null-last",
+			"error": {
+				"name": "Error",
+				"message": "inbox is null"
+			},
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": null
+		},
+		{
+			"id": "followers-shared-only",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://a.example/inbox",
+						true
+					]
+				]
+			}
+		},
+		{
+			"id": "followers-recipe-twice",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://a.example/inbox",
+						true
+					]
+				]
+			}
+		},
+		{
+			"id": "direct-only",
+			"followingsQueries": [],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://d.example/users/1/inbox",
+						false
+					],
+					[
+						"https://e.example/users/1/inbox",
+						false
+					]
+				]
+			}
+		},
+		{
+			"id": "direct-shared-inbox-already-added",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://a.example/inbox",
+						true
+					]
+				]
+			}
+		},
+		{
+			"id": "direct-before-followers-recipe",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://a.example/inbox",
+						true
+					],
+					[
+						"https://d.example/users/1/inbox",
+						false
+					]
+				]
+			}
+		},
+		{
+			"id": "direct-shared-inbox-not-added",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://a.example/inbox",
+						true
+					],
+					[
+						"https://d.example/users/1/inbox",
+						false
+					]
+				]
+			}
+		},
+		{
+			"id": "direct-shared-inbox-from-individual-follower",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://c.example/users/1/inbox",
+						false
+					]
+				]
+			}
+		},
+		{
+			"id": "direct-inbox-null",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://a.example/inbox",
+						true
+					]
+				]
+			}
+		},
+		{
+			"id": "direct-inbox-null-shared-added",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://a.example/inbox",
+						true
+					]
+				]
+			}
+		},
+		{
+			"id": "direct-inbox-equals-follower-shared-inbox",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://a.example/inbox",
+						false
+					],
+					[
+						"https://b.example/inbox",
+						true
+					]
+				]
+			}
+		},
+		{
+			"id": "direct-inbox-equals-follower-individual-inbox",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://c.example/users/1/inbox",
+						false
+					]
+				]
+			}
+		},
+		{
+			"id": "direct-duplicate-user",
+			"followingsQueries": [],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": {
+					"id": "https://local.example/notes/x/activity",
+					"type": "Create"
+				},
+				"inboxes": [
+					[
+						"https://d.example/users/1/inbox",
+						false
+					],
+					[
+						"https://e.example/users/1/inbox",
+						false
+					]
+				]
+			}
+		},
+		{
+			"id": "direct-after-inbox-null-follower",
+			"error": {
+				"name": "Error",
+				"message": "inbox is null"
+			},
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": null
+		},
+		{
+			"id": "activity-null",
+			"followingsQueries": [
+				{
+					"where": {
+						"followeeId": "alice",
+						"followerHost": {
+							"operator": "not",
+							"value": {
+								"operator": "isNull"
+							}
+						}
+					},
+					"select": {
+						"followerSharedInbox": true,
+						"followerInbox": true
+					}
+				}
+			],
+			"deliverMany": {
+				"user": {
+					"id": "alice"
+				},
+				"activity": null,
+				"inboxes": [
+					[
+						"https://a.example/inbox",
+						true
+					]
+				]
+			}
+		},
+		{
+			"id": "remote-actor",
+			"error": {
+				"name": "Error",
+				"message": "actor.host must be null"
+			},
+			"followingsQueries": [],
+			"deliverMany": null
+		}
+	]
+}
