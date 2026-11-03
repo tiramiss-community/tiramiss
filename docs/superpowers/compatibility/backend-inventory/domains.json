@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "d9b718359e583fd9e33711c8321fc06b83c06b53",
+  "implementationCommit": "47c9c75dd6b5fc9527c3976b86364b06c46f3a04",
   "domains": [
     {
       "id": "api-common",
