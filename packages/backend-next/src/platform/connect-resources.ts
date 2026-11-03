@@ -150,7 +150,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 
-		const notePostSave = createNotePostSave(async userId => {
+		const notePostSave = createNotePostSave(async ({ userId }) => {
 			await dataSource.getRepository(MiUser).createQueryBuilder().update()
 				.set({ notesCount: () => '"notesCount" + 1', updatedAt: new Date() })
 				.where('id = :userId', { userId }).execute();

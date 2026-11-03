@@ -187,8 +187,8 @@ migrationは対象表を先にロックし、request非settled、item非成功/�
 CW/localOnly/reactionAcceptanceを扱う。保存直後にnotes/showで参照でき、投稿数は保存後に加算する。
 DB失敗やクライアント切断を理由に自動再作成しない。通常終了では開始済みの投稿数更新も待つ。
 
-添付・投票・返信/Renote・channel・指定宛先・MFM抽出は#170で接続する。
-それらを含む入力は当面501 `NOT_IMPLEMENTED`で保存前に拒否する。
+#170段階1で添付（所有権・指定順・attachedFileTypes）と投票（NoteとPollを1つのtransactionで保存）を接続した。
+返信/Renote・channel・指定宛先・MFM抽出は#170の段階2・3で接続し、それまでは501 `NOT_IMPLEMENTED`で保存前に拒否する。
 noExtract*で抽出しないことを明示した本文は保存できる。
 AP/通知/stream/TL/検索/webhook・通常workerは未接続で、投稿領域全体の完成ではない。
 最小契約と既存実装の撤去順は[投稿の最小契約](../../docs/backend-next/posting-contract.md)を参照。

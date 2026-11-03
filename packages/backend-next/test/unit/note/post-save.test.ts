@@ -13,15 +13,15 @@ test('post-save failure is logged, does not escape to HTTP, and shutdown waits f
 		complete = resolve;
 	});
 	const updated: string[] = [];
-	const effects = createNotePostSave(async id => {
+	const effects = createNotePostSave(async ({ userId }) => {
 		await blocked;
-		if (id === 'broken') {
+		if (userId === 'broken') {
 			throw new Error('count unavailable');
 		}
-		updated.push(id);
+		updated.push(userId);
 	}, createLogger('test', line => logs.push(line)));
-	effects.start('saved');
-	effects.start('broken');
+	effects.start({ userId: 'saved' });
+	effects.start({ userId: 'broken' });
 	let closed = false;
 	const closing = effects.close().then(() => {
 		closed = true;

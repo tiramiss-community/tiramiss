@@ -20,3 +20,8 @@ export function matchesWords(text: string, words: string[]): boolean {
 		}
 	});
 }
+
+// cw と text は続けて読まれうるため、区切らずに連結する（本家 UtilityService.concatNoteContentsForKeyWordCheck）。
+export function concatNoteContentsForKeywordCheck(content: { cw: string | null; text: string | null; pollChoices: string[] }): string {
+	return `${content.cw ?? ''}${content.text ?? ''}\n${content.pollChoices.join('\n')}\n`;
+}

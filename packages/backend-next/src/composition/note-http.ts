@@ -4,7 +4,7 @@
  */
 import { createNoteApi } from '../http/note-api.js';
 import { createNoteCreateApi } from '../http/note-create-api.js';
-import { createNoteWriter } from '../platform/database/note-writer.js';
+import { createNoteWriter, createNoteWriteTransactions } from '../platform/database/note-writer.js';
 import { createNoteRateLimiter } from '../platform/note-rate-limit.js';
 import { createCreateNote, createShowNote, matchesWords, readNotePlan, renderNote } from '../modules/note/public.js';
 import { createNoteReader } from '../platform/database/note-reader.js';
@@ -22,8 +22,9 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 	const writer = createNoteWriter(manager, resources.roleMaterials, codec.createdAtFromId);
 	const create = createCreateNote({
 		...writer, newId: codec.newId, matchesWords,
+		transactions: createNoteWriteTransactions(resources.dataSource),
 		limit: createNoteRateLimiter(resources.redis),
-		afterSaved: note => resources.notePostSave.start(note.userId),
+		afterSaved: input => resources.notePostSave.start(input),
 	});
 	const authenticate = createTokenAuthenticator(manager, resources.logger);
 	return createRoleHttpApp(resources, config)

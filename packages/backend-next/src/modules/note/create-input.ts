@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Ajv } from 'ajv';
-import * as mfm from 'mfm-js';
 import { NoteCreateError } from './create-contract.js';
-import type { TextNoteInput } from './create-contract.js';
+import type { NoteInput, NoteReactionAcceptance, NoteVisibility } from './create-contract.js';
 
-// Keep the pinned endpoint schema/error paths while related inputs are implemented in #170.
+// INVALID_PARAM の info.param に schemaPath が出るため、本家 notes/create の paramDef を形ごと保つ。
 const paramDef = {
 	type: 'object',
 	properties: {
@@ -99,24 +98,51 @@ const ajv = new Ajv({ useDefaults: true });
 ajv.addFormat('misskey:id', /^[a-zA-Z0-9]+$/);
 const validate = ajv.compile(paramDef);
 
-export function parseTextNoteInput(input: unknown): TextNoteInput {
+interface ValidatedInput {
+	text?: string | null;
+	cw?: string | null;
+	visibility: NoteVisibility;
+	localOnly: boolean;
+	reactionAcceptance: NoteReactionAcceptance;
+	visibleUserIds?: string[];
+	noExtractMentions: boolean;
+	noExtractHashtags: boolean;
+	noExtractEmojis: boolean;
+	replyId?: string | null;
+	renoteId?: string | null;
+	channelId?: string | null;
+	fileIds?: string[];
+	mediaIds?: string[];
+	poll?: { choices: string[]; multiple?: boolean; expiresAt?: number | null; expiredAfter?: number | null } | null;
+}
+
+export function parseNoteInput(input: unknown, now: number): NoteInput {
 	const value = structuredClone(input);
 	if (!validate(value)) {
 		const error = validate.errors![0];
 		throw new NoteCreateError('INVALID_PARAM', { param: error.schemaPath, reason: error.message! });
 	}
-	const data = value as TextNoteInput & Record<string, unknown>;
-	const related = ['replyId', 'renoteId', 'channelId', 'poll', 'fileIds', 'mediaIds'];
-	if (related.some(key => data[key] != null) || data.visibleUserIds?.length) {
-		throw new NoteCreateError('NOT_IMPLEMENTED');
-	}
-	const tokens = [...mfm.parse(data.text.trim()), ...mfm.parse(data.cw ?? '')];
-	const extracted = mfm.extract(tokens, node =>
-		(node.type === 'mention' && !data.noExtractMentions) ||
-		(node.type === 'hashtag' && !data.noExtractHashtags) ||
-		(node.type === 'emojiCode' && !data.noExtractEmojis));
-	if (extracted.length > 0) {
-		throw new NoteCreateError('NOT_IMPLEMENTED');
-	}
-	return data;
+	const data = value as ValidatedInput;
+	// 本家は expiresAt: 0 も期限なしとして扱うため、?? ではなく真偽で選ぶ。
+	const poll = data.poll ? {
+		choices: data.poll.choices,
+		multiple: data.poll.multiple ?? false,
+		expiresAtMs: data.poll.expiredAfter ? now + data.poll.expiredAfter : data.poll.expiresAt ? data.poll.expiresAt : null,
+	} : null;
+	return {
+		text: data.text ?? null,
+		cw: data.cw ?? null,
+		visibility: data.visibility,
+		localOnly: data.localOnly,
+		reactionAcceptance: data.reactionAcceptance,
+		fileIds: data.fileIds ?? data.mediaIds ?? [],
+		poll,
+		replyId: data.replyId ?? null,
+		renoteId: data.renoteId ?? null,
+		channelId: data.channelId ?? null,
+		visibleUserIds: data.visibleUserIds ?? [],
+		noExtractMentions: data.noExtractMentions,
+		noExtractHashtags: data.noExtractHashtags,
+		noExtractEmojis: data.noExtractEmojis,
+	};
 }

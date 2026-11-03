@@ -20,6 +20,10 @@
 		"src/models/Emoji.ts",
 		"src/models/Instance.ts",
 		"src/models/AvatarDecoration.ts",
+		"src/models/Blocking.ts",
+		"src/models/UserProfile.ts",
+		"src/models/Page.ts",
+		"src/models/UserList.ts",
 		"src/types.ts",
 		"src/models/util/id.ts"
 	],
