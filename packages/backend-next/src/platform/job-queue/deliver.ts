@@ -1,0 +1,149 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import { Queue, UnrecoverableError, Worker } from 'bullmq';
+import { createDigest } from '../../modules/federation/public.js';
+import { DiagnosticError } from '../diagnostic-error.js';
+import { baseQueueOptions, baseWorkerOptions, onConnectionEnd, runWorker } from './connection.js';
+import type { RedisConfig } from '../../config/types.js';
+import type { DeliverJob, DeliverJobOutcome, DeliverBatch } from '../../modules/federation/public.js';
+import type { Logger } from '../logger.js';
+
+export const DELIVER = 'deliver';
+
+interface QueueConnection {
+	redis: RedisConfig;
+	connectTimeoutMs: number;
+	logger: Logger;
+}
+
+/** 本家 QueueService の job 名。最初の一致だけを置き換えるため、`http://` や `/inboxes` の `es` は残る。 */
+export function deliverJobName(to: string): string {
+	return to.replace('https://', '').replace('/inbox', '');
+}
+
+/** 本家 QueueService.deliverMany の addBulk の引数。本文と digest は 1 回だけ作り、全 job で同じ値を使う。 */
+export function deliverJobs(batch: DeliverBatch, config: { deliverJobMaxAttempts?: number }) {
+	const content = JSON.stringify(batch.activity);
+	const digest = createDigest(content);
+	const opts = {
+		attempts: config.deliverJobMaxAttempts ?? 12,
+		// 待ち時間は Worker の settings.backoffStrategy（httpRelatedBackoff）が決める。
+		backoff: { type: 'custom' },
+		removeOnComplete: { age: 3600 * 24 * 7, count: 30 },
+		removeOnFail: { age: 3600 * 24 * 7, count: 100 },
+	};
+	return Array.from(batch.inboxes, ([to, isSharedInbox]) => ({
+		name: deliverJobName(to),
+		data: { user: batch.user, content, digest, to, isSharedInbox } satisfies DeliverJob,
+		opts,
+	}));
+}
+
+/** 本家 QueueProcessorService の httpRelatedBackoff。`attemptsMade` は BullMQ が渡す、失敗した試行の回数。 */
+export function httpRelatedBackoff(attemptsMade: number, random: () => number = Math.random): number {
+	const baseDelay = 60 * 1000;
+	const maxBackoff = 8 * 60 * 60 * 1000;
+	let backoff = (Math.pow(2, attemptsMade) - 1) * baseDelay;
+	backoff = Math.min(backoff, maxBackoff);
+	backoff += Math.round(backoff * random() * 0.2);
+	return backoff;
+}
+
+/** 本家 QueueProcessorService の deliver Worker の設定。 */
+export function deliverWorkerOptions(redis: RedisConfig, connectTimeoutMs: number, config: { deliverJobConcurrency?: number; deliverJobPerSec?: number }) {
+	return {
+		...baseWorkerOptions(redis, DELIVER, connectTimeoutMs),
+		autorun: false,
+		concurrency: config.deliverJobConcurrency ?? 128,
+		limiter: { max: config.deliverJobPerSec ?? 128, duration: 1000 },
+		settings: { backoffStrategy: (attemptsMade: number) => httpRelatedBackoff(attemptsMade) },
+	};
+}
+
+export function parseDeliverJob(data: unknown): DeliverJob {
+	if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+		throw new DiagnosticError('INVALID_JOB_PAYLOAD', { queue: DELIVER });
+	}
+	const { user, content, digest, to, isSharedInbox } = data as Record<string, unknown>;
+	const userId = typeof user === 'object' && user !== null ? (user as Record<string, unknown>).id : undefined;
+	if (typeof userId !== 'string' || typeof content !== 'string' || typeof digest !== 'string' || typeof to !== 'string' || typeof isSharedInbox !== 'boolean') {
+		throw new DiagnosticError('INVALID_JOB_PAYLOAD', { queue: DELIVER });
+	}
+	return { user: { id: userId }, content, digest, to, isSharedInbox };
+}
+
+/**
+ * 処理の結果を BullMQ のジョブの結果へ写す。再試行しない失敗は UnrecoverableError、再試行する失敗は分類した例外のまま投げる。
+ */
+export function settleDeliverJob(outcome: DeliverJobOutcome): string {
+	if (outcome.kind === 'done') {
+		return outcome.result;
+	}
+	if (outcome.kind === 'stop') {
+		throw new UnrecoverableError(outcome.message);
+	}
+	throw outcome.error;
+}
+
+/** BullMQ の Job から型付きの入力だけを取り出して process へ渡す。 */
+export function createDeliverProcessor(process: (job: DeliverJob) => Promise<DeliverJobOutcome>, logger: Logger) {
+	return async (job: { id?: string; name: string; data: unknown; attemptsMade: number }): Promise<string> => {
+		let reason: string | undefined;
+		try {
+			const outcome = await process(parseDeliverJob(job.data));
+			if (outcome.kind === 'stop') {
+				reason = outcome.message;
+			}
+			return settleDeliverJob(outcome);
+		} catch (error) {
+			// 本家 runQueueJob と同じく試行ごとに記録し、元の例外のまま BullMQ へ返す。
+			// logger は例外のメッセージを出さないため、自分で作った停止の理由だけを別に残す。
+			const to = (job.data as { to?: unknown } | null)?.to;
+			logger.error('job.failed', { queue: DELIVER, jobId: job.id, jobName: job.name, attemptsMade: job.attemptsMade, to, reason, error });
+			throw error;
+		}
+	};
+}
+
+/** deliver queue の投入口。ready() を待ってから使い、close() は投入を終えた後に呼ぶ。 */
+export function createDeliverQueue(options: QueueConnection & { deliverJobMaxAttempts?: number; onLost(): void }) {
+	const queue = new Queue(DELIVER, baseQueueOptions(options.redis, DELIVER, options.connectTimeoutMs));
+	let closing = false;
+	queue.on('error', error => {
+		options.logger.error('job-queue.error', { queue: DELIVER, error });
+	});
+
+	return {
+		async ready(): Promise<void> {
+			await queue.waitUntilReady();
+			await onConnectionEnd(queue, () => {
+				if (!closing) {
+					options.onLost();
+				}
+			});
+		},
+		/** 本家 QueueService.deliverMany。宛先が空でも本家と同じく addBulk を呼ぶ。 */
+		async deliverMany(batch: DeliverBatch): Promise<void> {
+			await queue.addBulk(deliverJobs(batch, options));
+		},
+		async close(): Promise<void> {
+			closing = true;
+			await queue.close();
+		},
+	};
+}
+
+/**
+ * deliver ジョブの取得を始め、停止関数を返す。停止は取得の停止→実行中のジョブの完了→接続の解放の順に進む。
+ * 接続の喪失と取得ループの異常終了は reportFailure へ渡す。
+ */
+export async function startDeliverWorker(options: QueueConnection & {
+	config: { deliverJobConcurrency?: number; deliverJobPerSec?: number };
+	process(job: DeliverJob): Promise<DeliverJobOutcome>;
+	reportFailure(error: Error): void;
+}): Promise<() => Promise<void>> {
+	const worker = new Worker(DELIVER, createDeliverProcessor(options.process, options.logger), deliverWorkerOptions(options.redis, options.connectTimeoutMs, options.config));
+	return await runWorker(worker, { queue: DELIVER, logger: options.logger, reportFailure: options.reportFailure });
+}

@@ -17,3 +17,7 @@ export { deliverySucceeded, classifyDeliveryFailure } from './delivery-result.js
 export type { DeliveryFailure } from './delivery-result.js';
 export { isPureRenote, renderApNote, renderNoteActivity } from './note-activity.js';
 export type { NoteActivityMaterials, NoteActivityNote, ApDocumentFacts, ApEmojiFacts } from './note-activity.js';
+export { deliverSuccessPatch, deliverFailurePatch } from './instance.js';
+export type { InstanceFacts, InstancePatch, InstanceSuspensionState } from './instance.js';
+export { createDeliverJobProcessor } from './deliver-job.js';
+export type { DeliverBatch, DeliverJob, DeliverJobOutcome, DeliverJobSettings, InstanceLedger } from './deliver-job.js';

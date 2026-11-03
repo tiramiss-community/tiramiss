@@ -7,10 +7,7 @@ import type { OutboundHttp } from '../application/outbound-http.js';
 import type { RuntimeConfig } from '../config/types.js';
 import type { FederationKeys } from './federation-keys.js';
 
-/**
- * 署名付きの AP 送信を組み立てる。鍵と外向き HTTP は 1 プロセスで 1 回だけ作ったものを受け取る。
- * 配送ジョブはまだないため、通常起動からは呼ばない。
- */
+/** 署名付きの AP 送信を組み立てる。鍵と外向き HTTP は 1 プロセスで 1 回だけ作ったものを受け取る。 */
 export function createApRequest(
 	parts: { keys: Pick<FederationKeys, 'readUserKeypair'>; http: Pick<OutboundHttp, 'send'> },
 	config: Pick<RuntimeConfig, 'url'>,

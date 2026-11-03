@@ -529,3 +529,66 @@ export async function startFakeServers(): Promise<FakeServers> {
 		},
 	};
 }
+
+/** 偽の inbox が受け取った 1 件の配送。`verified` は受信した値のまま検証した結果。 */
+export interface RecordedDelivery {
+	path: string;
+	headers: Record<string, string | string[]>;
+	body: string;
+	/** 署名ヘッダーの keyId。 */
+	keyId: string | null;
+	verify(publicKeyPem: string): { signature: boolean | null; digest: boolean | null };
+}
+
+export interface InboxRecorder {
+	/** `http://127.0.0.1:<port>`。子プロセスからも名前解決なしで届く。 */
+	origin: string;
+	deliveries: RecordedDelivery[];
+	/** path ごとの応答の状態。未指定は 202。 */
+	respond(path: string, status: number): void;
+	close(): Promise<void>;
+}
+
+/**
+ * 複数の inbox への配送を受け取って記録する偽のサーバー。どの path にも応答し、署名と Digest は記録から後で検証する。
+ * 実 DNS の差し替えが効かない子プロセスからも使えるよう、IP アドレスで待ち受ける。
+ */
+export async function startInboxRecorder(): Promise<InboxRecorder> {
+	const deliveries: RecordedDelivery[] = [];
+	const statuses = new Map<string, number>();
+	const server = http.createServer(async (req, res) => {
+		const chunks: Buffer[] = [];
+		for await (const chunk of req) {
+			chunks.push(chunk as Buffer);
+		}
+		const headers: Record<string, string | string[]> = {};
+		for (let i = 0; i < req.rawHeaders.length; i += 2) {
+			const name = req.rawHeaders[i].toLowerCase();
+			const previous = headers[name];
+			headers[name] = previous === undefined ? req.rawHeaders[i + 1] : [previous, req.rawHeaders[i + 1]].flat();
+		}
+		const received: ReceivedRequest = { listener: 'inbox', method: req.method ?? '', path: req.url ?? '', headers, body: Buffer.concat(chunks) };
+		deliveries.push({
+			path: received.path,
+			headers,
+			body: received.body.toString('utf8'),
+			keyId: /keyId="([^"]*)"/.exec(single(headers.signature) ?? '')?.[1] ?? null,
+			verify: publicKeyPem => verifyReceived(received, publicKeyPem),
+		});
+		res.writeHead(statuses.get(received.path) ?? 202);
+		res.end();
+	});
+	await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
+
+	return {
+		origin: `http://127.0.0.1:${(server.address() as net.AddressInfo).port}`,
+		deliveries,
+		respond(path, status) {
+			statuses.set(path, status);
+		},
+		async close() {
+			server.closeAllConnections();
+			await new Promise(resolve => server.close(resolve));
+		},
+	};
+}
