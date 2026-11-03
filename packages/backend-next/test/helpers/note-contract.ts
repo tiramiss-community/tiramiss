@@ -55,7 +55,12 @@ export function createNoteContract(options: {
 			if (options.idFields.has(key) && symbols.has(value)) {
 				return symbols.get(value);
 			}
-			return options.timeFields.has(key) ? '$time' : value.replaceAll(options.origin(), '$origin');
+			if (options.timeFields.has(key)) {
+				// 壊れた時刻文字列まで $time に置き換えて一致させない。
+				expect(Number.isNaN(Date.parse(value)), `invalid time in ${key}: ${value}`).toBe(false);
+				return '$time';
+			}
+			return value.replaceAll(options.origin(), '$origin');
 		}
 		return value;
 	}
