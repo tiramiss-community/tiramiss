@@ -1,0 +1,1217 @@
+{
+	"inputs": {
+		"noteId": "9zz0note",
+		"cases": [
+			{
+				"id": "note-missing",
+				"note": null,
+				"votes": [],
+				"profiles": {}
+			},
+			{
+				"id": "note-without-poll",
+				"note": {
+					"userId": "author",
+					"hasPoll": false
+				},
+				"votes": [
+					{
+						"userId": "voter-a",
+						"userHost": null
+					}
+				],
+				"profiles": {
+					"author": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					},
+					"voter-a": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					}
+				}
+			},
+			{
+				"id": "author-only",
+				"note": {
+					"userId": "author",
+					"hasPoll": true
+				},
+				"votes": [],
+				"profiles": {
+					"author": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					}
+				}
+			},
+			{
+				"id": "author-and-local-voters",
+				"note": {
+					"userId": "author",
+					"hasPoll": true
+				},
+				"votes": [
+					{
+						"userId": "voter-a",
+						"userHost": null
+					},
+					{
+						"userId": "voter-b",
+						"userHost": null
+					}
+				],
+				"profiles": {
+					"author": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					},
+					"voter-a": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					},
+					"voter-b": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					}
+				}
+			},
+			{
+				"id": "author-also-voted",
+				"note": {
+					"userId": "author",
+					"hasPoll": true
+				},
+				"votes": [
+					{
+						"userId": "voter-a",
+						"userHost": null
+					},
+					{
+						"userId": "author",
+						"userHost": null
+					}
+				],
+				"profiles": {
+					"author": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					},
+					"voter-a": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					}
+				}
+			},
+			{
+				"id": "remote-voters-excluded",
+				"note": {
+					"userId": "author",
+					"hasPoll": true
+				},
+				"votes": [
+					{
+						"userId": "remote-voter",
+						"userHost": "remote.example"
+					},
+					{
+						"userId": "voter-a",
+						"userHost": null
+					}
+				],
+				"profiles": {
+					"author": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					},
+					"voter-a": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					},
+					"remote-voter": {
+						"userHost": "remote.example",
+						"notificationRecieveConfig": {}
+					}
+				}
+			},
+			{
+				"id": "multiple-choice-votes-by-one-user",
+				"note": {
+					"userId": "author",
+					"hasPoll": true
+				},
+				"votes": [
+					{
+						"userId": "voter-a",
+						"userHost": null
+					},
+					{
+						"userId": "voter-b",
+						"userHost": null
+					},
+					{
+						"userId": "voter-a",
+						"userHost": null
+					}
+				],
+				"profiles": {
+					"author": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					},
+					"voter-a": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					},
+					"voter-b": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					}
+				}
+			},
+			{
+				"id": "receive-config",
+				"note": {
+					"userId": "author",
+					"hasPoll": true
+				},
+				"votes": [
+					{
+						"userId": "voter-all",
+						"userHost": null
+					},
+					{
+						"userId": "voter-following",
+						"userHost": null
+					},
+					{
+						"userId": "voter-list",
+						"userHost": null
+					},
+					{
+						"userId": "voter-other-type-never",
+						"userHost": null
+					},
+					{
+						"userId": "voter-never",
+						"userHost": null
+					}
+				],
+				"profiles": {
+					"author": {
+						"userHost": null,
+						"notificationRecieveConfig": {
+							"pollEnded": {
+								"type": "never"
+							}
+						}
+					},
+					"voter-all": {
+						"userHost": null,
+						"notificationRecieveConfig": {
+							"pollEnded": {
+								"type": "all"
+							}
+						}
+					},
+					"voter-following": {
+						"userHost": null,
+						"notificationRecieveConfig": {
+							"pollEnded": {
+								"type": "following"
+							}
+						}
+					},
+					"voter-list": {
+						"userHost": null,
+						"notificationRecieveConfig": {
+							"pollEnded": {
+								"type": "list",
+								"userListId": "list"
+							}
+						}
+					},
+					"voter-other-type-never": {
+						"userHost": null,
+						"notificationRecieveConfig": {
+							"mention": {
+								"type": "never"
+							},
+							"reply": {
+								"type": "never"
+							}
+						}
+					},
+					"voter-never": {
+						"userHost": null,
+						"notificationRecieveConfig": {
+							"pollEnded": {
+								"type": "never"
+							}
+						}
+					}
+				}
+			},
+			{
+				"id": "remote-author",
+				"note": {
+					"userId": "remote-author",
+					"hasPoll": true
+				},
+				"votes": [
+					{
+						"userId": "voter-a",
+						"userHost": null
+					}
+				],
+				"profiles": {
+					"remote-author": {
+						"userHost": "remote.example",
+						"notificationRecieveConfig": {}
+					},
+					"voter-a": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					}
+				}
+			},
+			{
+				"id": "voter-profile-missing",
+				"note": {
+					"userId": "author",
+					"hasPoll": true
+				},
+				"votes": [
+					{
+						"userId": "voter-a",
+						"userHost": null
+					},
+					{
+						"userId": "voter-without-profile",
+						"userHost": null
+					},
+					{
+						"userId": "voter-b",
+						"userHost": null
+					}
+				],
+				"profiles": {
+					"author": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					},
+					"voter-a": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					},
+					"voter-b": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					}
+				}
+			},
+			{
+				"id": "one-recipient-store-fails",
+				"note": {
+					"userId": "author",
+					"hasPoll": true
+				},
+				"votes": [
+					{
+						"userId": "voter-a",
+						"userHost": null
+					},
+					{
+						"userId": "voter-b",
+						"userHost": null
+					}
+				],
+				"profiles": {
+					"author": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					},
+					"voter-a": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					},
+					"voter-b": {
+						"userHost": null,
+						"notificationRecieveConfig": {}
+					}
+				},
+				"storeFailsFor": [
+					"voter-a"
+				]
+			}
+		]
+	},
+	"cases": [
+		{
+			"id": "note-missing",
+			"result": {
+				"returned": true
+			},
+			"queries": [
+				[
+					"notes.findOneBy",
+					{
+						"id": "9zz0note"
+					}
+				]
+			],
+			"createNotificationCalls": [],
+			"stored": [],
+			"unhandledRejections": []
+		},
+		{
+			"id": "note-without-poll",
+			"result": {
+				"returned": true
+			},
+			"queries": [
+				[
+					"notes.findOneBy",
+					{
+						"id": "9zz0note"
+					}
+				]
+			],
+			"createNotificationCalls": [],
+			"stored": [],
+			"unhandledRejections": []
+		},
+		{
+			"id": "author-only",
+			"result": {
+				"returned": true
+			},
+			"queries": [
+				[
+					"notes.findOneBy",
+					{
+						"id": "9zz0note"
+					}
+				],
+				[
+					"pollVotes.createQueryBuilder",
+					"vote"
+				],
+				[
+					"select",
+					"vote.userId"
+				],
+				[
+					"where",
+					"vote.noteId = :noteId",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"innerJoinAndSelect",
+					"vote.user",
+					"user"
+				],
+				[
+					"andWhere",
+					"user.host IS NULL"
+				]
+			],
+			"createNotificationCalls": [
+				[
+					"author",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				]
+			],
+			"stored": [
+				{
+					"recipientId": "author",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				}
+			],
+			"unhandledRejections": []
+		},
+		{
+			"id": "author-and-local-voters",
+			"result": {
+				"returned": true
+			},
+			"queries": [
+				[
+					"notes.findOneBy",
+					{
+						"id": "9zz0note"
+					}
+				],
+				[
+					"pollVotes.createQueryBuilder",
+					"vote"
+				],
+				[
+					"select",
+					"vote.userId"
+				],
+				[
+					"where",
+					"vote.noteId = :noteId",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"innerJoinAndSelect",
+					"vote.user",
+					"user"
+				],
+				[
+					"andWhere",
+					"user.host IS NULL"
+				]
+			],
+			"createNotificationCalls": [
+				[
+					"author",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"voter-a",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"voter-b",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				]
+			],
+			"stored": [
+				{
+					"recipientId": "author",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				},
+				{
+					"recipientId": "voter-a",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				},
+				{
+					"recipientId": "voter-b",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				}
+			],
+			"unhandledRejections": []
+		},
+		{
+			"id": "author-also-voted",
+			"result": {
+				"returned": true
+			},
+			"queries": [
+				[
+					"notes.findOneBy",
+					{
+						"id": "9zz0note"
+					}
+				],
+				[
+					"pollVotes.createQueryBuilder",
+					"vote"
+				],
+				[
+					"select",
+					"vote.userId"
+				],
+				[
+					"where",
+					"vote.noteId = :noteId",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"innerJoinAndSelect",
+					"vote.user",
+					"user"
+				],
+				[
+					"andWhere",
+					"user.host IS NULL"
+				]
+			],
+			"createNotificationCalls": [
+				[
+					"author",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"voter-a",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				]
+			],
+			"stored": [
+				{
+					"recipientId": "author",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				},
+				{
+					"recipientId": "voter-a",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				}
+			],
+			"unhandledRejections": []
+		},
+		{
+			"id": "remote-voters-excluded",
+			"result": {
+				"returned": true
+			},
+			"queries": [
+				[
+					"notes.findOneBy",
+					{
+						"id": "9zz0note"
+					}
+				],
+				[
+					"pollVotes.createQueryBuilder",
+					"vote"
+				],
+				[
+					"select",
+					"vote.userId"
+				],
+				[
+					"where",
+					"vote.noteId = :noteId",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"innerJoinAndSelect",
+					"vote.user",
+					"user"
+				],
+				[
+					"andWhere",
+					"user.host IS NULL"
+				]
+			],
+			"createNotificationCalls": [
+				[
+					"author",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"voter-a",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				]
+			],
+			"stored": [
+				{
+					"recipientId": "author",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				},
+				{
+					"recipientId": "voter-a",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				}
+			],
+			"unhandledRejections": []
+		},
+		{
+			"id": "multiple-choice-votes-by-one-user",
+			"result": {
+				"returned": true
+			},
+			"queries": [
+				[
+					"notes.findOneBy",
+					{
+						"id": "9zz0note"
+					}
+				],
+				[
+					"pollVotes.createQueryBuilder",
+					"vote"
+				],
+				[
+					"select",
+					"vote.userId"
+				],
+				[
+					"where",
+					"vote.noteId = :noteId",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"innerJoinAndSelect",
+					"vote.user",
+					"user"
+				],
+				[
+					"andWhere",
+					"user.host IS NULL"
+				]
+			],
+			"createNotificationCalls": [
+				[
+					"author",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"voter-a",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"voter-b",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				]
+			],
+			"stored": [
+				{
+					"recipientId": "author",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				},
+				{
+					"recipientId": "voter-a",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				},
+				{
+					"recipientId": "voter-b",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				}
+			],
+			"unhandledRejections": []
+		},
+		{
+			"id": "receive-config",
+			"result": {
+				"returned": true
+			},
+			"queries": [
+				[
+					"notes.findOneBy",
+					{
+						"id": "9zz0note"
+					}
+				],
+				[
+					"pollVotes.createQueryBuilder",
+					"vote"
+				],
+				[
+					"select",
+					"vote.userId"
+				],
+				[
+					"where",
+					"vote.noteId = :noteId",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"innerJoinAndSelect",
+					"vote.user",
+					"user"
+				],
+				[
+					"andWhere",
+					"user.host IS NULL"
+				]
+			],
+			"createNotificationCalls": [
+				[
+					"author",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"voter-all",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"voter-following",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"voter-list",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"voter-other-type-never",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"voter-never",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				]
+			],
+			"stored": [
+				{
+					"recipientId": "voter-all",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				},
+				{
+					"recipientId": "voter-following",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				},
+				{
+					"recipientId": "voter-list",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				},
+				{
+					"recipientId": "voter-other-type-never",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				}
+			],
+			"unhandledRejections": []
+		},
+		{
+			"id": "remote-author",
+			"result": {
+				"returned": true
+			},
+			"queries": [
+				[
+					"notes.findOneBy",
+					{
+						"id": "9zz0note"
+					}
+				],
+				[
+					"pollVotes.createQueryBuilder",
+					"vote"
+				],
+				[
+					"select",
+					"vote.userId"
+				],
+				[
+					"where",
+					"vote.noteId = :noteId",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"innerJoinAndSelect",
+					"vote.user",
+					"user"
+				],
+				[
+					"andWhere",
+					"user.host IS NULL"
+				]
+			],
+			"createNotificationCalls": [
+				[
+					"voter-a",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				]
+			],
+			"stored": [
+				{
+					"recipientId": "voter-a",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				}
+			],
+			"unhandledRejections": []
+		},
+		{
+			"id": "voter-profile-missing",
+			"result": {
+				"thrown": {
+					"name": "EntityNotFoundError"
+				}
+			},
+			"queries": [
+				[
+					"notes.findOneBy",
+					{
+						"id": "9zz0note"
+					}
+				],
+				[
+					"pollVotes.createQueryBuilder",
+					"vote"
+				],
+				[
+					"select",
+					"vote.userId"
+				],
+				[
+					"where",
+					"vote.noteId = :noteId",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"innerJoinAndSelect",
+					"vote.user",
+					"user"
+				],
+				[
+					"andWhere",
+					"user.host IS NULL"
+				]
+			],
+			"createNotificationCalls": [
+				[
+					"author",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"voter-a",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				]
+			],
+			"stored": [
+				{
+					"recipientId": "author",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				},
+				{
+					"recipientId": "voter-a",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				}
+			],
+			"unhandledRejections": []
+		},
+		{
+			"id": "one-recipient-store-fails",
+			"result": {
+				"returned": true
+			},
+			"queries": [
+				[
+					"notes.findOneBy",
+					{
+						"id": "9zz0note"
+					}
+				],
+				[
+					"pollVotes.createQueryBuilder",
+					"vote"
+				],
+				[
+					"select",
+					"vote.userId"
+				],
+				[
+					"where",
+					"vote.noteId = :noteId",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"innerJoinAndSelect",
+					"vote.user",
+					"user"
+				],
+				[
+					"andWhere",
+					"user.host IS NULL"
+				]
+			],
+			"createNotificationCalls": [
+				[
+					"author",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"voter-a",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				],
+				[
+					"voter-b",
+					"pollEnded",
+					{
+						"noteId": "9zz0note"
+					}
+				]
+			],
+			"stored": [
+				{
+					"recipientId": "author",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				},
+				{
+					"recipientId": "voter-b",
+					"maxlen": [
+						"MAXLEN",
+						"~",
+						"500"
+					],
+					"notification": {
+						"id": "{id}",
+						"createdAt": "{createdAt}",
+						"type": "pollEnded",
+						"noteId": "9zz0note"
+					}
+				}
+			],
+			"unhandledRejections": [
+				"probe store failure"
+			]
+		}
+	]
+}
