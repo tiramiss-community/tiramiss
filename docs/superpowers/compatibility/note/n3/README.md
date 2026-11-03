@@ -171,7 +171,7 @@ N0と同じ規則（ID字段の論理名置換、日時字段の `$time`、設�
 
 - **配送対象の specified pure Renote**: 要約（RR-32の訂正、RR-44）は「public/home対象へ specified の pure Renote は作成できる」「pure RenoteはAnnounceで配送する」とだけ書く。初回の記録で `bobPureSpecified` を localOnly なしで作ると、保存後の `postNoteCreated` で `ApRendererService.renderAnnounce` が `renderAnnounce: cannot render non-public note` を投げ、応答の外で unhandled rejection になってVitestが中断した。このためfixtureを localOnly にした。この入力のHTTP応答・保存値は記録していない（#171の配送側の判断材料）。
 - **動画の thumbnailUrl**: 要約F16（訂正後）は「動画は thumbnailUrl ?? 外部動画サムネイルURL」とする。実測の `N3-FP-attached-types` では video/mp4 の `thumbnailUrl` が null だった。`VideoProcessingService.getExternalVideoThumbnailUrl` は `config.videoThumbnailGenerator` が未設定なら null を返すため、設定依存。
-- **visibleUserIds の順**: 要約V3どおり保証はない。`N3-MN-visible-order` では入力順の `[carol, bob]` で保存されたが、bobの行は投稿のたびに `notesCount` 更新で書き換わっており、PostgreSQLの物理順に依存した結果と考える（ID順でもない）。新実装の期待値にこの順を固定するかは別に決める。
+- **visibleUserIds の順**: 要約V3どおり保証はない。`N3-MN-visible-order` では入力順の `[carol, bob]` で保存されたが、bobの行は投稿のたびに `notesCount` 更新で書き換わっており、PostgreSQLの物理順に依存した結果と考える（ID順でもない）。新実装の期待値にこの順を固定するかは別に決める。→ 新実装では集合で比較すると決めた（[新実装への接続先](#新実装への接続先)を参照）。
 - 推測とされていた挙動は実測で確認した: `'#Foo #foo'`→`['foo','foo']`、`'#１２３'`→`'123'`、NFKCで伸びるタグ（`'#'+'㍿'×128`）は `value too long for type character varying(128)` の500 INTERNAL_ERROR（Note/Poll増分0）、空白のみtext+renoteIdはpure Renote、自分のspecifiedへのspecified返信は `visibleUserIds=[自分]`・mentionsなし、アーカイブ済みchannelのノートへの返信はそのchannelに保存されcountも加算、`expiresAt:0` は期限なし、bot のRenoteはrenoteCountを加算しないがbotの返信はrepliesCountを加算。
 
 ## 測っていないもの
@@ -241,6 +241,6 @@ BACKEND_NEXT_TEST_DB_PORT=55167 BACKEND_NEXT_TEST_REDIS_PORT=56167 \
 | ハッシュタグ・絵文字 | `N3-HE-*` | 同上 | 同上（段階3）。`N3-HE-nfkc-expanding` は本家どおり正規化前の長さで判定し、保存時のDBエラーで500 `INTERNAL_ERROR` になる。`error.info.e`（DBエラーの文言とリクエストごとのUUID）は動的な内部情報なので比較から除く。代わりに本家の記録が `QueryFailedError` であることと、新実装のログに出た例外が同じく `QueryFailedError`（PostgreSQL の 22001、長さ超過）であることを確かめる |
 | エラーの優先順 | `N3-ORD-*` | 同上 | 同上（段階2） |
 
-接続したケースは probe と同じ順に送り、各ケースの後で保存後処理の完了を待ってから、HTTP応答・Note/Poll増分・保存列・`watch` のcountを `observations.json` と照合する。成功したケースは、作成直後の `notes/show` が作成応答に今回の返信先 `repliesCount`・Renote対象 `renoteCount` の加算を足した値と一致することも確かめる。初期データは probe と同じく `notes/create` で作る（指定宛先を持つ `bobSpecified`・`aliceSpecified`・`aliceSpecifiedMention` を含む）。段階2で `N3-MN-limit-reply-boundary` の加算をDBに再現していた処理は、段階3でそのケースが保存されるようになったため撤去した。
+接続したケースは probe と同じ順に送り、各ケースの後で保存後処理の完了を待ってから、HTTP応答・Note/Poll増分・保存列・`watch` のcountを `observations.json` と照合する。成功したケースは、作成直後の `notes/show` が作成応答に今回の返信先 `repliesCount`・Renote対象 `renoteCount` の加算を足した値と一致することも確かめる。Note の初期データは probe と同じく `notes/create` で作る（指定宛先を持つ `bobSpecified`・`aliceSpecified`・`aliceSpecifiedMention` を含む）。ユーザー・ロール・DriveFile・リモートユーザーとそのNote・フォロー・channel・ブロックは、signup などの未接続APIの代わりにDBへ直接入れる。段階2で `N3-MN-limit-reply-boundary` の加算をDBに再現していた処理は、段階3でそのケースが保存されるようになったため撤去した。
 
 測っていない未登録リモートユーザーへのメンションは、新実装では#195まで保存前に501 `NOT_IMPLEMENTED`を返す（`packages/backend-next/test/integration/note-create.test.ts` で確認）。

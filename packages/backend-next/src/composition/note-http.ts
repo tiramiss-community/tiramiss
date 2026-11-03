@@ -22,7 +22,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 	const show = createShowNote(reader);
 	const writer = createNoteWriter(manager, resources.roleMaterials, codec.createdAtFromId);
 	const create = createCreateNote({
-		...writer, newId: codec.newId, matchesWords,
+		...writer, newId: codec.newId, currentTime: Date.now, matchesWords,
 		isSelfHost: createHostRules(new URL(config.url).host).isSelfHost,
 		transactions: createNoteWriteTransactions(resources.dataSource),
 		limit: createNoteRateLimiter(resources.redis),

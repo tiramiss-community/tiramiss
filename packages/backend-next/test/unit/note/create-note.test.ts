@@ -37,7 +37,7 @@ function related(id: string, facts: Partial<RelatedNote> = {}): RelatedNote {
 	};
 }
 
-function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteAttachableFile[]; failPoll?: boolean; failRender?: boolean; world?: World } = {}) {
+function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteAttachableFile[]; failPoll?: boolean; failRender?: boolean; world?: World; checkedAt?: number } = {}) {
 	const world = options.world ?? {};
 	const events: string[] = [];
 	const notes: NewNote[] = [];
@@ -109,6 +109,7 @@ function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteA
 			after.push(input);
 		},
 		newId: () => 'new',
+		currentTime: () => options.checkedAt ?? now,
 		matchesWords,
 	});
 	const render = async (id: string, viewerId: string) => {
@@ -130,7 +131,7 @@ test('text is trimmed and plain persisted fields do not depend on HTTP or ORM', 
 		renoteUserId: null, renoteUserHost: null, renoteChannelId: null, visibleUserIds: [], mentions: [], mentionedRemoteUsers: [], tags: [], emojis: [],
 	}]);
 	expect(polls).toEqual([]);
-	expect(after).toEqual([{ userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null }]);
+	expect(after).toEqual([{ noteId: 'new', userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null }]);
 	// 本家 NoteCreateService.ts:704-726: 投票なしは transaction を使わない単独 insert。
 	expect(events).toEqual(['root:note', 'render:new:author', 'after']);
 });
@@ -186,7 +187,7 @@ test('rate executes before suspended, moved, scope and schema; factor<=0 skips r
 	}, insertPoll: async () => {} };
 	const dependencies = {
 		...noRelations, readOwnedFiles: async () => [], writes, transactions: { run: async <T>(work: (scope: NoteWrites) => Promise<T>) => work(writes) },
-		afterSaved: () => {}, newId: () => 'new', matchesWords,
+		afterSaved: () => {}, newId: () => 'new', currentTime: () => 123, matchesWords,
 	};
 	const create = createCreateNote({
 		...dependencies,
@@ -224,7 +225,7 @@ test('an insert failure is not retried and never renders or starts post-save wor
 	}, insertPoll: async () => {} };
 	const create = createCreateNote({ ...noRelations, readAuthor: async () => author, readOwnedFiles: async () => [], writes, transactions: { run: work => work(writes) }, afterSaved: () => {
 		events.push('after');
-	}, newId: () => 'new', limit: async () => {}, matchesWords });
+	}, newId: () => 'new', currentTime: () => 123, limit: async () => {}, matchesWords });
 	await expect(create.createNote(actor, { text: 'hello' }, 123, async id => {
 		events.push('render');
 		return id;
@@ -310,6 +311,20 @@ test('a poll whose deadline is before the request time is rejected', async () =>
 	const { createNote, notes } = setup();
 	await expect(createNote({ text: 'poll', poll: { choices: ['a', 'b'], expiresAt: now - 1 } })).rejects.toMatchObject({ code: 'CANNOT_CREATE_ALREADY_EXPIRED_POLL' });
 	expect(notes).toEqual([]);
+});
+
+// 本家 notes/create.ts:229 と NoteCreateService.ts:404-411: expiredAfter は要求開始の時刻から数え、期限は関連の取得後の時刻と比べる。
+test('a relative poll deadline that passes while related records are read is rejected', async () => {
+	const { createNote, notes } = setup(author, { checkedAt: now + 2 });
+	await expect(createNote({ text: 'poll', poll: { choices: ['a', 'b'], expiredAfter: 1 } })).rejects.toMatchObject({ code: 'CANNOT_CREATE_ALREADY_EXPIRED_POLL' });
+	expect(notes).toEqual([]);
+});
+
+// 本家は範囲外の値を Invalid Date にするため期限切れと判定せず、Poll の保存で失敗する。
+test.each([-9_000_000_000_000_000, 9_000_000_000_000_000])('a poll deadline %d outside the Date range is not rejected as expired', async expiresAt => {
+	const { createNote, polls } = setup();
+	await createNote({ text: 'poll', poll: { choices: ['a', 'b'], expiresAt } });
+	expect(polls[0].expiresAtMs).toBe(expiresAt);
 });
 
 // 本家 NoteCreateService.ts:704-726: Poll 行は補正後の公開範囲と作者の host を持ち、Note と同じ transaction で入る。

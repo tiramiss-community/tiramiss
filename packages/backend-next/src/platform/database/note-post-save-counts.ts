@@ -8,11 +8,14 @@ import type { NotePostSaveInput } from '../../modules/note/public.js';
 import { DiagnosticError } from '../diagnostic-error.js';
 
 export function createNotePostSaveCounts(manager: EntityManager) {
-	async function countChannel(userId: string, channelId: string): Promise<void> {
+	function countChannelNotes(channelId: string) {
 		// 本家どおり時刻は後続処理の実行時に取る。要求開始時刻だと、遅れて終わった古い要求が lastNotedAt を巻き戻しうる。
-		await manager.getRepository(MiChannel).createQueryBuilder().update()
+		return manager.getRepository(MiChannel).createQueryBuilder().update()
 			.set({ notesCount: () => '"notesCount" + 1', lastNotedAt: new Date() })
 			.where('id = :channelId', { channelId }).execute();
+	}
+
+	async function countChannelUser(userId: string, channelId: string): Promise<void> {
 		// 本家どおり、保存後の件数が 1 なら初投稿とみなす。削除では減らさず、同時の初投稿で取りこぼしうる点も本家と同じ。
 		if (await manager.getRepository(MiNote).countBy({ userId, channelId }) === 1) {
 			await manager.getRepository(MiChannel).createQueryBuilder().update()
@@ -35,7 +38,8 @@ export function createNotePostSaveCounts(manager: EntityManager) {
 			steps.set('renote', increment('renoteCount', input.renotedNoteId));
 		}
 		if (input.channelId !== null) {
-			steps.set('channel', countChannel(input.userId, input.channelId));
+			steps.set('channel', countChannelNotes(input.channelId));
+			steps.set('channelUser', countChannelUser(input.userId, input.channelId));
 		}
 		// 本家の加算は互いに独立しているため、1 つの失敗で他の加算を省かない。失敗はどの加算かが分かるようすべて残す。
 		const names = [...steps.keys()];

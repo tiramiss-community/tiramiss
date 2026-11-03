@@ -12,7 +12,7 @@ import { createNoteWriteTransactions } from '../../src/platform/database/note-wr
 import { createIdCodec } from '../../src/platform/id-codec.js';
 import { createLogger } from '../../src/platform/logger.js';
 import { createTestDatabase } from '../helpers/database.js';
-import { afterPostSave } from '../helpers/note-contract.js';
+import { afterPostSave, createNoteContract } from '../helpers/note-contract.js';
 import type { NoteWrites } from '../../src/modules/note/public.js';
 
 const golden = JSON.parse(readFileSync(new URL('../../../../docs/superpowers/compatibility/note/observations.json', import.meta.url), 'utf8'));
@@ -23,55 +23,15 @@ let resources: Awaited<ReturnType<typeof connectResources>>;
 let app: ReturnType<typeof createBackendHttpApp>;
 const codec = createIdCodec('aidx');
 const actors: Record<string, { id: string; token: string }> = {};
-const symbols = new Map<string, string>();
-const ids: Record<string, string> = {};
 
 const idFields = new Set(['id', 'userId', 'replyId', 'renoteId', 'channelId', 'fileIds', 'visibleUserIds', 'mentions']);
 const timeFields = new Set(['createdAt', 'expiresAt']);
 
-function normalize(value: unknown, key = ''): unknown {
-	if (value instanceof Date) {
-		return '$time';
-	}
-	if (Array.isArray(value)) {
-		return value.map(v => normalize(v, key));
-	}
-	if (value !== null && typeof value === 'object') {
-		return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, normalize(v, k)]));
-	}
-	if (typeof value === 'string') {
-		if (idFields.has(key) && symbols.has(value)) {
-			return symbols.get(value);
-		}
-		return timeFields.has(key) ? '$time' : value.replaceAll(database.config.url, '$origin');
-	}
-	return value;
-}
-
-// probe（reference-note.e2e.ts の params）と同じく、未解決の $名で別の入力を送らない。
-function resolveParams(value: unknown): unknown {
-	if (typeof value === 'string' && value.startsWith('$')) {
-		expect(ids[value.slice(1)], `unresolved input ${value}`).toBeDefined();
-		return ids[value.slice(1)];
-	}
-	if (Array.isArray(value)) {
-		return value.map(resolveParams);
-	}
-	if (value !== null && typeof value === 'object') {
-		const repeat = (value as { $repeat?: [string, number] }).$repeat;
-		if (repeat) {
-			return repeat[0].repeat(repeat[1]);
-		}
-		return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, resolveParams(v)]));
-	}
-	return value;
-}
-
-function remember(name: string, id: string): string {
-	ids[name] = id;
-	symbols.set(id, `$${name}`);
-	return id;
-}
+const { ids, remember, normalize, resolve: resolveParams, prepare } = createNoteContract({
+	idFields, timeFields, origin: () => database.config.url,
+	create: (input, actor) => call(input, actors[actor].token),
+	settle: () => resources.notePostSave.idle(),
+});
 
 function call(input: unknown, token: string | null = actors.alice.token, authorization?: string) {
 	return app.request('/api/notes/create', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(authorization ? { Authorization: authorization } : {}) }, body: JSON.stringify(input && typeof input === 'object' ? { i: token, ...input } : input) });
@@ -123,13 +83,6 @@ beforeAll(async () => {
 	await prepare('private', { text: 'private', visibility: 'specified', visibleUserIds: [actors.bob.id] }, 'bob');
 	await prepare('channelNote', { text: 'channel', channelId: ids.channel }, 'bob');
 });
-
-async function prepare(name: string, input: object, actor: string) {
-	const response = await call(input, actors[actor].token);
-	expect(response.status).toBe(200);
-	remember(name, (await response.json()).createdNote.id);
-	await resources.notePostSave.idle();
-}
 
 afterAll(async () => {
 	await resources?.close();

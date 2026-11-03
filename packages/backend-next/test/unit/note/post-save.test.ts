@@ -20,8 +20,8 @@ test('post-save failure is logged, does not escape to HTTP, and shutdown waits f
 		}
 		updated.push(userId);
 	}, createLogger('test', line => logs.push(line)));
-	effects.start({ userId: 'saved', repliedNoteId: null, renotedNoteId: null, channelId: null });
-	effects.start({ userId: 'broken', repliedNoteId: null, renotedNoteId: null, channelId: null });
+	effects.start({ noteId: 'n1', userId: 'saved', repliedNoteId: null, renotedNoteId: null, channelId: null });
+	effects.start({ noteId: 'n2', userId: 'broken', repliedNoteId: 'replied', renotedNoteId: 'renoted', channelId: 'channel' });
 	let closed = false;
 	const closing = effects.close().then(() => {
 		closed = true;
@@ -31,7 +31,10 @@ test('post-save failure is logged, does not escape to HTTP, and shutdown waits f
 	complete();
 	await closing;
 	expect(updated).toEqual(['saved']);
-	expect(logs.map(line => JSON.parse(line).event)).toContain('note-post-save.failed');
+	// 加算の欠けた行を特定できるよう、対象の ID がすべて記録される。
+	expect(logs.map(line => JSON.parse(line)).filter(line => line.event === 'note-post-save.failed')).toEqual([expect.objectContaining({
+		noteId: 'n2', userId: 'broken', repliedNoteId: 'replied', renotedNoteId: 'renoted', channelId: 'channel',
+	})]);
 });
 
 test('idle waits for post-save work started while it is waiting', async () => {
@@ -42,13 +45,13 @@ test('idle waits for post-save work started while it is waiting', async () => {
 	const finished: string[] = [];
 	const effects = createNotePostSave(async ({ userId }) => {
 		if (userId === 'first') {
-			effects.start({ userId: 'second', repliedNoteId: null, renotedNoteId: null, channelId: null });
+			effects.start({ noteId: 'n2', userId: 'second', repliedNoteId: null, renotedNoteId: null, channelId: null });
 		} else {
 			await second;
 		}
 		finished.push(userId);
 	}, createLogger('test', () => {}));
-	effects.start({ userId: 'first', repliedNoteId: null, renotedNoteId: null, channelId: null });
+	effects.start({ noteId: 'n1', userId: 'first', repliedNoteId: null, renotedNoteId: null, channelId: null });
 	let idle = false;
 	const waiting = effects.idle().then(() => {
 		idle = true;

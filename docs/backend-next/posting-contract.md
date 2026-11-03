@@ -4,7 +4,7 @@
 
 ## 保存と応答
 
-認証 → 通常レート制限 → 停止/移行/scope → 入力検証 → 業務判断 → Note保存 → 後続処理開始 → 取得済み資料から出力する。本家の基本text投稿は単純insertであり、Noteと独自requestの同時保存を必要としない。投票など複数の業務データが一体となる処理は、その機能でtransactionを使う。COMMIT応答不明やクライアント切断を理由に投稿操作を自動再実行しない。
+認証 → 通常レート制限 → 停止/移行/scope → 入力検証 → 業務判断 → Note保存 → 取得済み資料から出力（描画） → 後続処理開始。応答の入れ子の返信先/Renote対象のcountを本家と同じく今回の加算前の値にするため、描画を終えてから後続処理を始める。描画に失敗しても保存済みなので後続処理は始め、500のログに保存済みNoteのIDを残す。本家の基本text投稿は単純insertであり、Noteと独自requestの同時保存を必要としない。投票など複数の業務データが一体となる処理は、その機能でtransactionを使う。COMMIT応答不明やクライアント切断を理由に投稿操作を自動再実行しない。
 
 HTTP成功は保存とレスポンス生成の成功。AP配送や通知の完了を待たない。後続処理失敗で保存済みNoteを巻き戻したと扱わず、エラーを記録する。本家同様、user.notesCount/updatedAtは保存後の処理で原子的加算する。通常終了では開始済み処理を既存の終了期限まで待つ。
 
@@ -29,7 +29,7 @@ HTTP成功は保存とレスポンス生成の成功。AP配送や通知の完�
 
 添付・投票・返信/Renote/引用・channel・指定宛先・MFM抽出を、固定本家の `notes/create` と `NoteCreateService` に合わせて接続する。基本text作成の501暫定制限は、未登録リモートユーザー宛てメンションを除いて撤去する。
 
-- **判定順**: 入力検証 → 指定宛先の取得 → 添付 → Renote対象 → 返信先 → 投票期限 → channel → 返信先によるchannelの補正 → channel投稿の強制（public・宛先なし・localOnly）→ sensitiveWords/canPublicNote（channelなしのみ）→ 禁止語（trim前のcw・text・選択肢）→ Renote対象/返信先による公開範囲・localOnlyの補正 → textのtrim → MFM抽出（text・cw・選択肢）→ メンション解決 → 返信先作者・指定宛先の追加 → メンション数上限 → 保存。複数の誤りでは最初のエラーを返す。エラーのcode/id/messageは本家どおり。
+- **判定順**: 入力検証 → 指定宛先の取得 → 添付 → Renote対象 → 返信先 → 投票期限（本家どおり、`expiredAfter` は要求開始の時刻から数え、期限は関連の取得を終えた時点の時刻と比べる。Dateの範囲外の値は期限切れとせず、保存時のDBエラーで500）→ channel → 返信先によるchannelの補正 → channel投稿の強制（public・宛先なし・localOnly）→ sensitiveWords/canPublicNote（channelなしのみ）→ 禁止語（trim前のcw・text・選択肢）→ Renote対象/返信先による公開範囲・localOnlyの補正 → textのtrim → MFM抽出（text・cw・選択肢）→ メンション解決 → 返信先作者・指定宛先の追加 → メンション数上限 → 保存。複数の誤りでは最初のエラーを返す。エラーのcode/id/messageは本家どおり。
 - **存在・可視性・ブロックの確認**は保存と同じtransactionに入れない（本家も同じ）。確認後の削除・ブロックは検出しない。本家の `create()` 内でcacheによりブロックを再確認して500になる経路は、DBの確認と食い違う競合時だけに起きるため移植しない。
 - **保存**: 投票ありはNoteとPollを、UseCaseが所有する1つのtransactionで保存する。投票なしはNoteの単純insert。非正規化列（threadId・replyUserId/Host・renoteUserId/Host・renoteChannelId・attachedFileTypes・mentionedRemoteUsers）も本家と同じ値で保存する。
 - **保存後のcount**: user.notesCountに加え、返信先repliesCount、Renote対象renoteCount（他人の投稿・botでない投稿者のみ。引用も含む）、channelのnotesCount・lastNotedAt・usersCount（その投稿者のchannel内Noteが1件ならusersCount+1）を、保存後の原子的更新として行う。本家どおり削除では減らさない。作成応答の描画を終えてから開始し、応答の入れ子の返信先/Renote対象のcountを本家と同じく今回の加算前の値にする。

@@ -18,7 +18,7 @@ export interface ExtractedContents {
 }
 
 // 本家 misc/normalize-for-search.ts。
-export function normalizeForSearch(tag: string): string {
+function normalizeForSearch(tag: string): string {
 	return tag.normalize('NFKC').toLowerCase();
 }
 

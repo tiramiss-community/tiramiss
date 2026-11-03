@@ -73,6 +73,7 @@ export function createCreateNote(dependencies: {
 	transactions: TransactionRunner<NoteWrites>;
 	afterSaved(input: NotePostSaveInput): void;
 	newId(now: number): string;
+	currentTime(): number;
 	matchesWords(text: string, words: string[]): boolean;
 }) {
 	async function authorize(actor: NoteCreateActor | null, now: number): Promise<NoteCreateAuthor> {
@@ -147,7 +148,7 @@ export function createCreateNote(dependencies: {
 	}
 
 	// 本家と同じく、存在・所有権・可視性・ブロックの確認は保存の transaction に入れない。確認後の変更は検出しない。
-	async function fetchRelated(author: NoteCreateAuthor, data: NoteInput, now: number): Promise<RelatedFacts> {
+	async function fetchRelated(author: NoteCreateAuthor, data: NoteInput): Promise<RelatedFacts> {
 		// 本家は公開範囲に関係なく取得し、存在しない ID は黙って除く。
 		const visibleUserIds = data.visibleUserIds.length > 0 ? await dependencies.readUserIds(data.visibleUserIds) : [];
 
@@ -162,8 +163,13 @@ export function createCreateNote(dependencies: {
 		const renote = data.renoteId === null ? null : await fetchRenote(author, data.renoteId, data.channelId);
 		const reply = data.replyId === null ? null : await fetchReply(author, data.replyId, data.visibility);
 
-		if (data.poll?.expiresAtMs != null && data.poll.expiresAtMs < now) {
-			throw new NoteCreateError('CANNOT_CREATE_ALREADY_EXPIRED_POLL');
+		// 本家は関連の取得を終えた時点の時刻と比べるため、要求開始の now ではなくここで時刻を読む。
+		// Date の範囲外の値は本家では Invalid Date となって比較が偽になり、保存時の DB エラーで 500 になるので、ここでは拒否しない。
+		if (data.poll?.expiresAtMs != null) {
+			const expiresAt = new Date(data.poll.expiresAtMs).getTime();
+			if (!Number.isNaN(expiresAt) && expiresAt < dependencies.currentTime()) {
+				throw new NoteCreateError('CANNOT_CREATE_ALREADY_EXPIRED_POLL');
+			}
 		}
 
 		let channel: RelatedChannel | null = null;
@@ -318,7 +324,7 @@ export function createCreateNote(dependencies: {
 		): Promise<T> {
 			const author = await authorize(actor, now);
 			const data = parseNoteInput(input, now);
-			const related = await fetchRelated(author, data, now);
+			const related = await fetchRelated(author, data);
 			const corrected = correct(author, data, related);
 			const mentioned = await resolveMentions(author, corrected.extracted.mentions);
 			const addressed = address(author, related.reply, corrected, mentioned);
@@ -341,6 +347,7 @@ export function createCreateNote(dependencies: {
 				return await render(note.id, author.id);
 			} finally {
 				dependencies.afterSaved({
+					noteId: note.id,
 					userId: note.userId,
 					repliedNoteId: note.replyId,
 					// 本家は自分の Note の Renote と bot による Renote を数えない。返信は bot・自分宛てでも数える。

@@ -19,7 +19,8 @@ export function createNotePostSave(run: (input: NotePostSaveInput) => Promise<vo
 	return {
 		start(input: NotePostSaveInput): void {
 			const work = setImmediate().then(() => run(input)).catch(error => {
-				logger.error('note-post-save.failed', { error, userId: input.userId });
+				// 加算の欠けた行を後から補えるよう、対象の ID をすべて残す。
+				logger.error('note-post-save.failed', { error, ...input });
 			});
 			pending.add(work);
 			void work.then(() => pending.delete(work));

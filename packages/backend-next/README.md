@@ -190,5 +190,6 @@ DB失敗やクライアント切断を理由に自動再作成しない。通常
 #170で添付（所有権・指定順・attachedFileTypes）と投票（NoteとPollを1つのtransactionで保存）、返信/Renote/引用・channel、
 指定宛先、MFM抽出（メンション・ハッシュタグ・絵文字）を接続した。メンションはローカルユーザーと登録済みリモートユーザーをDBで解決する。
 未登録のリモートユーザー宛ては、WebFingerによる解決（#195）まで501 `NOT_IMPLEMENTED`で保存前に拒否する。
+登録済みリモートユーザーも、#195までは `lastFetchedAt` が古くても再同期せずに使う（暫定制限）。
 AP/通知/stream/TL/検索/webhook・通常workerは未接続で、投稿領域全体の完成ではない。
 最小契約と既存実装の撤去順は[投稿の最小契約](../../docs/backend-next/posting-contract.md)を参照。

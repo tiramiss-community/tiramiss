@@ -64,10 +64,15 @@ export function createNoteCreateApi(dependencies: {
 		if (token != null && typeof token !== 'string') {
 			return context.body(null, 400);
 		}
+		// 描画は保存の後にだけ呼ばれるため、ここで ID が分かれば Note は保存済み。
+		let savedNoteId: string | undefined;
 		try {
 			const actor = token == null ? null : await dependencies.authenticate(token);
 			const now = Date.now();
-			const createdNote = await dependencies.createNote(actor, input, now, (id, viewerId) => dependencies.readCreatedNote(id, viewerId, now));
+			const createdNote = await dependencies.createNote(actor, input, now, (id, viewerId) => {
+				savedNoteId = id;
+				return dependencies.readCreatedNote(id, viewerId, now);
+			});
 			return context.json({ createdNote });
 		} catch (error) {
 			if (error instanceof NoteCreateError) {
@@ -84,7 +89,8 @@ export function createNoteCreateApi(dependencies: {
 			}
 			const response = apiErrorResponse(error, 'show');
 			if (response.status === 500) {
-				dependencies.logger.error('note-create.failed', { error });
+				// 応答は本家どおり保存前の失敗と同じ 500 にするが、再送による重複を調べられるよう保存済みの Note を残す。
+				dependencies.logger.error('note-create.failed', { error, savedNoteId });
 			}
 			return response;
 		}

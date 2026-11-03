@@ -11,7 +11,7 @@ import { migrateDatabase } from '../../src/platform/database/migrate.js';
 import { createIdCodec } from '../../src/platform/id-codec.js';
 import { createLogger } from '../../src/platform/logger.js';
 import { createTestDatabase } from '../helpers/database.js';
-import { afterPostSave } from '../helpers/note-contract.js';
+import { afterPostSave, createNoteContract } from '../helpers/note-contract.js';
 
 interface Fixture {
 	id: string;
@@ -39,62 +39,19 @@ let resources: Awaited<ReturnType<typeof connectResources>>;
 let app: ReturnType<typeof createBackendHttpApp>;
 const codec = createIdCodec('aidx');
 const tokens: Record<string, string> = {};
-const symbols = new Map<string, string>();
-const ids: Record<string, string> = {};
 
 // n3/README の正規化: N0 の ID 字段に非正規化列の ID を、日時字段に lastNotedAt を加える。
 const idFields = new Set(['id', 'userId', 'noteId', 'replyId', 'renoteId', 'channelId', 'fileIds', 'visibleUserIds', 'mentions', 'threadId', 'replyUserId', 'renoteUserId', 'renoteChannelId']);
 const timeFields = new Set(['createdAt', 'expiresAt', 'lastNotedAt']);
 
-function normalize(value: unknown, key = ''): unknown {
-	if (value instanceof Date) {
-		return '$time';
-	}
-	if (Array.isArray(value)) {
-		return value.map(v => normalize(v, key));
-	}
-	if (value !== null && typeof value === 'object') {
-		return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, normalize(v, k)]));
-	}
-	if (typeof value === 'string') {
-		if (idFields.has(key) && symbols.has(value)) {
-			return symbols.get(value);
-		}
-		return timeFields.has(key) ? '$time' : value.replaceAll(database.config.url, '$origin');
-	}
-	return value;
-}
-
-function resolve(value: unknown): unknown {
-	if (typeof value === 'string' && value.startsWith('$')) {
-		expect(ids[value.slice(1)], `unresolved input ${value}`).toBeDefined();
-		return ids[value.slice(1)];
-	}
-	if (Array.isArray(value)) {
-		return value.map(resolve);
-	}
-	if (value !== null && typeof value === 'object') {
-		return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, resolve(v)]));
-	}
-	return value;
-}
-
-function remember(name: string, id: string): string {
-	ids[name] = id;
-	symbols.set(id, `$${name}`);
-	return id;
-}
+const { ids, remember, normalize, resolve, prepare } = createNoteContract({
+	idFields, timeFields, origin: () => database.config.url,
+	create: (input, actor) => call('create', input, actor),
+	settle: () => resources.notePostSave.idle(),
+});
 
 function call(endpoint: 'create' | 'show', input: object, actor: string) {
 	return app.request(`/api/notes/${endpoint}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ i: tokens[actor], ...input }) });
-}
-
-// probe は保存後の count が収束するまで次の入力を送らないため、同じく保存後処理の完了を待つ。
-async function prepare(name: string, input: object, actor: string) {
-	const response = await call('create', input, actor);
-	expect(response.status, name).toBe(200);
-	remember(name, (await response.json()).createdNote.id);
-	await resources.notePostSave.idle();
 }
 
 function sortRecipients(value: unknown, key = ''): unknown {
