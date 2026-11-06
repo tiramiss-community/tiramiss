@@ -145,7 +145,7 @@ APの宛先規則は[本家配送の引き継ぎ](../../docs/backend-next/ap-del
 AP配送は #171 の最初の PR で接続した。HTTP子が投稿の後続処理で保存済みの投稿を読み直し、Create/Announceの表現と宛先を決めて `deliver` queueへ投入する。
 worker子は投票終了と同じ子で `deliver` のWorkerも動かし、本家どおりスキップ判定・署名付き送信・instance台帳の更新を行う。
 HTTP子も作者の鍵を読み、公開投稿のコピーへJSON-LD署名を1回付けて、既存のaccepted relayごとに個別の配送ジョブを投入する。外向きHTTPによる署名付き送信はworker子が行う。
-relay登録・受理/拒否・inbound検証・actor公開は#195、削除配送は#172、チャートは#200。
+relay登録・受理/拒否・inbound検証・actor公開は#195、削除配送は#172で接続済み、チャートは#200。
 本家との比較は[AP配送の比較資料](../../docs/superpowers/compatibility/ap-deliver/README.md)、業務規則と残りは[本家配送の引き継ぎ](../../docs/backend-next/ap-delivery-handoff.md)を参照する。
 基本text保存のためだけにjobやdispatcherを作らない。queue・payload・保持の値は[投稿の最小契約](../../docs/backend-next/posting-contract.md#通常ジョブ162)を参照する。
 
@@ -196,7 +196,7 @@ migrationは対象表を先にロックし、request非settled、item非成功/�
 
 本家形式の `redisForReactions` を指定した場合は専用接続で反応bufferを読み、未指定なら通常Redisを使う。`mediaProxy` / `videoThumbnailGenerator` とDBの `proxyRemoteFiles` を添付URLに適用する。専用接続も起動・終了期限と必須接続の障害監視に参加する。
 
-投稿作成・削除・変更系API・実worker/配信は後続（作成は#169/#170、AP配送は#171で接続）。保存済みデータのshow検証だけで投稿縦断の完成とは扱わない。
+投稿作成は#169/#170、作成のAP配送は#171、投稿削除とDelete/Undo配送は#172で接続した。残る変更系API・配信は後続。保存済みデータのshow検証だけで投稿縦断の完成とは扱わない。
 
 ## 基本投稿作成（#169 / N2）
 
@@ -211,3 +211,11 @@ DB失敗やクライアント切断を理由に自動再作成しない。通常
 登録済みリモートユーザーも、#195までは `lastFetchedAt` が古くても再同期せずに使う（暫定制限）。
 投票終了ジョブ（#162）とAP配送（#171。既存のaccepted relayへの配送を含む）以外の通知/stream/TL/検索/webhookは未接続で、投稿領域全体の完成ではない。
 最小契約と既存実装の撤去順は[投稿の最小契約](../../docs/backend-next/posting-contract.md)を参照。
+
+## 投稿削除（#172）
+
+通常HTTPの `POST /api/notes/delete` は `{ noteId, i? }` とBearerを扱い、成功時204・空本文。作者または現在のmoderatorに許可し、`write:notes` が必要。停止ユーザーは拒否するが移行済みユーザーは削除できる。productionではdelete専用の1秒間隔・1時間300回をRoleのfactorで調整する。
+
+返信数の減算→必要な配送開始→Note削除→他人削除の監査開始という本家の境界を維持する。後段のDB失敗で先行減算・配送を巻き戻したとは扱わない。Poll/Vote/Reactionは既存FKで削除し、user/Renote/channelのcountは減らさない。`notePostDelete.idle()` は開始済み配送・監査の待機窓口で、通常終了にも接続している。保存済みNote/作者/元投稿からDelete/Undoを生成し、followers・relay・concerned directを独立投入する。
+
+`test/integration/note-delete.test.ts` は認証/監査/DB/エラー/制限/宛先、`test/processes/note-delete.test.ts` は固定C10/F8・原文署名・削除配送の終了待機を確認する。通知/streamは#173、TL/検索は#174、webhookは#175、チャートは#200、縦断完成は#176。

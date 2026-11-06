@@ -32,7 +32,7 @@ HTTP成功は保存とレスポンス生成の成功。AP配送や通知の完�
 - **判定順**: 入力検証 → 指定宛先の取得 → 添付 → Renote対象 → 返信先 → 投票期限（本家どおり、`expiredAfter` は要求開始の時刻から数え、期限は関連の取得を終えた時点の時刻と比べる。Dateの範囲外の値は期限切れとせず、保存時のDBエラーで500）→ channel → 返信先によるchannelの補正 → channel投稿の強制（public・宛先なし・localOnly）→ sensitiveWords/canPublicNote（channelなしのみ）→ 禁止語（trim前のcw・text・選択肢）→ Renote対象/返信先による公開範囲・localOnlyの補正 → textのtrim → MFM抽出（text・cw・選択肢）→ メンション解決 → 返信先作者・指定宛先の追加 → メンション数上限 → 保存。複数の誤りでは最初のエラーを返す。エラーのcode/id/messageは本家どおり。
 - **存在・可視性・ブロックの確認**は保存と同じtransactionに入れない（本家も同じ）。確認後の削除・ブロックは検出しない。本家の `create()` 内でcacheによりブロックを再確認して500になる経路は、DBの確認と食い違う競合時だけに起きるため移植しない。
 - **保存**: 投票ありはNoteとPollを、UseCaseが所有する1つのtransactionで保存する。投票なしはNoteの単純insert。非正規化列（threadId・replyUserId/Host・renoteUserId/Host・renoteChannelId・attachedFileTypes・mentionedRemoteUsers）も本家と同じ値で保存する。
-- **保存後のcount**: user.notesCountに加え、返信先repliesCount、Renote対象renoteCount（他人の投稿・botでない投稿者のみ。引用も含む）、channelのnotesCount・lastNotedAt・usersCount（その投稿者のchannel内Noteが1件ならusersCount+1）を、保存後の原子的更新として行う。本家どおり削除では減らさない。作成応答の描画を終えてから開始し、応答の入れ子の返信先/Renote対象のcountを本家と同じく今回の加算前の値にする。
+- **保存後のcount**: user.notesCountに加え、返信先repliesCount、Renote対象renoteCount（他人の投稿・botでない投稿者のみ。引用も含む）、channelのnotesCount・lastNotedAt・usersCount（その投稿者のchannel内Noteが1件ならusersCount+1）を、保存後の原子的更新として行う。削除では返信先の `repliesCount` だけを1減らし、user・Renote・channelのcountは減らさない（#172）。作成応答の描画を終えてから開始し、応答の入れ子の返信先/Renote対象のcountを本家と同じく今回の加算前の値にする。
 - **メンション**: ローカルユーザーと登録済みリモートユーザーをDBで解決する。見つからないローカルユーザーは本家どおり無視する。自ホスト判定とホスト正規化は[連合の共通土台](federation-base-contract.md)を使う。登録済みリモートユーザーは `lastFetchedAt` に関係なく再同期せず使う。DBにない（未登録の）リモートユーザー宛ては、メンション解決の位置で保存前に501 `NOT_IMPLEMENTED`で拒否する。どちらも#195で除去する暫定制限であり、完成版の意図的差異にしない。
 - **指定宛先とMFM抽出**: 指定宛先は本家と同じく順序を付けずに取得し、存在しないIDは黙って除く（保存順は入力順を保証しない）。ハッシュタグの長さの上限は本家どおり正規化前の値で判定するため、NFKCで128文字を超えるタグは保存時のDBエラーで500になる。mediaSilencedによる絵文字の除外はリモート投稿にだけ効くため、ローカル投稿の経路には入れない。
 - **後続Issueの材料**: 投票終了のjob登録と通知は、保存済みの `poll.expiresAt` を材料に #162 の最初の PR で接続した（下記「通常ジョブ（#162）」）。#170では空のjobを作らない。通知・stream（#173）、hashtag表・ランキング・検索索引・TL・antenna（#174）、webhook（#175）、AP配送（#171）、チャートは本Issueで実装しない。いずれも保存済みのNote列（mentions・mentionedRemoteUsers・tags・reply/renote/channel）から判断できる。
@@ -63,3 +63,13 @@ HTTP成功は保存とレスポンス生成の成功。AP配送や通知の完�
 ## 選択の理由
 
 旧PG実行プロトコルを接続する案は初期目的に不要な保証と運用を増やす。先に全強化実装を消す案は未接続adapterの置換作業だけで機能実装を遅らせる。基本投稿を通しながら参照のない部分から撤去し、相互依存する残りを直後のPRでまとめて減らす。
+
+## 投稿削除（#172）
+
+`POST /api/notes/delete` は作者または現在のmoderatorに許可する。`write:notes`、停止状態、入力とエラーUUIDは固定本家に合わせ、移行済み作者も削除できる。productionではdelete専用の1秒間隔と1時間300回枠を、RoleのrateLimitFactorで調整する。moderator資格とfactorは現在のDB材料で評価する。
+
+本家と同じく、返信先の `repliesCount` 減算を独立した文として先に確定し、必要なAP表現と配送を開始してから `id + userId` でNoteを削除する。後のDELETEが失敗しても、先の減算や開始済み配送をrollbackしたことにしない。同期の表現失敗（specifiedのpure Renote等）はDELETE前の失敗となる。moderatorの他人削除の監査はDELETE成功後に開始するbest effortで、監査失敗は削除の失敗へ変換しない。Note全列と作者情報を監査へ渡す。Poll/Vote/Reactionは既存FKで削除され、参照する返信/Renoteは残る。
+
+ローカル作者かつ `localOnly=false` のとき、通常投稿・引用はDelete(Tombstone)、元投稿が残るpure RenoteはUndo(Announce)、元投稿消失時はDeleteへ戻す。作者鍵を使い、followers・accepted relay・concerned directを別々に投入する。非public削除もfollowers/relayを対象にし、followersとdirect間でsharedInboxを重複排除しない。concernedは保存済みremote mention URI・Renote作者と、削除対象へのremote返信/Renote作者。対象自身の列は削除前に保持し、参照する子Noteは削除後も照会できる。
+
+開始済みの配送・監査は `notePostDelete` が終了期限まで待つ。失敗は `note-post-delete.failed` に記録し、producerの再実行・永続宛先台帳・強いCreate/Delete順序を追加しない。stream/通知は#173、TL/検索は#174、webhookは#175、チャートは#200、最後の連携確認は#176に残す。[実装と検証](../superpowers/plans/2026-11-07-note-delete-172.md)。

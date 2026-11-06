@@ -15,9 +15,23 @@
 
 Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装・本家比較資料・HTTP/受け入れテストに接続済み。これを `verified`（検証根拠あり）とする。他の Role API は未実装。根拠は [Role 比較資料](../role/README.md)、[#115](https://github.com/tiramiss-community/tiramiss/issues/115) と #116–#121。
 
-`notes/show` は固定本家の観測 JSON と照合済みで `verified`。`notes/create` は #170 のローカル部分（添付・投票・返信/Renote・channel・指定宛先・MFM 抽出）まで実装した `partial` で、未登録リモートユーザー宛てのメンションは #195 まで保存前に 501 で拒否する。PG 通知保存と起動・migration の基盤は `partial`。旧 PG ジョブ基盤と AP 宛先 snapshot/page/host lease は PR #212/#213 で撤去したため、AP 送信とジョブ管理は `not_implemented` に戻した。**通常 worker は本家の投票終了ジョブ（`endedPollNotification`、#162）と AP 配送ジョブ（`deliver`、#171）を実行する。** 投票終了ジョブの投入・queue と Worker の設定・受信者の選定と PG への保存は本家 probe と比較して `partial` にした（[比較資料](../poll-ended/README.md)）。 #160 の最初の PR で、AP の署名・署名付き送信・配送結果の分類を本家と比較して `partial` にした。#171 の最初の PR で、ノート作成の Create/Announce の表現・宛先の選定・deliver queue と Worker・配送前の判定・インスタンス台帳を通常起動へ接続し、本家 probe と note の C9（relay を除く）と比較して `partial` にした（[比較資料](../ap-deliver/README.md)）。relay と JSON-LD 署名は #171 の 2 番目の PR、Delete/Undo は #172。 部分実装から公開機能全体の完成を推測しない。
+`notes/show` は固定本家の観測 JSON と照合済みで `verified`。`notes/create` は #170 のローカル部分（添付・投票・返信/Renote・channel・指定宛先・MFM 抽出）まで実装した `partial` で、未登録リモートユーザー宛てのメンションは #195 まで保存前に 501 で拒否する。PG 通知保存と起動・migration の基盤は `partial`。旧 PG ジョブ基盤と AP 宛先 snapshot/page/host lease は PR #212/#213 で撤去したため、AP 送信とジョブ管理は `not_implemented` に戻した。**通常 worker は本家の投票終了ジョブ（`endedPollNotification`、#162）と AP 配送ジョブ（`deliver`、#171）を実行する。** 投票終了ジョブの投入・queue と Worker の設定・受信者の選定と PG への保存は本家 probe と比較して `partial` にした（[比較資料](../poll-ended/README.md)）。 #160 の最初の PR で、AP の署名・署名付き送信・配送結果の分類を本家と比較して `partial` にした。#171 の最初の PR で、ノート作成の Create/Announce の表現・宛先の選定・deliver queue と Worker・配送前の判定・インスタンス台帳を通常起動へ接続し、本家 probe と note の C9（relay を除く）と比較して `partial` にした（[比較資料](../ap-deliver/README.md)）。relayとJSON-LD署名は#171の2番目のPR #227で接続済み。Delete/Undoは#172の下記sliceで接続した。 部分実装から公開機能全体の完成を推測しない。
 
 それ以外の入口は `not_implemented`（未実装）。これは見送りではなく、担当 Issue による設計・実装・比較が必要な状態。今回の検査は棚卸しの整合性検査であり、各 HTTP/連合機能の比較テストを再実行して `verified` を付けたものではない。
+
+## #172 sliceと固定監査表の照合（2026-11-07）
+
+今回の作業は未commitのため、生成表の `implementationCommit` と行statusは上記の固定Git treeのまま維持する。validatorはそのtreeに実装/検証ファイルが存在することを要求する。以下は現在の作業との差分であり、次のcommit/PRで監査基準を進める際に該当行へ反映する。生成表の古い「未実装」を現在の実装状況として読み替えない。
+
+| 契約ID/対象 | 現在の実装と比較 | 残る範囲 |
+| --- | --- | --- |
+| `api:notes/delete` | `http/note-delete-api.ts` と `modules/note/delete-note.ts`。実トークンHTTP・C10認可/監査/DB・production rateを `test/integration/note-delete.test.ts` で検証 | 削除stream/通知、TL/検索、webhook、チャート |
+| `ap-render:renderDelete` / `ap-render:renderUndo` | `modules/federation/note-deletion.ts`。C10 Delete/Undo/fallbackとF8を `test/processes/note-delete.test.ts` で原文署名・Digestも比較 | AP受信/actor公開は#195 |
+| `ap-send-site:NoteDeleteService.deliverToConcerned -> deliverToFollowers` / `-> deliverToUsers` | followersとconcerned directを独立投入。remote返信/Renote作者の実DB照会とqueue jobsも比較 | 強い取消/順序/固定宛先台帳は保留#161 |
+| `responsibility:notes-core:30` | Delete/Undo表現と配送先決定を接続。relayは作者鍵LD署名付きで別投入 | 残る縦断連携は#176 |
+| `service:NoteDeleteService` / `responsibility:notes-core:29` | 認可/物理削除/返信数/監査/配送の部分実装。DELETE失敗境界を固定本家probeで比較 | stream#173、TL/検索#174、webhook#175、チャート#200 |
+
+実装ファイルは `packages/backend-next/src/`、試験は `packages/backend-next/` からの相対パス。[計画と実測](../../plans/2026-11-07-note-delete-172.md)、[削除比較資料](../note/README.md#172-削除sliceの追加検証2026-11-07)を参照する。
 
 ## 列挙した範囲
 

@@ -12,3 +12,5 @@ export { createCreateNote } from './create-note.js';
 export { matchesWords } from './keywords.js';
 export { NoteCreateError } from './create-contract.js';
 export type { NoteCreateActor, NoteCreateAuthor, NoteAttachableFile, NewNote, NewPoll, NoteWrites, NotePostSaveInput, NoteCreateErrorCode, RelatedNote, RelatedChannel, MentionedRemoteUser } from './create-contract.js';
+export { createDeleteNote, NoteDeleteError } from './delete-note.js';
+export type { DeletedNoteSnapshot, NoteDeleteWork, NoteDeleteErrorCode } from './delete-note.js';

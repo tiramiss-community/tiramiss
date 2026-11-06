@@ -61,7 +61,7 @@
 
 - relay 登録・受信・actor・一般の remote context 取得は #195。既存 accepted relay への作成配送は第2sliceで実装（下記）。
 - 配送の成功・失敗によるチャートの更新は #200。成功時の `fetchInstanceMetadata` は連合の共通土台の段階 5（#216 の `getHtml` と一緒に）。
-- Delete・Undo の表現と削除の配送は #172。縦断の確認は #176。
+- Delete・Undoの表現と削除配送は#172の最初のsliceで接続（下記）。stream等との縦断確認は#176。
 - note-authors による instance 表の直接読みを `fetchInstance` へ置き換えることと、`packInstanceState` は最初の利用者の PR へ回した。
 
 
@@ -73,4 +73,12 @@ public 作成の呼び出し側だけで relay を選び、共有 sender 自体�
 
 別の deep copy に falsy `to` のみ Public を補い（`[]` を維持）、作者鍵で一回署名する。relay システムアカウントは使わない。relay は個別 `Queue.add`、`isSharedInbox: false` で、ordinary と URL が同じでも別 job。本文と digest は投入時に固定され、通常の12試行・backoff・保持を維持する。HTTP 成功条件は保存のまま、既存の post-save drain → queue close → 接続解放を維持する。PKCS#1 鍵の DB 書き換えは既存の best effort のまま drain 保証外。
 
-署名は固定本家の3 contextだけを同梱し、未知 URL を network 取得せず拒否する。jsonld 9 の既定 RDFC-1.0 / safe mode を維持。options / document の N-Quads SHA256 hex を結合した128文字を UTF-8 として RSA/SHA256 署名する。固定本家 probe の4 crypto vector と独立検証、43 relay 活動の単体テストが成功。C9 全9配送・実 queue の retry/410・cache・relay SELECT ロック中の停止を検証する結合/process テストを追加したが、この worker では sandbox の localhost `EPERM` により実行未完了。実測一覧は[実装計画](../superpowers/plans/2026-11-06-ap-relay-171.md)。
+署名は固定本家の3 contextだけを同梱し、未知 URL を network 取得せず拒否する。jsonld 9 の既定 RDFC-1.0 / safe mode を維持。options / document の N-Quads SHA256 hex を結合した128文字を UTF-8 として RSA/SHA256 署名する。固定本家 probe の4 crypto vector と独立検証、43 relay 活動の単体テストが成功。C9全9配送・実queueのretry/410・cache・relay SELECTロック中の停止は、PR #227のcontroller最終検証で結合150件/process3件が成功した。過去workerのlocalhost EPERMは最終状態ではない。実測一覧は[実装計画](../superpowers/plans/2026-11-06-ap-relay-171.md)。
+
+## #172: Delete/Undoの配送
+
+削除前に対象Noteの列・元Renoteの存在/URI・作者を読み、local作者かつ `!localOnly` のとき表現を1回生成する。DeleteはランダムUUID、UndoはローカルAnnounce IDなら `/undo`、本家のホスト判定でローカルでなければUUIDを使う。外側の `to/cc` は省略し、relayのコピーだけにPublicを補完して作者鍵で署名する。moderatorの削除でも鍵は投稿作者。
+
+本家と同じくfollowers、relay、concerned directを別枝にする。public以外のDeleteもfollowers/relayへ送る。directは保存済みremote mention URI、Renote作者と、削除投稿へのremote返信/Renote作者。direct内はinboxで重複排除するが、followersのsharedInboxとの横断排除はしない。channelもlocalOnlyの値で判断し、remote作者の削除は配送しない。
+
+pure RenoteはCW・返信・添付・投票の有無も判定し、元投稿ありはUndo、消失はDelete。specifiedのpure Renoteで元投稿ありは本家renderer同様に例外となり、ローカル削除に進まない。配送開始はDELETEより前で、DB削除が失敗しても既に始まった配送を取消しない。監査はDELETE成功後に開始し、双方とも既存終了期限まで追跡する。C10/F8・原文HTTP/Digest/LD署名・停止drainと固定本家failure probeの範囲は[実装計画](../superpowers/plans/2026-11-07-note-delete-172.md)に記録する。

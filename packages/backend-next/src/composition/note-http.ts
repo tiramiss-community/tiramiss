@@ -2,12 +2,16 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { randomUUID } from 'node:crypto';
+import { createNoteDeleteApi } from '../http/note-delete-api.js';
+import { createNoteDeleter } from '../platform/database/note-deleter.js';
+import { createNoteDeleteRateLimiter } from '../platform/note-delete-rate-limit.js';
 import { createNoteApi } from '../http/note-api.js';
 import { createNoteCreateApi } from '../http/note-create-api.js';
 import { createNoteWriter, createNoteWriteTransactions } from '../platform/database/note-writer.js';
 import { createNoteRateLimiter } from '../platform/note-rate-limit.js';
-import { createCreateNote, createShowNote, matchesWords, readNotePlan, renderNote } from '../modules/note/public.js';
-import { createHostRules } from '../modules/federation/public.js';
+import { createCreateNote, createDeleteNote, createShowNote, matchesWords, readNotePlan, renderNote } from '../modules/note/public.js';
+import { createHostRules, renderDeletedNoteActivity } from '../modules/federation/public.js';
 import { createNoteReader } from '../platform/database/note-reader.js';
 import { createTokenAuthenticator } from '../platform/database/authenticate.js';
 import { createIdCodec } from '../platform/id-codec.js';
@@ -28,8 +32,17 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		limit: createNoteRateLimiter(resources.redis),
 		afterSaved: input => resources.notePostSave.start(input),
 	});
+	const deletion = createDeleteNote({
+		...createNoteDeleter(manager, codec.createdAtFromId),
+		limit: createNoteDeleteRateLimiter(resources.redis),
+		renderActivity: (snapshot, now) => renderDeletedNoteActivity(snapshot, {
+			selfUrl: config.url, now, randomId: randomUUID(), isLocalUri: createHostRules(new URL(config.url).host).isUriLocal,
+		}),
+		start: resources.notePostDelete.start,
+	});
 	const authenticate = createTokenAuthenticator(manager, resources.logger);
 	return createRoleHttpApp(resources, config)
+		.route('/', createNoteDeleteApi({ authenticate, deleteNote: deletion.deleteNote, logger: resources.logger }))
 		.route('/', createNoteApi({ authenticate, showNote: show.showNote, logger: resources.logger }))
 		.route('/', createNoteCreateApi({
 			authenticate, createNote: create.createNote, logger: resources.logger,

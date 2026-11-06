@@ -34,7 +34,7 @@
 - **C6/C8**: 返信/pure Renote/引用、不存在/不可視/pure対象のAPIエラー、channel強制public/localOnly、archive/外部Renote拒否、noExtract*、specified+mentionを測定。集計は本家の完了を待って確認。renoteCountは引用も含むが自己Renoteを除外する（初期bob自己Renoteは加算されない）。botや各条件の個別比較は#170で追加。
 - **本家のcount**: outsiderのnotesCountは0→作成1→削除後1。channelの(notesCount,usersCount)は(3,2)→対象actorの投稿を全削除しても(3,2)→同actor再投稿で(4,3)。削除で単純に減る/人数を再加算しない期待値へ黙って変えない。新設計の同時確定と値そのものの変更判断は分ける。
 - **C9/C10**: 実workerが署名/Digest headerを持つHTTPをfake inboxへPOST。publicはrelayとshared inbox、home/followersはshared、specifiedは個人inbox。publicのremote返信先がfollowerのshared inboxと重なる場合は作成配送を重複排除。pureはAnnounce、引用はCreate。作者/他者/moderator削除、DB消失、監査、Redis noteStreamのdeleted、Delete/Undo、元投稿消失時のDelete fallbackを確認。public返信のDeleteはdirect/shared/relayの3配送となる。本probeは署名headerの存在を確認し、暗号検証は行っていない。
-- **F8の本家側**: 作成後に追加したlate followerへ、home/followers/specifiedのDeleteも配送し、relayにも送る。本家観測をD3の新期待値で上書きせず残した。新実装の非public固定集合・unknown/取消世代は#161/#171/#172で検証する。
+- **F8の本家側**: 作成後に追加したlate followerへ、home/followers/specifiedのDeleteも配送し、relayにも送る。本家観測をD3の新期待値で上書きせず残した。新実装も#172でこの本家宛先を移植・比較した。固定集合・unknown/取消世代は保留#161に分離する。
 
 APの受信集合はpathで整列する（並列HTTPの到着順を互換契約にしない）。activity内部の配列順は保持する。localOnly=0件は正の配送完了後300msの有限観測であり、無期限の不在証明ではない。streamはRedis publishの実受信でありWebSocketクライアントまで通した試験ではない。
 
@@ -53,8 +53,8 @@ F1–F7は新しい同時確定/永続request/所有世代/有限回復を要求
 | [#168 N1](https://github.com/tiramiss-community/tiramiss/issues/168) | C1-show/C5全件、Note/Poll/関連facts、集合取得と純粋変換、query数非比例。追加のnested/時刻/remote表示はcoverage参照 |
 | [#169 N2](https://github.com/tiramiss-community/tiramiss/issues/169) | C1/C2/C4、共通gate、成功/拒否HTTPとDB。D1/D2、F1/F3、容量413/503は新設計の追加期待値 |
 | [#170 N3](https://github.com/tiramiss-community/tiramiss/issues/170) | C3/C6/C7/C8、添付・poll・reply/Renote・channel・MFM、同時変更。channel人数とcountの判断を明記。2026-11-03の段階1でC3の添付ケースとC7の全件、段階3でC8の全件（C8-channel・C8-archived・C8-external-renote・C8-extract・C8-no-extract・C8-specified）と追加実測N3の全102件を `test/integration/note-create.test.ts`・`test/integration/note-create-relations.test.ts` へ接続（`BACKEND_NEXT_TEST_DB_PORT=… BACKEND_NEXT_TEST_REDIS_PORT=… pnpm --filter backend-next test:integration <file>` でPASS）。未登録リモートユーザーへのメンションは#195まで501、登録済みリモートユーザーは#195まで再同期しない |
-| [#171 N4](https://github.com/tiramiss-community/tiramiss/issues/171) | C9 AP全本文/audience/宛先、C6/C8の配送条件。#160/#162の実送信/workerに接続し署名検証・HTTP分類・停止を追加。2026-11-03の最初のPRで、C9-home・C9-followers・C9-specified・C9-localOnlyの全件と、C9-public・C9-pure・C9-quoteの`/inbox/shared`分を `test/processes/note-deliver.test.ts` へ接続（ID・ポート・時刻を置換して一致。署名は`crypto.verify`、Digestも検証）。channelも配送0件。第2slice は `/inbox/relay` を含む全9配送と、置換前の原文による独立LD検証を同テストに追加した。固定署名 vector と単体検証は成功、実 DB/Redis/process はこの worker の sandbox localhost EPERM により未完了。元のC9観測自体はheader存在のみで暗号検証していない。表現・宛先・投入・処理の本家probeとの比較は[ap-deliver](../ap-deliver/README.md)。F4/F8・D3の新設計の保証は持たない（下記の台帳の再評価） |
-| [#172 N5](https://github.com/tiramiss-community/tiramiss/issues/172) | C10認可/監査/DB/Undo fallback、F8の本家差異。新取消/unknown/過去宛先を#161と検証 |
+| [#171 N4](https://github.com/tiramiss-community/tiramiss/issues/171) | C9 AP全本文/audience/宛先、C6/C8の配送条件。#160/#162の実送信/workerに接続し署名検証・HTTP分類・停止を追加。2026-11-03の最初のPRで、C9-home・C9-followers・C9-specified・C9-localOnlyの全件と、C9-public・C9-pure・C9-quoteの`/inbox/shared`分を `test/processes/note-deliver.test.ts` へ接続（ID・ポート・時刻を置換して一致。署名は`crypto.verify`、Digestも検証）。channelも配送0件。第2slice は `/inbox/relay` を含む全9配送と、置換前の原文による独立LD検証を同テストに追加した。固定署名vectorと単体検証に加え、PR #227のcontroller最終検証で関連結合150件/process3件も成功。過去workerのlocalhost EPERMは最終状態ではない。元のC9観測自体はheader存在のみで暗号検証していない。表現・宛先・投入・処理の本家probeとの比較は[ap-deliver](../ap-deliver/README.md)。F4/F8・D3の新設計の保証は持たない（下記の台帳の再評価） |
+| [#172 N5](https://github.com/tiramiss-community/tiramiss/issues/172) | C10認可/監査/DB/Undo fallbackとF8本家宛先を `test/integration/note-delete.test.ts`・`test/processes/note-delete.test.ts` へ接続済み。返信数だけ減算し、DELETE失敗境界は追加の固定本家probeで比較。取消/unknown/固定宛先は保留#161へ分離 |
 | [#173–#175 N6](https://github.com/tiramiss-community/tiramiss/issues/173) | 通知条件/stream、派生更新、webhookの公開契約と有限配送。Redis publish観測を実WebSocket成立としない |
 | [#176 N7](https://github.com/tiramiss-community/tiramiss/issues/176) | coverageの全C/Fを、新実装の縦断・停止/競合試験へ対応付けてCIへ接続。空欄を新実装での成功へ変えない |
 | [#178 共通API](https://github.com/tiramiss-community/tiramiss/issues/178) / [#179 認証](https://github.com/tiramiss-community/tiramiss/issues/179) | Role固有のHTTP gateを投稿にも使える契約へ。rate before input、moved/read/delete例外、App scope、D6を引き継ぐ |
@@ -202,3 +202,20 @@ notes/create/delete、投票・reaction・follow等の変更API、TL/検索API�
 `test/integration/note-create.test.ts` で、段階1から C3 の添付ケース（C3-missing-file・C3-foreign-file・C3-file-precedence・C3-empty-file-precedence・C3-media-alias）と C7 の全5件（C7-default・C7-expired・C7-relative-priority・C7-duplicate・C7-one）を照合する。C7-relative-priority の `expiresAt` は要求の前後の時刻から求めた範囲で比べる（相対期限のため完全一致にしない）。同じファイルで C6 の全9件と C8 の全6件（C8-channel・C8-archived・C8-external-renote・C8-extract・C8-no-extract・C8-specified）を他のケースと同じく照合する（各ケースの後で保存後処理の完了を待つ）。C6-counts は probe の C5 と同じ2件目の返信（show-reply）を作った後の値、C8-channel-counts は削除APIが未接続のため `before` だけを照合する。初期データの `private` も probe と同じく `notes/create` で作る。追加の実測（N3）は [n3/README.md](n3/README.md#新実装への接続先) を参照。
 
 未登録のリモートユーザーへのメンション（本家ではWebFingerで解決し、失敗すれば無視する）は#195まで、メンション解決の位置で保存前に501 `NOT_IMPLEMENTED`を返す。登録済みリモートユーザーは、#195までは `lastFetchedAt` が古くても再同期せずに使う（同じく暫定制限）。同じファイルで、本文・CW・選択肢・指定宛先との組み合わせで保存されないことと、ポート付きの設定URL（`http://127.0.0.1:61167`）では `@probe_alice@127.0.0.1` が本家と同じく自ホストと判定されずこの501になることを確かめる。これは新実装の試験で、固定本家の実測ではない。
+
+## #172 削除sliceの追加検証（2026-11-07）
+
+`test/integration/note-delete.test.ts` でC10の認可/再削除/監査・移行済み作者と、停止/scope/入力/rate、現在moderator、Poll/Vote/Reaction cascade、返信/Renote参照残存、reply countだけの減算を確認する。stored URI・Renote作者・remote返信/Renote作者の実DB照会と個別queue jobs、DELETE失敗後の3配送枝・Note残存・先行減算・auditなしも対象にする。
+
+`test/processes/note-delete.test.ts` はC10-Delete/Undo/fallbackとF8-home/followers/specifiedを比較する。UUID/時刻を置換する前に全受信のHTTP署名・DigestとrelayのLD署名を検証し、moderator削除でも作者鍵を使うこと、relay SELECTをロックして204後のSIGTERMがdrainを待つことも確認する。通常retryは既存 `test/integration/deliver-queue.test.ts` の同じworker経路へ接続する。stream/通知・TL/検索・webhook・チャート・縦断完成は#173–#176/#200に残る。
+
+追加の `reference-delete.unit.ts` は固定本家の実NoteDeleteService/ApRendererServiceを、新実装の試験DBから得た実RepositoryとBEFORE DELETE失敗triggerで実行する。stream/chart/queue/検索/監査の境界は試験用stubで観測し、実HTTP配送を行ったprobeではない。`delete-failure-cases.json` はNote残存、reply count 3→2、followers/relay開始がDELETE前、direct開始、auditなしを記録する。C10正常系の原本観測は変更しない。
+
+```sh
+NOTE_DELETE_UPSTREAM_ROOT=/absolute/isolated/fixed-upstream \
+BACKEND_NEXT_TEST_DB_PORT=55472 BACKEND_NEXT_TEST_REDIS_PORT=56372 \
+pnpm --filter backend-next exec vitest run \
+  --config ../../docs/superpowers/compatibility/note/reference-delete.config.ts
+```
+
+固定checkoutのHEADを検査する。依存はap-deliverの本家probeと同じ前提で、元checkoutを変更しない。期待値を再収集するときだけ `NOTE_DELETE_PROBE_WRITE=1` を加える。今回writer収集とcontrollerのWRITEなし再生が成功した。D2/D3/F4の強い同時確定/取消/固定宛先は、GOALSの初期範囲に従い#172の所有から外した再評価を台帳へ残す。

@@ -22,18 +22,24 @@
     "contract": "count/関係更新を作成・削除と同時確定する。正常時の値と本家の応答直後/遅延の時点差を分ける。channel人数等の値の修正は未合意。",
     "owners": [
       169,
-      170,
-      172
+      170
     ],
-    "newImplementationVerified": false
+    "newImplementationVerified": false,
+    "reevaluations": [
+      {
+        "date": "2026-11-07",
+        "issue": 172,
+        "decision": "owners から #172 を外す",
+        "reason": "#172はGOALS/ROADMAPの本家相当の初期範囲に従う。返信数はDELETEより前の独立更新で、失敗時に巻き戻さない。削除宛先は現在followers/accepted relay/concerned directとし、固定集合・取消世代・強い順序保証を追加しない。追加保証は残る所有Issueの範囲で、元の契約文は履歴として維持する。"
+      }
+    ]
   },
   {
     "id": "D3",
     "contract": "取消世代・開始済み/unknownのDelete後続。非publicのDelete宛先を初回固定集合/送信実績へ限定する。本家F8はlate follower/relayにも送る。",
     "owners": [
       159,
-      161,
-      172
+      161
     ],
     "newImplementationVerified": false,
     "reevaluations": [
@@ -42,6 +48,12 @@
         "issue": 171,
         "decision": "owners から #171 を外す",
         "reason": "#171 の最初の PR は本家と同じく、作成時に followers・direct の宛先を選んで通常の BullMQ へ投入するだけで、宛先の固定集合・送信実績・取消世代を記録しない（docs/backend-next/ap-delivery-handoff.md）。D3 は新設計の追加保証で、本家相当を移植する #171 は実装しない（GOALS.md の初期範囲）。D3 自体の扱いは残りの所有者が再評価する。"
+      },
+      {
+        "date": "2026-11-07",
+        "issue": 172,
+        "decision": "owners から #172 を外す",
+        "reason": "#172はGOALS/ROADMAPの本家相当の初期範囲に従う。返信数はDELETEより前の独立更新で、失敗時に巻き戻さない。削除宛先は現在followers/accepted relay/concerned directとし、固定集合・取消世代・強い順序保証を追加しない。追加保証は残る所有Issueの範囲で、元の契約文は履歴として維持する。"
       }
     ]
   },
