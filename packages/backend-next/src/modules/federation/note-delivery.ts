@@ -33,12 +33,12 @@ const followersAudience = new Set(['public', 'home', 'followers']);
 
 /**
  * 本家 NoteCreateService.postNoteCreated の AP 配送の区画。保存済みの投稿を読み直し、表現・宛先の選定・投入までを行う。
- * relay への配送は #171 の 2 番目の PR で足す。
  */
 export function createDeliverCreatedNote(ports: {
 	readNote(noteId: string): Promise<NoteDeliveryMaterials | null>;
 	readUsers(ids: readonly string[]): Promise<DeliveryUser[]>;
 	readFollowerInboxes(followeeId: string): Promise<FollowerInbox[]>;
+	deliverToRelays(author: { id: string }, activity: Record<string, unknown>): Promise<void>;
 	enqueue(batch: DeliverBatch): Promise<void>;
 	/** 末尾の `/` を持たない origin。 */
 	selfUrl: string;
@@ -64,12 +64,26 @@ export function createDeliverCreatedNote(ports: {
 		}
 
 		const recipes = await directRecipes(delivery, ports.readUsers);
-		if (followersAudience.has(note.visibility)) {
-			recipes.push({ type: 'Followers' });
+		const relay = async () => {
+			if (note.visibility === 'public') {
+				await ports.deliverToRelays({ id: note.userId }, activity);
+			}
+		};
+		const ordinary = async () => {
+			if (followersAudience.has(note.visibility)) {
+				recipes.push({ type: 'Followers' });
+			}
+			const inboxes = await collectInboxes(recipes, () => ports.readFollowerInboxes(note.userId));
+			await ports.enqueue({ user: { id: note.userId }, activity, inboxes });
+		};
+		const results = await Promise.allSettled([relay(), ordinary()]);
+		const failures = results.filter(result => result.status === 'rejected').map(result => result.reason);
+		if (failures.length === 1) {
+			throw failures[0];
 		}
-		const inboxes = await collectInboxes(recipes, () => ports.readFollowerInboxes(note.userId));
-
-		await ports.enqueue({ user: { id: note.userId }, activity, inboxes });
+		if (failures.length > 1) {
+			throw new AggregateError(failures, 'note deliveries failed');
+		}
 	};
 }
 

@@ -1,0 +1,702 @@
+{
+	"inputs": {
+		"author": {
+			"id": "alice",
+			"host": null
+		},
+		"cases": [
+			null,
+			{},
+			{
+				"to": null
+			},
+			{
+				"to": ""
+			},
+			{
+				"to": false
+			},
+			{
+				"to": 0
+			},
+			{
+				"to": []
+			},
+			{
+				"to": [
+					"https://example.test/a"
+				]
+			},
+			{
+				"object": {
+					"content": "original"
+				}
+			}
+		]
+	},
+	"cases": [
+		{
+			"activity": null,
+			"relays": [],
+			"calls": []
+		},
+		{
+			"activity": null,
+			"relays": [
+				{
+					"inbox": "https://relay.test/inbox"
+				},
+				{
+					"inbox": "https://second.test/inbox"
+				}
+			],
+			"calls": []
+		},
+		{
+			"activity": {},
+			"relays": [],
+			"calls": [
+				[
+					"findBy",
+					{
+						"status": "accepted"
+					}
+				]
+			]
+		},
+		{
+			"activity": {},
+			"relays": [
+				{
+					"inbox": "https://relay.test/inbox"
+				},
+				{
+					"inbox": "https://second.test/inbox"
+				}
+			],
+			"calls": [
+				[
+					"findBy",
+					{
+						"status": "accepted"
+					}
+				],
+				[
+					"sign",
+					{
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						]
+					},
+					{
+						"id": "alice",
+						"host": null
+					},
+					true
+				],
+				[
+					"deliver",
+					{
+						"id": "alice",
+						"host": null
+					},
+					{
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						],
+						"signature": "signed"
+					},
+					"https://relay.test/inbox",
+					false
+				],
+				[
+					"deliver",
+					{
+						"id": "alice",
+						"host": null
+					},
+					{
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						],
+						"signature": "signed"
+					},
+					"https://second.test/inbox",
+					false
+				]
+			]
+		},
+		{
+			"activity": {
+				"to": null
+			},
+			"relays": [],
+			"calls": [
+				[
+					"findBy",
+					{
+						"status": "accepted"
+					}
+				]
+			]
+		},
+		{
+			"activity": {
+				"to": null
+			},
+			"relays": [
+				{
+					"inbox": "https://relay.test/inbox"
+				},
+				{
+					"inbox": "https://second.test/inbox"
+				}
+			],
+			"calls": [
+				[
+					"findBy",
+					{
+						"status": "accepted"
+					}
+				],
+				[
+					"sign",
+					{
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						]
+					},
+					{
+						"id": "alice",
+						"host": null
+					},
+					true
+				],
+				[
+					"deliver",
+					{
+						"id": "alice",
+						"host": null
+					},
+					{
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						],
+						"signature": "signed"
+					},
+					"https://relay.test/inbox",
+					false
+				],
+				[
+					"deliver",
+					{
+						"id": "alice",
+						"host": null
+					},
+					{
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						],
+						"signature": "signed"
+					},
+					"https://second.test/inbox",
+					false
+				]
+			]
+		},
+		{
+			"activity": {
+				"to": ""
+			},
+			"relays": [],
+			"calls": [
+				[
+					"findBy",
+					{
+						"status": "accepted"
+					}
+				]
+			]
+		},
+		{
+			"activity": {
+				"to": ""
+			},
+			"relays": [
+				{
+					"inbox": "https://relay.test/inbox"
+				},
+				{
+					"inbox": "https://second.test/inbox"
+				}
+			],
+			"calls": [
+				[
+					"findBy",
+					{
+						"status": "accepted"
+					}
+				],
+				[
+					"sign",
+					{
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						]
+					},
+					{
+						"id": "alice",
+						"host": null
+					},
+					true
+				],
+				[
+					"deliver",
+					{
+						"id": "alice",
+						"host": null
+					},
+					{
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						],
+						"signature": "signed"
+					},
+					"https://relay.test/inbox",
+					false
+				],
+				[
+					"deliver",
+					{
+						"id": "alice",
+						"host": null
+					},
+					{
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						],
+						"signature": "signed"
+					},
+					"https://second.test/inbox",
+					false
+				]
+			]
+		},
+		{
+			"activity": {
+				"to": false
+			},
+			"relays": [],
+			"calls": [
+				[
+					"findBy",
+					{
+						"status": "accepted"
+					}
+				]
+			]
+		},
+		{
+			"activity": {
+				"to": false
+			},
+			"relays": [
+				{
+					"inbox": "https://relay.test/inbox"
+				},
+				{
+					"inbox": "https://second.test/inbox"
+				}
+			],
+			"calls": [
+				[
+					"findBy",
+					{
+						"status": "accepted"
+					}
+				],
+				[
+					"sign",
+					{
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						]
+					},
+					{
+						"id": "alice",
+						"host": null
+					},
+					true
+				],
+				[
+					"deliver",
+					{
+						"id": "alice",
+						"host": null
+					},
+					{
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						],
+						"signature": "signed"
+					},
+					"https://relay.test/inbox",
+					false
+				],
+				[
+					"deliver",
+					{
+						"id": "alice",
+						"host": null
+					},
+					{
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						],
+						"signature": "signed"
+					},
+					"https://second.test/inbox",
+					false
+				]
+			]
+		},
+		{
+			"activity": {
+				"to": 0
+			},
+			"relays": [],
+			"calls": [
+				[
+					"findBy",
+					{
+						"status": "accepted"
+					}
+				]
+			]
+		},
+		{
+			"activity": {
+				"to": 0
+			},
+			"relays": [
+				{
+					"inbox": "https://relay.test/inbox"
+				},
+				{
+					"inbox": "https://second.test/inbox"
+				}
+			],
+			"calls": [
+				[
+					"findBy",
+					{
+						"status": "accepted"
+					}
+				],
+				[
+					"sign",
+					{
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						]
+					},
+					{
+						"id": "alice",
+						"host": null
+					},
+					true
+				],
+				[
+					"deliver",
+					{
+						"id": "alice",
+						"host": null
+					},
+					{
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						],
+						"signature": "signed"
+					},
+					"https://relay.test/inbox",
+					false
+				],
+				[
+					"deliver",
+					{
+						"id": "alice",
+						"host": null
+					},
+					{
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						],
+						"signature": "signed"
+					},
+					"https://second.test/inbox",
+					false
+				]
+			]
+		},
+		{
+			"activity": {
+				"to": []
+			},
+			"relays": [],
+			"calls": [
+				[
+					"findBy",
+					{
+						"status": "accepted"
+					}
+				]
+			]
+		},
+		{
+			"activity": {
+				"to": []
+			},
+			"relays": [
+				{
+					"inbox": "https://relay.test/inbox"
+				},
+				{
+					"inbox": "https://second.test/inbox"
+				}
+			],
+			"calls": [
+				[
+					"findBy",
+					{
+						"status": "accepted"
+					}
+				],
+				[
+					"sign",
+					{
+						"to": []
+					},
+					{
+						"id": "alice",
+						"host": null
+					},
+					true
+				],
+				[
+					"deliver",
+					{
+						"id": "alice",
+						"host": null
+					},
+					{
+						"to": [],
+						"signature": "signed"
+					},
+					"https://relay.test/inbox",
+					false
+				],
+				[
+					"deliver",
+					{
+						"id": "alice",
+						"host": null
+					},
+					{
+						"to": [],
+						"signature": "signed"
+					},
+					"https://second.test/inbox",
+					false
+				]
+			]
+		},
+		{
+			"activity": {
+				"to": [
+					"https://example.test/a"
+				]
+			},
+			"relays": [],
+			"calls": [
+				[
+					"findBy",
+					{
+						"status": "accepted"
+					}
+				]
+			]
+		},
+		{
+			"activity": {
+				"to": [
+					"https://example.test/a"
+				]
+			},
+			"relays": [
+				{
+					"inbox": "https://relay.test/inbox"
+				},
+				{
+					"inbox": "https://second.test/inbox"
+				}
+			],
+			"calls": [
+				[
+					"findBy",
+					{
+						"status": "accepted"
+					}
+				],
+				[
+					"sign",
+					{
+						"to": [
+							"https://example.test/a"
+						]
+					},
+					{
+						"id": "alice",
+						"host": null
+					},
+					true
+				],
+				[
+					"deliver",
+					{
+						"id": "alice",
+						"host": null
+					},
+					{
+						"to": [
+							"https://example.test/a"
+						],
+						"signature": "signed"
+					},
+					"https://relay.test/inbox",
+					false
+				],
+				[
+					"deliver",
+					{
+						"id": "alice",
+						"host": null
+					},
+					{
+						"to": [
+							"https://example.test/a"
+						],
+						"signature": "signed"
+					},
+					"https://second.test/inbox",
+					false
+				]
+			]
+		},
+		{
+			"activity": {
+				"object": {
+					"content": "original"
+				}
+			},
+			"relays": [],
+			"calls": [
+				[
+					"findBy",
+					{
+						"status": "accepted"
+					}
+				]
+			]
+		},
+		{
+			"activity": {
+				"object": {
+					"content": "original"
+				}
+			},
+			"relays": [
+				{
+					"inbox": "https://relay.test/inbox"
+				},
+				{
+					"inbox": "https://second.test/inbox"
+				}
+			],
+			"calls": [
+				[
+					"findBy",
+					{
+						"status": "accepted"
+					}
+				],
+				[
+					"sign",
+					{
+						"object": {
+							"content": "original"
+						},
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						]
+					},
+					{
+						"id": "alice",
+						"host": null
+					},
+					true
+				],
+				[
+					"deliver",
+					{
+						"id": "alice",
+						"host": null
+					},
+					{
+						"object": {
+							"content": "changed"
+						},
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						],
+						"signature": "signed"
+					},
+					"https://relay.test/inbox",
+					false
+				],
+				[
+					"deliver",
+					{
+						"id": "alice",
+						"host": null
+					},
+					{
+						"object": {
+							"content": "changed"
+						},
+						"to": [
+							"https://www.w3.org/ns/activitystreams#Public"
+						],
+						"signature": "signed"
+					},
+					"https://second.test/inbox",
+					false
+				]
+			]
+		},
+		{
+			"mode": "async-rejection",
+			"attempted": [
+				"first",
+				"second"
+			],
+			"rejected": false
+		},
+		{
+			"mode": "sync-throw",
+			"attempted": [
+				"first"
+			],
+			"rejected": true
+		}
+	]
+}

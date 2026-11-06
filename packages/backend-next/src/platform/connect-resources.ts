@@ -2,6 +2,10 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { randomBytes } from 'node:crypto';
+import { createFederationKeys } from '../composition/federation-keys.js';
+import { createAcceptedRelayReader } from './database/accepted-relays.js';
+import { signRsaSignature2017 } from './jsonld-signature.js';
 import { Redis } from 'ioredis';
 import { createNotePostSave, createNotePostSaveWork } from './note-post-save.js';
 import { createPollEndedQueue, ENDED_POLL_NOTIFICATION } from './job-queue/ended-poll-notification.js';
@@ -10,7 +14,7 @@ import { createNotePostSaveCounts } from './database/note-post-save-counts.js';
 import { createNoteActivityReader } from './database/note-activity.js';
 import { createDeliveryRecipientReader } from './database/delivery-recipients.js';
 import { createIdCodec } from './id-codec.js';
-import { createDeliverCreatedNote } from '../modules/federation/public.js';
+import { createDeliverCreatedNote, createDeliverToRelays } from '../modules/federation/public.js';
 import { openRoleMaterials } from './role-materials.js';
 import { createRoleMaterialReader } from './database/role-materials.js';
 import { ResourceScope } from './resource-scope.js';
@@ -192,6 +196,15 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 
+		const federationKeys = createFederationKeys({ dataSource, redis, logger }, config);
+		const deliverToRelays = createDeliverToRelays({
+			readAcceptedRelays: createAcceptedRelayReader({ manager: dataSource.manager, currentTime: Date.now }),
+			attachLdSignature: async (activity, author) => {
+				const key = await federationKeys.readUserKeypair(author.id);
+				return signRsaSignature2017(activity, { privateKeyPem: key.privateKeyPem, creator: `${config.url}/users/${author.id}#main-key` }, new Date(), randomBytes(16).toString('hex'));
+			},
+			enqueue: deliverQueue.deliverOne,
+		});
 		const recipients = createDeliveryRecipientReader(dataSource.manager);
 		const notePostSave = createNotePostSave(createNotePostSaveWork({
 			counts: createNotePostSaveCounts(dataSource.manager),
@@ -202,6 +215,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 				readUsers: recipients.readUsers,
 				readFollowerInboxes: recipients.readFollowerInboxes,
 				enqueue: deliverQueue.deliverMany,
+				deliverToRelays,
 				selfUrl: config.url,
 				currentTime: Date.now,
 			}),
@@ -213,7 +227,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw new DiagnosticError('JOB_QUEUE_REDIS_ENDED', { queue: lostQueue });
 		}
 		active = true;
-		return { dataSource, redis, reactionsRedis, roleMaterials, notePostSave, logger, close, failure };
+		return { dataSource, redis, reactionsRedis, roleMaterials, notePostSave, federationKeys, logger, close, failure };
 	};
 
 	try {

@@ -146,3 +146,41 @@ test('every saved note is handed to the delivery step, which decides by itself w
 
 	expect(delivered).toEqual(['n1']);
 });
+
+test('relay signing/submission inside delivery keeps idle and close pending while counts and polls finish, then logs failure', async () => {
+	const logs: Record<string, unknown>[] = [];
+	const done: string[] = [];
+	let release!: () => void;
+	const blocked = new Promise<void>(resolve => {
+		release = resolve;
+	});
+	const effects = createNotePostSave(createNotePostSaveWork({
+		counts: async () => {
+			done.push('counts');
+		},
+		schedulePollEnded: async () => {
+			done.push('poll');
+		},
+		deliver: async () => {
+			done.push('signing');
+			await blocked;
+			throw new Error('relay enqueue failed');
+		},
+		currentTime: () => 1000,
+	}), createLogger('test', line => logs.push(JSON.parse(line))));
+	effects.start({ noteId: 'saved-note', userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: 10000 });
+	let idle = false;
+	let closed = false;
+	const waiting = effects.idle().then(() => {
+		idle = true;
+	});
+	const closing = effects.close().then(() => {
+		closed = true;
+	});
+	await new Promise(resolve => setImmediate(resolve));
+	expect(done.sort()).toEqual(['counts', 'poll', 'signing']);
+	expect([idle, closed]).toEqual([false, false]);
+	release();
+	await Promise.all([waiting, closing]);
+	expect(logs.filter(line => line.event === 'note-post-save.failed')).toEqual([expect.objectContaining({ noteId: 'saved-note', userId: 'author', error: expect.objectContaining({ details: { failures: [{ step: 'deliver', error: { name: 'Error' } }] } }) })]);
+});

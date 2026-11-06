@@ -1,6 +1,6 @@
 # ノート作成の AP 配送の本家比較資料
 
-対象は [#171](https://github.com/tiramiss-community/tiramiss/issues/171) の最初の実装 PR。ノート作成から、Create/Announce の表現、宛先の選定、deliver queue への投入、配送ジョブの処理までを比べる。relay への配送と JSON-LD 署名は #171 の 2 番目の PR で比べる（2026-11-03 のユーザー決定）。比較元は本家 `8e07cf085adf7009583d234a208e30436f020e26`。
+対象は [#171](https://github.com/tiramiss-community/tiramiss/issues/171) の作成配送と既存 accepted relay の第2slice。ノート作成から、Create/Announce の表現、宛先の選定、deliver queue への投入、配送ジョブの処理までを比べる。第2slice は relay 配送と作者鍵 JSON-LD 署名を追加する。比較元は本家 `8e07cf085adf7009583d234a208e30436f020e26`。
 
 対象の本家コードは次のとおり。パスは `packages/backend/` から。
 
@@ -19,9 +19,12 @@
 | `mfm-html-cases.json` | 本文の MFM を `getNoteHtml` に通した HTML と `noMisskeyContent`。`toHtml` のすべての handler を通す |
 | `render-cases.json` | 保存済みの投稿と関連の行を与えて `postNoteCreated` の配送の区画を動かした結果。activity の JSON 文字列、宛先と job、relay を呼んだか、待たれない失敗 |
 | `recipient-cases.json` | `DeliverManager` に recipe と following の行を与えた結果。`deliverMany` へ渡る宛先の Map（順序つき）か例外 |
+| `ld-signature-cases.json` | 固定4署名の canonical N-Quads・hash・署名材料と、独立した暗号検証用の context |
+| `relay-cases.json` | null/空一覧・別copy・Public補完・一回署名・全relayの個別投入と、同期/非同期の投入失敗の本家観測 |
 | `job-cases.json` | `deliverMany`・`deliver` の投入（名前・内容・設定）、queue の prefix、Worker の設定、失敗の記録、`httpRelatedBackoff` の表、BullMQ の再試行の判定 |
 | `processor-cases.json` | `DeliverProcessorService.process` に配送先・送信の結果・meta・instance の行を与えた結果。戻り値か例外、instance の読み書き、Redis のキャッシュ、範囲外の呼び出し |
-| `reference-ap-deliver.unit.ts` | 上の 5 つの JSON の `inputs` を本家に通し、`cases` と照合する probe |
+| `reference-ap-deliver.unit.ts` | HTML・表現・宛先・job・processor の5つの JSON の `inputs` を本家に通し、`cases` と照合する probe |
+| `reference-relay.unit.ts` | 固定署名と relay の2つの JSON を本家から採取・再現する probe |
 
 各 JSON は `inputs`（入力表）と `cases`（本家の結果）を持つ。新実装のテストは `cases` を読み込み、値を手で複製しない。
 
@@ -47,7 +50,7 @@
 - `cases[]`: `{ id, reachedDeliver, activity, relay, directUserLookups, followingsQueries, addBulk, unhandledRejections }`。
   - `reachedDeliver`: activity を作り、宛先の選定に入ったか。
   - `activity`: `deliverMany` へ渡した activity の `JSON.stringify`。キーの順を含めて比べるため文字列のまま持つ。各 job の `content` はこれと同じ文字列（probe が確かめる）。
-  - `relay`: `RelayService.deliverToRelays` を呼んだか。relay の中身は 2 番目の PR で比べる。
+  - `relay`: `RelayService.deliverToRelays` を呼んだか。relay の中身は下記の独立 probe で採取した。
   - `directUserLookups`: 返信先・Renote 先の作者を direct へ足すために読み直した利用者 ID。
   - `followingsQueries`: followers の問い合わせ（TypeORM の演算子は `{ operator, value }` に直した）。
   - `addBulk`: `{ digest, jobs: [{ name, to, isSharedInbox }] }`。`null` は `addBulk` を呼ばなかった。
@@ -159,15 +162,17 @@ probe は re2 を差し替える（federation-base と同じ理由）。`postNot
 | `mfm-html-cases.json` | `unit/mfm/note-html.test.ts` | 全 90 件。MFM → HTML の純関数と `noMisskeyContent` の判定。`content` は byte 単位、例外は名前とメッセージ |
 | `render-cases.json` | `unit/federation/note-activity.test.ts`・`unit/federation/note-delivery.test.ts`・`integration/note-activity.test.ts` | 全 63 件。保存済みの列と関連の行からの activity（文字列で一致。メンションの `tag` だけは集合で比べる）、宛先と job の順・digest・本文、配送しない場合。結合テストは行を PostgreSQL へ入れて読み取りから通す（`reply-author-missing` など実 DB で作れない行を除く） |
 | `recipient-cases.json` | `unit/federation/deliver-recipients.test.ts` | 23 件。Map の順と値、問い合わせの回数、`inbox is null`。`remote-actor` は作者の判定で配送の区画に入らないため除く |
+| `ld-signature-cases.json` | `unit/federation/ld-signature.test.ts` | 固定4署名・canonical N-Quads・hash・署名材料の一致、独立 crypto.verify、改変と別鍵の拒否、全43 relay活動 |
+| `relay-cases.json` | `unit/federation/relay-delivery.test.ts` | 通常18観測を新実装へ通す。同期/非同期の投入失敗は下記の意図的差異も別に検証する。accepted一覧の10分cache境界は実DBの `integration/accepted-relays.test.ts` で検証する |
 | `job-cases.json` | `unit/job-queue/deliver.test.ts`・`integration/deliver-queue.test.ts` | 全件。job 名・内容・設定、queue の prefix、Worker の設定、backoff の表、再試行の判定（BullMQ の `Job.shouldRetryJob` に通す）。結合テストは実 Redis の BullMQ で、backoff の後の再試行と 4xx の停止を確かめる |
 | `processor-cases.json` | `integration/deliver-processor.test.ts`（純関数は `unit/federation/deliver-job.test.ts`） | 全 54 件・60 ジョブ。実 PostgreSQL・Redis の台帳で、戻り値か例外、送信、instance の読み書きと最終の行、Redis のキー・TTL・JSON。`fail-410-shared-unknown-stats-off` は下記の差異のとおり `goneSuspended` も残る |
-| [note/observations.json](../note/observations.json) | `processes/note-deliver.test.ts` | ビルド後の HTTP 子・worker 子を通し、C9-home・C9-followers・C9-specified・C9-localOnly の全件と、C9-public・C9-pure・C9-quote の `/inbox/shared` 分。ID・ポート・時刻を置き換えて本文が一致し、署名を `crypto.verify` で、Digest を本文で確かめる。`/inbox/relay` 分は 2 番目の PR で比べる |
+| [note/observations.json](../note/observations.json) | `processes/note-deliver.test.ts` | ビルド後の HTTP 子・worker 子を通し、C9-home・C9-followers・C9-specified・C9-localOnly の全件と、C9-public・C9-pure・C9-quote の `/inbox/shared` と `/inbox/relay` の全9配送を比較する。原文で HTTP・Digest・独立 LD 検証後、ID・ポート・時刻・nonce・署名値だけ置換。第2sliceで実行済み |
 
 ## 意図的な差異
 
 2026-11-03 のユーザー決定と #171 の設計・実装で決めたもの。
 
-- **relay と JSON-LD 署名**: 最初の PR では配送しない。移行データに accepted の relay があっても、public の投稿は relay へ届かない。2 番目の #171 PR までの一時的な差異。
+- **relay producer 失敗と drain**: 本家は relay 分岐・各 add を待たない。新実装は双方の分岐と全 add を独立に開始して allSettled し、単一例外は元のまま、複数は AggregateError で既存 post-save log へ返す。同期 throw 後も他 relay を試す。保存済み HTTP 成功と worker の通常 retry は維持する。
 - **成功時の `fetchInstanceMetadata`**: 呼ばない。連合の共通土台の段階 5（#216 の getHtml と一緒に）までの一時的な差異。
 - **チャート**: `apRequestChart`・`federationChart`・`instanceChart` を更新しない。#200 が扱う。
 - **メンションの `tag` の順**: 本家は問い合わせの返却順で決まらない。新実装は保存した `mentions` の順にし、比較は集合で行う。
@@ -182,9 +187,26 @@ probe は re2 を差し替える（federation-base と同じ理由）。`postNot
 - **Worker のログ**: 本家の `active`・`completed`・`stalled` の記録（debug）は移植しない。失敗した試行ごとに `job.failed` を、`to` と停止の理由とともに記録して元の例外を投げ直す。
 - **Redis の再接続**: deliver の queue と Worker も #162 と同じく再接続せず、稼働中の切断で全体を止める。
 
+## 第2slice の検証結果（2026-11-06）
+
+専用 PostgreSQL/Redis で結合6ファイル150件、ビルド後のプロセス3件が成功した。全9配送の本文・宛先・HTTP署名・Digestとrelayの独立LD署名検証、503の通常retry、410の停止、relay取得中の終了待機を確認した。子workerのsandboxで実行できなかった検証は親環境で実行した。テストDB間のRedisキャッシュ混線は回帰テストで再現し、DBごとの名前空間へ分離した。コマンドと最終結果は[実装計画](../../plans/2026-11-06-ap-relay-171.md)を参照する。
+
 ## 未検証・範囲外
 
-- **2 番目の #171 PR へ**: relay の一覧（10 分のキャッシュ）、`to` の補完、`attachLdSignature`（`RsaSignature2017`）、relay ごとの `deliver`。`job-cases.json` の `deliver` は本家の形の記録だけ。
 - **#172・#176 へ**: Delete・Undo の表現と削除の配送。
 - **#195 へ**: 未登録のリモートユーザーの解決、受信による instance の更新と自動解除。
 - **観測していない**: 実 DB での following・user の問い合わせの返却順（stub は表の順）、`driveFileEntityService.getPublicUrl` のリモート・メディアプロキシの分岐（ローカルの投稿者の添付だけを扱う）、本家の Worker の実 Redis での動作（記録用のクラスで観測した）、本家の `HttpRequestService` を通した実送信（[ap-request](../ap-request/README.md) で比較済み）、`fetchOrRegister` の競合で失われる更新がどちらになるか（実 DB では INSERT の確定順で決まる）、`isKeyWordIncluded` など投稿作成の補正（[note](../note/README.md) の C4 で扱う）。
+
+
+## 第2slice の固定署名・relay 証拠
+
+`reference-relay.config.ts` は `AP_RELAY_UPSTREAM_ROOT` の detached HEAD を固定 SHA と照合し、その checkout の `@` と依存だけで `JsonLd` / `RelayService` を実行する。DB global setup は使わず、slacc を初期化し、未知 context 取得は失敗させる。比較用 checkout の依存は上記の本家 probe 前提で用意する。backend-next から次を実行し、WRITE を外して再現を確認する。
+
+```sh
+AP_RELAY_UPSTREAM_ROOT=/absolute/fixed-upstream AP_RELAY_PROBE_WRITE=1 \
+pnpm --filter backend-next exec vitest run --config ../../docs/superpowers/compatibility/ap-deliver/reference-relay.config.ts
+```
+
+`ld-signature-cases.json` は3 context実体、4活動（Create・Announce・Unicode/nested・既存 signature 置換）、creator・日時・nonce、canonical N-Quads、hash、128文字の署名材料、署名済み出力と本家 verify 結果を収録。`relay-cases.json` は null/空・falsy/空配列 to・作者・別 copy・単件投入・async reject と sync throw の観測を収録する。新署名テスト `unit/federation/ld-signature.test.ts` は完全一致と fixture context だけの独立 crypto.verify、改変5種・別鍵、relay 活動43件を検証する。限定 loader は本家同梱定義の値を保持し、一般の取得と受信処理は #195。
+
+追加テストは `unit/federation/relay-delivery.test.ts`、`unit/job-queue/deliver.test.ts`（全4設定の単件 fixture）、`integration/accepted-relays.test.ts`、`integration/deliver-queue.test.ts` と `processes/note-deliver.test.ts`。cache は空結果も含め10分、ちょうど600000msは有効、取得後に時刻設定、失敗非cache・同時 miss 非集約・DB順維持。C9 の元観測は header 存在のみで暗号検証していない歴史を保持し、第2slice で受信原文を独立検証するテストを追加した。実測は[計画](../../plans/2026-11-06-ap-relay-171.md)に記録する。

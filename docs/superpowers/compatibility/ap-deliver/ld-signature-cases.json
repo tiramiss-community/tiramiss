@@ -1,0 +1,1176 @@
+{
+	"inputs": {
+		"contexts": {
+			"https://w3id.org/identity/v1": {
+				"@context": {
+					"id": "@id",
+					"type": "@type",
+					"cred": "https://w3id.org/credentials#",
+					"dc": "http://purl.org/dc/terms/",
+					"identity": "https://w3id.org/identity#",
+					"perm": "https://w3id.org/permissions#",
+					"ps": "https://w3id.org/payswarm#",
+					"rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+					"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+					"sec": "https://w3id.org/security#",
+					"schema": "http://schema.org/",
+					"xsd": "http://www.w3.org/2001/XMLSchema#",
+					"Group": "https://www.w3.org/ns/activitystreams#Group",
+					"claim": {
+						"@id": "cred:claim",
+						"@type": "@id"
+					},
+					"credential": {
+						"@id": "cred:credential",
+						"@type": "@id"
+					},
+					"issued": {
+						"@id": "cred:issued",
+						"@type": "xsd:dateTime"
+					},
+					"issuer": {
+						"@id": "cred:issuer",
+						"@type": "@id"
+					},
+					"recipient": {
+						"@id": "cred:recipient",
+						"@type": "@id"
+					},
+					"Credential": "cred:Credential",
+					"CryptographicKeyCredential": "cred:CryptographicKeyCredential",
+					"about": {
+						"@id": "schema:about",
+						"@type": "@id"
+					},
+					"address": {
+						"@id": "schema:address",
+						"@type": "@id"
+					},
+					"addressCountry": "schema:addressCountry",
+					"addressLocality": "schema:addressLocality",
+					"addressRegion": "schema:addressRegion",
+					"comment": "rdfs:comment",
+					"created": {
+						"@id": "dc:created",
+						"@type": "xsd:dateTime"
+					},
+					"creator": {
+						"@id": "dc:creator",
+						"@type": "@id"
+					},
+					"description": "schema:description",
+					"email": "schema:email",
+					"familyName": "schema:familyName",
+					"givenName": "schema:givenName",
+					"image": {
+						"@id": "schema:image",
+						"@type": "@id"
+					},
+					"label": "rdfs:label",
+					"name": "schema:name",
+					"postalCode": "schema:postalCode",
+					"streetAddress": "schema:streetAddress",
+					"title": "dc:title",
+					"url": {
+						"@id": "schema:url",
+						"@type": "@id"
+					},
+					"Person": "schema:Person",
+					"PostalAddress": "schema:PostalAddress",
+					"Organization": "schema:Organization",
+					"identityService": {
+						"@id": "identity:identityService",
+						"@type": "@id"
+					},
+					"idp": {
+						"@id": "identity:idp",
+						"@type": "@id"
+					},
+					"Identity": "identity:Identity",
+					"paymentProcessor": "ps:processor",
+					"preferences": {
+						"@id": "ps:preferences",
+						"@type": "@vocab"
+					},
+					"cipherAlgorithm": "sec:cipherAlgorithm",
+					"cipherData": "sec:cipherData",
+					"cipherKey": "sec:cipherKey",
+					"digestAlgorithm": "sec:digestAlgorithm",
+					"digestValue": "sec:digestValue",
+					"domain": "sec:domain",
+					"expires": {
+						"@id": "sec:expiration",
+						"@type": "xsd:dateTime"
+					},
+					"initializationVector": "sec:initializationVector",
+					"member": {
+						"@id": "schema:member",
+						"@type": "@id"
+					},
+					"memberOf": {
+						"@id": "schema:memberOf",
+						"@type": "@id"
+					},
+					"nonce": "sec:nonce",
+					"normalizationAlgorithm": "sec:normalizationAlgorithm",
+					"owner": {
+						"@id": "sec:owner",
+						"@type": "@id"
+					},
+					"password": "sec:password",
+					"privateKey": {
+						"@id": "sec:privateKey",
+						"@type": "@id"
+					},
+					"privateKeyPem": "sec:privateKeyPem",
+					"publicKey": {
+						"@id": "sec:publicKey",
+						"@type": "@id"
+					},
+					"publicKeyPem": "sec:publicKeyPem",
+					"publicKeyService": {
+						"@id": "sec:publicKeyService",
+						"@type": "@id"
+					},
+					"revoked": {
+						"@id": "sec:revoked",
+						"@type": "xsd:dateTime"
+					},
+					"signature": "sec:signature",
+					"signatureAlgorithm": "sec:signatureAlgorithm",
+					"signatureValue": "sec:signatureValue",
+					"CryptographicKey": "sec:Key",
+					"EncryptedMessage": "sec:EncryptedMessage",
+					"GraphSignature2012": "sec:GraphSignature2012",
+					"LinkedDataSignature2015": "sec:LinkedDataSignature2015",
+					"accessControl": {
+						"@id": "perm:accessControl",
+						"@type": "@id"
+					},
+					"writePermission": {
+						"@id": "perm:writePermission",
+						"@type": "@id"
+					}
+				}
+			},
+			"https://w3id.org/security/v1": {
+				"@context": {
+					"id": "@id",
+					"type": "@type",
+					"dc": "http://purl.org/dc/terms/",
+					"sec": "https://w3id.org/security#",
+					"xsd": "http://www.w3.org/2001/XMLSchema#",
+					"EcdsaKoblitzSignature2016": "sec:EcdsaKoblitzSignature2016",
+					"Ed25519Signature2018": "sec:Ed25519Signature2018",
+					"EncryptedMessage": "sec:EncryptedMessage",
+					"GraphSignature2012": "sec:GraphSignature2012",
+					"LinkedDataSignature2015": "sec:LinkedDataSignature2015",
+					"LinkedDataSignature2016": "sec:LinkedDataSignature2016",
+					"CryptographicKey": "sec:Key",
+					"authenticationTag": "sec:authenticationTag",
+					"canonicalizationAlgorithm": "sec:canonicalizationAlgorithm",
+					"cipherAlgorithm": "sec:cipherAlgorithm",
+					"cipherData": "sec:cipherData",
+					"cipherKey": "sec:cipherKey",
+					"created": {
+						"@id": "dc:created",
+						"@type": "xsd:dateTime"
+					},
+					"creator": {
+						"@id": "dc:creator",
+						"@type": "@id"
+					},
+					"digestAlgorithm": "sec:digestAlgorithm",
+					"digestValue": "sec:digestValue",
+					"domain": "sec:domain",
+					"encryptionKey": "sec:encryptionKey",
+					"expiration": {
+						"@id": "sec:expiration",
+						"@type": "xsd:dateTime"
+					},
+					"expires": {
+						"@id": "sec:expiration",
+						"@type": "xsd:dateTime"
+					},
+					"initializationVector": "sec:initializationVector",
+					"iterationCount": "sec:iterationCount",
+					"nonce": "sec:nonce",
+					"normalizationAlgorithm": "sec:normalizationAlgorithm",
+					"owner": {
+						"@id": "sec:owner",
+						"@type": "@id"
+					},
+					"password": "sec:password",
+					"privateKey": {
+						"@id": "sec:privateKey",
+						"@type": "@id"
+					},
+					"privateKeyPem": "sec:privateKeyPem",
+					"publicKey": {
+						"@id": "sec:publicKey",
+						"@type": "@id"
+					},
+					"publicKeyBase58": "sec:publicKeyBase58",
+					"publicKeyPem": "sec:publicKeyPem",
+					"publicKeyWif": "sec:publicKeyWif",
+					"publicKeyService": {
+						"@id": "sec:publicKeyService",
+						"@type": "@id"
+					},
+					"revoked": {
+						"@id": "sec:revoked",
+						"@type": "xsd:dateTime"
+					},
+					"salt": "sec:salt",
+					"signature": "sec:signature",
+					"signatureAlgorithm": "sec:signingAlgorithm",
+					"signatureValue": "sec:signatureValue"
+				}
+			},
+			"https://www.w3.org/ns/activitystreams": {
+				"@context": {
+					"@vocab": "_:",
+					"xsd": "http://www.w3.org/2001/XMLSchema#",
+					"as": "https://www.w3.org/ns/activitystreams#",
+					"ldp": "http://www.w3.org/ns/ldp#",
+					"vcard": "http://www.w3.org/2006/vcard/ns#",
+					"id": "@id",
+					"type": "@type",
+					"Accept": "as:Accept",
+					"Activity": "as:Activity",
+					"IntransitiveActivity": "as:IntransitiveActivity",
+					"Add": "as:Add",
+					"Announce": "as:Announce",
+					"Application": "as:Application",
+					"Arrive": "as:Arrive",
+					"Article": "as:Article",
+					"Audio": "as:Audio",
+					"Block": "as:Block",
+					"Collection": "as:Collection",
+					"CollectionPage": "as:CollectionPage",
+					"Relationship": "as:Relationship",
+					"Create": "as:Create",
+					"Delete": "as:Delete",
+					"Dislike": "as:Dislike",
+					"Document": "as:Document",
+					"Event": "as:Event",
+					"Follow": "as:Follow",
+					"Flag": "as:Flag",
+					"Group": "as:Group",
+					"Ignore": "as:Ignore",
+					"Image": "as:Image",
+					"Invite": "as:Invite",
+					"Join": "as:Join",
+					"Leave": "as:Leave",
+					"Like": "as:Like",
+					"Link": "as:Link",
+					"Mention": "as:Mention",
+					"Note": "as:Note",
+					"Object": "as:Object",
+					"Offer": "as:Offer",
+					"OrderedCollection": "as:OrderedCollection",
+					"OrderedCollectionPage": "as:OrderedCollectionPage",
+					"Organization": "as:Organization",
+					"Page": "as:Page",
+					"Person": "as:Person",
+					"Place": "as:Place",
+					"Profile": "as:Profile",
+					"Question": "as:Question",
+					"Reject": "as:Reject",
+					"Remove": "as:Remove",
+					"Service": "as:Service",
+					"TentativeAccept": "as:TentativeAccept",
+					"TentativeReject": "as:TentativeReject",
+					"Tombstone": "as:Tombstone",
+					"Undo": "as:Undo",
+					"Update": "as:Update",
+					"Video": "as:Video",
+					"View": "as:View",
+					"Listen": "as:Listen",
+					"Read": "as:Read",
+					"Move": "as:Move",
+					"Travel": "as:Travel",
+					"IsFollowing": "as:IsFollowing",
+					"IsFollowedBy": "as:IsFollowedBy",
+					"IsContact": "as:IsContact",
+					"IsMember": "as:IsMember",
+					"subject": {
+						"@id": "as:subject",
+						"@type": "@id"
+					},
+					"relationship": {
+						"@id": "as:relationship",
+						"@type": "@id"
+					},
+					"actor": {
+						"@id": "as:actor",
+						"@type": "@id"
+					},
+					"attributedTo": {
+						"@id": "as:attributedTo",
+						"@type": "@id"
+					},
+					"attachment": {
+						"@id": "as:attachment",
+						"@type": "@id"
+					},
+					"bcc": {
+						"@id": "as:bcc",
+						"@type": "@id"
+					},
+					"bto": {
+						"@id": "as:bto",
+						"@type": "@id"
+					},
+					"cc": {
+						"@id": "as:cc",
+						"@type": "@id"
+					},
+					"context": {
+						"@id": "as:context",
+						"@type": "@id"
+					},
+					"current": {
+						"@id": "as:current",
+						"@type": "@id"
+					},
+					"first": {
+						"@id": "as:first",
+						"@type": "@id"
+					},
+					"generator": {
+						"@id": "as:generator",
+						"@type": "@id"
+					},
+					"icon": {
+						"@id": "as:icon",
+						"@type": "@id"
+					},
+					"image": {
+						"@id": "as:image",
+						"@type": "@id"
+					},
+					"inReplyTo": {
+						"@id": "as:inReplyTo",
+						"@type": "@id"
+					},
+					"items": {
+						"@id": "as:items",
+						"@type": "@id"
+					},
+					"instrument": {
+						"@id": "as:instrument",
+						"@type": "@id"
+					},
+					"orderedItems": {
+						"@id": "as:items",
+						"@type": "@id",
+						"@container": "@list"
+					},
+					"last": {
+						"@id": "as:last",
+						"@type": "@id"
+					},
+					"location": {
+						"@id": "as:location",
+						"@type": "@id"
+					},
+					"next": {
+						"@id": "as:next",
+						"@type": "@id"
+					},
+					"object": {
+						"@id": "as:object",
+						"@type": "@id"
+					},
+					"oneOf": {
+						"@id": "as:oneOf",
+						"@type": "@id"
+					},
+					"anyOf": {
+						"@id": "as:anyOf",
+						"@type": "@id"
+					},
+					"closed": {
+						"@id": "as:closed",
+						"@type": "xsd:dateTime"
+					},
+					"origin": {
+						"@id": "as:origin",
+						"@type": "@id"
+					},
+					"accuracy": {
+						"@id": "as:accuracy",
+						"@type": "xsd:float"
+					},
+					"prev": {
+						"@id": "as:prev",
+						"@type": "@id"
+					},
+					"preview": {
+						"@id": "as:preview",
+						"@type": "@id"
+					},
+					"replies": {
+						"@id": "as:replies",
+						"@type": "@id"
+					},
+					"result": {
+						"@id": "as:result",
+						"@type": "@id"
+					},
+					"audience": {
+						"@id": "as:audience",
+						"@type": "@id"
+					},
+					"partOf": {
+						"@id": "as:partOf",
+						"@type": "@id"
+					},
+					"tag": {
+						"@id": "as:tag",
+						"@type": "@id"
+					},
+					"target": {
+						"@id": "as:target",
+						"@type": "@id"
+					},
+					"to": {
+						"@id": "as:to",
+						"@type": "@id"
+					},
+					"url": {
+						"@id": "as:url",
+						"@type": "@id"
+					},
+					"altitude": {
+						"@id": "as:altitude",
+						"@type": "xsd:float"
+					},
+					"content": "as:content",
+					"contentMap": {
+						"@id": "as:content",
+						"@container": "@language"
+					},
+					"name": "as:name",
+					"nameMap": {
+						"@id": "as:name",
+						"@container": "@language"
+					},
+					"duration": {
+						"@id": "as:duration",
+						"@type": "xsd:duration"
+					},
+					"endTime": {
+						"@id": "as:endTime",
+						"@type": "xsd:dateTime"
+					},
+					"height": {
+						"@id": "as:height",
+						"@type": "xsd:nonNegativeInteger"
+					},
+					"href": {
+						"@id": "as:href",
+						"@type": "@id"
+					},
+					"hreflang": "as:hreflang",
+					"latitude": {
+						"@id": "as:latitude",
+						"@type": "xsd:float"
+					},
+					"longitude": {
+						"@id": "as:longitude",
+						"@type": "xsd:float"
+					},
+					"mediaType": "as:mediaType",
+					"published": {
+						"@id": "as:published",
+						"@type": "xsd:dateTime"
+					},
+					"radius": {
+						"@id": "as:radius",
+						"@type": "xsd:float"
+					},
+					"rel": "as:rel",
+					"startIndex": {
+						"@id": "as:startIndex",
+						"@type": "xsd:nonNegativeInteger"
+					},
+					"startTime": {
+						"@id": "as:startTime",
+						"@type": "xsd:dateTime"
+					},
+					"summary": "as:summary",
+					"summaryMap": {
+						"@id": "as:summary",
+						"@container": "@language"
+					},
+					"totalItems": {
+						"@id": "as:totalItems",
+						"@type": "xsd:nonNegativeInteger"
+					},
+					"units": "as:units",
+					"updated": {
+						"@id": "as:updated",
+						"@type": "xsd:dateTime"
+					},
+					"width": {
+						"@id": "as:width",
+						"@type": "xsd:nonNegativeInteger"
+					},
+					"describes": {
+						"@id": "as:describes",
+						"@type": "@id"
+					},
+					"formerType": {
+						"@id": "as:formerType",
+						"@type": "@id"
+					},
+					"deleted": {
+						"@id": "as:deleted",
+						"@type": "xsd:dateTime"
+					},
+					"inbox": {
+						"@id": "ldp:inbox",
+						"@type": "@id"
+					},
+					"outbox": {
+						"@id": "as:outbox",
+						"@type": "@id"
+					},
+					"following": {
+						"@id": "as:following",
+						"@type": "@id"
+					},
+					"followers": {
+						"@id": "as:followers",
+						"@type": "@id"
+					},
+					"streams": {
+						"@id": "as:streams",
+						"@type": "@id"
+					},
+					"preferredUsername": "as:preferredUsername",
+					"endpoints": {
+						"@id": "as:endpoints",
+						"@type": "@id"
+					},
+					"uploadMedia": {
+						"@id": "as:uploadMedia",
+						"@type": "@id"
+					},
+					"proxyUrl": {
+						"@id": "as:proxyUrl",
+						"@type": "@id"
+					},
+					"liked": {
+						"@id": "as:liked",
+						"@type": "@id"
+					},
+					"oauthAuthorizationEndpoint": {
+						"@id": "as:oauthAuthorizationEndpoint",
+						"@type": "@id"
+					},
+					"oauthTokenEndpoint": {
+						"@id": "as:oauthTokenEndpoint",
+						"@type": "@id"
+					},
+					"provideClientKey": {
+						"@id": "as:provideClientKey",
+						"@type": "@id"
+					},
+					"signClientKey": {
+						"@id": "as:signClientKey",
+						"@type": "@id"
+					},
+					"sharedInbox": {
+						"@id": "as:sharedInbox",
+						"@type": "@id"
+					},
+					"Public": {
+						"@id": "as:Public",
+						"@type": "@id"
+					},
+					"source": "as:source",
+					"likes": {
+						"@id": "as:likes",
+						"@type": "@id"
+					},
+					"shares": {
+						"@id": "as:shares",
+						"@type": "@id"
+					},
+					"alsoKnownAs": {
+						"@id": "as:alsoKnownAs",
+						"@type": "@id"
+					}
+				}
+			}
+		},
+		"creator": "https://local.example/users/alice#main-key",
+		"created": "2026-11-06T01:02:03.000Z",
+		"nonce": "00112233445566778899aabbccddeeff",
+		"activities": [
+			{
+				"@context": [
+					"https://www.w3.org/ns/activitystreams",
+					"https://w3id.org/security/v1",
+					{
+						"Key": "sec:Key",
+						"manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+						"sensitive": "as:sensitive",
+						"Hashtag": "as:Hashtag",
+						"quoteUrl": "as:quoteUrl",
+						"toot": "http://joinmastodon.org/ns#",
+						"Emoji": "toot:Emoji",
+						"featured": "toot:featured",
+						"discoverable": "toot:discoverable",
+						"schema": "http://schema.org#",
+						"PropertyValue": "schema:PropertyValue",
+						"value": "schema:value",
+						"misskey": "https://misskey-hub.net/ns#",
+						"_misskey_content": "misskey:_misskey_content",
+						"_misskey_quote": "misskey:_misskey_quote",
+						"_misskey_reaction": "misskey:_misskey_reaction",
+						"_misskey_votes": "misskey:_misskey_votes",
+						"_misskey_summary": "misskey:_misskey_summary",
+						"_misskey_followedMessage": "misskey:_misskey_followedMessage",
+						"_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+						"_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+						"_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+						"_misskey_license": "misskey:_misskey_license",
+						"freeText": {
+							"@id": "misskey:freeText",
+							"@type": "schema:text"
+						},
+						"isCat": "misskey:isCat",
+						"vcard": "http://www.w3.org/2006/vcard/ns#"
+					}
+				],
+				"id": "https://local.example/notes/at3hjq77note0001/activity",
+				"actor": "https://local.example/users/alice",
+				"type": "Create",
+				"published": "2026-11-03T00:00:01.123Z",
+				"object": {
+					"id": "https://local.example/notes/at3hjq77note0001",
+					"type": "Note",
+					"attributedTo": "https://local.example/users/alice",
+					"content": "hello",
+					"published": "2026-11-03T00:00:01.123Z",
+					"to": [
+						"https://www.w3.org/ns/activitystreams#Public"
+					],
+					"cc": [
+						"https://local.example/users/alice/followers"
+					],
+					"inReplyTo": null,
+					"attachment": [],
+					"sensitive": false,
+					"tag": []
+				},
+				"to": [
+					"https://www.w3.org/ns/activitystreams#Public"
+				],
+				"cc": [
+					"https://local.example/users/alice/followers"
+				]
+			},
+			{
+				"@context": [
+					"https://www.w3.org/ns/activitystreams",
+					"https://w3id.org/security/v1",
+					{
+						"Key": "sec:Key",
+						"manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+						"sensitive": "as:sensitive",
+						"Hashtag": "as:Hashtag",
+						"quoteUrl": "as:quoteUrl",
+						"toot": "http://joinmastodon.org/ns#",
+						"Emoji": "toot:Emoji",
+						"featured": "toot:featured",
+						"discoverable": "toot:discoverable",
+						"schema": "http://schema.org#",
+						"PropertyValue": "schema:PropertyValue",
+						"value": "schema:value",
+						"misskey": "https://misskey-hub.net/ns#",
+						"_misskey_content": "misskey:_misskey_content",
+						"_misskey_quote": "misskey:_misskey_quote",
+						"_misskey_reaction": "misskey:_misskey_reaction",
+						"_misskey_votes": "misskey:_misskey_votes",
+						"_misskey_summary": "misskey:_misskey_summary",
+						"_misskey_followedMessage": "misskey:_misskey_followedMessage",
+						"_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+						"_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+						"_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+						"_misskey_license": "misskey:_misskey_license",
+						"freeText": {
+							"@id": "misskey:freeText",
+							"@type": "schema:text"
+						},
+						"isCat": "misskey:isCat",
+						"vcard": "http://www.w3.org/2006/vcard/ns#"
+					}
+				],
+				"id": "https://local.example/notes/at3hk9hnnote000q/activity",
+				"actor": "https://local.example/users/alice",
+				"type": "Announce",
+				"published": "2026-11-03T00:00:26.123Z",
+				"to": [
+					"https://www.w3.org/ns/activitystreams#Public"
+				],
+				"cc": [
+					"https://local.example/users/alice/followers"
+				],
+				"object": "https://local.example/notes/at2njgg0base0001"
+			},
+			{
+				"@context": [
+					"https://www.w3.org/ns/activitystreams",
+					"https://w3id.org/security/v1",
+					{
+						"Key": "sec:Key",
+						"manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+						"sensitive": "as:sensitive",
+						"Hashtag": "as:Hashtag",
+						"quoteUrl": "as:quoteUrl",
+						"toot": "http://joinmastodon.org/ns#",
+						"Emoji": "toot:Emoji",
+						"featured": "toot:featured",
+						"discoverable": "toot:discoverable",
+						"schema": "http://schema.org#",
+						"PropertyValue": "schema:PropertyValue",
+						"value": "schema:value",
+						"misskey": "https://misskey-hub.net/ns#",
+						"_misskey_content": "misskey:_misskey_content",
+						"_misskey_quote": "misskey:_misskey_quote",
+						"_misskey_reaction": "misskey:_misskey_reaction",
+						"_misskey_votes": "misskey:_misskey_votes",
+						"_misskey_summary": "misskey:_misskey_summary",
+						"_misskey_followedMessage": "misskey:_misskey_followedMessage",
+						"_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+						"_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+						"_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+						"_misskey_license": "misskey:_misskey_license",
+						"freeText": {
+							"@id": "misskey:freeText",
+							"@type": "schema:text"
+						},
+						"isCat": "misskey:isCat",
+						"vcard": "http://www.w3.org/2006/vcard/ns#"
+					}
+				],
+				"id": "https://local.example/notes/at3hjq77note0001/activity",
+				"actor": "https://local.example/users/alice",
+				"type": "Create",
+				"published": "2026-11-03T00:00:01.123Z",
+				"object": {
+					"id": "https://local.example/notes/at3hjq77note0001",
+					"type": "Note",
+					"attributedTo": "https://local.example/users/alice",
+					"content": "雪 ☃ café <b>日本語</b>",
+					"published": "2026-11-03T00:00:01.123Z",
+					"to": [
+						"https://www.w3.org/ns/activitystreams#Public"
+					],
+					"cc": [
+						"https://local.example/users/alice/followers"
+					],
+					"inReplyTo": null,
+					"attachment": [
+						{
+							"type": "Document",
+							"mediaType": "image/png",
+							"url": "https://example.test/雪.png",
+							"name": "画像"
+						}
+					],
+					"sensitive": false,
+					"tag": []
+				},
+				"to": [
+					"https://www.w3.org/ns/activitystreams#Public"
+				],
+				"cc": [
+					"https://local.example/users/alice/followers"
+				]
+			},
+			{
+				"@context": [
+					"https://www.w3.org/ns/activitystreams",
+					"https://w3id.org/security/v1",
+					{
+						"Key": "sec:Key",
+						"manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+						"sensitive": "as:sensitive",
+						"Hashtag": "as:Hashtag",
+						"quoteUrl": "as:quoteUrl",
+						"toot": "http://joinmastodon.org/ns#",
+						"Emoji": "toot:Emoji",
+						"featured": "toot:featured",
+						"discoverable": "toot:discoverable",
+						"schema": "http://schema.org#",
+						"PropertyValue": "schema:PropertyValue",
+						"value": "schema:value",
+						"misskey": "https://misskey-hub.net/ns#",
+						"_misskey_content": "misskey:_misskey_content",
+						"_misskey_quote": "misskey:_misskey_quote",
+						"_misskey_reaction": "misskey:_misskey_reaction",
+						"_misskey_votes": "misskey:_misskey_votes",
+						"_misskey_summary": "misskey:_misskey_summary",
+						"_misskey_followedMessage": "misskey:_misskey_followedMessage",
+						"_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+						"_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+						"_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+						"_misskey_license": "misskey:_misskey_license",
+						"freeText": {
+							"@id": "misskey:freeText",
+							"@type": "schema:text"
+						},
+						"isCat": "misskey:isCat",
+						"vcard": "http://www.w3.org/2006/vcard/ns#"
+					}
+				],
+				"id": "https://local.example/notes/at3hjq77note0001/activity",
+				"actor": "https://local.example/users/alice",
+				"type": "Create",
+				"published": "2026-11-03T00:00:01.123Z",
+				"object": {
+					"id": "https://local.example/notes/at3hjq77note0001",
+					"type": "Note",
+					"attributedTo": "https://local.example/users/alice",
+					"content": "hello",
+					"published": "2026-11-03T00:00:01.123Z",
+					"to": [
+						"https://www.w3.org/ns/activitystreams#Public"
+					],
+					"cc": [
+						"https://local.example/users/alice/followers"
+					],
+					"inReplyTo": null,
+					"attachment": [],
+					"sensitive": false,
+					"tag": []
+				},
+				"to": [
+					"https://www.w3.org/ns/activitystreams#Public"
+				],
+				"cc": [
+					"https://local.example/users/alice/followers"
+				],
+				"signature": {
+					"type": "ignored",
+					"signatureValue": "old"
+				}
+			}
+		]
+	},
+	"cases": [
+		{
+			"canonicalOptions": "_:c14n0 <http://purl.org/dc/terms/created> \"2026-11-06T01:02:03.000Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime> .\n_:c14n0 <http://purl.org/dc/terms/creator> <https://local.example/users/alice#main-key> .\n_:c14n0 <https://w3id.org/security#nonce> \"00112233445566778899aabbccddeeff\" .\n",
+			"canonicalDocument": "<https://local.example/notes/at3hjq77note0001/activity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/ns/activitystreams#Create> .\n<https://local.example/notes/at3hjq77note0001/activity> <https://www.w3.org/ns/activitystreams#actor> <https://local.example/users/alice> .\n<https://local.example/notes/at3hjq77note0001/activity> <https://www.w3.org/ns/activitystreams#cc> <https://local.example/users/alice/followers> .\n<https://local.example/notes/at3hjq77note0001/activity> <https://www.w3.org/ns/activitystreams#object> <https://local.example/notes/at3hjq77note0001> .\n<https://local.example/notes/at3hjq77note0001/activity> <https://www.w3.org/ns/activitystreams#published> \"2026-11-03T00:00:01.123Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime> .\n<https://local.example/notes/at3hjq77note0001/activity> <https://www.w3.org/ns/activitystreams#to> <https://www.w3.org/ns/activitystreams#Public> .\n<https://local.example/notes/at3hjq77note0001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/ns/activitystreams#Note> .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#attributedTo> <https://local.example/users/alice> .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#cc> <https://local.example/users/alice/followers> .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#content> \"hello\" .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#published> \"2026-11-03T00:00:01.123Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime> .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#sensitive> \"false\"^^<http://www.w3.org/2001/XMLSchema#boolean> .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#to> <https://www.w3.org/ns/activitystreams#Public> .\n",
+			"optionsHash": "cb06db8b08d06b6f4dbe73ef9947d1281f95a23f7f1001543084a0ad7ace362f",
+			"documentHash": "eefb2f70f34fe044e6f0acf06235387236456a2ed69d9aa5c4ba11cd6eadfbb5",
+			"verificationData": "cb06db8b08d06b6f4dbe73ef9947d1281f95a23f7f1001543084a0ad7ace362feefb2f70f34fe044e6f0acf06235387236456a2ed69d9aa5c4ba11cd6eadfbb5",
+			"signed": {
+				"@context": [
+					"https://www.w3.org/ns/activitystreams",
+					"https://w3id.org/security/v1",
+					{
+						"Key": "sec:Key",
+						"manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+						"sensitive": "as:sensitive",
+						"Hashtag": "as:Hashtag",
+						"quoteUrl": "as:quoteUrl",
+						"toot": "http://joinmastodon.org/ns#",
+						"Emoji": "toot:Emoji",
+						"featured": "toot:featured",
+						"discoverable": "toot:discoverable",
+						"schema": "http://schema.org#",
+						"PropertyValue": "schema:PropertyValue",
+						"value": "schema:value",
+						"misskey": "https://misskey-hub.net/ns#",
+						"_misskey_content": "misskey:_misskey_content",
+						"_misskey_quote": "misskey:_misskey_quote",
+						"_misskey_reaction": "misskey:_misskey_reaction",
+						"_misskey_votes": "misskey:_misskey_votes",
+						"_misskey_summary": "misskey:_misskey_summary",
+						"_misskey_followedMessage": "misskey:_misskey_followedMessage",
+						"_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+						"_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+						"_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+						"_misskey_license": "misskey:_misskey_license",
+						"freeText": {
+							"@id": "misskey:freeText",
+							"@type": "schema:text"
+						},
+						"isCat": "misskey:isCat",
+						"vcard": "http://www.w3.org/2006/vcard/ns#"
+					}
+				],
+				"id": "https://local.example/notes/at3hjq77note0001/activity",
+				"actor": "https://local.example/users/alice",
+				"type": "Create",
+				"published": "2026-11-03T00:00:01.123Z",
+				"object": {
+					"id": "https://local.example/notes/at3hjq77note0001",
+					"type": "Note",
+					"attributedTo": "https://local.example/users/alice",
+					"content": "hello",
+					"published": "2026-11-03T00:00:01.123Z",
+					"to": [
+						"https://www.w3.org/ns/activitystreams#Public"
+					],
+					"cc": [
+						"https://local.example/users/alice/followers"
+					],
+					"inReplyTo": null,
+					"attachment": [],
+					"sensitive": false,
+					"tag": []
+				},
+				"to": [
+					"https://www.w3.org/ns/activitystreams#Public"
+				],
+				"cc": [
+					"https://local.example/users/alice/followers"
+				],
+				"signature": {
+					"type": "RsaSignature2017",
+					"creator": "https://local.example/users/alice#main-key",
+					"nonce": "00112233445566778899aabbccddeeff",
+					"created": "2026-11-06T01:02:03.000Z",
+					"signatureValue": "CvijrduXQIW/NCeh+bpyXIFXUUt/CEEraVg11AF13u5SybLsf+uA/GUPDkgZv5fUwN16GsjLDDV7uLO2YIocEeCHNRfDfROGEiStJb2llDvmWwxwVR5A0yIWqL2ifqFZ577G+jZkQZjlGoDe5VVbqjlTV3DU/Jn8LYQYEpG70e3QwpUaFaBSrjT/ST5BdZWws5q0f6k8QsvxahgWuieeUYlC00p6qPqUiKDoIuWr0mWYbeKc64vHDtY+mEDyqq8njibtg1dOyHrLSYq74ZiHdLyRLB4z1EUNnwi1xF2tKZNdeLJiePUO7OF94MLcuuER/Z6KUY1fbBozLh20Oe48Mg=="
+				}
+			},
+			"verified": true
+		},
+		{
+			"canonicalOptions": "_:c14n0 <http://purl.org/dc/terms/created> \"2026-11-06T01:02:03.000Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime> .\n_:c14n0 <http://purl.org/dc/terms/creator> <https://local.example/users/alice#main-key> .\n_:c14n0 <https://w3id.org/security#nonce> \"00112233445566778899aabbccddeeff\" .\n",
+			"canonicalDocument": "<https://local.example/notes/at3hk9hnnote000q/activity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/ns/activitystreams#Announce> .\n<https://local.example/notes/at3hk9hnnote000q/activity> <https://www.w3.org/ns/activitystreams#actor> <https://local.example/users/alice> .\n<https://local.example/notes/at3hk9hnnote000q/activity> <https://www.w3.org/ns/activitystreams#cc> <https://local.example/users/alice/followers> .\n<https://local.example/notes/at3hk9hnnote000q/activity> <https://www.w3.org/ns/activitystreams#object> <https://local.example/notes/at2njgg0base0001> .\n<https://local.example/notes/at3hk9hnnote000q/activity> <https://www.w3.org/ns/activitystreams#published> \"2026-11-03T00:00:26.123Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime> .\n<https://local.example/notes/at3hk9hnnote000q/activity> <https://www.w3.org/ns/activitystreams#to> <https://www.w3.org/ns/activitystreams#Public> .\n",
+			"optionsHash": "cb06db8b08d06b6f4dbe73ef9947d1281f95a23f7f1001543084a0ad7ace362f",
+			"documentHash": "2505d258aea50b3d98ed5ae24a72309627ad10f471c2d5ae4a93fd63faba27b9",
+			"verificationData": "cb06db8b08d06b6f4dbe73ef9947d1281f95a23f7f1001543084a0ad7ace362f2505d258aea50b3d98ed5ae24a72309627ad10f471c2d5ae4a93fd63faba27b9",
+			"signed": {
+				"@context": [
+					"https://www.w3.org/ns/activitystreams",
+					"https://w3id.org/security/v1",
+					{
+						"Key": "sec:Key",
+						"manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+						"sensitive": "as:sensitive",
+						"Hashtag": "as:Hashtag",
+						"quoteUrl": "as:quoteUrl",
+						"toot": "http://joinmastodon.org/ns#",
+						"Emoji": "toot:Emoji",
+						"featured": "toot:featured",
+						"discoverable": "toot:discoverable",
+						"schema": "http://schema.org#",
+						"PropertyValue": "schema:PropertyValue",
+						"value": "schema:value",
+						"misskey": "https://misskey-hub.net/ns#",
+						"_misskey_content": "misskey:_misskey_content",
+						"_misskey_quote": "misskey:_misskey_quote",
+						"_misskey_reaction": "misskey:_misskey_reaction",
+						"_misskey_votes": "misskey:_misskey_votes",
+						"_misskey_summary": "misskey:_misskey_summary",
+						"_misskey_followedMessage": "misskey:_misskey_followedMessage",
+						"_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+						"_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+						"_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+						"_misskey_license": "misskey:_misskey_license",
+						"freeText": {
+							"@id": "misskey:freeText",
+							"@type": "schema:text"
+						},
+						"isCat": "misskey:isCat",
+						"vcard": "http://www.w3.org/2006/vcard/ns#"
+					}
+				],
+				"id": "https://local.example/notes/at3hk9hnnote000q/activity",
+				"actor": "https://local.example/users/alice",
+				"type": "Announce",
+				"published": "2026-11-03T00:00:26.123Z",
+				"to": [
+					"https://www.w3.org/ns/activitystreams#Public"
+				],
+				"cc": [
+					"https://local.example/users/alice/followers"
+				],
+				"object": "https://local.example/notes/at2njgg0base0001",
+				"signature": {
+					"type": "RsaSignature2017",
+					"creator": "https://local.example/users/alice#main-key",
+					"nonce": "00112233445566778899aabbccddeeff",
+					"created": "2026-11-06T01:02:03.000Z",
+					"signatureValue": "rHSZWwBZQkUk7At+Mta8voQxTu4T91KqEsv7F1Kt4MWrJnBnITTdVBC8u10WS5L9tHRv+uV1GID5lhpC/v/cv7b7qLwajkBCbie0wQcbkvDkT8f8QnDhHFZWH5RWB3BleX+qXjdiM1KI8ZfGs59ZHPp3cF3mOthiUZwmYXMtK5Btwa25zZzoFHlZgHyVd360BJ++a1peB685yUF8mB5WEwOGugxleQsXXSQTOphVRWGjT4uEq2eX2k5aS9OA13odg+9vD7yVOI6qkytYAo5apwju2D0VPRWxs4izA+Wvcnxx/4ufNwAz5BIK0PronicD+Xu9GvppGgCO5yiW822k/w=="
+				}
+			},
+			"verified": true
+		},
+		{
+			"canonicalOptions": "_:c14n0 <http://purl.org/dc/terms/created> \"2026-11-06T01:02:03.000Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime> .\n_:c14n0 <http://purl.org/dc/terms/creator> <https://local.example/users/alice#main-key> .\n_:c14n0 <https://w3id.org/security#nonce> \"00112233445566778899aabbccddeeff\" .\n",
+			"canonicalDocument": "<https://local.example/notes/at3hjq77note0001/activity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/ns/activitystreams#Create> .\n<https://local.example/notes/at3hjq77note0001/activity> <https://www.w3.org/ns/activitystreams#actor> <https://local.example/users/alice> .\n<https://local.example/notes/at3hjq77note0001/activity> <https://www.w3.org/ns/activitystreams#cc> <https://local.example/users/alice/followers> .\n<https://local.example/notes/at3hjq77note0001/activity> <https://www.w3.org/ns/activitystreams#object> <https://local.example/notes/at3hjq77note0001> .\n<https://local.example/notes/at3hjq77note0001/activity> <https://www.w3.org/ns/activitystreams#published> \"2026-11-03T00:00:01.123Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime> .\n<https://local.example/notes/at3hjq77note0001/activity> <https://www.w3.org/ns/activitystreams#to> <https://www.w3.org/ns/activitystreams#Public> .\n<https://local.example/notes/at3hjq77note0001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/ns/activitystreams#Note> .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#attachment> _:c14n0 .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#attributedTo> <https://local.example/users/alice> .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#cc> <https://local.example/users/alice/followers> .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#content> \"雪 ☃ café <b>日本語</b>\" .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#published> \"2026-11-03T00:00:01.123Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime> .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#sensitive> \"false\"^^<http://www.w3.org/2001/XMLSchema#boolean> .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#to> <https://www.w3.org/ns/activitystreams#Public> .\n_:c14n0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/ns/activitystreams#Document> .\n_:c14n0 <https://www.w3.org/ns/activitystreams#mediaType> \"image/png\" .\n_:c14n0 <https://www.w3.org/ns/activitystreams#name> \"画像\" .\n_:c14n0 <https://www.w3.org/ns/activitystreams#url> <https://example.test/雪.png> .\n",
+			"optionsHash": "cb06db8b08d06b6f4dbe73ef9947d1281f95a23f7f1001543084a0ad7ace362f",
+			"documentHash": "049aa2209a9e56656d59cc6d24ff215b8b16044468c87afdaa460be15ac75e08",
+			"verificationData": "cb06db8b08d06b6f4dbe73ef9947d1281f95a23f7f1001543084a0ad7ace362f049aa2209a9e56656d59cc6d24ff215b8b16044468c87afdaa460be15ac75e08",
+			"signed": {
+				"@context": [
+					"https://www.w3.org/ns/activitystreams",
+					"https://w3id.org/security/v1",
+					{
+						"Key": "sec:Key",
+						"manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+						"sensitive": "as:sensitive",
+						"Hashtag": "as:Hashtag",
+						"quoteUrl": "as:quoteUrl",
+						"toot": "http://joinmastodon.org/ns#",
+						"Emoji": "toot:Emoji",
+						"featured": "toot:featured",
+						"discoverable": "toot:discoverable",
+						"schema": "http://schema.org#",
+						"PropertyValue": "schema:PropertyValue",
+						"value": "schema:value",
+						"misskey": "https://misskey-hub.net/ns#",
+						"_misskey_content": "misskey:_misskey_content",
+						"_misskey_quote": "misskey:_misskey_quote",
+						"_misskey_reaction": "misskey:_misskey_reaction",
+						"_misskey_votes": "misskey:_misskey_votes",
+						"_misskey_summary": "misskey:_misskey_summary",
+						"_misskey_followedMessage": "misskey:_misskey_followedMessage",
+						"_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+						"_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+						"_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+						"_misskey_license": "misskey:_misskey_license",
+						"freeText": {
+							"@id": "misskey:freeText",
+							"@type": "schema:text"
+						},
+						"isCat": "misskey:isCat",
+						"vcard": "http://www.w3.org/2006/vcard/ns#"
+					}
+				],
+				"id": "https://local.example/notes/at3hjq77note0001/activity",
+				"actor": "https://local.example/users/alice",
+				"type": "Create",
+				"published": "2026-11-03T00:00:01.123Z",
+				"object": {
+					"id": "https://local.example/notes/at3hjq77note0001",
+					"type": "Note",
+					"attributedTo": "https://local.example/users/alice",
+					"content": "雪 ☃ café <b>日本語</b>",
+					"published": "2026-11-03T00:00:01.123Z",
+					"to": [
+						"https://www.w3.org/ns/activitystreams#Public"
+					],
+					"cc": [
+						"https://local.example/users/alice/followers"
+					],
+					"inReplyTo": null,
+					"attachment": [
+						{
+							"type": "Document",
+							"mediaType": "image/png",
+							"url": "https://example.test/雪.png",
+							"name": "画像"
+						}
+					],
+					"sensitive": false,
+					"tag": []
+				},
+				"to": [
+					"https://www.w3.org/ns/activitystreams#Public"
+				],
+				"cc": [
+					"https://local.example/users/alice/followers"
+				],
+				"signature": {
+					"type": "RsaSignature2017",
+					"creator": "https://local.example/users/alice#main-key",
+					"nonce": "00112233445566778899aabbccddeeff",
+					"created": "2026-11-06T01:02:03.000Z",
+					"signatureValue": "ajuIfiR9Du2N2lE4xc254An2rAdPq6wclmLsLo4k8kYLB4kwcqR69cH2FoQvGKUicLTiuSJ3yD+NrhuFc19mhsuZ1ROHPLrisQJ0WnqH9AkYpA00cX1oEPHiBiF929qnQ6qZRUpn64uC65XnDuC7RE/fM8/Fthx9yHsRuz7Cpw4HnvtEXLkq6nkY91evqKyLYKOM5vdHSCJ0hUNtBYTT2DvXjdjl+EalLDIIfgU9U34xacaMD0pqwyfTaOLTn8IN6jZpp8mEDBuftgg6zA+YH62gWbTPl8dWAt+jXswUIUjhvgmPk1Ot0aAvFTf8ouk6QuQq7OE+EQ+TQdOADRefmw=="
+				}
+			},
+			"verified": true
+		},
+		{
+			"canonicalOptions": "_:c14n0 <http://purl.org/dc/terms/created> \"2026-11-06T01:02:03.000Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime> .\n_:c14n0 <http://purl.org/dc/terms/creator> <https://local.example/users/alice#main-key> .\n_:c14n0 <https://w3id.org/security#nonce> \"00112233445566778899aabbccddeeff\" .\n",
+			"canonicalDocument": "<https://local.example/notes/at3hjq77note0001/activity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/ns/activitystreams#Create> .\n<https://local.example/notes/at3hjq77note0001/activity> <https://www.w3.org/ns/activitystreams#actor> <https://local.example/users/alice> .\n<https://local.example/notes/at3hjq77note0001/activity> <https://www.w3.org/ns/activitystreams#cc> <https://local.example/users/alice/followers> .\n<https://local.example/notes/at3hjq77note0001/activity> <https://www.w3.org/ns/activitystreams#object> <https://local.example/notes/at3hjq77note0001> .\n<https://local.example/notes/at3hjq77note0001/activity> <https://www.w3.org/ns/activitystreams#published> \"2026-11-03T00:00:01.123Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime> .\n<https://local.example/notes/at3hjq77note0001/activity> <https://www.w3.org/ns/activitystreams#to> <https://www.w3.org/ns/activitystreams#Public> .\n<https://local.example/notes/at3hjq77note0001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/ns/activitystreams#Note> .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#attributedTo> <https://local.example/users/alice> .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#cc> <https://local.example/users/alice/followers> .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#content> \"hello\" .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#published> \"2026-11-03T00:00:01.123Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime> .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#sensitive> \"false\"^^<http://www.w3.org/2001/XMLSchema#boolean> .\n<https://local.example/notes/at3hjq77note0001> <https://www.w3.org/ns/activitystreams#to> <https://www.w3.org/ns/activitystreams#Public> .\n",
+			"optionsHash": "cb06db8b08d06b6f4dbe73ef9947d1281f95a23f7f1001543084a0ad7ace362f",
+			"documentHash": "eefb2f70f34fe044e6f0acf06235387236456a2ed69d9aa5c4ba11cd6eadfbb5",
+			"verificationData": "cb06db8b08d06b6f4dbe73ef9947d1281f95a23f7f1001543084a0ad7ace362feefb2f70f34fe044e6f0acf06235387236456a2ed69d9aa5c4ba11cd6eadfbb5",
+			"signed": {
+				"@context": [
+					"https://www.w3.org/ns/activitystreams",
+					"https://w3id.org/security/v1",
+					{
+						"Key": "sec:Key",
+						"manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+						"sensitive": "as:sensitive",
+						"Hashtag": "as:Hashtag",
+						"quoteUrl": "as:quoteUrl",
+						"toot": "http://joinmastodon.org/ns#",
+						"Emoji": "toot:Emoji",
+						"featured": "toot:featured",
+						"discoverable": "toot:discoverable",
+						"schema": "http://schema.org#",
+						"PropertyValue": "schema:PropertyValue",
+						"value": "schema:value",
+						"misskey": "https://misskey-hub.net/ns#",
+						"_misskey_content": "misskey:_misskey_content",
+						"_misskey_quote": "misskey:_misskey_quote",
+						"_misskey_reaction": "misskey:_misskey_reaction",
+						"_misskey_votes": "misskey:_misskey_votes",
+						"_misskey_summary": "misskey:_misskey_summary",
+						"_misskey_followedMessage": "misskey:_misskey_followedMessage",
+						"_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+						"_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+						"_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+						"_misskey_license": "misskey:_misskey_license",
+						"freeText": {
+							"@id": "misskey:freeText",
+							"@type": "schema:text"
+						},
+						"isCat": "misskey:isCat",
+						"vcard": "http://www.w3.org/2006/vcard/ns#"
+					}
+				],
+				"id": "https://local.example/notes/at3hjq77note0001/activity",
+				"actor": "https://local.example/users/alice",
+				"type": "Create",
+				"published": "2026-11-03T00:00:01.123Z",
+				"object": {
+					"id": "https://local.example/notes/at3hjq77note0001",
+					"type": "Note",
+					"attributedTo": "https://local.example/users/alice",
+					"content": "hello",
+					"published": "2026-11-03T00:00:01.123Z",
+					"to": [
+						"https://www.w3.org/ns/activitystreams#Public"
+					],
+					"cc": [
+						"https://local.example/users/alice/followers"
+					],
+					"inReplyTo": null,
+					"attachment": [],
+					"sensitive": false,
+					"tag": []
+				},
+				"to": [
+					"https://www.w3.org/ns/activitystreams#Public"
+				],
+				"cc": [
+					"https://local.example/users/alice/followers"
+				],
+				"signature": {
+					"type": "RsaSignature2017",
+					"creator": "https://local.example/users/alice#main-key",
+					"nonce": "00112233445566778899aabbccddeeff",
+					"created": "2026-11-06T01:02:03.000Z",
+					"signatureValue": "CvijrduXQIW/NCeh+bpyXIFXUUt/CEEraVg11AF13u5SybLsf+uA/GUPDkgZv5fUwN16GsjLDDV7uLO2YIocEeCHNRfDfROGEiStJb2llDvmWwxwVR5A0yIWqL2ifqFZ577G+jZkQZjlGoDe5VVbqjlTV3DU/Jn8LYQYEpG70e3QwpUaFaBSrjT/ST5BdZWws5q0f6k8QsvxahgWuieeUYlC00p6qPqUiKDoIuWr0mWYbeKc64vHDtY+mEDyqq8njibtg1dOyHrLSYq74ZiHdLyRLB4z1EUNnwi1xF2tKZNdeLJiePUO7OF94MLcuuER/Z6KUY1fbBozLh20Oe48Mg=="
+				}
+			},
+			"verified": true
+		}
+	]
+}

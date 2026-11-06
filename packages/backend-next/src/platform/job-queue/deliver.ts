@@ -7,7 +7,7 @@ import { createDigest } from '../../modules/federation/public.js';
 import { DiagnosticError } from '../diagnostic-error.js';
 import { baseQueueOptions, baseWorkerOptions, onConnectionEnd, runWorker } from './connection.js';
 import type { RedisConfig } from '../../config/types.js';
-import type { DeliverJob, DeliverJobOutcome, DeliverBatch } from '../../modules/federation/public.js';
+import type { DeliverOne, DeliverJob, DeliverJobOutcome, DeliverBatch } from '../../modules/federation/public.js';
 import type { Logger } from '../logger.js';
 
 export const DELIVER = 'deliver';
@@ -127,6 +127,13 @@ export function createDeliverQueue(options: QueueConnection & { deliverJobMaxAtt
 		/** 本家 QueueService.deliverMany。宛先が空でも本家と同じく addBulk を呼ぶ。 */
 		async deliverMany(batch: DeliverBatch): Promise<void> {
 			await queue.addBulk(deliverJobs(batch, options));
+		},
+		async deliverOne(input: DeliverOne): Promise<void> {
+			if (input.activity === null || input.to === null) {
+				return;
+			}
+			const [job] = deliverJobs({ user: { id: input.user.id }, activity: input.activity, inboxes: new Map([[input.to, input.isSharedInbox]]) }, options);
+			await queue.add(job.name, job.data, job.opts);
 		},
 		async close(): Promise<void> {
 			closing = true;

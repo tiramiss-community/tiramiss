@@ -38,6 +38,9 @@ export function testConfig(): RuntimeConfig {
 export async function createTestDatabase() {
 	const config = testConfig();
 	const name = `backend_next_${randomUUID().replaceAll('-', '')}`;
+	// Base Redis, pubsub, and job queues share this object and must follow the isolated DB.
+	config.redis.prefix = name;
+	config.redis.keyPrefix = `${name}:`;
 	const admin = new DataSource({ type: 'postgres', ...config.database });
 	await admin.initialize();
 	await admin.query(`CREATE DATABASE "${name}"`);
