@@ -5,13 +5,13 @@
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { Job, UnrecoverableError } from 'bullmq';
+import { Job, Queue, UnrecoverableError } from 'bullmq';
 import { dump } from 'js-yaml';
 import { afterAll, expect, test, vi } from 'vitest';
 import { loadConfig } from '../../../src/config/load-config.js';
 import { baseQueueOptions } from '../../../src/platform/job-queue/connection.js';
 import {
-	createDeliverProcessor, DELIVER, deliverJobs, deliverWorkerOptions, httpRelatedBackoff, parseDeliverJob, settleDeliverJob,
+	createDeliverQueue, createDeliverProcessor, DELIVER, deliverJobs, deliverWorkerOptions, httpRelatedBackoff, parseDeliverJob, settleDeliverJob,
 } from '../../../src/platform/job-queue/deliver.js';
 import { createLogger } from '../../../src/platform/logger.js';
 import { loadApDeliverCases } from '../../helpers/ap-deliver-cases.js';
@@ -22,13 +22,14 @@ interface JobCases {
 		user: { id: string };
 		activity: Record<string, unknown>;
 		inboxes: [string, boolean][];
+		deliver: { id: string; to: string | null; isSharedInbox: boolean; contentNull?: boolean }[];
 		configs: { id: string; config: Record<string, number | null> }[];
 		redisForJobQueue: { id: string; options: RedisConfig }[];
 		backoff: { attemptsMade: number[]; random: number[] };
 		retry: { attempts: number[]; errors: { id: string; name?: string; message: string; unrecoverable?: boolean }[]; random: number };
 	};
 	cases: {
-		enqueue: { id: string; deliverMany: [string, unknown][]; deliverManyEmpty: [string, unknown][] }[];
+		enqueue: { id: string; deliver: { id: string; calls: unknown[][] }[]; deliverNullActivity: unknown[]; deliverNullTo: unknown[]; deliverMany: [string, unknown][]; deliverManyEmpty: [string, unknown][] }[];
 		queues: { id: string; queueName: string; queueOptions: { connection: Record<string, unknown>; prefix: string } }[];
 		workerOptions: { id: string; opts: Record<string, unknown> & { connection: Record<string, unknown> }; backoffStrategy: string }[];
 		worker: { name: string; onFailure: { rethrowsOriginal: boolean } };
@@ -162,4 +163,24 @@ test('a failed attempt is logged with the inbox and the stop reason, and the err
 	]);
 	expect(logs.some(line => JSON.stringify(line).includes('ENOTFOUND remote.example'))).toBe(false);
 	expect(cases.worker.onFailure.rethrowsOriginal).toBe(true);
+});
+
+test.for(inputs.configs.map((input, index) => [input.id, input, cases.enqueue[index]] as const))('single deliver uses Queue.add with pinned upstream jobs: %s', async ([, input, expected]) => {
+	const config = await configFor(input.config);
+	const calls: unknown[][] = [];
+	const add = vi.spyOn(Queue.prototype, 'add').mockImplementation(async (...args) => {
+		calls.push(['add', ...args]);
+		return {} as never;
+	});
+	const producer = createDeliverQueue({ redis: inputs.redisForJobQueue[0].options, connectTimeoutMs: 5000, logger: createLogger('test', () => {}), onLost: () => {}, ...config.deliverJob });
+	try {
+		for (const [index, c] of inputs.deliver.entries()) {
+			calls.length = 0;
+			await producer.deliverOne({ user: { ...inputs.user, extra: true } as { id: string }, activity: c.contentNull ? null : inputs.activity, to: c.to, isSharedInbox: c.isSharedInbox });
+			expect(calls).toEqual(expected.deliver[index].calls);
+		}
+	} finally {
+		add.mockRestore();
+		await producer.close();
+	}
 });

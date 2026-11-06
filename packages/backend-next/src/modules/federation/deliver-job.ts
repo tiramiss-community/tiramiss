@@ -21,6 +21,13 @@ export interface DeliverJob {
 	isSharedInbox: boolean;
 }
 
+export interface DeliverOne {
+	user: { id: string };
+	activity: Record<string, unknown> | null;
+	to: string | null;
+	isSharedInbox: boolean;
+}
+
 /** 1 つの activity をまとめて投入する宛先。本家 QueueService.deliverMany の引数で、Map の反復順が投入の順になる。 */
 export interface DeliverBatch {
 	user: { id: string };

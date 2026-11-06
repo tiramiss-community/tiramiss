@@ -12,6 +12,8 @@ import { migrateDatabase } from '../../src/platform/database/migrate.js';
 import { createIdCodec } from '../../src/platform/id-codec.js';
 import { baseQueueOptions } from '../../src/platform/job-queue/connection.js';
 import { createDeliverQueue, DELIVER, startDeliverWorker } from '../../src/platform/job-queue/deliver.js';
+import { signRsaSignature2017 } from '../../src/platform/jsonld-signature.js';
+import { verifyLdSignature } from '../helpers/ld-signature.js';
 import { generateRsaKeyPair } from '../../src/platform/key-pair.js';
 import { createLogger } from '../../src/platform/logger.js';
 import { createTestDatabase } from '../helpers/database.js';
@@ -175,4 +177,59 @@ test('blocked and suspended destinations complete with the upstream skip results
 		expect((await inspect.getJobs(['completed'])).map(job => job.returnvalue).sort()).toEqual(['skip (blocked)', 'skip (suspended)']);
 	}, { timeout: 10000, interval: 50 });
 	expect(inbox.deliveries).toEqual([]);
+});
+
+async function signedRelay(path: string) {
+	const pair = await resources.federationKeys.readUserKeypair(alice);
+	const signed = await signRsaSignature2017(activity, { privateKeyPem: pair.privateKeyPem, creator: `${config.url}/users/${alice}#main-key` }, new Date('2026-11-06T01:02:03.000Z'), '00112233445566778899aabbccddeeff');
+	await queue.deliverOne({ user: { id: alice }, activity: signed, to: `${inbox.origin}${path}`, isSharedInbox: false });
+	return signed;
+}
+
+test('individual relay jobs remain separate from ordinary delivery to an overlapping URL', async () => {
+	await signedRelay('/inbox/overlap');
+	await signedRelay('/inbox/second-relay');
+	await deliverTo(['/inbox/overlap', true]);
+	const jobs = await settled('completed', 3);
+	expect(jobs.filter(j => !j.data.isSharedInbox)).toHaveLength(2);
+	expect(inbox.deliveries.filter(d => d.path === '/inbox/overlap')).toHaveLength(2);
+	for (const d of inbox.deliveries) {
+		expect(d.verify(publicKeyPem)).toEqual({ signature: true, digest: true });
+		const parsed = JSON.parse(d.body);
+		if (parsed.signature) {
+			expect(await verifyLdSignature(parsed, publicKeyPem)).toBe(true);
+		} else {
+			expect(d.body).toBe(JSON.stringify(activity));
+		}
+	}
+});
+
+test('relay 503 retries the identical signed body and digest with normal backoff', async () => {
+	inbox.respond('/inbox/relay-flaky', 503);
+	const signed = await signedRelay('/inbox/relay-flaky');
+	const [delayed] = await settled('delayed', 1);
+	const saved = structuredClone(delayed.data);
+	expect(delayed.delay).toBeGreaterThanOrEqual(60000);
+	expect(delayed.delay).toBeLessThanOrEqual(72000);
+	inbox.respond('/inbox/relay-flaky', 202);
+	await delayed.promote();
+	const [completed] = await settled('completed', 1);
+	expect(completed.data).toEqual(saved);
+	expect(inbox.deliveries).toHaveLength(2);
+	for (const d of inbox.deliveries) {
+		expect(d.body).toBe(JSON.stringify(signed));
+		expect(d.verify(publicKeyPem)).toEqual({ signature: true, digest: true });
+		expect(await verifyLdSignature(JSON.parse(d.body), publicKeyPem)).toBe(true);
+	}
+});
+
+test('relay 410 stops without retry or shared-inbox gone suspension but retains failure bookkeeping', async () => {
+	inbox.respond('/inbox/relay-gone', 410);
+	await signedRelay('/inbox/relay-gone');
+	const [failed] = await settled('failed', 1);
+	expect(failed.failedReason).toBe('410 Gone');
+	expect(failed.attemptsMade).toBe(1);
+	await stopWorker!();
+	stopWorker = undefined;
+	expect(await resources.dataSource.getRepository(MiInstance).findOneBy({ host: '' })).toMatchObject({ isNotResponding: true, suspensionState: 'none' });
 });

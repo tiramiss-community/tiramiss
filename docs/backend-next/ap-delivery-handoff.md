@@ -1,6 +1,6 @@
 # AP配送の業務規則と削減後の引き継ぎ
 
-#171/#160/#162で実際のAP表現・署名HTTP・通常BullMQを接続するための入力。#162 の通常 BullMQ は投票終了ジョブで接続済み、#171 の最初の PR で relay を除くノート作成の配送を接続済み（下記）。
+#171/#160/#162で実際のAP表現・署名HTTP・通常BullMQを接続するための入力。#162 の通常 BullMQ は投票終了ジョブで接続済み、#171 の最初の PR でノート作成の配送を接続し、第2sliceで既存 accepted relay と作者鍵の JSON-LD 署名を追加した（下記）。
 未使用の配送実装は追加しない。固定本家は `8e07cf085adf7009583d234a208e30436f020e26`。
 
 - [NoteCreateService](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/NoteCreateService.ts)のローカル作者かつ非localOnlyの配送分岐を起点にする。remote mention・reply作者・renote作者がdirect候補、public/home/followersがfollowers対象、publicがrelay対象。channel等の入力補正と最新の連合条件も接続時に照合する。
@@ -59,7 +59,18 @@
 
 残るもの:
 
-- relay への配送と JSON-LD 署名（`jsonld`・context の複製・Public の補完・別 copy・`isSharedInbox: false`）は #171 の 2 番目の PR。note の C9 の `/inbox/relay` 分もそこで比べる。
+- relay 登録・受信・actor・一般の remote context 取得は #195。既存 accepted relay への作成配送は第2sliceで実装（下記）。
 - 配送の成功・失敗によるチャートの更新は #200。成功時の `fetchInstanceMetadata` は連合の共通土台の段階 5（#216 の `getHtml` と一緒に）。
 - Delete・Undo の表現と削除の配送は #172。縦断の確認は #176。
 - note-authors による instance 表の直接読みを `fetchInstance` へ置き換えることと、`packInstanceState` は最初の利用者の PR へ回した。
+
+
+## #171 第2slice: 既存 accepted relay
+
+public 作成の呼び出し側だけで relay を選び、共有 sender 自体は公開範囲を制限しない。表現・direct 作者の読み取りが成功した後、relay を開始してから followers/direct を開始する。双方と全 relay 投入を独立に開始し、全結果を待って既存 `note-post-save.failed` へ返す。一件の失敗は元の例外、複数は `AggregateError`。本家は relay / add を待たず、同期 throw で以降の relay を省く点が異なる。この差異は失敗観測と既存 drain のためで、再投入・永続依頼・強い保証を追加しない。
+
+`MiRelay.findBy({ status: 'accepted' })` は順序指定なし。プロセス内10分 cache は空配列も保存し、600000ms は有効、600001ms で再取得。取得成功後に時刻を記録し、失敗は cache せず、同時 miss はまとめない。登録の変更通知や無効化は追加しない。
+
+別の deep copy に falsy `to` のみ Public を補い（`[]` を維持）、作者鍵で一回署名する。relay システムアカウントは使わない。relay は個別 `Queue.add`、`isSharedInbox: false` で、ordinary と URL が同じでも別 job。本文と digest は投入時に固定され、通常の12試行・backoff・保持を維持する。HTTP 成功条件は保存のまま、既存の post-save drain → queue close → 接続解放を維持する。PKCS#1 鍵の DB 書き換えは既存の best effort のまま drain 保証外。
+
+署名は固定本家の3 contextだけを同梱し、未知 URL を network 取得せず拒否する。jsonld 9 の既定 RDFC-1.0 / safe mode を維持。options / document の N-Quads SHA256 hex を結合した128文字を UTF-8 として RSA/SHA256 署名する。固定本家 probe の4 crypto vector と独立検証、43 relay 活動の単体テストが成功。C9 全9配送・実 queue の retry/410・cache・relay SELECT ロック中の停止を検証する結合/process テストを追加したが、この worker では sandbox の localhost `EPERM` により実行未完了。実測一覧は[実装計画](../superpowers/plans/2026-11-06-ap-relay-171.md)。

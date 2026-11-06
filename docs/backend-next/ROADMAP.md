@@ -25,7 +25,7 @@
 | PG通知保存・effect記録（#155） | 保存先の承認を維持し直接save/flushへ分離。effect/課金への依存を撤去し、閲覧/既読/移行は#177へ残す |
 | 物理容量監視と受付停止（#166 / PR #206） | 初期範囲から外し保留。PRは未マージのまま残し、勝手にclose/mergeしない |
 
-通常workerは本家の投票終了ジョブ（#162の最初のPR）と、ノート作成のAP配送ジョブ（#171の最初のPR。relayを除く）を実行する。他の実ジョブhandlerは未接続。#169 / PR #212はマージ済みで、基本text作成のHTTP・保存・応答・後続count更新と、独自BullMQ transport/Redis復旧の撤去を完了。[PR #213](https://github.com/tiramiss-community/tiramiss/pull/213)もマージ済み。PG通知を直接保存へ分離し、残るPGジョブ/AP protocol・専用テスト・起動Entity登録・未使用依存を撤去した。新migrationは未解決の仕事を拒否し、通知本体を保持して不要9表/課金列を廃止する。添付/返信等と配送（relayを除く）は接続済みだが、delete・relay・通知等を通した完成品はまだない。マージ済みの独自migrationは履歴として保持するが、未使用adapterや不要テーブルを最終構成に残す方針ではない。
+通常workerは本家の投票終了ジョブ（#162の最初のPR）と、ノート作成のAP配送ジョブ（#171の最初のPRと既存 accepted relay の第2slice）を実行する。他の実ジョブhandlerは未接続。#169 / PR #212はマージ済みで、基本text作成のHTTP・保存・応答・後続count更新と、独自BullMQ transport/Redis復旧の撤去を完了。[PR #213](https://github.com/tiramiss-community/tiramiss/pull/213)もマージ済み。PG通知を直接保存へ分離し、残るPGジョブ/AP protocol・専用テスト・起動Entity登録・未使用依存を撤去した。新migrationは未解決の仕事を拒否し、通知本体を保持して不要9表/課金列を廃止する。添付/返信等と配送（relayを除く）は接続済みだが、delete・通知等を通した完成品はまだない。マージ済みの独自migrationは履歴として保持するが、未使用adapterや不要テーブルを最終構成に残す方針ではない。
 
 ## 本家比較から分かった追加仕様
 
@@ -111,3 +111,6 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 ## 再開時に確認すること
 
 [GOALS](GOALS.md)、本書、対象Issue、PR/ブランチの実状態を確認する。最小契約と基本text作成の実装/検証は[実装計画](../superpowers/plans/2026-11-03-note-create-169.md)を参照する。PG通知の分離と残存PGジョブ/AP adapter削減の[作業記録](../superpowers/plans/2026-11-03-simplify-jobs-124.md)を確認する。#215の段階1（ホスト正規化・連合可否・Meta読み取りの統一）は実装済み。#170 のローカル部分は実装済み（PR #221。未登録リモートユーザー宛てのメンションは#195まで501、登録済みリモートユーザーも#195まで再同期しない）。#215 の段階2（鍵とシステムアカウント、PR #222）と #216 の最初の PR（send・getJson と private 宛ての遮断、PR #223）は、通常起動から呼ばれない状態で実装済み。#160 の最初の PR（AP の署名・署名付き送信・配送結果の分類と、`extractDbHost`・`isFederationAllowedUri`）は、呼び出し元のない状態で実装済み。インスタンス台帳・配送前のスキップ判定・状態の書き込みは配送を接続する PR へ回した（[引き継ぎ](ap-delivery-handoff.md)）。#162 の最初の PR（通常の BullMQ の Queue/Worker と、本家の投票終了ジョブの投入から PG の通知保存まで。Redis 接続は再接続しない）は実装済み（[投稿の最小契約](posting-contract.md#通常ジョブ162)）。#171 の最初の PR（ノート作成の Create/Announce の表現・宛先・deliver queue と Worker・インスタンス台帳。#215 の段階 3 を含み、relay を除く）は実装済み（[引き継ぎ](ap-delivery-handoff.md#171-の最初の-pr-で入れたもの)）。次は、relay への配送と JSON-LD 署名を足す #171 の 2 番目の PR を進める。#172 の削除の配送も #171 の最初の PR の上に着手できる。#170 の保存列だけで進められる #174 も並行して着手できる。#163–#165 は #162 の実 queue の情報（同じ節の表）から着手できる。PR #206のマージ待ちでも、新たな基盤強化の実装でもない。着手するPRでは「移植する本家機能/解く依存」「必要な比較」「追加保証の有無」を短く説明する。
+
+
+#171 第2slice（2026-11-06）のローカル実装は、既存 accepted relay の10分 cache、作者鍵 RsaSignature2017、個別 Queue.add と post-save drain を接続した。固定本家 vector・独立暗号検証は単体で確認。C9 relay を含む9配送・実 queue retry/410・cache と停止待機の結合/process テストは sandbox の localhost EPERM で未完了。[計画と実測](../superpowers/plans/2026-11-06-ap-relay-171.md)。登録・受信・actor は #195、削除は #172/#176、チャートは #200、metadata は共通土台の段階5に残る。

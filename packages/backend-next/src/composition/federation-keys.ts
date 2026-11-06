@@ -7,11 +7,13 @@ import { createSystemAccountEnsurer } from '../platform/database/system-account.
 import { createIdCodec } from '../platform/id-codec.js';
 import { generateRsaKeyPair } from '../platform/key-pair.js';
 import { createUserKeypairReader } from '../platform/user-keypair.js';
-import type { RuntimeResources } from './create-runtime.js';
+import type { DataSource } from 'typeorm';
+import type { Redis } from 'ioredis';
+import type { Logger } from '../platform/logger.js';
 import type { RuntimeConfig } from '../config/types.js';
 
 // メモリキャッシュを各関数が持つため、1プロセスで1回だけ作り、UseCaseへ関数として渡す。
-export function createFederationKeys(resources: RuntimeResources, config: RuntimeConfig) {
+export function createFederationKeys(resources: { dataSource: DataSource; redis: Redis; logger: Logger }, config: RuntimeConfig) {
 	const codec = createIdCodec(config.id);
 	return {
 		generateRsaKeyPair,

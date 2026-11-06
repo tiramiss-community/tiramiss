@@ -24,4 +24,6 @@ export type { NoteDeliveryFacts, NoteDeliveryMaterials, DeliveryUser } from './n
 export { deliverSuccessPatch, deliverFailurePatch } from './instance.js';
 export type { InstanceFacts, InstancePatch, InstanceSuspensionState } from './instance.js';
 export { createDeliverJobProcessor } from './deliver-job.js';
-export type { DeliverBatch, DeliverJob, DeliverJobOutcome, DeliverJobSettings, InstanceLedger } from './deliver-job.js';
+export type { DeliverOne, DeliverBatch, DeliverJob, DeliverJobOutcome, DeliverJobSettings, InstanceLedger } from './deliver-job.js';
+export { createDeliverToRelays } from './relay-delivery.js';
+export type { AttachLdSignature } from './relay-delivery.js';

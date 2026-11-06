@@ -4,9 +4,12 @@
  */
 import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { Queue } from 'bullmq';
 import { Redis } from 'ioredis';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
-import { MiChannel, MiFollowing, MiMeta, MiNote, MiUser, MiUserKeypair, MiUserProfile } from 'backend-upstream/entities';
+import { MiChannel, MiFollowing, MiRelay, MiMeta, MiNote, MiUser, MiUserKeypair, MiUserProfile } from 'backend-upstream/entities';
+import { verifyLdSignature } from '../helpers/ld-signature.js';
+import { baseQueueOptions } from '../../src/platform/job-queue/connection.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
 import { migrateDatabase } from '../../src/platform/database/migrate.js';
 import { generateRsaKeyPair } from '../../src/platform/key-pair.js';
@@ -45,6 +48,7 @@ beforeAll(async () => {
 	publicKeyPem = pair.publicKeyPem;
 	await source.getRepository(MiUserKeypair).insert({ userId: alice, publicKey: pair.publicKeyPem, privateKey: pair.privateKeyPem });
 	await source.getRepository(MiUserProfile).insert([{ userId: alice, userHost: null }, { userId: bob, userHost: null }]);
+	await source.getRepository(MiRelay).insert(['accepted', 'requesting', 'rejected'].map(status => ({ id: status, inbox: `${inbox.origin}/inbox/${status === 'accepted' ? 'relay' : status}`, status: status as 'accepted' | 'requesting' | 'rejected' })));
 	await source.getRepository(MiMeta).update({ id: 'singleton' }, { federation: 'all' });
 
 	// 本家の観測と同じく、remote1・remote2 は同じ shared inbox を持ち、alice をフォローする。
@@ -93,10 +97,10 @@ function normalize(body: string, origin: string): unknown {
 	for (const [name, id] of Object.entries(ids)) {
 		text = text.replaceAll(id, `$${name}`);
 	}
-	return JSON.parse(text, (key, value: unknown) => (key === 'published' ? '$time' : value));
+	return JSON.parse(text, (key, value: unknown) => (['published', 'created'].includes(key) ? '$time' : key === 'nonce' ? '$nonce' : key === 'signatureValue' ? '$signature' : value));
 }
 
-test('notes created over HTTP are delivered by the worker process to the fake inboxes like the pinned upstream (relay excluded)', async () => {
+test('notes created over HTTP are delivered by the worker process to the fake inboxes like the pinned upstream (including accepted relay)', async () => {
 	const port = await freePort();
 	const value = processConfig({ http: { port } });
 	const config = await configuration(value);
@@ -113,12 +117,13 @@ test('notes created over HTTP are delivered by the worker process to the fake in
 		await create(port, 'ap-pure', { renoteId: ids.base });
 		await create(port, 'ap-quote', { text: 'quote', renoteId: ids.base });
 
-		// 本家の観測から relay（2 番目の #171 PR）を除いた宛先。
+		// C9 の全宛先。
 		const expected: Record<string, string[]> = {
-			'ap-public': ['/inbox/shared'], 'ap-home': ['/inbox/shared'], 'ap-followers': ['/inbox/shared'], 'ap-specified': ['/inbox/remote1'],
-			'ap-pure': ['/inbox/shared'], 'ap-quote': ['/inbox/shared'],
+			'ap-public': ['/inbox/relay', '/inbox/shared'], 'ap-home': ['/inbox/shared'], 'ap-followers': ['/inbox/shared'], 'ap-specified': ['/inbox/remote1'],
+			'ap-pure': ['/inbox/relay', '/inbox/shared'], 'ap-quote': ['/inbox/relay', '/inbox/shared'],
 		};
 		const total = Object.values(expected).flat().length;
+		expect(total).toBe(9);
 		await vi.waitFor(() => {
 			expect(inbox.deliveries).toHaveLength(total);
 		}, { timeout: 20000, interval: 100 });
@@ -131,7 +136,18 @@ test('notes created over HTTP are delivered by the worker process to the fake in
 			const key = `C9-${name.slice(3)}`;
 			const received = inbox.deliveries.filter(d => d.body.includes(`/notes/${ids[name]}/activity`)).sort((a, b) => a.path.localeCompare(b.path));
 			expect(received.map(d => d.path)).toEqual(paths);
-			const upstream = (observations[key] as { path: string; activity: unknown; signed: boolean; digest: boolean }[]).filter(o => o.path !== '/inbox/relay');
+			const upstream = (observations[key] as { path: string; activity: unknown; signed: boolean; digest: boolean }[]);
+			for (const d of received) {
+				expect(d.verify(publicKeyPem)).toEqual({ signature: true, digest: true });
+				const raw = JSON.parse(d.body);
+				if (d.path === '/inbox/relay') {
+					expect(await verifyLdSignature(raw, publicKeyPem)).toBe(true);
+					expect(raw.signature).toEqual({ type: 'RsaSignature2017', creator: `${value.url}/users/${ids.alice}#main-key`, nonce: expect.stringMatching(/^[0-9a-f]{32}$/), created: expect.any(String), signatureValue: expect.any(String) });
+					expect(new Date(raw.signature.created).toISOString()).toBe(raw.signature.created);
+				} else {
+					expect(raw.signature).toBeUndefined();
+				}
+			}
 			expect(received.map(d => ({ path: d.path, activity: normalize(d.body, value.url) }))).toEqual(upstream.map(o => ({ path: o.path, activity: o.activity })));
 			for (const delivery of received) {
 				expect(delivery.keyId).toBe(`${value.url}/users/${ids.alice}#main-key`);
@@ -185,6 +201,60 @@ test('losing the deliver queue connection of a worker stops the whole process tr
 				process.kill(child.pid, 'SIGKILL');
 			} catch {}
 		}
+		await config.close();
+	}
+});
+
+test('HTTP success precedes relay preparation; SIGTERM drains the blocked relay query and enqueues before exit', async () => {
+	const port = await freePort();
+	const value = processConfig({ http: { port }, processes: { ...database.config.processes, shutdownTimeoutMs: 15000 } });
+	const config = await configuration(value);
+	const lock = source.createQueryRunner();
+	const inspect = new Queue('deliver', baseQueueOptions(value.redisForJobQueue, 'deliver', 5000));
+	const http = launch('built/entrypoints/http.js', config.path);
+	let worker: ReturnType<typeof launch> | undefined;
+	let locked = false;
+	try {
+		await http.ready;
+		await lock.connect();
+		await lock.startTransaction();
+		locked = true;
+		await lock.query('LOCK TABLE relay IN ACCESS EXCLUSIVE MODE');
+		const noteId = await create(port, 'draining-relay', { text: 'drain relay', visibility: 'public' });
+		expect(await source.getRepository(MiNote).findOneBy({ id: noteId })).not.toBeNull();
+		await vi.waitFor(async () => {
+			const blocked = await source.query("SELECT pid FROM pg_stat_activity WHERE datname = current_database() AND wait_event_type = 'Lock' AND query ILIKE 'SELECT%relay%'");
+			expect(blocked.length).toBeGreaterThan(0);
+		}, { timeout: 5000 });
+		let exited = false;
+		void http.exit.then(() => {
+			exited = true;
+		});
+		http.child.kill('SIGTERM');
+		await new Promise(resolve => setTimeout(resolve, 300));
+		expect(exited).toBe(false);
+		await lock.commitTransaction();
+		locked = false;
+		expect((await http.exit).code, http.output()).toBe(0);
+		const waiting = await inspect.getJobs(['waiting']);
+		const relay = waiting.filter(j => j.data.to === `${inbox.origin}/inbox/relay`);
+		expect(relay).toHaveLength(1);
+		expect(await verifyLdSignature(JSON.parse(relay[0].data.content), publicKeyPem)).toBe(true);
+		worker = launch('built/entrypoints/worker.js', config.path);
+		await worker.ready;
+		await vi.waitFor(() => expect(inbox.deliveries.some(d => d.path === '/inbox/relay' && d.body.includes(noteId))).toBe(true), { timeout: 10000 });
+		const delivered = inbox.deliveries.find(d => d.path === '/inbox/relay' && d.body.includes(noteId))!;
+		expect(delivered.verify(publicKeyPem)).toEqual({ signature: true, digest: true });
+		expect(await verifyLdSignature(JSON.parse(delivered.body), publicKeyPem)).toBe(true);
+	} finally {
+		if (locked) {
+			await lock.rollbackTransaction();
+		}
+		await lock.release();
+		await http.close();
+		await worker?.close();
+		await inspect.obliterate({ force: true });
+		await inspect.close();
 		await config.close();
 	}
 });

@@ -129,6 +129,7 @@ test.for(cases)('$id read back from the database is queued to the same inboxes a
 	const batches: DeliverBatch[] = [];
 	const recipients = createDeliveryRecipientReader(source.manager);
 	const deliver = createDeliverCreatedNote({
+		deliverToRelays: async () => {},
 		readNote: read, readUsers: recipients.readUsers, readFollowerInboxes: recipients.readFollowerInboxes,
 		enqueue: async batch => {
 			batches.push(batch);
