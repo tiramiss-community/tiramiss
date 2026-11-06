@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "47c9c75dd6b5fc9527c3976b86364b06c46f3a04",
+  "implementationCommit": "ba51607ba514de5fe2e4a1bf574575d5f0d42fa9",
   "domains": [
     {
       "id": "api-common",
@@ -1561,6 +1561,21 @@
         "packages/backend-next/test/processes/note-deliver.test.ts"
       ],
       "note": "#171で通常workerへ接続し、スキップ判定・署名付き送信・インスタンス台帳・BullMQへの写像を本家probe（processor-cases・job-cases）と比較。チャートは#200、成功時のfetchInstanceMetadataは#215段階5"
+    },
+    "api:notes/delete": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/http/note-delete-api.ts",
+        "packages/backend-next/src/modules/note/delete-note.ts",
+        "packages/backend-next/src/platform/database/note-deleter.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/note/delete-note.test.ts",
+        "packages/backend-next/test/integration/note-delete.test.ts",
+        "packages/backend-next/test/processes/note-delete.test.ts",
+        "docs/superpowers/compatibility/note/reference-delete.unit.ts"
+      ],
+      "note": "#172で認可・物理削除・返信数減算・監査・Delete/Undo配送を接続し、本家DELETE失敗境界も比較。通知/stream#173、TL/検索#174、webhook#175、チャート#200、縦断#176は未完了。"
     }
   }
 }

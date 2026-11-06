@@ -1,0 +1,10 @@
+{
+	"upstream": "8e07cf085adf7009583d234a208e30436f020e26",
+	"failure": true,
+	"targetRemains": true,
+	"repliesCount": 2,
+	"followersStartedBeforeDelete": true,
+	"relayStartedBeforeDelete": true,
+	"directStarted": true,
+	"auditStarted": false
+}

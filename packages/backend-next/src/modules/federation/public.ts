@@ -27,3 +27,4 @@ export { createDeliverJobProcessor } from './deliver-job.js';
 export type { DeliverOne, DeliverBatch, DeliverJob, DeliverJobOutcome, DeliverJobSettings, InstanceLedger } from './deliver-job.js';
 export { createDeliverToRelays } from './relay-delivery.js';
 export type { AttachLdSignature } from './relay-delivery.js';
+export { renderDeletedNoteActivity, createDeliverDeletedNote } from './note-deletion.js';

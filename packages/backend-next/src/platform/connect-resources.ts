@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { randomBytes } from 'node:crypto';
+import { Redis } from 'ioredis';
 import { createFederationKeys } from '../composition/federation-keys.js';
+import { createDeliverCreatedNote, createDeliverToRelays, createDeliverDeletedNote } from '../modules/federation/public.js';
+import { createNotePostDelete } from './note-post-delete.js';
+import { appendNoteDeleteAudit, readDeletionConcernedUsers } from './database/note-deleter.js';
 import { createAcceptedRelayReader } from './database/accepted-relays.js';
 import { signRsaSignature2017 } from './jsonld-signature.js';
-import { Redis } from 'ioredis';
 import { createNotePostSave, createNotePostSaveWork } from './note-post-save.js';
 import { createPollEndedQueue, ENDED_POLL_NOTIFICATION } from './job-queue/ended-poll-notification.js';
 import { createDeliverQueue, DELIVER } from './job-queue/deliver.js';
@@ -14,7 +17,6 @@ import { createNotePostSaveCounts } from './database/note-post-save-counts.js';
 import { createNoteActivityReader } from './database/note-activity.js';
 import { createDeliveryRecipientReader } from './database/delivery-recipients.js';
 import { createIdCodec } from './id-codec.js';
-import { createDeliverCreatedNote, createDeliverToRelays } from '../modules/federation/public.js';
 import { openRoleMaterials } from './role-materials.js';
 import { createRoleMaterialReader } from './database/role-materials.js';
 import { ResourceScope } from './resource-scope.js';
@@ -222,12 +224,22 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			currentTime: Date.now,
 		}), logger);
 		scope.defer(notePostSave.close);
+		const deliverDeletedNote = createDeliverDeletedNote({
+			readFollowerInboxes: recipients.readFollowerInboxes,
+			readConcernedUsers: (snapshot: import('../modules/note/public.js').DeletedNoteSnapshot) => readDeletionConcernedUsers(dataSource.manager, snapshot),
+			deliverToRelays,
+			enqueue: deliverQueue.deliverMany,
+		});
+		const notePostDelete = createNotePostDelete(input => input.kind === 'delivery'
+			? deliverDeletedNote(input)
+			: appendNoteDeleteAudit(dataSource.manager, input, createIdCodec(config.id).newId), logger);
+		scope.defer(notePostDelete.close);
 
 		if (lostQueue !== undefined) {
 			throw new DiagnosticError('JOB_QUEUE_REDIS_ENDED', { queue: lostQueue });
 		}
 		active = true;
-		return { dataSource, redis, reactionsRedis, roleMaterials, notePostSave, federationKeys, logger, close, failure };
+		return { dataSource, redis, reactionsRedis, roleMaterials, notePostSave, notePostDelete, federationKeys, logger, close, failure };
 	};
 
 	try {

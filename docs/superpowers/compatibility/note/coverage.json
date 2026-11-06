@@ -484,7 +484,7 @@
       ],
       "remaining": [
         "署名/Digestのheader存在を確認し実受信本文を記録。暗号署名の検証、非同期worker停止、遅い再送、host制限/HTTP分類は#159/#160/#162/#171。localOnlyの0件は正の配送drain後300msの有限観測。",
-        "2026-11-03の#171最初のPRで、C9-home・C9-followers・C9-specified・C9-localOnlyの全件と、C9-public・C9-pure・C9-quoteの/inbox/shared分をtest/processes/note-deliver.test.tsで新実装と照合（署名はcrypto.verify、Digestも検証）。第2slice は /inbox/relay を含む全9配送・原文の独立LD検証・停止drainのprocessテストを追加。固定本家署名vectorと単体テストは成功。このworkerではlocalhost EPERMで実DB/Redis/process実行未完了。元C9観測はheader存在だけで暗号検証していない。"
+        "2026-11-03の#171最初のPRで、C9-home・C9-followers・C9-specified・C9-localOnlyの全件と、C9-public・C9-pure・C9-quoteの/inbox/shared分をtest/processes/note-deliver.test.tsで新実装と照合（署名はcrypto.verify、Digestも検証）。第2slice は /inbox/relay を含む全9配送・原文の独立LD検証・停止drainのprocessテストを追加。固定本家署名vectorと単体テストは成功。PR #227のcontroller最終検証で関連結合150件/process3件が成功し、C9全9配送を確認済み。過去workerのlocalhost EPERMは最終状態ではない。元C9観測はheader存在だけで暗号検証していない。"
       ]
     },
     {
@@ -534,10 +534,15 @@
         {
           "file": "observations.json",
           "key": "C10-fallback"
+        },
+        {
+          "file": "delete-failure-cases.json",
+          "key": "repliesCount"
         }
       ],
       "remaining": [
-        "作者/他者/moderator、連続削除、audit、Redis noteStream、Delete/Undo/元投稿消失fallbackを新実装へ接続。Redis publish観測であり実WebSocketクライアント受信の確認は#173/#189。"
+        "2026-11-07の#172 sliceで作者/他者/moderator/再削除・監査全Note snapshot・scope/移行済みactor・production rate・DB/関連FK/counterと、C10-Delete/Undo/fallbackを新実装へ接続。test/integration/note-delete.test.ts と test/processes/note-delete.test.ts で比較し、原文HTTP署名/Digest/relay LD署名と終了drainも検証。",
+        "削除stream/通知は#173、TL/検索は#174、webhookは#175、チャートは#200、実WebSocket受信は#173/#189、残る縦断は#176。強い取消/順序保証は保留#161。"
       ]
     },
     {
@@ -595,8 +600,7 @@
       "status": "new-design-contract",
       "owners": [
         159,
-        161,
-        172
+        161
       ],
       "upstream": [
         "packages/backend/src/core/NoteCreateService.ts",
@@ -612,6 +616,12 @@
           "issue": 171,
           "decision": "owners から #171 を外す",
           "reason": "#171 は本家相当の配送（通常の BullMQ の投入と再試行）を移植し、HTTP 送信権・結果不明・取消世代・Delete の順序という新設計の保証は持たない。これらは保留の #159/#161 と、削除を扱う #172 に属する（GOALS.md の初期範囲）。F4 自体の扱いは残りの所有者が再評価する。"
+        },
+        {
+          "date": "2026-11-07",
+          "issue": 172,
+          "decision": "owners から #172 を外す",
+          "reason": "#172は固定本家どおりDELETE前に通常配送を開始し、取消世代・unknown・強いCreate/Delete順序を実装しない。GOALSと保留#159/#161の境界を維持する。"
         }
       ]
     },
@@ -695,7 +705,7 @@
         }
       ],
       "remaining": [
-        "本家は作成後のlate followerとrelayへ非publicのDeleteも送ると実受信で確認。新設計では固定集合へ限定する（D3。新実装では未実装）。展開前/途中の削除とunknown宛先はN5で追加。"
+        "2026-11-07の#172でF8-upstream-home/followers/specifiedを実processの原文HTTP/Digest/LD署名付き配送と比較済み。作成後のlate followerとaccepted relayへ非publicのDeleteも送る。固定集合・unknown・取消世代を追加するD3は保留#161の範囲。"
       ],
       "reevaluations": [
         {
@@ -703,6 +713,12 @@
           "issue": 171,
           "decision": "owners から #171 を外す",
           "reason": "F8 は削除の配送の観測で、Delete の宛先は #172 が扱う。新実装の固定集合への限定（D3）は新設計の追加保証で、本家相当の作成時の配送を移植する #171 は実装しない。relay 部分の材料（relay への配送と LD 署名）は #171 の 2 番目の PR が作るが、Delete の relay 宛ては #172 で照合する。"
+        },
+        {
+          "date": "2026-11-07",
+          "issue": 172,
+          "decision": "本家の非public削除宛先を移植し、追加保証D3と分離",
+          "reason": "GOALS/ROADMAPに従い通常followers/relay/direct配送を実装した。初回固定集合への限定・unknown・取消世代は初期の必須条件ではなく、固定本家F8の期待値を維持する。"
         }
       ]
     }
