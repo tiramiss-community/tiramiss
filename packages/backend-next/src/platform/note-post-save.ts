@@ -12,7 +12,7 @@ export function createNotePostSaveWork(steps: {
 	counts(input: NotePostSaveInput): Promise<void>;
 	schedulePollEnded(job: { noteId: string; delayMs: number }): Promise<void>;
 	/** 保存済みの投稿を読み直し、配送するかどうかも自分で決める。 */
-	deliver(noteId: string): Promise<void>;
+	deliver(noteId: string, input?: NotePostSaveInput): Promise<void>;
 	currentTime(): number;
 }) {
 	return async (input: NotePostSaveInput): Promise<void> => {
@@ -21,7 +21,7 @@ export function createNotePostSaveWork(steps: {
 			// 本家どおり後続処理の開始時刻から遅延を決める。期限を過ぎていても負の遅延のまま投入し、BullMQ はすぐに実行する。
 			work.set('pollEnded', steps.schedulePollEnded({ noteId: input.noteId, delayMs: input.pollExpiresAtMs - steps.currentTime() }));
 		}
-		work.set('deliver', steps.deliver(input.noteId));
+		work.set('deliver', steps.deliver(input.noteId, input));
 
 		// 本家の加算・投入・配送は互いに独立しているため、1 つの失敗で他を省かない。
 		const names = [...work.keys()];
@@ -47,7 +47,7 @@ export function createNotePostSave(run: (input: NotePostSaveInput) => Promise<vo
 		start(input: NotePostSaveInput): void {
 			const work = setImmediate().then(() => run(input)).catch(error => {
 				// 加算の欠けた行や投入されなかった投票終了ジョブを後から補えるよう、対象の ID と期限をすべて残す。
-				logger.error('note-post-save.failed', { error, ...input });
+				logger.error('note-post-save.failed', { error, noteId: input.noteId, userId: input.userId, repliedNoteId: input.repliedNoteId, renotedNoteId: input.renotedNoteId, channelId: input.channelId, pollExpiresAtMs: input.pollExpiresAtMs });
 			});
 			pending.add(work);
 			void work.then(() => pending.delete(work));

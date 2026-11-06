@@ -26,6 +26,7 @@ export interface DeletedNoteSnapshot {
 }
 export type NoteDeleteWork =
  | { kind: 'delivery'; snapshot: DeletedNoteSnapshot; activity: Record<string, unknown> }
+ | { kind: 'stream'; snapshot: DeletedNoteSnapshot; occurredAtMs: number }
  | { kind: 'audit'; snapshot: DeletedNoteSnapshot; actorId: string; occurredAtMs: number };
 
 const ajv = new Ajv();
@@ -37,6 +38,7 @@ export function createDeleteNote(ports: {
 	limit(userId: string, factor: number): Promise<void>;
 	readNote(id: string): Promise<DeletedNoteSnapshot | null>;
 	decrementReplies(noteId: string): Promise<void>;
+	publishDeleted?(snapshot: DeletedNoteSnapshot, deletedAt: number): void;
 	renderActivity(snapshot: DeletedNoteSnapshot, now: number): Record<string, unknown>;
 	start(work: NoteDeleteWork): void;
 	deleteNote(noteId: string, authorId: string): Promise<void>;
@@ -74,6 +76,7 @@ export function createDeleteNote(ports: {
 			if (snapshot.replyId !== null) {
 				await ports.decrementReplies(snapshot.replyId);
 			}
+			ports.publishDeleted?.(snapshot, now);
 			if (snapshot.authorHost === null && !snapshot.localOnly) {
 				const activity = ports.renderActivity(snapshot, now);
 				ports.start({ kind: 'delivery', snapshot, activity });

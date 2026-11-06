@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import type { TransactionRunner } from '../../application/transaction.js';
-import type { PostNotificationWrites } from './model.js';
+import type { PostNotification, PostNotificationWrites } from './model.js';
 
 export interface PollEndedNote {
 	id: string;
@@ -30,6 +30,7 @@ export function createNotifyPollEnded(dependencies: {
 	// プロフィールがなければ例外を投げる。本家も findOneByOrFail で失敗し、ジョブを失敗させる。
 	readRecipient(userId: string): Promise<PollEndedRecipient>;
 	notifications: TransactionRunner<PostNotificationWrites>;
+	afterSaved?(notification: PostNotification): Promise<void>;
 	newId(now: number): string;
 	currentTime(): number;
 }) {
@@ -51,12 +52,14 @@ export function createNotifyPollEnded(dependencies: {
 				}
 
 				const now = dependencies.currentTime();
+				const notification: PostNotification = {
+					id: dependencies.newId(now), recipientId: userId, type: 'pollEnded', notifierId: null,
+					noteId: note.id, targetNoteId: null, createdAtMs: now,
+				};
 				try {
-					await dependencies.notifications.run(writes => writes.save({
-						id: dependencies.newId(now), recipientId: userId, type: 'pollEnded', notifierId: null,
-						noteId: note.id, targetNoteId: null, createdAtMs: now,
-					}));
+					await dependencies.notifications.run(writes => writes.save(notification));
 					result.notifiedUserIds.push(userId);
+					await dependencies.afterSaved?.(notification);
 				} catch (error) {
 					// 本家は通知の作成を待たないため、1 人分の失敗でジョブも他の受信者への通知も止まらない。
 					result.failures.push({ recipientId: userId, error });

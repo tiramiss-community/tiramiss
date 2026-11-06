@@ -19,15 +19,7 @@ export function createNoteReader(manager: EntityManager, redis: Redis, options: 
 			if (ids.length === 0) {
 				return [];
 			}
-			return (await manager.getRepository(MiNote).findBy({ id: In([...ids]) })).map((row): NoteFacts => ({
-				id: row.id, createdAtMs: options.createdAtFromId(row.id), userId: row.userId, userHost: row.userHost,
-				text: row.text, name: row.name, cw: row.cw, visibility: row.visibility, localOnly: row.localOnly,
-				reactionAcceptance: row.reactionAcceptance, visibleUserIds: row.visibleUserIds, mentions: row.mentions,
-				tags: row.tags, emojis: row.emojis, fileIds: row.fileIds, replyId: row.replyId, replyUserId: row.replyUserId,
-				renoteId: row.renoteId, channelId: row.channelId, renoteCount: row.renoteCount, repliesCount: row.repliesCount,
-				clippedCount: row.clippedCount, reactions: row.reactions, reactionPairs: row.reactionAndUserPairCache,
-				hasPoll: row.hasPoll, uri: row.uri, url: row.url,
-			}));
+			return (await manager.getRepository(MiNote).findBy({ id: In([...ids]) })).map(row => noteFactsFromRow(row, options.createdAtFromId));
 		},
 		async readGuestAccess(note) {
 			const author = await manager.getRepository(MiUser).findOneByOrFail({ id: note.userId });
@@ -90,5 +82,17 @@ export function createNoteReader(manager: EntityManager, redis: Redis, options: 
 				ugcVisibilityForVisitor: meta.ugcVisibilityForVisitor,
 			};
 		},
+	};
+}
+
+export function noteFactsFromRow(row: MiNote, createdAtFromId: (id: string) => number): NoteFacts {
+	return {
+		id: row.id, createdAtMs: createdAtFromId(row.id), userId: row.userId, userHost: row.userHost,
+		text: row.text, name: row.name, cw: row.cw, visibility: row.visibility, localOnly: row.localOnly,
+		reactionAcceptance: row.reactionAcceptance, visibleUserIds: row.visibleUserIds, mentions: row.mentions,
+		tags: row.tags, emojis: row.emojis, fileIds: row.fileIds, replyId: row.replyId, replyUserId: row.replyUserId,
+		renoteId: row.renoteId, channelId: row.channelId, renoteCount: row.renoteCount, repliesCount: row.repliesCount,
+		clippedCount: row.clippedCount, reactions: row.reactions, reactionPairs: row.reactionAndUserPairCache,
+		hasPoll: row.hasPoll, uri: row.uri, url: row.url,
 	};
 }
