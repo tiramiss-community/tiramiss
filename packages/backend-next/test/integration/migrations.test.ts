@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { MiHashtag } from 'backend-upstream/entities';
 import { afterAll, beforeAll, expect, test } from 'vitest';
 import { createTestDatabase } from '../helpers/database.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
@@ -29,6 +30,8 @@ test('applies all upstream migrations once and keeps internal history separate',
 	await migrateDatabase(database.config.database);
 	await assertMigrationsApplied(database.config.database);
 	const source = await createDataSource(database.config.database).initialize();
+	expect(source.getMetadata(MiHashtag).tableName).toBe('hashtag');
+	expect(await source.getRepository(MiHashtag).count()).toBe(0);
 	const before = await source.query('SELECT id, timestamp, name FROM public.migrations ORDER BY id');
 	expect(before).toHaveLength(349);
 	expect(await source.query('SELECT name FROM backend_internal.migrations')).toEqual([{ name: 'PostWorkPersistence1792590060271' }, { name: 'PostWorkDispatch1792643873727' }, { name: 'PostWorkRecovery1792665615537' }, { name: 'PostNotification1792732433541' }, { name: 'ApRecipientSnapshot1792734340852' }, { name: 'ApHostLease1792815498061' }, { name: 'RetireDurableWork1793635233676' }, { name: 'PollEndedNotification1793706223869' }]);

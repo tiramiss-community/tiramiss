@@ -237,3 +237,10 @@ home/local/user/list/channel（files/replies含む）の固定本家メソッド
 [featured比較資料](featured/README.md)の独立固定source期待値を `test/unit/note/featured.test.ts` へ直接接続する。本家の実NoteCreate/FeaturedServiceメソッドを抽出してRepository/Redis/clock等をdoubleへ置換した観測であり、本家full server/実DB/Redisとの同時比較ではない。
 
 新実装は `test/integration/note-featured.test.ts` の通常認証HTTP handler・PG・normal Redisで元Noteのglobal/作者別/channel加点、TTL/NX、quote/self/bot/reply/古いID、DB count拒否、global WRONGTYPE、削除後のsnapshot加点を検証する。別DBのtimeline Redisへ書かないことも確認する。`test/processes/note-featured.test.ts` はテスト専用Node preloadでrandomを固定し、通常HTTP子のRenote後SIGTERMとscore/終了0を観測する。held writerの直接drainはpost-save unitで検証する。reaction/2-window閲覧/gallery/hashtag・antennaと#174/#172/#176全体の完成は示さない。
+
+
+### #174 通常投稿のhashtag producer（2026-11-07）
+
+[固定source oracleと再実行](hashtag/README.md)は実HashtagService/FeaturedService/NoteCreateService/NoteDeleteServiceを抽出実行し、全87観測を保存する。Repository/Redisはdoubleであり、本家full server/実PGの実測と区別する。新実装のunitはupdate28件のDB mention列とRedis command列、post12件のgateをJSONから直接比較する（設定読取による独立仕事のinterleavingは全体順で固定しない）。別途4ケースのDB全配列・件数を実PGで直接比較する。
+
+通常HTTP handler/PG/Redisではtext/cw/poll/noExtract・visibility・channel/bot/localOnly、同時local/remote作者、NX・unique/HLL/featured、強制二重admission、SQL trigger/WRONGTYPE、削除後残留と遅延snapshotを検証する。migration/schema差分0と通常HTTP子SIGTERM後のDB/Redis結果を確認し、held Redis中のidle/closeはbarrier制御unitで検証する。raw128文字の正規化後伸長はsource oracleのINSERT候補であり、実PGではNote.tags varchar(128)[]が保存前に拒否する。profile attached・hashtag読取/stream/chart・antennaや#174/#172/#176全体は未完了。

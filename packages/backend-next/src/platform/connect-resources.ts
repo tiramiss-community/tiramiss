@@ -4,6 +4,9 @@
  */
 import { randomBytes } from 'node:crypto';
 import { Redis } from 'ioredis';
+import { createPostingHashtags } from '../composition/posting-hashtags.js';
+import { createHashtagRanking } from './hashtag-ranking.js';
+import { createNoteHashtagWriter, readHashtagRankingSettings } from './database/note-hashtags.js';
 import { createFeaturedRanking } from './featured-ranking.js';
 import { createPostingFeatured } from '../composition/posting-featured.js';
 import { createPostingTimelines } from '../composition/posting-timelines.js';
@@ -276,6 +279,11 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		}, config);
 		const notePostSave = createNotePostSave(createNotePostSaveWork({
 			counts: createNotePostSaveCounts(dataSource.manager),
+			hashtags: createPostingHashtags({
+				mention: createNoteHashtagWriter(dataSource.manager, () => createIdCodec(config.id).newId(Date.now())).mention,
+				ranking: createHashtagRanking(redis, Date.now),
+				readSettings: () => readHashtagRankingSettings(dataSource.manager),
+			}),
 			featured: createPostingFeatured({
 				add: createFeaturedRanking(redis, Date.now).add,
 				currentTime: Date.now, random: () => Math.random(), createdAtFromId: createIdCodec(config.id).createdAtFromId,

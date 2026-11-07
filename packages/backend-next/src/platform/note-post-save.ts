@@ -13,6 +13,7 @@ export function createNotePostSaveWork(steps: {
 	schedulePollEnded(job: { noteId: string; delayMs: number }): Promise<void>;
 	/** 保存済みの投稿を読み直し、配送するかどうかも自分で決める。 */
 	deliver(noteId: string, input?: NotePostSaveInput): Promise<void>;
+	hashtags?(input: NotePostSaveInput): Promise<void>;
 	featured?(input: NotePostSaveInput): Promise<void>;
 	timelines?(input: NotePostSaveInput): Promise<void>;
 	currentTime(): number;
@@ -27,6 +28,9 @@ export function createNotePostSaveWork(steps: {
 			}
 		};
 		start('counts', () => steps.counts(input));
+		if (steps.hashtags) {
+			start('hashtags', () => steps.hashtags!(input));
+		}
 		if (steps.featured) {
 			start('featured', () => steps.featured!(input));
 		}

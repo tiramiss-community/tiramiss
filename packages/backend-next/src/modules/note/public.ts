@@ -22,3 +22,5 @@ export { planNoteTimelines, sampleTimelineFollowers } from './timeline-plan.js';
 export type { TimelineNote, TimelineMaterials, PlannedTimeline } from './timeline-plan.js';
 export { planRenoteFeatured } from './featured-plan.js';
 export type { FeaturedNoteScore } from './featured-plan.js';
+export { planNoteHashtags, canRankHashtag } from './hashtag-plan.js';
+export type { HashtagMention, HashtagRankingSettings } from './hashtag-plan.js';

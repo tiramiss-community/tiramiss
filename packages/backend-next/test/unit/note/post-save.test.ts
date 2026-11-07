@@ -301,3 +301,41 @@ test('synchronous featured failure does not lose started counts or later deliver
 	expect(finished).toEqual(['deliver', 'counts']);
 	expect(logs.map(line => JSON.parse(line))).toContainEqual(expect.objectContaining({ event: 'note-post-save.failed', error: expect.objectContaining({ details: { failures: [{ step: 'featured', error: { name: 'Error' } }] } }) }));
 });
+
+test('hashtags start despite synchronous counts failure, and both idle and close wait for held hashtags', async () => {
+	const logs: string[] = [];
+	const started: string[] = [];
+	let release!: () => void;
+	const held = new Promise<void>(resolve => {
+		release = resolve;
+	});
+	const effects = createNotePostSave(createNotePostSaveWork({
+		counts: () => {
+			started.push('counts'); throw new Error('counts');
+		},
+		hashtags: async () => {
+			started.push('hashtags'); await held; throw new Error('hashtag');
+		},
+		timelines: async () => {
+			started.push('timelines');
+		},
+		deliver: async () => {
+			started.push('deliver');
+		},
+		schedulePollEnded: async () => {}, currentTime: () => 0,
+	}), createLogger('test', line => logs.push(line)));
+	effects.start({ noteId: 'tagged', userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: null });
+	let idle = false, closed = false;
+	const waiting = effects.idle().then(() => {
+		idle = true;
+	});
+	const closing = effects.close().then(() => {
+		closed = true;
+	});
+	await new Promise<void>(resolve => setImmediate(resolve));
+	expect(started).toEqual(['counts', 'hashtags', 'timelines', 'deliver']);
+	expect([idle, closed]).toEqual([false, false]);
+	release();
+	await Promise.all([waiting, closing]);
+	expect(logs.map(line => JSON.parse(line))).toContainEqual(expect.objectContaining({ event: 'note-post-save.failed', noteId: 'tagged', error: expect.objectContaining({ details: { failures: [expect.objectContaining({ step: 'counts' }), expect.objectContaining({ step: 'hashtags' })] } }) }));
+});
