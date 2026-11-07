@@ -1,6 +1,6 @@
 # 新バックエンドの全体計画
 
-更新: 2026-11-07。判断基準は [GOALS](GOALS.md)。全体Issueは [#114](https://github.com/tiramiss-community/tiramiss/issues/114)。本書は工程と現在地、Issueは個別作業と依存、各PRは実装・検証結果を持つ。
+更新: 2026-11-08。判断基準は [GOALS](GOALS.md)。全体Issueは [#114](https://github.com/tiramiss-community/tiramiss/issues/114)。本書は工程と現在地、Issueは個別作業と依存、各PRは実装・検証結果を持つ。
 
 ## 今回の方針整理
 
@@ -12,7 +12,7 @@
 
 ## 現在地と既存成果
 
-基準: develop `617bd45d67173b401ed58b2f27fc17b7e608b8c5`（PR #237マージ後）。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
+基準: develop `cc97140d3a4bfa639e8feb0446914d1cb22fa5c2`（PR #238マージ後）。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
 
 | 成果 | 初期実装での扱い |
 | --- | --- |
@@ -25,9 +25,9 @@
 | PG通知保存・effect記録（#155） | 保存先の承認を維持し直接save/flushへ分離。effect/課金への依存を撤去し、閲覧/既読/移行は#177へ残す |
 | 物理容量監視と受付停止（#166 / PR #206） | 初期範囲から外し保留。PRは未マージのまま残し、勝手にclose/mergeしない |
 
-投稿の現在地（2026-11-07）: #170/#171、投稿に必要な通知・WebSocket受信 #173、投稿webhook #175 と通常TL/検索/集計producer #174 は実装・比較済み。#174 は PR #237 で完了した。本変更では、#172 に残っていた作成後続と削除の連携を、同じ投稿を使う実HTTP/worker・PG/Redis/Meili・WebSocket・fake AP/webhookで検証した。sourceと製品の独立レビューは承認済み。#172 の完了判定と、#176 の削除に絞って確認した範囲は[本変更の計画](../superpowers/plans/2026-11-07-note-delete-integration-172.md)を参照する。後述の各sliceにある過去の残作業記述は当時の状態を示す。
+投稿の現在地（2026-11-07）: #170/#171、投稿に必要な通知・WebSocket受信 #173、投稿webhook #175 と通常TL/検索/集計producer #174 は実装・比較済み。#174 は PR #237 で完了した。#172の削除連携sliceでは、作成後続と削除の連携を、同じ投稿を使う実HTTP/worker・PG/Redis/Meili・WebSocket・fake AP/webhookで検証した。sourceと製品の独立レビューは承認済み。#172 の完了判定と、#176 の削除に絞って確認した範囲は[削除連携の計画](../superpowers/plans/2026-11-07-note-delete-integration-172.md)を参照する。後述の各sliceにある過去の残作業記述は当時の状態を示す。
 
-通常workerは投票終了・AP配送・投稿webhookのhandlerを実行する。他の実ジョブは担当領域へ残る。#169 / PR #212は、基本text作成のHTTP・保存・応答・後続count更新と、独自BullMQ transport/Redis復旧の撤去を完了。[PR #213](https://github.com/tiramiss-community/tiramiss/pull/213)でPG通知を直接保存へ分離し、残るPGジョブ/AP protocol・専用テスト・起動Entity登録・未使用依存を撤去した。新migrationは未解決の仕事を拒否し、通知本体を保持して不要9表/課金列を廃止する。マージ済みの独自migrationは履歴として保持するが、未使用adapterや不要テーブルを最終構成に残す方針ではない。
+通常workerは投票終了・AP配送・投稿webhookのhandlerを実行する。#163の管理14 API・公開QueueStatsは下記の実依存検証で完了条件を満たす。次は#164の通常保持/清掃と#165の実payload互換/残仕事引継ぎであり、#124と#176全体は未完了。他の実ジョブは担当領域へ残る。#169 / PR #212は、基本text作成のHTTP・保存・応答・後続count更新と、独自BullMQ transport/Redis復旧の撤去を完了。[PR #213](https://github.com/tiramiss-community/tiramiss/pull/213)でPG通知を直接保存へ分離し、残るPGジョブ/AP protocol・専用テスト・起動Entity登録・未使用依存を撤去した。新migrationは未解決の仕事を拒否し、通知本体を保持して不要9表/課金列を廃止する。マージ済みの独自migrationは履歴として保持するが、未使用adapterや不要テーブルを最終構成に残す方針ではない。
 
 ## 本家比較から分かった追加仕様
 
@@ -89,7 +89,7 @@ PR単位で一括revertせず、現在の参照・必要な業務規則・保存
 | Role初期範囲 / 残るRole API | #115（#116–#121完了）/ #181 |
 | 投稿の代表フロー | #125 → #127 → #170–#176（#167–#169完了）|
 | 通常ジョブ・署名HTTP・worker | #122 → #124 → #160 / #162 |
-| 本家queue管理・QueueStats / 履歴保持 / 実payload互換 | #163 / #164 / #165 |
+| 本家queue管理・QueueStats / 履歴保持 / 実payload互換 | #163実装・比較済み / #164・#165未完了 |
 | 全公開契約の棚卸し / 残る機能の実装 | #128 → #129 / #177–#200（領域別の所有者表は #128）|
 | 横断的な共通土台 | #215 連合の共通土台 / #216 外向きHTTP・SSRF / #217 プロセス間イベント・キャッシュ（いずれも #128 の子）|
 | 外部保存・部分完了 / 派生データ・必要な保守 | #130 と #188/#199 / #131 → #132/#133、#174/#185/#186/#200 |
@@ -149,3 +149,8 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 固定sourceとの比較で判明した純粋Renoteの元投稿照会を、認可用snapshotの準備から、deleted stream後の該当AP準備へ移した。照会拒否でも既発行streamが残り、localOnly/remote等では不要な照会を行わない。[固定sourceと実プロセスの比較範囲](../superpowers/compatibility/note/delete-integration/README.md)、[実装・検証記録](../superpowers/plans/2026-11-07-note-delete-integration-172.md)。source methodのdouble実行と本家full server比較は区別する。
 
 #172の通知/stream/TL/検索/webhook削除連携は、実依存検証と承認済みの独立レビューにより完了条件を満たした。文書を含む全差分の独立レビューも承認済み（[PR #238](https://github.com/tiramiss-community/tiramiss/pull/238)）。#176については削除に絞った連携確認である。#176全体には、#124の必須子#163–#165（queue管理・通常保持・残payload引継ぎ）と、C群全体・停止再開・暫定501を含む未対応台帳の照合が残る。全通知#177、閲覧#185/#186、全WS#189、remote受信#195、chart#200、再構築#132/#133の完成とはしない。次は#176の先行依存として#163–#165の必要な通常queue契約を進める。
+
+
+2026-11-08: #163の本家queue管理14 APIと公開QueueStatsを実装コミット`1f023061eb86a18a3113d29517cb7eded091edc6`で通常HTTPへ接続した。全10名の管理handleは既存3業務workerと分離する。固定97 source観測の95公開投影を直接照合し、残る2件はsource listener/QueueEvents寿命不足を再現しない差異として記録した。新実装は実HTTP/PG/Redis/WSで全route・現在Role/scope・実Worker制御・失敗時204と監査を、通常HTTP子で接続断/部分起動失敗/SIGTERM/期限超過を確認した。独立source/productレビューも承認済み。[比較範囲と実測](../superpowers/compatibility/queue-admin/README.md)、[実装計画](../superpowers/plans/2026-11-08-queue-admin-163.md)。
+
+統計は単一HTTP observerがXevを置き換え、即時/10秒周期・最新200件のメモリ履歴を持つ。公開channelでもapp upgradeの`read:account`は維持する。sourceの非待機操作/監査とHTTP204を維持し、診断と終了待機を追加した。既存のRedis無再接続差異も維持する。#163の完了は自動保持/周期清掃#164、実payload互換/残仕事引継ぎ#165、他stream#189・他管理#194、#124全体の完了ではない。次は#164/#165を進め、#176に残るC群・停止再開・未対応台帳の照合へ接続する。上の過去sliceで#163を残作業とした記述は当時の状態を示す。

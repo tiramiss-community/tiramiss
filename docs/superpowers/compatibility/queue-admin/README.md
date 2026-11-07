@@ -1,13 +1,13 @@
 # Queue管理とQueueStatsの固定本家比較（#163）
 
-対象は `misskey-dev/misskey@8e07cf085adf7009583d234a208e30436f020e26`。本資料は本家の管理API全14登録・10 queue・QueueStatsの契約を固定する。新backendの実装完了や、本家full serverとの一致を示すものではない。[現在の目的](../../../../docs/backend-next/GOALS.md)・[全体計画](../../../../docs/backend-next/ROADMAP.md)・[Issue #163](https://github.com/tiramiss-community/tiramiss/issues/163)を優先し、Issueの折り畳まれた旧PG制御・原子的監査・本文秘匿・最大100件ページ等を現行契約へ持ち込まない。
+対象は `misskey-dev/misskey@8e07cf085adf7009583d234a208e30436f020e26`。本資料のsource oracleは本家の管理API全14登録・10 queue・QueueStatsの契約を固定する。下記の新実装検証とは分けて記録し、本家full serverとの一致を示すものではない。[現在の目的](../../../../docs/backend-next/GOALS.md)・[全体計画](../../../../docs/backend-next/ROADMAP.md)・[Issue #163](https://github.com/tiramiss-community/tiramiss/issues/163)を優先し、Issueの折り畳まれた旧PG制御・原子的監査・本文秘匿・最大100件ページ等を現行契約へ持ち込まない。
 
 ## 再実行
 
 repo rootで実行する。固定commitのGitオブジェクトを持つcheckoutと、workspaceのTypeScript・AJV 8.20.0が必要。旧backendのbuildは不要。AJVは旧backendの依存が未linkの場合、既存pnpm storeの同じ固定版から読み込む。
 
 ```sh
-node docs/superpowers/compatibility/queue-admin/reference-queue-admin.cjs /path/to/upstream-checkout
+OUTPUT=/tmp/tiramiss-queue-admin-observations.actual.json node docs/superpowers/compatibility/queue-admin/reference-queue-admin.cjs /path/to/upstream-checkout
 cmp /tmp/tiramiss-queue-admin-observations.actual.json docs/superpowers/compatibility/queue-admin/observations.json
 ```
 
@@ -62,4 +62,24 @@ producerは初回即時＋10秒周期、deliver/inboxだけの`activeSincePrevTi
 - `endpoint-callback`の`boundary-*`: `heldQueueOperation`を解放する前後のcallback完了と監査/call順序を比べる。`jobs-*`は`repeatedJobs` recipeを1002件へ展開し、既定job fieldを補い、件数/両端/full JSON SHA-256を比較する。これは簡略化した代表値だけの比較ではない。
 - `stream-upgrade`: app permission/停止状態とupgrade結果を比べる。`stream-connection`:公開channel/duplicate/pong/logを比べる。`stream-producer-channel`:activeイベント、tick、履歴順序/切り詰めを比べる。履歴の200 tickはactive値100→299を順に与える。layerを跨いでunscoped appの到達性を解釈しない。
 
-source-onlyのXev/timer/QueueEvents実装詳細と、新backendが終了時に追加する診断・drainを、公開API互換性の照合と分けて記録する。実Redisでのpause/resume/retry/promote/remove/clean、実HTTP/認証/WS、障害と終了は新backendの結合・process検証で別に確認する。この資料自体で、それらを通したことにはしない。
+source-onlyのXev/timer/QueueEvents実装詳細と、新backendが終了時に追加する診断・drainを、公開API互換性の照合と分けて記録する。実Redisでのpause/resume/retry/promote/remove/clean、実HTTP/認証/WS、障害と終了は新backendの結合・process検証で別に確認する。source oracleの実行だけで、それらを通したことにはしない。
+
+
+## 新backendの実装と検証（2026-11-08、#163）
+
+実装コミット `1f023061eb86a18a3113d29517cb7eded091edc6` で、[14 HTTP route](../../../../packages/backend-next/src/http/queue-api.ts)、[管理UseCase](../../../../packages/backend-next/src/modules/queue/admin.ts)、[10 queueのadapter](../../../../packages/backend-next/src/platform/job-queue/administration.ts) と [公開QueueStats observer](../../../../packages/backend-next/src/platform/queue-stats.ts) を通常起動へ接続した。管理APIは現在のmoderator（administrator/rootを含む）とread/writeの`admin:queue` scopeを要求する。queueStatsの購読自体にその資格は不要だが、既存のapp token upgradeには`read:account`が必要。guestと自己credentialも購読できる。
+
+固定97観測のうち95件の公開投影を新実装へ直接照合した。[queue source比較](../../../../packages/backend-next/test/unit/queue/source-compat.test.ts) は67 HTTP handlerのstatus/body/明示認証headerとqueue/監査call、6件の待機境界、5件の1002-job recipeの件数/両端/JSON全体SHA-256を照合する。[stream比較](../../../../packages/backend-next/test/unit/stream/queue-stats.test.ts) は11件の公開message/history/count/listener投影、[実WS検証](../../../../packages/backend-next/test/integration/queue-stats.test.ts) は6 upgrade結果を照合する。新規500診断UUIDだけ固定値へ正規化する。INFOの実行固有値は別の実Redis検証で形と設定を確認する。
+
+source-onlyの `stream-producer-dispose-source-limits` と `stream-pending-log-listener-survives-dispose` の2観測は寿命不足の記録として残す。新実装では単一HTTPプロセスのobserverがXevの役割を置き換え、QueueEvents・channel listener・intervalを停止/解放し、開始済みのread/control/監査を接続解放前に待つ。clear/promote/retry/removeと監査の非待機境界、HTTP204は維持する。失敗は`queue-admin.detached-failed`で診断し、Redis操作とPG監査の原子性・rollback保証を追加しない。deliver/inboxのactiveイベントを即時/10000ms周期で観測し、最新先頭200件をメモリ保持する。履歴は再起動で失われる。
+
+新実装の実依存検証はsource oracleとは別に実行した。[queue HTTP/制御](../../../../packages/backend-next/test/integration/queue-admin.test.ts) は全14 route・全10名、現在Role/期限/失効/scope、実Redisの101件通常取得/100件検索・redaction/logs/metrics/INFO、別prefix隔離、実Workerのpause/resume、failed配送jobのretryとfake503→202宛ての副作用を検証する。監査trigger拒否とlocked active jobのremove失敗もHTTP204を維持する。[通常HTTP子の検証](../../../../packages/backend-next/test/processes/queue-admin.test.ts) はguest log、管理/QueueEvents接続断、部分起動失敗、受理済みpause・非待機remove・sample照会のSIGTERM待機と終了期限を確認する。既存投稿WSの回帰も実行した。
+
+| 実行コマンド（repo root） | 結果 |
+| --- | --- |
+| `pnpm --filter backend-next test` | 68 files / 2499 tests PASS |
+| `BACKEND_NEXT_TEST_DB_PORT=55485 BACKEND_NEXT_TEST_REDIS_PORT=56385 pnpm --filter backend-next test:integration test/integration/queue-admin.test.ts test/integration/queue-stats.test.ts test/integration/streaming-lifecycle.test.ts` | 3 files / 45 tests PASS |
+| `BACKEND_NEXT_TEST_DB_PORT=55485 BACKEND_NEXT_TEST_REDIS_PORT=56385 pnpm --filter backend-next test:process test/processes/queue-admin.test.ts test/processes/posting-websocket.test.ts` | 2 files / 10 tests PASS |
+| `pnpm --filter backend-next... build` / `pnpm --filter backend-next... typecheck` | PASS |
+
+独立したsource/product仕様・品質レビューで承認された範囲と上の実依存検証により、#163の14 API・QueueStats・制御/認可/終了条件を満たす。本家full serverと新実装serverの同時比較、全10業務worker、全stream基盤を検証したという意味ではない。既存Redisの無再接続方針は管理/QueueEventsにも適用し、切断時はSupervisorの通常異常終了となる。自動保持/周期清掃#164、実payload互換/残仕事引継ぎ#165、他16channel・他のWS書込#189、他の管理#194、投稿全体の縦断#176と親#124は未完了。[計画](../../plans/2026-11-08-queue-admin-163.md) と [現行契約](../../../backend-next/posting-contract.md#queue管理と公開queuestats163) を後続の入口とする。

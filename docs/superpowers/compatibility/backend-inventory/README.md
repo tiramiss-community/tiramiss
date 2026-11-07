@@ -15,11 +15,17 @@
 
 Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装・本家比較資料・HTTP/受け入れテストに接続済み。これを `verified`（検証根拠あり）とする。他の Role API は未実装。根拠は [Role 比較資料](../role/README.md)、[#115](https://github.com/tiramiss-community/tiramiss/issues/115) と #116–#121。
 
-`notes/show` は固定本家の観測 JSON と照合済みで `verified`。`notes/create` は #170 のローカル部分（添付・投票・返信/Renote・channel・指定宛先・MFM 抽出）まで実装した `partial` で、未登録リモートユーザー宛てのメンションは #195 まで保存前に 501 で拒否する。PG 通知保存と起動・migration の基盤は `partial`。旧 PG ジョブ基盤と AP 宛先 snapshot/page/host lease は PR #212/#213 で撤去したため、AP 送信とジョブ管理は `not_implemented` に戻した。**通常 worker は本家の投票終了ジョブ（`endedPollNotification`、#162）と AP 配送ジョブ（`deliver`、#171）を実行する。** 投票終了ジョブの投入・queue と Worker の設定・受信者の選定と PG への保存は本家 probe と比較して `partial` にした（[比較資料](../poll-ended/README.md)）。 #160 の最初の PR で、AP の署名・署名付き送信・配送結果の分類を本家と比較して `partial` にした。#171 の最初の PR で、ノート作成の Create/Announce の表現・宛先の選定・deliver queue と Worker・配送前の判定・インスタンス台帳を通常起動へ接続し、本家 probe と note の C9（relay を除く）と比較して `partial` にした（[比較資料](../ap-deliver/README.md)）。relayとJSON-LD署名は#171の2番目のPR #227で接続済み。Delete/Undoは#172の下記sliceで接続した。 部分実装から公開機能全体の完成を推測しない。
+`notes/show` は固定本家の観測 JSON と照合済みで `verified`。`notes/create` は #170 のローカル部分（添付・投票・返信/Renote・channel・指定宛先・MFM 抽出）まで実装した `partial` で、未登録リモートユーザー宛てのメンションは #195 まで保存前に 501 で拒否する。PG 通知保存と起動・migration の基盤は `partial`。旧 PG ジョブ基盤と AP 宛先 snapshot/page/host lease は PR #212/#213 で撤去したため、当時のAP送信とジョブ管理は `not_implemented` に戻した。現在の管理14 API/QueueStatsは下記#163で検証済み。**通常 worker は本家の投票終了（`endedPollNotification`、#162）・AP配送（`deliver`、#171）・投稿webhook（`userWebhookDeliver`、#175）の3ジョブを実行する。** 投票終了ジョブの投入・queue と Worker の設定・受信者の選定と PG への保存は本家 probe と比較して `partial` にした（[比較資料](../poll-ended/README.md)）。 #160 の最初の PR で、AP の署名・署名付き送信・配送結果の分類を本家と比較して `partial` にした。#171 の最初の PR で、ノート作成の Create/Announce の表現・宛先の選定・deliver queue と Worker・配送前の判定・インスタンス台帳を通常起動へ接続し、本家 probe と note の C9（relay を除く）と比較して `partial` にした（[比較資料](../ap-deliver/README.md)）。relayとJSON-LD署名は#171の2番目のPR #227で接続済み。Delete/Undoは#172の下記sliceで接続した。 部分実装から公開機能全体の完成を推測しない。
 
 #174の通常更新はhome/local/user/list/channel・休眠判定、検索登録/解除、Role TL、Renote featured、note hashtag、antenna、channel集計、remote Instance.notesCountまで接続した。固定source全責任監査と再構築材料の引継ぎを完了し、下記の最終sliceで`Closes #174`の根拠を記録する。`capability:timeline`は閲覧APIとRole/antenna WS受信が残るため`partial`を維持する。
 
-main/homeTimelineとnote購読は下記の#173受信sliceで`partial`とした。他17channel・readNotification・channel/ch書込は`not_implemented`（未実装）。その他の入口も個別行のstatusに従う。これは見送りではなく、担当 Issue による設計・実装・比較が必要な状態。今回の検査は棚卸しの整合性検査であり、各 HTTP/連合機能の比較テストを再実行して `verified` を付けたものではない。
+main/homeTimelineとnote購読は下記の#173受信sliceで`partial`とした。queueStatsは#163で`verified`、channel/chはそのrequestLogのみ`partial`。他16channel・readNotification・他channel書込は未実装。その他の入口も個別行のstatusに従う。これは見送りではなく、担当 Issue による設計・実装・比較が必要な状態。棚卸しの整合性検査自体はHTTP/連合機能の比較テストではない。`verified`の根拠は各行に記録した個別の比較・実依存検証に従う。
+
+## #163 管理APIとQueueStatsの照合（2026-11-08）
+
+`implementationCommit`を`1f023061eb86a18a3113d29517cb7eded091edc6`へ進め、管理14 API・queueStats channel/capability・個別管理操作・packer/INFO/統計timer/service・4つのqueue監査書込を`verified`とした。全10 queue名と広いqueue能力は`partial`、channel/chもqueueStatsのrequestLogだけの`partial`とする。監査時判定`audit.A/B`と領域の担当は変更しない。serverStatsと広域Xev連携は未実装で、共有stream責務は`partial`に留める。
+
+固定97観測の95公開投影を直接照合し、sourceの寿命不足2件は差異として残す。新実装の全2499単体・関連45結合・10 processとbuild/typecheckが成功し、全14 API/10名・現在Role/scope・実Worker制御・公開WS/upgrade認可・非待機失敗/監査・接続断/部分起動/停止待機を検証した。source/productの独立仕様・品質レビューも承認済み。[再実行・証拠と制約](../queue-admin/README.md)。本家full server比較や全10業務workerの証明にはしない。次は通常保持/清掃#164と残payload引継ぎ#165を進める。他WS#189・他管理#194、親#124と投稿全体#176は未完了。
 
 ## #172 sliceと固定監査表の照合（2026-11-07）
 
@@ -164,7 +170,7 @@ channelのnotesCount/lastNotedAt/usersCountはpack/mention等の準備成功後�
 | [system webhook設定・配送](#domain-system-webhook) | 未実装 | [#198](https://github.com/tiramiss-community/tiramiss/issues/198) |
 | [import/export・移動/削除・保守ジョブ](#domain-maintenance) | 未実装 | [#199](https://github.com/tiramiss-community/tiramiss/issues/199) / #130, #139 |
 | [charts・retention・統計](#domain-analytics) | 未実装 | [#200](https://github.com/tiramiss-community/tiramiss/issues/200) / #132, #133 |
-| [ジョブ管理・照会・制御](#domain-queue) | 未実装 | [#163](https://github.com/tiramiss-community/tiramiss/issues/163) / #124, #162, #164, #165 |
+| [ジョブ管理・照会・制御](#domain-queue) | 管理14 API/QueueStatsは検証根拠あり、保持/引継ぎ等は未完了 | [#163](https://github.com/tiramiss-community/tiramiss/issues/163) / #124, #162, #164, #165 |
 | [起動・migration・CLI・配布](#domain-operations) | 部分実装 | [#138](https://github.com/tiramiss-community/tiramiss/issues/138) / #113, #135, #136, #137, #139, #162, #166 |
 | [連合の共通土台（システムアカウント・鍵・ホスト判定・排他）](#domain-federation-base) | 未実装（監査で追加） | [#215](https://github.com/tiramiss-community/tiramiss/issues/215) / #195, #124, #160, #171 |
 | [外向きHTTPとSSRF対策](#domain-outbound-http) | 未実装（監査で追加） | [#216](https://github.com/tiramiss-community/tiramiss/issues/216) / #160, #188, #195, #196, #197, #198 |
@@ -391,7 +397,7 @@ upload/URL取得/移動/削除・folder/容量/添付参照・ファイルproxy/
 - 副作用: stream配信・通知既読・chat read・game ready/settings/cancel/putStone等。
 - 本家: [StreamingApiServerService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/server/api/StreamingApiServerService.ts)、[Connection.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/server/api/stream/Connection.ts)、[GlobalEventService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/GlobalEventService.ts)。
 - 新実装: `modules/stream`、`platform/streaming-server.ts`、`platform/database/streaming.ts`、`composition/posting-websocket.ts`。main/homeTimeline・note購読のみ部分実装。
-- 検証根拠: [固定source比較と実受信](../stream/README.md)。source64ケース、実HTTP/PG/Redis/WS、通常poll worker、終了時drainを検証。他17channel・readNotification・channel/ch書込は未実装。
+- 検証根拠: [固定source比較と実受信](../stream/README.md)。source64ケース、実HTTP/PG/Redis/WS、通常poll worker、終了時drainを検証。queueStatsとそのrequestLogは#163で接続済み。他16channel・readNotification・他channel書込は未実装。
 - 既知差異: 常時clone・JSON null frame無視・本文hideの現在following照会は比較資料を参照。広域cache同期#217と全#189の完成を示すものではない。
 
 <a id="domain-chat"></a>
@@ -570,9 +576,9 @@ chart各系列/retention/statsと集計/tick/resync/clean、履歴的countと復
 - 正本/保存: BullMQ/Redisのqueue状態 / ModerationLog。
 - 副作用: pause/resume/retry/promote/remove/clean・監査。
 - 本家: [QueueService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/QueueService.ts)、[show-job.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/server/api/endpoints/admin/queue/show-job.ts)。
-- 新実装: [connection.ts](../../../../packages/backend-next/src/platform/job-queue/connection.ts)、[ended-poll-notification.ts](../../../../packages/backend-next/src/platform/job-queue/ended-poll-notification.ts)、[deliver.ts](../../../../packages/backend-next/src/platform/job-queue/deliver.ts)。
-- 検証根拠: [poll-ended-job.test.ts](../../../../packages/backend-next/test/integration/poll-ended-job.test.ts)、[deliver-queue.test.ts](../../../../packages/backend-next/test/integration/deliver-queue.test.ts)。
-- 既知差異: 独自PG実行基盤（依頼/claim/復旧）はPR #212/#213で撤去。#162で通常BullMQのQueue/Workerを投票終了ジョブから接続し、#171でdeliver queue（本家と同じjob名・data・試行・backoff・保持・Worker設定）を足した。Redis接続は再接続せず、稼働中の切断を子の異常終了にする（本家はBullMQの既定のretryStrategyで1〜20秒の指数待ちにより無期限に再接続）。管理API・QueueStatsは未実装。
+- 新実装: [管理UseCase](../../../../packages/backend-next/src/modules/queue/admin.ts)、[14 HTTP route](../../../../packages/backend-next/src/http/queue-api.ts)、[10 queue adapter](../../../../packages/backend-next/src/platform/job-queue/administration.ts)、[QueueStats observer](../../../../packages/backend-next/src/platform/queue-stats.ts)。
+- 検証根拠: [queue source比較](../../../../packages/backend-next/test/unit/queue/source-compat.test.ts)、[実HTTP/PG/Redis](../../../../packages/backend-next/test/integration/queue-admin.test.ts)、[実WS](../../../../packages/backend-next/test/integration/queue-stats.test.ts)、[通常HTTP子と寿命/障害](../../../../packages/backend-next/test/processes/queue-admin.test.ts)、[比較範囲と結果](../queue-admin/README.md)。
+- 既知差異: 管理14 API/公開QueueStatsは#163で検証済み。単一HTTP observerがXevを置き換え、即時/10秒周期・最新先頭200件のメモリ履歴を持つ。sourceの非待機204境界を維持して診断/終了待機を追加する。既存のRedis無再接続方針を管理/QueueEventsにも適用する。再起動を跨ぐ統計保持や全10業務workerを追加しない。通常保持/周期清掃#164・残payload互換/引継ぎ#165が残るため`capability:queue`と各queue名は`partial`。
 
 <a id="domain-operations"></a>
 
@@ -586,7 +592,7 @@ Supervisor/HTTP/worker・設定/DB/Redis・migration/check・CLI・healthz・配
 - 本家: [cli.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/boot/cli.ts)、[HealthServerService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/server/HealthServerService.ts)。
 - 新実装: [supervisor.ts](../../../../packages/backend-next/src/processes/supervisor.ts)、[lifecycle.ts](../../../../packages/backend-next/src/processes/lifecycle.ts)、[migrate.ts](../../../../packages/backend-next/src/platform/database/migrate.ts)。
 - 検証根拠: [children.test.ts](../../../../packages/backend-next/test/processes/children.test.ts)。
-- 既知差異: 本家/独自migration分離、通常起動時自動migrationなし、完全停止切り替え。通常workerは投票終了ジョブ（#162）とAP配送ジョブ（#171）だけを実行する。他の業務handlerと配布の統合は未完了。物理容量停止(#166)は保留。
+- 既知差異: 本家/独自migration分離、通常起動時自動migrationなし、完全停止切り替え。通常workerは投票終了（#162）・AP配送（#171）・投稿webhook（#175）の3種を実行する。他の業務handlerと配布の統合は未完了。物理容量停止(#166)は保留。
 
 <a id="domain-federation-base"></a>
 

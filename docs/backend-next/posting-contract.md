@@ -58,7 +58,9 @@ HTTP成功は保存とレスポンス生成の成功。AP配送や通知の完�
 | Worker | `metrics: { maxDataPoints: 10080 }`、concurrency 1、limiter なし、`autorun: false` | `metrics` 同左、`concurrency: deliverJobConcurrency ?? 128`、`limiter: { max: deliverJobPerSec ?? 128, duration: 1000 }`、`settings.backoffStrategy` は本家の `httpRelatedBackoff`、`autorun: false` |
 | 結果 | なし | `'Success'`・`'skip (blocked)'`・`'skip (suspended)'`・`'skip (software suspended)'`。止める失敗は `UnrecoverableError`、再試行する失敗は分類した例外 |
 
-本家の 10 queue のうち、他は未接続。
+#175で`userWebhookDeliver`も通常producer/Workerへ接続済み。名前はwebhook ID、dataは`{ type, content, webhookId, userId, to, secret, createdAt, eventId }`の投入時snapshotで、`attempts: 4`・`backoff: { type: 'custom' }`とする。投入時の保持設定は成功`{ age: 604800, count: 30 }`・失敗`{ age: 604800, count: 100 }`で、Workerの周期清掃は追加しない。Workerはmetrics 10080・concurrency 64・limiter 64/1000msと本家HTTP backoffを使う。[webhook比較と実依存検証](../superpowers/compatibility/user-webhook/README.md)。
+
+業務workerはこの3種であり、残り7種の仕事は未接続。下記#163の管理handleは全10名を照会/制御するが、新たな業務workerを登録しない。
 
 ## 選択の理由
 
@@ -103,7 +105,7 @@ home/local/user/list/channel（files/replies派生を含む）の宛先規則を
 
 通常HTTPへmain/homeTimelineとnote購読を接続し、native/app/miauth・guest、Bearer優先/read:account/凍結、受信者別filter・hidden再pack・snapshotのhide/myReaction、別名と購読上限を扱う。関係factsは初回/10秒、活動日時と休眠解除は接続時/5分、heartbeatは1分pingと最終pongから2分超の切断で更新する。停止時はupgrade/WS/timer/subscriberを閉じ、開始済み認証・描画・facts・activity照会を待ってからDB/Redisを解放する。
 
-実HTTP作成→home/main通知、通常poll worker→pollEndedのPG保存とWS受信、実HTTP削除→subNoteのnoteUpdated/deletedと再接続・接続中SIGTERMを検証し、#173の残る実受信とstream側削除連携を満たす。[固定source64ケース・新実装の実依存検証・差異](../superpowers/compatibility/stream/README.md)を参照。本家full server/DB/workerの同時比較を示すものではない。他17channel・readNotification・channel/ch書込等#189、通知API/未読/既読/push/移行#177、広域cache#217、antenna・hashtag・featured等#174と最終削除連携#172、投稿全体の#176は未完了。
+実HTTP作成→home/main通知、通常poll worker→pollEndedのPG保存とWS受信、実HTTP削除→subNoteのnoteUpdated/deletedと再接続・接続中SIGTERMを検証し、#173の残る実受信とstream側削除連携を満たす。[固定source64ケース・新実装の実依存検証・差異](../superpowers/compatibility/stream/README.md)を参照。本家full server/DB/workerの同時比較を示すものではない。queueStatsは下記#163で接続済み。他16channel・readNotification・queueStats以外のchannel/ch書込等#189、通知API/未読/既読/push/移行#177、広域cache#217、antenna・hashtag・featured等#174と最終削除連携#172、投稿全体の#176は未完了。
 
 ## 通常検索producer（#174/#172）
 
@@ -174,3 +176,14 @@ remote作者の`Instance.notesCount`はstats有効時に既存台帳のfetchOrRe
 [antenna固定source比較](../superpowers/compatibility/note/antenna/README.md)と[全通常更新の責任監査・channel/counter固定source](../superpowers/compatibility/note/derived-updates/README.md)を参照。source側は抽出実行と明記した実PG payload観測、新実装側は実HTTP handler/PG/Redisと通常子プロセスで検証する。通常token HTTPはlocal作者だけで、remote受信入口#195は未実装のままremote snapshot producerを直接検証する。antenna管理/閲覧#185、WS antenna#189、import/clean#199、account move#195、chart#200、広域cache#217、投稿全体の#176と再構築#132/#133は別責任。過去slice末尾の#174残作業は当時の状態であり、現在の完了判定は責任監査表による。
 
 再構築は現存Note・現在の定義/所属から作る候補と、過去の定義・cache・membership・trim乱数・削除残留を含む履歴再現を区別する。remote instance countも遅延batch、削除と失敗履歴に依存し、現在Note数と必ず一致しない。対象ごとの保持・正本・復元不能材料を責任監査表から#132/#133へ引き継ぎ、再構築でraw publication・通知・APを再送しない。
+
+
+## Queue管理と公開QueueStats（#163）
+
+通常HTTPに本家14管理API、HTTP専用に全10 queue名のBullMQ handleを接続した。管理UseCaseは現在moderator（administrator/rootを含む）とread/writeの`admin:queue` scopeを検査する。公開queueStatsはguest・自己credential・`read:account` appが購読でき、queue scope/moderatorは要求しない。appの既存upgrade gateは維持する。
+
+通常listはinclusive 0..100の101件、truthy searchは0..1000をpack後にAND検索/slice100とする。2 webhook queueのtop-level secretだけを秘匿し、本文・完全URL・userId・logsまで隠さない。pause/resumeは制御を待つが、clear/promote/retry/removeと該当監査は本家の非待機204を維持する。診断と開始済み処理の終了待機を追加し、Redis/PG監査間の原子性やrollbackを保証しない。
+
+単一HTTP observerがsourceのXev連携を置き換え、deliver/inboxのactiveイベント・現在active/waiting/delayedを即時/10000ms周期で発行する。最新先頭200件のメモリ履歴は再起動で失われる。停止時にinterval/listener/QueueEventsを解放し、開始済みread/control/監査を接続解放前に待つ。既存のRedis無再接続方針は管理接続にも適用する。
+
+[固定97観測・95公開投影の直接比較と新実装の実HTTP/PG/Redis/WS/process検証](../superpowers/compatibility/queue-admin/README.md)により#163の全14 API・QueueStats・実制御/認可/寿命条件を確認した。本家full server全体の比較ではない。通常保持/周期清掃#164、実payload互換/残仕事引継ぎ#165を次に進め、#176の残る縦断確認へ接続する。#124全体、他stream#189・他管理#194や全10業務workerの完成は含めない。
