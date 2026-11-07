@@ -83,6 +83,6 @@ cmp docs/superpowers/compatibility/note/delete-integration/observations.json \
 
 元Renote照会の時点差は、[`delete-note.test.ts`のunit回帰](../../../../../packages/backend-next/test/unit/note/delete-note.test.ts)と[実PG/Redisを使うHTTP handler回帰](../../../../../packages/backend-next/test/integration/note-delete.test.ts)を先に失敗させてから修正した。照会失敗は`Repository.findOneBy`への選択的spyで元投稿だけを拒否し、他の照会を実PGへ通す。DBサーバーのSELECT拒否や完全な実HTTP子での照会障害を再現したものではない。元投稿をdeleted stream後の該当AP準備だけで読むことで、失敗時の既発行streamとlocalOnly/remote/拒否時の照会省略を確認した。これらのunit回帰はsourceと同じ境界をassertし、source JSONの直接比較は行わない。
 
-最終実行はunit 66 files / 2,410 tests、関連integration 5 files / 41 tests、新規と既存note-delete process 2 files / 5 testsがPASS。既存webhook/WSを含む先行process回帰3 files / 5 testsとはnote-delete2件が重複する。source再生成17ケースは独立したbyte比較と再レビューが成功した。製品の独立レビューもSpec PASS / Quality APPROVEで指摘なし。文書を含む全差分レビューとPR作成は未実施。完了判定とコマンドは[実装計画](../../../plans/2026-11-07-note-delete-integration-172.md)を参照する。
+最終実行はunit 66 files / 2,410 tests、関連integration 5 files / 41 tests、新規と既存note-delete process 2 files / 5 testsがPASS。既存webhook/WSを含む先行process回帰3 files / 5 testsとはnote-delete2件が重複する。source再生成17ケースは独立したbyte比較と再レビューが成功した。製品の独立レビューもSpec PASS / Quality APPROVEで指摘なし。完了判定とコマンドは[実装計画](../../../plans/2026-11-07-note-delete-integration-172.md)を参照する。
 
 今回の証拠は#172の削除連携と#176の削除に絞った先行確認。#176全体には、必須依存#124の#163–#165（通常queue管理・保持・残payload引継ぎ）、C群全体・停止再開・暫定501を含む未対応台帳の照合が残る。

@@ -76,7 +76,7 @@
 
 ## Execution Record
 
-作業ブランチは `feat/backend-next-posting-238`、worktreeは `.claude/worktrees/next-posting-238`。開始点はdevelop `617bd45d67173b401ed58b2f27fc17b7e608b8c5`（PR #237）。以下は最終コードに対する検証結果。sourceと製品の独立レビューは承認済み。文書を含む全差分レビューとPR作成は未実施。
+作業ブランチは `feat/backend-next-posting-238`、worktreeは `.claude/worktrees/next-posting-238`。開始点はdevelop `617bd45d67173b401ed58b2f27fc17b7e608b8c5`（PR #237）。以下は最終コードに対する検証結果。source・製品・文書を含む全差分の独立レビューは承認済み。[PR #238](https://github.com/tiramiss-community/tiramiss/pull/238)を作成した。
 
 ### 比較範囲と修正
 
@@ -112,10 +112,10 @@ PGの`client.query`非推奨警告と、広いintegrationでの注入された`s
 
 ### 完了判定と残範囲
 
-#172の未完了だった通知/stream/TL/検索/webhook削除連携に対し、既存通知・TL/集計保持、deleted WS、検索解除、既投入webhook継続とdelete webhook不在を同じ投稿で確認した。既存の認可/DB/AP比較と元Renote照会回帰を合わせ、削除責任の検証は揃った。製品の独立レビューもSpec PASS / Quality APPROVEで指摘なし。#172の完了条件を満たすため、PRは`Closes #172`、`Refs #176`とする。PR自体は未作成。Issue本文変更・直接close/mergeは行わない。
+#172の未完了だった通知/stream/TL/検索/webhook削除連携に対し、既存通知・TL/集計保持、deleted WS、検索解除、既投入webhook継続とdelete webhook不在を同じ投稿で確認した。既存の認可/DB/AP比較と元Renote照会回帰を合わせ、削除責任の検証は揃った。製品の独立レビューもSpec PASS / Quality APPROVEで指摘なし。#172の完了条件を満たすため、PRは`Closes #172`、`Refs #176`とする。Issue本文変更・直接close/mergeは行わない。
 
 #176の削除に絞った先行連携確認であり、#176全体は未完了。必須依存#124の#163–#165と、C群全体・停止再開・暫定501を含む未対応台帳の照合を残す。全通知#177、全WS#189、閲覧#185/#186、remote受信#195、chart#200、再構築#132/#133も完成扱いしない。
 
 sourceと製品の独立レビューはいずれもSpec PASS / Quality APPROVE。CodeRabbitはstagedの製品5ファイルをreview_completed・0 findingsで終了した。CodeRabbitのローカル結果保存はEROFSで失敗したが、完了したstdoutを保持している。GitHubへレビューは投稿していない。CodeRabbitの対象にsource資料・本計画・ROADMAPは含まれず、それらを含む全差分レビューを代替しない。
 
-- [ ] 文書を含む全差分レビューと最終shipping確認を行い、PRを作成する。
+- [x] 文書を含む全差分レビューと最終shipping確認を行い、[PR #238](https://github.com/tiramiss-community/tiramiss/pull/238)を作成した。
