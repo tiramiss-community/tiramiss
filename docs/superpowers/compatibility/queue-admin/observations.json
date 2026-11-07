@@ -1,0 +1,5871 @@
+{
+  "formatVersion": 1,
+  "fixedCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "evidence": "Actual fixed Git source modules and explicitly named Connection AST methods executed with Queue/QueueEvents, authentication/role, clock, Xev and HTTP request/reply doubles. No full upstream server, real Redis, Nest DI, actual authentication or actual socket.",
+  "dependencyVersions": {
+    "typescript": "6.0.2",
+    "ajv": "8.20.0",
+    "upstreamBullmq": "6.3.11"
+  },
+  "sources": {
+    "packages/backend/src/core/QueueService.ts": {
+      "blob": "c09fde4ce26238b4b10a4cde97363597b7a131ce",
+      "sha256": "abf3324184849ca3d1dbcd27004535eb42a835f36fd54d8b6b5a47d41d0b2333"
+    },
+    "packages/backend/src/decorators.ts": {
+      "blob": "42f925e1251cf8d5eb48caeb96d5a72fb203c017",
+      "sha256": "207c53166f496fb50e49b765b02ca7334cf7f817343222901a9646442a225f21"
+    },
+    "packages/backend/src/server/api/endpoint-list.ts": {
+      "blob": "b3cd0daf4a327c65f3f5514a6ca30af8268d3ae3",
+      "sha256": "f6adc6070df862e7544a92bafc001a9339bfe1e746a856b602c505a248ae5470"
+    },
+    "packages/backend/src/server/api/endpoints/admin/queue/clear.ts": {
+      "blob": "81cb4b81193f8720d8668b744f27a096b2936985",
+      "sha256": "3449657226236136c6abc0572781c82c0b538c7f8d5330ec59e33c9e686e7b98"
+    },
+    "packages/backend/src/server/api/endpoint-base.ts": {
+      "blob": "e061aa3a8e38d3361963fa1a9b232cf66520a772",
+      "sha256": "d53001d531f0e8a05cabfa22eca8e42d620fe07e0281c896e1adce6e48381728"
+    },
+    "packages/backend/src/server/api/error.ts": {
+      "blob": "2f8322a5689f42188ba1bda3a8d3ecca01c8736b",
+      "sha256": "1146f3cc06ebc2adc087823d37c00f7f0630331beae2fa221e05225b731f2638"
+    },
+    "packages/backend/src/server/api/endpoints/admin/queue/deliver-delayed.ts": {
+      "blob": "86158d7e22969819483c7c1d68f1381dcbbb8774",
+      "sha256": "4e1e145cb7230939256cc64a199db8329e385a1cff3c58dc3180f0878873baa0"
+    },
+    "packages/backend/src/server/api/endpoints/admin/queue/inbox-delayed.ts": {
+      "blob": "ad6a823b8fd77da4bc887d978a9754c4b4cb1861",
+      "sha256": "e8aead74dbb904c179d7c6db008c80ddc5c1a3d33cbf3a5dd97f254b3209fdac"
+    },
+    "packages/backend/src/server/api/endpoints/admin/queue/retry-job.ts": {
+      "blob": "b2603128f898e3989998a2be5834cd56634d31d6",
+      "sha256": "60ec014404855567bc162b8595bf151c29571032024e39a2f8a63f9cbfc0b57f"
+    },
+    "packages/backend/src/server/api/endpoints/admin/queue/remove-job.ts": {
+      "blob": "2c73f689d01c1a441557576d2546cfdce3f9be01",
+      "sha256": "2f32722f43dd4c4fd7bc3b1e476f3ddd4be35b46dde03d1cf4dc24c9ba9e7647"
+    },
+    "packages/backend/src/server/api/endpoints/admin/queue/show-job.ts": {
+      "blob": "1735c2267423fde6673af141cb7d0424e358b8d9",
+      "sha256": "25cafae0db31311a3ed854827fc2d504918b74855dd506412f1762391d47edca"
+    },
+    "packages/backend/src/server/api/endpoints/admin/queue/show-job-logs.ts": {
+      "blob": "b9292ed12af96de9c9ea3abb3130198f6f41d30a",
+      "sha256": "0ca4753df8f92d906e9f7d2a8bd9dd7f38c37c329566b3710d07f304dead088c"
+    },
+    "packages/backend/src/server/api/endpoints/admin/queue/promote-jobs.ts": {
+      "blob": "d22385e261d2f577d9fdebbcb9b22ecf30df22f9",
+      "sha256": "95d2a13580929510237d3f77d84bb954fe5184aaa50f21449746f2520dc2c4b4"
+    },
+    "packages/backend/src/server/api/endpoints/admin/queue/pause.ts": {
+      "blob": "a45022eee1fb9621bdc0708cde54b1e750e00f01",
+      "sha256": "846edf9aacaa5c4a6756cbcbeaddd7e5647e9950d2547646d54672ac10b46827"
+    },
+    "packages/backend/src/server/api/endpoints/admin/queue/resume.ts": {
+      "blob": "10db5ed9101ba3fa1370af19f37a5486027ea692",
+      "sha256": "50f39ba824b82536bad84af42120ce5ca13c6a327a02d4e287ff7f89601adf45"
+    },
+    "packages/backend/src/server/api/endpoints/admin/queue/jobs.ts": {
+      "blob": "155f2c40005a0af9e120a71d03f9d274777dcdaa",
+      "sha256": "411bedf2e95dd3120761537854e16b7dc552963e164776854fcd1eb0fccd6a17"
+    },
+    "packages/backend/src/server/api/endpoints/admin/queue/stats.ts": {
+      "blob": "519abc7414630fdcbd7d8e159a49a276c9370672",
+      "sha256": "cd12973f175f8c9096abe08c6e27720484e5a0d6981489916c51c043a96e3280"
+    },
+    "packages/backend/src/server/api/endpoints/admin/queue/queues.ts": {
+      "blob": "8d27e38c8438be235fbc4bcb3e8a4cc2677a53f7",
+      "sha256": "badd5e5f02d693b0a12f143dd112febb015b2703c3cae7be03476b759203f1e7"
+    },
+    "packages/backend/src/server/api/endpoints/admin/queue/queue-stats.ts": {
+      "blob": "0098160165393a7f4f8d6d213cc3600563c3d6de",
+      "sha256": "3c7ce19c146c19edc39b2e398093df8586b285ef2214a6b9f11076096f1e02be"
+    },
+    "packages/backend/src/server/api/ApiCallService.ts": {
+      "blob": "986949f1f21b0ee12eeaf609a3079f12016466a8",
+      "sha256": "da6431575d066d3b71633bead6e5d26130482d8b2a57a01179a1ab82a3032283"
+    },
+    "packages/backend/src/server/api/AuthenticateService.ts": {
+      "blob": "601618553e59bd3eaa75c663e59b7a9c5645b0a4",
+      "sha256": "0c60e4f91e7bd0efd877a0ecce0a9dde88615c3003033354716f3665724a389f"
+    },
+    "packages/backend/src/core/ModerationLogService.ts": {
+      "blob": "2c02af217d916d6884c3f54732f5ca1f980246c8",
+      "sha256": "e67d2d465c9d63f3cd3d173b92cb4d62358c49dfa31219a0f623d89612523678"
+    },
+    "packages/backend/src/models/json-schema/queue.ts": {
+      "blob": "dad0cf57f6e16d0dc1e8059696e2f0d822d3f5bf",
+      "sha256": "751c00303b2124402647deaa13dc08a63b06d57689f5ddb7118326277b021a1f"
+    },
+    "packages/backend/src/server/api/stream/channels/queue-stats.ts": {
+      "blob": "a87863f26cca7a960836c232bc9ca57b9da85c1c",
+      "sha256": "5df0bd31a04e130ed529a4183e6db992c9abe5858624e635dc3ceb57141fbcb7"
+    },
+    "packages/backend/src/misc/json-value.ts": {
+      "blob": "195f7c4d476e2908d6a8be8e0ef3a121ef71c9ae",
+      "sha256": "9279182c51d0b0301605b75d08b4b9a6cfbee4a962e2d2212dc1800b724b99bb"
+    },
+    "packages/backend/src/server/api/stream/channel.ts": {
+      "blob": "010d47a7ff31d5249046e3084a716807832a83c3",
+      "sha256": "e193ab8c27479c659ac19f586dcb6430f6e082dd4299025acedf2c9668eca821"
+    },
+    "packages/backend/src/daemons/QueueStatsService.ts": {
+      "blob": "ede104b9fe5443fabd4db39fa035962e1a69119b",
+      "sha256": "7058da31d86f1cb7fcf61fa0f0a9a177bd9de5f098e8bf3aaac16231f9b294c2"
+    },
+    "packages/backend/src/queue/const.ts": {
+      "blob": "625204b7add1ae4685d382e582e1abef290fb2cc",
+      "sha256": "8b7aa84ca3778fdf044bd7c26916eb62405fb5443705077e298010cd50f628aa"
+    },
+    "packages/backend/src/server/api/stream/Connection.ts": {
+      "blob": "2fcea97f68edf31a4a1a8bdeb151a183cf9891db",
+      "sha256": "004f18188cf7c7a48d1181bb9ba2b4a894f82445683e9f8803b614f4b495b975"
+    },
+    "packages/backend/src/server/api/StreamingApiServerService.ts": {
+      "blob": "8a317bdc4eadc3493e671cf756179cc61c5be4ee",
+      "sha256": "14448639f51526a12b741f7278ef09abf2b9f0296f0fc13ee20a8ed03e24147e"
+    }
+  },
+  "queueTypes": [
+    "system",
+    "endedPollNotification",
+    "postScheduledNote",
+    "deliver",
+    "inbox",
+    "db",
+    "relationship",
+    "objectStorage",
+    "userWebhookDeliver",
+    "systemWebhookDeliver"
+  ],
+  "metadata": [
+    {
+      "name": "admin/queue/clear",
+      "meta": {
+        "tags": [
+          "admin"
+        ],
+        "requireCredential": true,
+        "requireModerator": true,
+        "kind": "write:admin:queue"
+      },
+      "paramDef": {
+        "type": "object",
+        "properties": {
+          "queue": {
+            "type": "string",
+            "enum": [
+              "system",
+              "endedPollNotification",
+              "postScheduledNote",
+              "deliver",
+              "inbox",
+              "db",
+              "relationship",
+              "objectStorage",
+              "userWebhookDeliver",
+              "systemWebhookDeliver"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "*",
+              "completed",
+              "wait",
+              "active",
+              "paused",
+              "prioritized",
+              "delayed",
+              "failed"
+            ]
+          }
+        },
+        "required": [
+          "queue",
+          "state"
+        ]
+      }
+    },
+    {
+      "name": "admin/queue/deliver-delayed",
+      "meta": {
+        "tags": [
+          "admin"
+        ],
+        "requireCredential": true,
+        "requireModerator": true,
+        "kind": "read:admin:queue",
+        "res": {
+          "type": "array",
+          "optional": false,
+          "nullable": false,
+          "items": {
+            "type": "array",
+            "optional": false,
+            "nullable": false,
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "unevaluatedItems": false
+          },
+          "example": [
+            [
+              "example.com",
+              12
+            ]
+          ]
+        }
+      },
+      "paramDef": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "admin/queue/inbox-delayed",
+      "meta": {
+        "tags": [
+          "admin"
+        ],
+        "requireCredential": true,
+        "requireModerator": true,
+        "kind": "read:admin:queue",
+        "res": {
+          "type": "array",
+          "optional": false,
+          "nullable": false,
+          "items": {
+            "type": "array",
+            "optional": false,
+            "nullable": false,
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "unevaluatedItems": false
+          },
+          "example": [
+            [
+              "example.com",
+              12
+            ]
+          ]
+        }
+      },
+      "paramDef": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "admin/queue/retry-job",
+      "meta": {
+        "tags": [
+          "admin"
+        ],
+        "requireCredential": true,
+        "requireModerator": true,
+        "kind": "write:admin:queue"
+      },
+      "paramDef": {
+        "type": "object",
+        "properties": {
+          "queue": {
+            "type": "string",
+            "enum": [
+              "system",
+              "endedPollNotification",
+              "postScheduledNote",
+              "deliver",
+              "inbox",
+              "db",
+              "relationship",
+              "objectStorage",
+              "userWebhookDeliver",
+              "systemWebhookDeliver"
+            ]
+          },
+          "jobId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "queue",
+          "jobId"
+        ]
+      }
+    },
+    {
+      "name": "admin/queue/remove-job",
+      "meta": {
+        "tags": [
+          "admin"
+        ],
+        "requireCredential": true,
+        "requireModerator": true,
+        "kind": "write:admin:queue"
+      },
+      "paramDef": {
+        "type": "object",
+        "properties": {
+          "queue": {
+            "type": "string",
+            "enum": [
+              "system",
+              "endedPollNotification",
+              "postScheduledNote",
+              "deliver",
+              "inbox",
+              "db",
+              "relationship",
+              "objectStorage",
+              "userWebhookDeliver",
+              "systemWebhookDeliver"
+            ]
+          },
+          "jobId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "queue",
+          "jobId"
+        ]
+      }
+    },
+    {
+      "name": "admin/queue/show-job",
+      "meta": {
+        "tags": [
+          "admin"
+        ],
+        "requireCredential": true,
+        "requireModerator": true,
+        "kind": "read:admin:queue",
+        "res": {
+          "optional": false,
+          "nullable": false,
+          "ref": "QueueJob"
+        }
+      },
+      "paramDef": {
+        "type": "object",
+        "properties": {
+          "queue": {
+            "type": "string",
+            "enum": [
+              "system",
+              "endedPollNotification",
+              "postScheduledNote",
+              "deliver",
+              "inbox",
+              "db",
+              "relationship",
+              "objectStorage",
+              "userWebhookDeliver",
+              "systemWebhookDeliver"
+            ]
+          },
+          "jobId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "queue",
+          "jobId"
+        ]
+      }
+    },
+    {
+      "name": "admin/queue/show-job-logs",
+      "meta": {
+        "tags": [
+          "admin"
+        ],
+        "requireCredential": true,
+        "requireModerator": true,
+        "kind": "read:admin:queue",
+        "res": {
+          "type": "array",
+          "optional": false,
+          "nullable": false,
+          "items": {
+            "optional": false,
+            "nullable": false,
+            "type": "string"
+          }
+        }
+      },
+      "paramDef": {
+        "type": "object",
+        "properties": {
+          "queue": {
+            "type": "string",
+            "enum": [
+              "system",
+              "endedPollNotification",
+              "postScheduledNote",
+              "deliver",
+              "inbox",
+              "db",
+              "relationship",
+              "objectStorage",
+              "userWebhookDeliver",
+              "systemWebhookDeliver"
+            ]
+          },
+          "jobId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "queue",
+          "jobId"
+        ]
+      }
+    },
+    {
+      "name": "admin/queue/promote-jobs",
+      "meta": {
+        "tags": [
+          "admin"
+        ],
+        "requireCredential": true,
+        "requireModerator": true,
+        "kind": "write:admin:queue"
+      },
+      "paramDef": {
+        "type": "object",
+        "properties": {
+          "queue": {
+            "type": "string",
+            "enum": [
+              "system",
+              "endedPollNotification",
+              "postScheduledNote",
+              "deliver",
+              "inbox",
+              "db",
+              "relationship",
+              "objectStorage",
+              "userWebhookDeliver",
+              "systemWebhookDeliver"
+            ]
+          }
+        },
+        "required": [
+          "queue"
+        ]
+      }
+    },
+    {
+      "name": "admin/queue/pause",
+      "meta": {
+        "tags": [
+          "admin"
+        ],
+        "requireCredential": true,
+        "requireModerator": true,
+        "kind": "write:admin:queue"
+      },
+      "paramDef": {
+        "type": "object",
+        "properties": {
+          "queue": {
+            "type": "string",
+            "enum": [
+              "system",
+              "endedPollNotification",
+              "postScheduledNote",
+              "deliver",
+              "inbox",
+              "db",
+              "relationship",
+              "objectStorage",
+              "userWebhookDeliver",
+              "systemWebhookDeliver"
+            ]
+          }
+        },
+        "required": [
+          "queue"
+        ]
+      }
+    },
+    {
+      "name": "admin/queue/resume",
+      "meta": {
+        "tags": [
+          "admin"
+        ],
+        "requireCredential": true,
+        "requireModerator": true,
+        "kind": "write:admin:queue"
+      },
+      "paramDef": {
+        "type": "object",
+        "properties": {
+          "queue": {
+            "type": "string",
+            "enum": [
+              "system",
+              "endedPollNotification",
+              "postScheduledNote",
+              "deliver",
+              "inbox",
+              "db",
+              "relationship",
+              "objectStorage",
+              "userWebhookDeliver",
+              "systemWebhookDeliver"
+            ]
+          }
+        },
+        "required": [
+          "queue"
+        ]
+      }
+    },
+    {
+      "name": "admin/queue/jobs",
+      "meta": {
+        "tags": [
+          "admin"
+        ],
+        "requireCredential": true,
+        "requireModerator": true,
+        "kind": "read:admin:queue",
+        "res": {
+          "type": "array",
+          "optional": false,
+          "nullable": false,
+          "items": {
+            "optional": false,
+            "nullable": false,
+            "ref": "QueueJob"
+          }
+        }
+      },
+      "paramDef": {
+        "type": "object",
+        "properties": {
+          "queue": {
+            "type": "string",
+            "enum": [
+              "system",
+              "endedPollNotification",
+              "postScheduledNote",
+              "deliver",
+              "inbox",
+              "db",
+              "relationship",
+              "objectStorage",
+              "userWebhookDeliver",
+              "systemWebhookDeliver"
+            ]
+          },
+          "state": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "active",
+                "wait",
+                "delayed",
+                "completed",
+                "failed"
+              ]
+            }
+          },
+          "search": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "queue",
+          "state"
+        ]
+      }
+    },
+    {
+      "name": "admin/queue/stats",
+      "meta": {
+        "tags": [
+          "admin"
+        ],
+        "requireCredential": true,
+        "requireModerator": true,
+        "kind": "read:admin:queue",
+        "res": {
+          "type": "object",
+          "optional": false,
+          "nullable": false,
+          "properties": {
+            "deliver": {
+              "optional": false,
+              "nullable": false,
+              "ref": "QueueCount"
+            },
+            "inbox": {
+              "optional": false,
+              "nullable": false,
+              "ref": "QueueCount"
+            },
+            "db": {
+              "optional": false,
+              "nullable": false,
+              "ref": "QueueCount"
+            },
+            "objectStorage": {
+              "optional": false,
+              "nullable": false,
+              "ref": "QueueCount"
+            }
+          }
+        }
+      },
+      "paramDef": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "admin/queue/queues",
+      "meta": {
+        "tags": [
+          "admin"
+        ],
+        "requireCredential": true,
+        "requireModerator": true,
+        "kind": "read:admin:queue",
+        "res": {
+          "type": "array",
+          "optional": false,
+          "nullable": false,
+          "items": {
+            "type": "object",
+            "optional": false,
+            "nullable": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "optional": false,
+                "nullable": false,
+                "enum": [
+                  "system",
+                  "endedPollNotification",
+                  "postScheduledNote",
+                  "deliver",
+                  "inbox",
+                  "db",
+                  "relationship",
+                  "objectStorage",
+                  "userWebhookDeliver",
+                  "systemWebhookDeliver"
+                ]
+              },
+              "counts": {
+                "type": "object",
+                "optional": false,
+                "nullable": false,
+                "additionalProperties": {
+                  "type": "number"
+                }
+              },
+              "isPaused": {
+                "type": "boolean",
+                "optional": false,
+                "nullable": false
+              },
+              "metrics": {
+                "type": "object",
+                "optional": false,
+                "nullable": false,
+                "properties": {
+                  "completed": {
+                    "optional": false,
+                    "nullable": false,
+                    "ref": "QueueMetrics"
+                  },
+                  "failed": {
+                    "optional": false,
+                    "nullable": false,
+                    "ref": "QueueMetrics"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "paramDef": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "admin/queue/queue-stats",
+      "meta": {
+        "tags": [
+          "admin"
+        ],
+        "requireCredential": true,
+        "requireModerator": true,
+        "kind": "read:admin:queue",
+        "res": {
+          "type": "object",
+          "optional": false,
+          "nullable": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "optional": false,
+              "nullable": false,
+              "enum": [
+                "system",
+                "endedPollNotification",
+                "postScheduledNote",
+                "deliver",
+                "inbox",
+                "db",
+                "relationship",
+                "objectStorage",
+                "userWebhookDeliver",
+                "systemWebhookDeliver"
+              ]
+            },
+            "qualifiedName": {
+              "type": "string",
+              "optional": false,
+              "nullable": false
+            },
+            "counts": {
+              "type": "object",
+              "optional": false,
+              "nullable": false,
+              "additionalProperties": {
+                "type": "number"
+              }
+            },
+            "isPaused": {
+              "type": "boolean",
+              "optional": false,
+              "nullable": false
+            },
+            "metrics": {
+              "type": "object",
+              "optional": false,
+              "nullable": false,
+              "properties": {
+                "completed": {
+                  "optional": false,
+                  "nullable": false,
+                  "ref": "QueueMetrics"
+                },
+                "failed": {
+                  "optional": false,
+                  "nullable": false,
+                  "ref": "QueueMetrics"
+                }
+              }
+            },
+            "db": {
+              "type": "object",
+              "optional": false,
+              "nullable": false,
+              "properties": {
+                "version": {
+                  "type": "string",
+                  "optional": false,
+                  "nullable": false
+                },
+                "mode": {
+                  "type": "string",
+                  "optional": false,
+                  "nullable": false,
+                  "enum": [
+                    "cluster",
+                    "standalone",
+                    "sentinel"
+                  ]
+                },
+                "runId": {
+                  "type": "string",
+                  "optional": false,
+                  "nullable": false
+                },
+                "processId": {
+                  "type": "string",
+                  "optional": false,
+                  "nullable": false
+                },
+                "port": {
+                  "type": "number",
+                  "optional": false,
+                  "nullable": false
+                },
+                "os": {
+                  "type": "string",
+                  "optional": false,
+                  "nullable": false
+                },
+                "uptime": {
+                  "type": "number",
+                  "optional": false,
+                  "nullable": false
+                },
+                "memory": {
+                  "type": "object",
+                  "optional": false,
+                  "nullable": false,
+                  "properties": {
+                    "total": {
+                      "type": "number",
+                      "optional": false,
+                      "nullable": false
+                    },
+                    "used": {
+                      "type": "number",
+                      "optional": false,
+                      "nullable": false
+                    },
+                    "fragmentationRatio": {
+                      "type": "number",
+                      "optional": false,
+                      "nullable": false
+                    },
+                    "peak": {
+                      "type": "number",
+                      "optional": false,
+                      "nullable": false
+                    }
+                  }
+                },
+                "clients": {
+                  "type": "object",
+                  "optional": false,
+                  "nullable": false,
+                  "properties": {
+                    "blocked": {
+                      "type": "number",
+                      "optional": false,
+                      "nullable": false
+                    },
+                    "connected": {
+                      "type": "number",
+                      "optional": false,
+                      "nullable": false
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "paramDef": {
+        "type": "object",
+        "properties": {
+          "queue": {
+            "type": "string",
+            "enum": [
+              "system",
+              "endedPollNotification",
+              "postScheduledNote",
+              "deliver",
+              "inbox",
+              "db",
+              "relationship",
+              "objectStorage",
+              "userWebhookDeliver",
+              "systemWebhookDeliver"
+            ]
+          }
+        },
+        "required": [
+          "queue"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    {
+      "id": "route-clear",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/clear",
+        "params": {
+          "queue": "deliver",
+          "state": "*"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "completed"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "wait"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "active"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "paused"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "prioritized"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "delayed"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "failed"
+            ]
+          },
+          {
+            "method": "moderation.insert",
+            "value": {
+              "id": "audit-id",
+              "userId": "actor",
+              "type": "clearQueue",
+              "info": {}
+            }
+          }
+        ],
+        "callsAtResponse": 8,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "route-deliver-delayed",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/deliver-delayed",
+        "params": {},
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": [
+            [
+              "remote.example",
+              1
+            ]
+          ]
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJobs",
+            "args": [
+              [
+                "delayed"
+              ],
+              0,
+              -1
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "route-inbox-delayed",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/inbox-delayed",
+        "params": {},
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": [
+            [
+              "signer.example",
+              1
+            ]
+          ]
+        },
+        "calls": [
+          {
+            "queue": "inbox",
+            "method": "getJobs",
+            "args": [
+              [
+                "delayed"
+              ],
+              0,
+              -1
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "route-retry-job",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/retry-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": "job"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "retry",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 2,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "route-remove-job",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/remove-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": "job"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "remove",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 2,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "route-show-job",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": "job"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": {
+            "id": "job",
+            "name": "test job",
+            "data": {
+              "content": "body-visible",
+              "to": "https://remote.example/inbox",
+              "signature": {
+                "keyId": "https://signer.example/key"
+              },
+              "secret": "fixture-secret",
+              "userId": "recipient-visible"
+            },
+            "opts": {
+              "attempts": 12
+            },
+            "timestamp": 100,
+            "processedOn": 200,
+            "processedBy": "worker",
+            "finishedOn": 1000,
+            "progress": 0,
+            "attempts": 2,
+            "delay": 10,
+            "stacktrace": [
+              "newer",
+              "older"
+            ],
+            "returnValue": {
+              "result": true
+            },
+            "isFailed": true
+          }
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "route-show-job-logs",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job-logs",
+        "params": {
+          "queue": "deliver",
+          "jobId": "job"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": [
+            "log: fixture-secret"
+          ]
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJobLogs",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "route-promote-jobs",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/promote-jobs",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "promoteJobs",
+            "args": []
+          },
+          {
+            "method": "moderation.insert",
+            "value": {
+              "id": "audit-id",
+              "userId": "actor",
+              "type": "promoteQueue",
+              "info": {}
+            }
+          }
+        ],
+        "callsAtResponse": 2,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "route-pause",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "pause",
+            "args": []
+          },
+          {
+            "method": "moderation.insert",
+            "value": {
+              "id": "audit-id",
+              "userId": "actor",
+              "type": "pauseQueue",
+              "info": {}
+            }
+          }
+        ],
+        "callsAtResponse": 2,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "route-resume",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/resume",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "resume",
+            "args": []
+          },
+          {
+            "method": "moderation.insert",
+            "value": {
+              "id": "audit-id",
+              "userId": "actor",
+              "type": "resumeQueue",
+              "info": {}
+            }
+          }
+        ],
+        "callsAtResponse": 2,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "route-jobs",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/jobs",
+        "params": {
+          "queue": "deliver",
+          "state": [
+            "wait"
+          ]
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": [
+            {
+              "id": "job",
+              "name": "test job",
+              "data": {
+                "content": "body-visible",
+                "to": "https://remote.example/inbox",
+                "signature": {
+                  "keyId": "https://signer.example/key"
+                },
+                "secret": "fixture-secret",
+                "userId": "recipient-visible"
+              },
+              "opts": {
+                "attempts": 12
+              },
+              "timestamp": 100,
+              "processedOn": 200,
+              "processedBy": "worker",
+              "finishedOn": 1000,
+              "progress": 0,
+              "attempts": 2,
+              "delay": 10,
+              "stacktrace": [
+                "newer",
+                "older"
+              ],
+              "returnValue": {
+                "result": true
+              },
+              "isFailed": true
+            }
+          ]
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJobs",
+            "args": [
+              [
+                "wait"
+              ],
+              0,
+              100
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "route-stats",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/stats",
+        "params": {},
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": {
+            "deliver": {
+              "active": 1,
+              "waiting": 2,
+              "delayed": 3,
+              "completed": 4,
+              "failed": 5,
+              "paused": 0,
+              "prioritized": 0,
+              "waiting-children": 0
+            },
+            "inbox": {
+              "active": 1,
+              "waiting": 2,
+              "delayed": 3,
+              "completed": 4,
+              "failed": 5,
+              "paused": 0,
+              "prioritized": 0,
+              "waiting-children": 0
+            },
+            "db": {
+              "active": 1,
+              "waiting": 2,
+              "delayed": 3,
+              "completed": 4,
+              "failed": 5,
+              "paused": 0,
+              "prioritized": 0,
+              "waiting-children": 0
+            },
+            "objectStorage": {
+              "active": 1,
+              "waiting": 2,
+              "delayed": 3,
+              "completed": 4,
+              "failed": 5,
+              "paused": 0,
+              "prioritized": 0,
+              "waiting-children": 0
+            }
+          }
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJobCounts",
+            "args": []
+          },
+          {
+            "queue": "inbox",
+            "method": "getJobCounts",
+            "args": []
+          },
+          {
+            "queue": "db",
+            "method": "getJobCounts",
+            "args": []
+          },
+          {
+            "queue": "objectStorage",
+            "method": "getJobCounts",
+            "args": []
+          }
+        ],
+        "callsAtResponse": 4,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "route-queues",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/queues",
+        "params": {},
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": [
+            {
+              "name": "system",
+              "counts": {
+                "active": 1,
+                "waiting": 2,
+                "delayed": 3,
+                "completed": 4,
+                "failed": 5,
+                "paused": 0,
+                "prioritized": 0,
+                "waiting-children": 0
+              },
+              "isPaused": false,
+              "metrics": {
+                "completed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                },
+                "failed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                }
+              }
+            },
+            {
+              "name": "endedPollNotification",
+              "counts": {
+                "active": 1,
+                "waiting": 2,
+                "delayed": 3,
+                "completed": 4,
+                "failed": 5,
+                "paused": 0,
+                "prioritized": 0,
+                "waiting-children": 0
+              },
+              "isPaused": false,
+              "metrics": {
+                "completed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                },
+                "failed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                }
+              }
+            },
+            {
+              "name": "postScheduledNote",
+              "counts": {
+                "active": 1,
+                "waiting": 2,
+                "delayed": 3,
+                "completed": 4,
+                "failed": 5,
+                "paused": 0,
+                "prioritized": 0,
+                "waiting-children": 0
+              },
+              "isPaused": false,
+              "metrics": {
+                "completed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                },
+                "failed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                }
+              }
+            },
+            {
+              "name": "deliver",
+              "counts": {
+                "active": 1,
+                "waiting": 2,
+                "delayed": 3,
+                "completed": 4,
+                "failed": 5,
+                "paused": 0,
+                "prioritized": 0,
+                "waiting-children": 0
+              },
+              "isPaused": false,
+              "metrics": {
+                "completed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                },
+                "failed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                }
+              }
+            },
+            {
+              "name": "inbox",
+              "counts": {
+                "active": 1,
+                "waiting": 2,
+                "delayed": 3,
+                "completed": 4,
+                "failed": 5,
+                "paused": 0,
+                "prioritized": 0,
+                "waiting-children": 0
+              },
+              "isPaused": false,
+              "metrics": {
+                "completed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                },
+                "failed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                }
+              }
+            },
+            {
+              "name": "db",
+              "counts": {
+                "active": 1,
+                "waiting": 2,
+                "delayed": 3,
+                "completed": 4,
+                "failed": 5,
+                "paused": 0,
+                "prioritized": 0,
+                "waiting-children": 0
+              },
+              "isPaused": false,
+              "metrics": {
+                "completed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                },
+                "failed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                }
+              }
+            },
+            {
+              "name": "relationship",
+              "counts": {
+                "active": 1,
+                "waiting": 2,
+                "delayed": 3,
+                "completed": 4,
+                "failed": 5,
+                "paused": 0,
+                "prioritized": 0,
+                "waiting-children": 0
+              },
+              "isPaused": false,
+              "metrics": {
+                "completed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                },
+                "failed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                }
+              }
+            },
+            {
+              "name": "objectStorage",
+              "counts": {
+                "active": 1,
+                "waiting": 2,
+                "delayed": 3,
+                "completed": 4,
+                "failed": 5,
+                "paused": 0,
+                "prioritized": 0,
+                "waiting-children": 0
+              },
+              "isPaused": false,
+              "metrics": {
+                "completed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                },
+                "failed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                }
+              }
+            },
+            {
+              "name": "userWebhookDeliver",
+              "counts": {
+                "active": 1,
+                "waiting": 2,
+                "delayed": 3,
+                "completed": 4,
+                "failed": 5,
+                "paused": 0,
+                "prioritized": 0,
+                "waiting-children": 0
+              },
+              "isPaused": false,
+              "metrics": {
+                "completed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                },
+                "failed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                }
+              }
+            },
+            {
+              "name": "systemWebhookDeliver",
+              "counts": {
+                "active": 1,
+                "waiting": 2,
+                "delayed": 3,
+                "completed": 4,
+                "failed": 5,
+                "paused": 0,
+                "prioritized": 0,
+                "waiting-children": 0
+              },
+              "isPaused": false,
+              "metrics": {
+                "completed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                },
+                "failed": {
+                  "meta": {
+                    "count": 4,
+                    "prevTS": 1000,
+                    "prevCount": 3
+                  },
+                  "data": [
+                    1,
+                    2
+                  ],
+                  "count": 2
+                }
+              }
+            }
+          ]
+        },
+        "calls": [
+          {
+            "queue": "system",
+            "method": "getJobCounts",
+            "args": []
+          },
+          {
+            "queue": "endedPollNotification",
+            "method": "getJobCounts",
+            "args": []
+          },
+          {
+            "queue": "postScheduledNote",
+            "method": "getJobCounts",
+            "args": []
+          },
+          {
+            "queue": "deliver",
+            "method": "getJobCounts",
+            "args": []
+          },
+          {
+            "queue": "inbox",
+            "method": "getJobCounts",
+            "args": []
+          },
+          {
+            "queue": "db",
+            "method": "getJobCounts",
+            "args": []
+          },
+          {
+            "queue": "relationship",
+            "method": "getJobCounts",
+            "args": []
+          },
+          {
+            "queue": "objectStorage",
+            "method": "getJobCounts",
+            "args": []
+          },
+          {
+            "queue": "userWebhookDeliver",
+            "method": "getJobCounts",
+            "args": []
+          },
+          {
+            "queue": "systemWebhookDeliver",
+            "method": "getJobCounts",
+            "args": []
+          },
+          {
+            "queue": "system",
+            "method": "isPaused",
+            "args": []
+          },
+          {
+            "queue": "endedPollNotification",
+            "method": "isPaused",
+            "args": []
+          },
+          {
+            "queue": "postScheduledNote",
+            "method": "isPaused",
+            "args": []
+          },
+          {
+            "queue": "deliver",
+            "method": "isPaused",
+            "args": []
+          },
+          {
+            "queue": "inbox",
+            "method": "isPaused",
+            "args": []
+          },
+          {
+            "queue": "db",
+            "method": "isPaused",
+            "args": []
+          },
+          {
+            "queue": "relationship",
+            "method": "isPaused",
+            "args": []
+          },
+          {
+            "queue": "objectStorage",
+            "method": "isPaused",
+            "args": []
+          },
+          {
+            "queue": "userWebhookDeliver",
+            "method": "isPaused",
+            "args": []
+          },
+          {
+            "queue": "systemWebhookDeliver",
+            "method": "isPaused",
+            "args": []
+          },
+          {
+            "queue": "system",
+            "method": "getMetrics",
+            "args": [
+              "completed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "endedPollNotification",
+            "method": "getMetrics",
+            "args": [
+              "completed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "postScheduledNote",
+            "method": "getMetrics",
+            "args": [
+              "completed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "getMetrics",
+            "args": [
+              "completed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "inbox",
+            "method": "getMetrics",
+            "args": [
+              "completed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "db",
+            "method": "getMetrics",
+            "args": [
+              "completed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "relationship",
+            "method": "getMetrics",
+            "args": [
+              "completed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "objectStorage",
+            "method": "getMetrics",
+            "args": [
+              "completed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "userWebhookDeliver",
+            "method": "getMetrics",
+            "args": [
+              "completed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "systemWebhookDeliver",
+            "method": "getMetrics",
+            "args": [
+              "completed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "system",
+            "method": "getMetrics",
+            "args": [
+              "failed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "endedPollNotification",
+            "method": "getMetrics",
+            "args": [
+              "failed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "postScheduledNote",
+            "method": "getMetrics",
+            "args": [
+              "failed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "getMetrics",
+            "args": [
+              "failed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "inbox",
+            "method": "getMetrics",
+            "args": [
+              "failed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "db",
+            "method": "getMetrics",
+            "args": [
+              "failed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "relationship",
+            "method": "getMetrics",
+            "args": [
+              "failed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "objectStorage",
+            "method": "getMetrics",
+            "args": [
+              "failed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "userWebhookDeliver",
+            "method": "getMetrics",
+            "args": [
+              "failed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "systemWebhookDeliver",
+            "method": "getMetrics",
+            "args": [
+              "failed",
+              0,
+              10080
+            ]
+          }
+        ],
+        "callsAtResponse": 40,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "route-queue-stats",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/queue-stats",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": {
+            "name": "deliver",
+            "qualifiedName": "fixture:queue:deliver:deliver",
+            "counts": {
+              "active": 1,
+              "waiting": 2,
+              "delayed": 3,
+              "completed": 4,
+              "failed": 5,
+              "paused": 0,
+              "prioritized": 0,
+              "waiting-children": 0
+            },
+            "isPaused": false,
+            "metrics": {
+              "completed": {
+                "meta": {
+                  "count": 4,
+                  "prevTS": 1000,
+                  "prevCount": 3
+                },
+                "data": [
+                  1,
+                  2
+                ],
+                "count": 2
+              },
+              "failed": {
+                "meta": {
+                  "count": 4,
+                  "prevTS": 1000,
+                  "prevCount": 3
+                },
+                "data": [
+                  1,
+                  2
+                ],
+                "count": 2
+              }
+            },
+            "db": {
+              "version": "7.2.0",
+              "mode": "standalone",
+              "runId": "fixture-run",
+              "processId": "123",
+              "port": 6379,
+              "os": "Linux",
+              "uptime": 10,
+              "memory": {
+                "total": 1234,
+                "used": 200,
+                "fragmentationRatio": 1,
+                "peak": 300
+              },
+              "clients": {
+                "connected": 4,
+                "blocked": 1
+              }
+            }
+          }
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJobCounts",
+            "args": []
+          },
+          {
+            "queue": "deliver",
+            "method": "isPaused",
+            "args": []
+          },
+          {
+            "queue": "deliver",
+            "method": "getMetrics",
+            "args": [
+              "completed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "getMetrics",
+            "args": [
+              "failed",
+              0,
+              10080
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "info",
+            "args": []
+          }
+        ],
+        "callsAtResponse": 5,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "selector-system",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "system",
+          "jobId": "job"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": {
+            "id": "job",
+            "name": "test job",
+            "data": {
+              "content": "body-visible",
+              "to": "https://remote.example/inbox",
+              "signature": {
+                "keyId": "https://signer.example/key"
+              },
+              "secret": "fixture-secret",
+              "userId": "recipient-visible"
+            },
+            "opts": {
+              "attempts": 12
+            },
+            "timestamp": 100,
+            "processedOn": 200,
+            "processedBy": "worker",
+            "finishedOn": 1000,
+            "progress": 0,
+            "attempts": 2,
+            "delay": 10,
+            "stacktrace": [
+              "newer",
+              "older"
+            ],
+            "returnValue": {
+              "result": true
+            },
+            "isFailed": true
+          }
+        },
+        "calls": [
+          {
+            "queue": "system",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "selector-endedPollNotification",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "endedPollNotification",
+          "jobId": "job"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": {
+            "id": "job",
+            "name": "test job",
+            "data": {
+              "content": "body-visible",
+              "to": "https://remote.example/inbox",
+              "signature": {
+                "keyId": "https://signer.example/key"
+              },
+              "secret": "fixture-secret",
+              "userId": "recipient-visible"
+            },
+            "opts": {
+              "attempts": 12
+            },
+            "timestamp": 100,
+            "processedOn": 200,
+            "processedBy": "worker",
+            "finishedOn": 1000,
+            "progress": 0,
+            "attempts": 2,
+            "delay": 10,
+            "stacktrace": [
+              "newer",
+              "older"
+            ],
+            "returnValue": {
+              "result": true
+            },
+            "isFailed": true
+          }
+        },
+        "calls": [
+          {
+            "queue": "endedPollNotification",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "selector-postScheduledNote",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "postScheduledNote",
+          "jobId": "job"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": {
+            "id": "job",
+            "name": "test job",
+            "data": {
+              "content": "body-visible",
+              "to": "https://remote.example/inbox",
+              "signature": {
+                "keyId": "https://signer.example/key"
+              },
+              "secret": "fixture-secret",
+              "userId": "recipient-visible"
+            },
+            "opts": {
+              "attempts": 12
+            },
+            "timestamp": 100,
+            "processedOn": 200,
+            "processedBy": "worker",
+            "finishedOn": 1000,
+            "progress": 0,
+            "attempts": 2,
+            "delay": 10,
+            "stacktrace": [
+              "newer",
+              "older"
+            ],
+            "returnValue": {
+              "result": true
+            },
+            "isFailed": true
+          }
+        },
+        "calls": [
+          {
+            "queue": "postScheduledNote",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "selector-deliver",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": "job"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": {
+            "id": "job",
+            "name": "test job",
+            "data": {
+              "content": "body-visible",
+              "to": "https://remote.example/inbox",
+              "signature": {
+                "keyId": "https://signer.example/key"
+              },
+              "secret": "fixture-secret",
+              "userId": "recipient-visible"
+            },
+            "opts": {
+              "attempts": 12
+            },
+            "timestamp": 100,
+            "processedOn": 200,
+            "processedBy": "worker",
+            "finishedOn": 1000,
+            "progress": 0,
+            "attempts": 2,
+            "delay": 10,
+            "stacktrace": [
+              "newer",
+              "older"
+            ],
+            "returnValue": {
+              "result": true
+            },
+            "isFailed": true
+          }
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "selector-inbox",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "inbox",
+          "jobId": "job"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": {
+            "id": "job",
+            "name": "test job",
+            "data": {
+              "content": "body-visible",
+              "to": "https://remote.example/inbox",
+              "signature": {
+                "keyId": "https://signer.example/key"
+              },
+              "secret": "fixture-secret",
+              "userId": "recipient-visible"
+            },
+            "opts": {
+              "attempts": 12
+            },
+            "timestamp": 100,
+            "processedOn": 200,
+            "processedBy": "worker",
+            "finishedOn": 1000,
+            "progress": 0,
+            "attempts": 2,
+            "delay": 10,
+            "stacktrace": [
+              "newer",
+              "older"
+            ],
+            "returnValue": {
+              "result": true
+            },
+            "isFailed": true
+          }
+        },
+        "calls": [
+          {
+            "queue": "inbox",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "selector-db",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "db",
+          "jobId": "job"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": {
+            "id": "job",
+            "name": "test job",
+            "data": {
+              "content": "body-visible",
+              "to": "https://remote.example/inbox",
+              "signature": {
+                "keyId": "https://signer.example/key"
+              },
+              "secret": "fixture-secret",
+              "userId": "recipient-visible"
+            },
+            "opts": {
+              "attempts": 12
+            },
+            "timestamp": 100,
+            "processedOn": 200,
+            "processedBy": "worker",
+            "finishedOn": 1000,
+            "progress": 0,
+            "attempts": 2,
+            "delay": 10,
+            "stacktrace": [
+              "newer",
+              "older"
+            ],
+            "returnValue": {
+              "result": true
+            },
+            "isFailed": true
+          }
+        },
+        "calls": [
+          {
+            "queue": "db",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "selector-relationship",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "relationship",
+          "jobId": "job"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": {
+            "id": "job",
+            "name": "test job",
+            "data": {
+              "content": "body-visible",
+              "to": "https://remote.example/inbox",
+              "signature": {
+                "keyId": "https://signer.example/key"
+              },
+              "secret": "fixture-secret",
+              "userId": "recipient-visible"
+            },
+            "opts": {
+              "attempts": 12
+            },
+            "timestamp": 100,
+            "processedOn": 200,
+            "processedBy": "worker",
+            "finishedOn": 1000,
+            "progress": 0,
+            "attempts": 2,
+            "delay": 10,
+            "stacktrace": [
+              "newer",
+              "older"
+            ],
+            "returnValue": {
+              "result": true
+            },
+            "isFailed": true
+          }
+        },
+        "calls": [
+          {
+            "queue": "relationship",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "selector-objectStorage",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "objectStorage",
+          "jobId": "job"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": {
+            "id": "job",
+            "name": "test job",
+            "data": {
+              "content": "body-visible",
+              "to": "https://remote.example/inbox",
+              "signature": {
+                "keyId": "https://signer.example/key"
+              },
+              "secret": "fixture-secret",
+              "userId": "recipient-visible"
+            },
+            "opts": {
+              "attempts": 12
+            },
+            "timestamp": 100,
+            "processedOn": 200,
+            "processedBy": "worker",
+            "finishedOn": 1000,
+            "progress": 0,
+            "attempts": 2,
+            "delay": 10,
+            "stacktrace": [
+              "newer",
+              "older"
+            ],
+            "returnValue": {
+              "result": true
+            },
+            "isFailed": true
+          }
+        },
+        "calls": [
+          {
+            "queue": "objectStorage",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "selector-userWebhookDeliver",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "userWebhookDeliver",
+          "jobId": "job"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": {
+            "id": "job",
+            "name": "test job",
+            "data": {
+              "content": "body-visible",
+              "to": "https://remote.example/inbox",
+              "signature": {
+                "keyId": "https://signer.example/key"
+              },
+              "secret": "(redacted)",
+              "userId": "recipient-visible"
+            },
+            "opts": {
+              "attempts": 12
+            },
+            "timestamp": 100,
+            "processedOn": 200,
+            "processedBy": "worker",
+            "finishedOn": 1000,
+            "progress": 0,
+            "attempts": 2,
+            "delay": 10,
+            "stacktrace": [
+              "newer",
+              "older"
+            ],
+            "returnValue": {
+              "result": true
+            },
+            "isFailed": true
+          }
+        },
+        "calls": [
+          {
+            "queue": "userWebhookDeliver",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "selector-systemWebhookDeliver",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "systemWebhookDeliver",
+          "jobId": "job"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": {
+            "id": "job",
+            "name": "test job",
+            "data": {
+              "content": "body-visible",
+              "to": "https://remote.example/inbox",
+              "signature": {
+                "keyId": "https://signer.example/key"
+              },
+              "secret": "(redacted)",
+              "userId": "recipient-visible"
+            },
+            "opts": {
+              "attempts": 12
+            },
+            "timestamp": 100,
+            "processedOn": 200,
+            "processedBy": "worker",
+            "finishedOn": 1000,
+            "progress": 0,
+            "attempts": 2,
+            "delay": 10,
+            "stacktrace": [
+              "newer",
+              "older"
+            ],
+            "returnValue": {
+              "result": true
+            },
+            "isFailed": true
+          }
+        },
+        "calls": [
+          {
+            "queue": "systemWebhookDeliver",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "auth-anonymous",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "anonymous"
+      },
+      "expected": {
+        "response": {
+          "status": 401,
+          "headers": {
+            "WWW-Authenticate": "Bearer realm=\"Misskey\""
+          },
+          "body": {
+            "error": {
+              "message": "Credential required.",
+              "code": "CREDENTIAL_REQUIRED",
+              "id": "1384574d-a912-4b81-8601-c7b1c4085df1",
+              "kind": "client"
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "auth-member",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "member"
+      },
+      "expected": {
+        "response": {
+          "status": 403,
+          "headers": {},
+          "body": {
+            "error": {
+              "message": "You are not assigned to a moderator role.",
+              "code": "ROLE_PERMISSION_DENIED",
+              "id": "d33d5333-db36-423d-a8f9-1a2b9549da41",
+              "kind": "permission"
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "auth-suspended",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "suspended"
+      },
+      "expected": {
+        "response": {
+          "status": 403,
+          "headers": {},
+          "body": {
+            "error": {
+              "message": "Your account has been suspended.",
+              "code": "YOUR_ACCOUNT_SUSPENDED",
+              "id": "a8c724b3-6e9c-4b46-b1a8-bc3ed6258370",
+              "kind": "permission"
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "auth-root",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "root"
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "pause",
+            "args": []
+          },
+          {
+            "method": "moderation.insert",
+            "value": {
+              "id": "audit-id",
+              "userId": "root",
+              "type": "pauseQueue",
+              "info": {}
+            }
+          }
+        ],
+        "callsAtResponse": 2,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "auth-root-suspended",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "root-suspended"
+      },
+      "expected": {
+        "response": {
+          "status": 403,
+          "headers": {},
+          "body": {
+            "error": {
+              "message": "Your account has been suspended.",
+              "code": "YOUR_ACCOUNT_SUSPENDED",
+              "id": "a8c724b3-6e9c-4b46-b1a8-bc3ed6258370",
+              "kind": "permission"
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "auth-administrator",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "administrator"
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "pause",
+            "args": []
+          },
+          {
+            "method": "moderation.insert",
+            "value": {
+              "id": "audit-id",
+              "userId": "actor",
+              "type": "pauseQueue",
+              "info": {}
+            }
+          }
+        ],
+        "callsAtResponse": 2,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "auth-scoped",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "scoped"
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "pause",
+            "args": []
+          },
+          {
+            "method": "moderation.insert",
+            "value": {
+              "id": "audit-id",
+              "userId": "actor",
+              "type": "pauseQueue",
+              "info": {}
+            }
+          }
+        ],
+        "callsAtResponse": 2,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "auth-wrong-scope",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "wrong-scope"
+      },
+      "expected": {
+        "response": {
+          "status": 403,
+          "headers": {
+            "WWW-Authenticate": "Bearer realm=\"Misskey\", error=\"insufficient_scope\", error_description=\"Your app does not have the necessary permissions to use this endpoint.\""
+          },
+          "body": {
+            "error": {
+              "message": "Your app does not have the necessary permissions to use this endpoint.",
+              "code": "PERMISSION_DENIED",
+              "id": "1370e5b7-d4eb-4566-bb1d-7748ee6a1838",
+              "kind": "permission"
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "auth-invalid-token",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "invalid-token"
+      },
+      "expected": {
+        "response": {
+          "status": 401,
+          "headers": {
+            "WWW-Authenticate": "Bearer realm=\"Misskey\", error=\"invalid_token\", error_description=\"Authentication failed. Please ensure your token is correct.\""
+          },
+          "body": {
+            "error": {
+              "message": "Authentication failed. Please ensure your token is correct.",
+              "code": "AUTHENTICATION_FAILED",
+              "id": "b0a7f5f8-dc2f-4171-b91f-de88ad238e14",
+              "kind": "client"
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "auth-read-scope-allowed",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": "job"
+        },
+        "actor": "read-only-scope"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": {
+            "id": "job",
+            "name": "test job",
+            "data": {
+              "content": "body-visible",
+              "to": "https://remote.example/inbox",
+              "signature": {
+                "keyId": "https://signer.example/key"
+              },
+              "secret": "fixture-secret",
+              "userId": "recipient-visible"
+            },
+            "opts": {
+              "attempts": 12
+            },
+            "timestamp": 100,
+            "processedOn": 200,
+            "processedBy": "worker",
+            "finishedOn": 1000,
+            "progress": 0,
+            "attempts": 2,
+            "delay": 10,
+            "stacktrace": [
+              "newer",
+              "older"
+            ],
+            "returnValue": {
+              "result": true
+            },
+            "isFailed": true
+          }
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "auth-read-scope-write-denied",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "read-only-scope"
+      },
+      "expected": {
+        "response": {
+          "status": 403,
+          "headers": {
+            "WWW-Authenticate": "Bearer realm=\"Misskey\", error=\"insufficient_scope\", error_description=\"Your app does not have the necessary permissions to use this endpoint.\""
+          },
+          "body": {
+            "error": {
+              "message": "Your app does not have the necessary permissions to use this endpoint.",
+              "code": "PERMISSION_DENIED",
+              "id": "1370e5b7-d4eb-4566-bb1d-7748ee6a1838",
+              "kind": "permission"
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "auth-before-validation-anonymous",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "invalid"
+        },
+        "actor": "anonymous"
+      },
+      "expected": {
+        "response": {
+          "status": 401,
+          "headers": {
+            "WWW-Authenticate": "Bearer realm=\"Misskey\""
+          },
+          "body": {
+            "error": {
+              "message": "Credential required.",
+              "code": "CREDENTIAL_REQUIRED",
+              "id": "1384574d-a912-4b81-8601-c7b1c4085df1",
+              "kind": "client"
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "auth-before-validation-member",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "invalid"
+        },
+        "actor": "member"
+      },
+      "expected": {
+        "response": {
+          "status": 403,
+          "headers": {},
+          "body": {
+            "error": {
+              "message": "You are not assigned to a moderator role.",
+              "code": "ROLE_PERMISSION_DENIED",
+              "id": "d33d5333-db36-423d-a8f9-1a2b9549da41",
+              "kind": "permission"
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "auth-before-validation-wrong-scope",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "invalid"
+        },
+        "actor": "wrong-scope"
+      },
+      "expected": {
+        "response": {
+          "status": 403,
+          "headers": {
+            "WWW-Authenticate": "Bearer realm=\"Misskey\", error=\"insufficient_scope\", error_description=\"Your app does not have the necessary permissions to use this endpoint.\""
+          },
+          "body": {
+            "error": {
+              "message": "Your app does not have the necessary permissions to use this endpoint.",
+              "code": "PERMISSION_DENIED",
+              "id": "1370e5b7-d4eb-4566-bb1d-7748ee6a1838",
+              "kind": "permission"
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "missing-queue",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {},
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 400,
+          "headers": {
+            "WWW-Authenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\""
+          },
+          "body": {
+            "error": {
+              "message": "Invalid param.",
+              "code": "INVALID_PARAM",
+              "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+              "kind": "client",
+              "info": {
+                "param": "#/required",
+                "reason": "must have required property 'queue'"
+              }
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "unknown-queue",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "other"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 400,
+          "headers": {
+            "WWW-Authenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\""
+          },
+          "body": {
+            "error": {
+              "message": "Invalid param.",
+              "code": "INVALID_PARAM",
+              "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+              "kind": "client",
+              "info": {
+                "param": "#/properties/queue/enum",
+                "reason": "must be equal to one of the allowed values"
+              }
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "wrong-queue-type",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": 1
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 400,
+          "headers": {
+            "WWW-Authenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\""
+          },
+          "body": {
+            "error": {
+              "message": "Invalid param.",
+              "code": "INVALID_PARAM",
+              "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+              "kind": "client",
+              "info": {
+                "param": "#/properties/queue/type",
+                "reason": "must be string"
+              }
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "missing-job",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 400,
+          "headers": {
+            "WWW-Authenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\""
+          },
+          "body": {
+            "error": {
+              "message": "Invalid param.",
+              "code": "INVALID_PARAM",
+              "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+              "kind": "client",
+              "info": {
+                "param": "#/required",
+                "reason": "must have required property 'jobId'"
+              }
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "wrong-job-type",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": 1
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 400,
+          "headers": {
+            "WWW-Authenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\""
+          },
+          "body": {
+            "error": {
+              "message": "Invalid param.",
+              "code": "INVALID_PARAM",
+              "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+              "kind": "client",
+              "info": {
+                "param": "#/properties/jobId/type",
+                "reason": "must be string"
+              }
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "missing-state",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/jobs",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 400,
+          "headers": {
+            "WWW-Authenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\""
+          },
+          "body": {
+            "error": {
+              "message": "Invalid param.",
+              "code": "INVALID_PARAM",
+              "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+              "kind": "client",
+              "info": {
+                "param": "#/required",
+                "reason": "must have required property 'state'"
+              }
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "scalar-state",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/jobs",
+        "params": {
+          "queue": "deliver",
+          "state": "wait"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 400,
+          "headers": {
+            "WWW-Authenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\""
+          },
+          "body": {
+            "error": {
+              "message": "Invalid param.",
+              "code": "INVALID_PARAM",
+              "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+              "kind": "client",
+              "info": {
+                "param": "#/properties/state/type",
+                "reason": "must be array"
+              }
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "unsupported-job-state",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/jobs",
+        "params": {
+          "queue": "deliver",
+          "state": [
+            "paused"
+          ]
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 400,
+          "headers": {
+            "WWW-Authenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\""
+          },
+          "body": {
+            "error": {
+              "message": "Invalid param.",
+              "code": "INVALID_PARAM",
+              "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+              "kind": "client",
+              "info": {
+                "param": "#/properties/state/items/enum",
+                "reason": "must be equal to one of the allowed values"
+              }
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "unsupported-clear-state",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/clear",
+        "params": {
+          "queue": "deliver",
+          "state": "waiting"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 400,
+          "headers": {
+            "WWW-Authenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\""
+          },
+          "body": {
+            "error": {
+              "message": "Invalid param.",
+              "code": "INVALID_PARAM",
+              "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+              "kind": "client",
+              "info": {
+                "param": "#/properties/state/enum",
+                "reason": "must be equal to one of the allowed values"
+              }
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "wrong-search",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/jobs",
+        "params": {
+          "queue": "deliver",
+          "state": [],
+          "search": 3
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 400,
+          "headers": {
+            "WWW-Authenticate": "Bearer realm=\"Misskey\", error=\"invalid_request\", error_description=\"Invalid param.\""
+          },
+          "body": {
+            "error": {
+              "message": "Invalid param.",
+              "code": "INVALID_PARAM",
+              "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+              "kind": "client",
+              "info": {
+                "param": "#/properties/search/type",
+                "reason": "must be string"
+              }
+            }
+          }
+        },
+        "calls": [],
+        "callsAtResponse": 0,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "extra-params",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/jobs",
+        "params": {
+          "queue": "deliver",
+          "state": [],
+          "limit": 1,
+          "offset": 99
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": [
+            {
+              "id": "job",
+              "name": "test job",
+              "data": {
+                "content": "body-visible",
+                "to": "https://remote.example/inbox",
+                "signature": {
+                  "keyId": "https://signer.example/key"
+                },
+                "secret": "fixture-secret",
+                "userId": "recipient-visible"
+              },
+              "opts": {
+                "attempts": 12
+              },
+              "timestamp": 100,
+              "processedOn": 200,
+              "processedBy": "worker",
+              "finishedOn": 1000,
+              "progress": 0,
+              "attempts": 2,
+              "delay": 10,
+              "stacktrace": [
+                "newer",
+                "older"
+              ],
+              "returnValue": {
+                "result": true
+              },
+              "isFailed": true
+            }
+          ]
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJobs",
+            "args": [
+              [],
+              0,
+              100
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "empty-job-id",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/remove-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": ""
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJob",
+            "args": [
+              ""
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "missing-job-show",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": "absent"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 500,
+          "headers": {},
+          "body": {
+            "error": {
+              "message": "Internal error occurred. Please contact us if the error persists.",
+              "code": "INTERNAL_ERROR",
+              "id": "5d37dbcb-891e-41ca-a3d6-e690c97775ac",
+              "kind": "server",
+              "info": {
+                "e": {
+                  "message": "Job not found: absent",
+                  "code": "Error",
+                  "id": "00000000-0000-4000-8000-000000000001"
+                }
+              }
+            }
+          }
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJob",
+            "args": [
+              "absent"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "missing-job-remove",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/remove-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": "absent"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJob",
+            "args": [
+              "absent"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "missing-job-retry",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/retry-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": "absent"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJob",
+            "args": [
+              "absent"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "missing-job-logs",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job-logs",
+        "params": {
+          "queue": "deliver",
+          "jobId": "absent"
+        },
+        "actor": "moderator"
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": [
+            "log: fixture-secret"
+          ]
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJobLogs",
+            "args": [
+              "absent"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "failure-pause-pause",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "moderator",
+        "doubles": {
+          "fail": "pause"
+        }
+      },
+      "expected": {
+        "response": {
+          "status": 500,
+          "headers": {},
+          "body": {
+            "error": {
+              "message": "Internal error occurred. Please contact us if the error persists.",
+              "code": "INTERNAL_ERROR",
+              "id": "5d37dbcb-891e-41ca-a3d6-e690c97775ac",
+              "kind": "server",
+              "info": {
+                "e": {
+                  "message": "fixture pause failed",
+                  "code": "Error",
+                  "id": "00000000-0000-4000-8000-000000000001"
+                }
+              }
+            }
+          }
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "pause",
+            "args": []
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "failure-resume-resume",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/resume",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "moderator",
+        "doubles": {
+          "fail": "resume"
+        }
+      },
+      "expected": {
+        "response": {
+          "status": 500,
+          "headers": {},
+          "body": {
+            "error": {
+              "message": "Internal error occurred. Please contact us if the error persists.",
+              "code": "INTERNAL_ERROR",
+              "id": "5d37dbcb-891e-41ca-a3d6-e690c97775ac",
+              "kind": "server",
+              "info": {
+                "e": {
+                  "message": "fixture resume failed",
+                  "code": "Error",
+                  "id": "00000000-0000-4000-8000-000000000001"
+                }
+              }
+            }
+          }
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "resume",
+            "args": []
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "failure-clear-clean",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/clear",
+        "params": {
+          "queue": "deliver",
+          "state": "failed"
+        },
+        "actor": "moderator",
+        "doubles": {
+          "fail": "clean"
+        }
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "failed"
+            ]
+          },
+          {
+            "method": "moderation.insert",
+            "value": {
+              "id": "audit-id",
+              "userId": "actor",
+              "type": "clearQueue",
+              "info": {}
+            }
+          }
+        ],
+        "callsAtResponse": 2,
+        "detachedRejections": [
+          "fixture clean failed"
+        ]
+      }
+    },
+    {
+      "id": "failure-promote-jobs-promoteJobs",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/promote-jobs",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "moderator",
+        "doubles": {
+          "fail": "promoteJobs"
+        }
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "promoteJobs",
+            "args": []
+          },
+          {
+            "method": "moderation.insert",
+            "value": {
+              "id": "audit-id",
+              "userId": "actor",
+              "type": "promoteQueue",
+              "info": {}
+            }
+          }
+        ],
+        "callsAtResponse": 2,
+        "detachedRejections": [
+          "fixture promoteJobs failed"
+        ]
+      }
+    },
+    {
+      "id": "failure-retry-job-retry",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/retry-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": "job"
+        },
+        "actor": "moderator",
+        "doubles": {
+          "fail": "retry"
+        }
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "retry",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 2,
+        "detachedRejections": [
+          "fixture retry failed"
+        ]
+      }
+    },
+    {
+      "id": "failure-remove-job-remove",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/remove-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": "job"
+        },
+        "actor": "moderator",
+        "doubles": {
+          "fail": "remove"
+        }
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "remove",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 2,
+        "detachedRejections": [
+          "fixture remove failed"
+        ]
+      }
+    },
+    {
+      "id": "failure-pause-audit",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "deliver"
+        },
+        "actor": "moderator",
+        "doubles": {
+          "fail": "audit"
+        }
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "pause",
+            "args": []
+          },
+          {
+            "method": "moderation.insert",
+            "value": {
+              "id": "audit-id",
+              "userId": "actor",
+              "type": "pauseQueue",
+              "info": {}
+            }
+          }
+        ],
+        "callsAtResponse": 2,
+        "detachedRejections": [
+          "fixture audit failed"
+        ]
+      }
+    },
+    {
+      "id": "failure-show-job-getJob",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": "job"
+        },
+        "actor": "moderator",
+        "doubles": {
+          "fail": "getJob"
+        }
+      },
+      "expected": {
+        "response": {
+          "status": 500,
+          "headers": {},
+          "body": {
+            "error": {
+              "message": "Internal error occurred. Please contact us if the error persists.",
+              "code": "INTERNAL_ERROR",
+              "id": "5d37dbcb-891e-41ca-a3d6-e690c97775ac",
+              "kind": "server",
+              "info": {
+                "e": {
+                  "message": "fixture getJob failed",
+                  "code": "Error",
+                  "id": "00000000-0000-4000-8000-000000000001"
+                }
+              }
+            }
+          }
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "retry-promotes-unfinished",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/retry-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": "job"
+        },
+        "actor": "moderator",
+        "doubles": {
+          "jobs": [
+            {
+              "id": "job",
+              "name": "pending",
+              "data": {}
+            }
+          ]
+        }
+      },
+      "expected": {
+        "response": {
+          "status": 204,
+          "headers": {},
+          "body": null
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "promote",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 2,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "empty-stack-not-failed",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/show-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": "job"
+        },
+        "actor": "moderator",
+        "doubles": {
+          "jobs": [
+            {
+              "id": "job",
+              "name": "clean",
+              "data": {},
+              "stacktrace": [
+                "",
+                null
+              ],
+              "failedReason": ""
+            }
+          ]
+        }
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": {
+            "id": "job",
+            "name": "clean",
+            "data": {},
+            "opts": {
+              "attempts": 12
+            },
+            "timestamp": 100,
+            "processedOn": 200,
+            "processedBy": "worker",
+            "progress": 0,
+            "attempts": 2,
+            "delay": 10,
+            "failedReason": "",
+            "stacktrace": [],
+            "returnValue": {
+              "result": true
+            },
+            "isFailed": false
+          }
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJob",
+            "args": [
+              "job"
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "delayed-deliver-group-sort",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/deliver-delayed",
+        "params": {},
+        "actor": "moderator",
+        "doubles": {
+          "jobs": [
+            {
+              "id": "1",
+              "name": "a",
+              "data": {
+                "to": "https://a.example:8443/x",
+                "signature": {
+                  "keyId": "https://a.example/key"
+                }
+              }
+            },
+            {
+              "id": "2",
+              "name": "b",
+              "data": {
+                "to": "https://b.example/x",
+                "signature": {
+                  "keyId": "https://a.example/key2"
+                }
+              }
+            },
+            {
+              "id": "3",
+              "name": "c",
+              "data": {
+                "to": "https://b.example/y",
+                "signature": {
+                  "keyId": "https://b.example/key"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": [
+            [
+              "b.example",
+              2
+            ],
+            [
+              "a.example:8443",
+              1
+            ]
+          ]
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJobs",
+            "args": [
+              [
+                "delayed"
+              ],
+              0,
+              -1
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "delayed-inbox-group-sort",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/inbox-delayed",
+        "params": {},
+        "actor": "moderator",
+        "doubles": {
+          "jobs": [
+            {
+              "id": "1",
+              "name": "a",
+              "data": {
+                "to": "https://a.example:8443/x",
+                "signature": {
+                  "keyId": "https://a.example/key"
+                }
+              }
+            },
+            {
+              "id": "2",
+              "name": "b",
+              "data": {
+                "to": "https://b.example/x",
+                "signature": {
+                  "keyId": "https://a.example/key2"
+                }
+              }
+            },
+            {
+              "id": "3",
+              "name": "c",
+              "data": {
+                "to": "https://b.example/y",
+                "signature": {
+                  "keyId": "https://b.example/key"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "expected": {
+        "response": {
+          "status": 200,
+          "headers": {},
+          "body": [
+            [
+              "a.example",
+              2
+            ],
+            [
+              "b.example",
+              1
+            ]
+          ]
+        },
+        "calls": [
+          {
+            "queue": "inbox",
+            "method": "getJobs",
+            "args": [
+              [
+                "delayed"
+              ],
+              0,
+              -1
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "delayed-invalid-url",
+      "layer": "http-handler",
+      "input": {
+        "route": "admin/queue/deliver-delayed",
+        "params": {},
+        "actor": "moderator",
+        "doubles": {
+          "jobs": [
+            {
+              "id": "bad",
+              "data": {
+                "to": "bad url"
+              }
+            }
+          ]
+        }
+      },
+      "expected": {
+        "response": {
+          "status": 500,
+          "headers": {},
+          "body": {
+            "error": {
+              "message": "Internal error occurred. Please contact us if the error persists.",
+              "code": "INTERNAL_ERROR",
+              "id": "5d37dbcb-891e-41ca-a3d6-e690c97775ac",
+              "kind": "server",
+              "info": {
+                "e": {
+                  "message": "Invalid URL",
+                  "code": "TypeError",
+                  "id": "00000000-0000-4000-8000-000000000001"
+                }
+              }
+            }
+          }
+        },
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "getJobs",
+            "args": [
+              [
+                "delayed"
+              ],
+              0,
+              -1
+            ]
+          }
+        ],
+        "callsAtResponse": 1,
+        "detachedRejections": []
+      }
+    },
+    {
+      "id": "boundary-pause",
+      "layer": "endpoint-callback",
+      "input": {
+        "route": "admin/queue/pause",
+        "params": {
+          "queue": "deliver"
+        },
+        "heldQueueOperation": "pause"
+      },
+      "expected": {
+        "beforeRelease": {
+          "settled": false,
+          "calls": [
+            {
+              "queue": "deliver",
+              "method": "pause",
+              "args": []
+            }
+          ]
+        },
+        "afterRelease": {
+          "settled": true,
+          "calls": [
+            {
+              "queue": "deliver",
+              "method": "pause",
+              "args": []
+            },
+            {
+              "method": "moderation.insert",
+              "value": {
+                "id": "audit-id",
+                "userId": "actor",
+                "type": "pauseQueue",
+                "info": {}
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-resume",
+      "layer": "endpoint-callback",
+      "input": {
+        "route": "admin/queue/resume",
+        "params": {
+          "queue": "deliver"
+        },
+        "heldQueueOperation": "resume"
+      },
+      "expected": {
+        "beforeRelease": {
+          "settled": false,
+          "calls": [
+            {
+              "queue": "deliver",
+              "method": "resume",
+              "args": []
+            }
+          ]
+        },
+        "afterRelease": {
+          "settled": true,
+          "calls": [
+            {
+              "queue": "deliver",
+              "method": "resume",
+              "args": []
+            },
+            {
+              "method": "moderation.insert",
+              "value": {
+                "id": "audit-id",
+                "userId": "actor",
+                "type": "resumeQueue",
+                "info": {}
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-clear",
+      "layer": "endpoint-callback",
+      "input": {
+        "route": "admin/queue/clear",
+        "params": {
+          "queue": "deliver",
+          "state": "failed"
+        },
+        "heldQueueOperation": "clean"
+      },
+      "expected": {
+        "beforeRelease": {
+          "settled": true,
+          "calls": [
+            {
+              "queue": "deliver",
+              "method": "clean",
+              "args": [
+                0,
+                0,
+                "failed"
+              ]
+            },
+            {
+              "method": "moderation.insert",
+              "value": {
+                "id": "audit-id",
+                "userId": "actor",
+                "type": "clearQueue",
+                "info": {}
+              }
+            }
+          ]
+        },
+        "afterRelease": {
+          "settled": true,
+          "calls": [
+            {
+              "queue": "deliver",
+              "method": "clean",
+              "args": [
+                0,
+                0,
+                "failed"
+              ]
+            },
+            {
+              "method": "moderation.insert",
+              "value": {
+                "id": "audit-id",
+                "userId": "actor",
+                "type": "clearQueue",
+                "info": {}
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-promote-jobs",
+      "layer": "endpoint-callback",
+      "input": {
+        "route": "admin/queue/promote-jobs",
+        "params": {
+          "queue": "deliver"
+        },
+        "heldQueueOperation": "promoteJobs"
+      },
+      "expected": {
+        "beforeRelease": {
+          "settled": true,
+          "calls": [
+            {
+              "queue": "deliver",
+              "method": "promoteJobs",
+              "args": []
+            },
+            {
+              "method": "moderation.insert",
+              "value": {
+                "id": "audit-id",
+                "userId": "actor",
+                "type": "promoteQueue",
+                "info": {}
+              }
+            }
+          ]
+        },
+        "afterRelease": {
+          "settled": true,
+          "calls": [
+            {
+              "queue": "deliver",
+              "method": "promoteJobs",
+              "args": []
+            },
+            {
+              "method": "moderation.insert",
+              "value": {
+                "id": "audit-id",
+                "userId": "actor",
+                "type": "promoteQueue",
+                "info": {}
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-retry-job",
+      "layer": "endpoint-callback",
+      "input": {
+        "route": "admin/queue/retry-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": "job"
+        },
+        "heldQueueOperation": "retry"
+      },
+      "expected": {
+        "beforeRelease": {
+          "settled": true,
+          "calls": [
+            {
+              "queue": "deliver",
+              "method": "getJob",
+              "args": [
+                "job"
+              ]
+            },
+            {
+              "queue": "deliver",
+              "method": "retry",
+              "args": [
+                "job"
+              ]
+            }
+          ]
+        },
+        "afterRelease": {
+          "settled": true,
+          "calls": [
+            {
+              "queue": "deliver",
+              "method": "getJob",
+              "args": [
+                "job"
+              ]
+            },
+            {
+              "queue": "deliver",
+              "method": "retry",
+              "args": [
+                "job"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "boundary-remove-job",
+      "layer": "endpoint-callback",
+      "input": {
+        "route": "admin/queue/remove-job",
+        "params": {
+          "queue": "deliver",
+          "jobId": "job"
+        },
+        "heldQueueOperation": "remove"
+      },
+      "expected": {
+        "beforeRelease": {
+          "settled": true,
+          "calls": [
+            {
+              "queue": "deliver",
+              "method": "getJob",
+              "args": [
+                "job"
+              ]
+            },
+            {
+              "queue": "deliver",
+              "method": "remove",
+              "args": [
+                "job"
+              ]
+            }
+          ]
+        },
+        "afterRelease": {
+          "settled": true,
+          "calls": [
+            {
+              "queue": "deliver",
+              "method": "getJob",
+              "args": [
+                "job"
+              ]
+            },
+            {
+              "queue": "deliver",
+              "method": "remove",
+              "args": [
+                "job"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "jobs-no-search",
+      "layer": "endpoint-callback",
+      "input": {
+        "route": "admin/queue/jobs",
+        "params": {
+          "queue": "userWebhookDeliver",
+          "state": [
+            "wait"
+          ]
+        },
+        "repeatedJobs": {
+          "count": 1002,
+          "name": "Search Target",
+          "data": {
+            "secret": "needle-secret"
+          },
+          "stacktrace": []
+        }
+      },
+      "expected": {
+        "count": 101,
+        "first": {
+          "id": "0",
+          "name": "Search Target",
+          "data": {
+            "secret": "(redacted)"
+          },
+          "opts": {
+            "attempts": 12
+          },
+          "timestamp": 100,
+          "processedOn": 200,
+          "processedBy": "worker",
+          "progress": 0,
+          "attempts": 2,
+          "delay": 10,
+          "stacktrace": [],
+          "returnValue": {
+            "result": true
+          },
+          "isFailed": false
+        },
+        "last": {
+          "id": "100",
+          "name": "Search Target",
+          "data": {
+            "secret": "(redacted)"
+          },
+          "opts": {
+            "attempts": 12
+          },
+          "timestamp": 100,
+          "processedOn": 200,
+          "processedBy": "worker",
+          "progress": 0,
+          "attempts": 2,
+          "delay": 10,
+          "stacktrace": [],
+          "returnValue": {
+            "result": true
+          },
+          "isFailed": false
+        },
+        "digest": "5206a99c2c8e9bbbeef17d60bc2c77f0bcd7de516d299e6b2c750696bc8849d3",
+        "calls": [
+          {
+            "queue": "userWebhookDeliver",
+            "method": "getJobs",
+            "args": [
+              [
+                "wait"
+              ],
+              0,
+              100
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "jobs-empty-search",
+      "layer": "endpoint-callback",
+      "input": {
+        "route": "admin/queue/jobs",
+        "params": {
+          "queue": "userWebhookDeliver",
+          "state": [
+            "wait"
+          ],
+          "search": ""
+        },
+        "repeatedJobs": {
+          "count": 1002,
+          "name": "Search Target",
+          "data": {
+            "secret": "needle-secret"
+          },
+          "stacktrace": []
+        }
+      },
+      "expected": {
+        "count": 101,
+        "first": {
+          "id": "0",
+          "name": "Search Target",
+          "data": {
+            "secret": "(redacted)"
+          },
+          "opts": {
+            "attempts": 12
+          },
+          "timestamp": 100,
+          "processedOn": 200,
+          "processedBy": "worker",
+          "progress": 0,
+          "attempts": 2,
+          "delay": 10,
+          "stacktrace": [],
+          "returnValue": {
+            "result": true
+          },
+          "isFailed": false
+        },
+        "last": {
+          "id": "100",
+          "name": "Search Target",
+          "data": {
+            "secret": "(redacted)"
+          },
+          "opts": {
+            "attempts": 12
+          },
+          "timestamp": 100,
+          "processedOn": 200,
+          "processedBy": "worker",
+          "progress": 0,
+          "attempts": 2,
+          "delay": 10,
+          "stacktrace": [],
+          "returnValue": {
+            "result": true
+          },
+          "isFailed": false
+        },
+        "digest": "5206a99c2c8e9bbbeef17d60bc2c77f0bcd7de516d299e6b2c750696bc8849d3",
+        "calls": [
+          {
+            "queue": "userWebhookDeliver",
+            "method": "getJobs",
+            "args": [
+              [
+                "wait"
+              ],
+              0,
+              100
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "jobs-search-cap",
+      "layer": "endpoint-callback",
+      "input": {
+        "route": "admin/queue/jobs",
+        "params": {
+          "queue": "userWebhookDeliver",
+          "state": [
+            "wait"
+          ],
+          "search": "search target"
+        },
+        "repeatedJobs": {
+          "count": 1002,
+          "name": "Search Target",
+          "data": {
+            "secret": "needle-secret"
+          },
+          "stacktrace": []
+        }
+      },
+      "expected": {
+        "count": 100,
+        "first": {
+          "id": "0",
+          "name": "Search Target",
+          "data": {
+            "secret": "(redacted)"
+          },
+          "opts": {
+            "attempts": 12
+          },
+          "timestamp": 100,
+          "processedOn": 200,
+          "processedBy": "worker",
+          "progress": 0,
+          "attempts": 2,
+          "delay": 10,
+          "stacktrace": [],
+          "returnValue": {
+            "result": true
+          },
+          "isFailed": false
+        },
+        "last": {
+          "id": "99",
+          "name": "Search Target",
+          "data": {
+            "secret": "(redacted)"
+          },
+          "opts": {
+            "attempts": 12
+          },
+          "timestamp": 100,
+          "processedOn": 200,
+          "processedBy": "worker",
+          "progress": 0,
+          "attempts": 2,
+          "delay": 10,
+          "stacktrace": [],
+          "returnValue": {
+            "result": true
+          },
+          "isFailed": false
+        },
+        "digest": "84947204d214e89fc82b074286d61c4730db750273a075ccf9b213e349bd46fd",
+        "calls": [
+          {
+            "queue": "userWebhookDeliver",
+            "method": "getJobs",
+            "args": [
+              [
+                "wait"
+              ],
+              0,
+              1000
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "jobs-search-secret-redacted",
+      "layer": "endpoint-callback",
+      "input": {
+        "route": "admin/queue/jobs",
+        "params": {
+          "queue": "userWebhookDeliver",
+          "state": [
+            "wait"
+          ],
+          "search": "needle-secret"
+        },
+        "repeatedJobs": {
+          "count": 1002,
+          "name": "Search Target",
+          "data": {
+            "secret": "needle-secret"
+          },
+          "stacktrace": []
+        }
+      },
+      "expected": {
+        "count": 0,
+        "first": null,
+        "last": null,
+        "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "calls": [
+          {
+            "queue": "userWebhookDeliver",
+            "method": "getJobs",
+            "args": [
+              [
+                "wait"
+              ],
+              0,
+              1000
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "jobs-search-metadata",
+      "layer": "endpoint-callback",
+      "input": {
+        "route": "admin/queue/jobs",
+        "params": {
+          "queue": "userWebhookDeliver",
+          "state": [
+            "wait"
+          ],
+          "search": "attempts"
+        },
+        "repeatedJobs": {
+          "count": 1002,
+          "name": "Search Target",
+          "data": {
+            "secret": "needle-secret"
+          },
+          "stacktrace": []
+        }
+      },
+      "expected": {
+        "count": 100,
+        "first": {
+          "id": "0",
+          "name": "Search Target",
+          "data": {
+            "secret": "(redacted)"
+          },
+          "opts": {
+            "attempts": 12
+          },
+          "timestamp": 100,
+          "processedOn": 200,
+          "processedBy": "worker",
+          "progress": 0,
+          "attempts": 2,
+          "delay": 10,
+          "stacktrace": [],
+          "returnValue": {
+            "result": true
+          },
+          "isFailed": false
+        },
+        "last": {
+          "id": "99",
+          "name": "Search Target",
+          "data": {
+            "secret": "(redacted)"
+          },
+          "opts": {
+            "attempts": 12
+          },
+          "timestamp": 100,
+          "processedOn": 200,
+          "processedBy": "worker",
+          "progress": 0,
+          "attempts": 2,
+          "delay": 10,
+          "stacktrace": [],
+          "returnValue": {
+            "result": true
+          },
+          "isFailed": false
+        },
+        "digest": "84947204d214e89fc82b074286d61c4730db750273a075ccf9b213e349bd46fd",
+        "calls": [
+          {
+            "queue": "userWebhookDeliver",
+            "method": "getJobs",
+            "args": [
+              [
+                "wait"
+              ],
+              0,
+              1000
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "stream-connection-anonymous",
+      "layer": "stream-connection",
+      "input": {
+        "actor": "anonymous",
+        "upgradeBypassed": true,
+        "connect": {
+          "id": "channel-id",
+          "channel": "queueStats",
+          "pong": true
+        },
+        "duplicateId": "duplicate",
+        "requestLog": {
+          "id": "request-id",
+          "length": 1
+        }
+      },
+      "expected": {
+        "messages": [
+          {
+            "type": "connected",
+            "body": {
+              "id": "channel-id"
+            }
+          },
+          {
+            "type": "channel",
+            "body": {
+              "id": "channel-id",
+              "type": "statsLog",
+              "body": [
+                {
+                  "deliver": {
+                    "activeSincePrevTick": 0,
+                    "active": 1,
+                    "waiting": 2,
+                    "delayed": 3
+                  },
+                  "inbox": {
+                    "activeSincePrevTick": 0,
+                    "active": 1,
+                    "waiting": 2,
+                    "delayed": 3
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "channelCount": 1
+      }
+    },
+    {
+      "id": "stream-connection-member",
+      "layer": "stream-connection",
+      "input": {
+        "actor": "member",
+        "upgradeBypassed": true,
+        "connect": {
+          "id": "channel-id",
+          "channel": "queueStats",
+          "pong": true
+        },
+        "duplicateId": "duplicate",
+        "requestLog": {
+          "id": "request-id",
+          "length": 1
+        }
+      },
+      "expected": {
+        "messages": [
+          {
+            "type": "connected",
+            "body": {
+              "id": "channel-id"
+            }
+          },
+          {
+            "type": "channel",
+            "body": {
+              "id": "channel-id",
+              "type": "statsLog",
+              "body": [
+                {
+                  "deliver": {
+                    "activeSincePrevTick": 0,
+                    "active": 1,
+                    "waiting": 2,
+                    "delayed": 3
+                  },
+                  "inbox": {
+                    "activeSincePrevTick": 0,
+                    "active": 1,
+                    "waiting": 2,
+                    "delayed": 3
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "channelCount": 1
+      }
+    },
+    {
+      "id": "stream-connection-unscoped-app",
+      "layer": "stream-connection",
+      "input": {
+        "actor": "unscoped-app",
+        "upgradeBypassed": true,
+        "connect": {
+          "id": "channel-id",
+          "channel": "queueStats",
+          "pong": true
+        },
+        "duplicateId": "duplicate",
+        "requestLog": {
+          "id": "request-id",
+          "length": 1
+        }
+      },
+      "expected": {
+        "messages": [
+          {
+            "type": "connected",
+            "body": {
+              "id": "channel-id"
+            }
+          },
+          {
+            "type": "channel",
+            "body": {
+              "id": "channel-id",
+              "type": "statsLog",
+              "body": [
+                {
+                  "deliver": {
+                    "activeSincePrevTick": 0,
+                    "active": 1,
+                    "waiting": 2,
+                    "delayed": 3
+                  },
+                  "inbox": {
+                    "activeSincePrevTick": 0,
+                    "active": 1,
+                    "waiting": 2,
+                    "delayed": 3
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "channelCount": 1
+      }
+    },
+    {
+      "id": "stream-invalid-log-ignored",
+      "layer": "stream-channel",
+      "input": {
+        "invalidBodies": [
+          null,
+          [],
+          {},
+          {
+            "id": 1,
+            "length": 1
+          },
+          {
+            "id": "id"
+          },
+          {
+            "id": "id",
+            "length": "1"
+          }
+        ],
+        "unknownOperation": "unknown"
+      },
+      "expected": {
+        "messages": []
+      }
+    },
+    {
+      "id": "stream-active-count-and-log",
+      "layer": "stream-producer-channel",
+      "input": {
+        "deliverActiveEvents": 2,
+        "inboxActiveEvents": 1,
+        "ticks": 1,
+        "requestLog": {
+          "id": "id",
+          "length": 1
+        }
+      },
+      "expected": {
+        "messages": [
+          {
+            "type": "channel",
+            "body": {
+              "id": "channel-id",
+              "type": "stats",
+              "body": {
+                "deliver": {
+                  "activeSincePrevTick": 2,
+                  "active": 1,
+                  "waiting": 2,
+                  "delayed": 3
+                },
+                "inbox": {
+                  "activeSincePrevTick": 1,
+                  "active": 1,
+                  "waiting": 2,
+                  "delayed": 3
+                }
+              }
+            }
+          },
+          {
+            "type": "channel",
+            "body": {
+              "id": "channel-id",
+              "type": "statsLog",
+              "body": [
+                {
+                  "deliver": {
+                    "activeSincePrevTick": 2,
+                    "active": 1,
+                    "waiting": 2,
+                    "delayed": 3
+                  },
+                  "inbox": {
+                    "activeSincePrevTick": 1,
+                    "active": 1,
+                    "waiting": 2,
+                    "delayed": 3
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "queueEvents": [
+          {
+            "name": "deliver",
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:deliver"
+            }
+          },
+          {
+            "name": "inbox",
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:inbox"
+            }
+          }
+        ],
+        "timerCalls": [
+          [
+            "setInterval",
+            10000
+          ]
+        ]
+      }
+    },
+    {
+      "id": "stream-active-reset",
+      "layer": "stream-producer-channel",
+      "input": {
+        "ticks": 1
+      },
+      "expected": {
+        "messages": [
+          {
+            "type": "channel",
+            "body": {
+              "id": "channel-id",
+              "type": "stats",
+              "body": {
+                "deliver": {
+                  "activeSincePrevTick": 0,
+                  "active": 1,
+                  "waiting": 2,
+                  "delayed": 3
+                },
+                "inbox": {
+                  "activeSincePrevTick": 0,
+                  "active": 1,
+                  "waiting": 2,
+                  "delayed": 3
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "stream-history-1000",
+      "layer": "stream-producer-channel",
+      "input": {
+        "priorTicks": 203,
+        "recent200ActiveCounts": {
+          "firstTick": 100,
+          "lastTick": 299
+        },
+        "requestLog": {
+          "id": "id",
+          "length": 1000
+        }
+      },
+      "expected": {
+        "type": "statsLog",
+        "count": 200,
+        "first": {
+          "deliver": {
+            "activeSincePrevTick": 0,
+            "active": 299,
+            "waiting": 2,
+            "delayed": 3
+          },
+          "inbox": {
+            "activeSincePrevTick": 0,
+            "active": 299,
+            "waiting": 2,
+            "delayed": 3
+          }
+        },
+        "last": {
+          "deliver": {
+            "activeSincePrevTick": 0,
+            "active": 100,
+            "waiting": 2,
+            "delayed": 3
+          },
+          "inbox": {
+            "activeSincePrevTick": 0,
+            "active": 100,
+            "waiting": 2,
+            "delayed": 3
+          }
+        }
+      }
+    },
+    {
+      "id": "stream-history--1",
+      "layer": "stream-producer-channel",
+      "input": {
+        "priorTicks": 203,
+        "recent200ActiveCounts": {
+          "firstTick": 100,
+          "lastTick": 299
+        },
+        "requestLog": {
+          "id": "id",
+          "length": -1
+        }
+      },
+      "expected": {
+        "type": "statsLog",
+        "count": 199,
+        "first": {
+          "deliver": {
+            "activeSincePrevTick": 0,
+            "active": 299,
+            "waiting": 2,
+            "delayed": 3
+          },
+          "inbox": {
+            "activeSincePrevTick": 0,
+            "active": 299,
+            "waiting": 2,
+            "delayed": 3
+          }
+        },
+        "last": {
+          "deliver": {
+            "activeSincePrevTick": 0,
+            "active": 101,
+            "waiting": 2,
+            "delayed": 3
+          },
+          "inbox": {
+            "activeSincePrevTick": 0,
+            "active": 101,
+            "waiting": 2,
+            "delayed": 3
+          }
+        }
+      }
+    },
+    {
+      "id": "stream-history-1.9",
+      "layer": "stream-producer-channel",
+      "input": {
+        "priorTicks": 203,
+        "recent200ActiveCounts": {
+          "firstTick": 100,
+          "lastTick": 299
+        },
+        "requestLog": {
+          "id": "id",
+          "length": 1.9
+        }
+      },
+      "expected": {
+        "type": "statsLog",
+        "count": 1,
+        "first": {
+          "deliver": {
+            "activeSincePrevTick": 0,
+            "active": 299,
+            "waiting": 2,
+            "delayed": 3
+          },
+          "inbox": {
+            "activeSincePrevTick": 0,
+            "active": 299,
+            "waiting": 2,
+            "delayed": 3
+          }
+        },
+        "last": {
+          "deliver": {
+            "activeSincePrevTick": 0,
+            "active": 299,
+            "waiting": 2,
+            "delayed": 3
+          },
+          "inbox": {
+            "activeSincePrevTick": 0,
+            "active": 299,
+            "waiting": 2,
+            "delayed": 3
+          }
+        }
+      }
+    },
+    {
+      "id": "stream-history-0",
+      "layer": "stream-producer-channel",
+      "input": {
+        "priorTicks": 203,
+        "recent200ActiveCounts": {
+          "firstTick": 100,
+          "lastTick": 299
+        },
+        "requestLog": {
+          "id": "id",
+          "length": 0
+        }
+      },
+      "expected": {
+        "type": "statsLog",
+        "count": 0,
+        "first": null,
+        "last": null
+      }
+    },
+    {
+      "id": "stream-disconnect-unsubscribes",
+      "layer": "stream-connection",
+      "input": {
+        "disconnectId": "channel-id",
+        "subsequentTicks": 1
+      },
+      "expected": {
+        "messages": [],
+        "statsListeners": 0
+      }
+    },
+    {
+      "id": "stream-producer-dispose-source-limits",
+      "layer": "stream-producer",
+      "input": {
+        "operation": "dispose"
+      },
+      "expected": {
+        "timers": 0,
+        "remainingRequestLogListeners": 1,
+        "activeEventListeners": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "stream-pending-log-listener-survives-dispose",
+      "layer": "stream-channel",
+      "input": {
+        "producerAbsent": true,
+        "requestLog": {
+          "id": "pending",
+          "length": 1
+        },
+        "dispose": true
+      },
+      "expected": {
+        "pendingLogListeners": 1,
+        "statsListeners": 0
+      }
+    },
+    {
+      "id": "stream-upgrade-anonymous",
+      "layer": "stream-upgrade",
+      "input": {
+        "actor": "anonymous",
+        "appPermission": null
+      },
+      "expected": {
+        "upgraded": true,
+        "destroyed": false,
+        "writes": []
+      }
+    },
+    {
+      "id": "stream-upgrade-member",
+      "layer": "stream-upgrade",
+      "input": {
+        "actor": "member",
+        "appPermission": null
+      },
+      "expected": {
+        "upgraded": true,
+        "destroyed": false,
+        "writes": []
+      }
+    },
+    {
+      "id": "stream-upgrade-read-account-app",
+      "layer": "stream-upgrade",
+      "input": {
+        "actor": "read-account-app",
+        "appPermission": [
+          "read:account"
+        ]
+      },
+      "expected": {
+        "upgraded": true,
+        "destroyed": false,
+        "writes": []
+      }
+    },
+    {
+      "id": "stream-upgrade-unscoped-app",
+      "layer": "stream-upgrade",
+      "input": {
+        "actor": "unscoped-app",
+        "appPermission": []
+      },
+      "expected": {
+        "upgraded": false,
+        "destroyed": true,
+        "writes": [
+          "HTTP/1.1 401 Unauthorized\r\nWWW-Authenticate: Bearer realm=\"Misskey\", error=\"invalid_token\", error_description=\"Failed to authenticate\"\r\n\r\n"
+        ]
+      }
+    },
+    {
+      "id": "stream-upgrade-suspended",
+      "layer": "stream-upgrade",
+      "input": {
+        "actor": "suspended",
+        "appPermission": null
+      },
+      "expected": {
+        "upgraded": false,
+        "destroyed": true,
+        "writes": [
+          "HTTP/1.1 403 Forbidden\r\n\r\n"
+        ]
+      }
+    },
+    {
+      "id": "stream-upgrade-invalid-token",
+      "layer": "stream-upgrade",
+      "input": {
+        "actor": "invalid-token",
+        "appPermission": null
+      },
+      "expected": {
+        "upgraded": false,
+        "destroyed": true,
+        "writes": [
+          "HTTP/1.1 401 Unauthorized\r\nWWW-Authenticate: Bearer realm=\"Misskey\", error=\"invalid_token\", error_description=\"Failed to authenticate\"\r\n\r\n"
+        ]
+      }
+    }
+  ]
+}

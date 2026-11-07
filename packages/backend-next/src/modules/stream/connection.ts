@@ -4,6 +4,7 @@
  */
 import { filterHomeNote, hideStreamNote, instanceMuted, noteMuted, noteVisible, pureRenote } from './policy.js';
 import type { StreamFacts, StreamNote } from './policy.js';
+import type { QueueStatsReader } from '../queue/public.js';
 
 export function object(value: unknown): value is Record<string, unknown> {
 	return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -16,12 +17,25 @@ export function createStreamConnection(ports: {
 	send(value: { type: string; body: unknown }): void;
 	repack(id: string): Promise<Record<string, unknown> | null>;
 	reaction(note: StreamNote): Promise<string | undefined>;
+	queueStats?: QueueStatsReader;
 }) {
-	const channels = new Map<string, { name: string; params: Record<string, unknown> }>();
+	const channels = new Map<string, { name: string; params: Record<string, unknown>; dispose?: () => void }>();
 	const notes = new Map<string, number>();
+	let disposed = false;
+	const disconnect = (id: string) => {
+		channels.get(id)?.dispose?.();
+		channels.delete(id);
+	};
 	return {
+		dispose(): void {
+			disposed = true;
+			for (const id of channels.keys()) {
+				disconnect(id);
+			}
+			notes.clear();
+		},
 		async receive(value: unknown): Promise<void> {
-			if (!object(value) || !object(value.body)) {
+			if (disposed || !object(value) || !object(value.body)) {
 				return;
 			}
 			const { type, body } = value;
@@ -47,26 +61,38 @@ export function createStreamConnection(ports: {
 					notes.delete(id);
 				}
 			} else if (type === 'disconnect') {
-				channels.delete(id);
+				disconnect(id);
+			} else if (type === 'channel' || type === 'ch') {
+				if (channels.get(id)?.name === 'queueStats' && body.type === 'requestLog' && object(body.body) && typeof body.body.id === 'string' && typeof body.body.length === 'number') {
+					ports.send({ type: 'channel', body: { id, type: 'statsLog', body: ports.queueStats!.readLog(body.body.length) } });
+				}
 			} else if (type === 'connect') {
 				if (typeof body.channel !== 'string' || (body.params !== undefined && !object(body.params)) || (body.pong != null && typeof body.pong !== 'boolean')) {
 					return;
 				}
-				channels.delete(id);
-				if (channels.size >= 32 || ports.facts().userId === null || !['main', 'homeTimeline'].includes(body.channel)) {
+				disconnect(id);
+				const publicStats = body.channel === 'queueStats' && ports.queueStats !== undefined;
+				if (channels.size >= 32 || (!publicStats && (ports.facts().userId === null || !['main', 'homeTimeline'].includes(body.channel)))) {
 					return;
 				}
-				if (body.channel === 'main' && [...channels.values()].some(c => c.name === 'main')) {
+				if ((body.channel === 'main' || body.channel === 'queueStats') && [...channels.values()].some(c => c.name === body.channel)) {
 					return;
 				}
 				channels.set(id, { name: body.channel, params: body.params as Record<string, unknown> ?? {} });
+				if (publicStats) {
+					channels.get(id)!.dispose = ports.queueStats!.subscribe(sample => {
+						if (!disposed && channels.get(id)?.name === 'queueStats') {
+							ports.send({ type: 'channel', body: { id, type: 'stats', body: sample } });
+						}
+					});
+				}
 				if (body.pong) {
 					ports.send({ type: 'connected', body: { id } });
 				}
 			}
 		},
 		async publish(value: unknown): Promise<void> {
-			if (!object(value) || typeof value.channel !== 'string') {
+			if (disposed || !object(value) || typeof value.channel !== 'string') {
 				return;
 			}
 			const facts = ports.facts();

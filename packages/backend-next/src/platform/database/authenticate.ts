@@ -9,7 +9,7 @@ import type { RoleActor } from '../../modules/role/public.js';
 import type { Logger } from '../logger.js';
 
 export function createTokenAuthenticator(manager: EntityManager, logger: Logger) {
-	return async (token: string | null | undefined): Promise<RoleActor & { canWriteNote: boolean; canReadAccount: boolean; isSuspended: boolean }> => {
+	return async (token: string | null | undefined): Promise<RoleActor & { canWriteNote: boolean; canReadAccount: boolean; canReadQueue: boolean; canWriteQueue: boolean; isSuspended: boolean }> => {
 		if (token == null) {
 			throw new CredentialRequired();
 		}
@@ -18,7 +18,7 @@ export function createTokenAuthenticator(manager: EntityManager, logger: Logger)
 			if (user === null) {
 				throw new AuthenticationFailed();
 			}
-			return { userId: user.id, canWriteNote: true, canReadAccount: true, isSuspended: user.isSuspended, credentialGrant: { readRole: true, updateRole: true } };
+			return { userId: user.id, canWriteNote: true, canReadAccount: true, canReadQueue: true, canWriteQueue: true, isSuspended: user.isSuspended, credentialGrant: { readRole: true, updateRole: true } };
 		}
 
 		const accessToken = await manager.getRepository(MiAccessToken).findOne({ where: [{ hash: token.toLowerCase() }, { token }] });
@@ -38,7 +38,7 @@ export function createTokenAuthenticator(manager: EntityManager, logger: Logger)
 		} catch (error) {
 			logger.error('credential-usage.failed', { error });
 		}
-		return { userId: user.id, canWriteNote: permission.includes('write:notes'), canReadAccount: permission.includes('read:account'), isSuspended: user.isSuspended, credentialGrant: {
+		return { userId: user.id, canWriteNote: permission.includes('write:notes'), canReadAccount: permission.includes('read:account'), canReadQueue: permission.includes('read:admin:queue'), canWriteQueue: permission.includes('write:admin:queue'), isSuspended: user.isSuspended, credentialGrant: {
 			readRole: permission.includes('read:admin:roles'), updateRole: permission.includes('write:admin:roles'),
 		} };
 	};

@@ -18,8 +18,9 @@ import { createIdCodec } from '../platform/id-codec.js';
 import { createRoleHttpApp } from './role-http.js';
 import type { RuntimeResources } from './create-runtime.js';
 import type { RuntimeConfig } from '../config/types.js';
+import type { Hono } from 'hono';
 
-export function createBackendHttpApp(resources: RuntimeResources, config: RuntimeConfig) {
+export function createBackendHttpApp(resources: RuntimeResources, config: RuntimeConfig, queueApi?: Hono) {
 	const manager = resources.dataSource.manager;
 	const codec = createIdCodec(config.id);
 	const reader = createNoteReader(manager, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId });
@@ -42,7 +43,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		publishDeleted: (snapshot, occurredAtMs) => resources.notePostDelete.start({ kind: 'stream', snapshot, occurredAtMs }),
 	});
 	const authenticate = createTokenAuthenticator(manager, resources.logger);
-	return createRoleHttpApp(resources, config)
+	const app = createRoleHttpApp(resources, config)
 		.route('/', createNoteDeleteApi({ authenticate, deleteNote: deletion.deleteNote, logger: resources.logger }))
 		.route('/', createNoteApi({ authenticate, showNote: show.showNote, logger: resources.logger }))
 		.route('/', createNoteCreateApi({
@@ -52,4 +53,8 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 				return renderNote(id, await reader.readMaterials(notes, viewerId, now), viewerId, now);
 			},
 		}));
+	if (queueApi) {
+		app.route('/', queueApi);
+	}
+	return app;
 }
