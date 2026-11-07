@@ -63,8 +63,8 @@
 
 **Interfaces:** T1の実在する実装commitと、repo内に保存したsource比較・実依存検証を参照する。
 
-- [ ] **Step 1: 対象producer行だけを更新する。** `responsibility:notes-core:13`（Renote時featured加点）と関連する投稿副作用の根拠をT1へ固定する。window書込が実装される `responsibility:notes-core:40`（window方式と2-window平均）と `service:FeaturedService` は `partial` にし、未実装の読取merge・gallery/hashtag等を残範囲として明記する。featured閲覧/Reaction/Gallery/hashtag・antennaの未完了を維持し、監査A/B・担当domain・既存source証拠を変更しない。既存noteに残るRole TL未接続等の古い説明は対象の説明に限り最新実装へ合わせる。
-- [ ] **Step 2: 生成とmetadata検証。** `node scripts/backend-contract-inventory.mjs --write`、`--check`、`node --test scripts/backend-contract-inventory.test.mjs`、`node scripts/check-shipping.mjs --base ce5217a4be022a7c378f1519f96e639c2d316849`、`git diff --check`。ID集合・2,119契約・1,432監査行・31domainと既存根拠を保持したことを確認する。
+- [x] **Step 1: 対象producer行だけを更新する。** `responsibility:notes-core:13`（Renote時featured加点）と関連する投稿副作用の根拠をT1へ固定する。window書込が実装される `responsibility:notes-core:40`（window方式と2-window平均）と `service:FeaturedService` は `partial` にし、未実装の読取merge・gallery/hashtag等を残範囲として明記する。featured閲覧/Reaction/Gallery/hashtag・antennaの未完了を維持し、監査A/B・担当domain・既存source証拠を変更しない。既存noteに残るRole TL未接続等の古い説明は対象の説明に限り最新実装へ合わせる。
+- [x] **Step 2: 生成とmetadata検証。** `node scripts/backend-contract-inventory.mjs --write`、`--check`、`node --test scripts/backend-contract-inventory.test.mjs`、`git diff --check`。controllerが `node scripts/check-shipping.mjs --base ce5217a4be022a7c378f1519f96e639c2d316849` を実行し、最終shippingはPASS。ID集合・2,119契約・1,432監査行・31domainと既存根拠を保持したことを確認する。
 - [ ] **Step 3: metadata commitとPR引継ぎ。** controllerがT2を別commitにし、PRは `Refs #174`。#174/#172/#176/#184/#185をcloseしない。#114/#127/#174本文には#230未マージ等の古い記述があり、PR234までマージ済みという実状態を基準にする。
 
 ## 選定理由と完了条件
@@ -73,10 +73,20 @@ GitHub #114/#127/#174/#185/#186/#131をread-onlyで照合した。#174の必須�
 
 featuredは既存snapshotで全材料が揃い、通常Redisだけで閉じる。hashtagは `MiHashtag` の機械同期、atomicなmentionedUserIds/count更新、Metaのhidden/sensitive、1h unique set・10分HLL・featuredHashtagsRankingを併せて実装する必要があり、featured単独より広い。antennaは `MiAntenna` の同期、候補cache/internal events、follow/list/keyword/visibility facts、timeline/publicationが必要でさらに広い。後者を未承認の省略で小さくしない。
 
-完了は本家条件に沿うRenote加点が通常HTTP→post-save→実Redisで動き、境界値・独立失敗・終了待機・source比較が保存され、inventoryが実装commitへ固定されること。T1は実装・独立レビューを完了した。T2の対応表更新とPR作成は後続工程。
+完了は本家条件に沿うRenote加点が通常HTTP→post-save→実Redisで動き、境界値・独立失敗・終了待機・source比較が保存され、inventoryが実装commitへ固定されること。T1は実装・独立レビューを完了した。T2の対応表更新・生成・metadata検証も完了し、最終shippingはPASSし、ROADMAP追記の限定再レビュー・metadata commit・PR作成はcontrollerに残る。
 
 ## T1 検証結果（2026-11-07）
 
 単体62ファイル2,174件、featured結合11件、既存投稿結合163件、通常HTTP子のprocess1件、依存順build/typecheckが成功。固定本家の実メソッド50観測は再生成一致、新実装の直接JSON比較は39件（ID日時変換はdouble、実codecは結合/processで確認）。変更11ファイルのlint・SPDX・locale・diff検査が成功し、独立T1レビューはSpec PASS / Quality APPROVE。Entity/migration・旧backend API変更がないためschema/旧型生成は対象外。
 
 sourceのdetached処理に対する診断・終了待機、EXEC内command error検出、同期依存例外の独立集約を差異として記録した。新たなretry/永続状態/削除cleanupは追加していない。T1完成を#174/#172/#176全体の完成としない。
+
+## T2 metadata検証結果（2026-11-07）
+
+- PASS: `implementationCommit` を実在するT1実装commit `399987210060b90db0aaac89ed16bfaa69b95768` へ固定し、全implementation/verification参照がそのGit treeに存在することを確認した。
+- PASS: `responsibility:notes-core:13`・`responsibility:notes-core:40`・`service:FeaturedService` の3行を `partial` にし、`api:notes/create`・`capability:timeline` の既存根拠へ追加した。検索2行は残範囲noteだけを更新し、計7行に限定した。
+- PASS: `node scripts/backend-contract-inventory.mjs --write` / `--check`、`node --test scripts/backend-contract-inventory.test.mjs`（10件）、`git diff --check`。
+- PASS: `/tmp/tiramiss-next235-metadata-invariants.py` による開始baseとのsemantic照合で、2,119契約・1,432監査行・31domain、ID集合と順序、全行のsource/name/line/domain/audit/references、既存implementation/verification/differences配列の内容・順序を保持した。statusの新規変更は3行の `not_implemented → partial` のみで、`verified` へ広げていない。
+- PASS（controller実行）: 最終shippingで変更11TSのlint・SPDX対象3,156ファイル・locale safetyが成功。
+- PASS: 最終レビューで不足を指摘されたROADMAP末尾へ本sliceの実装pin・比較範囲・残範囲・復元限界を追記し、過去sliceの記録を保持した。metadata変更はROADMAPを含む7文書。文書のみの修正後に `git diff --check` を実行した。
+- SKIPPED（controllerへ引継ぎ）: ROADMAP追記の限定再レビュー、metadata commit、PR作成。T2はJSON/Markdownのみでruntimeを編集せず、T1の製品test/buildを再実行していない。
