@@ -1,0 +1,475 @@
+{
+  "fixedCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "evidence": "Actual complete fixed postNoteCreated and index method bodies plus actual NotificationManager class; collaborators are doubles. No full server, DB or Meilisearch. Harness captures detached unhandledRejection events.",
+  "source": {
+    "blob": "05e98541844d7f14e91263a78a03c9ec0139a89d"
+  },
+  "observations": [
+    {
+      "id": "success",
+      "calls": [
+        {
+          "method": "notesChart"
+        },
+        {
+          "method": "perUserNotesChart"
+        },
+        {
+          "method": "hashtag-update-start"
+        },
+        {
+          "method": "count-start"
+        },
+        {
+          "method": "timeline-start"
+        },
+        {
+          "method": "antenna-start"
+        },
+        {
+          "method": "active-user"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "publish-notes-start"
+        },
+        {
+          "method": "role-timeline-start"
+        },
+        {
+          "method": "webhook-start"
+        },
+        {
+          "method": "mention-preparation"
+        },
+        {
+          "method": "ap-render-start"
+        },
+        {
+          "method": "search-index-start",
+          "id": "noteid"
+        },
+        {
+          "method": "postNoteCreated-returned"
+        },
+        {
+          "method": "ap-manager-start"
+        },
+        {
+          "method": "ap-followers-recipe"
+        },
+        {
+          "method": "ap-relay-start"
+        },
+        {
+          "method": "ap-execute-start"
+        }
+      ],
+      "indexStarted": true,
+      "postNoteCreatedRejected": false,
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "pack-reject",
+      "calls": [
+        {
+          "method": "notesChart"
+        },
+        {
+          "method": "perUserNotesChart"
+        },
+        {
+          "method": "hashtag-update-start"
+        },
+        {
+          "method": "count-start"
+        },
+        {
+          "method": "timeline-start"
+        },
+        {
+          "method": "antenna-start"
+        },
+        {
+          "method": "active-user"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "postNoteCreated-returned",
+          "error": "pack failed"
+        }
+      ],
+      "indexStarted": false,
+      "postNoteCreatedRejected": true,
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "mention-preparation-reject",
+      "calls": [
+        {
+          "method": "notesChart"
+        },
+        {
+          "method": "perUserNotesChart"
+        },
+        {
+          "method": "hashtag-update-start"
+        },
+        {
+          "method": "count-start"
+        },
+        {
+          "method": "timeline-start"
+        },
+        {
+          "method": "antenna-start"
+        },
+        {
+          "method": "active-user"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "publish-notes-start"
+        },
+        {
+          "method": "role-timeline-start"
+        },
+        {
+          "method": "webhook-start"
+        },
+        {
+          "method": "mention-preparation"
+        },
+        {
+          "method": "postNoteCreated-returned",
+          "error": "mention preparation failed"
+        }
+      ],
+      "indexStarted": false,
+      "postNoteCreatedRejected": true,
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "detached-publisher-reject",
+      "calls": [
+        {
+          "method": "notesChart"
+        },
+        {
+          "method": "perUserNotesChart"
+        },
+        {
+          "method": "hashtag-update-start"
+        },
+        {
+          "method": "count-start"
+        },
+        {
+          "method": "timeline-start"
+        },
+        {
+          "method": "antenna-start"
+        },
+        {
+          "method": "active-user"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "publish-notes-start"
+        },
+        {
+          "method": "role-timeline-start"
+        },
+        {
+          "method": "webhook-start"
+        },
+        {
+          "method": "mention-preparation"
+        },
+        {
+          "method": "ap-render-start"
+        },
+        {
+          "method": "search-index-start",
+          "id": "noteid"
+        },
+        {
+          "method": "postNoteCreated-returned"
+        },
+        {
+          "method": "ap-manager-start"
+        },
+        {
+          "method": "ap-followers-recipe"
+        },
+        {
+          "method": "ap-relay-start"
+        },
+        {
+          "method": "ap-execute-start"
+        }
+      ],
+      "indexStarted": true,
+      "postNoteCreatedRejected": false,
+      "unhandledRejectionsCapturedByHarness": [
+        "publisher failed"
+      ]
+    },
+    {
+      "id": "detached-webhook-reject",
+      "calls": [
+        {
+          "method": "notesChart"
+        },
+        {
+          "method": "perUserNotesChart"
+        },
+        {
+          "method": "hashtag-update-start"
+        },
+        {
+          "method": "count-start"
+        },
+        {
+          "method": "timeline-start"
+        },
+        {
+          "method": "antenna-start"
+        },
+        {
+          "method": "active-user"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "publish-notes-start"
+        },
+        {
+          "method": "role-timeline-start"
+        },
+        {
+          "method": "webhook-start"
+        },
+        {
+          "method": "mention-preparation"
+        },
+        {
+          "method": "ap-render-start"
+        },
+        {
+          "method": "search-index-start",
+          "id": "noteid"
+        },
+        {
+          "method": "postNoteCreated-returned"
+        },
+        {
+          "method": "ap-manager-start"
+        },
+        {
+          "method": "ap-followers-recipe"
+        },
+        {
+          "method": "ap-relay-start"
+        },
+        {
+          "method": "ap-execute-start"
+        }
+      ],
+      "indexStarted": true,
+      "postNoteCreatedRejected": false,
+      "unhandledRejectionsCapturedByHarness": [
+        "webhook failed"
+      ]
+    },
+    {
+      "id": "detached-ap-render-throw",
+      "calls": [
+        {
+          "method": "notesChart"
+        },
+        {
+          "method": "perUserNotesChart"
+        },
+        {
+          "method": "hashtag-update-start"
+        },
+        {
+          "method": "count-start"
+        },
+        {
+          "method": "timeline-start"
+        },
+        {
+          "method": "antenna-start"
+        },
+        {
+          "method": "active-user"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "publish-notes-start"
+        },
+        {
+          "method": "role-timeline-start"
+        },
+        {
+          "method": "webhook-start"
+        },
+        {
+          "method": "mention-preparation"
+        },
+        {
+          "method": "ap-render-start"
+        },
+        {
+          "method": "search-index-start",
+          "id": "noteid"
+        },
+        {
+          "method": "postNoteCreated-returned"
+        }
+      ],
+      "indexStarted": true,
+      "postNoteCreatedRejected": false,
+      "unhandledRejectionsCapturedByHarness": [
+        "AP render threw"
+      ]
+    },
+    {
+      "id": "detached-ap-render-reject",
+      "calls": [
+        {
+          "method": "notesChart"
+        },
+        {
+          "method": "perUserNotesChart"
+        },
+        {
+          "method": "hashtag-update-start"
+        },
+        {
+          "method": "count-start"
+        },
+        {
+          "method": "timeline-start"
+        },
+        {
+          "method": "antenna-start"
+        },
+        {
+          "method": "active-user"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "publish-notes-start"
+        },
+        {
+          "method": "role-timeline-start"
+        },
+        {
+          "method": "webhook-start"
+        },
+        {
+          "method": "mention-preparation"
+        },
+        {
+          "method": "ap-render-start"
+        },
+        {
+          "method": "search-index-start",
+          "id": "noteid"
+        },
+        {
+          "method": "postNoteCreated-returned"
+        }
+      ],
+      "indexStarted": true,
+      "postNoteCreatedRejected": false,
+      "unhandledRejectionsCapturedByHarness": [
+        "AP render rejected"
+      ]
+    },
+    {
+      "id": "detached-ap-execute-reject",
+      "calls": [
+        {
+          "method": "notesChart"
+        },
+        {
+          "method": "perUserNotesChart"
+        },
+        {
+          "method": "hashtag-update-start"
+        },
+        {
+          "method": "count-start"
+        },
+        {
+          "method": "timeline-start"
+        },
+        {
+          "method": "antenna-start"
+        },
+        {
+          "method": "active-user"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "publish-notes-start"
+        },
+        {
+          "method": "role-timeline-start"
+        },
+        {
+          "method": "webhook-start"
+        },
+        {
+          "method": "mention-preparation"
+        },
+        {
+          "method": "ap-render-start"
+        },
+        {
+          "method": "search-index-start",
+          "id": "noteid"
+        },
+        {
+          "method": "postNoteCreated-returned"
+        },
+        {
+          "method": "ap-manager-start"
+        },
+        {
+          "method": "ap-followers-recipe"
+        },
+        {
+          "method": "ap-relay-start"
+        },
+        {
+          "method": "ap-execute-start"
+        }
+      ],
+      "indexStarted": true,
+      "postNoteCreatedRejected": false,
+      "unhandledRejectionsCapturedByHarness": [
+        "AP execute rejected"
+      ]
+    }
+  ]
+}

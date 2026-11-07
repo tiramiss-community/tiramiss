@@ -43,7 +43,8 @@
 		"cacheable-lookup": "7.0.0",
 		"ipaddr.js": "2.5.0",
 		"jsonld": "9.0.0",
-		"ws": "8.22.0"
+		"ws": "8.22.0",
+		"meilisearch": "0.62.0"
 	},
 	"devDependencies": {
 		"@types/node": "26.6.4",
