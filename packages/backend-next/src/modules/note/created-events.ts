@@ -16,6 +16,7 @@ export function createNoteCreatedEvents(ports: {
 	readSubscribers?(note: NoteNotificationPlanInput): Promise<NoteNotificationPlanInput['subscribers']>;
 	isThreadMuted?(recipientId: string, threadId: string): Promise<boolean>;
 	render(noteId: string, viewerId: string | null, options: { skipHide?: boolean; withReactionAndUserPairCache?: boolean }, snapshot?: NoteCreatedSnapshot): Promise<Record<string, unknown>>;
+	webhook?(userId: string, type: 'note' | 'mention' | 'reply' | 'renote', note: Record<string, unknown>): Promise<void>;
 	stream: { notes(note: Record<string, unknown>): Promise<void>; main(userId: string, type: string, note: Record<string, unknown>): Promise<void> };
 	readReception(recipientId: string, notifierId: string, type: PostNotification['type']): Promise<NotificationReception>;
 	notifications: TransactionRunner<PostNotificationWrites>;
@@ -73,19 +74,31 @@ export function createNoteCreatedEvents(ports: {
 		try {
 			const packed = await ports.render(note.id, null, { skipHide: true, withReactionAndUserPairCache: true }, snapshot);
 			start(ports.stream.notes(packed));
+			if (ports.webhook) {
+				start(ports.webhook(note.userId, 'note', packed));
+			}
 			for (const recipientId of note.mentions) {
 				if (note.localUserIds.has(recipientId) && !await threadMuted(recipientId, note.threadId ?? note.id)) {
 					const mentioned = await ports.render(note.id, recipientId, {}, snapshot);
 					start(ports.stream.main(recipientId, 'mention', mentioned));
+					if (ports.webhook) {
+						start(ports.webhook(recipientId, 'mention', mentioned));
+					}
 					acceptedMentions.push(recipientId);
 				}
 			}
 			if (note.reply !== null && note.localUserIds.has(note.reply.userId) && !await threadMuted(note.reply.userId, note.replyThreadId ?? note.reply.id)) {
 				start(ports.stream.main(note.reply.userId, 'reply', packed));
+				if (ports.webhook) {
+					start(ports.webhook(note.reply.userId, 'reply', packed));
+				}
 				acceptedReply = note.reply;
 			}
 			if (note.renote !== null && note.userId !== note.renote.userId && note.localUserIds.has(note.renote.userId)) {
 				start(ports.stream.main(note.renote.userId, 'renote', packed));
+				if (ports.webhook) {
+					start(ports.webhook(note.renote.userId, 'renote', packed));
+				}
 			}
 			for (const planned of planNoteNotifications({ ...note, mentions: acceptedMentions, reply: acceptedReply, threadMutedUserIds: new Set() }).filter(n => n.type !== 'note')) {
 				start(notify(planned));

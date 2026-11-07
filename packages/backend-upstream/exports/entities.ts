@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { MiWebhook } from '../src/models/Webhook.js';
 import { MiRole } from '../src/models/Role.js';
 import { MiRoleAssignment } from '../src/models/RoleAssignment.js';
 import { MiUser } from '../src/models/User.js';
@@ -32,5 +33,5 @@ import { MiMuting } from '../src/models/Muting.js';
 import { MiRenoteMuting } from '../src/models/RenoteMuting.js';
 import { MiNoteThreadMuting } from '../src/models/NoteThreadMuting.js';
 import { MiUserListMembership } from '../src/models/UserListMembership.js';
-export { MiRole, MiRoleAssignment, MiUser, MiMeta, MiModerationLog, MiAccessToken, MiApp, MiDriveFile, MiDriveFolder, MiNote, MiChannel, MiFollowing, MiRelay, MiPoll, MiPollVote, MiNoteReaction, MiEmoji, MiInstance, MiAvatarDecoration, MiBlocking, MiUserProfile, MiPage, MiUserList, MiSystemAccount, MiUserKeypair, MiUsedUsername, MiMuting, MiRenoteMuting, MiNoteThreadMuting, MiUserListMembership };
-export const entities = [MiRole, MiRoleAssignment, MiUser, MiMeta, MiModerationLog, MiAccessToken, MiApp, MiDriveFile, MiDriveFolder, MiNote, MiChannel, MiFollowing, MiRelay, MiPoll, MiPollVote, MiNoteReaction, MiEmoji, MiInstance, MiAvatarDecoration, MiBlocking, MiUserProfile, MiPage, MiUserList, MiSystemAccount, MiUserKeypair, MiUsedUsername, MiMuting, MiRenoteMuting, MiNoteThreadMuting, MiUserListMembership];
+export { MiWebhook, MiRole, MiRoleAssignment, MiUser, MiMeta, MiModerationLog, MiAccessToken, MiApp, MiDriveFile, MiDriveFolder, MiNote, MiChannel, MiFollowing, MiRelay, MiPoll, MiPollVote, MiNoteReaction, MiEmoji, MiInstance, MiAvatarDecoration, MiBlocking, MiUserProfile, MiPage, MiUserList, MiSystemAccount, MiUserKeypair, MiUsedUsername, MiMuting, MiRenoteMuting, MiNoteThreadMuting, MiUserListMembership };
+export const entities = [MiWebhook, MiRole, MiRoleAssignment, MiUser, MiMeta, MiModerationLog, MiAccessToken, MiApp, MiDriveFile, MiDriveFolder, MiNote, MiChannel, MiFollowing, MiRelay, MiPoll, MiPollVote, MiNoteReaction, MiEmoji, MiInstance, MiAvatarDecoration, MiBlocking, MiUserProfile, MiPage, MiUserList, MiSystemAccount, MiUserKeypair, MiUsedUsername, MiMuting, MiRenoteMuting, MiNoteThreadMuting, MiUserListMembership];

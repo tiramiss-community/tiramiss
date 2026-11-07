@@ -12,10 +12,11 @@ import type { EntityManager, DataSource } from 'typeorm';
 import type { Redis } from 'ioredis';
 import type { RuntimeConfig } from '../config/types.js';
 import type { PostNotification } from '../modules/notification/public.js';
+import type { UserWebhookEvent } from '../platform/job-queue/user-webhook.js';
 import type { createPostingStream } from '../platform/posting-stream.js';
 
 export function createPostingNotifications(resources: {
-	dataSource: DataSource; reactionsRedis: Redis; postingStream: ReturnType<typeof createPostingStream>;
+	dataSource: DataSource; reactionsRedis: Redis; postingStream: ReturnType<typeof createPostingStream>; webhook?(userId: string, type: UserWebhookEvent, note: Record<string, unknown>): Promise<void>;
 }, config: RuntimeConfig) {
 	const codec = createIdCodec(config.id);
 	const manager: EntityManager = resources.dataSource.manager;
@@ -28,7 +29,7 @@ export function createPostingNotifications(resources: {
 			const original = snapshot.note;
 			snapshots.set(original.id, {
 				...original, createdAtMs: codec.createdAtFromId(original.id), name: null,
-				renoteCount: 0, repliesCount: 0, clippedCount: 0, reactions: {}, reactionPairs: [], uri: null, url: null
+				renoteCount: 0, repliesCount: 0, clippedCount: 0, reactions: {}, reactionPairs: [], uri: null, url: null,
 			});
 			for (const related of [snapshot.reply, snapshot.renote]) {
 				if (related?.eventFacts && !snapshots.has(related.id)) {
@@ -63,7 +64,7 @@ export function createPostingNotifications(resources: {
 		createdEvents: (deliver: (noteId: string) => Promise<void>) => {
 			const events = createNoteCreatedEvents({
 				...facts, render: async (noteId, viewerId, options, snapshot) => (await render(noteId, viewerId, options, snapshot)).note,
-				stream: resources.postingStream, notifications: createNotificationTransactions(resources.dataSource),
+				stream: resources.postingStream, webhook: resources.webhook, notifications: createNotificationTransactions(resources.dataSource),
 				afterNotificationSaved, deliver, newId: codec.newId, currentTime: Date.now,
 			});
 			return (noteId: string, input?: { createdSnapshot?: NoteCreatedSnapshot }) => events(noteId, input?.createdSnapshot);

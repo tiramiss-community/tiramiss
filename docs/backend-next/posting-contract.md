@@ -86,3 +86,5 @@ reply/mention/quote/renote/noteの条件を`modules/note/notification-plan.ts`�
 既存の投票終了workerも保存後の通知発行へ接続した。削除済み投票・現在の設定・重複ジョブの規則は#162を維持する。通知本文の保存済み状態とstreamの成功は別で、永続effect・容量・一度だけ成立の基盤は再導入しない。
 
 検証は実HTTP/PG/Redis subscriberと通常poll worker、C10固定本家観測、source由来の受信条件・失敗境界を含む。[計画・実測](../superpowers/plans/2026-11-07-notification-stream-173.md)。WebSocket transport/auth/channelとクライアント受信は#189/#173/#176、広域fanout/cacheは#217、通知閲覧/既読/未読timer/push/移行は#177に残り、全stream/通知領域の完成とは扱わない。
+
+投稿 user webhook (#175) は保存後のイベント処理で note/reply/renote/mention を選び、通常 `userWebhookDeliver` queue に URL・secret・payload を固定する。受信者別の条件、処理・保持と未完了範囲は[比較資料](../superpowers/compatibility/user-webhook/README.md)を参照。固定本家に削除 webhook はない。設定 API・他のイベントは #197、作成から削除の縦断は #176。

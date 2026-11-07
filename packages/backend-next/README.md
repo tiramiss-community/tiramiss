@@ -226,3 +226,5 @@ DB失敗やクライアント切断を理由に自動再作成しない。通常
 通常HTTPの投稿からreply/mention/quote/renote/note通知の受信条件とPG保存、Redisのnotes/main publicationを開始する。通常投票終了workerは通知保存後のpublicationへ接続し、削除は物理DELETE前のdeletedイベントを開始する。保存後のpublish失敗で本文やHTTP成功を巻き戻さず、終了時は開始済み処理を待つ。
 
 `test/integration/note-notifications.test.ts`は実HTTP/PG/Redis subscriberで条件変更・payload・失敗・snapshot/current Poll・通常poll workerを確認する。WebSocket transport/auth/channelとクライアント受信は#189/#173/#176、共有fanoutは#217、通知閲覧/既読/未読timer/push/移行は#177に残る。[詳細と検証結果](../../docs/superpowers/plans/2026-11-07-notification-stream-173.md)。
+
+投稿 webhook は author note、ローカル受信者の mention/reply/renote を通常 `userWebhookDeliver` queue と worker へ接続する。設定管理と投稿以外のイベントは #197、最終の縦断確認は #176 に残る。設定キャッシュ・投入時 snapshot・固定本家との比較と実行方法は[比較資料](../../docs/superpowers/compatibility/user-webhook/README.md)を参照。

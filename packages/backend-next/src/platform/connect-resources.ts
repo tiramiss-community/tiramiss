@@ -2,12 +2,14 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { createPostingNotifications } from '../composition/posting-notifications.js';
-import { createPostingStream } from './posting-stream.js';
 import { randomBytes } from 'node:crypto';
 import { Redis } from 'ioredis';
+import { createPostingNotifications } from '../composition/posting-notifications.js';
 import { createFederationKeys } from '../composition/federation-keys.js';
 import { createDeliverCreatedNote, createDeliverToRelays, createDeliverDeletedNote } from '../modules/federation/public.js';
+import { createPostingStream } from './posting-stream.js';
+import { openUserWebhooks } from './user-webhooks.js';
+import { createUserWebhookQueue, USER_WEBHOOK_DELIVER } from './job-queue/user-webhook.js';
 import { createNotePostDelete } from './note-post-delete.js';
 import { appendNoteDeleteAudit, readDeletionConcernedUsers } from './database/note-deleter.js';
 import { createAcceptedRelayReader } from './database/accepted-relays.js';
@@ -200,6 +202,15 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 
+		const webhookQueue = createUserWebhookQueue({ redis: config.redisForJobQueue, connectTimeoutMs: config.processes.startupTimeoutMs, logger, onLost: onQueueLost(USER_WEBHOOK_DELIVER) });
+		scope.defer(webhookQueue.close);
+		await webhookQueue.ready();
+		const webhooks = await openUserWebhooks({ manager: dataSource.manager, redis: config.redisForPubsub, url: config.url, timeoutMs: config.processes.startupTimeoutMs, enqueue: webhookQueue.enqueue, registerCleanup: cleanup => scope.defer(cleanup) });
+		if (cancelled) {
+			await webhooks.close();
+			throw timeout;
+		}
+
 		const federationKeys = createFederationKeys({ dataSource, redis, logger }, config);
 		const deliverToRelays = createDeliverToRelays({
 			readAcceptedRelays: createAcceptedRelayReader({ manager: dataSource.manager, currentTime: Date.now }),
@@ -211,7 +222,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		});
 		const recipients = createDeliveryRecipientReader(dataSource.manager);
 		const postingStream = createPostingStream(rolePublisher, config.url);
-		const postingNotifications = createPostingNotifications({ dataSource, reactionsRedis, postingStream }, config);
+		const postingNotifications = createPostingNotifications({ dataSource, reactionsRedis, postingStream, webhook: webhooks.enqueue }, config);
 		const notePostSave = createNotePostSave(createNotePostSaveWork({
 			counts: createNotePostSaveCounts(dataSource.manager),
 			schedulePollEnded: pollEndedQueue.schedule,
@@ -237,8 +248,8 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		const notePostDelete = createNotePostDelete(input => input.kind === 'stream'
 			? postingStream.deleted({ id: input.snapshot.id, userId: input.snapshot.userId, visibility: input.snapshot.note.visibility, visibleUserIds: input.snapshot.auditNote.visibleUserIds as string[] }, input.occurredAtMs)
 			: input.kind === 'delivery'
-			? deliverDeletedNote(input)
-			: appendNoteDeleteAudit(dataSource.manager, input, createIdCodec(config.id).newId), logger);
+				? deliverDeletedNote(input)
+				: appendNoteDeleteAudit(dataSource.manager, input, createIdCodec(config.id).newId), logger);
 		scope.defer(notePostDelete.close);
 
 		if (lostQueue !== undefined) {

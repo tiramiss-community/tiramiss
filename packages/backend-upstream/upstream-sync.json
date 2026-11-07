@@ -1,6 +1,7 @@
 {
 	"commit": "8e07cf085adf7009583d234a208e30436f020e26",
 	"files": [
+		"src/models/Webhook.ts",
 		"src/models/Role.ts",
 		"src/models/RoleAssignment.ts",
 		"src/models/User.ts",

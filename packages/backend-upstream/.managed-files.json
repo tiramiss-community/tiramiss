@@ -380,6 +380,7 @@
 	"src/models/UserList.ts",
 	"src/models/UserListMembership.ts",
 	"src/models/UserProfile.ts",
+	"src/models/Webhook.ts",
 	"src/models/util/id.ts",
 	"src/types.ts"
 ]

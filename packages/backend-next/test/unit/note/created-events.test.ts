@@ -6,13 +6,13 @@ import { expect, test } from 'vitest';
 import { createNoteCreatedEvents } from '../../../src/modules/note/created-events.js';
 import type { PostNotification } from '../../../src/modules/notification/public.js';
 
-function setup(options: { failMention?: boolean; failPublish?: boolean; failSave?: boolean; reply?: boolean; threadModes?: boolean[]; failThread?: boolean; subscribers?: string[]; slowSave?: Promise<void>; mentions?: string[]; beforeReception?(recipientId: string): Promise<void> } = {}) {
+function setup(options: { failMention?: boolean; failPublish?: boolean; failSave?: boolean; reply?: boolean; replyUser?: string; renoteUser?: string; threadModes?: boolean[]; failThread?: boolean; subscribers?: string[]; slowSave?: Promise<void>; mentions?: string[]; beforeReception?(recipientId: string): Promise<void> } = {}) {
 	const saved: PostNotification[] = [];
 	const events: string[] = [];
 	const run = createNoteCreatedEvents({
 		read: async () => ({
-			id: 'n', userId: 'a', visibility: 'public', visibleUserIds: [], mentions: options.mentions ?? ['b'], reply: options.reply ? { id: 'parent', userId: 'b' } : null, renote: null, pureRenote: false,
-			localUserIds: new Set(['a', 'b']), threadMutedUserIds: new Set<string>(), subscribers: (options.subscribers ?? ['b']).map(userId => ({ userId, renoteMuted: false }))
+			id: 'n', userId: 'a', visibility: 'public', visibleUserIds: [], mentions: options.mentions ?? ['b'], reply: options.reply ? { id: 'parent', userId: options.replyUser ?? 'b' } : null, renote: options.renoteUser ? { id: 'original', userId: options.renoteUser } : null, pureRenote: false,
+			localUserIds: new Set(['a', 'b']), threadMutedUserIds: new Set<string>(), subscribers: (options.subscribers ?? ['b']).map(userId => ({ userId, renoteMuted: false })),
 		}),
 		isThreadMuted: async () => {
 			if (options.failThread) {
@@ -25,6 +25,9 @@ function setup(options: { failMention?: boolean; failPublish?: boolean; failSave
 				throw new Error('mention pack');
 			}
 			return { id: 'n', viewer };
+		},
+		webhook: async (userId: string, type: string, note: Record<string, unknown>) => {
+			events.push(`hook:${userId}:${type}:${note.viewer}`);
 		},
 		stream: {
 			notes: async () => {
@@ -50,8 +53,8 @@ function setup(options: { failMention?: boolean; failPublish?: boolean; failSave
 						throw new Error('save');
 					}
 					saved.push(notification);
-				}
-			})
+				},
+			}),
 		},
 		afterNotificationSaved: async n => {
 			events.push(`saved:${n.type}`);
@@ -161,4 +164,28 @@ test('at most eight subscriptions run concurrently, all recipients are attempted
 	expect(maximumActive).toBe(8);
 	expect(failure).toBeInstanceOf(AggregateError);
 	expect(new Set(world.saved.map(n => n.recipientId))).toEqual(new Set(subscribers.filter(id => id !== 'b')));
+});
+
+test('posting events enqueue the author and each eligible recipient with their packed view', async () => {
+	const world = setup({ reply: true });
+	await world.run('n');
+	expect(world.events.filter(event => event.startsWith('hook:'))).toEqual(['hook:a:note:null', 'hook:b:mention:b', 'hook:b:reply:null']);
+});
+
+test('self mention and reply are not suppressed by notification self rules', async () => {
+	const world = setup({ mentions: ['a'], reply: true, replyUser: 'a' });
+	await world.run('n');
+	expect(world.events.filter(event => event.startsWith('hook:'))).toEqual(['hook:a:note:null', 'hook:a:mention:a', 'hook:a:reply:null']);
+});
+
+test('muted mention and reply are omitted independently', async () => {
+	const world = setup({ reply: true, threadModes: [true, true] });
+	await world.run('n');
+	expect(world.events.filter(event => event.startsWith('hook:'))).toEqual(['hook:a:note:null']);
+});
+
+test.each([['a', false], ['b', true], ['remote', false]] as const)('renote delivery to %s follows local and self checks', async (owner, expected) => {
+	const world = setup({ mentions: [], renoteUser: owner });
+	await world.run('n');
+	expect(world.events.includes(`hook:${owner}:renote:null`)).toBe(expected);
 });
