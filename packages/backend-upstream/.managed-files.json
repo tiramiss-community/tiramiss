@@ -351,6 +351,7 @@
 	"migration/1790477603333-UserProfilePasswordComment.js",
 	"migration/1791109435844-FollowApprovalByAccountAge.js",
 	"src/models/AccessToken.ts",
+	"src/models/Antenna.ts",
 	"src/models/App.ts",
 	"src/models/AvatarDecoration.ts",
 	"src/models/Blocking.ts",

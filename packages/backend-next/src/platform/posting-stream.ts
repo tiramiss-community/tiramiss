@@ -8,6 +8,7 @@ export function createPostingStream(redis: { publish(channel: string, value: str
 		await redis.publish(host, JSON.stringify({ channel, message }));
 	};
 	return {
+		antenna: (antennaId: string, note: Record<string, unknown>) => publish(`antennaStream:${antennaId}`, { type: 'note', body: note }),
 		notes: (note: Record<string, unknown>) => publish('notesStream', note),
 		role: (roleId: string, note: Record<string, unknown>) => publish(`roleTimelineStream:${roleId}`, { type: 'note', body: note }),
 		main: (userId: string, type: string, body: unknown = null) => publish(`mainStream:${userId}`, { type, body }),

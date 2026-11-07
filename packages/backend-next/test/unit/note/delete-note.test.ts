@@ -85,6 +85,13 @@ test('missing authenticated actor is rejected and localOnly/remote authors do no
 	for (const snapshot of [{ localOnly: true }, { authorHost: 'remote.test' }]) {
 		const world = setup({ snapshot });
 		await world.deleteNote(actor, { noteId: 'note1' }, 10000);
-		expect(world.events).toEqual(['limit', 'reply', 'published', 'search', 'delete']);
+		expect(world.events).toEqual(['limit', 'reply', 'published', ...(snapshot.authorHost ? ['instanceCounts'] : []), 'search', 'delete']);
 	}
+});
+
+test('remote instance count work starts before search and failed DELETE and keeps original host', async () => {
+	const world = setup({ failDelete: true, snapshot: { authorHost: 'remote.test' } });
+	await expect(world.deleteNote(actor, { noteId: 'note1' }, 10000)).rejects.toThrow('db');
+	expect(world.events).toEqual(['limit', 'reply', 'published', 'instanceCounts', 'search', 'delete']);
+	expect(world.work[0]).toMatchObject({ kind: 'instanceCounts', snapshot: { authorHost: 'remote.test' } });
 });

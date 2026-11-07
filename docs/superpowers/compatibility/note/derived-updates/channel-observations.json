@@ -1,0 +1,211 @@
+{
+  "fixedCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "evidence": "Complete pinned postNoteCreated/index and NotificationManager execute from Git blobs. Repository/Redis/packer/other services are doubles. No full server, PostgreSQL or Redis comparison. Detached rejection is captured only by this harness.",
+  "sources": {
+    "packages/backend/src/core/NoteCreateService.ts": {
+      "blob": "05e98541844d7f14e91263a78a03c9ec0139a89d",
+      "sha256": "cbae284975c937d89c0030b5f3cf47de373555c1ce34b65de81bcf495e93f4fe"
+    },
+    "packages/backend/src/core/NoteDeleteService.ts": {
+      "blob": "1b945277b7590bf89fcdaaf5c56ec16513a59d6a",
+      "sha256": "f27dfc26664f39f9ade3366f46411ffe6ff5c189e5d97fb371dda5c3bf7d240c"
+    }
+  },
+  "observations": [
+    {
+      "mode": "success",
+      "calls": [
+        {
+          "method": "user-count"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "mention-preparation"
+        },
+        {
+          "method": "channel-increment",
+          "args": {
+            "where": {
+              "id": "channel"
+            },
+            "column": "notesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "channel-timestamp",
+          "args": {
+            "id": "channel",
+            "keys": [
+              "lastNotedAt"
+            ]
+          }
+        },
+        {
+          "method": "channel-countBy",
+          "args": {
+            "userId": "author",
+            "channelId": "channel"
+          }
+        },
+        {
+          "method": "index"
+        },
+        {
+          "method": "channel-increment",
+          "args": {
+            "where": {
+              "id": "channel"
+            },
+            "column": "usersCount",
+            "amount": 1
+          }
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "mode": "pack-reject",
+      "calls": [
+        {
+          "method": "user-count"
+        },
+        {
+          "method": "pack"
+        }
+      ],
+      "error": "pack failed",
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "mode": "mention-reject",
+      "calls": [
+        {
+          "method": "user-count"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "mention-preparation"
+        }
+      ],
+      "error": "mention failed",
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "mode": "notes-reject",
+      "calls": [
+        {
+          "method": "user-count"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "mention-preparation"
+        },
+        {
+          "method": "channel-increment",
+          "args": {
+            "where": {
+              "id": "channel"
+            },
+            "column": "notesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "channel-timestamp",
+          "args": {
+            "id": "channel",
+            "keys": [
+              "lastNotedAt"
+            ]
+          }
+        },
+        {
+          "method": "channel-countBy",
+          "args": {
+            "userId": "author",
+            "channelId": "channel"
+          }
+        },
+        {
+          "method": "index"
+        },
+        {
+          "method": "channel-increment",
+          "args": {
+            "where": {
+              "id": "channel"
+            },
+            "column": "usersCount",
+            "amount": 1
+          }
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": [
+        "notes failed"
+      ]
+    },
+    {
+      "mode": "timestamp-reject",
+      "calls": [
+        {
+          "method": "user-count"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "mention-preparation"
+        },
+        {
+          "method": "channel-increment",
+          "args": {
+            "where": {
+              "id": "channel"
+            },
+            "column": "notesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "channel-timestamp",
+          "args": {
+            "id": "channel",
+            "keys": [
+              "lastNotedAt"
+            ]
+          }
+        },
+        {
+          "method": "channel-countBy",
+          "args": {
+            "userId": "author",
+            "channelId": "channel"
+          }
+        },
+        {
+          "method": "index"
+        },
+        {
+          "method": "channel-increment",
+          "args": {
+            "where": {
+              "id": "channel"
+            },
+            "column": "usersCount",
+            "amount": 1
+          }
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": [
+        "timestamp failed"
+      ]
+    }
+  ]
+}

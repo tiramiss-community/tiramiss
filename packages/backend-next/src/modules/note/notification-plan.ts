@@ -7,6 +7,7 @@ import type { PostNotificationType } from '../notification/public.js';
 export interface NoteNotificationPlanInput {
 	id: string;
 	userId: string;
+	channelId?: string | null;
 	visibility: 'public' | 'home' | 'followers' | 'specified';
 	visibleUserIds: string[];
 	mentions: string[];

@@ -6,7 +6,7 @@ import { expect, test } from 'vitest';
 import { createNoteCreatedEvents } from '../../../src/modules/note/created-events.js';
 import type { PostNotification } from '../../../src/modules/notification/public.js';
 
-function setup(options: { failRole?: boolean; slowRole?: Promise<void>; failPack?: boolean; failWebhook?: boolean; failAP?: boolean; failMention?: boolean; failPublish?: boolean; failSave?: boolean; reply?: boolean; replyUser?: string; renoteUser?: string; threadModes?: boolean[]; failThread?: boolean; subscribers?: string[]; slowSave?: Promise<void>; mentions?: string[]; beforeReception?(recipientId: string): Promise<void> } = {}) {
+function setup(options: { channelAggregates?(): Promise<void>; failRole?: boolean; slowRole?: Promise<void>; failPack?: boolean; failWebhook?: boolean; failAP?: boolean; failMention?: boolean; failPublish?: boolean; failSave?: boolean; reply?: boolean; replyUser?: string; renoteUser?: string; threadModes?: boolean[]; failThread?: boolean; subscribers?: string[]; slowSave?: Promise<void>; mentions?: string[]; beforeReception?(recipientId: string): Promise<void> } = {}) {
 	const saved: PostNotification[] = [];
 	const notes: Record<string, unknown>[] = [];
 	const roles: Record<string, unknown>[] = [];
@@ -82,6 +82,7 @@ function setup(options: { failRole?: boolean; slowRole?: Promise<void>; failPack
 				throw new Error('AP');
 			}
 		},
+		channelAggregates: options.channelAggregates,
 		index: async () => {
 			events.push('index');
 		},
@@ -268,4 +269,39 @@ test('created events wait for role work while independent AP and search already 
 	expect(done).toBe(false);
 	release();
 	await running;
+});
+
+test.each(['pack', 'mention'] as const)('channel aggregates do not start after %s preparation failure', async (mode) => {
+	const calls: string[] = [];
+	const world = setup({
+		failPack: mode === 'pack', failMention: mode === 'mention', channelAggregates: async () => {
+			calls.push('channel');
+		}
+	});
+	await expect(world.run('n')).rejects.toThrow();
+	expect(calls).toEqual([]);
+});
+test('channel aggregates start after AP preparation and before indexing; their asynchronous failure does not gate indexing and is drained', async () => {
+	let release!: () => void;
+	const held = new Promise<void>(resolve => {
+		release = resolve;
+	});
+	const world = setup({
+		channelAggregates: async () => {
+			world.events.push('channel');
+			await held;
+			throw new Error('channel count');
+		}
+	});
+	let done = false;
+	const run = world.run('n').catch(error => {
+		done = true;
+		return error;
+	});
+	await new Promise<void>(resolve => setImmediate(resolve));
+	expect(world.events.indexOf('channel')).toBeGreaterThan(world.events.indexOf('AP'));
+	expect(world.events.indexOf('index')).toBeGreaterThan(world.events.indexOf('channel'));
+	expect(done).toBe(false);
+	release();
+	expect(await run).toBeInstanceOf(AggregateError);
 });

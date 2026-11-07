@@ -19,7 +19,7 @@ export function createNoteNotificationReader(manager: EntityManager) {
 			const candidateIds = [...new Set([...note.mentions, ...(note.replyUserId ? [note.replyUserId] : []), ...(note.renoteUserId ? [note.renoteUserId] : [])])];
 			const local = candidateIds.length > 0 ? await manager.getRepository(MiUser).find({ where: { id: In(candidateIds), host: IsNull() }, select: { id: true } }) : [];
 			return {
-				id: note.id, userId: note.userId, visibility: note.visibility, visibleUserIds: note.visibleUserIds, mentions: note.mentions, threadId: note.threadId ?? note.id, replyThreadId: reply?.threadId ?? note.threadId ?? note.replyId ?? undefined,
+				id: note.id, userId: note.userId, channelId: note.channelId, visibility: note.visibility, visibleUserIds: note.visibleUserIds, mentions: note.mentions, threadId: note.threadId ?? note.id, replyThreadId: reply?.threadId ?? note.threadId ?? note.replyId ?? undefined,
 				reply: note.replyId === null ? null : { id: note.replyId, userId: note.replyUserId! }, renote: note.renoteId === null ? null : { id: note.renoteId, userId: note.renoteUserId! },
 				pureRenote: note.renoteId !== null && note.text === null && note.cw === null && note.replyId === null && !note.hasPoll && note.fileIds.length === 0,
 				localUserIds: new Set(local.map(u => u.id)), threadMutedUserIds: new Set<string>(),

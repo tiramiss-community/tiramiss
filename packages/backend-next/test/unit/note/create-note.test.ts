@@ -8,7 +8,7 @@ import { createCreateNote } from '../../../src/modules/note/create-note.js';
 import { concatNoteContentsForKeywordCheck, matchesWords } from '../../../src/modules/note/keywords.js';
 import type { MentionedRemoteUser, NewNote, NewPoll, NoteAttachableFile, NoteCreateAuthor, NotePostSaveInput, NoteWrites, RelatedChannel, RelatedNote } from '../../../src/modules/note/create-contract.js';
 
-const author: NoteCreateAuthor = { id: 'author', host: null, isSuspended: false, movedToUri: null, isBot: false, canPublicNote: true, mentionLimit: 20, rateLimitFactor: 1, sensitiveWords: [], prohibitedWords: [] };
+const author: NoteCreateAuthor = { id: 'author', username: 'author', host: null, isSuspended: false, movedToUri: null, isBot: false, canPublicNote: true, mentionLimit: 20, rateLimitFactor: 1, sensitiveWords: [], prohibitedWords: [] };
 const actor = { userId: 'author', canWriteNote: true };
 const ownedFiles: NoteAttachableFile[] = [{ id: 'img', type: 'image/png' }, { id: 'vid', type: 'video/mp4' }];
 const now = 1_000_000;
@@ -82,7 +82,7 @@ function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteA
 		readChannel: async (id, { includeArchived }) => {
 			events.push(`channel:${id}:${includeArchived ? 'any' : 'active'}`);
 			const channel = world.channels?.find(c => c.id === id && (includeArchived || !c.isArchived));
-			return channel ? { id: channel.id, allowRenoteToExternal: channel.allowRenoteToExternal } : null;
+			return channel ? { ...channel } : null;
 		},
 		readMentionedRemoteUsers: async ids => ids.flatMap(id => (world.remoteUsers ?? []).filter(user => user.id === id).map(({ id: _, ...user }) => user)),
 		readUserIds: async ids => {
@@ -365,7 +365,7 @@ const relationWorld: World = {
 		related('nested', { replyId: 'public', threadId: 'root' }), related('remote', { userId: 'remoteUser', userHost: 'remote.test' }),
 	],
 	blockings: [['blocker', 'author'], ['author', 'other']],
-	channels: [{ id: 'closedCh', allowRenoteToExternal: false }, { id: 'openCh', allowRenoteToExternal: true }, { id: 'archivedCh', allowRenoteToExternal: true, isArchived: true }],
+	channels: [{ id: 'closedCh', isSensitive: false, allowRenoteToExternal: false }, { id: 'openCh', isSensitive: false, allowRenoteToExternal: true }, { id: 'archivedCh', isSensitive: false, allowRenoteToExternal: true, isArchived: true }],
 	remoteUsers: [{ id: 'remoteUser', uri: 'https://remote.test/users/r', username: 'r', host: 'remote.test' }],
 	users: [
 		{ id: 'carol', username: 'carol', host: null }, { id: 'bob', username: 'bob', host: null }, { id: 'author', username: 'author', host: null },

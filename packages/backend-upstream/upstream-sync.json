@@ -36,7 +36,8 @@
 		"src/models/NoteThreadMuting.ts",
 		"src/models/UserListMembership.ts",
 		"src/models/ChannelFollowing.ts",
-		"src/models/ChannelMuting.ts"
+		"src/models/ChannelMuting.ts",
+		"src/models/Antenna.ts"
 	],
 	"migrationDirectory": "migration",
 	"externalDependencies": [

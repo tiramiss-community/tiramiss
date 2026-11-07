@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "3a35fec002a26bb681a5c3b44315b247d20f8e24",
+  "implementationCommit": "4d777eda753920a9638ec2ad5df93a3c0ced06c7",
   "domains": [
     {
       "id": "api-common",
@@ -1474,13 +1474,33 @@
         "packages/backend-next/src/modules/note/create-note.ts",
         "packages/backend-next/src/platform/note-post-save.ts",
         "packages/backend-next/src/platform/database/note-writer.ts",
-        "packages/backend-next/src/modules/federation/note-delivery.ts"
+        "packages/backend-next/src/modules/federation/note-delivery.ts",
+        "packages/backend-next/src/platform/database/note-post-save-counts.ts",
+        "packages/backend-next/src/modules/note/created-events.ts",
+        "packages/backend-next/src/platform/note-instance-counts.ts",
+        "packages/backend-next/src/platform/instance-ledger.ts",
+        "packages/backend-next/src/platform/connect-resources.ts",
+        "packages/backend-next/src/modules/note/delete-note.ts",
+        "packages/backend-next/src/platform/note-post-delete.ts"
       ],
       "verification": [
         "packages/backend-next/test/integration/note-create.test.ts",
         "packages/backend-next/test/unit/note/post-save.test.ts",
-        "packages/backend-next/test/unit/federation/note-delivery.test.ts"
-      ]
+        "packages/backend-next/test/unit/federation/note-delivery.test.ts",
+        "packages/backend-next/test/unit/note/created-events.test.ts",
+        "packages/backend-next/test/integration/note-antennas.test.ts",
+        "docs/superpowers/compatibility/note/derived-updates/reference-channel.cjs",
+        "docs/superpowers/compatibility/note/derived-updates/channel-observations.json",
+        "docs/superpowers/compatibility/note/derived-updates/README.md",
+        "packages/backend-next/test/unit/note/instance-counts.test.ts",
+        "packages/backend-next/test/unit/note/delete-note.test.ts",
+        "packages/backend-next/test/integration/note-instance-counts.test.ts",
+        "packages/backend-next/test/processes/note-antennas.test.ts",
+        "packages/backend-next/test/fixtures/note-instance-counts.mjs",
+        "docs/superpowers/compatibility/note/derived-updates/reference-instance-counter.cjs",
+        "docs/superpowers/compatibility/note/derived-updates/instance-counter-observations.json"
+      ],
+      "note": "既存投稿フローにchannel集計の準備成功境界/独立statement修正と、remote Instance.notesCount作成5分集約/削除直接減算を接続。通常派生更新の全source棚卸しと再構築材料をderived-updatesへ引き継ぐ。remote AP入口 #195、chart #200、残る投稿機能と全体縦断 #176 を完成扱いしない。"
     },
     "capability:notifications": {
       "status": "partial",
@@ -1601,7 +1621,11 @@
         "packages/backend-next/src/modules/note/hashtag-plan.ts",
         "packages/backend-next/src/platform/database/note-hashtags.ts",
         "packages/backend-next/src/platform/hashtag-ranking.ts",
-        "packages/backend-next/src/composition/posting-hashtags.ts"
+        "packages/backend-next/src/composition/posting-hashtags.ts",
+        "packages/backend-next/src/modules/note/antenna-plan.ts",
+        "packages/backend-next/src/platform/database/note-antennas.ts",
+        "packages/backend-next/src/platform/note-antennas.ts",
+        "packages/backend-next/src/composition/posting-antennas.ts"
       ],
       "verification": [
         "packages/backend-next/test/integration/note-create.test.ts",
@@ -1631,12 +1655,19 @@
         "packages/backend-next/test/processes/note-hashtags.test.ts",
         "docs/superpowers/compatibility/note/hashtag/reference-hashtag.mjs",
         "docs/superpowers/compatibility/note/hashtag/source-observations.json",
-        "docs/superpowers/compatibility/note/hashtag/README.md"
+        "docs/superpowers/compatibility/note/hashtag/README.md",
+        "packages/backend-next/test/unit/note/antennas.test.ts",
+        "packages/backend-next/test/unit/note/antenna-lifecycle.test.ts",
+        "packages/backend-next/test/integration/note-antennas.test.ts",
+        "packages/backend-next/test/processes/note-antennas.test.ts",
+        "docs/superpowers/compatibility/note/antenna/reference-antenna.mjs",
+        "docs/superpowers/compatibility/note/antenna/source-observations.json",
+        "docs/superpowers/compatibility/note/antenna/README.md"
       ],
       "differences": [
         "添付・投票・返信/Renote・channel・指定宛先・MFM抽出は#170で接続済み。未登録リモートユーザー宛てのメンションは#195まで保存前に501 NOT_IMPLEMENTEDで拒否し、登録済みリモートユーザーも#195まで再同期しない暫定制限（docs/backend-next/posting-contract.md）。完成版の意図的差異ではない。"
       ],
-      "note": "保存後のmain/home実受信・検索snapshot・Role TL更新/publication・Renote featured加点に、noteのhashtag表とトレンド更新を接続。未登録remote mentionの501と登録済みremote再同期制限#195、antenna等#174、検索/hashtag閲覧#186、featured閲覧#185・reaction加点#184、Role TL閲覧#185・Role WS受信#189、全体縦断#176は未完了。"
+      "note": "保存後のmain/home実受信・検索snapshot・Role TL・Renote featured・note hashtagに、antenna照合/一覧cache/internal受信/TL/raw publicationを接続。未登録remote mentionの501と登録済みremote再同期制限 #195、検索/hashtag閲覧 #186、featured閲覧 #185・reaction加点 #184、Role/antenna閲覧 #185・WS受信 #189、投稿全体の縦断 #176 は未完了。"
     },
     "processor:EndedPollNotification": {
       "status": "partial",
@@ -1726,7 +1757,11 @@
         "packages/backend-next/src/modules/note/featured-plan.ts",
         "packages/backend-next/src/platform/featured-ranking.ts",
         "packages/backend-next/src/composition/posting-featured.ts",
-        "packages/backend-next/src/platform/note-post-save.ts"
+        "packages/backend-next/src/platform/note-post-save.ts",
+        "packages/backend-next/src/modules/note/antenna-plan.ts",
+        "packages/backend-next/src/platform/database/note-antennas.ts",
+        "packages/backend-next/src/platform/note-antennas.ts",
+        "packages/backend-next/src/composition/posting-antennas.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/note/timeline-plan.test.ts",
@@ -1747,9 +1782,16 @@
         "packages/backend-next/test/processes/note-featured.test.ts",
         "docs/superpowers/compatibility/note/featured/reference-featured.mjs",
         "docs/superpowers/compatibility/note/featured/source-observations.json",
-        "docs/superpowers/compatibility/note/featured/README.md"
+        "docs/superpowers/compatibility/note/featured/README.md",
+        "packages/backend-next/test/unit/note/antennas.test.ts",
+        "packages/backend-next/test/unit/note/antenna-lifecycle.test.ts",
+        "packages/backend-next/test/integration/note-antennas.test.ts",
+        "packages/backend-next/test/processes/note-antennas.test.ts",
+        "docs/superpowers/compatibility/note/antenna/reference-antenna.mjs",
+        "docs/superpowers/compatibility/note/antenna/source-observations.json",
+        "docs/superpowers/compatibility/note/antenna/README.md"
       ],
-      "note": "home/local/user/list/channelのRedis書込producerと休眠判定、Role TL書込/publication、Renote featured加点を通常投稿へ接続。note起因hashtag producerも別adapterで接続済み。閲覧#185、検索/hashtag API#186、antenna等#174、featured取得/2-window平均#185・reaction側加点#184、Role WS#189、再構築#132/#133は未完了。"
+      "note": "home/local/user/list/channelのRedis書込と休眠判定、Role TL、Renote featured、note hashtagに、antennaの照合/active一覧/internal受信/TL/raw publicationを接続。閲覧API #185、検索/hashtag API #186、featured取得 #185・reaction側 #184、Role/antenna WS #189、再構築 #132/#133 は未完了。"
     },
     "processor:UserWebhookDeliver": {
       "status": "partial",
@@ -2007,7 +2049,7 @@
         "docs/superpowers/compatibility/note/hashtag/source-observations.json",
         "docs/superpowers/compatibility/note/hashtag/README.md"
       ],
-      "note": "検索索引の登録/解除とpublic/home投稿のhashtag表・トレンド更新を接続。検索/hashtag閲覧APIと可視性#186、再構築#132/#133、antenna等#174、最終連携#172/#176は未完了。"
+      "note": "検索索引の登録/解除とpublic/home投稿のhashtag表・トレンド更新を接続済み。antennaの通常更新も別producerで接続。検索/hashtag閲覧APIと可視性 #186、再構築 #132/#133、最終縦断 #176 は未完了。"
     }
   }
 }

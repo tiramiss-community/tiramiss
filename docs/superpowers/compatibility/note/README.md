@@ -244,3 +244,10 @@ home/local/user/list/channel（files/replies含む）の固定本家メソッド
 [固定source oracleと再実行](hashtag/README.md)は実HashtagService/FeaturedService/NoteCreateService/NoteDeleteServiceを抽出実行し、全87観測を保存する。Repository/Redisはdoubleであり、本家full server/実PGの実測と区別する。新実装のunitはupdate28件のDB mention列とRedis command列、post12件のgateをJSONから直接比較する（設定読取による独立仕事のinterleavingは全体順で固定しない）。別途4ケースのDB全配列・件数を実PGで直接比較する。
 
 通常HTTP handler/PG/Redisではtext/cw/poll/noExtract・visibility・channel/bot/localOnly、同時local/remote作者、NX・unique/HLL/featured、強制二重admission、SQL trigger/WRONGTYPE、削除後残留と遅延snapshotを検証する。migration/schema差分0と通常HTTP子SIGTERM後のDB/Redis結果を確認し、held Redis中のidle/closeはbarrier制御unitで検証する。raw128文字の正規化後伸長はsource oracleのINSERT候補であり、実PGではNote.tags varchar(128)[]が保存前に拒否する。profile attached・hashtag読取/stream/chart・antennaや#174/#172/#176全体は未完了。
+
+
+### #174 antennaと通常派生更新の完了監査（2026-11-07）
+
+[antenna固定source](antenna/README.md)は184観測を保存し、新実装は87のmatcher結果/条件付き照会trace、24のage/tail/random timeline commandとpublication開始順、5つの実TypeORM/PG raw payloadを直接消費する。通常認証HTTP→実PG→専用timeline Redis/pubsubではcache/internal event、visibility/list/follow、作成時author/channel、file/CW/reply/renote、失敗/削除/停止を別に検証する。本家full serverの同時起動比較ではない。
+
+[全通常更新の責任監査](derived-updates/README.md)はchannelの準備成功後・3独立SQL境界とremote Instance.notesCountを具体的な欠落として検出し、本sliceで接続した。counterの固定source17件のうち6つのbatch/timer/flush結果を新実装unitへ直接照合し、実PG/Redisの登録/cache残留・管理者HTTP削除/失敗・終了flushも確認する。#174判定をproducer責任で行い、閲覧/管理/WS/chart/remote受信/#176/#132/#133を同時に完成したとは扱わない。上の過去sliceの残作業は当時の状態を示す。

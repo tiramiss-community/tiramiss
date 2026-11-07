@@ -23,6 +23,7 @@ export function createNoteCreatedEvents(ports: {
 	notifications: TransactionRunner<PostNotificationWrites>;
 	afterNotificationSaved(notification: PostNotification): Promise<void>;
 	deliver(noteId: string): Promise<void>;
+	channelAggregates?(input: { userId: string; channelId: string | null }): Promise<void>;
 	index?(noteId: string, snapshot?: NoteCreatedSnapshot): Promise<void>;
 	newId(now: number): string;
 	currentTime(): number;
@@ -109,6 +110,9 @@ export function createNoteCreatedEvents(ports: {
 				start(notify(planned));
 			}
 			start(ports.deliver(note.id));
+			if (ports.channelAggregates) {
+				start(ports.channelAggregates({ userId: note.userId, channelId: note.channelId ?? null }));
+			}
 			if (ports.index) {
 				start(ports.index(note.id, snapshot));
 			}
