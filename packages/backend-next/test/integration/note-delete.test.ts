@@ -5,7 +5,8 @@
 import { readFileSync } from 'node:fs';
 import { Queue } from 'bullmq';
 import { baseQueueOptions } from '../../src/platform/job-queue/connection.js';
-import { afterAll, beforeAll, expect, test } from 'vitest';
+import { afterAll, beforeAll, expect, test, vi } from 'vitest';
+import { Redis } from 'ioredis';
 import { MiAccessToken, MiChannel, MiFollowing, MiRelay, MiUserKeypair, MiMeta, MiModerationLog, MiNote, MiNoteReaction, MiPoll, MiPollVote, MiRole, MiRoleAssignment, MiUser } from 'backend-upstream/entities';
 import { createBackendHttpApp } from '../../src/composition/note-http.js';
 import { connectResources } from '../../src/platform/connect-resources.js';
@@ -199,3 +200,67 @@ async function queued(noteId: string): Promise<{ to: string; content: string }[]
  await inspect.close();
 }
 }
+
+test('pure Renote original SELECT failure preserves the already-published deleted stream and stored Note', async () => {
+	const original = await note('bob');
+	const target = await note('alice', { text: null, renoteId: original, localOnly: false });
+	const subscriber = new Redis({ ...database.config.redisForPubsub, keyPrefix: undefined });
+	const messages: { channel: string; message: { type: string } }[] = [];
+	subscriber.on('message', (_channel, value) => messages.push(JSON.parse(value)));
+	await subscriber.subscribe(new URL(database.config.url).host);
+	const repository = resources.dataSource.getRepository(MiNote);
+	const findOneBy = repository.findOneBy.bind(repository);
+	const failing = vi.spyOn(repository, 'findOneBy').mockImplementation(async where => {
+		if (!Array.isArray(where) && where.id === original) {
+			throw new Error('injected original SELECT failure');
+		}
+		return findOneBy(where);
+	});
+	const audits = await resources.dataSource.getRepository(MiModerationLog).count();
+	const started = vi.spyOn(resources.notePostDelete, 'start');
+	const http = createBackendHttpApp(resources, database.config);
+	try {
+		const response = await http.request('/api/notes/delete', { method: 'POST', body: JSON.stringify({ i: actors.get('moderator')!.token, noteId: target }) });
+		expect(response.status).toBe(500);
+		await resources.notePostDelete.idle();
+		await vi.waitFor(() => expect(messages.filter(message => message.channel === `noteStream:${target}`).map(message => message.message.type)).toEqual(['deleted']));
+		expect(await repository.existsBy({ id: target })).toBe(true);
+		expect(await resources.dataSource.getRepository(MiModerationLog).count()).toBe(audits);
+		expect(await queued(target)).toEqual([]);
+		expect(started.mock.calls.map(([work]) => work.kind)).toEqual(['stream']);
+	} finally {
+		failing.mockRestore(); started.mockRestore(); subscriber.disconnect();
+	}
+});
+
+test.each(['localOnly', 'remote', 'denied'] as const)('pure Renote %s deletion never needs the original SELECT', async kind => {
+	const original = await note('bob');
+	let userId = actors.get('alice')!.id;
+	if (kind === 'remote') {
+		userId = id();
+		await resources.dataSource.getRepository(MiUser).insert({ id: userId, username: 'select-remote', usernameLower: 'select-remote', host: 'select-remote.test' });
+	}
+	const target = await note('alice', { userId, text: null, renoteId: original, localOnly: kind === 'localOnly' });
+	const repository = resources.dataSource.getRepository(MiNote);
+	const findOneBy = repository.findOneBy.bind(repository);
+	let originalQueries = 0;
+	const failing = vi.spyOn(repository, 'findOneBy').mockImplementation(async where => {
+		if (!Array.isArray(where) && where.id === original) {
+			originalQueries++;
+			throw new Error('injected unused original SELECT failure');
+		}
+		return findOneBy(where);
+	});
+	try {
+		const response = await call(target, kind === 'denied' ? 'bob' : 'moderator');
+		expect(response.status).toBe(kind === 'denied' ? 400 : 204);
+		if (kind === 'denied') {
+			expect((await response.json()).error.code).toBe('ACCESS_DENIED');
+		}
+		await resources.notePostDelete.idle();
+		expect(originalQueries).toBe(0);
+		expect(await repository.existsBy({ id: target })).toBe(kind === 'denied');
+	} finally {
+		failing.mockRestore();
+	}
+});

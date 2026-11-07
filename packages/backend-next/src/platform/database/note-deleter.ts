@@ -5,7 +5,6 @@
 import { In, IsNull, Not } from 'typeorm';
 import { MiModerationLog, MiNote, MiUser } from 'backend-upstream/entities';
 import { evaluatePolicies, evaluatePrivileges, selectApplicableRoles } from '../../modules/role/public.js';
-import { isPureRenote } from '../../modules/federation/public.js';
 import { readRoleAuthorizationFacts } from './role-authorization-facts.js';
 import type { EntityManager } from 'typeorm';
 import type { DeletedNoteSnapshot } from '../../modules/note/public.js';
@@ -29,7 +28,6 @@ export function createNoteDeleter(manager: EntityManager, createdAtFromId: (id: 
 				return null;
 			}
 			const author = await manager.getRepository(MiUser).findOneByOrFail({ id: row.userId });
-			const original = isPureRenote(row) ? await manager.getRepository(MiNote).findOneBy({ id: row.renoteId! }) : null;
 			return {
 				id: row.id, userId: row.userId, authorHost: author.host, authorUsername: author.username, localOnly: row.localOnly,
 				replyId: row.replyId, renoteUserId: row.renoteUserId,
@@ -38,9 +36,13 @@ export function createNoteDeleter(manager: EntityManager, createdAtFromId: (id: 
 					replyId: row.replyId, renoteId: row.renoteId, renoteUserHost: row.renoteUserHost, fileIds: row.fileIds,
 					hasPoll: row.hasPoll, tags: row.tags, mentionedRemoteUsers: JSON.parse(row.mentionedRemoteUsers),
 				},
-				renote: original === null ? null : { id: original.id, uri: original.uri },
+				renote: null,
 				auditNote: { ...row },
 			};
+		},
+		async readRenote(id: string): Promise<DeletedNoteSnapshot['renote']> {
+			const original = await manager.getRepository(MiNote).findOneBy({ id });
+			return original === null ? null : { id: original.id, uri: original.uri };
 		},
 		async decrementReplies(noteId: string): Promise<void> {
 			await manager.getRepository(MiNote).decrement({ id: noteId }, 'repliesCount', 1);

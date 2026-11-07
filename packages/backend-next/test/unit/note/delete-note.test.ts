@@ -12,7 +12,7 @@ const note: DeletedNoteSnapshot = {
 	renote: null, renoteUserId: null, auditNote: { id: 'note1', text: 'text' }, authorUsername: 'alice',
 };
 
-function setup(options: { moderator?: boolean; suspended?: boolean; exists?: boolean; failDelete?: boolean; failRender?: boolean; actorMissing?: boolean; snapshot?: Partial<DeletedNoteSnapshot> } = {}) {
+function setup(options: { moderator?: boolean; suspended?: boolean; exists?: boolean; failDelete?: boolean; failRender?: boolean; failOriginal?: boolean; actorMissing?: boolean; snapshot?: Partial<DeletedNoteSnapshot> } = {}) {
 	const events: string[] = [];
 	const work: NoteDeleteWork[] = [];
 	const useCase = createDeleteNote({
@@ -21,6 +21,13 @@ function setup(options: { moderator?: boolean; suspended?: boolean; exists?: boo
 			events.push('limit');
 		},
 		readNote: async () => options.exists === false ? null : { ...note, ...options.snapshot },
+		readRenote: async () => {
+			events.push('original');
+			if (options.failOriginal) {
+				throw new Error('original query');
+			}
+			return { id: 'original', uri: null };
+		},
 		decrementReplies: async () => {
 			events.push('reply');
 		},
@@ -94,4 +101,35 @@ test('remote instance count work starts before search and failed DELETE and keep
 	await expect(world.deleteNote(actor, { noteId: 'note1' }, 10000)).rejects.toThrow('db');
 	expect(world.events).toEqual(['limit', 'reply', 'published', 'instanceCounts', 'search', 'delete']);
 	expect(world.work[0]).toMatchObject({ kind: 'instanceCounts', snapshot: { authorHost: 'remote.test' } });
+});
+
+const pureRenote = { ...note.note, text: null, replyId: null, renoteId: 'original' };
+test('pure Renote original query failure follows deleted publication and prevents later effects', async () => {
+	const world = setup({ failOriginal: true, snapshot: { replyId: null, note: pureRenote } });
+	await expect(world.deleteNote(actor, { noteId: 'note1' }, 10000)).rejects.toThrow('original query');
+	expect(world.events).toEqual(['limit', 'published', 'original']);
+	expect(world.work).toEqual([]);
+});
+test('pure Renote original is prepared after publication without mutating the published snapshot', async () => {
+	const world = setup({ snapshot: { replyId: null, note: pureRenote } });
+	await world.deleteNote(actor, { noteId: 'note1' }, 10000);
+	expect(world.events).toEqual(['limit', 'published', 'original', 'delivery', 'search', 'delete']);
+	expect(world.work[0]).toMatchObject({ kind: 'delivery', snapshot: { renote: { id: 'original', uri: null } } });
+	expect(world.work[1]).toMatchObject({ kind: 'search', snapshot: { renote: null } });
+});
+test.each([
+	{ localOnly: true, note: pureRenote },
+	{ authorHost: 'remote.test', note: pureRenote },
+	{ note: note.note },
+	{ note: { ...pureRenote, text: 'quote' } },
+])('original query is skipped for a deletion without pure local AP work %#', async snapshot => {
+	const world = setup({ failOriginal: true, snapshot });
+	await world.deleteNote(actor, { noteId: 'note1' }, 10000);
+	expect(world.events).not.toContain('original');
+	expect(world.events).toContain('delete');
+});
+test('denied pure Renote deletion does not read the original', async () => {
+	const world = setup({ failOriginal: true, snapshot: { replyId: null, note: pureRenote } });
+	await expect(world.deleteNote({ ...actor, userId: 'other' }, { noteId: 'note1' }, 10000)).rejects.toMatchObject({ code: 'ACCESS_DENIED' });
+	expect(world.events).toEqual(['limit']);
 });
