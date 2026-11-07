@@ -179,10 +179,18 @@ for (const mode of ['reject-count', 'reject-rank', 'command-error', 'throw-first
 }
 await capture('lifetime-post-returns-before-ranking-exec', async () => {
 	const f = setup('hold-rank');
-	await f.post.postNoteCreated(baseNote, baseAuthor, { visibility: 'public', localOnly: true, renote: baseTarget }, true, [], []);
-	const returnedBeforeRelease = true;
-	assert.equal(Object.keys(f.state().scores).length, 0);
-	f.record('post-returned'); f.held.resolve(); await tick();
+	const posted = f.post.postNoteCreated(baseNote, baseAuthor, { visibility: 'public', localOnly: true, renote: baseTarget }, true, [], []).then(() => true);
+	let returnedBeforeRelease;
+	try {
+		returnedBeforeRelease = await Promise.race([posted, tick().then(() => tick()).then(() => false)]);
+		assert.equal(returnedBeforeRelease, true, 'post must return before ranking exec is released');
+		assert.equal(Object.keys(f.state().scores).length, 0);
+		f.record('post-returned');
+	} finally {
+		f.held.resolve();
+		await posted;
+		await tick();
+	}
 	assert.equal(Object.keys(f.state().scores).length, 2);
 	return { input: { nowMs: now, random, target: baseTarget }, returnedBeforeRelease, calls: f.calls, state: f.state() };
 });
