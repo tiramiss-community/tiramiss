@@ -1,0 +1,3575 @@
+{
+  "fixedCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "evidence": "Actual pinned NoteCreateService.postNoteCreated/incRenoteCount/isRenote/isQuote, NotificationManager, FeaturedService update methods, NoteDeleteService.delete; repositories, Redis, clocks, random and unrelated collaborators doubled. Not full server/real DB/Redis.",
+  "sources": {
+    "packages/backend/src/core/NoteCreateService.ts": {
+      "blob": "05e98541844d7f14e91263a78a03c9ec0139a89d"
+    },
+    "packages/backend/src/core/FeaturedService.ts": {
+      "blob": "b3335e38da475457fc2f38542fa3fc39608e000a"
+    },
+    "packages/backend/src/core/NoteDeleteService.ts": {
+      "blob": "1b945277b7590bf89fcdaaf5c56ec16513a59d6a"
+    }
+  },
+  "observations": [
+    {
+      "id": "post-ordinary-note",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": null,
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": null
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-pure-renote",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:468/1793968496000": 5,
+          "featuredPerUserNotesRanking:target-author:200/1793968496000": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          },
+          "featuredPerUserNotesRanking:target-author:200": {
+            "seconds": 1814400,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-quote-text",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          },
+          "text": "quote"
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:468/1793968496000": 5,
+          "featuredPerUserNotesRanking:target-author:200/1793968496000": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          },
+          "featuredPerUserNotesRanking:target-author:200": {
+            "seconds": 1814400,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-quote-poll",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          },
+          "poll": {
+            "choices": [
+              "a",
+              "b"
+            ]
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:468/1793968496000": 5,
+          "featuredPerUserNotesRanking:target-author:200/1793968496000": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          },
+          "featuredPerUserNotesRanking:target-author:200": {
+            "seconds": 1814400,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-self-renote",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "target-author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-bot-renote",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": true
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-remote-actor",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": "remote.example",
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:468/1793968496000": 5,
+          "featuredPerUserNotesRanking:target-author:200/1793968496000": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          },
+          "featuredPerUserNotesRanking:target-author:200": {
+            "seconds": 1814400,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-silent-renote",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": true,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:468/1793968496000": 5,
+          "featuredPerUserNotesRanking:target-author:200/1793968496000": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          },
+          "featuredPerUserNotesRanking:target-author:200": {
+            "seconds": 1814400,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-actor-home",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "home",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "home",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:468/1793968496000": 5,
+          "featuredPerUserNotesRanking:target-author:200/1793968496000": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          },
+          "featuredPerUserNotesRanking:target-author:200": {
+            "seconds": 1814400,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-actor-followers",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "followers",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "followers",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:468/1793968496000": 5,
+          "featuredPerUserNotesRanking:target-author:200/1793968496000": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          },
+          "featuredPerUserNotesRanking:target-author:200": {
+            "seconds": 1814400,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-actor-specified",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "specified",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "specified",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:468/1793968496000": 5,
+          "featuredPerUserNotesRanking:target-author:200/1793968496000": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          },
+          "featuredPerUserNotesRanking:target-author:200": {
+            "seconds": 1814400,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-target-home",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "home",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "home",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-target-followers",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "followers",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "followers",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-target-specified",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "specified",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "specified",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-target-remote",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": "remote.example",
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": "remote.example",
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-target-reply",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": "reply"
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": "reply"
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-target-channel",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": "channel",
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": "channel",
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredInChannelNotesRanking:channel:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredInChannelNotesRanking:channel:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredInChannelNotesRanking:channel:468/1793968496000": 5
+        },
+        "ttl": {
+          "featuredInChannelNotesRanking:channel:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-target-channel-remote-private",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": "remote.example",
+          "visibility": "specified",
+          "channelId": "channel",
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": "remote.example",
+            "visibility": "specified",
+            "channelId": "channel",
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredInChannelNotesRanking:channel:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredInChannelNotesRanking:channel:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredInChannelNotesRanking:channel:468/1793968496000": 5
+        },
+        "ttl": {
+          "featuredInChannelNotesRanking:channel:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-target-channel-reply",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": "channel",
+          "replyId": "reply"
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": "channel",
+            "replyId": "reply"
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-target-localOnly",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "localOnly": true
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null,
+            "localOnly": true
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:468/1793968496000": 5,
+          "featuredPerUserNotesRanking:target-author:200/1793968496000": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          },
+          "featuredPerUserNotesRanking:target-author:200": {
+            "seconds": 1814400,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-target-sensitive-channel",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": "channel",
+          "replyId": null,
+          "channel": {
+            "isSensitive": true
+          }
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": "channel",
+            "replyId": null,
+            "channel": {
+              "isSensitive": true
+            }
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredInChannelNotesRanking:channel:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredInChannelNotesRanking:channel:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredInChannelNotesRanking:channel:468/1793968496000": 5
+        },
+        "ttl": {
+          "featuredInChannelNotesRanking:channel:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "post-pack-fails-after-featured-start",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "reject-pack"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:468/1793968496000": 5,
+          "featuredPerUserNotesRanking:target-author:200/1793968496000": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          },
+          "featuredPerUserNotesRanking:target-author:200": {
+            "seconds": 1814400,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "error": "pack failed",
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "sampling-0.299999-age-1",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.299999,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1794054896001",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1794054896001",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1794054896001"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "1794054896001"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "score": 5,
+          "member": "1794054896001"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:468/1794054896001": 5,
+          "featuredPerUserNotesRanking:target-author:200/1794054896001": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          },
+          "featuredPerUserNotesRanking:target-author:200": {
+            "seconds": 1814400,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "sampling-0.299999-age259199999",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.299999,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793795696001",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793795696001",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793795696001"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "1793795696001"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "score": 5,
+          "member": "1793795696001"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:468/1793795696001": 5,
+          "featuredPerUserNotesRanking:target-author:200/1793795696001": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          },
+          "featuredPerUserNotesRanking:target-author:200": {
+            "seconds": 1814400,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "sampling-0.299999-age259200000",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.299999,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793795696000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793795696000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793795696000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "sampling-0.299999-age259200001",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.299999,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793795695999",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793795695999",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793795695999"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "sampling-0.3-age-1",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.3,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1794054896001",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1794054896001",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1794054896001"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "sampling-0.3-age259199999",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.3,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793795696001",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793795696001",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793795696001"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "sampling-0.3-age259200000",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.3,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793795696000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793795696000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793795696000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "sampling-0.3-age259200001",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.3,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793795695999",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793795695999",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793795695999"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "sampling-0.300001-age-1",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.300001,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1794054896001",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1794054896001",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1794054896001"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "sampling-0.300001-age259199999",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.300001,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793795696001",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793795696001",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793795696001"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "sampling-0.300001-age259200000",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.300001,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793795696000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793795696000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793795696000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "sampling-0.300001-age259200001",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.300001,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793795695999",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793795695999",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "ok"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793795695999"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "ranking-window-3days-offset-1",
+      "input": {
+        "nowMs": 1698451199999,
+        "rangeDays": 3,
+        "offsetMs": -1
+      },
+      "calls": [
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:99",
+          "score": 5,
+          "member": "note"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:99",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:99/note": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:99": {
+            "seconds": 777600,
+            "setAtMs": 1698451199999
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "ranking-window-3days-offset0",
+      "input": {
+        "nowMs": 1698451200000,
+        "rangeDays": 3,
+        "offsetMs": 0
+      },
+      "calls": [
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:100",
+          "score": 5,
+          "member": "note"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:100",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:100/note": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:100": {
+            "seconds": 777600,
+            "setAtMs": 1698451200000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "ranking-window-3days-offset1",
+      "input": {
+        "nowMs": 1698451200001,
+        "rangeDays": 3,
+        "offsetMs": 1
+      },
+      "calls": [
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:100",
+          "score": 5,
+          "member": "note"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:100",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:100/note": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:100": {
+            "seconds": 777600,
+            "setAtMs": 1698451200001
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "ranking-window-7days-offset-1",
+      "input": {
+        "nowMs": 1733011199999,
+        "rangeDays": 7,
+        "offsetMs": -1
+      },
+      "calls": [
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:user:99",
+          "score": 5,
+          "member": "note"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:user:99",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredPerUserNotesRanking:user:99/note": 5
+        },
+        "ttl": {
+          "featuredPerUserNotesRanking:user:99": {
+            "seconds": 1814400,
+            "setAtMs": 1733011199999
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "ranking-window-7days-offset0",
+      "input": {
+        "nowMs": 1733011200000,
+        "rangeDays": 7,
+        "offsetMs": 0
+      },
+      "calls": [
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:user:100",
+          "score": 5,
+          "member": "note"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:user:100",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredPerUserNotesRanking:user:100/note": 5
+        },
+        "ttl": {
+          "featuredPerUserNotesRanking:user:100": {
+            "seconds": 1814400,
+            "setAtMs": 1733011200000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "ranking-window-7days-offset1",
+      "input": {
+        "nowMs": 1733011200001,
+        "rangeDays": 7,
+        "offsetMs": 1
+      },
+      "calls": [
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:user:100",
+          "score": 5,
+          "member": "note"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:user:100",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredPerUserNotesRanking:user:100/note": 5
+        },
+        "ttl": {
+          "featuredPerUserNotesRanking:user:100": {
+            "seconds": 1814400,
+            "setAtMs": 1733011200001
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "ranking-repeat-increments-and-keeps-initial-expiry",
+      "input": {
+        "firstAtMs": 1794054896000,
+        "secondAtMs": 1794054897000
+      },
+      "calls": [
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "note"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "note"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:468/note": 10
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "failure-reject-count",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "reject-count"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:468/1793968496000": 5,
+          "featuredPerUserNotesRanking:target-author:200/1793968496000": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          },
+          "featuredPerUserNotesRanking:target-author:200": {
+            "seconds": 1814400,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": [
+        "count failed"
+      ]
+    },
+    {
+      "id": "failure-reject-rank",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "reject-rank"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": [
+        "rank failed",
+        "rank failed"
+      ]
+    },
+    {
+      "id": "failure-command-error",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "command-error"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "failure-throw-first-rank",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "author": {
+          "id": "author",
+          "host": null,
+          "isBot": false
+        },
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        },
+        "note": {
+          "id": "1794054896000",
+          "userId": "author",
+          "userHost": null,
+          "visibility": "public",
+          "localOnly": true,
+          "channelId": null
+        },
+        "data": {
+          "visibility": "public",
+          "localOnly": true,
+          "renote": {
+            "id": "1793968496000",
+            "userId": "target-author",
+            "userHost": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null
+          }
+        },
+        "silent": false,
+        "mode": "throw-first-rank"
+      },
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "global-threw"
+        }
+      ],
+      "state": {
+        "scores": {},
+        "ttl": {}
+      },
+      "error": "global threw",
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "lifetime-post-returns-before-ranking-exec",
+      "input": {
+        "nowMs": 1794054896000,
+        "random": 0.1,
+        "target": {
+          "id": "1793968496000",
+          "userId": "target-author",
+          "userHost": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null
+        }
+      },
+      "returnedBeforeRelease": true,
+      "calls": [
+        {
+          "method": "count-target",
+          "id": "1793968496000"
+        },
+        {
+          "method": "count-execute"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredGlobalNotesRanking:468",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredGlobalNotesRanking:468",
+          "seconds": 777600,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "multi"
+        },
+        {
+          "method": "zincrby",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "score": 5,
+          "member": "1793968496000"
+        },
+        {
+          "method": "expire",
+          "key": "featuredPerUserNotesRanking:target-author:200",
+          "seconds": 1814400,
+          "condition": "NX"
+        },
+        {
+          "method": "exec"
+        },
+        {
+          "method": "index"
+        },
+        {
+          "method": "post-returned"
+        }
+      ],
+      "state": {
+        "scores": {
+          "featuredGlobalNotesRanking:468/1793968496000": 5,
+          "featuredPerUserNotesRanking:target-author:200/1793968496000": 5
+        },
+        "ttl": {
+          "featuredGlobalNotesRanking:468": {
+            "seconds": 777600,
+            "setAtMs": 1794054896000
+          },
+          "featuredPerUserNotesRanking:target-author:200": {
+            "seconds": 1814400,
+            "setAtMs": 1794054896000
+          }
+        }
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "delete-no-cleanup-quietfalse-dbFailsfalse",
+      "input": {
+        "quiet": false,
+        "dbFails": false
+      },
+      "calls": [
+        {
+          "method": "deleted-publication"
+        },
+        {
+          "method": "search-unindex"
+        },
+        {
+          "method": "db-delete"
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "delete-no-cleanup-quietfalse-dbFailstrue",
+      "input": {
+        "quiet": false,
+        "dbFails": true
+      },
+      "calls": [
+        {
+          "method": "deleted-publication"
+        },
+        {
+          "method": "search-unindex"
+        },
+        {
+          "method": "db-delete"
+        }
+      ],
+      "error": "db delete failed",
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "delete-no-cleanup-quiettrue-dbFailsfalse",
+      "input": {
+        "quiet": true,
+        "dbFails": false
+      },
+      "calls": [
+        {
+          "method": "search-unindex"
+        },
+        {
+          "method": "db-delete"
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "delete-no-cleanup-quiettrue-dbFailstrue",
+      "input": {
+        "quiet": true,
+        "dbFails": true
+      },
+      "calls": [
+        {
+          "method": "search-unindex"
+        },
+        {
+          "method": "db-delete"
+        }
+      ],
+      "error": "db delete failed",
+      "unhandledRejectionsCapturedByHarness": []
+    }
+  ]
+}

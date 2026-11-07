@@ -8,7 +8,7 @@
 
 - 本家: `8e07cf085adf7009583d234a208e30436f020e26`。`backend-upstream/upstream-sync.json` と同じ SHA。fork の現在の `packages/backend` からは列挙しない。
 - 新実装: `6f62cb897d2a03e8fd7727eadf45c20d8bfcf206`（PR #213 マージ後）。判定と根拠はこの地点に固定する。
-  - 行の `implementation`/`verification` は `domains.json` の `implementationCommit` の木で存在を検査する。#216 の最初の PR で外向き HTTP の行の根拠を参照できるよう `224416b352fa474a37fb286cd4838d8818947fc8` へ、#215 段階 2 の PR で連合の共通土台の行の根拠も参照できるよう、両方を含む `36cad9edcbfd2b990d36b2f6645b677b1e54f0e4` へ、#160 の最初の PR で AP の署名・配送結果の分類の行の根拠も参照できるよう `02612df99fe3c529fc692d76b3bd37498a2e0e1a` へ、#162 の最初の PR で投票終了ジョブと通常 worker の行の根拠も参照できるよう `00c6b5b75ddcf4bb9e5e79291e2f54a9dd4933e4` へ、同じ PR で queue 接続のコメントを直した `ae30e864a06baf64a793d10ab6fb844ee3821502` へ、#171 の最初の PR でノート作成の AP 配送の行の根拠も参照できるよう `d9b718359e583fd9e33711c8321fc06b83c06b53` へ、同じ PR で MFM の `br` の行・起動中の投入口の接続の喪失を直した `47c9c75dd6b5fc9527c3976b86364b06c46f3a04` へ進めた。#172の削除sliceで追加した実装・検証の根拠を参照できるよう `ba51607ba514de5fe2e4a1bf574575d5f0d42fa9` へ進めた。#173第1sliceの通知・stream producerと4 Entityの根拠を参照できるよう `40239a1244b1a088e4fe836e0c57360d0065c912` へ進めた。#174第1sliceのTL producer・設定・休眠判定・ChannelFollowingの根拠を参照できるよう `6a7e2e3e46c7ad49fed7e87f23a7b781c145532c` へ進めた。#173の投稿WebSocket受信sliceの根拠を参照できるよう `6f4a5444ca9f02634972e81b5ffe7368302f7335` へ進めた。#174/#172の検索producerの根拠を参照できるよう `2ed681dcf3ba502865dd325baec2545568333018` へ進めた。#174のRole producerの根拠を参照できるよう `381eb4ff11106d62139f912cd237634385bde256` へ進めた。監査の判定（`audit`）はこれらの更新で変えていない。
+  - 行の `implementation`/`verification` は `domains.json` の `implementationCommit` の木で存在を検査する。#216 の最初の PR で外向き HTTP の行の根拠を参照できるよう `224416b352fa474a37fb286cd4838d8818947fc8` へ、#215 段階 2 の PR で連合の共通土台の行の根拠も参照できるよう、両方を含む `36cad9edcbfd2b990d36b2f6645b677b1e54f0e4` へ、#160 の最初の PR で AP の署名・配送結果の分類の行の根拠も参照できるよう `02612df99fe3c529fc692d76b3bd37498a2e0e1a` へ、#162 の最初の PR で投票終了ジョブと通常 worker の行の根拠も参照できるよう `00c6b5b75ddcf4bb9e5e79291e2f54a9dd4933e4` へ、同じ PR で queue 接続のコメントを直した `ae30e864a06baf64a793d10ab6fb844ee3821502` へ、#171 の最初の PR でノート作成の AP 配送の行の根拠も参照できるよう `d9b718359e583fd9e33711c8321fc06b83c06b53` へ、同じ PR で MFM の `br` の行・起動中の投入口の接続の喪失を直した `47c9c75dd6b5fc9527c3976b86364b06c46f3a04` へ進めた。#172の削除sliceで追加した実装・検証の根拠を参照できるよう `ba51607ba514de5fe2e4a1bf574575d5f0d42fa9` へ進めた。#173第1sliceの通知・stream producerと4 Entityの根拠を参照できるよう `40239a1244b1a088e4fe836e0c57360d0065c912` へ進めた。#174第1sliceのTL producer・設定・休眠判定・ChannelFollowingの根拠を参照できるよう `6a7e2e3e46c7ad49fed7e87f23a7b781c145532c` へ進めた。#173の投稿WebSocket受信sliceの根拠を参照できるよう `6f4a5444ca9f02634972e81b5ffe7368302f7335` へ進めた。#174/#172の検索producerの根拠を参照できるよう `2ed681dcf3ba502865dd325baec2545568333018` へ進めた。#174のRole producerの根拠を参照できるよう `381eb4ff11106d62139f912cd237634385bde256` へ進めた。#174のRenote featured producerの根拠を参照できるよう `399987210060b90db0aaac89ed16bfaa69b95768` へ進めた。監査の判定（`audit`）はこれらの更新で変えていない。
 - 対象: 登録 API と非 API HTTP、WebSocket、AP 受信/公開/送信、業務保存・副作用、job/周期処理、CLI/運用。fork 固有機能は対象外。固定本家の機能を一括で見送らない。
 
 ## 現在の到達点
@@ -74,6 +74,16 @@ settings、ID由来の8-field document、scope/visibility/content条件、作成
 pack成功後の既存Role材料と現在User factsによる適用Role選択、Redisリスト追加、packed publicationだけを接続した。maxlen1000は最近IDの10%trim時に適用し、古い直接更新はtrimしない。常時hard capではない。固定source229ケースの再生とJSON一致を確認し、新実装との直接fixture照合は所属16件。新実装はfocused unit48件、近傍112件、全unit2119件、実HTTP handler/PG/専用Redis11件、通常HTTP子の投稿直後SIGTERMとcache/publication/終了1件を検証した。[比較範囲と差異](../note/role-timeline/README.md) / [実装・検証記録](../../plans/2026-11-07-note-role-timeline-174.md)。
 
 `roles/notes`、`roleTimeline` WS channel、イベントごとの公開Role確認は `not_implemented` のまま。Role管理/割当API #181、閲覧 #185、Role WS #189、antenna/hashtag/featured等 #174、再構築 #132/#133、最終削除連携 #172・投稿全体 #176を完了扱いしない。上の過去sliceでRole TL全体を残作業とした記録は当時の状態を示し、本sliceで接続したproducerと未接続のconsumerを区別する。
+
+## #174 Renote featured producer sliceの照合（2026-11-07）
+
+実装コミット `399987210060b90db0aaac89ed16bfaa69b95768` を固定根拠に、`responsibility:notes-core:13`、`responsibility:notes-core:40`、`service:FeaturedService` を `partial` とした。`api:notes/create` と `capability:timeline` は `partial` を維持して既存根拠へ追加し、`responsibility:notes-core:44` と `service:SearchService` は古い残範囲説明だけを更新した。対象は7行で、全行の監査A/B・担当domain・本家source/line/referencesと既存根拠配列の順序を保持する。
+
+他人Renote/quote・nonbotの元投稿について、sample `< 0.3` とID由来の時刻からstrict3日未満の条件で+5を開始する。channel付き非replyはchannel、channelなしのpublic/local/非replyはglobalとper-userへ加点する。通常Redisの独立MULTIへ書き、3日/7日windowと9日/21日のEXPIRE NXを使う。DB count拒否や一方のranking失敗を他方の開始条件にせず、開始済み処理は既存診断・終了待機へ接続する。
+
+固定sourceメソッド50観測の再生成一致、新実装との直接JSON比較39件を確認した。本家全サーバーの実HTTP/実Redis比較とは区別し、ID日時変換はsource/unitのdouble、実codecは新実装の結合/processで検証する。新実装の単体62ファイル2,174件、featured実HTTP handler/PG/通常Redis結合11件、近傍投稿結合163件、通常HTTP子のRenote直後SIGTERMとscore成立/終了1件、依存順build/typecheckは成功。[比較範囲と差異](../note/featured/README.md) / [計画と検証記録](../../plans/2026-11-07-note-featured-174.md)。
+
+ranking取得/2-window平均・featured閲覧#185、reactionによる加点#184、gallery ranking、hashtag/antenna等#174、Role WS#189、再構築#132/#133、最終削除連携#172・投稿全体#176は未完了。削除時purge/減点は本家にもなく追加しない。過去sliceでRole TL/featured全体を残作業とした記録は当時の状態を示し、本sliceの書込producerと残るconsumer/他producerを区別する。
 
 ## 列挙した範囲
 

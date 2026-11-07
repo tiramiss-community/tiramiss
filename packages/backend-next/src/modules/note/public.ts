@@ -20,3 +20,5 @@ export { createNoteCreatedEvents } from './created-events.js';
 export type { NoteCreatedSnapshot } from './create-contract.js';
 export { planNoteTimelines, sampleTimelineFollowers } from './timeline-plan.js';
 export type { TimelineNote, TimelineMaterials, PlannedTimeline } from './timeline-plan.js';
+export { planRenoteFeatured } from './featured-plan.js';
+export type { FeaturedNoteScore } from './featured-plan.js';

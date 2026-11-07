@@ -13,19 +13,31 @@ export function createNotePostSaveWork(steps: {
 	schedulePollEnded(job: { noteId: string; delayMs: number }): Promise<void>;
 	/** 保存済みの投稿を読み直し、配送するかどうかも自分で決める。 */
 	deliver(noteId: string, input?: NotePostSaveInput): Promise<void>;
+	featured?(input: NotePostSaveInput): Promise<void>;
 	timelines?(input: NotePostSaveInput): Promise<void>;
 	currentTime(): number;
 }) {
 	return async (input: NotePostSaveInput): Promise<void> => {
-		const work = new Map<string, Promise<void>>([['counts', steps.counts(input)]]);
+		const work = new Map<string, Promise<void>>();
+		const start = (name: string, run: () => Promise<void>) => {
+			try {
+				work.set(name, run());
+			} catch (error) {
+				work.set(name, Promise.reject(error));
+			}
+		};
+		start('counts', () => steps.counts(input));
+		if (steps.featured) {
+			start('featured', () => steps.featured!(input));
+		}
 		if (steps.timelines) {
-			work.set('timelines', steps.timelines(input));
+			start('timelines', () => steps.timelines!(input));
 		}
 		if (input.pollExpiresAtMs !== null) {
 			// 本家どおり後続処理の開始時刻から遅延を決める。期限を過ぎていても負の遅延のまま投入し、BullMQ はすぐに実行する。
-			work.set('pollEnded', steps.schedulePollEnded({ noteId: input.noteId, delayMs: input.pollExpiresAtMs - steps.currentTime() }));
+			start('pollEnded', () => steps.schedulePollEnded({ noteId: input.noteId, delayMs: input.pollExpiresAtMs! - steps.currentTime() }));
 		}
-		work.set('deliver', steps.deliver(input.noteId, input));
+		start('deliver', () => steps.deliver(input.noteId, input));
 
 		// 本家の加算・投入・配送は互いに独立しているため、1 つの失敗で他を省かない。
 		const names = [...work.keys()];

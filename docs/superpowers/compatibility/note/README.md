@@ -230,3 +230,10 @@ pnpm --filter backend-next exec vitest run \
 ### #174 通常タイムラインproducerの接続（2026-11-07）
 
 home/local/user/list/channel（files/replies含む）の固定本家メソッドと新plannerを1,280入力で照合し、新実装は通常HTTP/PG/専用Redisと実HTTP子の終了・切断で検証した。probeの本家Repository/Redisはdoubleであり、本家全体を実HTTP/実Redisで新たに実測した結果とは区別する。検索・antenna・hashtag・featured・role timeline、閲覧APIと休眠解除等は残作業。[比較資料と再実行](timeline/README.md)。
+
+
+### #174 Renote featured +5 producer（2026-11-07）
+
+[featured比較資料](featured/README.md)の独立固定source期待値を `test/unit/note/featured.test.ts` へ直接接続する。本家の実NoteCreate/FeaturedServiceメソッドを抽出してRepository/Redis/clock等をdoubleへ置換した観測であり、本家full server/実DB/Redisとの同時比較ではない。
+
+新実装は `test/integration/note-featured.test.ts` の通常認証HTTP handler・PG・normal Redisで元Noteのglobal/作者別/channel加点、TTL/NX、quote/self/bot/reply/古いID、DB count拒否、global WRONGTYPE、削除後のsnapshot加点を検証する。別DBのtimeline Redisへ書かないことも確認する。`test/processes/note-featured.test.ts` はテスト専用Node preloadでrandomを固定し、通常HTTP子のRenote後SIGTERMとscore/終了0を観測する。held writerの直接drainはpost-save unitで検証する。reaction/2-window閲覧/gallery/hashtag・antennaと#174/#172/#176全体の完成は示さない。

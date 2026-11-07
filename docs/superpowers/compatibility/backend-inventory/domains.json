@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "381eb4ff11106d62139f912cd237634385bde256",
+  "implementationCommit": "399987210060b90db0aaac89ed16bfaa69b95768",
   "domains": [
     {
       "id": "api-common",
@@ -1593,7 +1593,11 @@
         "packages/backend-next/src/composition/posting-notifications.ts",
         "packages/backend-next/src/platform/connect-resources.ts",
         "packages/backend-next/src/modules/role/applicable-roles.ts",
-        "packages/backend-next/src/modules/role/public.ts"
+        "packages/backend-next/src/modules/role/public.ts",
+        "packages/backend-next/src/modules/note/featured-plan.ts",
+        "packages/backend-next/src/platform/featured-ranking.ts",
+        "packages/backend-next/src/composition/posting-featured.ts",
+        "packages/backend-next/src/platform/note-post-save.ts"
       ],
       "verification": [
         "packages/backend-next/test/integration/note-create.test.ts",
@@ -1610,12 +1614,19 @@
         "packages/backend-next/test/processes/note-role-timelines.test.ts",
         "docs/superpowers/compatibility/note/role-timeline/reference-role-timeline.mjs",
         "docs/superpowers/compatibility/note/role-timeline/source-observations.json",
-        "docs/superpowers/compatibility/note/role-timeline/README.md"
+        "docs/superpowers/compatibility/note/role-timeline/README.md",
+        "packages/backend-next/test/unit/note/featured.test.ts",
+        "packages/backend-next/test/unit/note/post-save.test.ts",
+        "packages/backend-next/test/integration/note-featured.test.ts",
+        "packages/backend-next/test/processes/note-featured.test.ts",
+        "docs/superpowers/compatibility/note/featured/reference-featured.mjs",
+        "docs/superpowers/compatibility/note/featured/source-observations.json",
+        "docs/superpowers/compatibility/note/featured/README.md"
       ],
       "differences": [
         "添付・投票・返信/Renote・channel・指定宛先・MFM抽出は#170で接続済み。未登録リモートユーザー宛てのメンションは#195まで保存前に501 NOT_IMPLEMENTEDで拒否し、登録済みリモートユーザーも#195まで再同期しない暫定制限（docs/backend-next/posting-contract.md）。完成版の意図的差異ではない。"
       ],
-      "note": "保存後のmain/home実受信と検索snapshot登録に、Role TL更新/publicationを接続。未登録remote mentionの501と登録済みremote再同期制限#195、antenna/hashtag/featured等#174、Role TL閲覧#185・Role WS受信#189、全体縦断#176は未完了。"
+      "note": "保存後のmain/home実受信・検索snapshot・Role TL更新/publicationに、Renote featured加点を接続。未登録remote mentionの501と登録済みremote再同期制限#195、antenna/hashtag等#174、featured閲覧#185・reaction加点#184、Role TL閲覧#185・Role WS受信#189、全体縦断#176は未完了。"
     },
     "processor:EndedPollNotification": {
       "status": "partial",
@@ -1701,7 +1712,11 @@
         "packages/backend-next/src/composition/posting-notifications.ts",
         "packages/backend-next/src/platform/connect-resources.ts",
         "packages/backend-next/src/modules/role/applicable-roles.ts",
-        "packages/backend-next/src/modules/role/public.ts"
+        "packages/backend-next/src/modules/role/public.ts",
+        "packages/backend-next/src/modules/note/featured-plan.ts",
+        "packages/backend-next/src/platform/featured-ranking.ts",
+        "packages/backend-next/src/composition/posting-featured.ts",
+        "packages/backend-next/src/platform/note-post-save.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/note/timeline-plan.test.ts",
@@ -1715,9 +1730,16 @@
         "packages/backend-next/test/processes/note-role-timelines.test.ts",
         "docs/superpowers/compatibility/note/role-timeline/reference-role-timeline.mjs",
         "docs/superpowers/compatibility/note/role-timeline/source-observations.json",
-        "docs/superpowers/compatibility/note/role-timeline/README.md"
+        "docs/superpowers/compatibility/note/role-timeline/README.md",
+        "packages/backend-next/test/unit/note/featured.test.ts",
+        "packages/backend-next/test/unit/note/post-save.test.ts",
+        "packages/backend-next/test/integration/note-featured.test.ts",
+        "packages/backend-next/test/processes/note-featured.test.ts",
+        "docs/superpowers/compatibility/note/featured/reference-featured.mjs",
+        "docs/superpowers/compatibility/note/featured/source-observations.json",
+        "docs/superpowers/compatibility/note/featured/README.md"
       ],
-      "note": "#174第1sliceでhome/local/user/list/channelのRedis書込producerと休眠判定を通常投稿へ接続し、後続sliceでRole TL書込とpublicationを追加。閲覧#185、検索API#186、antenna/hashtag/featured等の更新、Role WS#189、再構築#132/#133は未完了。"
+      "note": "home/local/user/list/channelのRedis書込producerと休眠判定、Role TL書込/publication、Renote featured加点を通常投稿へ接続。閲覧#185、検索API#186、antenna/hashtag等#174、featured取得/2-window平均#185・reaction側加点#184、Role WS#189、再構築#132/#133は未完了。"
     },
     "processor:UserWebhookDeliver": {
       "status": "partial",
