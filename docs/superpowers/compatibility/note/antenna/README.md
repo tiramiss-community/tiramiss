@@ -4,7 +4,10 @@
 
 実行対象は AntennaService のクラス全体（constructor、subscriber listener、lazy cache、disposeを含む）、実際の bindThis、Acct、UtilityService のアカウント変換、FanoutTimelineService.push、GlobalEventService の publish、完全な postNoteCreated/NotificationManager と NoteDeleteService.delete。DB/Redis・時刻・random・他機能は double。末尾5件だけは、本家の MiNote/MiChannel の実際の decorator・constructor、insertNote と TypeORM/PostgreSQL を使う。User/DriveFile は関係先の ID だけを持つ probe Entity に置き換える。本家 full server、HTTP、実 Redis、WebSocket を実行した比較ではない。
 
+実行側のこのリポジトリのrootでも依存をインストールしてから実行する。probeはそのrootの `package.json` を基点に `typescript` を解決するため、PGなしの179件にも必要。`REPOSITORY_ROOT` を指定する場合は、そのディレクトリに同じ依存を用意する。固定本家側の依存は、下記の `UPSTREAM_ROOT` の前提も満たすこと。
+
 ```sh
+pnpm install --frozen-lockfile
 SOURCE_PG_URL='postgres://postgres:foundation-test-only@127.0.0.1:55483/backend_next_test' \
 UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream \
 OUTPUT_DIR=/tmp/antenna-source \
