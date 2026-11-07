@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "4d777eda753920a9638ec2ad5df93a3c0ced06c7",
+  "implementationCommit": "1f023061eb86a18a3113d29517cb7eded091edc6",
   "domains": [
     {
       "id": "api-common",
@@ -514,7 +514,7 @@
         "packages/backend-next/test/unit/stream/missing-main-note.test.ts"
       ],
       "differences": [
-        "投稿受信sliceはmain/homeTimeline・note購読のみ。常時cloneとJSON null frame無視、本文hideに限る現在following照会の差異はdocs/superpowers/compatibility/stream/README.md。他17channel・readNotification・channel/ch書込は未実装。"
+        "投稿受信sliceはmain/homeTimeline・note購読のみ。常時cloneとJSON null frame無視、本文hideに限る現在following照会の差異はdocs/superpowers/compatibility/stream/README.md。queueStatsとそのrequestLogは#163で接続済み。他16channel・readNotification・他channel書込は未実装。"
       ]
     },
     {
@@ -919,16 +919,28 @@
       ],
       "apiNames": [],
       "implementation": [
-        "packages/backend-next/src/platform/job-queue/connection.ts",
-        "packages/backend-next/src/platform/job-queue/ended-poll-notification.ts",
-        "packages/backend-next/src/platform/job-queue/deliver.ts"
+        "packages/backend-next/src/modules/queue/admin.ts",
+        "packages/backend-next/src/http/queue-api.ts",
+        "packages/backend-next/src/platform/job-queue/administration.ts",
+        "packages/backend-next/src/platform/database/queue-admin.ts",
+        "packages/backend-next/src/composition/queue-http.ts",
+        "packages/backend-next/src/platform/queue-stats.ts",
+        "packages/backend-next/src/modules/stream/connection.ts",
+        "packages/backend-next/src/processes/http.ts"
       ],
       "verification": [
-        "packages/backend-next/test/integration/poll-ended-job.test.ts",
-        "packages/backend-next/test/integration/deliver-queue.test.ts"
+        "packages/backend-next/test/unit/queue/source-compat.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md",
+        "packages/backend-next/test/unit/stream/queue-stats.test.ts",
+        "packages/backend-next/test/integration/queue-stats.test.ts"
       ],
       "differences": [
-        "独自PG実行基盤（依頼/claim/復旧）はPR #212/#213で撤去。#162で通常BullMQのQueue/Workerを投票終了ジョブから接続し、#171でdeliver queue（本家と同じjob名・data・試行・backoff・保持・Worker設定）を足した。Redis接続は再接続せず、稼働中の切断を子の異常終了にする（本家はBullMQの既定のretryStrategyで1〜20秒の指数待ちにより無期限に再接続）。管理API・QueueStatsは未実装。"
+        "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164の自動保持/清掃と#165の残payload引継ぎは未完了。",
+        "#163で公開queueStatsを固定sourceの公開投影と実Redis/WS/processで検証。guestとread:account appが購読可能（appのupgrade認可は維持）。単一HTTP observerがdeliver/inboxを即時/10000ms観測し最新先頭200件をメモリ保持。Xevを導入せず、停止時にQueueEvents/listener/開始済み処理を解放/待機する。再起動を跨ぐ保持はない。",
+        "既存のRedis無再接続方針を維持し、管理/QueueEvents接続断も子の異常終了とする。本家BullMQの無期限再接続との差異。業務workerは既存の投票終了・deliver・userWebhookの3種のみ。"
       ]
     },
     {
@@ -1841,7 +1853,7 @@
         "docs/superpowers/compatibility/stream/README.md",
         "packages/backend-next/test/integration/streaming-lifecycle.test.ts"
       ],
-      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。他17channel・readNotification・channel/ch書込と全#189は未完了。"
+      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。queueStatsは#163で接続済み。他16channel・readNotification・queueStats以外のchannel/ch書込と全#189は未完了。"
     },
     "stream-channel:packages/backend/src/server/api/stream/Connection.ts:351": {
       "status": "partial",
@@ -1861,7 +1873,7 @@
         "packages/backend-next/test/processes/posting-websocket.test.ts",
         "docs/superpowers/compatibility/stream/README.md"
       ],
-      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。他17channel・readNotification・channel/ch書込と全#189は未完了。"
+      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。queueStatsは#163で接続済み。他16channel・readNotification・queueStats以外のchannel/ch書込と全#189は未完了。"
     },
     "stream-channel:packages/backend/src/server/api/stream/Connection.ts:352": {
       "status": "partial",
@@ -1881,7 +1893,7 @@
         "packages/backend-next/test/processes/posting-websocket.test.ts",
         "docs/superpowers/compatibility/stream/README.md"
       ],
-      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。他17channel・readNotification・channel/ch書込と全#189は未完了。"
+      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。queueStatsは#163で接続済み。他16channel・readNotification・queueStats以外のchannel/ch書込と全#189は未完了。"
     },
     "stream-command:packages/backend/src/server/api/stream/Connection.ts:160": {
       "status": "partial",
@@ -1901,7 +1913,7 @@
         "packages/backend-next/test/processes/posting-websocket.test.ts",
         "docs/superpowers/compatibility/stream/README.md"
       ],
-      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。他17channel・readNotification・channel/ch書込と全#189は未完了。"
+      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。queueStatsは#163で接続済み。他16channel・readNotification・queueStats以外のchannel/ch書込と全#189は未完了。"
     },
     "stream-command:packages/backend/src/server/api/stream/Connection.ts:161": {
       "status": "partial",
@@ -1921,7 +1933,7 @@
         "packages/backend-next/test/processes/posting-websocket.test.ts",
         "docs/superpowers/compatibility/stream/README.md"
       ],
-      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。他17channel・readNotification・channel/ch書込と全#189は未完了。"
+      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。queueStatsは#163で接続済み。他16channel・readNotification・queueStats以外のchannel/ch書込と全#189は未完了。"
     },
     "stream-command:packages/backend/src/server/api/stream/Connection.ts:162": {
       "status": "partial",
@@ -1941,7 +1953,7 @@
         "packages/backend-next/test/processes/posting-websocket.test.ts",
         "docs/superpowers/compatibility/stream/README.md"
       ],
-      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。他17channel・readNotification・channel/ch書込と全#189は未完了。"
+      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。queueStatsは#163で接続済み。他16channel・readNotification・queueStats以外のchannel/ch書込と全#189は未完了。"
     },
     "stream-command:packages/backend/src/server/api/stream/Connection.ts:163": {
       "status": "partial",
@@ -1961,7 +1973,7 @@
         "packages/backend-next/test/processes/posting-websocket.test.ts",
         "docs/superpowers/compatibility/stream/README.md"
       ],
-      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。他17channel・readNotification・channel/ch書込と全#189は未完了。"
+      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。queueStatsは#163で接続済み。他16channel・readNotification・queueStats以外のchannel/ch書込と全#189は未完了。"
     },
     "stream-command:packages/backend/src/server/api/stream/Connection.ts:164": {
       "status": "partial",
@@ -1981,7 +1993,7 @@
         "packages/backend-next/test/processes/posting-websocket.test.ts",
         "docs/superpowers/compatibility/stream/README.md"
       ],
-      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。他17channel・readNotification・channel/ch書込と全#189は未完了。"
+      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。queueStatsは#163で接続済み。他16channel・readNotification・queueStats以外のchannel/ch書込と全#189は未完了。"
     },
     "stream-command:packages/backend/src/server/api/stream/Connection.ts:165": {
       "status": "partial",
@@ -1991,7 +2003,9 @@
         "packages/backend-next/src/platform/streaming-server.ts",
         "packages/backend-next/src/composition/posting-websocket.ts",
         "packages/backend-next/src/processes/http.ts",
-        "packages/backend-next/src/platform/database/streaming.ts"
+        "packages/backend-next/src/platform/database/streaming.ts",
+        "packages/backend-next/src/platform/queue-stats.ts",
+        "packages/backend-next/src/composition/queue-http.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/stream/receiver.test.ts",
@@ -1999,9 +2013,14 @@
         "docs/superpowers/compatibility/stream/source-cases.json",
         "packages/backend-next/test/integration/posting-websocket.test.ts",
         "packages/backend-next/test/processes/posting-websocket.test.ts",
-        "docs/superpowers/compatibility/stream/README.md"
+        "docs/superpowers/compatibility/stream/README.md",
+        "packages/backend-next/test/unit/stream/queue-stats.test.ts",
+        "packages/backend-next/test/integration/queue-stats.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
       ],
-      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。他17channel・readNotification・channel/ch書込と全#189は未完了。"
+      "note": "#173のmain/homeTimeline・note購読に加え、#163でqueueStatsの接続/解除とchannel/chによるrequestLogを検証。他16channel・readNotification・他channel書込など全#189は未完了。"
     },
     "stream-command:packages/backend/src/server/api/stream/Connection.ts:166": {
       "status": "partial",
@@ -2011,7 +2030,9 @@
         "packages/backend-next/src/platform/streaming-server.ts",
         "packages/backend-next/src/composition/posting-websocket.ts",
         "packages/backend-next/src/processes/http.ts",
-        "packages/backend-next/src/platform/database/streaming.ts"
+        "packages/backend-next/src/platform/database/streaming.ts",
+        "packages/backend-next/src/platform/queue-stats.ts",
+        "packages/backend-next/src/composition/queue-http.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/stream/receiver.test.ts",
@@ -2019,9 +2040,14 @@
         "docs/superpowers/compatibility/stream/source-cases.json",
         "packages/backend-next/test/integration/posting-websocket.test.ts",
         "packages/backend-next/test/processes/posting-websocket.test.ts",
-        "docs/superpowers/compatibility/stream/README.md"
+        "docs/superpowers/compatibility/stream/README.md",
+        "packages/backend-next/test/unit/stream/queue-stats.test.ts",
+        "packages/backend-next/test/integration/queue-stats.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
       ],
-      "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。他17channel・readNotification・channel/ch書込と全#189は未完了。"
+      "note": "#173のmain/homeTimeline・note購読に加え、#163でqueueStatsの接続/解除とchannel/chによるrequestLogを検証。他16channel・readNotification・他channel書込など全#189は未完了。"
     },
     "capability:search": {
       "status": "partial",
@@ -2050,6 +2076,349 @@
         "docs/superpowers/compatibility/note/hashtag/README.md"
       ],
       "note": "検索索引の登録/解除とpublic/home投稿のhashtag表・トレンド更新を接続済み。antennaの通常更新も別producerで接続。検索/hashtag閲覧APIと可視性 #186、再構築 #132/#133、最終縦断 #176 は未完了。"
+    },
+    "api:admin/queue/clear": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/queue/admin.ts",
+        "packages/backend-next/src/http/queue-api.ts",
+        "packages/backend-next/src/platform/job-queue/administration.ts",
+        "packages/backend-next/src/platform/database/queue-admin.ts",
+        "packages/backend-next/src/composition/queue-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/queue/source-compat.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164の自動保持/清掃と#165の残payload引継ぎは未完了。"
+    },
+    "api:admin/queue/deliver-delayed": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/queue/admin.ts",
+        "packages/backend-next/src/http/queue-api.ts",
+        "packages/backend-next/src/platform/job-queue/administration.ts",
+        "packages/backend-next/src/platform/database/queue-admin.ts",
+        "packages/backend-next/src/composition/queue-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/queue/source-compat.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164の自動保持/清掃と#165の残payload引継ぎは未完了。"
+    },
+    "api:admin/queue/inbox-delayed": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/queue/admin.ts",
+        "packages/backend-next/src/http/queue-api.ts",
+        "packages/backend-next/src/platform/job-queue/administration.ts",
+        "packages/backend-next/src/platform/database/queue-admin.ts",
+        "packages/backend-next/src/composition/queue-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/queue/source-compat.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164の自動保持/清掃と#165の残payload引継ぎは未完了。"
+    },
+    "api:admin/queue/jobs": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/queue/admin.ts",
+        "packages/backend-next/src/http/queue-api.ts",
+        "packages/backend-next/src/platform/job-queue/administration.ts",
+        "packages/backend-next/src/platform/database/queue-admin.ts",
+        "packages/backend-next/src/composition/queue-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/queue/source-compat.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164の自動保持/清掃と#165の残payload引継ぎは未完了。"
+    },
+    "api:admin/queue/pause": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/queue/admin.ts",
+        "packages/backend-next/src/http/queue-api.ts",
+        "packages/backend-next/src/platform/job-queue/administration.ts",
+        "packages/backend-next/src/platform/database/queue-admin.ts",
+        "packages/backend-next/src/composition/queue-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/queue/source-compat.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164の自動保持/清掃と#165の残payload引継ぎは未完了。"
+    },
+    "api:admin/queue/promote-jobs": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/queue/admin.ts",
+        "packages/backend-next/src/http/queue-api.ts",
+        "packages/backend-next/src/platform/job-queue/administration.ts",
+        "packages/backend-next/src/platform/database/queue-admin.ts",
+        "packages/backend-next/src/composition/queue-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/queue/source-compat.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164の自動保持/清掃と#165の残payload引継ぎは未完了。"
+    },
+    "api:admin/queue/queue-stats": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/queue/admin.ts",
+        "packages/backend-next/src/http/queue-api.ts",
+        "packages/backend-next/src/platform/job-queue/administration.ts",
+        "packages/backend-next/src/platform/database/queue-admin.ts",
+        "packages/backend-next/src/composition/queue-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/queue/source-compat.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164の自動保持/清掃と#165の残payload引継ぎは未完了。"
+    },
+    "api:admin/queue/queues": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/queue/admin.ts",
+        "packages/backend-next/src/http/queue-api.ts",
+        "packages/backend-next/src/platform/job-queue/administration.ts",
+        "packages/backend-next/src/platform/database/queue-admin.ts",
+        "packages/backend-next/src/composition/queue-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/queue/source-compat.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164の自動保持/清掃と#165の残payload引継ぎは未完了。"
+    },
+    "api:admin/queue/remove-job": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/queue/admin.ts",
+        "packages/backend-next/src/http/queue-api.ts",
+        "packages/backend-next/src/platform/job-queue/administration.ts",
+        "packages/backend-next/src/platform/database/queue-admin.ts",
+        "packages/backend-next/src/composition/queue-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/queue/source-compat.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164の自動保持/清掃と#165の残payload引継ぎは未完了。"
+    },
+    "api:admin/queue/resume": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/queue/admin.ts",
+        "packages/backend-next/src/http/queue-api.ts",
+        "packages/backend-next/src/platform/job-queue/administration.ts",
+        "packages/backend-next/src/platform/database/queue-admin.ts",
+        "packages/backend-next/src/composition/queue-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/queue/source-compat.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164の自動保持/清掃と#165の残payload引継ぎは未完了。"
+    },
+    "api:admin/queue/retry-job": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/queue/admin.ts",
+        "packages/backend-next/src/http/queue-api.ts",
+        "packages/backend-next/src/platform/job-queue/administration.ts",
+        "packages/backend-next/src/platform/database/queue-admin.ts",
+        "packages/backend-next/src/composition/queue-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/queue/source-compat.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164の自動保持/清掃と#165の残payload引継ぎは未完了。"
+    },
+    "api:admin/queue/show-job": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/queue/admin.ts",
+        "packages/backend-next/src/http/queue-api.ts",
+        "packages/backend-next/src/platform/job-queue/administration.ts",
+        "packages/backend-next/src/platform/database/queue-admin.ts",
+        "packages/backend-next/src/composition/queue-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/queue/source-compat.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164の自動保持/清掃と#165の残payload引継ぎは未完了。"
+    },
+    "api:admin/queue/show-job-logs": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/queue/admin.ts",
+        "packages/backend-next/src/http/queue-api.ts",
+        "packages/backend-next/src/platform/job-queue/administration.ts",
+        "packages/backend-next/src/platform/database/queue-admin.ts",
+        "packages/backend-next/src/composition/queue-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/queue/source-compat.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164の自動保持/清掃と#165の残payload引継ぎは未完了。"
+    },
+    "api:admin/queue/stats": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/queue/admin.ts",
+        "packages/backend-next/src/http/queue-api.ts",
+        "packages/backend-next/src/platform/job-queue/administration.ts",
+        "packages/backend-next/src/platform/database/queue-admin.ts",
+        "packages/backend-next/src/composition/queue-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/queue/source-compat.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164の自動保持/清掃と#165の残payload引継ぎは未完了。"
+    },
+    "capability:queue": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/queue/admin.ts",
+        "packages/backend-next/src/http/queue-api.ts",
+        "packages/backend-next/src/platform/job-queue/administration.ts",
+        "packages/backend-next/src/platform/database/queue-admin.ts",
+        "packages/backend-next/src/composition/queue-http.ts",
+        "packages/backend-next/src/platform/queue-stats.ts",
+        "packages/backend-next/src/modules/stream/connection.ts",
+        "packages/backend-next/src/processes/http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/queue/source-compat.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md",
+        "packages/backend-next/test/unit/stream/queue-stats.test.ts",
+        "packages/backend-next/test/integration/queue-stats.test.ts"
+      ],
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164の自動保持/清掃と#165の残payload引継ぎは未完了。 全10業務workerの追加を意味しない。"
+    },
+    "capability:queue-stats": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/platform/queue-stats.ts",
+        "packages/backend-next/src/modules/stream/connection.ts",
+        "packages/backend-next/src/composition/queue-http.ts",
+        "packages/backend-next/src/processes/http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/stream/queue-stats.test.ts",
+        "packages/backend-next/test/integration/queue-stats.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#163で公開queueStatsを固定sourceの公開投影と実Redis/WS/processで検証。guestとread:account appが購読可能（appのupgrade認可は維持）。単一HTTP observerがdeliver/inboxを即時/10000ms観測し最新先頭200件をメモリ保持。Xevを導入せず、停止時にQueueEvents/listener/開始済み処理を解放/待機する。再起動を跨ぐ保持はない。"
+    },
+    "stream-channel:packages/backend/src/server/api/stream/Connection.ts:364": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/platform/queue-stats.ts",
+        "packages/backend-next/src/modules/stream/connection.ts",
+        "packages/backend-next/src/composition/queue-http.ts",
+        "packages/backend-next/src/processes/http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/stream/queue-stats.test.ts",
+        "packages/backend-next/test/integration/queue-stats.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#163で公開queueStatsを固定sourceの公開投影と実Redis/WS/processで検証。guestとread:account appが購読可能（appのupgrade認可は維持）。単一HTTP observerがdeliver/inboxを即時/10000ms観測し最新先頭200件をメモリ保持。Xevを導入せず、停止時にQueueEvents/listener/開始済み処理を解放/待機する。再起動を跨ぐ保持はない。"
+    },
+    "stream-command:packages/backend/src/server/api/stream/Connection.ts:167": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/platform/queue-stats.ts",
+        "packages/backend-next/src/modules/stream/connection.ts",
+        "packages/backend-next/src/composition/queue-http.ts",
+        "packages/backend-next/src/processes/http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/stream/queue-stats.test.ts",
+        "packages/backend-next/test/integration/queue-stats.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#173のmain/homeTimeline・note購読に加え、#163でqueueStatsの接続/解除とchannel/chによるrequestLogを検証。他16channel・readNotification・他channel書込など全#189は未完了。"
+    },
+    "stream-command:packages/backend/src/server/api/stream/Connection.ts:168": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/platform/queue-stats.ts",
+        "packages/backend-next/src/modules/stream/connection.ts",
+        "packages/backend-next/src/composition/queue-http.ts",
+        "packages/backend-next/src/processes/http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/stream/queue-stats.test.ts",
+        "packages/backend-next/test/integration/queue-stats.test.ts",
+        "packages/backend-next/test/processes/queue-admin.test.ts",
+        "docs/superpowers/compatibility/queue-admin/observations.json",
+        "docs/superpowers/compatibility/queue-admin/README.md"
+      ],
+      "note": "#173のmain/homeTimeline・note購読に加え、#163でqueueStatsの接続/解除とchannel/chによるrequestLogを検証。他16channel・readNotification・他channel書込など全#189は未完了。"
     }
   }
 }

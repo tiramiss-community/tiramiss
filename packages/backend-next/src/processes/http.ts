@@ -7,6 +7,7 @@ import { chmod } from 'node:fs/promises';
 import { getRequestListener } from '@hono/node-server';
 import { createBackendHttpApp } from '../composition/note-http.js';
 import { openPostingWebSocket } from '../composition/posting-websocket.js';
+import { openQueueHttp } from '../composition/queue-http.js';
 import { startManagedProcess } from './lifecycle.js';
 import type { Hono } from 'hono';
 import type { RuntimeConfig } from '../config/types.js';
@@ -113,14 +114,29 @@ export async function closeHttp(server: Server): Promise<void> {
 
 export function startHttp(config: RuntimeConfig) {
 	return startManagedProcess('http', config, async (resources, reportFailure) => {
-		const server = await listenHttp(createBackendHttpApp(resources, config), config.http);
+		const queues = await openQueueHttp(resources, config, reportFailure);
+		let server: Server;
 		try {
-			const streaming = await openPostingWebSocket(server, resources, config, reportFailure);
+			server = await listenHttp(createBackendHttpApp(resources, config, queues.api), config.http);
+		} catch (error) {
+			await queues.close();
+			throw error;
+		}
+		registerHttpDrain(server, queues.stats.close);
+		try {
+			const streaming = await openPostingWebSocket(server, resources, config, reportFailure, queues.stats);
 			registerHttpDrain(server, streaming.close);
 		} catch (error) {
 			await closeHttp(server);
+			await queues.close();
 			throw error;
 		}
-		return () => closeHttp(server);
+		return async () => {
+			try {
+				await closeHttp(server);
+			} finally {
+				await queues.close();
+			}
+		};
 	});
 }

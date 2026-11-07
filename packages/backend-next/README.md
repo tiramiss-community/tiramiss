@@ -72,6 +72,12 @@ queueごとのprefixは本家と同じ`<prefix>:queue:<queue名>`。各子は投
 停止期限を超えると異常終了する（止めたジョブはBullMQのstalled検査で戻る）。
 ログはstdoutへのJSON行で、設定全体や認証情報を出力しない。
 
+`POST /api/admin/queue/*` の本家14 APIを通常HTTPへ接続する。現在moderator（administrator/rootを含む）と`read:admin:queue`または`write:admin:queue`で認可し、全10 queue名の照会・pause/resume/retry/promote/remove/cleanを扱う。管理handleはHTTPだけが所有し、未接続の業務Workerを起動しない。`show-job`/`jobs`は2 webhook queueのtop-level secretだけを秘匿し、本文・URL・userId・logsは保持する。
+
+`/streaming` の `connect` で `channel: "queueStats"` を購読し、`{ type: "ch", body: { id: "stats", type: "requestLog", body: { id: "log", length: 10 } } }` を購読ID `stats` へ送る（`channel`も同じ）と履歴を得る。公開channelなのでguestや受理済み`read:account` appはqueue管理資格なしで購読できる。HTTPに1つのobserverがdeliver/inboxのactiveイベントと現在件数を即時/10秒周期で発行し、最新先頭200件をメモリ保持する。再起動を跨ぐ保持はない。
+
+pause/resumeは制御完了を待つ。clear/promote/retry/removeと監査は本家の非待機HTTP204を維持し、失敗を診断して開始済み処理を停止時に待つ。QueueEvents・listener・intervalもHTTP停止へ接続する。管理接続にも既存の無再接続方針を適用する。[固定source比較・実依存検証・差異](../../docs/superpowers/compatibility/queue-admin/README.md)。通常保持/清掃#164、残payload引継ぎ#165は別作業となる。
+
 ## 検証
 
 テスト専用のPostgreSQL・Redis・Meilisearchを使う。既存の`misskey-infra`とは別のComposeプロジェクトであり、
@@ -240,7 +246,7 @@ DB失敗やクライアント切断を理由に自動再作成しない。通常
 
 HTTPプロセスごとに専用Redis subscriberを1本持ち、各受信者の関係factsを接続時と10秒ごとに取得する。TLの公開snapshotは維持し、nested hideと自分のreactionを受信者ごとに適用する。followers本文を隠す判定だけは本家の別following cacheに相当する現在DB材料で行う。接続時と5分ごとの活動日時更新、1分ごとのpingと2分超の無pong切断を行い、停止はupgrade/WSを拒否・終了し、開始済みDB処理を待ってから依存先を解放する。
 
-実HTTP create/delete、通常投票worker、実PG/Redis/WSと停止・heartbeat・relation refreshを検証する。[固定本家比較と検証範囲](../../docs/superpowers/compatibility/stream/README.md)。`readNotification`・channel書込・他17channelは#189/#177、通知閲覧/既読/未読/push/移行は#177、投稿全体の縦断完成は#176に残る。
+実HTTP create/delete、通常投票worker、実PG/Redis/WSと停止・heartbeat・relation refreshを検証する。[固定本家比較と検証範囲](../../docs/superpowers/compatibility/stream/README.md)。queueStatsとそのrequestLogを除く`readNotification`・channel書込・他16channelは#189/#177、通知閲覧/既読/未読/push/移行は#177、投稿全体の縦断完成は#176に残る。
 
 ## 通常検索producer（#174/#172）
 

@@ -12,6 +12,7 @@ import type { Duplex } from 'node:stream';
 import type { RedisConfig } from '../config/types.js';
 import type { StreamFacts, StreamNote } from '../modules/stream/public.js';
 import type { Logger } from './logger.js';
+import type { QueueStatsReader } from '../modules/queue/public.js';
 
 export interface StreamingPorts {
 	authenticate(token: string | null): Promise<{ userId: string; canReadAccount: boolean; isSuspended: boolean } | null>;
@@ -28,6 +29,7 @@ export async function openStreamingServer(server: Server, options: {
 	ports: StreamingPorts;
 	logger: Logger;
 	onFailure(error: Error): void;
+	queueStats?: QueueStatsReader;
 }) {
 	let draining = false;
 	const tasks = new Set<Promise<unknown>>();
@@ -110,7 +112,7 @@ export async function openStreamingServer(server: Server, options: {
 					}).catch(error => options.logger.error('streaming.event.failed', { error })));
 				};
 				const connection = createStreamConnection({
-					facts: () => facts, now: Date.now, hidingFollowing: () => options.ports.hidingFollowing(userId),
+					facts: () => facts, now: Date.now, hidingFollowing: () => options.ports.hidingFollowing(userId), queueStats: options.queueStats,
 					send: value => {
 						if (!closed && !draining && ws.readyState === WebSocket.OPEN) {
 							ws.send(JSON.stringify(value));
@@ -137,6 +139,7 @@ export async function openStreamingServer(server: Server, options: {
 					lastPong: Date.now(), publish: (value: unknown) => enqueue(() => connection.publish(value)),
 					dispose: () => {
 						closed = true;
+						connection.dispose();
 						clearInterval(refresh);
 						clearInterval(activity);
 						sessions.delete(ws);
