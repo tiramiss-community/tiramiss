@@ -4,6 +4,8 @@ reviews:
   profile: "chill"
   high_level_summary: false
   poem: true
+  auto_approvals:
+    enabled: true
   pre_merge_checks:
     docstrings:
       # カバレッジ下限チェックを一時的に無効化する。
