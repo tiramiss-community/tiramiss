@@ -72,7 +72,7 @@ HTTP成功は保存とレスポンス生成の成功。AP配送や通知の完�
 
 ローカル作者かつ `localOnly=false` のとき、通常投稿・引用はDelete(Tombstone)、元投稿が残るpure RenoteはUndo(Announce)、元投稿消失時はDeleteへ戻す。作者鍵を使い、followers・accepted relay・concerned directを別々に投入する。非public削除もfollowers/relayを対象にし、followersとdirect間でsharedInboxを重複排除しない。concernedは保存済みremote mention URI・Renote作者と、削除対象へのremote返信/Renote作者。対象自身の列は削除前に保持し、参照する子Noteは削除後も照会できる。
 
-開始済みの配送・監査は `notePostDelete` が終了期限まで待つ。失敗は `note-post-delete.failed` に記録し、producerの再実行・永続宛先台帳・強いCreate/Delete順序を追加しない。stream/通知は#173、TL/検索は#174、webhookは#175、チャートは#200、最後の連携確認は#176に残す。[実装と検証](../superpowers/plans/2026-11-07-note-delete-172.md)。
+開始済みの配送・監査は `notePostDelete` が終了期限まで待つ。失敗は `note-post-delete.failed` に記録し、producerの再実行・永続宛先台帳・強いCreate/Delete順序を追加しない。投稿/削除/通知streamは下記#173受信sliceまで接続した。検索等は#174、チャートは#200、投稿全体の連携確認は#176に残す。固定本家に削除webhookはない。[実装と検証](../superpowers/plans/2026-11-07-note-delete-172.md)。
 
 
 ## 投稿通知とstream producer（#173 第1slice、2026-11-07）
@@ -85,7 +85,7 @@ reply/mention/quote/renote/noteの条件を`modules/note/notification-plan.ts`�
 
 既存の投票終了workerも保存後の通知発行へ接続した。削除済み投票・現在の設定・重複ジョブの規則は#162を維持する。通知本文の保存済み状態とstreamの成功は別で、永続effect・容量・一度だけ成立の基盤は再導入しない。
 
-検証は実HTTP/PG/Redis subscriberと通常poll worker、C10固定本家観測、source由来の受信条件・失敗境界を含む。[計画・実測](../superpowers/plans/2026-11-07-notification-stream-173.md)。WebSocket transport/auth/channelとクライアント受信は#189/#173/#176、広域fanout/cacheは#217、通知閲覧/既読/未読timer/push/移行は#177に残り、全stream/通知領域の完成とは扱わない。
+検証は実HTTP/PG/Redis subscriberと通常poll worker、C10固定本家観測、source由来の受信条件・失敗境界を含む。[計画・実測](../superpowers/plans/2026-11-07-notification-stream-173.md)。投稿のWebSocket transport/auth/main/homeTimeline・note購読は下記受信sliceで接続した。他WS機能#189、投稿全体の縦断#176、広域fanout/cache#217、通知閲覧/既読/未読timer/push/移行#177は未完了で、全stream/通知領域の完成とは扱わない。
 
 投稿 user webhook (#175) は保存後のイベント処理で note/reply/renote/mention を選び、通常 `userWebhookDeliver` queue に URL・secret・payload を固定する。受信者別の条件、処理・保持と未完了範囲は[比較資料](../superpowers/compatibility/user-webhook/README.md)を参照。固定本家に削除 webhook はない。設定 API・他のイベントは #197、作成から削除の縦断は #176。
 
@@ -95,6 +95,12 @@ home/local/user/list/channel（files/replies派生を含む）の宛先規則を
 
 通常投稿の保存成功と独立して開始し、更新失敗でHTTP成功を取り消さず、他のcount/poll/通知/AP処理を省かない。古いchannel IDは購読者照会より先に直接追加が始まり、照会失敗でも開始済み処理を待つ。削除はfanoutリストのIDをpurgeしない。永続依頼・自動retry・Create/Delete順序保証は追加しない。
 
-本家と同じ10%の休眠sample（最大1000、最終活動がstrictに50日より古い）を維持し、Userとその全Followingの旗を独立に更新する。今回の投稿を受けた後、次回の通常follower照会から除外される。WebSocket接続時の復帰は#189/#180に残る。Metaは#217の変更通知cacheに依存せず後続ごとにDBから読む。
+本家と同じ10%の休眠sample（最大1000、最終活動がstrictに50日より古い）を維持し、Userとその全Followingの旗を独立に更新する。今回の投稿を受けた後、次回の通常follower照会から除外される。WebSocket接続時/5分周期の活動更新とUser/Following休眠解除は#173受信sliceで接続した。account API全体と他WS機能は#180/#189に残る。Metaは#217の変更通知cacheに依存せず後続ごとにDBから読む。
 
 固定メソッドを実行した1,280 routingケースと、新実装の実HTTP/PG/Redis、起動停止・切断を検証する。[比較範囲](../superpowers/compatibility/note/timeline/README.md)。検索・antenna・hashtag・featured・role timeline等は#174の後続、閲覧API #185/#186、role関連 #181/#189、チャート #200、再構築 #132/#133と区別し、#174全体を完了にしない。
+
+## 投稿WebSocket受信（#173）
+
+通常HTTPへmain/homeTimelineとnote購読を接続し、native/app/miauth・guest、Bearer優先/read:account/凍結、受信者別filter・hidden再pack・snapshotのhide/myReaction、別名と購読上限を扱う。関係factsは初回/10秒、活動日時と休眠解除は接続時/5分、heartbeatは1分pingと最終pongから2分超の切断で更新する。停止時はupgrade/WS/timer/subscriberを閉じ、開始済み認証・描画・facts・activity照会を待ってからDB/Redisを解放する。
+
+実HTTP作成→home/main通知、通常poll worker→pollEndedのPG保存とWS受信、実HTTP削除→subNoteのnoteUpdated/deletedと再接続・接続中SIGTERMを検証し、#173の残る実受信とstream側削除連携を満たす。[固定source64ケース・新実装の実依存検証・差異](../superpowers/compatibility/stream/README.md)を参照。本家full server/DB/workerの同時比較を示すものではない。他17channel・readNotification・channel/ch書込等#189、通知API/未読/既読/push/移行#177、広域cache#217、検索等#174と残る削除連携#172、投稿全体の#176は未完了。
