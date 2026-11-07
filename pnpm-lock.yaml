@@ -867,7 +867,13 @@ importers:
       ulid:
         specifier: 3.0.2
         version: 3.0.2
+      ws:
+        specifier: 8.22.0
+        version: 8.22.0(bufferutil@4.1.0)(utf-8-validate@6.0.6)
     devDependencies:
+      '@types/ws':
+        specifier: 8.18.2
+        version: 8.18.2
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
