@@ -22,6 +22,7 @@ export function createNoteCreatedEvents(ports: {
 	notifications: TransactionRunner<PostNotificationWrites>;
 	afterNotificationSaved(notification: PostNotification): Promise<void>;
 	deliver(noteId: string): Promise<void>;
+	index?(noteId: string, snapshot?: NoteCreatedSnapshot): Promise<void>;
 	newId(now: number): string;
 	currentTime(): number;
 }) {
@@ -104,6 +105,9 @@ export function createNoteCreatedEvents(ports: {
 				start(notify(planned));
 			}
 			start(ports.deliver(note.id));
+			if (ports.index) {
+				start(ports.index(note.id, snapshot));
+			}
 		} catch (error) {
 			// 本家はこの準備に失敗すると manager 通知・AP 配送へ進まない。先に開始した購読通知は残る。
 			start(Promise.reject(error));

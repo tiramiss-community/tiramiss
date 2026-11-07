@@ -146,7 +146,7 @@ test.each(outboundCases.inputs.invalidNetworks.map(networks => ({ networks })))(
 	expect(outboundDifferences.find(entry => entry.id === 'H1')?.newImplementationVerified).toBe(true);
 });
 
-test.each(['proxy: 1', 'proxyBypassHosts: api.deepl.com', 'proxyBypassHosts: [1]', 'allowedPrivateNetworks: 10.0.0.0/8', 'outgoingAddress: 1', "deliverJobConcurrency: '300'", "deliverJobPerSec: '128'", 'deliverJobMaxAttempts: true'])(
+test.each(['proxy: 1', 'proxyBypassHosts: api.deepl.com', 'proxyBypassHosts: [1]', 'allowedPrivateNetworks: 10.0.0.0/8', 'outgoingAddress: 1', 'deliverJobConcurrency: \'300\'', 'deliverJobPerSec: \'128\'', 'deliverJobMaxAttempts: true'])(
 	'rejects outbound keys of the wrong type: %s', async setting => {
 		await expect(loadConfig({
 			configFile: await config(setting),
@@ -154,3 +154,27 @@ test.each(['proxy: 1', 'proxyBypassHosts: api.deepl.com', 'proxyBypassHosts: [1]
 		})).rejects.toMatchObject({ code: 'INVALID_CONFIG', details: { field: setting.split(':')[0] } });
 	},
 );
+
+test('loads source search provider, port and scope without selecting Meili by configuration alone', async () => {
+	const env = { DATABASE_DB: 'test', DATABASE_USER: 'tester' };
+	const keys = 'meilisearch: {host: localhost, port: \'7700\', apiKey: secret, index: misskey, scope: [remote.test]}';
+	expect((await loadConfig({ configFile: await config(keys), env })).fulltextSearch).toBeUndefined();
+	const value = await loadConfig({ configFile: await config(`fulltextSearch: {provider: meilisearch}\n${keys}`), env });
+	expect(value.fulltextSearch).toEqual({ provider: 'meilisearch' });
+	expect(value.meilisearch).toEqual({ host: 'localhost', port: '7700', apiKey: 'secret', index: 'misskey', scope: ['remote.test'], ssl: undefined });
+	await expect(loadConfig({ configFile: await config('fulltextSearch: {provider: meilisearch}'), env })).rejects.toMatchObject({ code: 'INVALID_CONFIG', details: { field: 'meilisearch' } });
+});
+
+test('accepts example YAML numeric Meili port, empty API key/index, and default local scope', async () => {
+	const value = await loadConfig({ configFile: await config('fulltextSearch: {provider: meilisearch}\nmeilisearch: {host: localhost, port: 7700, apiKey: \'\', index: \'\'}'), env: { DATABASE_DB: 'test', DATABASE_USER: 'tester' } });
+	expect(value.meilisearch).toEqual({ host: 'localhost', port: 7700, apiKey: '', index: '', scope: undefined, ssl: undefined });
+});
+test.each(['fulltextSearch: {provider: meilisearch}\nmeilisearch: {host: localhost, port: 7700, apiKey: secret, index: test, scope: invalid}', 'fulltextSearch: {provider: meilisearch}\nmeilisearch: {host: localhost, port: 7700, apiKey: secret, index: test, ssl: yes}'])('rejects invalid search configuration without serializing credentials: %s', async setting => {
+	await expect(loadConfig({ configFile: await config(setting), env: { DATABASE_DB: 'test', DATABASE_USER: 'tester' } })).rejects.toMatchObject({ code: 'INVALID_CONFIG' });
+});
+
+test.each([undefined, 'sqlLike', 'sqlPgroonga', 'unknownFutureProvider'])('inactive provider %s ignores malformed unused Meili configuration', async provider => {
+	const value = await loadConfig({ configFile: await configFrom({ url: 'https://example.test', ...requiredOnly, fulltextSearch: provider ? { provider } : undefined, meilisearch: 'unused-invalid-block' }), env: { DATABASE_DB: 'test', DATABASE_USER: 'tester' } });
+	expect(value.fulltextSearch?.provider).toBe(provider);
+	expect(value.meilisearch).toBeUndefined();
+});

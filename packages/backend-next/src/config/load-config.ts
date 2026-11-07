@@ -105,6 +105,32 @@ function redis(value: unknown, host: string): RedisConfig {
 	} as RedisConfig;
 }
 
+function searchConfig(source: ObjectValue): Pick<RuntimeConfig, 'fulltextSearch' | 'meilisearch'> {
+	const fulltextSearch = optional(source.fulltextSearch, value => {
+		const provider = object(value, 'fulltextSearch').provider;
+		return { provider: optional(provider, value => text(value, 'fulltextSearch.provider', true)) };
+	});
+	// 本家は選択されていない provider の Meili 設定を参照しない。
+	if (fulltextSearch?.provider !== 'meilisearch') {
+		return { fulltextSearch };
+	}
+	if (source.meilisearch == null) {
+		throw new DiagnosticError('INVALID_CONFIG', { field: 'meilisearch' });
+	}
+	const meilisearch = optional(source.meilisearch, value => {
+		const config = object(value, 'meilisearch');
+		const scope = config.scope == null ? undefined : Array.isArray(config.scope) ? texts(config.scope, 'meilisearch.scope') : text(config.scope, 'meilisearch.scope');
+		if (typeof scope === 'string' && scope !== 'local' && scope !== 'global') {
+			throw new DiagnosticError('INVALID_CONFIG', { field: 'meilisearch.scope' });
+		}
+		if (config.ssl != null && typeof config.ssl !== 'boolean') {
+			throw new DiagnosticError('INVALID_CONFIG', { field: 'meilisearch.ssl' });
+		}
+		return { host: text(config.host, 'meilisearch.host'), port: typeof config.port === 'number' ? number(config.port, 'meilisearch.port') : text(config.port, 'meilisearch.port'), apiKey: text(config.apiKey, 'meilisearch.apiKey', true), index: text(config.index, 'meilisearch.index', true), ssl: config.ssl as boolean | undefined, scope: scope as import('../modules/search/public.js').SearchScope | undefined };
+	});
+	return { fulltextSearch, meilisearch };
+}
+
 export async function loadConfig(
 	options: { configFile?: string; env?: NodeJS.ProcessEnv } = {},
 ): Promise<RuntimeConfig> {
@@ -139,6 +165,7 @@ export async function loadConfig(
 
 	return {
 		id,
+		...searchConfig(source),
 		url: url.origin,
 		userAgent: `Misskey/${upstreamRelease.version} (${source.url})`,
 		outboundHttp: outboundHttp(source),

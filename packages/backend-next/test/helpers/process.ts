@@ -28,6 +28,8 @@ export async function configuration(config: RuntimeConfig) {
 		dump({
 			url: config.url,
 			id: config.id,
+			fulltextSearch: config.fulltextSearch,
+			meilisearch: config.meilisearch,
 			port: config.http.port,
 			socket: config.http.socket,
 			db: {

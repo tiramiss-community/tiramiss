@@ -6,7 +6,7 @@ import { expect, test } from 'vitest';
 import { createNoteCreatedEvents } from '../../../src/modules/note/created-events.js';
 import type { PostNotification } from '../../../src/modules/notification/public.js';
 
-function setup(options: { failMention?: boolean; failPublish?: boolean; failSave?: boolean; reply?: boolean; replyUser?: string; renoteUser?: string; threadModes?: boolean[]; failThread?: boolean; subscribers?: string[]; slowSave?: Promise<void>; mentions?: string[]; beforeReception?(recipientId: string): Promise<void> } = {}) {
+function setup(options: { failPack?: boolean; failWebhook?: boolean; failAP?: boolean; failMention?: boolean; failPublish?: boolean; failSave?: boolean; reply?: boolean; replyUser?: string; renoteUser?: string; threadModes?: boolean[]; failThread?: boolean; subscribers?: string[]; slowSave?: Promise<void>; mentions?: string[]; beforeReception?(recipientId: string): Promise<void> } = {}) {
 	const saved: PostNotification[] = [];
 	const events: string[] = [];
 	const run = createNoteCreatedEvents({
@@ -21,6 +21,9 @@ function setup(options: { failMention?: boolean; failPublish?: boolean; failSave
 		},
 		render: async (_id, viewer) => {
 			events.push(`render:${viewer}`);
+			if (viewer === null && options.failPack) {
+				throw new Error('global pack');
+			}
 			if (viewer === 'b' && options.failMention) {
 				throw new Error('mention pack');
 			}
@@ -28,6 +31,9 @@ function setup(options: { failMention?: boolean; failPublish?: boolean; failSave
 		},
 		webhook: async (userId: string, type: string, note: Record<string, unknown>) => {
 			events.push(`hook:${userId}:${type}:${note.viewer}`);
+			if (options.failWebhook) {
+				throw new Error('webhook');
+			}
 		},
 		stream: {
 			notes: async () => {
@@ -61,6 +67,12 @@ function setup(options: { failMention?: boolean; failPublish?: boolean; failSave
 		},
 		deliver: async () => {
 			events.push('AP');
+			if (options.failAP) {
+				throw new Error('AP');
+			}
+		},
+		index: async () => {
+			events.push('index');
 		},
 		newId: () => `notification${saved.length}`, currentTime: () => 1000,
 	});
@@ -188,4 +200,25 @@ test.each([['a', false], ['b', true], ['remote', false]] as const)('renote deliv
 	const world = setup({ mentions: [], renoteUser: owner });
 	await world.run('n');
 	expect(world.events.includes(`hook:${owner}:renote:null`)).toBe(expected);
+});
+
+test('search starts only after preparation succeeds and ignores detached publish failures', async () => {
+	const failed = setup({ failMention: true });
+	await expect(failed.run('n')).rejects.toThrow();
+	expect(failed.events).not.toContain('index');
+	const published = setup({ failPublish: true });
+	await expect(published.run('n')).rejects.toThrow();
+	expect(published.events).toContain('index');
+	expect(published.events.indexOf('AP')).toBeLessThan(published.events.indexOf('index'));
+});
+
+test.each([{ failPack: true }, { failMention: true }, { failThread: true }])('awaited preparation failure suppresses search: %j', async options => {
+	const world = setup(options);
+	await expect(world.run('n')).rejects.toThrow();
+	expect(world.events).not.toContain('index');
+});
+test.each([{ failPublish: true }, { failWebhook: true }, { failAP: true }])('detached failure preserves search: %j', async options => {
+	const world = setup(options);
+	await expect(world.run('n')).rejects.toThrow();
+	expect(world.events).toContain('index');
 });

@@ -72,7 +72,7 @@ HTTP成功は保存とレスポンス生成の成功。AP配送や通知の完�
 
 ローカル作者かつ `localOnly=false` のとき、通常投稿・引用はDelete(Tombstone)、元投稿が残るpure RenoteはUndo(Announce)、元投稿消失時はDeleteへ戻す。作者鍵を使い、followers・accepted relay・concerned directを別々に投入する。非public削除もfollowers/relayを対象にし、followersとdirect間でsharedInboxを重複排除しない。concernedは保存済みremote mention URI・Renote作者と、削除対象へのremote返信/Renote作者。対象自身の列は削除前に保持し、参照する子Noteは削除後も照会できる。
 
-開始済みの配送・監査は `notePostDelete` が終了期限まで待つ。失敗は `note-post-delete.failed` に記録し、producerの再実行・永続宛先台帳・強いCreate/Delete順序を追加しない。投稿/削除/通知streamは下記#173受信sliceまで接続した。検索等は#174、チャートは#200、投稿全体の連携確認は#176に残す。固定本家に削除webhookはない。[実装と検証](../superpowers/plans/2026-11-07-note-delete-172.md)。
+開始済みの配送・監査は `notePostDelete` が終了期限まで待つ。失敗は `note-post-delete.failed` に記録し、producerの再実行・永続宛先台帳・強いCreate/Delete順序を追加しない。投稿/削除/通知streamは下記#173受信sliceまで接続した。検索登録/解除は下記の検索producerへ接続済み。antenna・hashtag・featured・role timeline等は#174、チャートは#200、投稿全体の連携確認は#176に残す。固定本家に削除webhookはない。[実装と検証](../superpowers/plans/2026-11-07-note-delete-172.md)。
 
 
 ## 投稿通知とstream producer（#173 第1slice、2026-11-07）
@@ -97,10 +97,22 @@ home/local/user/list/channel（files/replies派生を含む）の宛先規則を
 
 本家と同じ10%の休眠sample（最大1000、最終活動がstrictに50日より古い）を維持し、Userとその全Followingの旗を独立に更新する。今回の投稿を受けた後、次回の通常follower照会から除外される。WebSocket接続時/5分周期の活動更新とUser/Following休眠解除は#173受信sliceで接続した。account API全体と他WS機能は#180/#189に残る。Metaは#217の変更通知cacheに依存せず後続ごとにDBから読む。
 
-固定メソッドを実行した1,280 routingケースと、新実装の実HTTP/PG/Redis、起動停止・切断を検証する。[比較範囲](../superpowers/compatibility/note/timeline/README.md)。検索・antenna・hashtag・featured・role timeline等は#174の後続、閲覧API #185/#186、role関連 #181/#189、チャート #200、再構築 #132/#133と区別し、#174全体を完了にしない。
+固定メソッドを実行した1,280 routingケースと、新実装の実HTTP/PG/Redis、起動停止・切断を検証する。[比較範囲](../superpowers/compatibility/note/timeline/README.md)。検索は下記のproducerへ接続済み。antenna・hashtag・featured・role timeline等は#174の後続、閲覧API #185/#186、role関連 #181/#189、チャート #200、再構築 #132/#133と区別し、#174全体を完了にしない。
 
 ## 投稿WebSocket受信（#173）
 
 通常HTTPへmain/homeTimelineとnote購読を接続し、native/app/miauth・guest、Bearer優先/read:account/凍結、受信者別filter・hidden再pack・snapshotのhide/myReaction、別名と購読上限を扱う。関係factsは初回/10秒、活動日時と休眠解除は接続時/5分、heartbeatは1分pingと最終pongから2分超の切断で更新する。停止時はupgrade/WS/timer/subscriberを閉じ、開始済み認証・描画・facts・activity照会を待ってからDB/Redisを解放する。
 
-実HTTP作成→home/main通知、通常poll worker→pollEndedのPG保存とWS受信、実HTTP削除→subNoteのnoteUpdated/deletedと再接続・接続中SIGTERMを検証し、#173の残る実受信とstream側削除連携を満たす。[固定source64ケース・新実装の実依存検証・差異](../superpowers/compatibility/stream/README.md)を参照。本家full server/DB/workerの同時比較を示すものではない。他17channel・readNotification・channel/ch書込等#189、通知API/未読/既読/push/移行#177、広域cache#217、検索等#174と残る削除連携#172、投稿全体の#176は未完了。
+実HTTP作成→home/main通知、通常poll worker→pollEndedのPG保存とWS受信、実HTTP削除→subNoteのnoteUpdated/deletedと再接続・接続中SIGTERMを検証し、#173の残る実受信とstream側削除連携を満たす。[固定source64ケース・新実装の実依存検証・差異](../superpowers/compatibility/stream/README.md)を参照。本家full server/DB/workerの同時比較を示すものではない。他17channel・readNotification・channel/ch書込等#189、通知API/未読/既読/push/移行#177、広域cache#217、antenna・hashtag・featured・role timeline等#174と最終削除連携#172、投稿全体の#176は未完了。
+
+## 通常検索producer（#174/#172）
+
+SDKを公開しない`modules/search/public.ts`の`SearchNote`/`SearchDocument`、`searchDocument`/`shouldUnindex`が登録可否とdocumentを決める。platformの`createSearchIndex`はSDK 0.62.0、compositionの`createPostingSearch`はsnapshot/DB読み取りと設定を所有する。UseCase間呼び出し・新規queue・永続状態は追加しない。
+
+- `fulltextSearch.provider === meilisearch`だけで`${index}---notes`を更新。既定SQLLike/SQLPgroongaは外部へ通信しない。
+- 登録はpublic/home、text/cwの少なくとも片方が非null（空文字も含む）。scope既定local、global、host配列で、local authorは配列でも対象。localOnlyを除外しない。documentはid/ID由来createdAt/userId/userHost/channelId/cw/text/tagsのみ。
+- pack/mention準備失敗は検索開始を抑止する。開始済みstream/webhook/APの非同期失敗は抑止しない。既存created-eventsの準備成功末尾で登録要求を始める。
+- 削除解除はpublic/homeのみで、scope/contentを追加条件にしない。既存`NoteDeleteWork`の`search`をDB DELETE直前に開始し、DELETE失敗後も開始済み要求を取り消さない。
+- 要求失敗は操作名/noteIdと安全なerrorを記録し、post-save/deleteの既存集約/drainも維持する。settingsは起動成功条件にせず失敗を捕捉する。開始済みSDK HTTP要求は既存終了期限まで待つが、engine taskの適用完了・自動retryは追加しない。
+
+作成snapshotは直後の削除後も材料になるため、本家と同じく遅れたaddがdelete後に適用され得る。強い順序・tombstone・replayは追加しない。[独立固定source256+8ケースと実依存検証](../superpowers/compatibility/note/search/README.md)。検索API #186、再構築 #132/#133、antenna/hashtag/featured/role timeline、#174/#172/#176全体は未完了。

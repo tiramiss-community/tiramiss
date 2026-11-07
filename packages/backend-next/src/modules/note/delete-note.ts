@@ -25,6 +25,7 @@ export interface DeletedNoteSnapshot {
 	auditNote: Record<string, unknown>;
 }
 export type NoteDeleteWork =
+ | { kind: 'search'; snapshot: DeletedNoteSnapshot }
  | { kind: 'delivery'; snapshot: DeletedNoteSnapshot; activity: Record<string, unknown> }
  | { kind: 'stream'; snapshot: DeletedNoteSnapshot; occurredAtMs: number }
  | { kind: 'audit'; snapshot: DeletedNoteSnapshot; actorId: string; occurredAtMs: number };
@@ -81,6 +82,7 @@ export function createDeleteNote(ports: {
 				const activity = ports.renderActivity(snapshot, now);
 				ports.start({ kind: 'delivery', snapshot, activity });
 			}
+			ports.start({ kind: 'search', snapshot });
 			await ports.deleteNote(snapshot.id, snapshot.userId);
 			if (snapshot.userId !== actor.userId) {
 				ports.start({ kind: 'audit', snapshot, actorId: actor.userId, occurredAtMs: now });

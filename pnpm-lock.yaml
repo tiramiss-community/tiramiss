@@ -840,6 +840,9 @@ importers:
       jsonld:
         specifier: 9.0.0
         version: 9.0.0
+      meilisearch:
+        specifier: 0.62.0
+        version: 0.62.0
       mfm-js:
         specifier: 0.27.0
         version: 0.27.0
@@ -871,9 +874,6 @@ importers:
         specifier: 8.22.0
         version: 8.22.0(bufferutil@4.1.0)(utf-8-validate@6.0.6)
     devDependencies:
-      '@types/ws':
-        specifier: 8.18.2
-        version: 8.18.2
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
@@ -889,6 +889,9 @@ importers:
       '@types/semver':
         specifier: 7.8.0
         version: 7.8.0
+      '@types/ws':
+        specifier: 8.18.2
+        version: 8.18.2
       '@typescript-eslint/parser':
         specifier: 8.71.0
         version: 8.71.0(@typescript/typescript6@6.0.2)(eslint@9.39.5(supports-color@10.2.2))(supports-color@10.2.2)

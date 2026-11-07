@@ -2,14 +2,15 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { createPostingTimelines } from '../composition/posting-timelines.js';
-import { createNoteTimelineReader } from './database/note-timelines.js';
-import { createTimelineCache } from './timeline-cache.js';
 import { randomBytes } from 'node:crypto';
 import { Redis } from 'ioredis';
+import { createPostingTimelines } from '../composition/posting-timelines.js';
+import { createPostingSearch } from '../composition/posting-search.js';
 import { createPostingNotifications } from '../composition/posting-notifications.js';
 import { createFederationKeys } from '../composition/federation-keys.js';
 import { createDeliverCreatedNote, createDeliverToRelays, createDeliverDeletedNote } from '../modules/federation/public.js';
+import { createTimelineCache } from './timeline-cache.js';
+import { createNoteTimelineReader } from './database/note-timelines.js';
 import { createPostingStream } from './posting-stream.js';
 import { openUserWebhooks } from './user-webhooks.js';
 import { createUserWebhookQueue, USER_WEBHOOK_DELIVER } from './job-queue/user-webhook.js';
@@ -258,6 +259,8 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			enqueue: deliverQueue.deliverOne,
 		});
 		const recipients = createDeliveryRecipientReader(dataSource.manager);
+		const postingSearch = createPostingSearch(dataSource.manager, config, logger);
+		scope.defer(postingSearch.close);
 		const postingStream = createPostingStream(rolePublisher, config.url);
 		const postingNotifications = createPostingNotifications({ dataSource, reactionsRedis, postingStream, webhook: webhooks.enqueue }, config);
 		const notePostSave = createNotePostSave(createNotePostSaveWork({
@@ -277,7 +280,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 				deliverToRelays,
 				selfUrl: config.url,
 				currentTime: Date.now,
-			})),
+			}), postingSearch.index),
 			currentTime: Date.now,
 		}), logger);
 		scope.defer(notePostSave.close);
@@ -287,11 +290,13 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			deliverToRelays,
 			enqueue: deliverQueue.deliverMany,
 		});
-		const notePostDelete = createNotePostDelete(input => input.kind === 'stream'
-			? postingStream.deleted({ id: input.snapshot.id, userId: input.snapshot.userId, visibility: input.snapshot.note.visibility, visibleUserIds: input.snapshot.auditNote.visibleUserIds as string[] }, input.occurredAtMs)
-			: input.kind === 'delivery'
-				? deliverDeletedNote(input)
-				: appendNoteDeleteAudit(dataSource.manager, input, createIdCodec(config.id).newId), logger);
+		const notePostDelete = createNotePostDelete(input => input.kind === 'search'
+			? postingSearch.unindex(input.snapshot.note)
+			: input.kind === 'stream'
+				? postingStream.deleted({ id: input.snapshot.id, userId: input.snapshot.userId, visibility: input.snapshot.note.visibility, visibleUserIds: input.snapshot.auditNote.visibleUserIds as string[] }, input.occurredAtMs)
+				: input.kind === 'delivery'
+					? deliverDeletedNote(input)
+					: appendNoteDeleteAudit(dataSource.manager, input, createIdCodec(config.id).newId), logger);
 		scope.defer(notePostDelete.close);
 
 		if (lostQueue !== undefined) {

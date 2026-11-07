@@ -39,7 +39,13 @@ export interface DeliverJobConfig {
 	deliverJobMaxAttempts?: number;
 }
 
+export interface MeilisearchConfig {
+	host: string; port: string | number; apiKey: string; ssl?: boolean; index: string;
+	scope?: import('../modules/search/public.js').SearchScope;
+}
 export interface RuntimeConfig {
+	fulltextSearch?: { provider?: string };
+	meilisearch?: MeilisearchConfig;
 	id: IdMethod;
 	roleCache: RoleCacheConfig;
 	url: string;

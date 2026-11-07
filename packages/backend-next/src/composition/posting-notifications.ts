@@ -61,11 +61,11 @@ export function createPostingNotifications(resources: {
 	};
 	return {
 		afterNotificationSaved,
-		createdEvents: (deliver: (noteId: string) => Promise<void>) => {
+		createdEvents: (deliver: (noteId: string) => Promise<void>, index?: (noteId: string, snapshot?: NoteCreatedSnapshot) => Promise<void>) => {
 			const events = createNoteCreatedEvents({
 				...facts, render: async (noteId, viewerId, options, snapshot) => (await render(noteId, viewerId, options, snapshot)).note,
 				stream: resources.postingStream, webhook: resources.webhook, notifications: createNotificationTransactions(resources.dataSource),
-				afterNotificationSaved, deliver, newId: codec.newId, currentTime: Date.now,
+				afterNotificationSaved, deliver, index, newId: codec.newId, currentTime: Date.now,
 			});
 			return (noteId: string, input?: { createdSnapshot?: NoteCreatedSnapshot }) => events(noteId, input?.createdSnapshot);
 		},
