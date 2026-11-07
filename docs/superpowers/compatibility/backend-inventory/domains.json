@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "6a7e2e3e46c7ad49fed7e87f23a7b781c145532c",
+  "implementationCommit": "a94c85fb3e486db613dc8c16f3a4504e365d3ce0",
   "domains": [
     {
       "id": "api-common",
@@ -738,13 +738,13 @@
         163,
         175
       ],
-      "scope": "hook管理6API/テスト、投稿に加えfollow/unfollow/followed/reaction等の全イベント、secretの実行時取得、有限配送/unknownを扱う。投稿sliceは#175を再利用する。",
+      "scope": "hook管理6API/テスト、投稿とfollow/unfollow/followed/reaction等の全イベントを本家相当で扱う。#175は投稿4イベントを接続し、設定API・他イベントは#197。宛先/secretは投入時snapshot。",
       "persistence": [
         "UserWebhook",
-        "固定依頼・配送進捗"
+        "通常BullMQ jobと結果"
       ],
       "effects": [
-        "userWebhookDeliver HTTP・署名・retry"
+        "userWebhookDeliver HTTP・secretヘッダー・通常retry"
       ],
       "upstreamReferences": [
         "packages/backend/src/core/UserWebhookService.ts",
@@ -754,9 +754,20 @@
         "i/webhooks/"
       ],
       "apiNames": [],
-      "implementation": [],
-      "verification": [],
-      "differences": []
+      "implementation": [
+        "packages/backend-next/src/platform/user-webhooks.ts",
+        "packages/backend-next/src/platform/job-queue/user-webhook.ts",
+        "packages/backend-next/src/modules/note/created-events.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/job-queue/user-webhook.test.ts",
+        "packages/backend-next/test/integration/user-webhook.test.ts",
+        "packages/backend-next/test/processes/user-webhook.test.ts",
+        "packages/backend-next/test/unit/user-webhooks-reconnect.test.ts"
+      ],
+      "differences": [
+        "差異W1: 再接続時にactive設定cacheを破棄し次のenqueueで再取得。再接続・設定通知より古い取得結果を採用しない。固定本家との差異と理由はdocs/superpowers/compatibility/user-webhook/README.md。"
+      ]
     },
     {
       "id": "system-webhook",
@@ -1601,6 +1612,35 @@
         "docs/superpowers/compatibility/note/timeline/reference-timeline.mjs"
       ],
       "note": "#174第1sliceでhome/local/user/list/channelのRedis書込producerと休眠判定を通常投稿へ接続。閲覧#185、検索#186、Role/antenna/featured等の更新、再構築#132/#133は未完了。"
+    },
+    "processor:UserWebhookDeliver": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/platform/job-queue/user-webhook.ts",
+        "packages/backend-next/src/platform/user-webhooks.ts",
+        "packages/backend-next/src/modules/note/created-events.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/job-queue/user-webhook.test.ts",
+        "packages/backend-next/test/integration/user-webhook.test.ts",
+        "packages/backend-next/test/processes/user-webhook.test.ts"
+      ],
+      "note": "#175で投稿note/mention/reply/renoteを通常BullMQとworkerへ接続。URL/secretは投入時snapshot、専用secretヘッダー・4試行・HTTP backoff・64並行/秒・各試行statusを本家相当で検証。管理API・投稿以外のイベントは#197、systemは#198、最終縦断は#176。source probeは本家メソッド+doublesであり、新旧全体HTTP比較ではない。"
+    },
+    "capability:user-webhook": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/platform/job-queue/user-webhook.ts",
+        "packages/backend-next/src/platform/user-webhooks.ts",
+        "packages/backend-next/src/modules/note/created-events.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/job-queue/user-webhook.test.ts",
+        "packages/backend-next/test/integration/user-webhook.test.ts",
+        "packages/backend-next/test/processes/user-webhook.test.ts",
+        "packages/backend-next/test/unit/user-webhooks-reconnect.test.ts"
+      ],
+      "note": "#175で投稿note/mention/reply/renoteを通常BullMQとworkerへ接続。URL/secretは投入時snapshot、専用secretヘッダー・4試行・HTTP backoff・64並行/秒・各試行statusを本家相当で検証。管理API・投稿以外のイベントは#197、systemは#198、最終縦断は#176。source probeは本家メソッド+doublesであり、新旧全体HTTP比較ではない。 差異W1: 再接続時にactive設定cacheを破棄し次のenqueueで再取得。再接続・設定通知より古い取得結果を採用しない。固定本家との差異と理由はdocs/superpowers/compatibility/user-webhook/README.md。"
     }
   }
 }

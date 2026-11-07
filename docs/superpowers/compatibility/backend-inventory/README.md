@@ -104,7 +104,7 @@ Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装
 | [AP受信・remote解決・actor公開](#domain-federation) | 未実装 | [#195](https://github.com/tiramiss-community/tiramiss/issues/195) / #160, #171 |
 | [投稿AP送信・宛先](#domain-ap-outbound) | 未実装 | [#124](https://github.com/tiramiss-community/tiramiss/issues/124) / #159, #160, #161, #162, #171, #172 |
 | [HTML・feed・preview・公開配布経路](#domain-web) | 未実装 | [#196](https://github.com/tiramiss-community/tiramiss/issues/196) |
-| [user webhook設定・全イベント配送](#domain-user-webhook) | 未実装 | [#197](https://github.com/tiramiss-community/tiramiss/issues/197) / #163, #175 |
+| [user webhook設定・全イベント配送](#domain-user-webhook) | 投稿部分のみ | [#197](https://github.com/tiramiss-community/tiramiss/issues/197) / #163, #175 |
 | [system webhook設定・配送](#domain-system-webhook) | 未実装 | [#198](https://github.com/tiramiss-community/tiramiss/issues/198) |
 | [import/export・移動/削除・保守ジョブ](#domain-maintenance) | 未実装 | [#199](https://github.com/tiramiss-community/tiramiss/issues/199) / #130, #139 |
 | [charts・retention・統計](#domain-analytics) | 未実装 | [#200](https://github.com/tiramiss-community/tiramiss/issues/200) / #132, #133 |
@@ -454,15 +454,13 @@ AcceptによるAP/HTML分岐、SPA/OGP/embed/feed/robots/OpenSearch/sw/manifest/
 
 ### user webhook設定・全イベント配送
 
-hook管理6API/テスト、投稿に加えfollow/unfollow/followed/reaction等の全イベント、secretの実行時取得、有限配送/unknownを扱う。投稿sliceは#175を再利用する。
+投稿 note/reply/renote/mention を通常 queue と worker に接続。hook 管理6 API と follow/unfollow/followed/reaction 等は #197 に残る。
 
-- 担当: [#197](https://github.com/tiramiss-community/tiramiss/issues/197).
-- 正本/保存: UserWebhook / 固定依頼・配送進捗。
-- 副作用: userWebhookDeliver HTTP・署名・retry。
-- 本家: [UserWebhookService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/UserWebhookService.ts)、[Webhook.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/models/Webhook.ts)。
-- 新実装: 未実装。
-- 検証根拠: 未接続。担当 Issue で固定本家との比較 fixture と受け入れを追加。
-- 既知差異: この棚卸しで新たな差異は採用していない。実装時の差異は個別に記録する。
+- 担当: [#197](https://github.com/tiramiss-community/tiramiss/issues/197)、投稿 slice は #175。
+- 正本/保存: UserWebhook と通常 BullMQ job。URL/secret は enqueue 時に snapshot。
+- 副作用: userWebhookDeliver HTTP、secret ヘッダー、通常 retry。
+- 本家・実装・検証の範囲: [投稿 webhook 比較](../user-webhook/README.md)。
+- 既知差異: Redis 内部イベントの喪失からの自動回復は保証しない。追加保証は導入していない。
 
 <a id="domain-system-webhook"></a>
 

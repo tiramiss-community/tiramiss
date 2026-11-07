@@ -87,6 +87,8 @@ reply/mention/quote/renote/noteの条件を`modules/note/notification-plan.ts`�
 
 検証は実HTTP/PG/Redis subscriberと通常poll worker、C10固定本家観測、source由来の受信条件・失敗境界を含む。[計画・実測](../superpowers/plans/2026-11-07-notification-stream-173.md)。WebSocket transport/auth/channelとクライアント受信は#189/#173/#176、広域fanout/cacheは#217、通知閲覧/既読/未読timer/push/移行は#177に残り、全stream/通知領域の完成とは扱わない。
 
+投稿 user webhook (#175) は保存後のイベント処理で note/reply/renote/mention を選び、通常 `userWebhookDeliver` queue に URL・secret・payload を固定する。受信者別の条件、処理・保持と未完了範囲は[比較資料](../superpowers/compatibility/user-webhook/README.md)を参照。固定本家に削除 webhook はない。設定 API・他のイベントは #197、作成から削除の縦断は #176。
+
 ## 通常タイムラインproducer（#174 第1slice）
 
 home/local/user/list/channel（files/replies派生を含む）の宛先規則を純粋plannerへ分離し、保存時のNoteと処理時のFollowing/list/channel/Metaを使ってRedisへ直接追加する。`redisForTimelines`（未指定は通常Redis）、`list:<name>`と既存prefix、channel上限 `perChannelMaxNoteCacheCount ?? 1000` とMeta上限を維持する。3分以内のstrict境界・10%trim、古いIDの末尾日時比較と非trimは固定本家に従う。小数の半上限も丸めない。
