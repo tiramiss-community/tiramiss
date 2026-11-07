@@ -4,6 +4,8 @@
  */
 import { randomBytes } from 'node:crypto';
 import { Redis } from 'ioredis';
+import { createFeaturedRanking } from './featured-ranking.js';
+import { createPostingFeatured } from '../composition/posting-featured.js';
 import { createPostingTimelines } from '../composition/posting-timelines.js';
 import { createPostingSearch } from '../composition/posting-search.js';
 import { createPostingRoleTimelines } from '../composition/posting-role-timelines.js';
@@ -274,6 +276,10 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		}, config);
 		const notePostSave = createNotePostSave(createNotePostSaveWork({
 			counts: createNotePostSaveCounts(dataSource.manager),
+			featured: createPostingFeatured({
+				add: createFeaturedRanking(redis, Date.now).add,
+				currentTime: Date.now, random: () => Math.random(), createdAtFromId: createIdCodec(config.id).createdAtFromId,
+			}),
 			timelines: createPostingTimelines({
 				reader: createNoteTimelineReader(dataSource.manager, config.perChannelMaxNoteCacheCount ?? 1000),
 				cache: timelineCache,

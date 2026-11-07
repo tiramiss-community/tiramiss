@@ -129,3 +129,14 @@ Role定義と割り当ては既存材料cacheから取得し、この段階の�
 本家はconditional Userを5分cacheし、notesCountの加算もdetachedで始める。新実装は既存#119契約に従いUser事実をこの段階でDBから読む。加算→Role評価の順序は強化しないため、作成した1件をconditional notesCountが必ず含むとは保証しない。[固定source229ケース・新実装との直接比較16ケース・実PG/Redis/process検証と差異](../superpowers/compatibility/note/role-timeline/README.md)。
 
 削除はRole cacheをpurgeせず、保存snapshotからの遅延投入も残す。#132/#133の再構築では現在のNote＋User＋Role/assignmentだけから過去の所属・期限・条件一致を復元できない。現在材料からの近似と履歴再現を区別し、再構築でpublicationは再送しない。Role閲覧API #181/#185とRole WS channel #189、antenna/hashtag/featured等の#174、最終連携#172/#176は残る。
+
+
+## Renote の featured 加点（#174）
+
+通常投稿の `renotedNoteId` と `createdSnapshot.renote` を使い、他人への nonbot Renote（quoteを含む）から元Noteへ +5 する。投稿自体の visibility/localOnly/channel/silent を新しい除外条件にしない。`random < 0.3` と実行時刻−元ID日時 `< 259200000` を満たす場合が対象で、未来IDも許す。sample不成立では時刻・ID解析を行わない。元Noteがchannel内なら非replyだけをchannelへ、channel外ならpublic/local/非replyだけをglobalと作者別へ加点する。
+
+通常Redisへkeyごとの別MULTIで `ZINCRBY 5` と `EXPIRE NX` を送る。epochは2023-01-01 UTC、global/channelは3日window・9日TTL、作者別は7日window・21日TTL。age用clockと各keyのwindow用clockはそれぞれ実行時に取得する。countの完了・失敗に加点を従属させず、global失敗でも作者別を開始する。開始済み処理は既存post-saveのidle/closeへ含め、個別command失敗も安全な診断へ残す。保存済みNoteのHTTP成功は変えない。
+
+固定本家は加点Promiseをdetachedで開始し、EXEC結果配列のcommand errorを検査しない。新実装は終了待機と診断へ集約する。合成portが同期例外を投げた場合も独立portを開始するが、本家の同期wrapper例外では後続portへ進まないため、この防御的な差異を本家同一とは呼ばない。実製品Redis writerはasyncであり同期準備の失敗もrejectになる。対象snapshot欠落はDB再読込で補わず診断し、通常HTTP経路がsnapshotを渡すことを実依存テストで確認する。
+
+Renote削除や元Note削除による減算・purgeはなく、削除後の遅延snapshot加点も成立し得る。`featuredGlobalNotesRanking:<window>`、`featuredInChannelNotesRanking:<channelId>:<window>`、`featuredPerUserNotesRanking:<userId>:<window>` の値は確率と過去の実行windowに依存する。現存Note/renoteCountだけから厳密復元できないため、#132/#133で現在材料による近似と履歴再現を区別する。[固定source比較と再実行](../superpowers/compatibility/note/featured/README.md)。reaction +1 (#184)、2-windowを読む閲覧API (#185/#187)、gallery/hashtag、antennaと#174/#172/#176全体は残る。

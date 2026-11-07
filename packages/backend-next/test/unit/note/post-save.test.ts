@@ -220,3 +220,84 @@ test('relay signing/submission inside delivery keeps idle and close pending whil
 	await Promise.all([waiting, closing]);
 	expect(logs.filter(line => line.event === 'note-post-save.failed')).toEqual([expect.objectContaining({ noteId: 'saved-note', userId: 'author', error: expect.objectContaining({ details: { failures: [{ step: 'deliver', error: { name: 'Error' } }] } }) })]);
 });
+
+test.each(['held', 'reject', 'throw'])('featured starts independently of %s counts and close drains held featured', async mode => {
+	let releaseFeatured!: () => void;
+	let releaseCounts!: () => void;
+	const gate = new Promise<void>(resolve => {
+		releaseFeatured = resolve;
+	});
+	const counts = new Promise<void>(resolve => {
+		releaseCounts = resolve;
+	});
+	const started: string[] = [];
+	const logs: string[] = [];
+	const effects = createNotePostSave(createNotePostSaveWork({
+		counts: () => {
+			started.push('counts');
+			if (mode === 'throw') {
+				throw new Error('count');
+			}
+			return mode === 'reject' ? Promise.reject(new Error('count')) : counts;
+		},
+		featured: async () => {
+			started.push('featured');
+			await gate;
+		},
+		timelines: async () => {
+			started.push('timelines');
+		},
+		schedulePollEnded: async () => {}, deliver: async () => {
+			started.push('deliver');
+		}, currentTime: () => 0,
+	}), createLogger('test', line => logs.push(line)));
+	effects.start({ noteId: 'note', userId: 'user', repliedNoteId: null, renotedNoteId: 'target', channelId: null, pollExpiresAtMs: null });
+	let closed = false;
+	const close = effects.close().then(() => {
+		closed = true;
+	});
+	await new Promise(resolve => setImmediate(resolve));
+	expect(started).toEqual(['counts', 'featured', 'timelines', 'deliver']);
+	expect(closed).toBe(false);
+	releaseCounts();
+	await new Promise(resolve => setImmediate(resolve));
+	expect(closed).toBe(false);
+	releaseFeatured();
+	await close;
+	expect(logs.some(line => JSON.parse(line).event === 'note-post-save.failed')).toBe(mode !== 'held');
+});
+
+test('synchronous featured failure does not lose started counts or later delivery from the drain', async () => {
+	let release!: () => void;
+	const blocked = new Promise<void>(resolve => {
+		release = resolve;
+	});
+	const logs: string[] = [];
+	const finished: string[] = [];
+	const effects = createNotePostSave(createNotePostSaveWork({
+		counts: async () => {
+			await blocked;
+			finished.push('counts');
+		},
+		featured: () => {
+			throw new Error('featured preparation');
+		},
+		schedulePollEnded: async () => {},
+		deliver: async () => {
+			finished.push('deliver');
+		},
+		currentTime: () => 0,
+	}), createLogger('test', line => logs.push(line)));
+	effects.start({ noteId: 'note', userId: 'user', repliedNoteId: null, renotedNoteId: 'target', channelId: null, pollExpiresAtMs: null });
+	let idle = false;
+	const waiting = effects.idle().then(() => {
+		idle = true;
+	});
+	await new Promise(resolve => setImmediate(resolve));
+	expect(finished).toEqual(['deliver']);
+	expect(idle).toBe(false);
+	release();
+	await waiting;
+	expect(finished).toEqual(['deliver', 'counts']);
+	expect(logs.map(line => JSON.parse(line))).toContainEqual(expect.objectContaining({ event: 'note-post-save.failed', error: expect.objectContaining({ details: { failures: [{ step: 'featured', error: { name: 'Error' } }] } }) }));
+});
