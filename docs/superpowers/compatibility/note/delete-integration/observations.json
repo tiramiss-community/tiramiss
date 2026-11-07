@@ -1,0 +1,2747 @@
+{
+  "fixedCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "evidence": "Complete pinned NoteDeleteService class and helpers; complete pinned SearchService class; complete postNoteCreated and listed creation methods plus NotificationManager; unmodified scheduled-post-created statement and shutdown field from create, in a harness wrapper; complete poll-ended processor checks missing Note after success deletion. The two held late-creation success cases use non-poll Note/data and a successful packer double; actual Poll/Vote packing is not exercised and could fail. Repository, renderer, packer, producer services, SDK engine, scheduler, clock and randomness are doubles. Mock retained arrays only complement complete Delete AST call absence; no upstream HTTP server, PostgreSQL, Redis, Meilisearch task application, AP rendering, full create method or cascade execution. Detached rejections are captured by the harness. Held promises are released in finally.",
+  "creationMethods": [
+    "postNoteCreated",
+    "index",
+    "isRenote",
+    "isQuote",
+    "incRenoteCount",
+    "saveReply",
+    "createMentionedEvents",
+    "renderNoteOrRenoteActivity"
+  ],
+  "deleteCallTargets": [
+    "(JSON.parse(note.mentionedRemoteUsers) as IMentionedRemoteUsers).map",
+    "In",
+    "Inject",
+    "Injectable",
+    "IsNull",
+    "JSON.parse",
+    "Not",
+    "isQuote",
+    "isRenote",
+    "notes.map",
+    "qb.orWhere",
+    "query.getMany",
+    "this.apDeliverManagerService.deliverToFollowers",
+    "this.apDeliverManagerService.deliverToUsers",
+    "this.apRendererService.addContext",
+    "this.apRendererService.renderAnnounce",
+    "this.apRendererService.renderDelete",
+    "this.apRendererService.renderTombstone",
+    "this.apRendererService.renderUndo",
+    "this.deliverToConcerned",
+    "this.federatedInstanceService.fetchOrRegister",
+    "this.federatedInstanceService.fetchOrRegister(user.host).then",
+    "this.getMentionedRemoteUsers",
+    "this.getRenotedOrRepliedRemoteUsers",
+    "this.globalEventService.publishNoteStream",
+    "this.instanceChart.updateNote",
+    "this.instancesRepository.decrement",
+    "this.moderationLogService.log",
+    "this.notesChart.update",
+    "this.notesRepository.createQueryBuilder",
+    "this.notesRepository.createQueryBuilder('note')\n\t\t\t.leftJoinAndSelect",
+    "this.notesRepository.createQueryBuilder('note')\n\t\t\t.leftJoinAndSelect('note.user', 'user')\n\t\t\t.where",
+    "this.notesRepository.createQueryBuilder('note')\n\t\t\t.leftJoinAndSelect('note.user', 'user')\n\t\t\t.where(new Brackets(qb => {\n\t\t\t\tqb.orWhere('note.renoteId = :renoteId', { renoteId: note.id });\n\t\t\t\tqb.orWhere('note.replyId = :replyId', { replyId: note.id });\n\t\t\t}))\n\t\t\t.andWhere",
+    "this.notesRepository.decrement",
+    "this.notesRepository.delete",
+    "this.notesRepository.findOneBy",
+    "this.perUserNotesChart.update",
+    "this.relayService.deliverToRelays",
+    "this.searchService.unindexNote",
+    "this.userEntityService.isLocalUser",
+    "this.userEntityService.isRemoteUser",
+    "this.usersRepository.find",
+    "this.usersRepository.findOneByOrFail",
+    "where.push"
+  ],
+  "sources": {
+    "packages/backend/src/misc/is-renote.ts": {
+      "blob": "f4bb329d8038ffaa8da7ff79260ff99c09029623",
+      "sha256": "94e81166e0dded8b2298000e2f9e1f8692754859f22c54791ac0f3f1d5b99607"
+    },
+    "packages/backend/src/core/NoteDeleteService.ts": {
+      "blob": "1b945277b7590bf89fcdaaf5c56ec16513a59d6a",
+      "sha256": "f27dfc26664f39f9ade3366f46411ffe6ff5c189e5d97fb371dda5c3bf7d240c"
+    },
+    "packages/backend/src/core/SearchService.ts": {
+      "blob": "c54195d91a70e7c5fa9dcdac75ef8e47ebdc620e",
+      "sha256": "dc4e882e41b41033b0075060ea73fd8e310a2b48e0efbd291f6bb45916e8780a"
+    },
+    "packages/backend/src/core/NoteCreateService.ts": {
+      "blob": "05e98541844d7f14e91263a78a03c9ec0139a89d",
+      "sha256": "cbae284975c937d89c0030b5f3cf47de373555c1ce34b65de81bcf495e93f4fe"
+    },
+    "packages/backend/src/queue/processors/EndedPollNotificationProcessorService.ts": {
+      "blob": "34180e5f2b09a034be3dfda2b1241c7263395a3f",
+      "sha256": "891829d83009b930416d192ea6e69d549e896f504b8f44224cbf22f36c87280d"
+    },
+    "packages/backend/src/models/Note.ts": {
+      "blob": "089fe8f1883065a76033f0dfcf17b23dabf2741d",
+      "sha256": "6bfac7ead9ec41ed6a276b1fb4088cda551ac1215550856cdcd250699df31d80"
+    },
+    "packages/backend/src/models/Poll.ts": {
+      "blob": "d82e29fb85ba00f3cae00ef7f42226ee46faab50",
+      "sha256": "16409d547a62cc17ed60cd14d7137efd60ca59004c49e2a2786c16871ef92198"
+    },
+    "packages/backend/src/models/PollVote.ts": {
+      "blob": "600ca8ea41713964b7a4152d20a5e947df443c2c",
+      "sha256": "dfec4b3e8470365d0fe0d557960f141adbb4742d16f3b24d5913a82d2efb7698"
+    },
+    "packages/backend/src/models/NoteReaction.ts": {
+      "blob": "98263081ab24bd413ca7bfeb3f7ffacaf4780d6b",
+      "sha256": "32e02ef7fab04e726df360a80ed06a057aeda3412ad5d21dfd4b24a1780a5f3e"
+    },
+    "packages/backend/migration/1753868431598-remove_note_constraints.js": {
+      "blob": "29540cf9de369763f28aad2304b3fda154f42b14",
+      "sha256": "1f304a713a6fa062dc753a9cee68e528f56c2a0b17cf5db15151d545b5caf3a7"
+    }
+  },
+  "observations": [
+    {
+      "id": "success",
+      "calls": [
+        {
+          "method": "reply-count-decrement",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "deleted-stream",
+          "args": {
+            "id": "note",
+            "type": "deleted",
+            "body": {
+              "deletedAt": "2024-10-27T03:33:20.000Z"
+            }
+          }
+        },
+        {
+          "method": "render-tombstone",
+          "args": {
+            "uri": "https://local.example/notes/note"
+          }
+        },
+        {
+          "method": "render-delete"
+        },
+        {
+          "method": "follower-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "relay-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "concerned-mentioned-query"
+        },
+        {
+          "method": "notes-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "user-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "search-delete-start",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "search-delete-accepted"
+        },
+        {
+          "method": "db-delete",
+          "args": {
+            "where": {
+              "id": "note",
+              "userId": "author"
+            }
+          }
+        },
+        {
+          "method": "audit-author-query"
+        },
+        {
+          "method": "concerned-descendant-query"
+        },
+        {
+          "method": "moderator-audit",
+          "args": {
+            "actor": "moderator",
+            "type": "deleteNote",
+            "noteId": "note"
+          }
+        },
+        {
+          "method": "direct-delivery",
+          "args": {
+            "type": "Delete",
+            "ids": [
+              "mentioned",
+              "remote-child-author"
+            ]
+          }
+        },
+        {
+          "method": "delete-returned"
+        },
+        {
+          "method": "poll-current-note-read"
+        }
+      ],
+      "state": {
+        "noteExists": false,
+        "parentReplies": 2,
+        "parentRenotes": 7,
+        "userCount": 5,
+        "channelCount": 4,
+        "ordinaryTimeline": [
+          "retained"
+        ],
+        "roleTimeline": [
+          "retained"
+        ],
+        "antennaTimeline": [
+          "retained"
+        ],
+        "hashtags": [
+          "retained"
+        ],
+        "featured": [
+          "retained"
+        ],
+        "notifications": [
+          "retained"
+        ],
+        "webhooks": [],
+        "searchDocumentExists": false
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "db-delete-reject",
+      "calls": [
+        {
+          "method": "reply-count-decrement",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "deleted-stream",
+          "args": {
+            "id": "note",
+            "type": "deleted",
+            "body": {
+              "deletedAt": "2024-10-27T03:33:20.000Z"
+            }
+          }
+        },
+        {
+          "method": "render-tombstone",
+          "args": {
+            "uri": "https://local.example/notes/note"
+          }
+        },
+        {
+          "method": "render-delete"
+        },
+        {
+          "method": "follower-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "relay-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "concerned-mentioned-query"
+        },
+        {
+          "method": "notes-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "user-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "search-delete-start",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "search-delete-accepted"
+        },
+        {
+          "method": "db-delete",
+          "args": {
+            "where": {
+              "id": "note",
+              "userId": "author"
+            }
+          }
+        },
+        {
+          "method": "concerned-descendant-query"
+        },
+        {
+          "method": "delete-rejected",
+          "args": {
+            "message": "DB DELETE failed"
+          }
+        },
+        {
+          "method": "direct-delivery",
+          "args": {
+            "type": "Delete",
+            "ids": [
+              "mentioned",
+              "remote-child-author"
+            ]
+          }
+        }
+      ],
+      "state": {
+        "noteExists": true,
+        "parentReplies": 2,
+        "parentRenotes": 7,
+        "userCount": 5,
+        "channelCount": 4,
+        "ordinaryTimeline": [
+          "retained"
+        ],
+        "roleTimeline": [
+          "retained"
+        ],
+        "antennaTimeline": [
+          "retained"
+        ],
+        "hashtags": [
+          "retained"
+        ],
+        "featured": [
+          "retained"
+        ],
+        "notifications": [
+          "retained"
+        ],
+        "webhooks": [],
+        "searchDocumentExists": false
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "reply-decrement-reject",
+      "calls": [
+        {
+          "method": "reply-count-decrement",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "delete-rejected",
+          "args": {
+            "message": "reply decrement failed"
+          }
+        }
+      ],
+      "state": {
+        "noteExists": true,
+        "parentReplies": 3,
+        "parentRenotes": 7,
+        "userCount": 5,
+        "channelCount": 4,
+        "ordinaryTimeline": [
+          "retained"
+        ],
+        "roleTimeline": [
+          "retained"
+        ],
+        "antennaTimeline": [
+          "retained"
+        ],
+        "hashtags": [
+          "retained"
+        ],
+        "featured": [
+          "retained"
+        ],
+        "notifications": [
+          "retained"
+        ],
+        "webhooks": [],
+        "searchDocumentExists": true
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "stream-throws",
+      "calls": [
+        {
+          "method": "reply-count-decrement",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "deleted-stream",
+          "args": {
+            "id": "note",
+            "type": "deleted",
+            "body": {
+              "deletedAt": "2024-10-27T03:33:20.000Z"
+            }
+          }
+        },
+        {
+          "method": "delete-rejected",
+          "args": {
+            "message": "stream failed"
+          }
+        }
+      ],
+      "state": {
+        "noteExists": true,
+        "parentReplies": 2,
+        "parentRenotes": 7,
+        "userCount": 5,
+        "channelCount": 4,
+        "ordinaryTimeline": [
+          "retained"
+        ],
+        "roleTimeline": [
+          "retained"
+        ],
+        "antennaTimeline": [
+          "retained"
+        ],
+        "hashtags": [
+          "retained"
+        ],
+        "featured": [
+          "retained"
+        ],
+        "notifications": [
+          "retained"
+        ],
+        "webhooks": [],
+        "searchDocumentExists": true
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "render-throws",
+      "calls": [
+        {
+          "method": "reply-count-decrement",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "deleted-stream",
+          "args": {
+            "id": "note",
+            "type": "deleted",
+            "body": {
+              "deletedAt": "2024-10-27T03:33:20.000Z"
+            }
+          }
+        },
+        {
+          "method": "render-tombstone",
+          "args": {
+            "uri": "https://local.example/notes/note"
+          }
+        },
+        {
+          "method": "render-delete"
+        },
+        {
+          "method": "delete-rejected",
+          "args": {
+            "message": "render failed"
+          }
+        }
+      ],
+      "state": {
+        "noteExists": true,
+        "parentReplies": 2,
+        "parentRenotes": 7,
+        "userCount": 5,
+        "channelCount": 4,
+        "ordinaryTimeline": [
+          "retained"
+        ],
+        "roleTimeline": [
+          "retained"
+        ],
+        "antennaTimeline": [
+          "retained"
+        ],
+        "hashtags": [
+          "retained"
+        ],
+        "featured": [
+          "retained"
+        ],
+        "notifications": [
+          "retained"
+        ],
+        "webhooks": [],
+        "searchDocumentExists": true
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "unindex-reject-independent",
+      "calls": [
+        {
+          "method": "reply-count-decrement",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "deleted-stream",
+          "args": {
+            "id": "note",
+            "type": "deleted",
+            "body": {
+              "deletedAt": "2024-10-27T03:33:20.000Z"
+            }
+          }
+        },
+        {
+          "method": "render-tombstone",
+          "args": {
+            "uri": "https://local.example/notes/note"
+          }
+        },
+        {
+          "method": "render-delete"
+        },
+        {
+          "method": "follower-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "relay-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "concerned-mentioned-query"
+        },
+        {
+          "method": "notes-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "user-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "search-delete-start",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "db-delete",
+          "args": {
+            "where": {
+              "id": "note",
+              "userId": "author"
+            }
+          }
+        },
+        {
+          "method": "audit-author-query"
+        },
+        {
+          "method": "concerned-descendant-query"
+        },
+        {
+          "method": "moderator-audit",
+          "args": {
+            "actor": "moderator",
+            "type": "deleteNote",
+            "noteId": "note"
+          }
+        },
+        {
+          "method": "direct-delivery",
+          "args": {
+            "type": "Delete",
+            "ids": [
+              "mentioned",
+              "remote-child-author"
+            ]
+          }
+        },
+        {
+          "method": "delete-returned"
+        }
+      ],
+      "state": {
+        "noteExists": false,
+        "parentReplies": 2,
+        "parentRenotes": 7,
+        "userCount": 5,
+        "channelCount": 4,
+        "ordinaryTimeline": [
+          "retained"
+        ],
+        "roleTimeline": [
+          "retained"
+        ],
+        "antennaTimeline": [
+          "retained"
+        ],
+        "hashtags": [
+          "retained"
+        ],
+        "featured": [
+          "retained"
+        ],
+        "notifications": [
+          "retained"
+        ],
+        "webhooks": [],
+        "searchDocumentExists": true
+      },
+      "unhandledRejectionsCapturedByHarness": [
+        "unindex failed"
+      ]
+    },
+    {
+      "id": "local-only",
+      "calls": [
+        {
+          "method": "reply-count-decrement",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "deleted-stream",
+          "args": {
+            "id": "note",
+            "type": "deleted",
+            "body": {
+              "deletedAt": "2024-10-27T03:33:20.000Z"
+            }
+          }
+        },
+        {
+          "method": "notes-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "user-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "search-delete-start",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "search-delete-accepted"
+        },
+        {
+          "method": "db-delete",
+          "args": {
+            "where": {
+              "id": "note",
+              "userId": "author"
+            }
+          }
+        },
+        {
+          "method": "audit-author-query"
+        },
+        {
+          "method": "moderator-audit",
+          "args": {
+            "actor": "moderator",
+            "type": "deleteNote",
+            "noteId": "note"
+          }
+        },
+        {
+          "method": "delete-returned"
+        }
+      ],
+      "state": {
+        "noteExists": false,
+        "parentReplies": 2,
+        "parentRenotes": 7,
+        "userCount": 5,
+        "channelCount": 4,
+        "ordinaryTimeline": [
+          "retained"
+        ],
+        "roleTimeline": [
+          "retained"
+        ],
+        "antennaTimeline": [
+          "retained"
+        ],
+        "hashtags": [
+          "retained"
+        ],
+        "featured": [
+          "retained"
+        ],
+        "notifications": [
+          "retained"
+        ],
+        "webhooks": [],
+        "searchDocumentExists": false
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "remote-author",
+      "calls": [
+        {
+          "method": "reply-count-decrement",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "deleted-stream",
+          "args": {
+            "id": "note",
+            "type": "deleted",
+            "body": {
+              "deletedAt": "2024-10-27T03:33:20.000Z"
+            }
+          }
+        },
+        {
+          "method": "notes-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "instance-register",
+          "args": {
+            "host": "remote.example"
+          }
+        },
+        {
+          "method": "search-delete-start",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "search-delete-accepted"
+        },
+        {
+          "method": "db-delete",
+          "args": {
+            "where": {
+              "id": "note",
+              "userId": "author"
+            }
+          }
+        },
+        {
+          "method": "instance-count-decrement",
+          "args": {
+            "where": {
+              "id": "instance"
+            },
+            "column": "notesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "audit-author-query"
+        },
+        {
+          "method": "moderator-audit",
+          "args": {
+            "actor": "moderator",
+            "type": "deleteNote",
+            "noteId": "note"
+          }
+        },
+        {
+          "method": "delete-returned"
+        }
+      ],
+      "state": {
+        "noteExists": false,
+        "parentReplies": 2,
+        "parentRenotes": 7,
+        "userCount": 5,
+        "channelCount": 4,
+        "ordinaryTimeline": [
+          "retained"
+        ],
+        "roleTimeline": [
+          "retained"
+        ],
+        "antennaTimeline": [
+          "retained"
+        ],
+        "hashtags": [
+          "retained"
+        ],
+        "featured": [
+          "retained"
+        ],
+        "notifications": [
+          "retained"
+        ],
+        "webhooks": [],
+        "searchDocumentExists": false
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "pure-renote-undo",
+      "calls": [
+        {
+          "method": "deleted-stream",
+          "args": {
+            "id": "note",
+            "type": "deleted",
+            "body": {
+              "deletedAt": "2024-10-27T03:33:20.000Z"
+            }
+          }
+        },
+        {
+          "method": "renote-original-query",
+          "args": {
+            "where": {
+              "id": "original"
+            }
+          }
+        },
+        {
+          "method": "render-announce",
+          "args": {
+            "uri": "https://original.example/note"
+          }
+        },
+        {
+          "method": "render-undo"
+        },
+        {
+          "method": "follower-delivery",
+          "args": {
+            "type": "Undo"
+          }
+        },
+        {
+          "method": "relay-delivery",
+          "args": {
+            "type": "Undo"
+          }
+        },
+        {
+          "method": "concerned-mentioned-query"
+        },
+        {
+          "method": "notes-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "user-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "search-delete-start",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "search-delete-accepted"
+        },
+        {
+          "method": "db-delete",
+          "args": {
+            "where": {
+              "id": "note",
+              "userId": "author"
+            }
+          }
+        },
+        {
+          "method": "audit-author-query"
+        },
+        {
+          "method": "concerned-descendant-query"
+        },
+        {
+          "method": "moderator-audit",
+          "args": {
+            "actor": "moderator",
+            "type": "deleteNote",
+            "noteId": "note"
+          }
+        },
+        {
+          "method": "direct-delivery",
+          "args": {
+            "type": "Undo",
+            "ids": [
+              "mentioned",
+              "remote-child-author"
+            ]
+          }
+        },
+        {
+          "method": "delete-returned"
+        }
+      ],
+      "state": {
+        "noteExists": false,
+        "parentReplies": 3,
+        "parentRenotes": 7,
+        "userCount": 5,
+        "channelCount": 4,
+        "ordinaryTimeline": [
+          "retained"
+        ],
+        "roleTimeline": [
+          "retained"
+        ],
+        "antennaTimeline": [
+          "retained"
+        ],
+        "hashtags": [
+          "retained"
+        ],
+        "featured": [
+          "retained"
+        ],
+        "notifications": [
+          "retained"
+        ],
+        "webhooks": [],
+        "searchDocumentExists": false
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "pure-renote-missing-original",
+      "calls": [
+        {
+          "method": "deleted-stream",
+          "args": {
+            "id": "note",
+            "type": "deleted",
+            "body": {
+              "deletedAt": "2024-10-27T03:33:20.000Z"
+            }
+          }
+        },
+        {
+          "method": "renote-original-query",
+          "args": {
+            "where": {
+              "id": "original"
+            }
+          }
+        },
+        {
+          "method": "render-tombstone",
+          "args": {
+            "uri": "https://local.example/notes/note"
+          }
+        },
+        {
+          "method": "render-delete"
+        },
+        {
+          "method": "follower-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "relay-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "concerned-mentioned-query"
+        },
+        {
+          "method": "notes-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "user-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "search-delete-start",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "search-delete-accepted"
+        },
+        {
+          "method": "db-delete",
+          "args": {
+            "where": {
+              "id": "note",
+              "userId": "author"
+            }
+          }
+        },
+        {
+          "method": "audit-author-query"
+        },
+        {
+          "method": "concerned-descendant-query"
+        },
+        {
+          "method": "moderator-audit",
+          "args": {
+            "actor": "moderator",
+            "type": "deleteNote",
+            "noteId": "note"
+          }
+        },
+        {
+          "method": "direct-delivery",
+          "args": {
+            "type": "Delete",
+            "ids": [
+              "mentioned",
+              "remote-child-author"
+            ]
+          }
+        },
+        {
+          "method": "delete-returned"
+        }
+      ],
+      "state": {
+        "noteExists": false,
+        "parentReplies": 3,
+        "parentRenotes": 7,
+        "userCount": 5,
+        "channelCount": 4,
+        "ordinaryTimeline": [
+          "retained"
+        ],
+        "roleTimeline": [
+          "retained"
+        ],
+        "antennaTimeline": [
+          "retained"
+        ],
+        "hashtags": [
+          "retained"
+        ],
+        "featured": [
+          "retained"
+        ],
+        "notifications": [
+          "retained"
+        ],
+        "webhooks": [],
+        "searchDocumentExists": false
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "pure-renote-original-query-reject",
+      "calls": [
+        {
+          "method": "deleted-stream",
+          "args": {
+            "id": "note",
+            "type": "deleted",
+            "body": {
+              "deletedAt": "2024-10-27T03:33:20.000Z"
+            }
+          }
+        },
+        {
+          "method": "renote-original-query",
+          "args": {
+            "where": {
+              "id": "original"
+            }
+          }
+        },
+        {
+          "method": "delete-rejected",
+          "args": {
+            "message": "original lookup failed"
+          }
+        }
+      ],
+      "state": {
+        "noteExists": true,
+        "parentReplies": 3,
+        "parentRenotes": 7,
+        "userCount": 5,
+        "channelCount": 4,
+        "ordinaryTimeline": [
+          "retained"
+        ],
+        "roleTimeline": [
+          "retained"
+        ],
+        "antennaTimeline": [
+          "retained"
+        ],
+        "hashtags": [
+          "retained"
+        ],
+        "featured": [
+          "retained"
+        ],
+        "notifications": [
+          "retained"
+        ],
+        "webhooks": [],
+        "searchDocumentExists": true
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "quiet-delete",
+      "calls": [
+        {
+          "method": "reply-count-decrement",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "search-delete-start",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "search-delete-accepted"
+        },
+        {
+          "method": "db-delete",
+          "args": {
+            "where": {
+              "id": "note",
+              "userId": "author"
+            }
+          }
+        },
+        {
+          "method": "audit-author-query"
+        },
+        {
+          "method": "moderator-audit",
+          "args": {
+            "actor": "moderator",
+            "type": "deleteNote",
+            "noteId": "note"
+          }
+        },
+        {
+          "method": "delete-returned"
+        }
+      ],
+      "state": {
+        "noteExists": false,
+        "parentReplies": 2,
+        "parentRenotes": 7,
+        "userCount": 5,
+        "channelCount": 4,
+        "ordinaryTimeline": [
+          "retained"
+        ],
+        "roleTimeline": [
+          "retained"
+        ],
+        "antennaTimeline": [
+          "retained"
+        ],
+        "hashtags": [
+          "retained"
+        ],
+        "featured": [
+          "retained"
+        ],
+        "notifications": [
+          "retained"
+        ],
+        "webhooks": [],
+        "searchDocumentExists": false
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "create-pack-reject-then-delete",
+      "calls": [
+        {
+          "method": "create-chart"
+        },
+        {
+          "method": "create-user-chart"
+        },
+        {
+          "method": "hashtag-update"
+        },
+        {
+          "method": "user-count-increment"
+        },
+        {
+          "method": "ordinary-timeline-add"
+        },
+        {
+          "method": "antenna-timeline-add"
+        },
+        {
+          "method": "reply-count-increment",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "renote-count-increment"
+        },
+        {
+          "method": "featured-global-add"
+        },
+        {
+          "method": "featured-user-add"
+        },
+        {
+          "method": "poll-job-add",
+          "args": {
+            "id": "note",
+            "data": {
+              "noteId": "note"
+            },
+            "options": {
+              "delay": 60000,
+              "removeOnComplete": {
+                "age": 604800,
+                "count": 30
+              },
+              "removeOnFail": {
+                "age": 604800,
+                "count": 100
+              }
+            }
+          }
+        },
+        {
+          "method": "active-user-chart"
+        },
+        {
+          "method": "pack",
+          "args": {
+            "viewer": null
+          }
+        },
+        {
+          "method": "create-rejected",
+          "args": {
+            "message": "pack failed"
+          }
+        },
+        {
+          "method": "before-delete"
+        },
+        {
+          "method": "reply-count-decrement",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "deleted-stream",
+          "args": {
+            "id": "note",
+            "type": "deleted",
+            "body": {
+              "deletedAt": "2024-10-27T03:33:20.000Z"
+            }
+          }
+        },
+        {
+          "method": "render-tombstone",
+          "args": {
+            "uri": "https://local.example/notes/note"
+          }
+        },
+        {
+          "method": "render-delete"
+        },
+        {
+          "method": "follower-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "relay-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "concerned-mentioned-query"
+        },
+        {
+          "method": "notes-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "user-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "search-delete-start",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "search-delete-accepted"
+        },
+        {
+          "method": "db-delete",
+          "args": {
+            "where": {
+              "id": "note",
+              "userId": "author"
+            }
+          }
+        },
+        {
+          "method": "audit-author-query"
+        },
+        {
+          "method": "concerned-descendant-query"
+        },
+        {
+          "method": "moderator-audit",
+          "args": {
+            "actor": "moderator",
+            "type": "deleteNote",
+            "noteId": "note"
+          }
+        },
+        {
+          "method": "direct-delivery",
+          "args": {
+            "type": "Delete",
+            "ids": [
+              "mentioned",
+              "remote-child-author"
+            ]
+          }
+        },
+        {
+          "method": "delete-returned"
+        }
+      ],
+      "state": {
+        "noteExists": false,
+        "parentReplies": 3,
+        "parentRenotes": 8,
+        "userCount": 6,
+        "channelCount": 4,
+        "ordinaryTimeline": [
+          "retained",
+          "note"
+        ],
+        "roleTimeline": [
+          "retained"
+        ],
+        "antennaTimeline": [
+          "retained",
+          "note"
+        ],
+        "hashtags": [
+          "retained",
+          "tag"
+        ],
+        "featured": [
+          "retained",
+          "parent"
+        ],
+        "notifications": [
+          "retained"
+        ],
+        "webhooks": [],
+        "searchDocumentExists": false
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "create-mention-reject-then-delete",
+      "calls": [
+        {
+          "method": "create-chart"
+        },
+        {
+          "method": "create-user-chart"
+        },
+        {
+          "method": "hashtag-update"
+        },
+        {
+          "method": "user-count-increment"
+        },
+        {
+          "method": "ordinary-timeline-add"
+        },
+        {
+          "method": "antenna-timeline-add"
+        },
+        {
+          "method": "reply-count-increment",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "renote-count-increment"
+        },
+        {
+          "method": "featured-global-add"
+        },
+        {
+          "method": "featured-user-add"
+        },
+        {
+          "method": "poll-job-add",
+          "args": {
+            "id": "note",
+            "data": {
+              "noteId": "note"
+            },
+            "options": {
+              "delay": 60000,
+              "removeOnComplete": {
+                "age": 604800,
+                "count": 30
+              },
+              "removeOnFail": {
+                "age": 604800,
+                "count": 100
+              }
+            }
+          }
+        },
+        {
+          "method": "active-user-chart"
+        },
+        {
+          "method": "pack",
+          "args": {
+            "viewer": null
+          }
+        },
+        {
+          "method": "created-stream",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "role-timeline-add"
+        },
+        {
+          "method": "webhook-enqueue",
+          "args": {
+            "id": "author",
+            "type": "note"
+          }
+        },
+        {
+          "method": "pack",
+          "args": {
+            "viewer": "mentioned-local"
+          }
+        },
+        {
+          "method": "create-rejected",
+          "args": {
+            "message": "mention pack failed"
+          }
+        },
+        {
+          "method": "before-delete"
+        },
+        {
+          "method": "reply-count-decrement",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "deleted-stream",
+          "args": {
+            "id": "note",
+            "type": "deleted",
+            "body": {
+              "deletedAt": "2024-10-27T03:33:20.000Z"
+            }
+          }
+        },
+        {
+          "method": "render-tombstone",
+          "args": {
+            "uri": "https://local.example/notes/note"
+          }
+        },
+        {
+          "method": "render-delete"
+        },
+        {
+          "method": "follower-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "relay-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "concerned-mentioned-query"
+        },
+        {
+          "method": "notes-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "user-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "search-delete-start",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "search-delete-accepted"
+        },
+        {
+          "method": "db-delete",
+          "args": {
+            "where": {
+              "id": "note",
+              "userId": "author"
+            }
+          }
+        },
+        {
+          "method": "audit-author-query"
+        },
+        {
+          "method": "concerned-descendant-query"
+        },
+        {
+          "method": "moderator-audit",
+          "args": {
+            "actor": "moderator",
+            "type": "deleteNote",
+            "noteId": "note"
+          }
+        },
+        {
+          "method": "direct-delivery",
+          "args": {
+            "type": "Delete",
+            "ids": [
+              "mentioned",
+              "remote-child-author"
+            ]
+          }
+        },
+        {
+          "method": "delete-returned"
+        }
+      ],
+      "state": {
+        "noteExists": false,
+        "parentReplies": 3,
+        "parentRenotes": 8,
+        "userCount": 6,
+        "channelCount": 4,
+        "ordinaryTimeline": [
+          "retained",
+          "note"
+        ],
+        "roleTimeline": [
+          "retained",
+          "note"
+        ],
+        "antennaTimeline": [
+          "retained",
+          "note"
+        ],
+        "hashtags": [
+          "retained",
+          "tag"
+        ],
+        "featured": [
+          "retained",
+          "parent"
+        ],
+        "notifications": [
+          "retained"
+        ],
+        "webhooks": [
+          "note"
+        ],
+        "searchDocumentExists": false
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "create-pack-held-until-after-delete",
+      "calls": [
+        {
+          "method": "create-chart"
+        },
+        {
+          "method": "create-user-chart"
+        },
+        {
+          "method": "hashtag-update"
+        },
+        {
+          "method": "user-count-increment"
+        },
+        {
+          "method": "ordinary-timeline-add"
+        },
+        {
+          "method": "antenna-timeline-add"
+        },
+        {
+          "method": "reply-count-increment",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "renote-count-increment"
+        },
+        {
+          "method": "featured-global-add"
+        },
+        {
+          "method": "featured-user-add"
+        },
+        {
+          "method": "active-user-chart"
+        },
+        {
+          "method": "pack",
+          "args": {
+            "viewer": null
+          }
+        },
+        {
+          "method": "pack-held"
+        },
+        {
+          "method": "reply-count-decrement",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "deleted-stream",
+          "args": {
+            "id": "note",
+            "type": "deleted",
+            "body": {
+              "deletedAt": "2024-10-27T03:33:20.000Z"
+            }
+          }
+        },
+        {
+          "method": "render-tombstone",
+          "args": {
+            "uri": "https://local.example/notes/note"
+          }
+        },
+        {
+          "method": "render-delete"
+        },
+        {
+          "method": "follower-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "relay-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "concerned-mentioned-query"
+        },
+        {
+          "method": "notes-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "user-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "search-delete-start",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "search-delete-accepted"
+        },
+        {
+          "method": "db-delete",
+          "args": {
+            "where": {
+              "id": "note",
+              "userId": "author"
+            }
+          }
+        },
+        {
+          "method": "audit-author-query"
+        },
+        {
+          "method": "concerned-descendant-query"
+        },
+        {
+          "method": "moderator-audit",
+          "args": {
+            "actor": "moderator",
+            "type": "deleteNote",
+            "noteId": "note"
+          }
+        },
+        {
+          "method": "direct-delivery",
+          "args": {
+            "type": "Delete",
+            "ids": [
+              "mentioned",
+              "remote-child-author"
+            ]
+          }
+        },
+        {
+          "method": "delete-returned"
+        },
+        {
+          "method": "release-pack"
+        },
+        {
+          "method": "created-stream",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "role-timeline-add"
+        },
+        {
+          "method": "webhook-enqueue",
+          "args": {
+            "id": "author",
+            "type": "note"
+          }
+        },
+        {
+          "method": "pack",
+          "args": {
+            "viewer": "mentioned-local"
+          }
+        },
+        {
+          "method": "main-stream",
+          "args": {
+            "userId": "mentioned-local",
+            "type": "mention"
+          }
+        },
+        {
+          "method": "webhook-enqueue",
+          "args": {
+            "id": "mentioned-local",
+            "type": "mention"
+          }
+        },
+        {
+          "method": "main-stream",
+          "args": {
+            "userId": "other",
+            "type": "reply"
+          }
+        },
+        {
+          "method": "webhook-enqueue",
+          "args": {
+            "id": "other",
+            "type": "reply"
+          }
+        },
+        {
+          "method": "main-stream",
+          "args": {
+            "userId": "other",
+            "type": "renote"
+          }
+        },
+        {
+          "method": "webhook-enqueue",
+          "args": {
+            "id": "other",
+            "type": "renote"
+          }
+        },
+        {
+          "method": "notification-create",
+          "args": {
+            "id": "mentioned-local",
+            "type": "mention"
+          }
+        },
+        {
+          "method": "notification-create",
+          "args": {
+            "id": "other",
+            "type": "quote"
+          }
+        },
+        {
+          "method": "render-create-note"
+        },
+        {
+          "method": "channel-increment",
+          "args": {
+            "column": "notesCount"
+          }
+        },
+        {
+          "method": "channel-timestamp"
+        },
+        {
+          "method": "search-add-start",
+          "args": {
+            "documents": [
+              {
+                "id": "note",
+                "createdAt": 1730000000000,
+                "userId": "author",
+                "userHost": null,
+                "channelId": "channel",
+                "cw": null,
+                "text": "body",
+                "tags": [
+                  "tag"
+                ]
+              }
+            ],
+            "settings": {
+              "primaryKey": "id"
+            }
+          }
+        },
+        {
+          "method": "search-add-accepted"
+        },
+        {
+          "method": "channel-increment",
+          "args": {
+            "column": "usersCount"
+          }
+        },
+        {
+          "method": "create-returned"
+        },
+        {
+          "method": "create-relay",
+          "args": {
+            "type": "Create"
+          }
+        },
+        {
+          "method": "create-delivery"
+        }
+      ],
+      "state": {
+        "noteExists": false,
+        "parentReplies": 3,
+        "parentRenotes": 8,
+        "userCount": 6,
+        "channelCount": 5,
+        "ordinaryTimeline": [
+          "retained",
+          "note"
+        ],
+        "roleTimeline": [
+          "retained",
+          "note"
+        ],
+        "antennaTimeline": [
+          "retained",
+          "note"
+        ],
+        "hashtags": [
+          "retained",
+          "tag"
+        ],
+        "featured": [
+          "retained",
+          "parent"
+        ],
+        "notifications": [
+          "retained",
+          "mention",
+          "quote"
+        ],
+        "webhooks": [
+          "note",
+          "mention",
+          "reply",
+          "renote"
+        ],
+        "searchDocumentExists": true
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "scheduled-post-created-held-until-after-delete",
+      "calls": [
+        {
+          "method": "post-create-scheduled",
+          "args": {
+            "value": "post created",
+            "aborted": false
+          }
+        },
+        {
+          "method": "creation-caller-returned"
+        },
+        {
+          "method": "reply-count-decrement",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "deleted-stream",
+          "args": {
+            "id": "note",
+            "type": "deleted",
+            "body": {
+              "deletedAt": "2024-10-27T03:33:20.000Z"
+            }
+          }
+        },
+        {
+          "method": "render-tombstone",
+          "args": {
+            "uri": "https://local.example/notes/note"
+          }
+        },
+        {
+          "method": "render-delete"
+        },
+        {
+          "method": "follower-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "relay-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "concerned-mentioned-query"
+        },
+        {
+          "method": "notes-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "user-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "search-delete-start",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "search-delete-accepted"
+        },
+        {
+          "method": "db-delete",
+          "args": {
+            "where": {
+              "id": "note",
+              "userId": "author"
+            }
+          }
+        },
+        {
+          "method": "audit-author-query"
+        },
+        {
+          "method": "concerned-descendant-query"
+        },
+        {
+          "method": "moderator-audit",
+          "args": {
+            "actor": "moderator",
+            "type": "deleteNote",
+            "noteId": "note"
+          }
+        },
+        {
+          "method": "direct-delivery",
+          "args": {
+            "type": "Delete",
+            "ids": [
+              "mentioned",
+              "remote-child-author"
+            ]
+          }
+        },
+        {
+          "method": "delete-returned"
+        },
+        {
+          "method": "release-post-created"
+        },
+        {
+          "method": "create-chart"
+        },
+        {
+          "method": "create-user-chart"
+        },
+        {
+          "method": "hashtag-update"
+        },
+        {
+          "method": "user-count-increment"
+        },
+        {
+          "method": "ordinary-timeline-add"
+        },
+        {
+          "method": "antenna-timeline-add"
+        },
+        {
+          "method": "reply-count-increment",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "renote-count-increment"
+        },
+        {
+          "method": "featured-global-add"
+        },
+        {
+          "method": "featured-user-add"
+        },
+        {
+          "method": "active-user-chart"
+        },
+        {
+          "method": "pack",
+          "args": {
+            "viewer": null
+          }
+        },
+        {
+          "method": "created-stream",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "role-timeline-add"
+        },
+        {
+          "method": "webhook-enqueue",
+          "args": {
+            "id": "author",
+            "type": "note"
+          }
+        },
+        {
+          "method": "pack",
+          "args": {
+            "viewer": "mentioned-local"
+          }
+        },
+        {
+          "method": "main-stream",
+          "args": {
+            "userId": "mentioned-local",
+            "type": "mention"
+          }
+        },
+        {
+          "method": "webhook-enqueue",
+          "args": {
+            "id": "mentioned-local",
+            "type": "mention"
+          }
+        },
+        {
+          "method": "main-stream",
+          "args": {
+            "userId": "other",
+            "type": "reply"
+          }
+        },
+        {
+          "method": "webhook-enqueue",
+          "args": {
+            "id": "other",
+            "type": "reply"
+          }
+        },
+        {
+          "method": "main-stream",
+          "args": {
+            "userId": "other",
+            "type": "renote"
+          }
+        },
+        {
+          "method": "webhook-enqueue",
+          "args": {
+            "id": "other",
+            "type": "renote"
+          }
+        },
+        {
+          "method": "notification-create",
+          "args": {
+            "id": "mentioned-local",
+            "type": "mention"
+          }
+        },
+        {
+          "method": "notification-create",
+          "args": {
+            "id": "other",
+            "type": "quote"
+          }
+        },
+        {
+          "method": "render-create-note"
+        },
+        {
+          "method": "channel-increment",
+          "args": {
+            "column": "notesCount"
+          }
+        },
+        {
+          "method": "channel-timestamp"
+        },
+        {
+          "method": "search-add-start",
+          "args": {
+            "documents": [
+              {
+                "id": "note",
+                "createdAt": 1730000000000,
+                "userId": "author",
+                "userHost": null,
+                "channelId": "channel",
+                "cw": null,
+                "text": "body",
+                "tags": [
+                  "tag"
+                ]
+              }
+            ],
+            "settings": {
+              "primaryKey": "id"
+            }
+          }
+        },
+        {
+          "method": "search-add-accepted"
+        },
+        {
+          "method": "channel-increment",
+          "args": {
+            "column": "usersCount"
+          }
+        },
+        {
+          "method": "create-relay",
+          "args": {
+            "type": "Create"
+          }
+        },
+        {
+          "method": "create-delivery"
+        }
+      ],
+      "state": {
+        "noteExists": false,
+        "parentReplies": 3,
+        "parentRenotes": 8,
+        "userCount": 6,
+        "channelCount": 5,
+        "ordinaryTimeline": [
+          "retained",
+          "note"
+        ],
+        "roleTimeline": [
+          "retained",
+          "note"
+        ],
+        "antennaTimeline": [
+          "retained",
+          "note"
+        ],
+        "hashtags": [
+          "retained",
+          "tag"
+        ],
+        "featured": [
+          "retained",
+          "parent"
+        ],
+        "notifications": [
+          "retained",
+          "mention",
+          "quote"
+        ],
+        "webhooks": [
+          "note",
+          "mention",
+          "reply",
+          "renote"
+        ],
+        "searchDocumentExists": true
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "create-search-add-held-until-after-delete",
+      "calls": [
+        {
+          "method": "create-chart"
+        },
+        {
+          "method": "create-user-chart"
+        },
+        {
+          "method": "hashtag-update"
+        },
+        {
+          "method": "user-count-increment"
+        },
+        {
+          "method": "ordinary-timeline-add"
+        },
+        {
+          "method": "antenna-timeline-add"
+        },
+        {
+          "method": "reply-count-increment",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "renote-count-increment"
+        },
+        {
+          "method": "featured-global-add"
+        },
+        {
+          "method": "featured-user-add"
+        },
+        {
+          "method": "poll-job-add",
+          "args": {
+            "id": "note",
+            "data": {
+              "noteId": "note"
+            },
+            "options": {
+              "delay": 60000,
+              "removeOnComplete": {
+                "age": 604800,
+                "count": 30
+              },
+              "removeOnFail": {
+                "age": 604800,
+                "count": 100
+              }
+            }
+          }
+        },
+        {
+          "method": "active-user-chart"
+        },
+        {
+          "method": "pack",
+          "args": {
+            "viewer": null
+          }
+        },
+        {
+          "method": "created-stream",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "role-timeline-add"
+        },
+        {
+          "method": "webhook-enqueue",
+          "args": {
+            "id": "author",
+            "type": "note"
+          }
+        },
+        {
+          "method": "pack",
+          "args": {
+            "viewer": "mentioned-local"
+          }
+        },
+        {
+          "method": "main-stream",
+          "args": {
+            "userId": "mentioned-local",
+            "type": "mention"
+          }
+        },
+        {
+          "method": "webhook-enqueue",
+          "args": {
+            "id": "mentioned-local",
+            "type": "mention"
+          }
+        },
+        {
+          "method": "main-stream",
+          "args": {
+            "userId": "other",
+            "type": "reply"
+          }
+        },
+        {
+          "method": "webhook-enqueue",
+          "args": {
+            "id": "other",
+            "type": "reply"
+          }
+        },
+        {
+          "method": "main-stream",
+          "args": {
+            "userId": "other",
+            "type": "renote"
+          }
+        },
+        {
+          "method": "webhook-enqueue",
+          "args": {
+            "id": "other",
+            "type": "renote"
+          }
+        },
+        {
+          "method": "notification-create",
+          "args": {
+            "id": "mentioned-local",
+            "type": "mention"
+          }
+        },
+        {
+          "method": "notification-create",
+          "args": {
+            "id": "other",
+            "type": "quote"
+          }
+        },
+        {
+          "method": "render-create-note"
+        },
+        {
+          "method": "channel-increment",
+          "args": {
+            "column": "notesCount"
+          }
+        },
+        {
+          "method": "channel-timestamp"
+        },
+        {
+          "method": "search-add-start",
+          "args": {
+            "documents": [
+              {
+                "id": "note",
+                "createdAt": 1730000000000,
+                "userId": "author",
+                "userHost": null,
+                "channelId": "channel",
+                "cw": null,
+                "text": "body",
+                "tags": [
+                  "tag"
+                ]
+              }
+            ],
+            "settings": {
+              "primaryKey": "id"
+            }
+          }
+        },
+        {
+          "method": "channel-increment",
+          "args": {
+            "column": "usersCount"
+          }
+        },
+        {
+          "method": "create-returned"
+        },
+        {
+          "method": "reply-count-decrement",
+          "args": {
+            "where": {
+              "id": "parent"
+            },
+            "column": "repliesCount",
+            "amount": 1
+          }
+        },
+        {
+          "method": "create-relay",
+          "args": {
+            "type": "Create"
+          }
+        },
+        {
+          "method": "create-delivery"
+        },
+        {
+          "method": "deleted-stream",
+          "args": {
+            "id": "note",
+            "type": "deleted",
+            "body": {
+              "deletedAt": "2024-10-27T03:33:20.000Z"
+            }
+          }
+        },
+        {
+          "method": "render-tombstone",
+          "args": {
+            "uri": "https://local.example/notes/note"
+          }
+        },
+        {
+          "method": "render-delete"
+        },
+        {
+          "method": "follower-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "relay-delivery",
+          "args": {
+            "type": "Delete"
+          }
+        },
+        {
+          "method": "concerned-mentioned-query"
+        },
+        {
+          "method": "notes-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "user-chart",
+          "args": {
+            "created": false
+          }
+        },
+        {
+          "method": "search-delete-start",
+          "args": {
+            "id": "note"
+          }
+        },
+        {
+          "method": "search-delete-accepted"
+        },
+        {
+          "method": "db-delete",
+          "args": {
+            "where": {
+              "id": "note",
+              "userId": "author"
+            }
+          }
+        },
+        {
+          "method": "audit-author-query"
+        },
+        {
+          "method": "concerned-descendant-query"
+        },
+        {
+          "method": "moderator-audit",
+          "args": {
+            "actor": "moderator",
+            "type": "deleteNote",
+            "noteId": "note"
+          }
+        },
+        {
+          "method": "direct-delivery",
+          "args": {
+            "type": "Delete",
+            "ids": [
+              "mentioned",
+              "remote-child-author"
+            ]
+          }
+        },
+        {
+          "method": "delete-returned"
+        },
+        {
+          "method": "after-delete-before-add-release",
+          "args": {
+            "searchDocumentExists": false
+          }
+        },
+        {
+          "method": "release-search-add"
+        },
+        {
+          "method": "search-add-accepted"
+        }
+      ],
+      "state": {
+        "noteExists": false,
+        "parentReplies": 3,
+        "parentRenotes": 8,
+        "userCount": 6,
+        "channelCount": 5,
+        "ordinaryTimeline": [
+          "retained",
+          "note"
+        ],
+        "roleTimeline": [
+          "retained",
+          "note"
+        ],
+        "antennaTimeline": [
+          "retained",
+          "note"
+        ],
+        "hashtags": [
+          "retained",
+          "tag"
+        ],
+        "featured": [
+          "retained",
+          "parent"
+        ],
+        "notifications": [
+          "retained",
+          "mention",
+          "quote"
+        ],
+        "webhooks": [
+          "note",
+          "mention",
+          "reply",
+          "renote"
+        ],
+        "searchDocumentExists": true
+      },
+      "unhandledRejectionsCapturedByHarness": []
+    }
+  ]
+}

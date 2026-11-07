@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Ajv } from 'ajv';
+import { isPureRenote } from '../federation/public.js';
 import type { NoteCreateActor } from './create-contract.js';
 import type { NoteActivityNote } from '../federation/public.js';
 
@@ -39,6 +40,7 @@ export function createDeleteNote(ports: {
 	readActor(userId: string, now: number): Promise<{ isSuspended: boolean; rateLimitFactor: number; isModerator: boolean } | null>;
 	limit(userId: string, factor: number): Promise<void>;
 	readNote(id: string): Promise<DeletedNoteSnapshot | null>;
+	readRenote(id: string): Promise<DeletedNoteSnapshot['renote']>;
 	decrementReplies(noteId: string): Promise<void>;
 	publishDeleted?(snapshot: DeletedNoteSnapshot, deletedAt: number): void;
 	renderActivity(snapshot: DeletedNoteSnapshot, now: number): Record<string, unknown>;
@@ -80,8 +82,12 @@ export function createDeleteNote(ports: {
 			}
 			ports.publishDeleted?.(snapshot, now);
 			if (snapshot.authorHost === null && !snapshot.localOnly) {
-				const activity = ports.renderActivity(snapshot, now);
-				ports.start({ kind: 'delivery', snapshot, activity });
+				// 本家は deleted stream の後、ローカルの純粋 Renote の AP 準備だけで元投稿を読む。
+				const deliverySnapshot = isPureRenote(snapshot.note)
+					? { ...snapshot, renote: await ports.readRenote(snapshot.note.renoteId!) }
+					: snapshot;
+				const activity = ports.renderActivity(deliverySnapshot, now);
+				ports.start({ kind: 'delivery', snapshot: deliverySnapshot, activity });
 			}
 			if (snapshot.authorHost !== null) {
 				ports.start({ kind: 'instanceCounts', snapshot });

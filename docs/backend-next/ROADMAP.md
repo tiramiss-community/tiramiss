@@ -1,6 +1,6 @@
 # 新バックエンドの全体計画
 
-更新: 2026-11-03。判断基準は [GOALS](GOALS.md)。全体Issueは [#114](https://github.com/tiramiss-community/tiramiss/issues/114)。本書は工程と現在地、Issueは個別作業と依存、各PRは実装・検証結果を持つ。
+更新: 2026-11-07。判断基準は [GOALS](GOALS.md)。全体Issueは [#114](https://github.com/tiramiss-community/tiramiss/issues/114)。本書は工程と現在地、Issueは個別作業と依存、各PRは実装・検証結果を持つ。
 
 ## 今回の方針整理
 
@@ -12,7 +12,7 @@
 
 ## 現在地と既存成果
 
-基準: develop `3ca82a4a5a2e575ab90daf3f5022669a4a5108ce`（PR #218マージ後）。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
+基準: develop `617bd45d67173b401ed58b2f27fc17b7e608b8c5`（PR #237マージ後）。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
 
 | 成果 | 初期実装での扱い |
 | --- | --- |
@@ -25,7 +25,9 @@
 | PG通知保存・effect記録（#155） | 保存先の承認を維持し直接save/flushへ分離。effect/課金への依存を撤去し、閲覧/既読/移行は#177へ残す |
 | 物理容量監視と受付停止（#166 / PR #206） | 初期範囲から外し保留。PRは未マージのまま残し、勝手にclose/mergeしない |
 
-通常workerは本家の投票終了ジョブ（#162の最初のPR）と、ノート作成のAP配送ジョブ（#171の最初のPRと既存 accepted relay の第2slice）を実行する。他の実ジョブhandlerは未接続。#169 / PR #212はマージ済みで、基本text作成のHTTP・保存・応答・後続count更新と、独自BullMQ transport/Redis復旧の撤去を完了。[PR #213](https://github.com/tiramiss-community/tiramiss/pull/213)もマージ済み。PG通知を直接保存へ分離し、残るPGジョブ/AP protocol・専用テスト・起動Entity登録・未使用依存を撤去した。新migrationは未解決の仕事を拒否し、通知本体を保持して不要9表/課金列を廃止する。添付/返信等と配送（relayを除く）は接続済みだが、delete・通知等を通した完成品はまだない。マージ済みの独自migrationは履歴として保持するが、未使用adapterや不要テーブルを最終構成に残す方針ではない。
+投稿の現在地（2026-11-07）: #170/#171、投稿に必要な通知・WebSocket受信 #173、投稿webhook #175 と通常TL/検索/集計producer #174 は実装・比較済み。#174 は PR #237 で完了した。本変更では、#172 に残っていた作成後続と削除の連携を、同じ投稿を使う実HTTP/worker・PG/Redis/Meili・WebSocket・fake AP/webhookで検証した。sourceと製品の独立レビューは承認済み。#172 の完了判定と、#176 の削除に絞って確認した範囲は[本変更の計画](../superpowers/plans/2026-11-07-note-delete-integration-172.md)を参照する。後述の各sliceにある過去の残作業記述は当時の状態を示す。
+
+通常workerは投票終了・AP配送・投稿webhookのhandlerを実行する。他の実ジョブは担当領域へ残る。#169 / PR #212は、基本text作成のHTTP・保存・応答・後続count更新と、独自BullMQ transport/Redis復旧の撤去を完了。[PR #213](https://github.com/tiramiss-community/tiramiss/pull/213)でPG通知を直接保存へ分離し、残るPGジョブ/AP protocol・専用テスト・起動Entity登録・未使用依存を撤去した。新migrationは未解決の仕事を拒否し、通知本体を保持して不要9表/課金列を廃止する。マージ済みの独自migrationは履歴として保持するが、未使用adapterや不要テーブルを最終構成に残す方針ではない。
 
 ## 本家比較から分かった追加仕様
 
@@ -62,7 +64,7 @@ PR単位で一括revertせず、現在の参照・必要な業務規則・保存
 
 削減PRでは、除去する対象と参照元、残す比較/業務処理、DB/残ジョブへの影響を短く示す。不要な独自テーブル/列/索引は、既存データと利用状況を確認し、停止下の新しいmigrationで廃止する。マージ済み履歴と本家public schemaを直接書き換えない。必要なデータ/残ジョブがある場合は、その扱いを先に確定する。
 
-**削減の完了条件**: 本家相当の経路と必要な失敗処理が動き、不要な旧実装がruntime・起動・運用・テストの前提に残っていない。通常workerは投票終了ジョブとAP配送ジョブだけを実行する現状で、他の既存adapterを無条件に代替完了扱いしない。仕様・比較観測・Git履歴を保持することと、未使用の実行コードを残すことを区別する。
+**削減の完了条件**: 本家相当の経路と必要な失敗処理が動き、不要な旧実装がruntime・起動・運用・テストの前提に残っていない。通常workerは投票終了・AP配送・投稿webhookのhandlerを実行する現状で、他の既存adapterを無条件に代替完了扱いしない。仕様・比較観測・Git履歴を保持することと、未使用の実行コードを残すことを区別する。
 
 ## Issueと依存の見直し
 
@@ -141,3 +143,9 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 2026-11-07: #174のantenna producerを通常post-saveへ接続。保存時作者・補正後channel・TypeORM insert後のraw Noteを保持し、lazy active一覧/internal変更受信、30分Redis/1分memoryのfollowing cache、現在list membershipと固定source順の照合を使う。全照合成功後だけ専用timeline Redisのmax200とraw antenna publicationを開始し、独立失敗の診断・終了待機へ接続した。通常HTTP子の照会中SIGTERMと、専用subscriberの接続/購読失敗後解放も検証する。[比較資料](../superpowers/compatibility/note/antenna/README.md)、[実装計画](../superpowers/plans/2026-11-07-note-antenna-174.md)。
 
 同じ#174の全責任監査で見つかったchannel集計の開始境界とremote Instance.notesCountも接続した。channelはpack/mention準備成功後に3仕事を別SQLで開始し、remoteは既存instance台帳の登録後に初回期限5分の+1集約、削除時に直接-1。新しい永続状態・retry・cache書換は加えない。終了時はenqueuerを待ちqueued/既発火の更新をdrainする。[全通常更新の監査と#132/#133への材料](../superpowers/compatibility/note/derived-updates/README.md)が現在の#174完了判定の根拠であり、上記過去sliceの曖昧な「等」を残責任の根拠にしない。remote受信#195、antenna CRUD/閲覧#185・WS#189・import/clean#199、chart#200、広域cache#217と投稿全体#176は別に残る。
+
+2026-11-07: #172 の削除連携を実プロセスで確認した。通常HTTP/workerとPG/Redis/Meili、WebSocket、fake inbox/webhookで、作成・show後の削除成功とDB拒否、第三者の削除拒否を観測した。DB拒否でも先行するdeleted stream・AP Delete・unindexは残り、成功時だけ物理削除・他人削除監査へ反映する。TL ID・既存PG通知・hashtag/ランキング履歴・投入済み作成webhookを削除で取り消さず、削除webhookを追加しない。
+
+固定sourceとの比較で判明した純粋Renoteの元投稿照会を、認可用snapshotの準備から、deleted stream後の該当AP準備へ移した。照会拒否でも既発行streamが残り、localOnly/remote等では不要な照会を行わない。[固定sourceと実プロセスの比較範囲](../superpowers/compatibility/note/delete-integration/README.md)、[実装・検証記録](../superpowers/plans/2026-11-07-note-delete-integration-172.md)。source methodのdouble実行と本家full server比較は区別する。
+
+#172の通知/stream/TL/検索/webhook削除連携は、実依存検証と承認済みの独立レビューにより完了条件を満たした。文書を含む全差分の独立レビューも承認済み（[PR #238](https://github.com/tiramiss-community/tiramiss/pull/238)）。#176については削除に絞った連携確認である。#176全体には、#124の必須子#163–#165（queue管理・通常保持・残payload引継ぎ）と、C群全体・停止再開・暫定501を含む未対応台帳の照合が残る。全通知#177、閲覧#185/#186、全WS#189、remote受信#195、chart#200、再構築#132/#133の完成とはしない。次は#176の先行依存として#163–#165の必要な通常queue契約を進める。
