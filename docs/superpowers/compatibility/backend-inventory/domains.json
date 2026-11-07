@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "1053d7218ef46da0589da1c5d24f90495fc26cc7",
+  "implementationCommit": "a94c85fb3e486db613dc8c16f3a4504e365d3ce0",
   "domains": [
     {
       "id": "api-common",
@@ -762,9 +762,12 @@
       "verification": [
         "packages/backend-next/test/unit/job-queue/user-webhook.test.ts",
         "packages/backend-next/test/integration/user-webhook.test.ts",
-        "packages/backend-next/test/processes/user-webhook.test.ts"
+        "packages/backend-next/test/processes/user-webhook.test.ts",
+        "packages/backend-next/test/unit/user-webhooks-reconnect.test.ts"
       ],
-      "differences": []
+      "differences": [
+        "差異W1: 再接続時にactive設定cacheを破棄し次のenqueueで再取得。再接続・設定通知より古い取得結果を採用しない。固定本家との差異と理由はdocs/superpowers/compatibility/user-webhook/README.md。"
+      ]
     },
     {
       "id": "system-webhook",
@@ -1634,9 +1637,10 @@
       "verification": [
         "packages/backend-next/test/unit/job-queue/user-webhook.test.ts",
         "packages/backend-next/test/integration/user-webhook.test.ts",
-        "packages/backend-next/test/processes/user-webhook.test.ts"
+        "packages/backend-next/test/processes/user-webhook.test.ts",
+        "packages/backend-next/test/unit/user-webhooks-reconnect.test.ts"
       ],
-      "note": "#175で投稿note/mention/reply/renoteを通常BullMQとworkerへ接続。URL/secretは投入時snapshot、専用secretヘッダー・4試行・HTTP backoff・64並行/秒・各試行statusを本家相当で検証。管理API・投稿以外のイベントは#197、systemは#198、最終縦断は#176。source probeは本家メソッド+doublesであり、新旧全体HTTP比較ではない。"
+      "note": "#175で投稿note/mention/reply/renoteを通常BullMQとworkerへ接続。URL/secretは投入時snapshot、専用secretヘッダー・4試行・HTTP backoff・64並行/秒・各試行statusを本家相当で検証。管理API・投稿以外のイベントは#197、systemは#198、最終縦断は#176。source probeは本家メソッド+doublesであり、新旧全体HTTP比較ではない。 差異W1: 再接続時にactive設定cacheを破棄し次のenqueueで再取得。再接続・設定通知より古い取得結果を採用しない。固定本家との差異と理由はdocs/superpowers/compatibility/user-webhook/README.md。"
     }
   }
 }
