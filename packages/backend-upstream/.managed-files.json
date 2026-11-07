@@ -361,6 +361,7 @@
 	"src/models/DriveFolder.ts",
 	"src/models/Emoji.ts",
 	"src/models/Following.ts",
+	"src/models/Hashtag.ts",
 	"src/models/Instance.ts",
 	"src/models/Meta.ts",
 	"src/models/ModerationLog.ts",

@@ -8,7 +8,7 @@
 
 - 本家: `8e07cf085adf7009583d234a208e30436f020e26`。`backend-upstream/upstream-sync.json` と同じ SHA。fork の現在の `packages/backend` からは列挙しない。
 - 新実装: `6f62cb897d2a03e8fd7727eadf45c20d8bfcf206`（PR #213 マージ後）。判定と根拠はこの地点に固定する。
-  - 行の `implementation`/`verification` は `domains.json` の `implementationCommit` の木で存在を検査する。#216 の最初の PR で外向き HTTP の行の根拠を参照できるよう `224416b352fa474a37fb286cd4838d8818947fc8` へ、#215 段階 2 の PR で連合の共通土台の行の根拠も参照できるよう、両方を含む `36cad9edcbfd2b990d36b2f6645b677b1e54f0e4` へ、#160 の最初の PR で AP の署名・配送結果の分類の行の根拠も参照できるよう `02612df99fe3c529fc692d76b3bd37498a2e0e1a` へ、#162 の最初の PR で投票終了ジョブと通常 worker の行の根拠も参照できるよう `00c6b5b75ddcf4bb9e5e79291e2f54a9dd4933e4` へ、同じ PR で queue 接続のコメントを直した `ae30e864a06baf64a793d10ab6fb844ee3821502` へ、#171 の最初の PR でノート作成の AP 配送の行の根拠も参照できるよう `d9b718359e583fd9e33711c8321fc06b83c06b53` へ、同じ PR で MFM の `br` の行・起動中の投入口の接続の喪失を直した `47c9c75dd6b5fc9527c3976b86364b06c46f3a04` へ進めた。#172の削除sliceで追加した実装・検証の根拠を参照できるよう `ba51607ba514de5fe2e4a1bf574575d5f0d42fa9` へ進めた。#173第1sliceの通知・stream producerと4 Entityの根拠を参照できるよう `40239a1244b1a088e4fe836e0c57360d0065c912` へ進めた。#174第1sliceのTL producer・設定・休眠判定・ChannelFollowingの根拠を参照できるよう `6a7e2e3e46c7ad49fed7e87f23a7b781c145532c` へ進めた。#173の投稿WebSocket受信sliceの根拠を参照できるよう `6f4a5444ca9f02634972e81b5ffe7368302f7335` へ進めた。#174/#172の検索producerの根拠を参照できるよう `2ed681dcf3ba502865dd325baec2545568333018` へ進めた。#174のRole producerの根拠を参照できるよう `381eb4ff11106d62139f912cd237634385bde256` へ進めた。#174のRenote featured producerの根拠を参照できるよう `399987210060b90db0aaac89ed16bfaa69b95768` へ進めた。監査の判定（`audit`）はこれらの更新で変えていない。
+  - 行の `implementation`/`verification` は `domains.json` の `implementationCommit` の木で存在を検査する。#216 の最初の PR で外向き HTTP の行の根拠を参照できるよう `224416b352fa474a37fb286cd4838d8818947fc8` へ、#215 段階 2 の PR で連合の共通土台の行の根拠も参照できるよう、両方を含む `36cad9edcbfd2b990d36b2f6645b677b1e54f0e4` へ、#160 の最初の PR で AP の署名・配送結果の分類の行の根拠も参照できるよう `02612df99fe3c529fc692d76b3bd37498a2e0e1a` へ、#162 の最初の PR で投票終了ジョブと通常 worker の行の根拠も参照できるよう `00c6b5b75ddcf4bb9e5e79291e2f54a9dd4933e4` へ、同じ PR で queue 接続のコメントを直した `ae30e864a06baf64a793d10ab6fb844ee3821502` へ、#171 の最初の PR でノート作成の AP 配送の行の根拠も参照できるよう `d9b718359e583fd9e33711c8321fc06b83c06b53` へ、同じ PR で MFM の `br` の行・起動中の投入口の接続の喪失を直した `47c9c75dd6b5fc9527c3976b86364b06c46f3a04` へ進めた。#172の削除sliceで追加した実装・検証の根拠を参照できるよう `ba51607ba514de5fe2e4a1bf574575d5f0d42fa9` へ進めた。#173第1sliceの通知・stream producerと4 Entityの根拠を参照できるよう `40239a1244b1a088e4fe836e0c57360d0065c912` へ進めた。#174第1sliceのTL producer・設定・休眠判定・ChannelFollowingの根拠を参照できるよう `6a7e2e3e46c7ad49fed7e87f23a7b781c145532c` へ進めた。#173の投稿WebSocket受信sliceの根拠を参照できるよう `6f4a5444ca9f02634972e81b5ffe7368302f7335` へ進めた。#174/#172の検索producerの根拠を参照できるよう `2ed681dcf3ba502865dd325baec2545568333018` へ進めた。#174のRole producerの根拠を参照できるよう `381eb4ff11106d62139f912cd237634385bde256` へ進めた。#174のRenote featured producerの根拠を参照できるよう `399987210060b90db0aaac89ed16bfaa69b95768` へ進めた。#174のnote hashtag producerの根拠を参照できるよう `3a35fec002a26bb681a5c3b44315b247d20f8e24` へ進めた。監査の判定（`audit`）はこれらの更新で変えていない。
 - 対象: 登録 API と非 API HTTP、WebSocket、AP 受信/公開/送信、業務保存・副作用、job/周期処理、CLI/運用。fork 固有機能は対象外。固定本家の機能を一括で見送らない。
 
 ## 現在の到達点
@@ -85,6 +85,16 @@ pack成功後の既存Role材料と現在User factsによる適用Role選択、R
 
 ranking取得/2-window平均・featured閲覧#185、reactionによる加点#184、gallery ranking、hashtag/antenna等#174、Role WS#189、再構築#132/#133、最終削除連携#172・投稿全体#176は未完了。削除時purge/減点は本家にもなく追加しない。過去sliceでRole TL/featured全体を残作業とした記録は当時の状態を示し、本sliceの書込producerと残るconsumer/他producerを区別する。
 
+## #174 note hashtag producer sliceの照合（2026-11-07）
+
+実装コミット `3a35fec002a26bb681a5c3b44315b247d20f8e24` を固定根拠に、`entity:hashtag`、`responsibility:notes-core:41/42`、`service:HashtagService`を`partial`とした。Entityの内容は固定本家と同一だが、接続済みの利用者はnote producerであり、profile attached更新/解除・API/packerを完成扱いしない。`responsibility:notes-core:40`と`service:FeaturedService`にはhashtag加点の根拠を追加し`partial`を維持する。`api:notes/create`と`capability:search`は既存根拠へ追加、`capability:timeline`と検索service/責務2行は古い残範囲の説明だけを更新した。対象11行（監査8・override3）のA/B・担当domain・本家source/line/referencesと既存根拠配列の順序を保持する。
+
+public/homeの保存snapshotから、hashtag表のhistorical mentioned利用者をtotal/local/remote別に原子的に追加する。hidden/sensitiveはRedisだけを除外する。通常Redisの1h unique set・10分HLL・1h featuredランキング（+1、3h EXPIRE NX）を接続し、非原子的な同時通過・NX非延長を維持する。DB失敗は後のタグだけを止め、設定/ランキング失敗はDBを止めず、開始済みの独立仕事は既存診断・終了待機へ含める。本家の注入Metaに対して新実装は対象producerごとに現在Metaを非同期取得し、未知設定時はrankingを抑止する。この読取境界とcommand error検出/drainの差異を記録し、新cache・retry・永続依頼・削除purgeを足していない。
+
+固定sourceの87観測は再生成一致し、新unitとの直接JSON比較はupdate28＋post12の40件、実PGの全列比較（生成id除外）は4件である。87件すべての新旧直接一致を示すものではない。sourceは実際の固定メソッドとDB/Redis等のdoubleを使い、新実装の実HTTP handler/PG/Redis検証と区別する。非同期設定読取による独立処理のinterleavingはmembershipと他commandを別streamとして比較する。新実装の全unit63ファイル2,234件、実依存結合38件（hashtag21・migration6・近傍featured11）、通常HTTP子の投稿直後SIGTERM1件、upstream同期5件・sync:check・依存順build/typecheck・専用DBのmigrate/check-migrations/check-schema（差分0）が成功した。[比較範囲と差異](../note/hashtag/README.md) / [計画と検証記録](../../plans/2026-11-07-note-hashtag-174.md)。
+
+利用者配列は削除で減らず、Redis結果は過去の設定・実行window・expiry・同時通過に依存するため、現存Noteだけでは厳密に再構築できない。#132/#133では近似と履歴再現を区別する。profile/remote attached更新、管理hiddenTags変更時のranking cleanup、hashtag API/packer/stream・chart reader、antennaと#174の全更新照合、#172/#176の最終連携は残る。featured閲覧/2-window merge・reaction/galleryも別責任であり、このsliceで完了にしない。
+
 ## 列挙した範囲
 
 | 単位 | 件数 | 根拠と数え方 |
@@ -125,7 +135,7 @@ ranking取得/2-window平均・featured閲覧#185、reactionによる加点#184�
 | [投稿周辺参照・下書き・予約](#domain-notes-extra) | 未実装 | [#183](https://github.com/tiramiss-community/tiramiss/issues/183) / #127 |
 | [reaction・投票・favorite・thread mute](#domain-engagement) | 未実装 | [#184](https://github.com/tiramiss-community/tiramiss/issues/184) |
 | [TL・アンテナ・一覧閲覧](#domain-timeline) | producer部分実装 | [#185](https://github.com/tiramiss-community/tiramiss/issues/185) / #132, #133, #174 |
-| [検索・ハッシュタグ](#domain-search) | 検索producer部分実装 | [#186](https://github.com/tiramiss-community/tiramiss/issues/186) / #132, #133, #174 |
+| [検索・ハッシュタグ](#domain-search) | 検索/hashtag producer部分実装 | [#186](https://github.com/tiramiss-community/tiramiss/issues/186) / #132, #133, #174 |
 | [list・clip・channel](#domain-collections) | 未実装 | [#187](https://github.com/tiramiss-community/tiramiss/issues/187) |
 | [通知・未読/既読・push](#domain-notifications) | 部分実装 | [#177](https://github.com/tiramiss-community/tiramiss/issues/177) / #155, #173, #139 |
 | [Drive・ファイル配信・外部保存](#domain-drive) | 未実装 | [#188](https://github.com/tiramiss-community/tiramiss/issues/188) / #130, #170, #139 |

@@ -140,3 +140,18 @@ Role定義と割り当ては既存材料cacheから取得し、この段階の�
 固定本家は加点Promiseをdetachedで開始し、EXEC結果配列のcommand errorを検査しない。新実装は終了待機と診断へ集約する。合成portが同期例外を投げた場合も独立portを開始するが、本家の同期wrapper例外では後続portへ進まないため、この防御的な差異を本家同一とは呼ばない。実製品Redis writerはasyncであり同期準備の失敗もrejectになる。対象snapshot欠落はDB再読込で補わず診断し、通常HTTP経路がsnapshotを渡すことを実依存テストで確認する。
 
 Renote削除や元Note削除による減算・purgeはなく、削除後の遅延snapshot加点も成立し得る。`featuredGlobalNotesRanking:<window>`、`featuredInChannelNotesRanking:<channelId>:<window>`、`featuredPerUserNotesRanking:<userId>:<window>` の値は確率と過去の実行windowに依存する。現存Note/renoteCountだけから厳密復元できないため、#132/#133で現在材料による近似と履歴再現を区別する。[固定source比較と再実行](../superpowers/compatibility/note/featured/README.md)。reaction +1 (#184)、2-windowを読む閲覧API (#185/#187)、gallery/hashtag、antennaと#174/#172/#176全体は残る。
+
+
+## 通常投稿のhashtag producer（#174）
+
+保存時snapshotのtags/作者/host/visibilityを使い、public/homeの投稿だけを処理する。bot・channel・localOnly・silent相当による除外は加えない。抽出済みtagsの順序と正規化衝突を維持し、Noteを再取得しない。`MiHashtag`は固定SHAから機械同期し、既存の本家migrationが作るhashtag表へ登録した。
+
+DBはtagごとに一つの原子的INSERT ON CONFLICTで、historical mentionedUserIdsとlocal/remote配列・件数を更新する。同一作者は加算せず、同時の別作者も失わない。attached列は触らない。TypeORM 1.1.1の公開orUpdateは条件付き配列追加と件数式を表せないため、このadapterに限定してparameterized SQLを使う。
+
+hiddenTagsのNFKC/lowercase完全一致とsensitiveWordsの既存RE2判定は通常Redisだけを除外する。`hashtagUsers:<tag>`のSISMEMBERが1なら全Redis書込を省き、DBは続ける。missならfeaturedの1時間windowへ+1/10800秒NX、10分HLLへPFADD/259200秒NX、作者SETへSADD/3600秒NXを独立して開始する。HLLはSISMEMBER前のlocal Date.setMinutes切下げからUTC成分でkeyを作り、featuredはその後の実行時計を読む。unique判定とSADDの間の競合を強化せず、同じ作者の同時投稿が二重加点され得ることを維持する。
+
+本家の注入Metaと異なり、対象producer呼び出しごとに既存readMetaからhiddenTags/sensitiveWordsを読む（広域cache同期は#217）。設定読取を先に開始し、その完了や失敗をDBループの条件にしない。各ranking仕事だけが設定を待ち、読取失敗時はfilter不明のためrankingを行わず診断する。DB失敗は後のtagを止め、Redis失敗はDB進行や後のtagを止めない。featured MULTI失敗でもHLL/SET pipelineを開始する。開始済みの全仕事をsettleしてから既存post-save診断へ渡し、idle/closeで待つ。HTTP保存成功後の失敗をHTTPへ返さず、EXEC内command errorも診断する。この診断・drainは本家のdetached処理との差異である。
+
+削除はhashtag表・unique/HLL/featuredを減算・purgeせず、削除後の遅延snapshotも処理する。表には削除済み投稿の過去作者が残り、Redisは過去の設定・処理時計・初回expiry・競合に依存する。現存Noteからの近似再構築と厳密な履歴再現を#132/#133で区別する。raw128文字の正規化後伸長は再切詰めせず、本家同様Note.tags varchar(128)[]へのINSERTで拒否される場合がある。
+
+[固定source比較と実依存検証の境界](../superpowers/compatibility/note/hashtag/README.md)。profile attached/解除・hashtag API/packer/stream・chart読取、antennaと#174/#172/#176全体は未完了。上の過去sliceでhashtagを残作業とした記述は当時の状態を示す。
