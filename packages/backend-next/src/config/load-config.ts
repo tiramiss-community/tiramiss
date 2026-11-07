@@ -160,6 +160,8 @@ export async function loadConfig(
 		redisForJobQueue: source.redisForJobQueue ? redis(source.redisForJobQueue, url.host) : baseRedis,
 		redisForPubsub: source.redisForPubsub ? redis(source.redisForPubsub, url.host) : baseRedis,
 		redisForReactions: source.redisForReactions ? redis(source.redisForReactions, url.host) : undefined,
+		redisForTimelines: source.redisForTimelines ? redis(source.redisForTimelines, url.host) : baseRedis,
+		perChannelMaxNoteCacheCount: source.perChannelMaxNoteCacheCount == null ? 1000 : number(source.perChannelMaxNoteCacheCount, 'perChannelMaxNoteCacheCount'),
 		noteMedia: {
 			mediaProxy: source.mediaProxy ? text(source.mediaProxy, 'mediaProxy').replace(/\/$/, '') : `${url.origin}/proxy`,
 			externalMediaProxyEnabled: Boolean(source.mediaProxy && text(source.mediaProxy, 'mediaProxy').replace(/\/$/, '') !== `${url.origin}/proxy`),

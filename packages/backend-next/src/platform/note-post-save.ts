@@ -13,10 +13,14 @@ export function createNotePostSaveWork(steps: {
 	schedulePollEnded(job: { noteId: string; delayMs: number }): Promise<void>;
 	/** 保存済みの投稿を読み直し、配送するかどうかも自分で決める。 */
 	deliver(noteId: string, input?: NotePostSaveInput): Promise<void>;
+	timelines?(input: NotePostSaveInput): Promise<void>;
 	currentTime(): number;
 }) {
 	return async (input: NotePostSaveInput): Promise<void> => {
 		const work = new Map<string, Promise<void>>([['counts', steps.counts(input)]]);
+		if (steps.timelines) {
+			work.set('timelines', steps.timelines(input));
+		}
 		if (input.pollExpiresAtMs !== null) {
 			// 本家どおり後続処理の開始時刻から遅延を決める。期限を過ぎていても負の遅延のまま投入し、BullMQ はすぐに実行する。
 			work.set('pollEnded', steps.schedulePollEnded({ noteId: input.noteId, delayMs: input.pollExpiresAtMs - steps.currentTime() }));

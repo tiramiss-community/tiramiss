@@ -113,6 +113,16 @@ test('pins the upstream version to the same commit as the copied upstream defini
 	expect(upstreamRelease.commit).toBe(sync.commit);
 });
 
+test('timeline Redis falls back to base and keeps existing channel cache defaults and zero', async () => {
+	const env = { DATABASE_DB: 'test', DATABASE_USER: 'tester' };
+	const defaults = await loadConfig({ configFile: await config('{}'), env });
+	expect(defaults.redisForTimelines).toEqual(defaults.redis);
+	expect(defaults.perChannelMaxNoteCacheCount).toBe(1000);
+	const separate = await loadConfig({ configFile: await config('redisForTimelines: {host: timelines, port: 6382, db: 6, prefix: tl}\nperChannelMaxNoteCacheCount: 0'), env });
+	expect(separate.redisForTimelines).toMatchObject({ host: 'timelines', port: 6382, db: 6, keyPrefix: 'tl:' });
+	expect(separate.perChannelMaxNoteCacheCount).toBe(0);
+});
+
 test.each(outboundCases.cases.filter(c => c.fn === 'config'))('builds the upstream User-Agent and outbound keys: $name', async c => {
 	const input = outboundCases.inputs.configs.find(entry => entry.name === c.name)!;
 	const value = await loadConfig({

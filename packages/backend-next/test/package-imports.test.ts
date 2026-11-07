@@ -40,12 +40,14 @@ test('loads copied entities without eagerly loading migration dependencies', asy
 	expect(source.getMetadata('MiPoll').relations.find(relation => relation.propertyName === 'note')?.inverseEntityMetadata.tableName).toBe('note');
 	expect(source.getMetadata('MiPollVote').tableName).toBe('poll_vote');
 	expect(source.getMetadata('MiNoteReaction').tableName).toBe('note_reaction');
-	expect(source.entityMetadatas).toHaveLength(30);
+	expect(source.entityMetadatas).toHaveLength(31);
 	for (const [model, table, relation] of [['MiMuting', 'muting', 'muter'], ['MiRenoteMuting', 'renote_muting', 'mutee'], ['MiNoteThreadMuting', 'note_thread_muting', 'user'], ['MiUserListMembership', 'user_list_membership', 'user']] as const) {
 		expect(source.getMetadata(model).tableName).toBe(table);
 		expect(source.getMetadata(model).relations.find(value => value.propertyName === relation)?.inverseEntityMetadata.tableName).toBe('user');
 	}
 	expect(source.getMetadata('MiUserListMembership').relations.find(value => value.propertyName === 'userList')?.inverseEntityMetadata.tableName).toBe('user_list');
+	expect(source.getMetadata('MiChannelFollowing').tableName).toBe('channel_following');
+	expect(source.getMetadata('MiChannelFollowing').relations.find(value => value.propertyName === 'followee')?.inverseEntityMetadata.tableName).toBe('channel');
 	expect(source.getMetadata('MiBlocking').tableName).toBe('blocking');
 	expect(source.getMetadata('MiUserProfile').tableName).toBe('user_profile');
 	expect(source.getMetadata('MiSystemAccount').tableName).toBe('system_account');

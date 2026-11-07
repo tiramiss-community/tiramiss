@@ -147,6 +147,42 @@ test('every saved note is handed to the delivery step, which decides by itself w
 	expect(delivered).toEqual(['n1']);
 });
 
+test('timeline failure is drained and logged while counts, poll and delivery finish independently', async () => {
+	const logs: Record<string, unknown>[] = [];
+	const finished: string[] = [];
+	let release!: () => void;
+	const gate = new Promise<void>(resolve => {
+		release = resolve;
+	});
+	const effects = createNotePostSave(createNotePostSaveWork({
+		counts: async () => {
+			finished.push('counts');
+		},
+		schedulePollEnded: async () => {
+			finished.push('poll');
+		},
+		deliver: async () => {
+			finished.push('delivery');
+		},
+		timelines: async () => {
+			await gate;
+			throw new Error('Redis timeline unavailable');
+		},
+		currentTime: () => 1000,
+	}), createLogger('test', line => logs.push(JSON.parse(line))));
+	effects.start({ noteId: 'timeline-note', userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: 5000 });
+	let closed = false;
+	const closing = effects.close().then(() => {
+		closed = true;
+	});
+	await new Promise(resolve => setImmediate(resolve));
+	expect(finished.sort()).toEqual(['counts', 'delivery', 'poll']);
+	expect(closed).toBe(false);
+	release();
+	await closing;
+	expect(logs).toContainEqual(expect.objectContaining({ event: 'note-post-save.failed', noteId: 'timeline-note', error: expect.objectContaining({ details: { failures: [expect.objectContaining({ step: 'timelines' })] } }) }));
+});
+
 test('relay signing/submission inside delivery keeps idle and close pending while counts and polls finish, then logs failure', async () => {
 	const logs: Record<string, unknown>[] = [];
 	const done: string[] = [];

@@ -226,3 +226,7 @@ pnpm --filter backend-next exec vitest run \
 本家C10の`C10-deleted-stream`を新実装の実Redis subscriber出力と比較した。新規の通知条件・投稿payload・保存後失敗は固定本家ソース由来の期待値として実HTTP/PG/Redisで検証し、全条件を本家runtimeで再実測したとは扱わない。既存poll-ended固定processor fixtureも維持する。
 
 通知/streamはproducer部分のみで、WebSocket受信は引き続き#173/#189/#176、通知API/既読/未読/push/移行は#177、共有fanout/cacheは#217の残作業。[実装・検証](../../plans/2026-11-07-notification-stream-173.md)。
+
+### #174 通常タイムラインproducerの接続（2026-11-07）
+
+home/local/user/list/channel（files/replies含む）の固定本家メソッドと新plannerを1,280入力で照合し、新実装は通常HTTP/PG/専用Redisと実HTTP子の終了・切断で検証した。probeの本家Repository/Redisはdoubleであり、本家全体を実HTTP/実Redisで新たに実測した結果とは区別する。検索・antenna・hashtag・featured・role timeline、閲覧APIと休眠解除等は残作業。[比較資料と再実行](timeline/README.md)。
