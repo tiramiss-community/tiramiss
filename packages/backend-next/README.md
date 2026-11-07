@@ -39,6 +39,7 @@ backendNext:
 
 外向きHTTPは本家と同じキー `proxy`・`proxyBypassHosts`・`allowedPrivateNetworks`・`outgoingAddress`・`deliverJobConcurrency`（proxy接続数の算出とdeliver Workerの並行度）を読む。
 AP配送は本家と同じキー `deliverJobPerSec`（既定128）・`deliverJobMaxAttempts`（既定12）も読む。本家と同じく`??`で既定値を補うため、0はそのまま使う。
+投稿タイムラインは `redisForTimelines`（省略時は `redis`）と `perChannelMaxNoteCacheCount`（既定1000）を使う。既存のMetaにあるfanout有効化・home/list/local-user/remote-userの上限も読む。
 既定値は本家と同じく未指定。private宛ての遮断は `NODE_ENV=production` のときだけ行う。
 `allowedPrivateNetworks` の不正なCIDRは、本家と異なり起動時に `INVALID_CONFIG` で拒否する（承認済みの差異）。
 User-Agentは `Misskey/<固定本家のversion> (<設定ファイルのurlそのまま>)`。比較資料は[外向きHTTP](../../docs/superpowers/compatibility/outbound-http/README.md)を参照。
@@ -149,6 +150,10 @@ relay登録・受理/拒否・inbound検証・actor公開は#195、削除配送�
 本家との比較は[AP配送の比較資料](../../docs/superpowers/compatibility/ap-deliver/README.md)、業務規則と残りは[本家配送の引き継ぎ](../../docs/backend-next/ap-delivery-handoff.md)を参照する。
 基本text保存のためだけにjobやdispatcherを作らない。queue・payload・保持の値は[投稿の最小契約](../../docs/backend-next/posting-contract.md#通常ジョブ162)を参照する。
 
+#174の第1sliceは通常投稿からhome/local/user/list/channelのRedisリストを更新する。返信・添付・公開範囲・購読関係・休眠フラグを本家のproducer規則で判定し、保存時のNoteと現在の関係/Metaを使う。`list:<timeline名>`を既存prefix内へ保存する。3分より古いIDは現在の末尾より日時が新しい場合だけ追加し、recentは10%で指定件数へtrimする。削除時は本家どおりIDを消さない。失敗は投稿HTTP成功を取り消さず記録し、終了時に開始済み処理を待つ。
+
+非channel投稿の10%でローカル非休眠followerを最大1000件抽出し、最終活動が50日より古いUserとその全Followingを休眠化する。WebSocket接続時の復帰は未接続（#189/#180）であり、休眠の全ライフサイクルの完成ではない。検索・antenna・hashtag・featured・role timeline等は#174の後続、閲覧APIは#185/#186、role関連は#181/#189、チャートは#200、再構築は#132/#133に残る。[比較範囲](../../docs/superpowers/compatibility/note/timeline/README.md)を参照。
+
 ## 通知のPostgreSQL保存
 
 通知本体は承認済みの `backend_internal.notification` を維持する。
@@ -209,7 +214,7 @@ DB失敗やクライアント切断を理由に自動再作成しない。通常
 指定宛先、MFM抽出（メンション・ハッシュタグ・絵文字）を接続した。メンションはローカルユーザーと登録済みリモートユーザーをDBで解決する。
 未登録のリモートユーザー宛ては、WebFingerによる解決（#195）まで501 `NOT_IMPLEMENTED`で保存前に拒否する。
 登録済みリモートユーザーも、#195までは `lastFetchedAt` が古くても再同期せずに使う（暫定制限）。
-投票終了ジョブ（#162）とAP配送（#171。既存のaccepted relayへの配送を含む）以外の通知/stream/TL/検索/webhookは未接続で、投稿領域全体の完成ではない。
+投票終了ジョブ（#162）、AP配送（#171。既存のaccepted relayへの配送を含む）、投稿通知/stream producer（#173）と下記の通常TL producer（#174）は接続済み。検索・webhook・WebSocket受信等は未接続で、投稿領域全体の完成ではない。
 最小契約と既存実装の撤去順は[投稿の最小契約](../../docs/backend-next/posting-contract.md)を参照。
 
 ## 投稿削除（#172）
@@ -218,7 +223,7 @@ DB失敗やクライアント切断を理由に自動再作成しない。通常
 
 返信数の減算→必要な配送開始→Note削除→他人削除の監査開始という本家の境界を維持する。後段のDB失敗で先行減算・配送を巻き戻したとは扱わない。Poll/Vote/Reactionは既存FKで削除し、user/Renote/channelのcountは減らさない。`notePostDelete.idle()` は開始済み配送・監査の待機窓口で、通常終了にも接続している。保存済みNote/作者/元投稿からDelete/Undoを生成し、followers・relay・concerned directを独立投入する。
 
-`test/integration/note-delete.test.ts` は認証/監査/DB/エラー/制限/宛先、`test/processes/note-delete.test.ts` は固定C10/F8・原文署名・削除配送の終了待機を確認する。通知/streamは#173、TL/検索は#174、webhookは#175、チャートは#200、縦断完成は#176。
+`test/integration/note-delete.test.ts` は認証/監査/DB/エラー/制限/宛先、`test/processes/note-delete.test.ts` は固定C10/F8・原文署名・削除配送の終了待機を確認する。削除streamは#173で接続済み。TLは本家どおりIDをpurgeしない。検索更新は#174の後続、webhookは#175、チャートは#200、縦断完成は#176。
 
 
 ### 投稿通知・stream producer（#173 第1slice）

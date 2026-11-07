@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
@@ -6,6 +6,8 @@ import { randomUUID } from 'node:crypto';
 
 const root = process.env.UPSTREAM_ROOT;
 assert(root, 'Set UPSTREAM_ROOT to the fixed upstream checkout');
+const commit = '8e07cf085adf7009583d234a208e30436f020e26';
+execFileSync('git', ['-C', root, 'cat-file', '-e', `${commit}^{commit}`]);
 const require = createRequire(`${root}/package.json`);
 const ts = require('typescript');
 const files = {
@@ -15,7 +17,7 @@ const files = {
   status: 'packages/backend/src/misc/status-error.ts',
   worker: 'packages/backend/src/queue/QueueProcessorService.ts',
 };
-function source(key) { return ts.createSourceFile(files[key], fs.readFileSync(`${root}/${files[key]}`, 'utf8'), ts.ScriptTarget.Latest, true); }
+function source(key) { return ts.createSourceFile(files[key], execFileSync('git', ['-C', root, 'show', `${commit}:${files[key]}`], { encoding: 'utf8' }), ts.ScriptTarget.Latest, true); }
 function literalMethod(key, name, parameters, globals = {}) {
   const klass = source(key).statements.find(ts.isClassDeclaration);
   const method = klass.members.find(m => m.name?.getText() === name);

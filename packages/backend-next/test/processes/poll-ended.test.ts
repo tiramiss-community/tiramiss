@@ -122,7 +122,10 @@ test('a delayed job pending while the worker is stopped runs after a new worker 
 		await vi.waitFor(async () => {
 			expect(await pollEndedFor(noteId)).toEqual([{ recipient_id: seeded.actors.ordinary.id, notifier_id: null }]);
 		}, { timeout: 10000, interval: 100 });
-		expect(await queue.getJobCounts('completed', 'failed')).toEqual({ completed: 1, failed: 0 });
+		// 通知のDB commit 後も publish と BullMQ の完了記録が続く。
+		await vi.waitFor(async () => {
+			expect(await queue.getJobCounts('completed', 'failed')).toEqual({ completed: 1, failed: 0 });
+		}, { timeout: 10000, interval: 100 });
 	} finally {
 		await queue.close();
 		await http.close();

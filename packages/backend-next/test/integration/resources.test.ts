@@ -132,7 +132,7 @@ test('fails on unavailable database before opening Redis', async () => {
 	).rejects.toThrow();
 });
 
-test.each(['redis', 'redisForPubsub', 'redisForReactions', 'redisForJobQueue'] as const)('rejects and cleans up before startup deadline when %s accepts TCP but never responds', async redisField => {
+test.each(['redis', 'redisForPubsub', 'redisForReactions', 'redisForTimelines', 'redisForJobQueue'] as const)('rejects and cleans up before startup deadline when %s accepts TCP but never responds', async redisField => {
 	const sockets = new Set<import('node:net').Socket>();
 	const server = createServer({ allowHalfOpen: true }, (socket) => {
 		socket.resume();
@@ -183,6 +183,51 @@ test.each(['redis', 'redisForPubsub', 'redisForReactions', 'redisForJobQueue'] a
 			});
 		});
 		await attempt.catch(() => {});
+	}
+});
+
+test('dedicated timeline Redis reports loss and closes normally without reporting failure', async () => {
+	const resources = await connectResources({ ...database.config, redisForTimelines: { ...database.config.redis, db: 6, keyPrefix: 'timeline174-resources:' } }, logger);
+	try {
+		expect(await resources.timelinesRedis.ping()).toBe('PONG');
+		resources.timelinesRedis.disconnect();
+		expect((await resources.failure).message).toContain('TIMELINES_REDIS_ENDED');
+	} finally {
+		await resources.close();
+	}
+	expect(resources.timelinesRedis.status).toBe('end');
+	expect(resources.redis.status).toBe('end');
+	expect(resources.dataSource.isInitialized).toBe(false);
+	const healthy = await connectResources({ ...database.config, redisForTimelines: { ...database.config.redis, db: 6 } }, logger);
+	let reported = false;
+	void healthy.failure.then(() => {
+		reported = true;
+	});
+	await healthy.close();
+	await new Promise(resolve => setTimeout(resolve, 20));
+	expect(reported).toBe(false);
+});
+
+test('startup rejects loss of the timeline connection while later resources are opening', async () => {
+	const { Redis } = await import('ioredis');
+	const { randomUUID } = await import('node:crypto');
+	const connectionName = `timeline174-${randomUUID()}`;
+	const control = new Redis(database.config.redis);
+	deliverQueueHooks.beforeReady = async () => {
+		const line = String(await control.client('LIST')).split('\n').find(entry => entry.includes(`name=${connectionName} `));
+		expect(line).toBeDefined();
+		await control.client('KILL', 'ID', line!.match(/^id=(\d+)/)![1]);
+		await new Promise(resolve => setTimeout(resolve, 50));
+	};
+	try {
+		const result = await connectResources({ ...database.config, redisForTimelines: { ...database.config.redis, connectionName } }, logger).then(async value => {
+			await value.close();
+			return 'started';
+		}, (error: unknown) => error);
+		expect(result).toMatchObject({ code: 'TIMELINES_REDIS_ENDED' });
+	} finally {
+		deliverQueueHooks.beforeReady = undefined;
+		control.disconnect();
 	}
 });
 
