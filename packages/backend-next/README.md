@@ -4,7 +4,7 @@
 
 Misskeyバックエンド再設計の実行基盤・Role初期実装・投稿参照。
 既存トークンで `admin/roles/show` と `admin/roles/update` を利用できる。
-`notes/show` は保存済み本家データから取得・可視性判定・出力を提供する。通常workerは本家の投票終了ジョブと、既存のaccepted relayへの配送を含むAP配送ジョブを実行する。その他のAPIと業務ジョブは後続の実装範囲。
+`notes/show` は保存済み本家データから取得・可視性判定・出力を提供する。通常workerは本家の投票終了ジョブと、既存のaccepted relayへの配送を含むAP配送ジョブを実行する。通常投稿後は[Role timeline producer](../../docs/superpowers/compatibility/note/role-timeline/README.md)も既存の材料評価・Redis cache・pubsubへ接続する。Role閲覧API/WS channelと、その他のAPI・業務ジョブは後続の実装範囲。
 
 全公開契約の移植状況・保存/副作用・担当Issueは[バックエンド対応表](../../docs/superpowers/compatibility/backend-inventory/README.md)を参照する。
 登録APIだけでなく、非API HTTP、stream、ActivityPub、定期/業務ジョブ、CLIも追跡する。
@@ -152,7 +152,7 @@ relay登録・受理/拒否・inbound検証・actor公開は#195、削除配送�
 
 #174の第1sliceは通常投稿からhome/local/user/list/channelのRedisリストを更新する。返信・添付・公開範囲・購読関係・休眠フラグを本家のproducer規則で判定し、保存時のNoteと現在の関係/Metaを使う。`list:<timeline名>`を既存prefix内へ保存する。3分より古いIDは現在の末尾より日時が新しい場合だけ追加し、recentは10%で指定件数へtrimする。削除時は本家どおりIDを消さない。失敗は投稿HTTP成功を取り消さず記録し、終了時に開始済み処理を待つ。
 
-非channel投稿の10%でローカル非休眠followerを最大1000件抽出し、最終活動が50日より古いUserとその全Followingを休眠化する。WebSocket接続と5分ごとの活動記録でUserとFollowingの休眠フラグを解除する。検索は下記の通常producerへ接続済み。antenna・hashtag・featured・role timeline等は#174の後続、閲覧APIは#185/#186、role関連は#181/#189、チャートは#200、再構築は#132/#133に残る。[比較範囲](../../docs/superpowers/compatibility/note/timeline/README.md)を参照。
+非channel投稿の10%でローカル非休眠followerを最大1000件抽出し、最終活動が50日より古いUserとその全Followingを休眠化する。WebSocket接続と5分ごとの活動記録でUserとFollowingの休眠フラグを解除する。検索と通常Role timeline producerは接続済み。antenna・hashtag・featured等は#174の後続、閲覧APIは#185/#186、role関連の閲覧API・WS受信は#181/#189、チャートは#200、再構築は#132/#133に残る。[比較範囲](../../docs/superpowers/compatibility/note/timeline/README.md)を参照。
 
 ## 通知のPostgreSQL保存
 
@@ -214,7 +214,7 @@ DB失敗やクライアント切断を理由に自動再作成しない。通常
 指定宛先、MFM抽出（メンション・ハッシュタグ・絵文字）を接続した。メンションはローカルユーザーと登録済みリモートユーザーをDBで解決する。
 未登録のリモートユーザー宛ては、WebFingerによる解決（#195）まで501 `NOT_IMPLEMENTED`で保存前に拒否する。
 登録済みリモートユーザーも、#195までは `lastFetchedAt` が古くても再同期せずに使う（暫定制限）。
-投票終了ジョブ（#162）、AP配送（#171。既存のaccepted relayへの配送を含む）、投稿通知/stream producer（#173）と下記の通常TL producer（#174）は接続済み。投稿webhookと下記のWebSocket受信も接続済み。antenna・hashtag・featured・role timeline等が残るため投稿領域全体の完成ではない。
+投票終了ジョブ（#162）、AP配送（#171。既存のaccepted relayへの配送を含む）、投稿通知/stream producer（#173）と通常TL・Role timeline producer（#174）は接続済み。投稿webhookと下記のWebSocket受信も接続済み。antenna・hashtag・featured等の通常更新やRole閲覧API・WS受信が残るため投稿領域全体の完成ではない。
 最小契約と既存実装の撤去順は[投稿の最小契約](../../docs/backend-next/posting-contract.md)を参照。
 
 ## 投稿削除（#172）

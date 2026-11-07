@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "2ed681dcf3ba502865dd325baec2545568333018",
+  "implementationCommit": "381eb4ff11106d62139f912cd237634385bde256",
   "domains": [
     {
       "id": "api-common",
@@ -1585,7 +1585,15 @@
         "packages/backend-next/src/modules/stream/policy.ts",
         "packages/backend-next/src/modules/search/public.ts",
         "packages/backend-next/src/platform/search-index.ts",
-        "packages/backend-next/src/composition/posting-search.ts"
+        "packages/backend-next/src/composition/posting-search.ts",
+        "packages/backend-next/src/platform/database/role-timelines.ts",
+        "packages/backend-next/src/composition/posting-role-timelines.ts",
+        "packages/backend-next/src/modules/note/created-events.ts",
+        "packages/backend-next/src/platform/posting-stream.ts",
+        "packages/backend-next/src/composition/posting-notifications.ts",
+        "packages/backend-next/src/platform/connect-resources.ts",
+        "packages/backend-next/src/modules/role/applicable-roles.ts",
+        "packages/backend-next/src/modules/role/public.ts"
       ],
       "verification": [
         "packages/backend-next/test/integration/note-create.test.ts",
@@ -1595,12 +1603,19 @@
         "packages/backend-next/test/integration/note-search-index.test.ts",
         "packages/backend-next/test/processes/note-search-index.test.ts",
         "docs/superpowers/compatibility/note/search/reference-search.cjs",
-        "docs/superpowers/compatibility/note/search/README.md"
+        "docs/superpowers/compatibility/note/search/README.md",
+        "packages/backend-next/test/unit/note/role-timelines.test.ts",
+        "packages/backend-next/test/unit/note/created-events.test.ts",
+        "packages/backend-next/test/integration/note-role-timelines.test.ts",
+        "packages/backend-next/test/processes/note-role-timelines.test.ts",
+        "docs/superpowers/compatibility/note/role-timeline/reference-role-timeline.mjs",
+        "docs/superpowers/compatibility/note/role-timeline/source-observations.json",
+        "docs/superpowers/compatibility/note/role-timeline/README.md"
       ],
       "differences": [
         "添付・投票・返信/Renote・channel・指定宛先・MFM抽出は#170で接続済み。未登録リモートユーザー宛てのメンションは#195まで保存前に501 NOT_IMPLEMENTEDで拒否し、登録済みリモートユーザーも#195まで再同期しない暫定制限（docs/backend-next/posting-contract.md）。完成版の意図的差異ではない。"
       ],
-      "note": "保存後のmain/home実受信と検索snapshot登録を接続。未登録remote mentionの501と登録済みremote再同期制限#195、antenna/hashtag/featured/Role TL等#174、全体縦断#176は未完了。"
+      "note": "保存後のmain/home実受信と検索snapshot登録に、Role TL更新/publicationを接続。未登録remote mentionの501と登録済みremote再同期制限#195、antenna/hashtag/featured等#174、Role TL閲覧#185・Role WS受信#189、全体縦断#176は未完了。"
     },
     "processor:EndedPollNotification": {
       "status": "partial",
@@ -1678,16 +1693,31 @@
         "packages/backend-next/src/modules/note/timeline-plan.ts",
         "packages/backend-next/src/composition/posting-timelines.ts",
         "packages/backend-next/src/platform/database/note-timelines.ts",
-        "packages/backend-next/src/platform/timeline-cache.ts"
+        "packages/backend-next/src/platform/timeline-cache.ts",
+        "packages/backend-next/src/platform/database/role-timelines.ts",
+        "packages/backend-next/src/composition/posting-role-timelines.ts",
+        "packages/backend-next/src/modules/note/created-events.ts",
+        "packages/backend-next/src/platform/posting-stream.ts",
+        "packages/backend-next/src/composition/posting-notifications.ts",
+        "packages/backend-next/src/platform/connect-resources.ts",
+        "packages/backend-next/src/modules/role/applicable-roles.ts",
+        "packages/backend-next/src/modules/role/public.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/note/timeline-plan.test.ts",
         "packages/backend-next/test/unit/note/timeline-cache.test.ts",
         "packages/backend-next/test/integration/note-timelines.test.ts",
         "packages/backend-next/test/processes/note-timelines.test.ts",
-        "docs/superpowers/compatibility/note/timeline/reference-timeline.mjs"
+        "docs/superpowers/compatibility/note/timeline/reference-timeline.mjs",
+        "packages/backend-next/test/unit/note/role-timelines.test.ts",
+        "packages/backend-next/test/unit/note/created-events.test.ts",
+        "packages/backend-next/test/integration/note-role-timelines.test.ts",
+        "packages/backend-next/test/processes/note-role-timelines.test.ts",
+        "docs/superpowers/compatibility/note/role-timeline/reference-role-timeline.mjs",
+        "docs/superpowers/compatibility/note/role-timeline/source-observations.json",
+        "docs/superpowers/compatibility/note/role-timeline/README.md"
       ],
-      "note": "#174第1sliceでhome/local/user/list/channelのRedis書込producerと休眠判定を通常投稿へ接続。閲覧#185、検索#186、Role/antenna/featured等の更新、再構築#132/#133は未完了。"
+      "note": "#174第1sliceでhome/local/user/list/channelのRedis書込producerと休眠判定を通常投稿へ接続し、後続sliceでRole TL書込とpublicationを追加。閲覧#185、検索API#186、antenna/hashtag/featured等の更新、Role WS#189、再構築#132/#133は未完了。"
     },
     "processor:UserWebhookDeliver": {
       "status": "partial",

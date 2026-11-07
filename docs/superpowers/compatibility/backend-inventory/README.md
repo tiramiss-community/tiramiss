@@ -8,7 +8,7 @@
 
 - 本家: `8e07cf085adf7009583d234a208e30436f020e26`。`backend-upstream/upstream-sync.json` と同じ SHA。fork の現在の `packages/backend` からは列挙しない。
 - 新実装: `6f62cb897d2a03e8fd7727eadf45c20d8bfcf206`（PR #213 マージ後）。判定と根拠はこの地点に固定する。
-  - 行の `implementation`/`verification` は `domains.json` の `implementationCommit` の木で存在を検査する。#216 の最初の PR で外向き HTTP の行の根拠を参照できるよう `224416b352fa474a37fb286cd4838d8818947fc8` へ、#215 段階 2 の PR で連合の共通土台の行の根拠も参照できるよう、両方を含む `36cad9edcbfd2b990d36b2f6645b677b1e54f0e4` へ、#160 の最初の PR で AP の署名・配送結果の分類の行の根拠も参照できるよう `02612df99fe3c529fc692d76b3bd37498a2e0e1a` へ、#162 の最初の PR で投票終了ジョブと通常 worker の行の根拠も参照できるよう `00c6b5b75ddcf4bb9e5e79291e2f54a9dd4933e4` へ、同じ PR で queue 接続のコメントを直した `ae30e864a06baf64a793d10ab6fb844ee3821502` へ、#171 の最初の PR でノート作成の AP 配送の行の根拠も参照できるよう `d9b718359e583fd9e33711c8321fc06b83c06b53` へ、同じ PR で MFM の `br` の行・起動中の投入口の接続の喪失を直した `47c9c75dd6b5fc9527c3976b86364b06c46f3a04` へ進めた。#172の削除sliceで追加した実装・検証の根拠を参照できるよう `ba51607ba514de5fe2e4a1bf574575d5f0d42fa9` へ進めた。#173第1sliceの通知・stream producerと4 Entityの根拠を参照できるよう `40239a1244b1a088e4fe836e0c57360d0065c912` へ進めた。#174第1sliceのTL producer・設定・休眠判定・ChannelFollowingの根拠を参照できるよう `6a7e2e3e46c7ad49fed7e87f23a7b781c145532c` へ進めた。#173の投稿WebSocket受信sliceの根拠を参照できるよう `6f4a5444ca9f02634972e81b5ffe7368302f7335` へ進めた。#174/#172の検索producerの根拠を参照できるよう `2ed681dcf3ba502865dd325baec2545568333018` へ進めた。監査の判定（`audit`）はこれらの更新で変えていない。
+  - 行の `implementation`/`verification` は `domains.json` の `implementationCommit` の木で存在を検査する。#216 の最初の PR で外向き HTTP の行の根拠を参照できるよう `224416b352fa474a37fb286cd4838d8818947fc8` へ、#215 段階 2 の PR で連合の共通土台の行の根拠も参照できるよう、両方を含む `36cad9edcbfd2b990d36b2f6645b677b1e54f0e4` へ、#160 の最初の PR で AP の署名・配送結果の分類の行の根拠も参照できるよう `02612df99fe3c529fc692d76b3bd37498a2e0e1a` へ、#162 の最初の PR で投票終了ジョブと通常 worker の行の根拠も参照できるよう `00c6b5b75ddcf4bb9e5e79291e2f54a9dd4933e4` へ、同じ PR で queue 接続のコメントを直した `ae30e864a06baf64a793d10ab6fb844ee3821502` へ、#171 の最初の PR でノート作成の AP 配送の行の根拠も参照できるよう `d9b718359e583fd9e33711c8321fc06b83c06b53` へ、同じ PR で MFM の `br` の行・起動中の投入口の接続の喪失を直した `47c9c75dd6b5fc9527c3976b86364b06c46f3a04` へ進めた。#172の削除sliceで追加した実装・検証の根拠を参照できるよう `ba51607ba514de5fe2e4a1bf574575d5f0d42fa9` へ進めた。#173第1sliceの通知・stream producerと4 Entityの根拠を参照できるよう `40239a1244b1a088e4fe836e0c57360d0065c912` へ進めた。#174第1sliceのTL producer・設定・休眠判定・ChannelFollowingの根拠を参照できるよう `6a7e2e3e46c7ad49fed7e87f23a7b781c145532c` へ進めた。#173の投稿WebSocket受信sliceの根拠を参照できるよう `6f4a5444ca9f02634972e81b5ffe7368302f7335` へ進めた。#174/#172の検索producerの根拠を参照できるよう `2ed681dcf3ba502865dd325baec2545568333018` へ進めた。#174のRole producerの根拠を参照できるよう `381eb4ff11106d62139f912cd237634385bde256` へ進めた。監査の判定（`audit`）はこれらの更新で変えていない。
 - 対象: 登録 API と非 API HTTP、WebSocket、AP 受信/公開/送信、業務保存・副作用、job/周期処理、CLI/運用。fork 固有機能は対象外。固定本家の機能を一括で見送らない。
 
 ## 現在の到達点
@@ -17,7 +17,7 @@ Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装
 
 `notes/show` は固定本家の観測 JSON と照合済みで `verified`。`notes/create` は #170 のローカル部分（添付・投票・返信/Renote・channel・指定宛先・MFM 抽出）まで実装した `partial` で、未登録リモートユーザー宛てのメンションは #195 まで保存前に 501 で拒否する。PG 通知保存と起動・migration の基盤は `partial`。旧 PG ジョブ基盤と AP 宛先 snapshot/page/host lease は PR #212/#213 で撤去したため、AP 送信とジョブ管理は `not_implemented` に戻した。**通常 worker は本家の投票終了ジョブ（`endedPollNotification`、#162）と AP 配送ジョブ（`deliver`、#171）を実行する。** 投票終了ジョブの投入・queue と Worker の設定・受信者の選定と PG への保存は本家 probe と比較して `partial` にした（[比較資料](../poll-ended/README.md)）。 #160 の最初の PR で、AP の署名・署名付き送信・配送結果の分類を本家と比較して `partial` にした。#171 の最初の PR で、ノート作成の Create/Announce の表現・宛先の選定・deliver queue と Worker・配送前の判定・インスタンス台帳を通常起動へ接続し、本家 probe と note の C9（relay を除く）と比較して `partial` にした（[比較資料](../ap-deliver/README.md)）。relayとJSON-LD署名は#171の2番目のPR #227で接続済み。Delete/Undoは#172の下記sliceで接続した。 部分実装から公開機能全体の完成を推測しない。
 
-#174第1sliceでhome/local/user/list/channelのRedis書込producerと休眠判定を通常投稿へ接続し、`capability:timeline`を`partial`とした。閲覧APIや検索、Role TL/antenna等は未完了。
+#174第1sliceでhome/local/user/list/channelのRedis書込producerと休眠判定を通常投稿へ接続し、`capability:timeline`を`partial`とした。検索producerとRole TLの書込/publicationは後続sliceで接続した。閲覧API、Role WS受信、antenna等は未完了。
 
 main/homeTimelineとnote購読は下記の#173受信sliceで`partial`とした。他17channel・readNotification・channel/ch書込は`not_implemented`（未実装）。その他の入口も個別行のstatusに従う。これは見送りではなく、担当 Issue による設計・実装・比較が必要な状態。今回の検査は棚卸しの整合性検査であり、各 HTTP/連合機能の比較テストを再実行して `verified` を付けたものではない。
 
@@ -66,6 +66,14 @@ main/homeTimelineとnote購読は下記の#173受信sliceで`partial`とした�
 [比較資料](../note/search/README.md)の固定source256ケースと完全な元メソッドの追加8ケースはcollaborator doubleによる実行であり、本家全HTTP/DB/engine測定ではない。新unitはそのうち240行を直接照合する。対象を限定したsettings/登録/解除producerは実装済みだが、新旧264ケースすべてを直接差分照合したという意味にはせず、索引ルール行も保守的に`partial`とした。実engineの適用はHono `app.request`と専用PG/Redis/Meilisearch v1.3.4/SDK0.62.0による結合試験で確認し、実HTTP子の起動・停止はSDKとloopback gatewayによるprocess試験で確認した。両者を同一の子→実engine試験とは扱わない。productionはtask受付だけを待ち、task適用待ちは試験内のみ。
 
 settings、ID由来の8-field document、scope/visibility/content条件、作成準備成功境界とsnapshot、quiet/content/scopeで省かないDB DELETE前解除、DB失敗/SDK拒否、設定と終了待機を検証した。全unit最終60 files/2093 tests、関連integration2 files/16 tests（検索8件）、process1 file/5 tests、既存fixture8件はPASS。独立product/runtimeレビューはAPPROVE。[実装・検証記録](../../plans/2026-11-07-note-search-174.md)。検索API#186、再構築#132/#133、antenna/hashtag/featured/Role TL等#174、削除最終連携#172、投稿全体#176は未完了であり、このsliceでcloseしない。上の過去sliceにある検索未接続の記述は当時の状態を示す。
+
+## #174 Role producer sliceの照合（2026-11-07）
+
+実装コミット `381eb4ff11106d62139f912cd237634385bde256` を固定根拠に、`responsibility:instance-moderation:14`、`stream-event:RoleTimelineEvent.note`、`service:RoleService` を `partial` とした。`responsibility:notes-core:22`、`service:FanoutTimelineService`、`api:notes/create`、`capability:timeline` は `partial` を維持して既存根拠へ追加した。全行の監査A/B・担当domain・本家source/lineと既存実装/検証参照は保持する。
+
+pack成功後の既存Role材料と現在User factsによる適用Role選択、Redisリスト追加、packed publicationだけを接続した。maxlen1000は最近IDの10%trim時に適用し、古い直接更新はtrimしない。常時hard capではない。固定source229ケースの再生とJSON一致を確認し、新実装との直接fixture照合は所属16件。新実装はfocused unit48件、近傍112件、全unit2119件、実HTTP handler/PG/専用Redis11件、通常HTTP子の投稿直後SIGTERMとcache/publication/終了1件を検証した。[比較範囲と差異](../note/role-timeline/README.md) / [実装・検証記録](../../plans/2026-11-07-note-role-timeline-174.md)。
+
+`roles/notes`、`roleTimeline` WS channel、イベントごとの公開Role確認は `not_implemented` のまま。Role管理/割当API #181、閲覧 #185、Role WS #189、antenna/hashtag/featured等 #174、再構築 #132/#133、最終削除連携 #172・投稿全体 #176を完了扱いしない。上の過去sliceでRole TL全体を残作業とした記録は当時の状態を示し、本sliceで接続したproducerと未接続のconsumerを区別する。
 
 ## 列挙した範囲
 

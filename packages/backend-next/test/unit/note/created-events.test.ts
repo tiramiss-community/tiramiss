@@ -6,8 +6,10 @@ import { expect, test } from 'vitest';
 import { createNoteCreatedEvents } from '../../../src/modules/note/created-events.js';
 import type { PostNotification } from '../../../src/modules/notification/public.js';
 
-function setup(options: { failPack?: boolean; failWebhook?: boolean; failAP?: boolean; failMention?: boolean; failPublish?: boolean; failSave?: boolean; reply?: boolean; replyUser?: string; renoteUser?: string; threadModes?: boolean[]; failThread?: boolean; subscribers?: string[]; slowSave?: Promise<void>; mentions?: string[]; beforeReception?(recipientId: string): Promise<void> } = {}) {
+function setup(options: { failRole?: boolean; slowRole?: Promise<void>; failPack?: boolean; failWebhook?: boolean; failAP?: boolean; failMention?: boolean; failPublish?: boolean; failSave?: boolean; reply?: boolean; replyUser?: string; renoteUser?: string; threadModes?: boolean[]; failThread?: boolean; subscribers?: string[]; slowSave?: Promise<void>; mentions?: string[]; beforeReception?(recipientId: string): Promise<void> } = {}) {
 	const saved: PostNotification[] = [];
+	const notes: Record<string, unknown>[] = [];
+	const roles: Record<string, unknown>[] = [];
 	const events: string[] = [];
 	const run = createNoteCreatedEvents({
 		read: async () => ({
@@ -29,6 +31,14 @@ function setup(options: { failPack?: boolean; failWebhook?: boolean; failAP?: bo
 			}
 			return { id: 'n', viewer };
 		},
+		roleTimelines: async (noteId, userId, packed) => {
+			roles.push(packed);
+			events.push(`role:${noteId}:${userId}:${packed.viewer}`);
+			await options.slowRole;
+			if (options.failRole) {
+				throw new Error('role');
+			}
+		},
 		webhook: async (userId: string, type: string, note: Record<string, unknown>) => {
 			events.push(`hook:${userId}:${type}:${note.viewer}`);
 			if (options.failWebhook) {
@@ -36,7 +46,8 @@ function setup(options: { failPack?: boolean; failWebhook?: boolean; failAP?: bo
 			}
 		},
 		stream: {
-			notes: async () => {
+			notes: async packed => {
+				notes.push(packed);
 				events.push('notes'); if (options.failPublish) {
 					throw new Error('publish');
 				}
@@ -76,7 +87,7 @@ function setup(options: { failPack?: boolean; failWebhook?: boolean; failAP?: bo
 		},
 		newId: () => `notification${saved.length}`, currentTime: () => 1000,
 	});
-	return { run, events, saved };
+	return { run, events, saved, notes, roles };
 }
 
 test('notification bodies persist independently and events precede AP preparation', async () => {
@@ -221,4 +232,40 @@ test.each([{ failPublish: true }, { failWebhook: true }, { failAP: true }])('det
 	const world = setup(options);
 	await expect(world.run('n')).rejects.toThrow();
 	expect(world.events).toContain('index');
+});
+
+test('role producer starts after successful global pack and notes stream, before webhooks', async () => {
+	const world = setup();
+	await world.run('n');
+	expect(world.roles[0]).toBe(world.notes[0]);
+	expect(world.events.slice(world.events.indexOf('render:null'), world.events.indexOf('render:b'))).toEqual(['render:null', 'notes', 'role:n:a:null', 'hook:a:note:null']);
+});
+
+test('failed global pack does not start role producer', async () => {
+	const world = setup({ failPack: true });
+	await expect(world.run('n')).rejects.toThrow();
+	expect(world.events.some(event => event.startsWith('role:'))).toBe(false);
+});
+
+test('role failure preserves webhook, notifications, AP and search preparation', async () => {
+	const world = setup({ failRole: true });
+	await expect(world.run('n')).rejects.toThrow();
+	expect(world.events).toEqual(expect.arrayContaining(['hook:a:note:null', 'AP', 'index']));
+	expect(world.saved.map(n => n.type)).toEqual(['note', 'mention']);
+});
+
+test('created events wait for role work while independent AP and search already start', async () => {
+	let release!: () => void;
+	const world = setup({ slowRole: new Promise<void>(resolve => {
+		release = resolve;
+	}) });
+	let done = false;
+	const running = world.run('n').then(() => {
+		done = true;
+	});
+	await new Promise(resolve => setImmediate(resolve));
+	expect(world.events).toEqual(expect.arrayContaining(['AP', 'index']));
+	expect(done).toBe(false);
+	release();
+	await running;
 });

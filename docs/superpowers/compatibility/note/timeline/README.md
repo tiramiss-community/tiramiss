@@ -27,6 +27,8 @@ node docs/superpowers/compatibility/note/timeline/reference-timeline.mjs /path/t
 
 ## 後続と制約
 
-#174全体は未完了。検索・antenna・hashtag・featured・role timeline等、閲覧API #185/#186、role関連 #181/#189、チャート #200、正本/再構築 #132/#133をこのsliceの完成へ含めない。WebSocket接続で活動時刻を更新して休眠解除する本家の経路は #189/#180。REST認証へ独自の解除処理を追加しない。
+#174全体は未完了。検索・antenna・hashtag・featured等、閲覧API #185/#186、role関連 #181/#189、チャート #200、正本/再構築 #132/#133をこのsliceの完成へ含めない。WebSocket接続で活動時刻を更新して休眠解除する本家の経路は #189/#180。REST認証へ独自の解除処理を追加しない。
 
 Metaは既存 `readMeta` を後続処理ごとに読み、#217のプロセス間変更通知に基づくメモリキャッシュは作らない。通常の失敗・部分更新を保持し、新しい永続依頼・自動retry・削除との強い順序保証を追加しない。実行結果は[作業記録](../../../plans/2026-11-07-note-timeline-174.md)にある。
+
+Role timelineの通常producerは[後続slice](../role-timeline/README.md)へ接続した。Role閲覧API/WS consumerの完成を示すものではない。

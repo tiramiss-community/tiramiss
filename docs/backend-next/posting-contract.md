@@ -72,7 +72,7 @@ HTTP成功は保存とレスポンス生成の成功。AP配送や通知の完�
 
 ローカル作者かつ `localOnly=false` のとき、通常投稿・引用はDelete(Tombstone)、元投稿が残るpure RenoteはUndo(Announce)、元投稿消失時はDeleteへ戻す。作者鍵を使い、followers・accepted relay・concerned directを別々に投入する。非public削除もfollowers/relayを対象にし、followersとdirect間でsharedInboxを重複排除しない。concernedは保存済みremote mention URI・Renote作者と、削除対象へのremote返信/Renote作者。対象自身の列は削除前に保持し、参照する子Noteは削除後も照会できる。
 
-開始済みの配送・監査は `notePostDelete` が終了期限まで待つ。失敗は `note-post-delete.failed` に記録し、producerの再実行・永続宛先台帳・強いCreate/Delete順序を追加しない。投稿/削除/通知streamは下記#173受信sliceまで接続した。検索登録/解除は下記の検索producerへ接続済み。antenna・hashtag・featured・role timeline等は#174、チャートは#200、投稿全体の連携確認は#176に残す。固定本家に削除webhookはない。[実装と検証](../superpowers/plans/2026-11-07-note-delete-172.md)。
+開始済みの配送・監査は `notePostDelete` が終了期限まで待つ。失敗は `note-post-delete.failed` に記録し、producerの再実行・永続宛先台帳・強いCreate/Delete順序を追加しない。投稿/削除/通知streamは下記#173受信sliceまで接続した。検索登録/解除は下記の検索producerへ接続済み。antenna・hashtag・featured等は#174、チャートは#200、投稿全体の連携確認は#176に残す。固定本家に削除webhookはない。[実装と検証](../superpowers/plans/2026-11-07-note-delete-172.md)。
 
 
 ## 投稿通知とstream producer（#173 第1slice、2026-11-07）
@@ -97,13 +97,13 @@ home/local/user/list/channel（files/replies派生を含む）の宛先規則を
 
 本家と同じ10%の休眠sample（最大1000、最終活動がstrictに50日より古い）を維持し、Userとその全Followingの旗を独立に更新する。今回の投稿を受けた後、次回の通常follower照会から除外される。WebSocket接続時/5分周期の活動更新とUser/Following休眠解除は#173受信sliceで接続した。account API全体と他WS機能は#180/#189に残る。Metaは#217の変更通知cacheに依存せず後続ごとにDBから読む。
 
-固定メソッドを実行した1,280 routingケースと、新実装の実HTTP/PG/Redis、起動停止・切断を検証する。[比較範囲](../superpowers/compatibility/note/timeline/README.md)。検索は下記のproducerへ接続済み。antenna・hashtag・featured・role timeline等は#174の後続、閲覧API #185/#186、role関連 #181/#189、チャート #200、再構築 #132/#133と区別し、#174全体を完了にしない。
+固定メソッドを実行した1,280 routingケースと、新実装の実HTTP/PG/Redis、起動停止・切断を検証する。[比較範囲](../superpowers/compatibility/note/timeline/README.md)。検索は下記のproducerへ接続済み。antenna・hashtag・featured等は#174の後続、閲覧API #185/#186、role関連 #181/#189、チャート #200、再構築 #132/#133と区別し、#174全体を完了にしない。
 
 ## 投稿WebSocket受信（#173）
 
 通常HTTPへmain/homeTimelineとnote購読を接続し、native/app/miauth・guest、Bearer優先/read:account/凍結、受信者別filter・hidden再pack・snapshotのhide/myReaction、別名と購読上限を扱う。関係factsは初回/10秒、活動日時と休眠解除は接続時/5分、heartbeatは1分pingと最終pongから2分超の切断で更新する。停止時はupgrade/WS/timer/subscriberを閉じ、開始済み認証・描画・facts・activity照会を待ってからDB/Redisを解放する。
 
-実HTTP作成→home/main通知、通常poll worker→pollEndedのPG保存とWS受信、実HTTP削除→subNoteのnoteUpdated/deletedと再接続・接続中SIGTERMを検証し、#173の残る実受信とstream側削除連携を満たす。[固定source64ケース・新実装の実依存検証・差異](../superpowers/compatibility/stream/README.md)を参照。本家full server/DB/workerの同時比較を示すものではない。他17channel・readNotification・channel/ch書込等#189、通知API/未読/既読/push/移行#177、広域cache#217、antenna・hashtag・featured・role timeline等#174と最終削除連携#172、投稿全体の#176は未完了。
+実HTTP作成→home/main通知、通常poll worker→pollEndedのPG保存とWS受信、実HTTP削除→subNoteのnoteUpdated/deletedと再接続・接続中SIGTERMを検証し、#173の残る実受信とstream側削除連携を満たす。[固定source64ケース・新実装の実依存検証・差異](../superpowers/compatibility/stream/README.md)を参照。本家full server/DB/workerの同時比較を示すものではない。他17channel・readNotification・channel/ch書込等#189、通知API/未読/既読/push/移行#177、広域cache#217、antenna・hashtag・featured等#174と最終削除連携#172、投稿全体の#176は未完了。
 
 ## 通常検索producer（#174/#172）
 
@@ -115,4 +115,17 @@ SDKを公開しない`modules/search/public.ts`の`SearchNote`/`SearchDocument`�
 - 削除解除はpublic/homeのみで、scope/contentを追加条件にしない。既存`NoteDeleteWork`の`search`をDB DELETE直前に開始し、DELETE失敗後も開始済み要求を取り消さない。
 - 要求失敗は操作名/noteIdと安全なerrorを記録し、post-save/deleteの既存集約/drainも維持する。settingsは起動成功条件にせず失敗を捕捉する。開始済みSDK HTTP要求は既存終了期限まで待つが、engine taskの適用完了・自動retryは追加しない。
 
-作成snapshotは直後の削除後も材料になるため、本家と同じく遅れたaddがdelete後に適用され得る。強い順序・tombstone・replayは追加しない。[独立固定source256+8ケースと実依存検証](../superpowers/compatibility/note/search/README.md)。検索API #186、再構築 #132/#133、antenna/hashtag/featured/role timeline、#174/#172/#176全体は未完了。
+作成snapshotは直後の削除後も材料になるため、本家と同じく遅れたaddがdelete後に適用され得る。強い順序・tombstone・replayは追加しない。[独立固定source256+8ケースと実依存検証](../superpowers/compatibility/note/search/README.md)。検索API #186、再構築 #132/#133、antenna/hashtag/featured、#174/#172/#176全体は未完了。
+
+
+## 通常Roleタイムラインproducer（#174）
+
+通常の投稿イベントは匿名の `skipHide: true, withReactionAndUserPairCache: true` 描画成功後、notesStream開始直後・webhook開始前に、同じpacked noteでRole producerを開始する。描画失敗時は開始しない。Role取得やRedisの非同期失敗はwebhook・通知・AP配送・検索の準備を止めず、既存post-saveが診断と終了待機を所有する。HTTP応答は保存・レスポンス生成の成功で返す。新たなsilent入力は追加しない。
+
+Role定義と割り当ては既存材料cacheから取得し、この段階の明示時刻と、conditional定義がある場合だけ取得する現在のUser事実で公開selectorを評価する。割り当て期限は `expiresAt > now`、定義取得順のassignedにconditional一致を連結し、assigned conditionalが一致したときは同じRoleを二度処理する。roleの公開/探索可否、note visibility、channel、localOnly、Metaのfanout無効でproducerを除外しない。
+
+各Roleで既存timeline専用Redisの `list:roleTimeline:<id>` へmax1000のpushを準備し、既存pubsub接続のinstance hostへ `{ channel: "roleTimelineStream:<id>", message: { type: "note", body: packed } }` を開始して、最後にpipelineを送る。既存の3分境界・古いIDの直接更新・10%trimを使い、常時1000件のhard capは追加しない。非同期の部分失敗でも他Roleの投入/publicationを開始する。本家同様に同期準備例外では後続Roleと未送信pipelineを止めるが、開始済み処理は待つ。
+
+本家はconditional Userを5分cacheし、notesCountの加算もdetachedで始める。新実装は既存#119契約に従いUser事実をこの段階でDBから読む。加算→Role評価の順序は強化しないため、作成した1件をconditional notesCountが必ず含むとは保証しない。[固定source229ケース・新実装との直接比較16ケース・実PG/Redis/process検証と差異](../superpowers/compatibility/note/role-timeline/README.md)。
+
+削除はRole cacheをpurgeせず、保存snapshotからの遅延投入も残す。#132/#133の再構築では現在のNote＋User＋Role/assignmentだけから過去の所属・期限・条件一致を復元できない。現在材料からの近似と履歴再現を区別し、再構築でpublicationは再送しない。Role閲覧API #181/#185とRole WS channel #189、antenna/hashtag/featured等の#174、最終連携#172/#176は残る。

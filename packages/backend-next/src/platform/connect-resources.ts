@@ -6,6 +6,8 @@ import { randomBytes } from 'node:crypto';
 import { Redis } from 'ioredis';
 import { createPostingTimelines } from '../composition/posting-timelines.js';
 import { createPostingSearch } from '../composition/posting-search.js';
+import { createPostingRoleTimelines } from '../composition/posting-role-timelines.js';
+import { createRoleTimelineReader } from './database/role-timelines.js';
 import { createPostingNotifications } from '../composition/posting-notifications.js';
 import { createFederationKeys } from '../composition/federation-keys.js';
 import { createDeliverCreatedNote, createDeliverToRelays, createDeliverDeletedNote } from '../modules/federation/public.js';
@@ -262,12 +264,19 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		const postingSearch = createPostingSearch(dataSource.manager, config, logger);
 		scope.defer(postingSearch.close);
 		const postingStream = createPostingStream(rolePublisher, config.url);
-		const postingNotifications = createPostingNotifications({ dataSource, reactionsRedis, postingStream, webhook: webhooks.enqueue }, config);
+		const timelineCache = createTimelineCache(timelinesRedis, { createdAtFromId: createIdCodec(config.id).createdAtFromId, currentTime: Date.now, random: () => Math.random() });
+		const postingNotifications = createPostingNotifications({
+			dataSource, reactionsRedis, postingStream, webhook: webhooks.enqueue,
+			roleTimelines: createPostingRoleTimelines({
+				readRoleIds: createRoleTimelineReader(dataSource.manager, roleMaterials, createIdCodec(config.id).createdAtFromId).roleIds,
+				cache: timelineCache, publish: postingStream.role, currentTime: Date.now,
+			}),
+		}, config);
 		const notePostSave = createNotePostSave(createNotePostSaveWork({
 			counts: createNotePostSaveCounts(dataSource.manager),
 			timelines: createPostingTimelines({
 				reader: createNoteTimelineReader(dataSource.manager, config.perChannelMaxNoteCacheCount ?? 1000),
-				cache: createTimelineCache(timelinesRedis, { createdAtFromId: createIdCodec(config.id).createdAtFromId, currentTime: Date.now, random: () => Math.random() }),
+				cache: timelineCache,
 				currentTime: Date.now, random: () => Math.random(),
 			}),
 			schedulePollEnded: pollEndedQueue.schedule,

@@ -16,6 +16,7 @@ export function createNoteCreatedEvents(ports: {
 	readSubscribers?(note: NoteNotificationPlanInput): Promise<NoteNotificationPlanInput['subscribers']>;
 	isThreadMuted?(recipientId: string, threadId: string): Promise<boolean>;
 	render(noteId: string, viewerId: string | null, options: { skipHide?: boolean; withReactionAndUserPairCache?: boolean }, snapshot?: NoteCreatedSnapshot): Promise<Record<string, unknown>>;
+	roleTimelines?(noteId: string, userId: string, note: Record<string, unknown>): Promise<void>;
 	webhook?(userId: string, type: 'note' | 'mention' | 'reply' | 'renote', note: Record<string, unknown>): Promise<void>;
 	stream: { notes(note: Record<string, unknown>): Promise<void>; main(userId: string, type: string, note: Record<string, unknown>): Promise<void> };
 	readReception(recipientId: string, notifierId: string, type: PostNotification['type']): Promise<NotificationReception>;
@@ -75,6 +76,9 @@ export function createNoteCreatedEvents(ports: {
 		try {
 			const packed = await ports.render(note.id, null, { skipHide: true, withReactionAndUserPairCache: true }, snapshot);
 			start(ports.stream.notes(packed));
+			if (ports.roleTimelines) {
+				start(ports.roleTimelines(note.id, note.userId, packed));
+			}
 			if (ports.webhook) {
 				start(ports.webhook(note.userId, 'note', packed));
 			}
