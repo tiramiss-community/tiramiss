@@ -21,6 +21,6 @@
 		"magic-string": "1.4.2",
 		"oxc-walker": "1.1.1",
 		"rolldown": "1.2.12",
-		"vite": "8.3.2"
+		"vite": "8.3.3"
 	}
 }
