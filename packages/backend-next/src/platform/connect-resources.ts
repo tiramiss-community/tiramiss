@@ -3,19 +3,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { randomBytes } from 'node:crypto';
+import { MiInstance } from 'backend-upstream/entities';
 import { Redis } from 'ioredis';
+import { createPostingAntennas } from '../composition/posting-antennas.js';
+import { createHostRules } from '../modules/federation/public.js';
 import { createPostingHashtags } from '../composition/posting-hashtags.js';
-import { createHashtagRanking } from './hashtag-ranking.js';
-import { createNoteHashtagWriter, readHashtagRankingSettings } from './database/note-hashtags.js';
-import { createFeaturedRanking } from './featured-ranking.js';
 import { createPostingFeatured } from '../composition/posting-featured.js';
 import { createPostingTimelines } from '../composition/posting-timelines.js';
 import { createPostingSearch } from '../composition/posting-search.js';
 import { createPostingRoleTimelines } from '../composition/posting-role-timelines.js';
-import { createRoleTimelineReader } from './database/role-timelines.js';
 import { createPostingNotifications } from '../composition/posting-notifications.js';
 import { createFederationKeys } from '../composition/federation-keys.js';
 import { createDeliverCreatedNote, createDeliverToRelays, createDeliverDeletedNote } from '../modules/federation/public.js';
+import { createRoleTimelineReader } from './database/role-timelines.js';
+import { createFeaturedRanking } from './featured-ranking.js';
+import { createNoteHashtagWriter, readHashtagRankingSettings } from './database/note-hashtags.js';
+import { createHashtagRanking } from './hashtag-ranking.js';
+import { createNoteAntennaReader } from './database/note-antennas.js';
+import { readMeta } from './database/meta.js';
+import { createInstanceLedger } from './instance-ledger.js';
+import { createNoteInstanceCounts } from './note-instance-counts.js';
+import { openNoteAntennas } from './note-antennas.js';
 import { createTimelineCache } from './timeline-cache.js';
 import { createNoteTimelineReader } from './database/note-timelines.js';
 import { createPostingStream } from './posting-stream.js';
@@ -277,7 +285,33 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 				cache: timelineCache, publish: postingStream.role, currentTime: Date.now,
 			}),
 		}, config);
+		const antennaReader = createNoteAntennaReader(dataSource.manager);
+		const antennas = await openNoteAntennas({
+			reader: antennaReader, redis, subscriberConfig: config.redisForPubsub, url: config.url,
+			timeoutMs: config.processes.startupTimeoutMs, currentTime: Date.now,
+			onError: error => logger.error('note-antennas.cache-failed', { error }),
+			registerCleanup: cleanup => scope.defer(cleanup),
+		});
+		if (cancelled) {
+			await antennas.close();
+			throw timeout;
+		}
+		const instanceLedger = createInstanceLedger({ manager: dataSource.manager, redis, newId: createIdCodec(config.id).newId });
+		const noteInstanceCounts = createNoteInstanceCounts({
+			enabled: async () => (await readMeta(dataSource.manager)).enableStatsForFederatedInstances,
+			fetchOrRegister: instanceLedger.fetchOrRegisterInstance,
+			increment: async (id, amount) => {
+				await dataSource.getRepository(MiInstance).increment({ id }, 'notesCount', amount);
+			},
+			decrement: async id => {
+				await dataSource.getRepository(MiInstance).decrement({ id }, 'notesCount', 1);
+			},
+			delayMs: process.env.NODE_ENV === 'test' ? 0 : 300000,
+			onError: (error, details) => logger.error('note-instance-counts.failed', { error, ...details }),
+		});
+		scope.defer(noteInstanceCounts.close);
 		const notePostSave = createNotePostSave(createNotePostSaveWork({
+			instances: input => noteInstanceCounts.created(input.createdSnapshot?.author?.host ?? null),
 			counts: createNotePostSaveCounts(dataSource.manager),
 			hashtags: createPostingHashtags({
 				mention: createNoteHashtagWriter(dataSource.manager, () => createIdCodec(config.id).newId(Date.now())).mention,
@@ -293,6 +327,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 				cache: timelineCache,
 				currentTime: Date.now, random: () => Math.random(),
 			}),
+			antennas: createPostingAntennas({ ...antennas, listContains: antennaReader.listContains, fullApAccount: createHostRules(new URL(config.url).host).fullApAccount, cache: timelineCache, publish: postingStream.antenna }),
 			schedulePollEnded: pollEndedQueue.schedule,
 			// 本家と同じく投稿を受けた子で表現と宛先を決め、送信は worker の子に任せる。
 			deliver: postingNotifications.createdEvents(createDeliverCreatedNote({
@@ -313,13 +348,15 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			deliverToRelays,
 			enqueue: deliverQueue.deliverMany,
 		});
-		const notePostDelete = createNotePostDelete(input => input.kind === 'search'
-			? postingSearch.unindex(input.snapshot.note)
-			: input.kind === 'stream'
-				? postingStream.deleted({ id: input.snapshot.id, userId: input.snapshot.userId, visibility: input.snapshot.note.visibility, visibleUserIds: input.snapshot.auditNote.visibleUserIds as string[] }, input.occurredAtMs)
-				: input.kind === 'delivery'
-					? deliverDeletedNote(input)
-					: appendNoteDeleteAudit(dataSource.manager, input, createIdCodec(config.id).newId), logger);
+		const notePostDelete = createNotePostDelete(input => input.kind === 'instanceCounts'
+			? noteInstanceCounts.deleted(input.snapshot.authorHost)
+			: input.kind === 'search'
+				? postingSearch.unindex(input.snapshot.note)
+				: input.kind === 'stream'
+					? postingStream.deleted({ id: input.snapshot.id, userId: input.snapshot.userId, visibility: input.snapshot.note.visibility, visibleUserIds: input.snapshot.auditNote.visibleUserIds as string[] }, input.occurredAtMs)
+					: input.kind === 'delivery'
+						? deliverDeletedNote(input)
+						: appendNoteDeleteAudit(dataSource.manager, input, createIdCodec(config.id).newId), logger);
 		scope.defer(notePostDelete.close);
 
 		if (lostQueue !== undefined) {
@@ -329,7 +366,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw new DiagnosticError('TIMELINES_REDIS_ENDED', {});
 		}
 		active = true;
-		return { dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, notePostSave, notePostDelete, postingNotifications, postingStream, federationKeys, logger, close, failure };
+		return { dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, logger, close, failure };
 	};
 
 	try {

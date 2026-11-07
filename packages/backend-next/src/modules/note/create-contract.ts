@@ -36,6 +36,7 @@ export interface NoteInput {
 
 export interface NoteCreateAuthor {
 	id: string;
+	username: string;
 	host: string | null;
 	isSuspended: boolean;
 	movedToUri: string | null;
@@ -55,6 +56,7 @@ export interface NoteAttachableFile {
 // 返信先・Renote 対象の判定と非正規化列に使う値。保存済みの pure Renote 判定のため本文の有無も持つ。
 export interface RelatedNote {
 	eventFacts?: import('./model.js').NoteFacts;
+	rawNote?: Record<string, unknown>;
 	id: string;
 	userId: string;
 	userHost: string | null;
@@ -75,6 +77,8 @@ export interface RelatedNote {
 
 export interface RelatedChannel {
 	id: string;
+	isSensitive: boolean;
+	raw?: Record<string, unknown>;
 	allowRenoteToExternal: boolean;
 }
 
@@ -127,12 +131,15 @@ export interface NewPoll {
 }
 
 export interface NoteWrites {
-	insertNote(note: NewNote): Promise<void>;
+	insertNote(note: NewNote): Promise<Record<string, unknown> | void>;
 	insertPoll(poll: NewPoll): Promise<void>;
 }
 
 export interface NoteCreatedSnapshot {
 	note: NewNote;
+	author?: import('./antenna-plan.js').AntennaAuthor;
+	channel?: RelatedChannel | null;
+	rawNote?: Record<string, unknown>;
 	reply: RelatedNote | null;
 	renote: RelatedNote | null;
 }

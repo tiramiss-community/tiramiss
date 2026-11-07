@@ -303,15 +303,15 @@ export function createCreateNote(dependencies: {
 		};
 	}
 
-	async function save(note: NewNote, poll: NewPoll | null): Promise<void> {
+	async function save(note: NewNote, poll: NewPoll | null): Promise<Record<string, unknown> | void> {
 		// 本家は投票なしの Note を単独で insert する。全投稿を transaction に入れる保証は追加しない。
 		if (poll === null) {
-			await dependencies.writes.insertNote(note);
-			return;
+			return dependencies.writes.insertNote(note);
 		}
-		await dependencies.transactions.run(async writes => {
-			await writes.insertNote(note);
+		return dependencies.transactions.run(async writes => {
+			const rawNote = await writes.insertNote(note);
 			await writes.insertPoll(poll);
+			return rawNote;
 		});
 	}
 
@@ -339,7 +339,7 @@ export function createCreateNote(dependencies: {
 				votes: data.poll.choices.map(() => 0),
 				noteVisibility: note.visibility, userId: note.userId, userHost: note.userHost, channelId: note.channelId,
 			};
-			await save(note, poll);
+			const rawNote = await save(note, poll);
 
 			// 応答の入れ子は本家と同じく今回の count 加算前の値にするため、描画を終えてから後続を始める。
 			// 描画に失敗しても Note は保存済みなので、後続は省略しない。
@@ -354,7 +354,8 @@ export function createCreateNote(dependencies: {
 					renotedNoteId: related.renote !== null && related.renote.userId !== author.id && !author.isBot ? related.renote.id : null,
 					channelId: note.channelId,
 					pollExpiresAtMs: poll?.expiresAtMs ?? null,
-					createdSnapshot: { note, reply: related.reply, renote: related.renote },
+					createdSnapshot: { note, reply: related.reply, renote: related.renote, author: { id: author.id, username: author.username, host: author.host, isBot: author.isBot }, channel: related.channel,
+																								rawNote: rawNote ? { ...rawNote, reply: related.reply?.rawNote ?? null, renote: related.renote?.rawNote ?? null } : undefined },
 				});
 			}
 		},

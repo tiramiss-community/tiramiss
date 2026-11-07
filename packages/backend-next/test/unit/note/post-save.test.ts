@@ -339,3 +339,38 @@ test('hashtags start despite synchronous counts failure, and both idle and close
 	await Promise.all([waiting, closing]);
 	expect(logs.map(line => JSON.parse(line))).toContainEqual(expect.objectContaining({ event: 'note-post-save.failed', noteId: 'tagged', error: expect.objectContaining({ details: { failures: [expect.objectContaining({ step: 'counts' }), expect.objectContaining({ step: 'hashtags' })] } }) }));
 });
+
+test('antenna begins before packed delivery, survives pack failure, and shutdown drains its independent work', async () => {
+	let release!: () => void;
+	const held = new Promise<void>(resolve => {
+		release = resolve;
+	});
+	const order: string[] = [];
+	const logs: string[] = [];
+	const effects = createNotePostSave(createNotePostSaveWork({
+		counts: async () => { }, schedulePollEnded: async () => { }, currentTime: () => 0,
+		timelines: async () => {
+			order.push('timeline');
+		}, antennas: async () => {
+			order.push('antenna');
+			await held;
+			throw new Error('antenna');
+		}, deliver: async () => {
+			order.push('pack');
+			throw new Error('pack');
+		},
+	}), createLogger('test', line => logs.push(line)));
+	effects.start({
+		noteId: 'raw', userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: null
+	});
+	let closed = false;
+	const close = effects.close().then(() => {
+		closed = true;
+	});
+	await new Promise(resolve => setImmediate(resolve));
+	expect(order).toEqual(['timeline', 'antenna', 'pack']);
+	expect(closed).toBe(false);
+	release();
+	await close;
+	expect(logs.map(line => JSON.parse(line))).toContainEqual(expect.objectContaining({ event: 'note-post-save.failed', error: expect.objectContaining({ details: { failures: [expect.objectContaining({ step: 'antennas' }), expect.objectContaining({ step: 'deliver' })] } }) }));
+});

@@ -155,3 +155,22 @@ hiddenTagsのNFKC/lowercase完全一致とsensitiveWordsの既存RE2判定は通
 削除はhashtag表・unique/HLL/featuredを減算・purgeせず、削除後の遅延snapshotも処理する。表には削除済み投稿の過去作者が残り、Redisは過去の設定・処理時計・初回expiry・競合に依存する。現存Noteからの近似再構築と厳密な履歴再現を#132/#133で区別する。raw128文字の正規化後伸長は再切詰めせず、本家同様Note.tags varchar(128)[]へのINSERTで拒否される場合がある。
 
 [固定source比較と実依存検証の境界](../superpowers/compatibility/note/hashtag/README.md)。profile attached/解除・hashtag API/packer/stream・chart読取、antennaと#174/#172/#176全体は未完了。上の過去sliceでhashtagを残作業とした記述は当時の状態を示す。
+
+
+## 通常投稿のantenna producerと派生集計（#174）
+
+通常post-saveは、保存時の作者 `{id,username,host,isBot}` と返信による補正後channelを保持し、通常TLの直後・packed描画を含む配送の前にantennaを独立開始する。Note・作者・channelを後から再取得しない。保存時のinsertオブジェクトへTypeORMがRETURNINGの既定列を反映した直後にplain snapshotを取り、reply/renoteの取得時raw snapshotとchannel全列を添える。`mentionedRemoteUsers`はJSON文字列で、未指定の新Noteのname/uri/urlは省略され、取得済み関連Noteではnullになる。packed Noteや作成後の再読込で代用しない。
+
+最初の一覧取得だけ`isActive=true`を読む。TTL/single-flight/再接続refreshは加えず、本家のcold fetch完了による上書き・並行取得競合を維持する。instance hostのinternal `antennaCreated`はinactiveでも追加、`antennaUpdated`は最初の同IDを置換または追加、`antennaDeleted`は同IDを全除去する。CRUD/import/clean/reactivation等の発行元自体は今回追加しない。通常Redisのfollowing cacheは`kvcache:userFollowings:<ownerId>`へ全followeeの`{withReplies}`をJSONで保存し、Redis30分・memory1分。memoryのread境界はage>60000、3分GCも維持する。internal `follow`で両層を消し、`unfollow`は本家どおり無視する。Redis障害でDBへ縮退しない。
+
+照合はsensitive channel、bot、local作者、reply、specified宛先、followers照会、src/list/account、include/exclude keyword、fileの順。followersでは自己所有でも先にcacheを読み、listは現在membershipを照会する。homeの追加following制限、expression評価、空白trimやアカウントの追加正規化は加えない。keywordsはtext+'\n'+cwへのOR-of-AND部分文字列で、exact-emptyだけ除く。exclude-onlyでもtext/cw双方nullは拒否する。
+
+全定義の照合を並行開始し、一つでも失敗すれば全宛先の出力を止め、開始済み照会はsettleする。成功時は定義順に専用timeline Redisの`list:antennaTimeline:<id>`へ既存writerのmax200を渡し、host-topicへ`{channel:'antennaStream:<id>',message:{type:'note',body:rawNote}}`を開始してからpipelineを送る。3分境界、10%trim、古いIDの末尾判定・直接pushを既存writerから再利用する。非同期publication失敗でも後続宛先とpipelineを開始する。同期準備失敗では未送信pipelineを送らず、既開始publicationと古いID更新をdrainする。診断・終了待機・不正JSONの無視は本家detached処理からの運用上の差異。削除purgeや遅延snapshotの取消はしない。
+
+channel集計は早期user/reply/renote countと分離する。packed/global・mention/thread準備成功後、AP開始の後・検索indexの前にnotesCount、lastNotedAt、初投稿usersCountをそれぞれ独立開始する。pack/mention準備失敗では開始せず、一つのSQL拒否で残りやindexを省かない。
+
+remote作者の`Instance.notesCount`はstats有効時に既存台帳のfetchOrRegisterを使い、instance IDごとに+1を合算する。最初のenqueueから5分の期限を延ばさず、sourceと同じNODE_ENV=testのみ0ms。発火前にbatchを消し、更新中の同IDへのenqueueは次batchになる。通常remote削除は検索/DELETE前に-1を直接開始し、DELETE失敗でも取り消さない。設定は既存readMetaから操作ごとに読み、instance cacheのnotesCountを書き直さず、負値clamp・retryを加えない。終了はpost-save/post-deleteのregistrationを待ち、queued batchをflushし既発火更新も待ってから接続を閉じる。失敗は診断しbatchを再予約しない。source disposeが待たない既発火更新のdrainは資源寿命上の差異である。
+
+[antenna固定source比較](../superpowers/compatibility/note/antenna/README.md)と[全通常更新の責任監査・channel/counter固定source](../superpowers/compatibility/note/derived-updates/README.md)を参照。source側は抽出実行と明記した実PG payload観測、新実装側は実HTTP handler/PG/Redisと通常子プロセスで検証する。通常token HTTPはlocal作者だけで、remote受信入口#195は未実装のままremote snapshot producerを直接検証する。antenna管理/閲覧#185、WS antenna#189、import/clean#199、account move#195、chart#200、広域cache#217、投稿全体の#176と再構築#132/#133は別責任。過去slice末尾の#174残作業は当時の状態であり、現在の完了判定は責任監査表による。
+
+再構築は現存Note・現在の定義/所属から作る候補と、過去の定義・cache・membership・trim乱数・削除残留を含む履歴再現を区別する。remote instance countも遅延batch、削除と失敗履歴に依存し、現在Note数と必ず一致しない。対象ごとの保持・正本・復元不能材料を責任監査表から#132/#133へ引き継ぎ、再構築でraw publication・通知・APを再送しない。

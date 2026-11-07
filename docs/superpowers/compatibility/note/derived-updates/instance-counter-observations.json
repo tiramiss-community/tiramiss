@@ -1,0 +1,651 @@
+{
+  "fixedCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "evidence": "Complete pinned NoteCreateService.postNoteCreated/index/counter/dispose methods, actual constructor queue initialization, NotificationManager, NoteDeleteService.delete, and complete CollapsedQueue execute from Git blobs. Timers, repositories, registration, packer and other services are doubles. No full server/DB/Redis comparison.",
+  "sources": {
+    "packages/backend/src/core/NoteCreateService.ts": {
+      "blob": "05e98541844d7f14e91263a78a03c9ec0139a89d",
+      "sha256": "cbae284975c937d89c0030b5f3cf47de373555c1ce34b65de81bcf495e93f4fe"
+    },
+    "packages/backend/src/core/NoteDeleteService.ts": {
+      "blob": "1b945277b7590bf89fcdaaf5c56ec16513a59d6a",
+      "sha256": "f27dfc26664f39f9ade3366f46411ffe6ff5c189e5d97fb371dda5c3bf7d240c"
+    },
+    "packages/backend/src/misc/collapsed-queue.ts": {
+      "blob": "5bc20a78ae29a0ddeb22e949599b8ff66250fb7c",
+      "sha256": "a38be8d6e83c12a265ce74d68ad526b59cda0fa0e9a3e842452b30a7570d8ca0"
+    }
+  },
+  "observations": [
+    {
+      "id": "create-local-skipped",
+      "calls": [
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        },
+        {
+          "method": "disposed"
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "create-disabled-skipped",
+      "calls": [
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        },
+        {
+          "method": "disposed"
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "create-remote-flush",
+      "calls": [
+        {
+          "method": "fetch-or-register",
+          "args": {
+            "host": "remote.example"
+          }
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "timer-start",
+          "args": {
+            "id": 1,
+            "delay": 300000,
+            "at": 0
+          }
+        },
+        {
+          "method": "index"
+        },
+        {
+          "method": "timer-clear",
+          "args": {
+            "id": 1
+          }
+        },
+        {
+          "method": "instance-increment",
+          "args": {
+            "where": {
+              "id": "instance"
+            },
+            "column": "notesCount",
+            "value": 1
+          }
+        },
+        {
+          "method": "instance-increment-finished",
+          "args": {
+            "id": "instance"
+          }
+        },
+        {
+          "method": "disposed"
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "create-pack-reject-still-enqueues",
+      "calls": [
+        {
+          "method": "fetch-or-register",
+          "args": {
+            "host": "remote.example"
+          }
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "timer-start",
+          "args": {
+            "id": 1,
+            "delay": 300000,
+            "at": 0
+          }
+        },
+        {
+          "method": "post-rejected",
+          "args": {
+            "message": "pack failed"
+          }
+        },
+        {
+          "method": "timer-clear",
+          "args": {
+            "id": 1
+          }
+        },
+        {
+          "method": "instance-increment",
+          "args": {
+            "where": {
+              "id": "instance"
+            },
+            "column": "notesCount",
+            "value": 1
+          }
+        },
+        {
+          "method": "instance-increment-finished",
+          "args": {
+            "id": "instance"
+          }
+        },
+        {
+          "method": "disposed"
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "create-registration-reject-independent",
+      "calls": [
+        {
+          "method": "fetch-or-register",
+          "args": {
+            "host": "remote.example"
+          }
+        },
+        {
+          "method": "pack"
+        },
+        {
+          "method": "index"
+        },
+        {
+          "method": "disposed"
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": [
+        "fetch failed"
+      ]
+    },
+    {
+      "id": "delete-remote-immediate",
+      "calls": [
+        {
+          "method": "deleted-publication"
+        },
+        {
+          "method": "fetch-or-register",
+          "args": {
+            "host": "remote.example"
+          }
+        },
+        {
+          "method": "unindex"
+        },
+        {
+          "method": "db-delete"
+        },
+        {
+          "method": "instance-decrement",
+          "args": {
+            "where": {
+              "id": "instance"
+            },
+            "column": "notesCount",
+            "value": 1
+          }
+        },
+        {
+          "method": "delete-returned"
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "delete-quiet-skipped",
+      "calls": [
+        {
+          "method": "unindex"
+        },
+        {
+          "method": "db-delete"
+        },
+        {
+          "method": "delete-returned"
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "delete-disabled-skipped",
+      "calls": [
+        {
+          "method": "deleted-publication"
+        },
+        {
+          "method": "unindex"
+        },
+        {
+          "method": "db-delete"
+        },
+        {
+          "method": "delete-returned"
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "delete-db-reject-retains-decrement",
+      "calls": [
+        {
+          "method": "deleted-publication"
+        },
+        {
+          "method": "fetch-or-register",
+          "args": {
+            "host": "remote.example"
+          }
+        },
+        {
+          "method": "unindex"
+        },
+        {
+          "method": "db-delete"
+        },
+        {
+          "method": "instance-decrement",
+          "args": {
+            "where": {
+              "id": "instance"
+            },
+            "column": "notesCount",
+            "value": 1
+          }
+        },
+        {
+          "method": "delete-rejected",
+          "args": {
+            "message": "delete failed"
+          }
+        },
+        {
+          "method": "delete-returned"
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "delete-decrement-reject-independent",
+      "calls": [
+        {
+          "method": "deleted-publication"
+        },
+        {
+          "method": "fetch-or-register",
+          "args": {
+            "host": "remote.example"
+          }
+        },
+        {
+          "method": "unindex"
+        },
+        {
+          "method": "db-delete"
+        },
+        {
+          "method": "instance-decrement",
+          "args": {
+            "where": {
+              "id": "instance"
+            },
+            "column": "notesCount",
+            "value": 1
+          }
+        },
+        {
+          "method": "delete-returned"
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": [
+        "decrement failed"
+      ]
+    },
+    {
+      "id": "delete-registration-reject-independent",
+      "calls": [
+        {
+          "method": "deleted-publication"
+        },
+        {
+          "method": "fetch-or-register",
+          "args": {
+            "host": "remote.example"
+          }
+        },
+        {
+          "method": "unindex"
+        },
+        {
+          "method": "db-delete"
+        },
+        {
+          "method": "delete-returned"
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": [
+        "fetch failed"
+      ]
+    },
+    {
+      "id": "batch-first-deadline-not-debounce",
+      "calls": [
+        {
+          "method": "timer-start",
+          "args": {
+            "id": 1,
+            "delay": 300000,
+            "at": 0
+          }
+        },
+        {
+          "method": "timer-fire",
+          "args": {
+            "id": 1,
+            "at": 300000
+          }
+        },
+        {
+          "method": "instance-increment",
+          "args": {
+            "where": {
+              "id": "a"
+            },
+            "column": "notesCount",
+            "value": 3
+          }
+        },
+        {
+          "method": "instance-increment-finished",
+          "args": {
+            "id": "a"
+          }
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "batch-independent-instance-deadlines",
+      "calls": [
+        {
+          "method": "timer-start",
+          "args": {
+            "id": 1,
+            "delay": 300000,
+            "at": 0
+          }
+        },
+        {
+          "method": "timer-start",
+          "args": {
+            "id": 2,
+            "delay": 300000,
+            "at": 100000
+          }
+        },
+        {
+          "method": "timer-fire",
+          "args": {
+            "id": 1,
+            "at": 300000
+          }
+        },
+        {
+          "method": "instance-increment",
+          "args": {
+            "where": {
+              "id": "a"
+            },
+            "column": "notesCount",
+            "value": 1
+          }
+        },
+        {
+          "method": "instance-increment-finished",
+          "args": {
+            "id": "a"
+          }
+        },
+        {
+          "method": "timer-clear",
+          "args": {
+            "id": 2
+          }
+        },
+        {
+          "method": "instance-increment",
+          "args": {
+            "where": {
+              "id": "b"
+            },
+            "column": "notesCount",
+            "value": 1
+          }
+        },
+        {
+          "method": "instance-increment-finished",
+          "args": {
+            "id": "b"
+          }
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "timer-inflight-new-batch-and-dispose-does-not-wait-old",
+      "calls": [
+        {
+          "method": "timer-start",
+          "args": {
+            "id": 1,
+            "delay": 300000,
+            "at": 0
+          }
+        },
+        {
+          "method": "timer-fire",
+          "args": {
+            "id": 1,
+            "at": 300000
+          }
+        },
+        {
+          "method": "instance-increment",
+          "args": {
+            "where": {
+              "id": "a"
+            },
+            "column": "notesCount",
+            "value": 1
+          }
+        },
+        {
+          "method": "dispose-returned-with-inflight"
+        },
+        {
+          "method": "timer-start",
+          "args": {
+            "id": 2,
+            "delay": 300000,
+            "at": 300000
+          }
+        },
+        {
+          "method": "timer-clear",
+          "args": {
+            "id": 2
+          }
+        },
+        {
+          "method": "instance-increment",
+          "args": {
+            "where": {
+              "id": "a"
+            },
+            "column": "notesCount",
+            "value": 2
+          }
+        },
+        {
+          "method": "instance-increment-finished",
+          "args": {
+            "id": "a"
+          }
+        },
+        {
+          "method": "instance-increment-finished",
+          "args": {
+            "id": "a"
+          }
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "timer-reject-lost-no-retry",
+      "calls": [
+        {
+          "method": "timer-start",
+          "args": {
+            "id": 1,
+            "delay": 300000,
+            "at": 0
+          }
+        },
+        {
+          "method": "timer-fire",
+          "args": {
+            "id": 1,
+            "at": 300000
+          }
+        },
+        {
+          "method": "instance-increment",
+          "args": {
+            "where": {
+              "id": "a"
+            },
+            "column": "notesCount",
+            "value": 1
+          }
+        },
+        {
+          "method": "dispose-resolved"
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": [
+        "increment failed"
+      ]
+    },
+    {
+      "id": "shutdown-flush-reject-all-settled-no-retry",
+      "calls": [
+        {
+          "method": "timer-start",
+          "args": {
+            "id": 1,
+            "delay": 300000,
+            "at": 0
+          }
+        },
+        {
+          "method": "timer-start",
+          "args": {
+            "id": 2,
+            "delay": 300000,
+            "at": 0
+          }
+        },
+        {
+          "method": "timer-clear",
+          "args": {
+            "id": 1
+          }
+        },
+        {
+          "method": "timer-clear",
+          "args": {
+            "id": 2
+          }
+        },
+        {
+          "method": "instance-increment",
+          "args": {
+            "where": {
+              "id": "a"
+            },
+            "column": "notesCount",
+            "value": 1
+          }
+        },
+        {
+          "method": "instance-increment",
+          "args": {
+            "where": {
+              "id": "b"
+            },
+            "column": "notesCount",
+            "value": 2
+          }
+        },
+        {
+          "method": "dispose-resolved"
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": []
+    },
+    {
+      "id": "source-node-env-test-zero-delay",
+      "calls": [
+        {
+          "method": "timer-start",
+          "args": {
+            "id": 1,
+            "delay": 0,
+            "at": 0
+          }
+        },
+        {
+          "method": "timer-fire",
+          "args": {
+            "id": 1,
+            "at": 0
+          }
+        },
+        {
+          "method": "instance-increment",
+          "args": {
+            "where": {
+              "id": "a"
+            },
+            "column": "notesCount",
+            "value": 1
+          }
+        },
+        {
+          "method": "instance-increment-finished",
+          "args": {
+            "id": "a"
+          }
+        }
+      ],
+      "unhandledRejectionsCapturedByHarness": []
+    }
+  ]
+}

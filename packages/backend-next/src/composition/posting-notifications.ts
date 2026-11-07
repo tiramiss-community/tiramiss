@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { createNoteCreatedEvents, readNotePlan, renderNote } from '../modules/note/public.js';
+import { createNotePostSaveChannelCounts } from '../platform/database/note-post-save-counts.js';
 import { createNoteNotificationReader } from '../platform/database/note-notifications.js';
 import { createNotificationTransactions } from '../platform/database/poll-ended.js';
 import { createNoteReader } from '../platform/database/note-reader.js';
@@ -66,7 +67,7 @@ export function createPostingNotifications(resources: {
 			const events = createNoteCreatedEvents({
 				...facts, render: async (noteId, viewerId, options, snapshot) => (await render(noteId, viewerId, options, snapshot)).note,
 				stream: resources.postingStream, roleTimelines: resources.roleTimelines, webhook: resources.webhook, notifications: createNotificationTransactions(resources.dataSource),
-				afterNotificationSaved, deliver, index, newId: codec.newId, currentTime: Date.now,
+				afterNotificationSaved, deliver, index, channelAggregates: createNotePostSaveChannelCounts(manager), newId: codec.newId, currentTime: Date.now,
 			});
 			return (noteId: string, input?: { createdSnapshot?: NoteCreatedSnapshot }) => events(noteId, input?.createdSnapshot);
 		},

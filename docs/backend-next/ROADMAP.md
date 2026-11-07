@@ -136,3 +136,8 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 
 
 2026-11-07: #174のnote hashtag producerを通常post-saveへ接続した。固定本家MiHashtagの機械同期と既存migration登録を行い、public/home snapshotからhistorical mentioned作者のlocal/remote原子集計、通常Redisの1時間unique SET・10分HLL・featured hashtag +1を実装。hidden/sensitiveはRedisだけを除外し、NX期限・独立clock・非原子的unique競合と削除時の残留を維持する。新しいMeta読取がDB進行を妨げない構成とし、開始済みRedisの診断・終了待機を既存post-saveへ接続した。[比較資料](../superpowers/compatibility/note/hashtag/README.md)、[実装計画と検証](../superpowers/plans/2026-11-07-note-hashtag-174.md)、[契約と再構築制約](posting-contract.md#通常投稿のhashtag-producer174)。profile attached/解除・hashtag API/packer/stream・chart読取、antennaと#174/#172/#176全体、再構築#132/#133は未完了。上の過去sliceでhashtag全体を残作業とした記述は当時の状態を示す。
+
+
+2026-11-07: #174のantenna producerを通常post-saveへ接続。保存時作者・補正後channel・TypeORM insert後のraw Noteを保持し、lazy active一覧/internal変更受信、30分Redis/1分memoryのfollowing cache、現在list membershipと固定source順の照合を使う。全照合成功後だけ専用timeline Redisのmax200とraw antenna publicationを開始し、独立失敗の診断・終了待機へ接続した。通常HTTP子の照会中SIGTERMと、専用subscriberの接続/購読失敗後解放も検証する。[比較資料](../superpowers/compatibility/note/antenna/README.md)、[実装計画](../superpowers/plans/2026-11-07-note-antenna-174.md)。
+
+同じ#174の全責任監査で見つかったchannel集計の開始境界とremote Instance.notesCountも接続した。channelはpack/mention準備成功後に3仕事を別SQLで開始し、remoteは既存instance台帳の登録後に初回期限5分の+1集約、削除時に直接-1。新しい永続状態・retry・cache書換は加えない。終了時はenqueuerを待ちqueued/既発火の更新をdrainする。[全通常更新の監査と#132/#133への材料](../superpowers/compatibility/note/derived-updates/README.md)が現在の#174完了判定の根拠であり、上記過去sliceの曖昧な「等」を残責任の根拠にしない。remote受信#195、antenna CRUD/閲覧#185・WS#189・import/clean#199、chart#200、広域cache#217と投稿全体#176は別に残る。

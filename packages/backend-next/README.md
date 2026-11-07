@@ -214,7 +214,7 @@ DB失敗やクライアント切断を理由に自動再作成しない。通常
 指定宛先、MFM抽出（メンション・ハッシュタグ・絵文字）を接続した。メンションはローカルユーザーと登録済みリモートユーザーをDBで解決する。
 未登録のリモートユーザー宛ては、WebFingerによる解決（#195）まで501 `NOT_IMPLEMENTED`で保存前に拒否する。
 登録済みリモートユーザーも、#195までは `lastFetchedAt` が古くても再同期せずに使う（暫定制限）。
-投票終了ジョブ（#162）、AP配送（#171。既存のaccepted relayへの配送を含む）、投稿通知/stream producer（#173）と通常TL・Role timeline producer（#174）は接続済み。投稿webhookと下記のWebSocket受信も接続済み。antenna・hashtag・featured等の通常更新やRole閲覧API・WS受信が残るため投稿領域全体の完成ではない。
+投票終了ジョブ（#162）、AP配送（#171。既存のaccepted relayへの配送を含む）、投稿通知/stream producer（#173）と通常TL・Role timeline producer（#174）は接続済み。投稿webhookと下記のWebSocket受信も接続済み。検索・Role・featured・hashtag・antennaの通常producerも接続した。Role/antenna等の閲覧APIやWS channel、remote受信・chart・投稿全体#176は別に残る。
 最小契約と既存実装の撤去順は[投稿の最小契約](../../docs/backend-next/posting-contract.md)を参照。
 
 ## 投稿削除（#172）
@@ -263,3 +263,21 @@ meilisearch:
 作成はpack/mention準備成功後にsnapshotを登録し、public/homeかつtextまたはcw非nullを対象とする。削除はpublic/homeならscope/contentに関係なくDB DELETE前に解除を開始する。失敗は`search-index.failed`/`search-unindex.failed`にnoteIdと安全なerror情報を残し、保存済みHTTP成功を取り消さない。終了時は開始済みHTTP要求を既存期限まで待つ。SDK成功はtask受付であり、engine側の適用完了を保証しない。
 
 専用Compose起動後、`test:integration test/integration/note-search-index.test.ts`で実HTTP handler/PG/Redis/Meiliのdocument・settingsと削除を確認し、`test:process test/processes/note-search-index.test.ts`で実HTTP子の開始/停止/障害を確認する。task完了待ちは試験だけで行う。[固定source比較・制約・再構築材料](../../docs/superpowers/compatibility/note/search/README.md)を参照。検索API #186、再構築 #132/#133、#174/#172/#176全体の完成は含めない。
+
+
+## antenna producerと通常派生集計（#174）
+
+通常投稿は保存時作者・補正後channel・insert直後のraw Noteを保持し、pack前の独立post-saveでantenna照合、専用timeline Redisのmax200とraw pubsub publicationを開始する。アンテナ定義は最初だけactiveを取得し、その後はinstance hostのinternal created/updated/deletedを受信する。設定API自体は#185に残る。followingは通常Redisの30分cache/1分memory、list membershipは照合時のDBを使う。削除でcached IDをpurgeせず、遅延snapshotも残す。詳細・source oracle・再構築制約は[比較資料](../../docs/superpowers/compatibility/note/antenna/README.md)と[投稿契約](../../docs/backend-next/posting-contract.md#通常投稿のantenna-producerと派生集計174)。
+
+channel集計はpack/mention準備成功後の3つの独立SQL。remote Instance.notesCountはstats設定有効時だけ、既存台帳からinstance IDを得て5分集約+1、通常削除で直接-1を行う。終了時に開始済みpost-save/deleteとbatchを待ち、失敗を再予約しない。remote token HTTP投稿は未対応で、remote snapshot producerと管理者HTTP削除を検証する。chartやremote受信の実装完了を示さない。[全更新責任と保持/再構築材料](../../docs/superpowers/compatibility/note/derived-updates/README.md)。
+
+専用Composeと`BACKEND_NEXT_TEST_DB_PORT`/`BACKEND_NEXT_TEST_REDIS_PORT`を設定したうえで、次を実行する。
+
+```sh
+pnpm --filter backend-next test test/unit/note/antennas.test.ts test/unit/note/antenna-lifecycle.test.ts test/unit/note/instance-counts.test.ts test/unit/note/post-save.test.ts test/unit/note/created-events.test.ts
+pnpm --filter backend-next test:integration test/integration/note-antennas.test.ts test/integration/note-instance-counts.test.ts test/integration/migrations.test.ts
+pnpm --filter backend-next... build
+pnpm --filter backend-next test:process test/processes/note-antennas.test.ts
+```
+
+実依存検証は通常認証HTTP・PostgreSQL・分離したtimeline Redis・pubsub、internal設定受信、raw payload全列、部分失敗、即削除後のsnapshot、SQL拒否、subscriber解放を扱う。通常HTTP子の照会保留中SIGTERMと、managed子の5分batchを待たず終了時flushして終了0を観測する。source corpusの抽出実行とは別の証拠として記録する。

@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { MiHashtag } from 'backend-upstream/entities';
+import { MiAntenna, MiHashtag } from 'backend-upstream/entities';
 import { afterAll, beforeAll, expect, test } from 'vitest';
 import { createTestDatabase } from '../helpers/database.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
@@ -21,7 +21,7 @@ test('rejects an empty database without creating any history or schema', async (
 	const source = await createDataSource(database.config.database).initialize();
 	expect(
 		await source.query(
-			"SELECT to_regclass('public.migrations') AS upstream, to_regclass('backend_internal.migrations') AS internal",
+			'SELECT to_regclass(\'public.migrations\') AS upstream, to_regclass(\'backend_internal.migrations\') AS internal',
 		),
 	).toEqual([{ upstream: null, internal: null }]);
 	await source.destroy();
@@ -30,6 +30,8 @@ test('applies all upstream migrations once and keeps internal history separate',
 	await migrateDatabase(database.config.database);
 	await assertMigrationsApplied(database.config.database);
 	const source = await createDataSource(database.config.database).initialize();
+	expect(source.getMetadata(MiAntenna).tableName).toBe('antenna');
+	expect(await source.getRepository(MiAntenna).count()).toBe(0);
 	expect(source.getMetadata(MiHashtag).tableName).toBe('hashtag');
 	expect(await source.getRepository(MiHashtag).count()).toBe(0);
 	const before = await source.query('SELECT id, timestamp, name FROM public.migrations ORDER BY id');
@@ -38,7 +40,7 @@ test('applies all upstream migrations once and keeps internal history separate',
 	// A second command must preserve upstream migration IDs, not replay history.
 	await migrateDatabase(database.config.database);
 	expect(await source.query('SELECT id, timestamp, name FROM public.migrations ORDER BY id')).toEqual(before);
-	expect(await source.query("SELECT to_regclass('public.note') AS note")).toEqual([{ note: 'note' }]);
+	expect(await source.query('SELECT to_regclass(\'public.note\') AS note')).toEqual([{ note: 'note' }]);
 	await source.destroy();
 });
 test('checks only copied entity scope and reports real schema drift without applying DDL', async () => {
@@ -48,7 +50,7 @@ test('checks only copied entity scope and reports real schema drift without appl
 	await expect(assertSchemaMatches(database.config.database)).rejects.toMatchObject({ code: 'SCHEMA_DRIFT' });
 	expect(
 		await source.query(
-			"SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name='role' AND column_name='unexpectedFoundationColumn'",
+			'SELECT column_name FROM information_schema.columns WHERE table_schema=\'public\' AND table_name=\'role\' AND column_name=\'unexpectedFoundationColumn\'',
 		),
 	).toHaveLength(1);
 	await source.query('ALTER TABLE public.role DROP COLUMN "unexpectedFoundationColumn"');
@@ -58,7 +60,7 @@ test('rejects missing internal history without recreating it', async () => {
 	const source = await createDataSource(database.config.database).initialize();
 	await source.query('DROP TABLE backend_internal.migrations');
 	await expect(assertMigrationsApplied(database.config.database)).rejects.toThrow();
-	expect(await source.query("SELECT to_regclass('backend_internal.migrations') AS name")).toEqual([{ name: null }]);
+	expect(await source.query('SELECT to_regclass(\'backend_internal.migrations\') AS name')).toEqual([{ name: null }]);
 	await source.destroy();
 });
 
@@ -66,7 +68,7 @@ test('does not change public schema when initializing only internal history', as
 	const source = await createDataSource(database.config.database).initialize();
 	const snapshot = () =>
 		source.query(
-			"SELECT table_name, column_name, data_type, column_default, is_nullable FROM information_schema.columns WHERE table_schema='public' ORDER BY table_name, ordinal_position",
+			'SELECT table_name, column_name, data_type, column_default, is_nullable FROM information_schema.columns WHERE table_schema=\'public\' ORDER BY table_name, ordinal_position',
 		);
 	const before = await snapshot();
 	await source.query('DROP SCHEMA backend_internal CASCADE');
@@ -82,7 +84,7 @@ test('does not initialize internal state after upstream migration failure', asyn
 	try {
 		await source.query('CREATE TABLE public.instance (existing_column integer)');
 		await expect(migrateDatabase(broken.config.database)).rejects.toThrow();
-		expect(await source.query("SELECT to_regnamespace('backend_internal') AS name")).toEqual([{ name: null }]);
+		expect(await source.query('SELECT to_regnamespace(\'backend_internal\') AS name')).toEqual([{ name: null }]);
 	} finally {
 		await source.destroy();
 		await broken.close();

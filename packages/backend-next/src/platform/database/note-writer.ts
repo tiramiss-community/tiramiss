@@ -2,10 +2,10 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { noteFactsFromRow } from './note-reader.js';
 import { In } from 'typeorm';
 import { MiUser, MiNote, MiPoll, MiDriveFile, MiBlocking, MiFollowing, MiChannel, MiUserProfile } from 'backend-upstream/entities';
 import { evaluatePolicies, selectApplicableRoles } from '../../modules/role/public.js';
+import { noteFactsFromRow } from './note-reader.js';
 import { readMeta } from './meta.js';
 import { createTransactionRunner } from './transaction-runner.js';
 import type { DataSource, EntityManager } from 'typeorm';
@@ -29,8 +29,8 @@ export function createNoteWriter(manager: EntityManager, roles: RoleMaterialRead
 				followersCount: user.followersCount, followingCount: user.followingCount, notesCount: user.notesCount,
 			}, now);
 			const policies = evaluatePolicies({ userId: id, roles: applicable, basePolicies: meta.policies, uploadLimitBytes: 0 });
-			return { id, host: user.host, isSuspended: user.isSuspended, movedToUri: user.movedToUri, isBot: user.isBot, canPublicNote: policies.canPublicNote,
-				mentionLimit: policies.mentionLimit, rateLimitFactor: policies.rateLimitFactor, sensitiveWords: meta.sensitiveWords, prohibitedWords: meta.prohibitedWords };
+			return { id, username: user.username, host: user.host, isSuspended: user.isSuspended, movedToUri: user.movedToUri, isBot: user.isBot, canPublicNote: policies.canPublicNote,
+												mentionLimit: policies.mentionLimit, rateLimitFactor: policies.rateLimitFactor, sensitiveWords: meta.sensitiveWords, prohibitedWords: meta.prohibitedWords };
 		},
 		async readUserIds(ids: string[]): Promise<string[]> {
 			const users = await manager.getRepository(MiUser).find({ where: { id: In(ids) }, select: { id: true } });
@@ -69,7 +69,7 @@ export function createNoteWriter(manager: EntityManager, roles: RoleMaterialRead
 				return null;
 			}
 			const { userId, userHost, text, cw, fileIds, hasPoll, replyId, renoteId, threadId, channelId, visibility, visibleUserIds, mentions, replyUserId, localOnly } = row;
-			return { eventFacts: noteFactsFromRow(row, createdAtFromId), id, userId, userHost, text, cw, fileIds, hasPoll, replyId, renoteId, threadId, channelId, visibility, visibleUserIds, mentions, replyUserId, localOnly };
+			return { rawNote: { ...row }, eventFacts: noteFactsFromRow(row, createdAtFromId), id, userId, userHost, text, cw, fileIds, hasPoll, replyId, renoteId, threadId, channelId, visibility, visibleUserIds, mentions, replyUserId, localOnly };
 		},
 		isBlocking(blockerId: string, blockeeId: string): Promise<boolean> {
 			return manager.getRepository(MiBlocking).existsBy({ blockerId, blockeeId });
@@ -79,7 +79,7 @@ export function createNoteWriter(manager: EntityManager, roles: RoleMaterialRead
 		},
 		async readChannel(id: string, options: { includeArchived: boolean }): Promise<RelatedChannel | null> {
 			const channel = await manager.getRepository(MiChannel).findOneBy(options.includeArchived ? { id } : { id, isArchived: false });
-			return channel && { id: channel.id, allowRenoteToExternal: channel.allowRenoteToExternal };
+			return channel && { id: channel.id, isSensitive: channel.isSensitive, allowRenoteToExternal: channel.allowRenoteToExternal, raw: { ...channel } };
 		},
 		async readMentionedRemoteUsers(userIds: string[]): Promise<MentionedRemoteUser[]> {
 			const users = await manager.getRepository(MiUser).find({ where: { id: In(userIds) }, select: { id: true, username: true, host: true, uri: true } });
@@ -99,9 +99,12 @@ export function createNoteWriter(manager: EntityManager, roles: RoleMaterialRead
 
 function createNoteWrites(manager: EntityManager, assertActive: () => void = () => {}): NoteWrites {
 	return {
-		async insertNote({ mentionedRemoteUsers, ...note }: NewNote): Promise<void> {
+		async insertNote({ mentionedRemoteUsers, ...note }: NewNote): Promise<Record<string, unknown>> {
 			assertActive();
-			await manager.getRepository(MiNote).insert({ ...note, mentionedRemoteUsers: JSON.stringify(mentionedRemoteUsers) });
+			const inserted = new MiNote({ ...note, ...(note.mentions.length > 0 ? { mentionedRemoteUsers: JSON.stringify(mentionedRemoteUsers) } : {}) });
+			await manager.getRepository(MiNote).insert(inserted);
+			// TypeORM が RETURNING の既定列を元の insert オブジェクトへ反映した直後に確保する。
+			return { ...inserted };
 		},
 		async insertPoll({ expiresAtMs, ...poll }: NewPoll): Promise<void> {
 			assertActive();

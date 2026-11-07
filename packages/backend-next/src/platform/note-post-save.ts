@@ -9,6 +9,7 @@ import type { Logger } from './logger.js';
 
 /** 本家 NoteCreateService.postNoteCreated のうち、実装済みの後続処理をまとめる。 */
 export function createNotePostSaveWork(steps: {
+	instances?(input: NotePostSaveInput): Promise<void>;
 	counts(input: NotePostSaveInput): Promise<void>;
 	schedulePollEnded(job: { noteId: string; delayMs: number }): Promise<void>;
 	/** 保存済みの投稿を読み直し、配送するかどうかも自分で決める。 */
@@ -16,6 +17,7 @@ export function createNotePostSaveWork(steps: {
 	hashtags?(input: NotePostSaveInput): Promise<void>;
 	featured?(input: NotePostSaveInput): Promise<void>;
 	timelines?(input: NotePostSaveInput): Promise<void>;
+	antennas?(input: NotePostSaveInput): Promise<void>;
 	currentTime(): number;
 }) {
 	return async (input: NotePostSaveInput): Promise<void> => {
@@ -27,6 +29,9 @@ export function createNotePostSaveWork(steps: {
 				work.set(name, Promise.reject(error));
 			}
 		};
+		if (steps.instances) {
+			start('instances', () => steps.instances!(input));
+		}
 		start('counts', () => steps.counts(input));
 		if (steps.hashtags) {
 			start('hashtags', () => steps.hashtags!(input));
@@ -36,6 +41,9 @@ export function createNotePostSaveWork(steps: {
 		}
 		if (steps.timelines) {
 			start('timelines', () => steps.timelines!(input));
+		}
+		if (steps.antennas) {
+			start('antennas', () => steps.antennas!(input));
 		}
 		if (input.pollExpiresAtMs !== null) {
 			// 本家どおり後続処理の開始時刻から遅延を決める。期限を過ぎていても負の遅延のまま投入し、BullMQ はすぐに実行する。

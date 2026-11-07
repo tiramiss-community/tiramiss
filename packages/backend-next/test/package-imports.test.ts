@@ -41,7 +41,9 @@ test('loads copied entities without eagerly loading migration dependencies', asy
 	expect(source.getMetadata('MiPollVote').tableName).toBe('poll_vote');
 	expect(source.getMetadata('MiNoteReaction').tableName).toBe('note_reaction');
 	expect(source.getMetadata('MiHashtag').tableName).toBe('hashtag');
-	expect(source.entityMetadatas).toHaveLength(34);
+	expect(source.getMetadata('MiAntenna').tableName).toBe('antenna');
+	expect(source.getMetadata('MiAntenna').relations.find(value => value.propertyName === 'userList')?.inverseEntityMetadata.tableName).toBe('user_list');
+	expect(source.entityMetadatas).toHaveLength(35);
 	expect(source.getMetadata('MiWebhook').tableName).toBe('webhook');
 	expect(source.getMetadata('MiWebhook').relations.find(value => value.propertyName === 'user')?.inverseEntityMetadata.tableName).toBe('user');
 	for (const [model, table, relation] of [['MiMuting', 'muting', 'muter'], ['MiRenoteMuting', 'renote_muting', 'mutee'], ['MiNoteThreadMuting', 'note_thread_muting', 'user'], ['MiUserListMembership', 'user_list_membership', 'user']] as const) {
