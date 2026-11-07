@@ -18,3 +18,5 @@ export { planNoteNotifications } from './notification-plan.js';
 export type { NoteNotificationPlanInput, PlannedNoteNotification } from './notification-plan.js';
 export { createNoteCreatedEvents } from './created-events.js';
 export type { NoteCreatedSnapshot } from './create-contract.js';
+export { planNoteTimelines, sampleTimelineFollowers } from './timeline-plan.js';
+export type { TimelineNote, TimelineMaterials, PlannedTimeline } from './timeline-plan.js';

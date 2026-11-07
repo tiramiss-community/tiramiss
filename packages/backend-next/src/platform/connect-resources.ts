@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { createPostingNotifications } from '../composition/posting-notifications.js';
+import { createPostingTimelines } from '../composition/posting-timelines.js';
+import { createNoteTimelineReader } from './database/note-timelines.js';
+import { createTimelineCache } from './timeline-cache.js';
 import { createPostingStream } from './posting-stream.js';
 import { randomBytes } from 'node:crypto';
 import { Redis } from 'ioredis';
@@ -46,6 +49,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 	// 投入口の接続は再接続しない。起動を終えるまでは failure を見張る側がいないため、起動中に失った接続は覚えておき、起動を失敗させる。
 	// 見逃すと、子は投入できない投入口のまま ready を返し、後続処理の失敗ログだけを残して動き続ける。
 	let lostQueue: string | undefined;
+	let lostTimelines = false;
 	const onQueueLost = (queue: string) => () => {
 		if (closing) {
 			return;
@@ -136,6 +140,39 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			}
 		}
 
+		let timelinesRedis = redis;
+		if (config.redisForTimelines && config.redisForTimelines !== config.redis) {
+			timelinesRedis = new Redis({
+				...config.redisForTimelines, lazyConnect: true, retryStrategy: () => null,
+				maxRetriesPerRequest: 0, disconnectTimeout: 0, connectTimeout: config.processes.startupTimeoutMs,
+			});
+			timelinesRedis.on('error', error => logger.error('timelines-redis.error', { error }));
+			const connection = timelinesRedis;
+			scope.defer(async () => {
+				if (connection.status !== 'end') {
+					await new Promise<void>(resolve => {
+						connection.once('end', resolve);
+						connection.disconnect();
+					});
+				}
+			});
+			await timelinesRedis.connect();
+			await timelinesRedis.ping();
+			if (cancelled) {
+				throw timeout;
+			}
+		}
+		timelinesRedis.on('end', () => {
+			if (closing) {
+				return;
+			}
+			if (active) {
+				reportFailure(new DiagnosticError('TIMELINES_REDIS_ENDED', {}));
+			} else {
+				lostTimelines = true;
+			}
+		});
+
 		const rolePublisher = new Redis({
 			...config.redisForPubsub,
 			disconnectTimeout: 0,
@@ -214,6 +251,11 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		const postingNotifications = createPostingNotifications({ dataSource, reactionsRedis, postingStream }, config);
 		const notePostSave = createNotePostSave(createNotePostSaveWork({
 			counts: createNotePostSaveCounts(dataSource.manager),
+			timelines: createPostingTimelines({
+				reader: createNoteTimelineReader(dataSource.manager, config.perChannelMaxNoteCacheCount ?? 1000),
+				cache: createTimelineCache(timelinesRedis, { createdAtFromId: createIdCodec(config.id).createdAtFromId, currentTime: Date.now, random: () => Math.random() }),
+				currentTime: Date.now, random: () => Math.random(),
+			}),
 			schedulePollEnded: pollEndedQueue.schedule,
 			// 本家と同じく投稿を受けた子で表現と宛先を決め、送信は worker の子に任せる。
 			deliver: postingNotifications.createdEvents(createDeliverCreatedNote({
@@ -244,8 +286,11 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		if (lostQueue !== undefined) {
 			throw new DiagnosticError('JOB_QUEUE_REDIS_ENDED', { queue: lostQueue });
 		}
+		if (lostTimelines || timelinesRedis.status !== 'ready') {
+			throw new DiagnosticError('TIMELINES_REDIS_ENDED', {});
+		}
 		active = true;
-		return { dataSource, redis, reactionsRedis, roleMaterials, notePostSave, notePostDelete, postingNotifications, postingStream, federationKeys, logger, close, failure };
+		return { dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, notePostSave, notePostDelete, postingNotifications, postingStream, federationKeys, logger, close, failure };
 	};
 
 	try {

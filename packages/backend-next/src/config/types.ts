@@ -52,6 +52,8 @@ export interface RuntimeConfig {
 	redisForJobQueue: RedisConfig;
 	redisForPubsub: RedisConfig;
 	redisForReactions?: RedisConfig;
+	redisForTimelines?: RedisConfig;
+	perChannelMaxNoteCacheCount?: number;
 	noteMedia?: { mediaProxy: string; externalMediaProxyEnabled: boolean; videoThumbnailGenerator?: string };
 	http: { port?: number; socket?: string; chmodSocket?: string };
 	processes: { workerCount: number; startupTimeoutMs: number; shutdownTimeoutMs: number };
