@@ -114,3 +114,13 @@ test('invalid saved emoji host is omitted like upstream domainToASCII instead of
 	const m = materials({ userHost: 'remote.test', emojis: ['blob@9999999999'] });
 	expect(renderNote('a', m, null, now)).toHaveProperty('emojis', {});
 });
+
+test('internal posting stream skips hiding recursively and includes reaction pairs without a viewer', () => {
+	const m = materials({ visibility: 'specified', visibleUserIds: ['viewer'], renoteId: 'b', reactionPairs: ['viewer/like'] });
+	(m.notes as Map<string, NoteFacts>).set('b', { ...m.notes.get('a')!, id: 'b', renoteId: null });
+	const result = renderNote('a', m, null, now, true, { skipHide: true, withReactionAndUserPairCache: true });
+	expect(result).toMatchObject({ text: 'hello', visibleUserIds: ['viewer'], reactionAndUserPairCache: ['viewer/like'], renote: { text: 'hello', reactionAndUserPairCache: ['viewer/like'] } });
+	expect(result).not.toHaveProperty('isHidden');
+	expect(result.renote).not.toHaveProperty('isHidden');
+	expect(renderNote('a', m, null, now)).not.toHaveProperty('reactionAndUserPairCache');
+});

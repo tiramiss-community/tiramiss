@@ -39,6 +39,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 			selfUrl: config.url, now, randomId: randomUUID(), isLocalUri: createHostRules(new URL(config.url).host).isUriLocal,
 		}),
 		start: resources.notePostDelete.start,
+		publishDeleted: (snapshot, occurredAtMs) => resources.notePostDelete.start({ kind: 'stream', snapshot, occurredAtMs }),
 	});
 	const authenticate = createTokenAuthenticator(manager, resources.logger);
 	return createRoleHttpApp(resources, config)

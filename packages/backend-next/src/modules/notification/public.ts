@@ -5,3 +5,5 @@
 export type { PostNotification, PostNotificationType, PostNotificationWrites } from './model.js';
 export { createNotifyPollEnded } from './poll-ended.js';
 export type { PollEndedNote, PollEndedRecipient, PollEndedResult } from './poll-ended.js';
+export { receivesPostNotification } from './reception.js';
+export type { NotificationReception } from './reception.js';

@@ -28,7 +28,11 @@
 		"src/models/UserKeypair.ts",
 		"src/models/UsedUsername.ts",
 		"src/types.ts",
-		"src/models/util/id.ts"
+		"src/models/util/id.ts",
+		"src/models/Muting.ts",
+		"src/models/RenoteMuting.ts",
+		"src/models/NoteThreadMuting.ts",
+		"src/models/UserListMembership.ts"
 	],
 	"migrationDirectory": "migration",
 	"externalDependencies": [

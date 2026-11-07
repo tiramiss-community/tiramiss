@@ -10,11 +10,12 @@ import type { RuntimeResources } from './create-runtime.js';
 import type { RuntimeConfig } from '../config/types.js';
 
 /** 投票終了ジョブ 1 件を処理する関数を組み立てる。 */
-export function createPollEndedHandler(resources: Pick<RuntimeResources, 'dataSource' | 'logger'>, config: Pick<RuntimeConfig, 'id'>) {
+export function createPollEndedHandler(resources: Pick<RuntimeResources, 'dataSource' | 'logger'> & Partial<Pick<RuntimeResources, 'postingNotifications'>>, config: Pick<RuntimeConfig, 'id'>) {
 	const codec = createIdCodec(config.id);
 	const { notifyPollEnded } = createNotifyPollEnded({
 		...createPollEndedReader(resources.dataSource.manager),
 		notifications: createNotificationTransactions(resources.dataSource),
+		afterSaved: resources.postingNotifications?.afterNotificationSaved,
 		newId: codec.newId,
 		currentTime: Date.now,
 	});

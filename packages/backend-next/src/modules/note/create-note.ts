@@ -354,6 +354,7 @@ export function createCreateNote(dependencies: {
 					renotedNoteId: related.renote !== null && related.renote.userId !== author.id && !author.isBot ? related.renote.id : null,
 					channelId: note.channelId,
 					pollExpiresAtMs: poll?.expiresAtMs ?? null,
+					createdSnapshot: { note, reply: related.reply, renote: related.renote },
 				});
 			}
 		},

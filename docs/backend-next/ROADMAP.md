@@ -116,3 +116,6 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 #171 第2slice（PR #227、マージ済み）は、既存accepted relayの10分cache、作者鍵RsaSignature2017、個別Queue.addとpost-save drainを接続した。controllerの最終検証で単体1,652件、関連結合150件、process3件、固定本家probe2件が成功している。過去workerのlocalhost EPERMは最終未実行状態ではない。[実測](../superpowers/plans/2026-11-06-ap-relay-171.md)。登録・受信・actorは#195、チャートは#200、metadataは共通土台の段階5に残る。
 
 #172（2026-11-07）の削除sliceは、notes/deleteの認可・scope/rate・現在moderator・物理削除・返信数減算・監査と、作者鍵によるDelete/Undo/fallback配送を実装した。固定C10とF8非public late followerを実processで比較し、DELETE失敗時の本家の減算/配送開始境界も固定本家サービスと実DB triggerで測定した。stream/通知/TL/検索/webhook/チャートを接続済みとは扱わない。[計画と検証](../superpowers/plans/2026-11-07-note-delete-172.md)。次は#173の通知条件/投稿・削除streamを、承認済みPG通知保存と既存投稿列へ接続する。#174/#175は必要な具体契約が揃った部分から並行でき、最終連携は#176で確認する。
+
+
+2026-11-07: PR #228の削除実装はマージ済み。次の#173第1sliceで投稿通知の条件・PG直接保存、投稿/削除/通知のRedis publication、既存投票終了workerの通知発行を通常起動へ接続した。実Redis subscriberで観測し、WebSocketクライアント受信の完成とは区別する。[実装・検証記録](../superpowers/plans/2026-11-07-notification-stream-173.md)。#173/#176の残る受信確認、WebSocket #189、通知API/既読/未読/push/移行 #177とshared fanout #217は未完了。次に着手できる実装は#174（TL/検索）、#175（webhook）。両方の削除連携と#173の残りを#176で比較する。

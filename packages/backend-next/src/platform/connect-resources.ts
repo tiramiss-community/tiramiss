@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { createPostingNotifications } from '../composition/posting-notifications.js';
+import { createPostingStream } from './posting-stream.js';
 import { randomBytes } from 'node:crypto';
 import { Redis } from 'ioredis';
 import { createFederationKeys } from '../composition/federation-keys.js';
@@ -208,11 +210,13 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			enqueue: deliverQueue.deliverOne,
 		});
 		const recipients = createDeliveryRecipientReader(dataSource.manager);
+		const postingStream = createPostingStream(rolePublisher, config.url);
+		const postingNotifications = createPostingNotifications({ dataSource, reactionsRedis, postingStream }, config);
 		const notePostSave = createNotePostSave(createNotePostSaveWork({
 			counts: createNotePostSaveCounts(dataSource.manager),
 			schedulePollEnded: pollEndedQueue.schedule,
 			// 本家と同じく投稿を受けた子で表現と宛先を決め、送信は worker の子に任せる。
-			deliver: createDeliverCreatedNote({
+			deliver: postingNotifications.createdEvents(createDeliverCreatedNote({
 				readNote: createNoteActivityReader(dataSource.manager, { ...config.noteMedia, url: config.url, createdAtFromId: createIdCodec(config.id).createdAtFromId }),
 				readUsers: recipients.readUsers,
 				readFollowerInboxes: recipients.readFollowerInboxes,
@@ -220,7 +224,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 				deliverToRelays,
 				selfUrl: config.url,
 				currentTime: Date.now,
-			}),
+			})),
 			currentTime: Date.now,
 		}), logger);
 		scope.defer(notePostSave.close);
@@ -230,7 +234,9 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			deliverToRelays,
 			enqueue: deliverQueue.deliverMany,
 		});
-		const notePostDelete = createNotePostDelete(input => input.kind === 'delivery'
+		const notePostDelete = createNotePostDelete(input => input.kind === 'stream'
+			? postingStream.deleted({ id: input.snapshot.id, userId: input.snapshot.userId, visibility: input.snapshot.note.visibility, visibleUserIds: input.snapshot.auditNote.visibleUserIds as string[] }, input.occurredAtMs)
+			: input.kind === 'delivery'
 			? deliverDeletedNote(input)
 			: appendNoteDeleteAudit(dataSource.manager, input, createIdCodec(config.id).newId), logger);
 		scope.defer(notePostDelete.close);
@@ -239,7 +245,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw new DiagnosticError('JOB_QUEUE_REDIS_ENDED', { queue: lostQueue });
 		}
 		active = true;
-		return { dataSource, redis, reactionsRedis, roleMaterials, notePostSave, notePostDelete, federationKeys, logger, close, failure };
+		return { dataSource, redis, reactionsRedis, roleMaterials, notePostSave, notePostDelete, postingNotifications, postingStream, federationKeys, logger, close, failure };
 	};
 
 	try {

@@ -14,3 +14,7 @@ export { NoteCreateError } from './create-contract.js';
 export type { NoteCreateActor, NoteCreateAuthor, NoteAttachableFile, NewNote, NewPoll, NoteWrites, NotePostSaveInput, NoteCreateErrorCode, RelatedNote, RelatedChannel, MentionedRemoteUser } from './create-contract.js';
 export { createDeleteNote, NoteDeleteError } from './delete-note.js';
 export type { DeletedNoteSnapshot, NoteDeleteWork, NoteDeleteErrorCode } from './delete-note.js';
+export { planNoteNotifications } from './notification-plan.js';
+export type { NoteNotificationPlanInput, PlannedNoteNotification } from './notification-plan.js';
+export { createNoteCreatedEvents } from './created-events.js';
+export type { NoteCreatedSnapshot } from './create-contract.js';

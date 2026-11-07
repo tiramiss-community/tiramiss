@@ -54,6 +54,7 @@ export interface NoteAttachableFile {
 
 // 返信先・Renote 対象の判定と非正規化列に使う値。保存済みの pure Renote 判定のため本文の有無も持つ。
 export interface RelatedNote {
+	eventFacts?: import('./model.js').NoteFacts;
 	id: string;
 	userId: string;
 	userHost: string | null;
@@ -130,7 +131,13 @@ export interface NoteWrites {
 	insertPoll(poll: NewPoll): Promise<void>;
 }
 
-// Note 全体を渡すと後続処理が DB の読み直しや描画用の値に依存するため、加算とジョブの投入に使う値だけを渡す。
+export interface NoteCreatedSnapshot {
+	note: NewNote;
+	reply: RelatedNote | null;
+	renote: RelatedNote | null;
+}
+
+// 加算・ジョブは ID と期限だけを使い、通知と stream は保存時の投稿を使う。
 export interface NotePostSaveInput {
 	// 投票終了ジョブの名前と内容。失敗時にどの投稿の後続処理が欠けたかの記録にも使う。
 	noteId: string;
@@ -141,6 +148,7 @@ export interface NotePostSaveInput {
 	channelId: string | null;
 	// 期限のある投票を持つときだけ値を持ち、投票終了ジョブを投入する。
 	pollExpiresAtMs: number | null;
+	createdSnapshot?: NoteCreatedSnapshot;
 }
 
 export type NoteCreateErrorCode =

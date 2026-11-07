@@ -131,7 +131,8 @@ test('text is trimmed and plain persisted fields do not depend on HTTP or ORM', 
 		renoteUserId: null, renoteUserHost: null, renoteChannelId: null, visibleUserIds: [], mentions: [], mentionedRemoteUsers: [], tags: [], emojis: [],
 	}]);
 	expect(polls).toEqual([]);
-	expect(after).toEqual([{ noteId: 'new', userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: null }]);
+	expect(after).toEqual([expect.objectContaining({ noteId: 'new', userId: 'author', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: null })]);
+	expect(after[0].createdSnapshot?.note).toEqual(notes[0]);
 	// 本家 NoteCreateService.ts:704-726: 投票なしは transaction を使わない単独 insert。
 	expect(events).toEqual(['root:note', 'render:new:author', 'after']);
 });

@@ -219,3 +219,10 @@ pnpm --filter backend-next exec vitest run \
 ```
 
 固定checkoutのHEADを検査する。依存はap-deliverの本家probeと同じ前提で、元checkoutを変更しない。期待値を再収集するときだけ `NOTE_DELETE_PROBE_WRITE=1` を加える。今回writer収集とcontrollerのWRITEなし再生が成功した。D2/D3/F4の強い同時確定/取消/固定宛先は、GOALSの初期範囲に従い#172の所有から外した再評価を台帳へ残す。
+
+
+### #173 通知・stream producerの接続（2026-11-07）
+
+本家C10の`C10-deleted-stream`を新実装の実Redis subscriber出力と比較した。新規の通知条件・投稿payload・保存後失敗は固定本家ソース由来の期待値として実HTTP/PG/Redisで検証し、全条件を本家runtimeで再実測したとは扱わない。既存poll-ended固定processor fixtureも維持する。
+
+通知/streamはproducer部分のみで、WebSocket受信は引き続き#173/#189/#176、通知API/既読/未読/push/移行は#177、共有fanout/cacheは#217の残作業。[実装・検証](../../plans/2026-11-07-notification-stream-173.md)。

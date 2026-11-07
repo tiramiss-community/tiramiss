@@ -8,7 +8,7 @@
 
 - 本家: `8e07cf085adf7009583d234a208e30436f020e26`。`backend-upstream/upstream-sync.json` と同じ SHA。fork の現在の `packages/backend` からは列挙しない。
 - 新実装: `6f62cb897d2a03e8fd7727eadf45c20d8bfcf206`（PR #213 マージ後）。判定と根拠はこの地点に固定する。
-  - 行の `implementation`/`verification` は `domains.json` の `implementationCommit` の木で存在を検査する。#216 の最初の PR で外向き HTTP の行の根拠を参照できるよう `224416b352fa474a37fb286cd4838d8818947fc8` へ、#215 段階 2 の PR で連合の共通土台の行の根拠も参照できるよう、両方を含む `36cad9edcbfd2b990d36b2f6645b677b1e54f0e4` へ、#160 の最初の PR で AP の署名・配送結果の分類の行の根拠も参照できるよう `02612df99fe3c529fc692d76b3bd37498a2e0e1a` へ、#162 の最初の PR で投票終了ジョブと通常 worker の行の根拠も参照できるよう `00c6b5b75ddcf4bb9e5e79291e2f54a9dd4933e4` へ、同じ PR で queue 接続のコメントを直した `ae30e864a06baf64a793d10ab6fb844ee3821502` へ、#171 の最初の PR でノート作成の AP 配送の行の根拠も参照できるよう `d9b718359e583fd9e33711c8321fc06b83c06b53` へ、同じ PR で MFM の `br` の行・起動中の投入口の接続の喪失を直した `47c9c75dd6b5fc9527c3976b86364b06c46f3a04` へ進めた。#172の削除sliceで追加した実装・検証の根拠を参照できるよう `ba51607ba514de5fe2e4a1bf574575d5f0d42fa9` へ進めた。監査の判定（`audit`）はこの更新で変えていない。
+  - 行の `implementation`/`verification` は `domains.json` の `implementationCommit` の木で存在を検査する。#216 の最初の PR で外向き HTTP の行の根拠を参照できるよう `224416b352fa474a37fb286cd4838d8818947fc8` へ、#215 段階 2 の PR で連合の共通土台の行の根拠も参照できるよう、両方を含む `36cad9edcbfd2b990d36b2f6645b677b1e54f0e4` へ、#160 の最初の PR で AP の署名・配送結果の分類の行の根拠も参照できるよう `02612df99fe3c529fc692d76b3bd37498a2e0e1a` へ、#162 の最初の PR で投票終了ジョブと通常 worker の行の根拠も参照できるよう `00c6b5b75ddcf4bb9e5e79291e2f54a9dd4933e4` へ、同じ PR で queue 接続のコメントを直した `ae30e864a06baf64a793d10ab6fb844ee3821502` へ、#171 の最初の PR でノート作成の AP 配送の行の根拠も参照できるよう `d9b718359e583fd9e33711c8321fc06b83c06b53` へ、同じ PR で MFM の `br` の行・起動中の投入口の接続の喪失を直した `47c9c75dd6b5fc9527c3976b86364b06c46f3a04` へ進めた。#172の削除sliceで追加した実装・検証の根拠を参照できるよう `ba51607ba514de5fe2e4a1bf574575d5f0d42fa9` へ進めた。#173第1sliceの通知・stream producerと4 Entityの根拠を参照できるよう `40239a1244b1a088e4fe836e0c57360d0065c912` へ進めた。監査の判定（`audit`）はこの更新で変えていない。
 - 対象: 登録 API と非 API HTTP、WebSocket、AP 受信/公開/送信、業務保存・副作用、job/周期処理、CLI/運用。fork 固有機能は対象外。固定本家の機能を一括で見送らない。
 
 ## 現在の到達点
@@ -32,6 +32,12 @@ Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装
 | `service:NoteDeleteService` / `responsibility:notes-core:29` | 認可/物理削除/返信数/監査/配送の部分実装。DELETE失敗境界を固定本家probeで比較 | stream#173、TL/検索#174、webhook#175、チャート#200 |
 
 実装ファイルは `packages/backend-next/src/`、試験は `packages/backend-next/` からの相対パス。[計画と実測](../../plans/2026-11-07-note-delete-172.md)、[削除比較資料](../note/README.md#172-削除sliceの追加検証2026-11-07)を参照する。
+
+## #173 producer sliceの照合（2026-11-07）
+
+投稿6種の通知条件・PG直接保存・保存後のpackとRedis発行、投稿/削除stream、通常投票終了workerの発行を接続した。20監査行と通知能力・processor・削除APIの3 overrideへ実装/検証の参照を同期し、すべて`partial`を維持する。4 Entityは通知factsの読み取りに使う範囲であり、各領域の変更APIを完成済みとは扱わない。
+
+実HTTP/PG/Redis subscriber、通常worker、C10固定値とsource由来の条件を検証した。[計画と実測](../../plans/2026-11-07-notification-stream-173.md)。WebSocket受信#189/#173/#176、通知API/未読/既読/push/移行#177、他のプロセス間イベント/cache同期#217は未完了。上の#172時点で未接続だった削除streamも、このsliceで発行まで接続している。
 
 ## 列挙した範囲
 

@@ -25,7 +25,7 @@ export function populateEmojis(names: readonly string[], host: string | null, ma
 	}));
 }
 
-export function renderNote(id: string, materials: NoteViewMaterials, viewerId: string | null, now: number, detail = true): JsonObject {
+export function renderNote(id: string, materials: NoteViewMaterials, viewerId: string | null, now: number, detail = true, options: { skipHide?: boolean; withReactionAndUserPairCache?: boolean } = {}): JsonObject {
 	const note = materials.notes.get(id);
 	if (!note) {
 		throw new NoteMaterialMissing('NOTE_MISSING');
@@ -45,7 +45,7 @@ export function renderNote(id: string, materials: NoteViewMaterials, viewerId: s
 		: undefined;
 	const nested = (target: string, targetDetail: boolean) => {
 		try {
-			return renderNote(target, materials, viewerId, now, targetDetail);
+			return renderNote(target, materials, viewerId, now, targetDetail, options);
 		} catch (error) {
 			// 本家のnullIfEntityNotFoundは、参照先自身だけでなくPoll/作者の欠落もnullにする。
 			if (error instanceof NoteMaterialMissing) {
@@ -63,6 +63,7 @@ export function renderNote(id: string, materials: NoteViewMaterials, viewerId: s
 		text: note.name && (note.url ?? note.uri) ? `【${note.name}】\n${(note.text ?? '').trim()}\n\n${note.url ?? note.uri}` : note.text,
 		cw: note.cw, visibility, localOnly: note.localOnly, reactionAcceptance: note.reactionAcceptance,
 		...(note.visibility === 'specified' ? { visibleUserIds: [...note.visibleUserIds] } : {}),
+		...(options.withReactionAndUserPairCache ? { reactionAndUserPairCache: pairs } : {}),
 		renoteCount: note.renoteCount, repliesCount: note.repliesCount, reactionCount, reactions,
 		reactionEmojis: populateEmojis(Object.keys(reactions).filter(x => x.startsWith(':') && x.includes('@') && !x.includes('@.')).map(x => x.replaceAll(':', '')), note.userHost, materials),
 		...(note.userHost !== null ? { emojis: populateEmojis(note.emojis, note.userHost, materials) } : {}),
@@ -84,7 +85,7 @@ export function renderNote(id: string, materials: NoteViewMaterials, viewerId: s
 		result.poll = { multiple: poll.multiple, expiresAt: poll.expiresAt,
 			choices: poll.choices.map((text, index) => ({ text, votes: poll.votes[poll.choices.indexOf(text)], isVoted: myChoices.has(index) })) };
 	}
-	if (shouldHideNote(note, author, viewerId, { visibility, replyAuthorId: reply?.userId as string | undefined,
+	if (!options.skipHide && shouldHideNote(note, author, viewerId, { visibility, replyAuthorId: reply?.userId as string | undefined,
 		isFollowing: materials.followedAuthorIds.has(note.userId), visitorsAllowed: materials.ugcVisibilityForVisitor !== 'none', now })) {
 		delete result.visibleUserIds;
 		delete result.poll;

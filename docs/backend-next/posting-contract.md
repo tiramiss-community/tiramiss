@@ -73,3 +73,16 @@ HTTP成功は保存とレスポンス生成の成功。AP配送や通知の完�
 ローカル作者かつ `localOnly=false` のとき、通常投稿・引用はDelete(Tombstone)、元投稿が残るpure RenoteはUndo(Announce)、元投稿消失時はDeleteへ戻す。作者鍵を使い、followers・accepted relay・concerned directを別々に投入する。非public削除もfollowers/relayを対象にし、followersとdirect間でsharedInboxを重複排除しない。concernedは保存済みremote mention URI・Renote作者と、削除対象へのremote返信/Renote作者。対象自身の列は削除前に保持し、参照する子Noteは削除後も照会できる。
 
 開始済みの配送・監査は `notePostDelete` が終了期限まで待つ。失敗は `note-post-delete.failed` に記録し、producerの再実行・永続宛先台帳・強いCreate/Delete順序を追加しない。stream/通知は#173、TL/検索は#174、webhookは#175、チャートは#200、最後の連携確認は#176に残す。[実装と検証](../superpowers/plans/2026-11-07-note-delete-172.md)。
+
+
+## 投稿通知とstream producer（#173 第1slice、2026-11-07）
+
+reply/mention/quote/renote/noteの条件を`modules/note/notification-plan.ts`と通知の受信policyへ分離し、UseCaseでID・時刻を決めて既存PG通知へ直接保存する。購読通知とmanager通知は別枝で、設定・follow/list/muteは処理時、thread muteは各mention/replyの準備時に読む。ブロック・ワードミュートを保存前の条件として独自追加しない。保存後のnotifier検査でstreamだけ抑止される場合も本文は保持する。
+
+通常投稿は本家のguest `skipHide`/reaction-pair付き`notesStream`とreply/renote、受信者別detailのmentionを発行する。通知は保存完了後、受信者別Note/UserLiteを含め`mainStream`へ発行する。Redis channelは公開URLのhost、論理channelとmessageを包む本家のJSON形式を使う。削除は返信数減算後、AP準備と物理DELETEの前に`noteStream`のdeletedを開始する。後段のDELETE失敗でも発行を取り消さない。
+
+保存済みNoteと即時参照先の値は投稿処理のメモリ内で保持し、後続のcount更新や即削除による表現変更を避ける。Poll/Voteは描画時の現在値を読む。global/mention/thread準備の失敗ではmanager/APへ進まず、先行した購読通知は独立して終了する。通知保存・publishの失敗でHTTPの保存成功を取り消さず、開始済み処理をdrainし診断ログへ残す。
+
+既存の投票終了workerも保存後の通知発行へ接続した。削除済み投票・現在の設定・重複ジョブの規則は#162を維持する。通知本文の保存済み状態とstreamの成功は別で、永続effect・容量・一度だけ成立の基盤は再導入しない。
+
+検証は実HTTP/PG/Redis subscriberと通常poll worker、C10固定本家観測、source由来の受信条件・失敗境界を含む。[計画・実測](../superpowers/plans/2026-11-07-notification-stream-173.md)。WebSocket transport/auth/channelとクライアント受信は#189/#173/#176、広域fanout/cacheは#217、通知閲覧/既読/未読timer/push/移行は#177に残り、全stream/通知領域の完成とは扱わない。

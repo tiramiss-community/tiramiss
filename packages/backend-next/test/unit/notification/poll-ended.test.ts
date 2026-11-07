@@ -90,3 +90,28 @@ test('every recorded upstream case is connected', () => {
 	expect(recorded.cases.map(c => c.id)).toEqual(recorded.inputs.cases.map(c => c.id));
 	expect(recorded.cases.length).toBeGreaterThan(0);
 });
+
+test('publication happens after committed save; publish failure retains body and does not stop other recipients', async () => {
+	const saved: PostNotification[] = [];
+	const published: string[] = [];
+	const notify = createNotifyPollEnded({
+		readNote: async id => ({ id, userId: 'author', hasPoll: true }), readLocalVoterIds: async () => ['voter'],
+		readRecipient: async () => ({ userHost: null, receiveConfig: null }),
+		notifications: { run: work => work({ save: async n => {
+			saved.push(n);
+		} }) },
+		afterSaved: async n => {
+			expect(saved).toContain(n);
+			published.push(n.recipientId);
+			if (n.recipientId === 'author') {
+				throw new Error('publish');
+			}
+		},
+		newId: () => `n${saved.length}`, currentTime: () => now,
+	});
+	const result = await notify.notifyPollEnded({ noteId: 'note' });
+	expect(saved.map(n => n.recipientId)).toEqual(['author', 'voter']);
+	expect(published).toEqual(['author', 'voter']);
+	expect(result.notifiedUserIds).toEqual(['author', 'voter']);
+	expect(result.failures.map(f => f.recipientId)).toEqual(['author']);
+});

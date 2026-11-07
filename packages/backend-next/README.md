@@ -219,3 +219,10 @@ DB失敗やクライアント切断を理由に自動再作成しない。通常
 返信数の減算→必要な配送開始→Note削除→他人削除の監査開始という本家の境界を維持する。後段のDB失敗で先行減算・配送を巻き戻したとは扱わない。Poll/Vote/Reactionは既存FKで削除し、user/Renote/channelのcountは減らさない。`notePostDelete.idle()` は開始済み配送・監査の待機窓口で、通常終了にも接続している。保存済みNote/作者/元投稿からDelete/Undoを生成し、followers・relay・concerned directを独立投入する。
 
 `test/integration/note-delete.test.ts` は認証/監査/DB/エラー/制限/宛先、`test/processes/note-delete.test.ts` は固定C10/F8・原文署名・削除配送の終了待機を確認する。通知/streamは#173、TL/検索は#174、webhookは#175、チャートは#200、縦断完成は#176。
+
+
+### 投稿通知・stream producer（#173 第1slice）
+
+通常HTTPの投稿からreply/mention/quote/renote/note通知の受信条件とPG保存、Redisのnotes/main publicationを開始する。通常投票終了workerは通知保存後のpublicationへ接続し、削除は物理DELETE前のdeletedイベントを開始する。保存後のpublish失敗で本文やHTTP成功を巻き戻さず、終了時は開始済み処理を待つ。
+
+`test/integration/note-notifications.test.ts`は実HTTP/PG/Redis subscriberで条件変更・payload・失敗・snapshot/current Poll・通常poll workerを確認する。WebSocket transport/auth/channelとクライアント受信は#189/#173/#176、共有fanoutは#217、通知閲覧/既読/未読timer/push/移行は#177に残る。[詳細と検証結果](../../docs/superpowers/plans/2026-11-07-notification-stream-173.md)。

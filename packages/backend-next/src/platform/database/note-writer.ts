@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { noteFactsFromRow } from './note-reader.js';
 import { In } from 'typeorm';
 import { MiUser, MiNote, MiPoll, MiDriveFile, MiBlocking, MiFollowing, MiChannel, MiUserProfile } from 'backend-upstream/entities';
 import { evaluatePolicies, selectApplicableRoles } from '../../modules/role/public.js';
@@ -63,15 +64,12 @@ export function createNoteWriter(manager: EntityManager, roles: RoleMaterialRead
 			return files.map(file => ({ id: file.id, type: file.type }));
 		},
 		async readNote(id: string): Promise<RelatedNote | null> {
-			const row = await manager.getRepository(MiNote).findOne({ where: { id }, select: {
-				id: true, userId: true, userHost: true, text: true, cw: true, fileIds: true, hasPoll: true, replyId: true, renoteId: true,
-				threadId: true, channelId: true, visibility: true, visibleUserIds: true, mentions: true, replyUserId: true, localOnly: true,
-			} });
+			const row = await manager.getRepository(MiNote).findOneBy({ id });
 			if (!row) {
 				return null;
 			}
 			const { userId, userHost, text, cw, fileIds, hasPoll, replyId, renoteId, threadId, channelId, visibility, visibleUserIds, mentions, replyUserId, localOnly } = row;
-			return { id, userId, userHost, text, cw, fileIds, hasPoll, replyId, renoteId, threadId, channelId, visibility, visibleUserIds, mentions, replyUserId, localOnly };
+			return { eventFacts: noteFactsFromRow(row, createdAtFromId), id, userId, userHost, text, cw, fileIds, hasPoll, replyId, renoteId, threadId, channelId, visibility, visibleUserIds, mentions, replyUserId, localOnly };
 		},
 		isBlocking(blockerId: string, blockeeId: string): Promise<boolean> {
 			return manager.getRepository(MiBlocking).existsBy({ blockerId, blockeeId });

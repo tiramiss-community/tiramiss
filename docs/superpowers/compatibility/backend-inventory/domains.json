@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "ba51607ba514de5fe2e4a1bf574575d5f0d42fa9",
+  "implementationCommit": "40239a1244b1a088e4fe836e0c57360d0065c912",
   "domains": [
     {
       "id": "api-common",
@@ -1441,11 +1441,15 @@
     "capability:notifications": {
       "status": "partial",
       "implementation": [
-        "packages/backend-next/src/platform/database/notification/persistence.ts"
+        "packages/backend-next/src/platform/database/notification/persistence.ts",
+        "packages/backend-next/src/modules/note/created-events.ts",
+        "packages/backend-next/src/composition/posting-notifications.ts"
       ],
       "verification": [
-        "packages/backend-next/test/integration/notification.test.ts"
-      ]
+        "packages/backend-next/test/integration/notification.test.ts",
+        "packages/backend-next/test/integration/note-notifications.test.ts"
+      ],
+      "note": "承認済みPG直接保存と投稿6種の通知/Redis発行を接続。全通知API/未読/既読/push/移行は#177、WebSocketは#189。"
     },
     "capability:ap-outbound": {
       "status": "partial",
@@ -1537,14 +1541,16 @@
       "implementation": [
         "packages/backend-next/src/modules/notification/poll-ended.ts",
         "packages/backend-next/src/platform/job-queue/ended-poll-notification.ts",
-        "packages/backend-next/src/composition/poll-ended-job.ts"
+        "packages/backend-next/src/composition/poll-ended-job.ts",
+        "packages/backend-next/src/composition/posting-notifications.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/notification/poll-ended.test.ts",
         "packages/backend-next/test/integration/poll-ended-job.test.ts",
-        "packages/backend-next/test/processes/poll-ended.test.ts"
+        "packages/backend-next/test/processes/poll-ended.test.ts",
+        "packages/backend-next/test/integration/note-notifications.test.ts"
       ],
-      "note": "#162で通常workerへ接続し、受信者の選定とPGへの保存まで本家probeと比較。stream配信・未読/pushは#173/#177/#189"
+      "note": "#162の通常worker・PG保存へ#173でnotifierなしのRedis notification発行を接続。未読/既読/pushは#177、WebSocket受信は#189。"
     },
     "processor:Deliver": {
       "status": "partial",
@@ -1567,15 +1573,17 @@
       "implementation": [
         "packages/backend-next/src/http/note-delete-api.ts",
         "packages/backend-next/src/modules/note/delete-note.ts",
-        "packages/backend-next/src/platform/database/note-deleter.ts"
+        "packages/backend-next/src/platform/database/note-deleter.ts",
+        "packages/backend-next/src/platform/posting-stream.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/note/delete-note.test.ts",
         "packages/backend-next/test/integration/note-delete.test.ts",
         "packages/backend-next/test/processes/note-delete.test.ts",
-        "docs/superpowers/compatibility/note/reference-delete.unit.ts"
+        "docs/superpowers/compatibility/note/reference-delete.unit.ts",
+        "packages/backend-next/test/integration/note-notifications.test.ts"
       ],
-      "note": "#172で認可・物理削除・返信数減算・監査・Delete/Undo配送を接続し、本家DELETE失敗境界も比較。通知/stream#173、TL/検索#174、webhook#175、チャート#200、縦断#176は未完了。"
+      "note": "#172の認可・物理削除・返信数減算・監査・Delete/Undo配送へ#173でDELETE前のdeleted Redis発行を接続。DELETE失敗でも発行済み。TL/検索#174、webhook#175、チャート#200、WebSocket#189、縦断#176は未完了。"
     }
   }
 }
