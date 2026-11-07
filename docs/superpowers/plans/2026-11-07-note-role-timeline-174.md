@@ -64,7 +64,7 @@
   dependency順build/typecheck後、`pnpm --filter backend-next test:process test/processes/note-role-timelines.test.ts`。実HTTP子の投稿直後SIGTERMで既存post-saveが投入/publicationまでdrainし、終了code0と資源解放を確認する。単体でpubsub拒否と開始済み古いID直接処理の待機を確認する。既存timeline-cache、post-save、created-eventsの近傍テストを一度実行する。
 - [x] **Step 7: 比較と再構築材料を永続文書へ整理する。**
   実行したprobe/期待値と新実装のテストの対応、source比較と実依存の証拠、detached失敗を安全なログ/drainへ接続する差異を記録する。再構築はNote＋User＋現時点Role/assignmentでは過去の所属/条件一致を再現できず、publicationは再構築で再送しないことを #132/#133 へ引き継ぐ。未実装のhashtag/antenna/featured、Role閲覧/API/WSは残す。
-- [ ] **Step 8: 出荷検査・独立レビュー・実装commit。**
+- [x] **Step 8: 出荷検査・独立レビュー・実装commit。**
   `pnpm --filter backend-next... build`、`pnpm --filter backend-next... typecheck`、固定probe再生、`node scripts/check-shipping.mjs --base 7d606dec1f95c110b90203a9ea05d1a71744e00c`、`git diff --check` を実行する。独立レビューの必須指摘を修正し、controllerがTask1のみをcommitする。Entity/migration変更がないためschema検査と旧backend API型生成は対象外。
 
 ### Task 2: 実装commitへ対応表と検証metadataを固定する
@@ -73,16 +73,16 @@
 
 **Interfaces:** Task1の実在する実装commit、repo内の比較資料と検証ファイルを参照する。T1完了前に新規ファイルを指すimplementationCommitを作らない。
 
-- [ ] **Step 1: 対応するproducer行の根拠だけを更新する。**
+- [x] **Step 1: 対応するproducer行の根拠だけを更新する。**
   `implementationCommit`をTask1 commitへ進め、Role timeline投稿更新/publicationの根拠を追加する。監査判定・担当domain・既存source証拠を維持し、Role API/WS/閲覧や#174全体の状態を完了へ変えない。
-- [ ] **Step 2: 生成と検証を行う。**
+- [x] **Step 2: 生成と検証を行う。**
   `node scripts/backend-contract-inventory.mjs --write`、`node scripts/backend-contract-inventory.mjs --check`、`node --test scripts/backend-contract-inventory.test.mjs`、`node scripts/check-shipping.mjs --base 7d606dec1f95c110b90203a9ea05d1a71744e00c`、`git diff --check` を実行し、生成差分が対象行とpinに限定されることを確認する。
 - [ ] **Step 3: metadata commitとPR引継ぎを行う。**
   controllerがTask2を別commitにし、PRは `Refs #174` とする。#174/#172/#176/#181/#189をcloseしない。#114/#127/#174のlive本文は#230未マージと記載した古い状態なので、ユーザーから認められた範囲で進捗更新する場合も本sliceと既存マージ済み成果を区別する。
 
 ## 実装・検証結果
 
-T1製品・比較資料・検証は実装済み、独立coreレビューAPPROVE（P1/P2なし）。T1 commitとT2 metadataはcontrollerが順に行う。開始baseは上記のまま、実装commitはまだない。
+T1製品・比較資料・検証は実装コミット `381eb4ff11106d62139f912cd237634385bde256` に固定した。独立coreレビューAPPROVE（P1/P2なし）。開始baseは上記のまま。T2 metadataもこの実在commitへ固定し、commitとPR送信はcontrollerが行う。
 
 - RED: created-events 26件中3失敗（Role開始/非同期失敗/終了待機未接続）。新producer import不在も確認。同期例外drain追加は6件中1失敗→6件成功。
 - PASS: focused producer/created-events 2 files / 48件、近傍Role条件・timeline-cache/plan・post-saveを含め6 files / 112件。controllerの全unit 61 files / 2119件。
@@ -92,6 +92,14 @@ T1製品・比較資料・検証は実装済み、独立coreレビューAPPROVE�
 - 実装判断: `selectApplicableRoles`内部のassigned選択を狭い公開helper `selectAssignedRoles`として共用し、manual-only定義で不要なUser取得を避けた。条件評価/expiryをadapterへ複製しない。既存契約の変更・新consumer/API/schema/dependencyはない。
 - 差異: 既存#119材料cache/現在User factsを維持する。本家の5分User cacheとnotesCount競合はsource原メソッドで記録し、加算完了→Role評価の順序を追加しない。sourceのdetached workは既存診断と終了待機へ接続する。
 - 制約: role maxlen1000は最近IDの10%trim時に適用し、古い直接更新はtrimしない。常時hard capとは扱わない。削除purge/backfillはなく、#132/#133へ履歴材料の不足とpublicationを再送しないことを記録。
-- 残範囲: antenna/hashtag/featured等#174、Role閲覧API #181/#185、Role WS #189、#172/#176の最終連携、T2対応表pin/生成とPR送信。Entity/migration変更と旧backend API変更がないためschema検査/旧API型生成はSKIPPED。
+- 残範囲: antenna/hashtag/featured等#174、Role閲覧API #181/#185、Role WS #189、#172/#176の最終連携、PR送信。Entity/migration変更と旧backend API変更がないためschema検査/旧API型生成はSKIPPED。
 
 詳細なケース対応と再実行手順は[Role producer比較資料](../compatibility/note/role-timeline/README.md)。
+
+
+### T2 metadataの検証
+
+- PASS: `implementationCommit` を実装済み `381eb4ff11106d62139f912cd237634385bde256` へ更新。producer責務・Role event publication・RoleServiceの限定3行だけを `not_implemented` から `partial` にし、既存4行は `partial` のまま根拠を追加した。
+- PASS: `node scripts/backend-contract-inventory.mjs --write` / `--check`、`node --test scripts/backend-contract-inventory.test.mjs`（10件）、`git diff --check`。
+- PASS: semantic照合で2,119契約・1,432監査行・31domain、ID集合・audit A/B・domain/source/line/referencesと既存根拠の順序を保持し、変更は指定7行と実装pinだけと確認した。`roles/notes`、Role WS channel、Roleイベントの公開判定は未実装のまま。
+- SKIPPED（controllerへ引継ぎ）: 最終shippingは全変更安定後にcontrollerが実行する。T2はJSON/Markdownのみで製品コードを変更せず、T1のbuild/typecheck/製品テストを再実行しない。metadata commitとPR送信はcontrollerに残る。
