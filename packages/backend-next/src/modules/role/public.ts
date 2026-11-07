@@ -4,7 +4,7 @@
  */
 export type { EvaluationRole, InstanceRoleFacts, RoleAssignment, RolePrivileges, UserRoleFacts } from './model.js';
 export { evaluateCondition } from './condition.js';
-export { selectApplicableRoles } from './applicable-roles.js';
+export { selectApplicableRoles, selectAssignedRoles } from './applicable-roles.js';
 export { evaluatePolicies, type PolicyInput } from './policies.js';
 export { evaluatePrivileges } from './privileges.js';
 export { DEFAULT_POLICIES, type RolePolicies } from './policy-defaults.js';

@@ -4,7 +4,7 @@
 
 Misskeyバックエンド再設計の実行基盤・Role初期実装・投稿参照。
 既存トークンで `admin/roles/show` と `admin/roles/update` を利用できる。
-`notes/show` は保存済み本家データから取得・可視性判定・出力を提供する。通常workerは本家の投票終了ジョブと、既存のaccepted relayへの配送を含むAP配送ジョブを実行する。その他のAPIと業務ジョブは後続の実装範囲。
+`notes/show` は保存済み本家データから取得・可視性判定・出力を提供する。通常workerは本家の投票終了ジョブと、既存のaccepted relayへの配送を含むAP配送ジョブを実行する。通常投稿後は[Role timeline producer](../../docs/superpowers/compatibility/note/role-timeline/README.md)も既存の材料評価・Redis cache・pubsubへ接続する。Role閲覧API/WS channelと、その他のAPI・業務ジョブは後続の実装範囲。
 
 全公開契約の移植状況・保存/副作用・担当Issueは[バックエンド対応表](../../docs/superpowers/compatibility/backend-inventory/README.md)を参照する。
 登録APIだけでなく、非API HTTP、stream、ActivityPub、定期/業務ジョブ、CLIも追跡する。

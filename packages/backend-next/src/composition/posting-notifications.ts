@@ -16,6 +16,7 @@ import type { UserWebhookEvent } from '../platform/job-queue/user-webhook.js';
 import type { createPostingStream } from '../platform/posting-stream.js';
 
 export function createPostingNotifications(resources: {
+	roleTimelines?(noteId: string, userId: string, note: Record<string, unknown>): Promise<void>;
 	dataSource: DataSource; reactionsRedis: Redis; postingStream: ReturnType<typeof createPostingStream>; webhook?(userId: string, type: UserWebhookEvent, note: Record<string, unknown>): Promise<void>;
 }, config: RuntimeConfig) {
 	const codec = createIdCodec(config.id);
@@ -64,7 +65,7 @@ export function createPostingNotifications(resources: {
 		createdEvents: (deliver: (noteId: string) => Promise<void>, index?: (noteId: string, snapshot?: NoteCreatedSnapshot) => Promise<void>) => {
 			const events = createNoteCreatedEvents({
 				...facts, render: async (noteId, viewerId, options, snapshot) => (await render(noteId, viewerId, options, snapshot)).note,
-				stream: resources.postingStream, webhook: resources.webhook, notifications: createNotificationTransactions(resources.dataSource),
+				stream: resources.postingStream, roleTimelines: resources.roleTimelines, webhook: resources.webhook, notifications: createNotificationTransactions(resources.dataSource),
 				afterNotificationSaved, deliver, index, newId: codec.newId, currentTime: Date.now,
 			});
 			return (noteId: string, input?: { createdSnapshot?: NoteCreatedSnapshot }) => events(noteId, input?.createdSnapshot);
