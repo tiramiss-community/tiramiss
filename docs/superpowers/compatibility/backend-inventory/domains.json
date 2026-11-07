@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "6f4a5444ca9f02634972e81b5ffe7368302f7335",
+  "implementationCommit": "2ed681dcf3ba502865dd325baec2545568333018",
   "domains": [
     {
       "id": "api-common",
@@ -349,9 +349,22 @@
         "users/search",
         "users/search-by-username-and-host"
       ],
-      "implementation": [],
-      "verification": [],
-      "differences": []
+      "implementation": [
+        "packages/backend-next/src/modules/search/public.ts",
+        "packages/backend-next/src/platform/search-index.ts",
+        "packages/backend-next/src/composition/posting-search.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/search.test.ts",
+        "packages/backend-next/test/unit/search-index.test.ts",
+        "packages/backend-next/test/integration/note-search-index.test.ts",
+        "packages/backend-next/test/processes/note-search-index.test.ts",
+        "docs/superpowers/compatibility/note/search/reference-search.cjs",
+        "docs/superpowers/compatibility/note/search/README.md"
+      ],
+      "differences": [
+        "検索producerだけを#174/#172で接続。detached拒否は安全な構造化ログへ記録し、既存の開始済み要求drain/終了期限へ接続する。engine task適用は待機しない。検索API・タグ更新・再構築は未完了。"
+      ]
     },
     {
       "id": "collections",
@@ -1569,18 +1582,25 @@
         "packages/backend-next/src/composition/posting-websocket.ts",
         "packages/backend-next/src/processes/http.ts",
         "packages/backend-next/src/modules/stream/connection.ts",
-        "packages/backend-next/src/modules/stream/policy.ts"
+        "packages/backend-next/src/modules/stream/policy.ts",
+        "packages/backend-next/src/modules/search/public.ts",
+        "packages/backend-next/src/platform/search-index.ts",
+        "packages/backend-next/src/composition/posting-search.ts"
       ],
       "verification": [
         "packages/backend-next/test/integration/note-create.test.ts",
         "packages/backend-next/test/processes/note-create.test.ts",
         "packages/backend-next/test/integration/posting-websocket.test.ts",
-        "packages/backend-next/test/processes/posting-websocket.test.ts"
+        "packages/backend-next/test/processes/posting-websocket.test.ts",
+        "packages/backend-next/test/integration/note-search-index.test.ts",
+        "packages/backend-next/test/processes/note-search-index.test.ts",
+        "docs/superpowers/compatibility/note/search/reference-search.cjs",
+        "docs/superpowers/compatibility/note/search/README.md"
       ],
       "differences": [
         "添付・投票・返信/Renote・channel・指定宛先・MFM抽出は#170で接続済み。未登録リモートユーザー宛てのメンションは#195まで保存前に501 NOT_IMPLEMENTEDで拒否し、登録済みリモートユーザーも#195まで再同期しない暫定制限（docs/backend-next/posting-contract.md）。完成版の意図的差異ではない。"
       ],
-      "note": "投稿保存後のmain/homeTimeline実受信を実HTTP/processで確認。既存の未登録remote mention等の暫定制限と検索等の未接続は残る。"
+      "note": "保存後のmain/home実受信と検索snapshot登録を接続。未登録remote mentionの501と登録済みremote再同期制限#195、antenna/hashtag/featured/Role TL等#174、全体縦断#176は未完了。"
     },
     "processor:EndedPollNotification": {
       "status": "partial",
@@ -1632,7 +1652,10 @@
         "packages/backend-next/src/composition/posting-websocket.ts",
         "packages/backend-next/src/processes/http.ts",
         "packages/backend-next/src/modules/stream/connection.ts",
-        "packages/backend-next/src/modules/stream/policy.ts"
+        "packages/backend-next/src/modules/stream/policy.ts",
+        "packages/backend-next/src/modules/search/public.ts",
+        "packages/backend-next/src/platform/search-index.ts",
+        "packages/backend-next/src/composition/posting-search.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/note/delete-note.test.ts",
@@ -1641,9 +1664,13 @@
         "docs/superpowers/compatibility/note/reference-delete.unit.ts",
         "packages/backend-next/test/integration/note-notifications.test.ts",
         "packages/backend-next/test/integration/posting-websocket.test.ts",
-        "packages/backend-next/test/processes/posting-websocket.test.ts"
+        "packages/backend-next/test/processes/posting-websocket.test.ts",
+        "packages/backend-next/test/integration/note-search-index.test.ts",
+        "packages/backend-next/test/processes/note-search-index.test.ts",
+        "docs/superpowers/compatibility/note/search/reference-search.cjs",
+        "docs/superpowers/compatibility/note/search/README.md"
       ],
-      "note": "認可・物理削除・返信数減算・監査・Delete/Undo配送とDELETE前deleted発行に、subNote経由の実WS受信を接続。DELETE失敗時の既存境界は維持。検索等#174・チャート#200・全体縦断#176は未完了。固定本家に削除webhookはない。"
+      "note": "認可・物理削除・返信数・監査・Delete/Undo配送、DELETE前publicationとsubNote実WS受信に、DB DELETE前の検索解除を接続。DELETE失敗でも解除開始を維持。固定本家に削除webhookはない。チャート#200・全体縦断#176は未完了。"
     },
     "capability:timeline": {
       "status": "partial",
@@ -1891,6 +1918,23 @@
         "docs/superpowers/compatibility/stream/README.md"
       ],
       "note": "#173のmain/homeTimeline・note購読（別名、上限、参照count、削除noteUpdated）を通常HTTPへ接続。固定source64ケースと新実装の実PG/Redis/WS・通常worker/processで比較。他17channel・readNotification・channel/ch書込と全#189は未完了。"
+    },
+    "capability:search": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/search/public.ts",
+        "packages/backend-next/src/platform/search-index.ts",
+        "packages/backend-next/src/composition/posting-search.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/search.test.ts",
+        "packages/backend-next/test/unit/search-index.test.ts",
+        "packages/backend-next/test/integration/note-search-index.test.ts",
+        "packages/backend-next/test/processes/note-search-index.test.ts",
+        "docs/superpowers/compatibility/note/search/reference-search.cjs",
+        "docs/superpowers/compatibility/note/search/README.md"
+      ],
+      "note": "検索producerのsettings/登録/解除を#174/#172で接続。検索API/閲覧制御#186、再構築#132/#133、antenna/hashtag/featured/Role TL等#174、最終連携#172/#176は未完了。"
     }
   }
 }
