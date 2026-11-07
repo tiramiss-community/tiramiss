@@ -6,12 +6,12 @@ import { expect, test } from 'vitest';
 import { createNoteCreatedEvents } from '../../../src/modules/note/created-events.js';
 import type { PostNotification } from '../../../src/modules/notification/public.js';
 
-function setup(options: { failMention?: boolean; failPublish?: boolean; failSave?: boolean; reply?: boolean; threadModes?: boolean[]; failThread?: boolean; subscribers?: string[]; slowSave?: Promise<void> } = {}) {
+function setup(options: { failMention?: boolean; failPublish?: boolean; failSave?: boolean; reply?: boolean; threadModes?: boolean[]; failThread?: boolean; subscribers?: string[]; slowSave?: Promise<void>; mentions?: string[]; beforeReception?(recipientId: string): Promise<void> } = {}) {
 	const saved: PostNotification[] = [];
 	const events: string[] = [];
 	const run = createNoteCreatedEvents({
 		read: async () => ({
-			id: 'n', userId: 'a', visibility: 'public', visibleUserIds: [], mentions: ['b'], reply: options.reply ? { id: 'parent', userId: 'b' } : null, renote: null, pureRenote: false,
+			id: 'n', userId: 'a', visibility: 'public', visibleUserIds: [], mentions: options.mentions ?? ['b'], reply: options.reply ? { id: 'parent', userId: 'b' } : null, renote: null, pureRenote: false,
 			localUserIds: new Set(['a', 'b']), threadMutedUserIds: new Set<string>(), subscribers: (options.subscribers ?? ['b']).map(userId => ({ userId, renoteMuted: false }))
 		}),
 		isThreadMuted: async () => {
@@ -36,7 +36,10 @@ function setup(options: { failMention?: boolean; failPublish?: boolean; failSave
 				events.push(type);
 			},
 		},
-		readReception: async (recipientId, notifierId) => ({ recipientId, notifierId, mode: null, muted: false, followsNotifier: false, followedByNotifier: false, listContainsNotifier: false }),
+		readReception: async (recipientId, notifierId) => {
+			await options.beforeReception?.(recipientId);
+			return { recipientId, notifierId, mode: null, muted: false, followsNotifier: false, followedByNotifier: false, listContainsNotifier: false };
+		},
 		notifications: {
 			run: work => work({
 				save: async notification => {
@@ -110,4 +113,52 @@ test('failed subscriber does not end drain while another subscriber is saving', 
 	expect(ended).toBe(false);
 	release(); await running;
 	expect(world.saved.map(n => n.recipientId)).toEqual(['c']);
+});
+
+test('at most eight subscriptions run concurrently, all recipients are attempted and failures still drain', async () => {
+	let releaseReception!: () => void;
+	let releaseSave!: () => void;
+	const receptionGate = new Promise<void>(resolve => {
+		releaseReception = resolve;
+	});
+	const saveGate = new Promise<void>(resolve => {
+		releaseSave = resolve;
+	});
+	const attempted: string[] = [];
+	let active = 0;
+	let maximumActive = 0;
+	const subscribers = ['b', 'c', ...Array.from({ length: 18 }, (_, i) => `subscriber${i}`)];
+	const world = setup({
+		subscribers, mentions: [], failSave: true, slowSave: saveGate,
+		beforeReception: async recipientId => {
+			attempted.push(recipientId);
+			active++;
+			maximumActive = Math.max(maximumActive, active);
+			await receptionGate;
+			active--;
+		},
+	});
+	let ended = false;
+	let failure: unknown;
+	const running = world.run('n').catch(error => {
+		failure = error;
+	}).finally(() => {
+		ended = true;
+	});
+	try {
+		await new Promise(resolve => setImmediate(resolve));
+		expect(active).toBe(8);
+		expect(world.events).toContain('AP');
+		releaseReception();
+		await new Promise(resolve => setImmediate(resolve));
+		expect(new Set(attempted)).toEqual(new Set(subscribers));
+		expect(ended).toBe(false);
+	} finally {
+		releaseReception();
+		releaseSave();
+		await running;
+	}
+	expect(maximumActive).toBe(8);
+	expect(failure).toBeInstanceOf(AggregateError);
+	expect(new Set(world.saved.map(n => n.recipientId))).toEqual(new Set(subscribers.filter(id => id !== 'b')));
 });

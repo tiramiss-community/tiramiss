@@ -33,7 +33,8 @@ export function createNoteNotificationReader(manager: EntityManager) {
 			const subscribers = await manager.getRepository(MiFollowing).findBy({ followeeId: note.userId, notify: 'normal' });
 			const mutings = note.pureRenote && subscribers.length > 0
 				? await manager.getRepository(MiRenoteMuting).findBy({ muterId: In(subscribers.map(s => s.followerId)), muteeId: note.userId }) : [];
-			return subscribers.map(s => ({ userId: s.followerId, renoteMuted: mutings.some(m => m.muterId === s.followerId) }));
+			const renoteMutedUserIds = new Set(mutings.map(m => m.muterId));
+			return subscribers.map(s => ({ userId: s.followerId, renoteMuted: renoteMutedUserIds.has(s.followerId) }));
 		},
 		async isThreadMuted(userId: string, threadId: string): Promise<boolean> {
 			return manager.getRepository(MiNoteThreadMuting).existsBy({ userId, threadId });

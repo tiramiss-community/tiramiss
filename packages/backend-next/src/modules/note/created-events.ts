@@ -9,6 +9,8 @@ import type { NoteCreatedSnapshot } from './create-contract.js';
 import type { TransactionRunner } from '../../application/transaction.js';
 import type { NoteNotificationPlanInput, PlannedNoteNotification } from './notification-plan.js';
 
+const subscriptionConcurrency = 8;
+
 export function createNoteCreatedEvents(ports: {
 	read(noteId: string, snapshot?: NoteCreatedSnapshot): Promise<NoteNotificationPlanInput | null>;
 	readSubscribers?(note: NoteNotificationPlanInput): Promise<NoteNotificationPlanInput['subscribers']>;
@@ -45,8 +47,21 @@ export function createNoteCreatedEvents(ports: {
 		};
 		start((async () => {
 			const subscribers = ports.readSubscribers ? await ports.readSubscribers(note) : note.subscribers;
-			const subscriptions = await Promise.allSettled(planNoteNotifications({ ...note, subscribers }).filter(n => n.type === 'note').map(notify));
-			const errors = subscriptions.flatMap(result => result.status === 'rejected' ? [result.reason] : []);
+			const subscriptions = planNoteNotifications({ ...note, subscribers }).filter(n => n.type === 'note');
+			let next = 0;
+			const errors: unknown[] = [];
+			// PG保存の待機を購読者全員分まとめて作らず、各処理が終わってから次の宛先へ進む。
+			const runSubscriptions = async () => {
+				while (next < subscriptions.length) {
+					const subscription = subscriptions[next++];
+					try {
+						await notify(subscription);
+					} catch (error) {
+						errors.push(error);
+					}
+				}
+			};
+			await Promise.all(Array.from({ length: Math.min(subscriptionConcurrency, subscriptions.length) }, runSubscriptions));
 			if (errors.length > 0) {
 				throw new AggregateError(errors, 'Subscription notifications failed');
 			}

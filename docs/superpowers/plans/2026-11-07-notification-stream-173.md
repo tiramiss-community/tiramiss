@@ -74,3 +74,12 @@ Full WebSocket transport/auth/channels and recipient filtering/actual client rec
 ## Independent review
 
 Native in-session source reviewers covered notification conditions and stream/render/lifecycle contracts, then a fresh completeness reviewer checked the final test evidence. No unresolved functional blocker remains. Ultracode subprocess launch was rejected by automatic approval review before any worker executed; no subprocess output is claimed. Native reviewers were used as the safer alternative within this session, without retrying the rejected external execution.
+
+## PR review follow-up (2026-11-07)
+
+Verified the two performance findings in [review 5808421791](https://github.com/tiramiss-community/tiramiss/pull/229#pullrequestreview-5808421791) against the current code:
+
+- Subscriber notifications previously started every recipient's PG queries at once. A local worker loop now runs at most eight complete notification operations per post. A failed recipient does not stop the remaining recipients; the existing drain waits for all workers and aggregates errors. Manager notifications and AP preparation remain independent of subscription completion.
+- Renote mute matching now uses a Set of muter IDs, avoiding a repeated linear scan per subscriber without changing recipients or flags.
+- The limit is a conservative implementation constant, not a measured throughput target or a limit across posts/processes. The review also suggested an operational setting; no new configuration surface is added for this narrow PG-load fix. Configuration can be introduced when actual tuning requirements are established, in line with GOALS.
+- PASS: the new regression initially observed 20 concurrent starts instead of the expected eight, then passed after the fix. Full unit 49 files / 1,707 tests, notification HTTP/PG/Redis integration 13 tests, and typecheck pass. The integration retains pure-Renote mute and quote/subscriber coverage.
