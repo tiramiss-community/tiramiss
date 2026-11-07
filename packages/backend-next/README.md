@@ -152,7 +152,7 @@ relay登録・受理/拒否・inbound検証・actor公開は#195、削除配送�
 
 #174の第1sliceは通常投稿からhome/local/user/list/channelのRedisリストを更新する。返信・添付・公開範囲・購読関係・休眠フラグを本家のproducer規則で判定し、保存時のNoteと現在の関係/Metaを使う。`list:<timeline名>`を既存prefix内へ保存する。3分より古いIDは現在の末尾より日時が新しい場合だけ追加し、recentは10%で指定件数へtrimする。削除時は本家どおりIDを消さない。失敗は投稿HTTP成功を取り消さず記録し、終了時に開始済み処理を待つ。
 
-非channel投稿の10%でローカル非休眠followerを最大1000件抽出し、最終活動が50日より古いUserとその全Followingを休眠化する。WebSocket接続時の復帰は未接続（#189/#180）であり、休眠の全ライフサイクルの完成ではない。検索・antenna・hashtag・featured・role timeline等は#174の後続、閲覧APIは#185/#186、role関連は#181/#189、チャートは#200、再構築は#132/#133に残る。[比較範囲](../../docs/superpowers/compatibility/note/timeline/README.md)を参照。
+非channel投稿の10%でローカル非休眠followerを最大1000件抽出し、最終活動が50日より古いUserとその全Followingを休眠化する。WebSocket接続と5分ごとの活動記録でUserとFollowingの休眠フラグを解除する。検索・antenna・hashtag・featured・role timeline等は#174の後続、閲覧APIは#185/#186、role関連は#181/#189、チャートは#200、再構築は#132/#133に残る。[比較範囲](../../docs/superpowers/compatibility/note/timeline/README.md)を参照。
 
 ## 通知のPostgreSQL保存
 
@@ -214,7 +214,7 @@ DB失敗やクライアント切断を理由に自動再作成しない。通常
 指定宛先、MFM抽出（メンション・ハッシュタグ・絵文字）を接続した。メンションはローカルユーザーと登録済みリモートユーザーをDBで解決する。
 未登録のリモートユーザー宛ては、WebFingerによる解決（#195）まで501 `NOT_IMPLEMENTED`で保存前に拒否する。
 登録済みリモートユーザーも、#195までは `lastFetchedAt` が古くても再同期せずに使う（暫定制限）。
-投票終了ジョブ（#162）、AP配送（#171。既存のaccepted relayへの配送を含む）、投稿通知/stream producer（#173）と下記の通常TL producer（#174）は接続済み。検索・webhook・WebSocket受信等は未接続で、投稿領域全体の完成ではない。
+投票終了ジョブ（#162）、AP配送（#171。既存のaccepted relayへの配送を含む）、投稿通知/stream producer（#173）と下記の通常TL producer（#174）は接続済み。投稿webhookと下記のWebSocket受信も接続済み。検索等が残るため投稿領域全体の完成ではない。
 最小契約と既存実装の撤去順は[投稿の最小契約](../../docs/backend-next/posting-contract.md)を参照。
 
 ## 投稿削除（#172）
@@ -230,6 +230,14 @@ DB失敗やクライアント切断を理由に自動再作成しない。通常
 
 通常HTTPの投稿からreply/mention/quote/renote/note通知の受信条件とPG保存、Redisのnotes/main publicationを開始する。通常投票終了workerは通知保存後のpublicationへ接続し、削除は物理DELETE前のdeletedイベントを開始する。保存後のpublish失敗で本文やHTTP成功を巻き戻さず、終了時は開始済み処理を待つ。
 
-`test/integration/note-notifications.test.ts`は実HTTP/PG/Redis subscriberで条件変更・payload・失敗・snapshot/current Poll・通常poll workerを確認する。WebSocket transport/auth/channelとクライアント受信は#189/#173/#176、共有fanoutは#217、通知閲覧/既読/未読timer/push/移行は#177に残る。[詳細と検証結果](../../docs/superpowers/plans/2026-11-07-notification-stream-173.md)。
+`test/integration/note-notifications.test.ts`は実HTTP/PG/Redis subscriberで条件変更・payload・失敗・snapshot/current Poll・通常poll workerを確認する。main/homeTimelineと削除購読のWebSocket受信を下記で接続した。他channelは#189、広域の共有fanout/cacheは#217、通知閲覧/既読/未読timer/push/移行は#177に残る。[詳細と検証結果](../../docs/superpowers/plans/2026-11-07-notification-stream-173.md)。
 
 投稿 webhook は author note、ローカル受信者の mention/reply/renote を通常 `userWebhookDeliver` queue と worker へ接続する。設定管理と投稿以外のイベントは #197、最終の縦断確認は #176 に残る。設定キャッシュ・投入時 snapshot・固定本家との比較と実行方法は[比較資料](../../docs/superpowers/compatibility/user-webhook/README.md)を参照。
+
+### 投稿WebSocket受信（#173、#189の一部）
+
+通常HTTPプロセスの `/streaming` にWebSocketで接続し、native/app/miauth token（Bearer優先、query `i`）またはguestを受け付ける。app/miauthには `read:account` が必要。`connect` の `main` と `homeTimeline`、`subNote`/`s`/`sr` と `unsubNote`/`un` による削除 `noteUpdated` を扱う。`disconnect`、`pong: true` の接続ack、接続ID置換、32channel・1536note上限を本家に合わせる。
+
+HTTPプロセスごとに専用Redis subscriberを1本持ち、各受信者の関係factsを接続時と10秒ごとに取得する。TLの公開snapshotは維持し、nested hideと自分のreactionを受信者ごとに適用する。followers本文を隠す判定だけは本家の別following cacheに相当する現在DB材料で行う。接続時と5分ごとの活動日時更新、1分ごとのpingと2分超の無pong切断を行い、停止はupgrade/WSを拒否・終了し、開始済みDB処理を待ってから依存先を解放する。
+
+実HTTP create/delete、通常投票worker、実PG/Redis/WSと停止・heartbeat・relation refreshを検証する。[固定本家比較と検証範囲](../../docs/superpowers/compatibility/stream/README.md)。`readNotification`・channel書込・他17channelは#189/#177、通知閲覧/既読/未読/push/移行は#177、投稿全体の縦断完成は#176に残る。

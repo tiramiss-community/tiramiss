@@ -8,7 +8,7 @@
 
 - 本家: `8e07cf085adf7009583d234a208e30436f020e26`。`backend-upstream/upstream-sync.json` と同じ SHA。fork の現在の `packages/backend` からは列挙しない。
 - 新実装: `6f62cb897d2a03e8fd7727eadf45c20d8bfcf206`（PR #213 マージ後）。判定と根拠はこの地点に固定する。
-  - 行の `implementation`/`verification` は `domains.json` の `implementationCommit` の木で存在を検査する。#216 の最初の PR で外向き HTTP の行の根拠を参照できるよう `224416b352fa474a37fb286cd4838d8818947fc8` へ、#215 段階 2 の PR で連合の共通土台の行の根拠も参照できるよう、両方を含む `36cad9edcbfd2b990d36b2f6645b677b1e54f0e4` へ、#160 の最初の PR で AP の署名・配送結果の分類の行の根拠も参照できるよう `02612df99fe3c529fc692d76b3bd37498a2e0e1a` へ、#162 の最初の PR で投票終了ジョブと通常 worker の行の根拠も参照できるよう `00c6b5b75ddcf4bb9e5e79291e2f54a9dd4933e4` へ、同じ PR で queue 接続のコメントを直した `ae30e864a06baf64a793d10ab6fb844ee3821502` へ、#171 の最初の PR でノート作成の AP 配送の行の根拠も参照できるよう `d9b718359e583fd9e33711c8321fc06b83c06b53` へ、同じ PR で MFM の `br` の行・起動中の投入口の接続の喪失を直した `47c9c75dd6b5fc9527c3976b86364b06c46f3a04` へ進めた。#172の削除sliceで追加した実装・検証の根拠を参照できるよう `ba51607ba514de5fe2e4a1bf574575d5f0d42fa9` へ進めた。#173第1sliceの通知・stream producerと4 Entityの根拠を参照できるよう `40239a1244b1a088e4fe836e0c57360d0065c912` へ進めた。#174第1sliceのTL producer・設定・休眠判定・ChannelFollowingの根拠を参照できるよう `6a7e2e3e46c7ad49fed7e87f23a7b781c145532c` へ進めた。監査の判定（`audit`）はこの更新で変えていない。
+  - 行の `implementation`/`verification` は `domains.json` の `implementationCommit` の木で存在を検査する。#216 の最初の PR で外向き HTTP の行の根拠を参照できるよう `224416b352fa474a37fb286cd4838d8818947fc8` へ、#215 段階 2 の PR で連合の共通土台の行の根拠も参照できるよう、両方を含む `36cad9edcbfd2b990d36b2f6645b677b1e54f0e4` へ、#160 の最初の PR で AP の署名・配送結果の分類の行の根拠も参照できるよう `02612df99fe3c529fc692d76b3bd37498a2e0e1a` へ、#162 の最初の PR で投票終了ジョブと通常 worker の行の根拠も参照できるよう `00c6b5b75ddcf4bb9e5e79291e2f54a9dd4933e4` へ、同じ PR で queue 接続のコメントを直した `ae30e864a06baf64a793d10ab6fb844ee3821502` へ、#171 の最初の PR でノート作成の AP 配送の行の根拠も参照できるよう `d9b718359e583fd9e33711c8321fc06b83c06b53` へ、同じ PR で MFM の `br` の行・起動中の投入口の接続の喪失を直した `47c9c75dd6b5fc9527c3976b86364b06c46f3a04` へ進めた。#172の削除sliceで追加した実装・検証の根拠を参照できるよう `ba51607ba514de5fe2e4a1bf574575d5f0d42fa9` へ進めた。#173第1sliceの通知・stream producerと4 Entityの根拠を参照できるよう `40239a1244b1a088e4fe836e0c57360d0065c912` へ進めた。#174第1sliceのTL producer・設定・休眠判定・ChannelFollowingの根拠を参照できるよう `6a7e2e3e46c7ad49fed7e87f23a7b781c145532c` へ進めた。#173の投稿WebSocket受信sliceの根拠を参照できるよう `6f4a5444ca9f02634972e81b5ffe7368302f7335` へ進めた。監査の判定（`audit`）はこれらの更新で変えていない。
 - 対象: 登録 API と非 API HTTP、WebSocket、AP 受信/公開/送信、業務保存・副作用、job/周期処理、CLI/運用。fork 固有機能は対象外。固定本家の機能を一括で見送らない。
 
 ## 現在の到達点
@@ -19,7 +19,7 @@ Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装
 
 #174第1sliceでhome/local/user/list/channelのRedis書込producerと休眠判定を通常投稿へ接続し、`capability:timeline`を`partial`とした。閲覧APIや検索、Role TL/antenna等は未完了。
 
-それ以外の入口は `not_implemented`（未実装）。これは見送りではなく、担当 Issue による設計・実装・比較が必要な状態。今回の検査は棚卸しの整合性検査であり、各 HTTP/連合機能の比較テストを再実行して `verified` を付けたものではない。
+main/homeTimelineとnote購読は下記の#173受信sliceで`partial`とした。他17channel・readNotification・channel/ch書込は`not_implemented`（未実装）。その他の入口も個別行のstatusに従う。これは見送りではなく、担当 Issue による設計・実装・比較が必要な状態。今回の検査は棚卸しの整合性検査であり、各 HTTP/連合機能の比較テストを再実行して `verified` を付けたものではない。
 
 ## #172 sliceと固定監査表の照合（2026-11-07）
 
@@ -39,7 +39,7 @@ Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装
 
 投稿6種の通知条件・PG直接保存・保存後のpackとRedis発行、投稿/削除stream、通常投票終了workerの発行を接続した。20監査行と通知能力・processor・削除APIの3 overrideへ実装/検証の参照を同期し、すべて`partial`を維持する。4 Entityは通知factsの読み取りに使う範囲であり、各領域の変更APIを完成済みとは扱わない。
 
-実HTTP/PG/Redis subscriber、通常worker、C10固定値とsource由来の条件を検証した。[計画と実測](../../plans/2026-11-07-notification-stream-173.md)。WebSocket受信#189/#173/#176、通知API/未読/既読/push/移行#177、他のプロセス間イベント/cache同期#217は未完了。上の#172時点で未接続だった削除streamも、このsliceで発行まで接続している。
+実HTTP/PG/Redis subscriber、通常worker、C10固定値とsource由来の条件を検証した。[計画と実測](../../plans/2026-11-07-notification-stream-173.md)。当時未完了だった投稿のWebSocket受信は下記sliceで接続した。通知API/未読/既読/push/移行#177、他WS機能#189、全体縦断#176、他のプロセス間イベント/cache同期#217は未完了。上の#172時点で未接続だった削除streamも、このsliceで発行まで接続している。
 
 ## #174 TL producer sliceの照合（2026-11-07）
 
@@ -49,7 +49,15 @@ Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装
 - `config:redisForTimelines` / `perChannelMaxNoteCacheCount`、fanout有効化と4件の保持数Meta設定: 現在の設定を通常投稿と接続の寿命へ反映。全設定用途の完成ではない。
 - `entity:channel_following`: 固定本家の機械同期と投稿時の購読者照会。follow/unfollow APIは#187。
 
-根拠は `src/composition/posting-timelines.ts`、`src/platform/database/note-timelines.ts`、`src/platform/timeline-cache.ts` と対応unit/実HTTP・PG・Redis/process試験。固定本家メソッドを抽出した1,280ケースの比較はRepository/Redisをdoubleにしたソース実行比較で、本家全体の実HTTP測定とは区別する。[検証記録](../../plans/2026-11-07-note-timeline-174.md) / [比較資料](../note/timeline/README.md)。検索・antenna・hashtag・featured・Role TL等は#174の後続、閲覧は#185/#186、活動時刻更新・休眠解除は#180/#189に残る。
+根拠は `src/composition/posting-timelines.ts`、`src/platform/database/note-timelines.ts`、`src/platform/timeline-cache.ts` と対応unit/実HTTP・PG・Redis/process試験。固定本家メソッドを抽出した1,280ケースの比較はRepository/Redisをdoubleにしたソース実行比較で、本家全体の実HTTP測定とは区別する。[検証記録](../../plans/2026-11-07-note-timeline-174.md) / [比較資料](../note/timeline/README.md)。検索・antenna・hashtag・featured・Role TL等は#174の後続、閲覧は#185/#186、活動時刻更新・休眠解除は下記#173受信sliceでWebSocket接続へ接続した。account API全体#180と他WS機能#189は未完了。
+
+## #173 投稿WebSocket受信sliceの照合（2026-11-07）
+
+実装コミット `6f4a5444ca9f02634972e81b5ffe7368302f7335` で、main/homeTimeline、connect/disconnect、subNote/s/sr/unsubNote/unを通常HTTPへ接続した。認証/read:account/凍結、受信者別filter・snapshotのhide・myReaction、関係factsの初回/10秒更新、接続時/5分の活動更新と休眠解除、heartbeatと終了時drainを含む。生成入口の新規10行・既存4行と監査55行に今回の証拠を反映し、対象行はすべて`partial`とする。ChannelMutingは固定本家の機械同期と受信facts照会のみで、変更APIや清掃/cache同期の完成ではない。
+
+[比較資料](../stream/README.md)の固定source64ケースと、新実装の実HTTP/PG/Redis/WS・通常HTTP/worker processで比較した。本家全サーバーの実行比較ではない。実processはHTTP作成→home note/main mention・notification→通常投票終了workerのpollEnded通知とPG保存→HTTP削除→購読noteUpdated/deleted、再接続・接続中SIGTERMを確認する。周期処理とpending認証/renderの終了順は実Redis/WSと明示clockの試験で確認する。
+
+これにより#173が残していた投稿・削除・通知のクライアント実受信とstream側削除連携を満たす。#173の完了を#176全体の完了に換算しない。他17channel・readNotification・channel/ch書込等の#189、通知API/既読/未読/push/移行#177、検索等#174と残る削除連携#172、広域cache同期#217、投稿全体の縦断#176は未完了。常時clone・JSON null frame無視・本文hideの現在following照会の差異も比較資料に記録した。
 
 ## 列挙した範囲
 
@@ -95,7 +103,7 @@ Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装
 | [list・clip・channel](#domain-collections) | 未実装 | [#187](https://github.com/tiramiss-community/tiramiss/issues/187) |
 | [通知・未読/既読・push](#domain-notifications) | 部分実装 | [#177](https://github.com/tiramiss-community/tiramiss/issues/177) / #155, #173, #139 |
 | [Drive・ファイル配信・外部保存](#domain-drive) | 未実装 | [#188](https://github.com/tiramiss-community/tiramiss/issues/188) / #130, #170, #139 |
-| [WebSocket接続・購読・状態変更](#domain-stream) | 未実装 | [#189](https://github.com/tiramiss-community/tiramiss/issues/189) |
+| [WebSocket接続・購読・状態変更](#domain-stream) | 投稿受信部分実装 | [#189](https://github.com/tiramiss-community/tiramiss/issues/189) |
 | [chatメッセージ・room](#domain-chat) | 未実装 | [#190](https://github.com/tiramiss-community/tiramiss/issues/190) |
 | [pages・Play・gallery](#domain-content) | 未実装 | [#191](https://github.com/tiramiss-community/tiramiss/issues/191) |
 | [Reversi・bubble game](#domain-games) | 未実装 | [#192](https://github.com/tiramiss-community/tiramiss/issues/192) |
@@ -334,9 +342,9 @@ upload/URL取得/移動/削除・folder/容量/添付参照・ファイルproxy/
 - 正本/保存: 認証/関係facts / Redis PubSub / chat既読/game状態。
 - 副作用: stream配信・通知既読・chat read・game ready/settings/cancel/putStone等。
 - 本家: [StreamingApiServerService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/server/api/StreamingApiServerService.ts)、[Connection.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/server/api/stream/Connection.ts)、[GlobalEventService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/GlobalEventService.ts)。
-- 新実装: 未実装。
-- 検証根拠: 未接続。担当 Issue で固定本家との比較 fixture と受け入れを追加。
-- 既知差異: この棚卸しで新たな差異は採用していない。実装時の差異は個別に記録する。
+- 新実装: `modules/stream`、`platform/streaming-server.ts`、`platform/database/streaming.ts`、`composition/posting-websocket.ts`。main/homeTimeline・note購読のみ部分実装。
+- 検証根拠: [固定source比較と実受信](../stream/README.md)。source64ケース、実HTTP/PG/Redis/WS、通常poll worker、終了時drainを検証。他17channel・readNotification・channel/ch書込は未実装。
+- 既知差異: 常時clone・JSON null frame無視・本文hideの現在following照会は比較資料を参照。広域cache同期#217と全#189の完成を示すものではない。
 
 <a id="domain-chat"></a>
 

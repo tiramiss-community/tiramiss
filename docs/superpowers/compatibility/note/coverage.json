@@ -542,7 +542,7 @@
       ],
       "remaining": [
         "2026-11-07の#172 sliceで作者/他者/moderator/再削除・監査全Note snapshot・scope/移行済みactor・production rate・DB/関連FK/counterと、C10-Delete/Undo/fallbackを新実装へ接続。test/integration/note-delete.test.ts と test/processes/note-delete.test.ts で比較し、原文HTTP署名/Digest/relay LD署名と終了drainも検証。",
-        "削除stream/通知は#173、TL/検索は#174、webhookは#175、チャートは#200、実WebSocket受信は#173/#189、残る縦断は#176。強い取消/順序保証は保留#161。"
+        "削除stream発行とsubNoteのnoteUpdated/deleted実受信は#173で接続。固定C10はRedis発行観測で、WSは../stream/README.mdの固定source比較とtest/processes/posting-websocket.test.tsの新実装実processで別途検証。本家full server WS比較ではない。検索等#174、チャート#200、他WS機能#189、投稿全体の縦断#176は未完了。固定本家に削除webhookはない。強い取消/順序保証は保留#161。"
       ]
     },
     {

@@ -356,6 +356,7 @@
 	"src/models/Blocking.ts",
 	"src/models/Channel.ts",
 	"src/models/ChannelFollowing.ts",
+	"src/models/ChannelMuting.ts",
 	"src/models/DriveFile.ts",
 	"src/models/DriveFolder.ts",
 	"src/models/Emoji.ts",

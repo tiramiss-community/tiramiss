@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { settleAll } from '../settle-all.js';
 import { In } from 'typeorm';
 import { MiNote, MiUser, MiPoll, MiPollVote, MiNoteReaction, MiFollowing, MiDriveFile, MiChannel, MiEmoji } from 'backend-upstream/entities';
 import { readNoteAuthors } from './note-authors.js';
@@ -48,7 +49,7 @@ export function createNoteReader(manager: EntityManager, redis: Redis, options: 
 					buffered.set(id, { deltas: Object.fromEntries(Object.entries(result[index * 2][1] as Record<string, string>).map(([k, v]) => [k, parseInt(v, 10)])), pairs: result[index * 2 + 1][1] as string[] });
 				}
 			}
-			const [files, channels, polls, votes, reactions, followings] = await Promise.all([
+			const [files, channels, polls, votes, reactions, followings] = await settleAll([
 				fileIds.length ? manager.getRepository(MiDriveFile).findBy({ id: In(fileIds) }) : [],
 				channelIds.length ? manager.getRepository(MiChannel).findBy({ id: In(channelIds) }) : [],
 				pollIds.length ? manager.getRepository(MiPoll).findBy({ noteId: In(pollIds) }) : [],

@@ -6,6 +6,7 @@ import { createServer, type Server } from 'node:http';
 import { chmod } from 'node:fs/promises';
 import { getRequestListener } from '@hono/node-server';
 import { createBackendHttpApp } from '../composition/note-http.js';
+import { openPostingWebSocket } from '../composition/posting-websocket.js';
 import { startManagedProcess } from './lifecycle.js';
 import type { Hono } from 'hono';
 import type { RuntimeConfig } from '../config/types.js';
@@ -13,12 +14,13 @@ import type { RuntimeConfig } from '../config/types.js';
 interface HttpState {
 	draining: boolean;
 	active: Set<Promise<void>>;
+	drainers: Set<() => Promise<void>>;
 }
 
 const states = new WeakMap<Server, HttpState>();
 
 export async function listenHttp(app: Hono, config: RuntimeConfig['http']): Promise<Server> {
-	const state: HttpState = { draining: false, active: new Set() };
+	const state: HttpState = { draining: false, active: new Set(), drainers: new Set() };
 	const listener = getRequestListener(app.fetch);
 
 	const server: Server = createServer((request, response) => {
@@ -76,6 +78,14 @@ export async function listenHttp(app: Hono, config: RuntimeConfig['http']): Prom
 	return server;
 }
 
+export function registerHttpDrain(server: Server, drain: () => Promise<void>): void {
+	const state = states.get(server);
+	if (!state) {
+		throw new Error('HTTP server not managed');
+	}
+	state.drainers.add(drain);
+}
+
 export async function closeHttp(server: Server): Promise<void> {
 	const state = states.get(server);
 	if (!state) {
@@ -84,6 +94,7 @@ export async function closeHttp(server: Server): Promise<void> {
 
 	state.draining = true;
 	await Promise.all([
+		...Array.from(state.drainers, drain => drain()),
 		new Promise<void>((resolve, reject) => {
 			server.close((error) => {
 				if (error) {
@@ -101,8 +112,15 @@ export async function closeHttp(server: Server): Promise<void> {
 }
 
 export function startHttp(config: RuntimeConfig) {
-	return startManagedProcess('http', config, async resources => {
+	return startManagedProcess('http', config, async (resources, reportFailure) => {
 		const server = await listenHttp(createBackendHttpApp(resources, config), config.http);
+		try {
+			const streaming = await openPostingWebSocket(server, resources, config, reportFailure);
+			registerHttpDrain(server, streaming.close);
+		} catch (error) {
+			await closeHttp(server);
+			throw error;
+		}
 		return () => closeHttp(server);
 	});
 }
