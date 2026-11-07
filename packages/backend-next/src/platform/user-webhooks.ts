@@ -19,7 +19,18 @@ export async function openUserWebhooks(options: {
 	const subscriber = new Redis({ ...options.redis, connectTimeout: options.timeoutMs, lazyConnect: true, enableOfflineQueue: false, maxRetriesPerRequest: 0 });
 	let hooks: Hook[] = [];
 	let fetched = false;
+	let generation = 0;
+	let connectedOnce = false;
 	subscriber.on('error', () => { /* Redis の再接続は ioredis が行う。 */ });
+	subscriber.on('ready', () => {
+		if (connectedOnce) {
+			// 切断中の設定通知は再配信されないため、次の投稿では正本から読み直す。
+			generation++;
+			hooks = [];
+			fetched = false;
+		}
+		connectedOnce = true;
+	});
 	subscriber.on('message', (_channel, data) => {
 		let event: { channel?: string; message?: { type?: string; body?: Hook } };
 		try {
@@ -34,10 +45,12 @@ export async function openUserWebhooks(options: {
 		switch (event.message?.type) {
 			case 'webhookCreated':
 				if (body.active) {
+					generation++;
 					hooks.push(body);
 				}
 				break;
 			case 'webhookUpdated': {
+				generation++;
 				const index = hooks.findIndex(hook => hook.id === body.id);
 				if (!body.active) {
 					hooks = hooks.filter(hook => hook.id !== body.id);
@@ -48,7 +61,10 @@ export async function openUserWebhooks(options: {
 				}
 				break;
 			}
-			case 'webhookDeleted': hooks = hooks.filter(hook => hook.id !== body.id); break;
+			case 'webhookDeleted':
+				generation++;
+				hooks = hooks.filter(hook => hook.id !== body.id);
+				break;
 		}
 	});
 	const close = async () => {
@@ -63,8 +79,13 @@ export async function openUserWebhooks(options: {
 	}
 	return {
 		async enqueue(userId: string, type: UserWebhookEvent, note: Record<string, unknown>) {
-			if (!fetched) {
-				hooks = await options.manager.getRepository(MiWebhook).findBy({ active: true });
+			while (!fetched) {
+				const readGeneration = generation;
+				const active = await options.manager.getRepository(MiWebhook).findBy({ active: true });
+				if (readGeneration !== generation) {
+					continue;
+				}
+				hooks = active;
 				fetched = true;
 			}
 			await Promise.all(hooks.filter(hook => hook.userId === userId && hook.on.includes(type)).map(hook => options.enqueue(hook, type, note)));

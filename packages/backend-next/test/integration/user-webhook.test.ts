@@ -82,7 +82,7 @@ test('real queue retains a captured hook through disable/delete and retries tran
 	}
 });
 
-test('lazy hook cache changes only after internal update and delete messages', async () => {
+test('while connected, the lazy hook cache changes only after internal update and delete messages', async () => {
 	await source.getRepository(MiWebhook).insert({ id: 'cache-hook', userId: 'owner', name: 'cache', active: true, on: ['note'], url, secret: 'old' });
 	const observed: string[] = [];
 	const hooks = await openUserWebhooks({ manager: source.manager, redis: database.config.redisForPubsub, url: database.config.url, timeoutMs: 10000, enqueue: async hook => {
@@ -124,5 +124,45 @@ test('lazy hook cache changes only after internal update and delete messages', a
 		});
 	} finally {
 		await hooks.close(); publisher.disconnect();
+	}
+});
+
+test('reconnecting the subscriber reloads disabled, deleted and changed hooks without internal messages', async () => {
+	await source.getRepository(MiUser).insert({ id: 'reconnect-owner', username: 'reconnect', usernameLower: 'reconnect' });
+	const row = { userId: 'reconnect-owner', name: 'reconnect', active: true, on: ['note' as const], url, secret: 'old' };
+	await source.getRepository(MiWebhook).insert([
+		{ ...row, id: 'reconnect-disabled' },
+		{ ...row, id: 'reconnect-deleted' },
+		{ ...row, id: 'reconnect-changed' },
+	]);
+	const observed: { id: string; secret: string }[] = [];
+	const hooks = await openUserWebhooks({ manager: source.manager, redis: database.config.redisForPubsub, url: database.config.url, timeoutMs: 10000, enqueue: async hook => {
+		observed.push({ id: hook.id, secret: hook.secret });
+	} });
+	const control = new Redis(database.config.redisForPubsub);
+	const subscriberIds = async () => {
+		const clients = await control.client('LIST') as string;
+		return clients.split('\n').filter(line => /\bsub=1\b/.test(line)).map(line => /\bid=(\d+)/.exec(line)![1]);
+	};
+	try {
+		await hooks.enqueue('reconnect-owner', 'note', {});
+		expect(observed).toHaveLength(3);
+		await source.getRepository(MiWebhook).update({ id: 'reconnect-disabled' }, { active: false });
+		await source.getRepository(MiWebhook).delete({ id: 'reconnect-deleted' });
+		await source.getRepository(MiWebhook).update({ id: 'reconnect-changed' }, { secret: 'new' });
+		const oldIds = await subscriberIds();
+		expect(oldIds).toHaveLength(1);
+		await control.client('KILL', 'ID', oldIds[0]);
+		await vi.waitFor(async () => {
+			const current = await subscriberIds();
+			expect(current).toHaveLength(1);
+			expect(current[0]).not.toBe(oldIds[0]);
+		}, { timeout: 10000 });
+		observed.length = 0;
+		await hooks.enqueue('reconnect-owner', 'note', {});
+		expect(observed).toEqual([{ id: 'reconnect-changed', secret: 'new' }]);
+	} finally {
+		await hooks.close();
+		control.disconnect();
 	}
 });
