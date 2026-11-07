@@ -228,6 +228,42 @@ function cacheWorld() {
 	};
 }
 
+test.each(['antennaCreated', 'antennaUpdated'])('definition appended by %s during matching applies to the next post', async (event) => {
+	const w = cacheWorld();
+	w.active([antenna({ src: 'list', userListId: 'list' })]);
+	const matching = deferred();
+	const held = deferred<boolean>();
+	const p = producer([], {
+		definitions: w.cache.definitions,
+		listContains: () => {
+			matching.resolve();
+			return held.promise;
+		},
+	});
+	try {
+		const result = p.run();
+		try {
+			await matching.promise;
+			w.event(event, antenna({ id: 'added' }));
+		} finally {
+			held.resolve(true);
+		}
+		await result;
+		expect(p.calls.filter(call => Array.isArray(call) && call[0] === 'push')).toEqual([
+			['push', 'list:antennaTimeline:a', 'note'],
+		]);
+		expect(p.calls.filter(call => Array.isArray(call) && call[0] === 'publish').map(call => (call as unknown[])[1])).toEqual(['a']);
+		expect(p.calls).toContainEqual(['exec']);
+
+		p.calls.length = 0;
+		await p.run();
+		expect(p.calls.filter(call => Array.isArray(call) && call[0] === 'publish').map(call => (call as unknown[])[1])).toEqual(['a', 'added']);
+		expect(p.calls).toContainEqual(['exec']);
+	} finally {
+		await w.cache.close();
+	}
+});
+
 test('lazy active bootstrap, resident database changes, inactive updates/upserts and duplicate deletes follow source', async () => {
 	const w = cacheWorld();
 	expect(w.reader.active).not.toHaveBeenCalled();

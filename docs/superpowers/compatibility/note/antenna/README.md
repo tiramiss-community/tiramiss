@@ -11,7 +11,9 @@ OUTPUT_DIR=/tmp/antenna-source \
 node docs/superpowers/compatibility/note/antenna/reference-antenna.mjs
 ```
 
-`UPSTREAM_ROOT` は固定コミットを保持する Git repository。作業ツリーの内容は使わない。`SOURCE_PG_URL` は専用テスト PostgreSQL の管理接続で、probe 自身が一意の DB を作成し、終了時にその DB だけを削除する。共有・本番 DB を指定しない。PG URL を省略した場合は DB を伴わない179件だけを実行し、`databaseEvidence.executed=false` と未実行理由を出力する。保存済みの184件を再生成するには PG URL が必要。PostgreSQL の版は観測値なので、別の版を使う場合はその差も記録する。
+`UPSTREAM_ROOT` は固定コミットを保持する Git repository。ソースの抽出には Git オブジェクトを使い、作業ツリーのソースは読まない。一方、PG probe は `UPSTREAM_ROOT/packages/backend/package.json` を基点に、作業ツリーの `node_modules` から `typeorm` と `pg` を解決する。保存済みの184件を再生成する場合は、固定コミットをcheckoutし、`pnpm install --frozen-lockfile` で依存をインストールしておく必要がある。インストール済みTypeORMの版が固定コミットの定義と一致することを検査し、その実装ファイルのSHA-256も記録する。
+
+`SOURCE_PG_URL` は専用テスト PostgreSQL の管理接続で、probe 自身が一意の DB を作成し、終了時にその DB だけを削除する。共有・本番 DB を指定しない。PG URL を省略した場合は DB を伴わない179件だけを実行し、`databaseEvidence.executed=false` と未実行理由を出力する。保存済みの184件を再生成するには PG URL が必要。PostgreSQL の版は観測値なので、別の版を使う場合はその差も記録する。
 
 新実装の unit が保存済み `source-observations.json` を読むだけなら PostgreSQL・本家 checkout とも不要。PG 接続が必要なのは本家側5件の保存 payload を再計測する場合だけで、通常の fixture 照合の前提にはしない。
 

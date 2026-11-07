@@ -17,7 +17,8 @@ export function createPostingAntennas(ports: AntennaMatchPorts & {
 		}
 		const author = snapshot.author;
 		const note = { ...snapshot.note, channel: snapshot.channel };
-		const definitions = await ports.definitions();
+		// 内部イベントで共有配列が変わっても、照合結果と出力対象を対応させる。
+		const definitions = [...await ports.definitions()];
 		const matches = await Promise.allSettled(definitions.map(antenna => checkHitAntenna(antenna, note, author, ports)));
 		const failures = matches.flatMap(result => result.status === 'rejected' ? [result.reason] : []);
 		if (failures.length > 0) {
