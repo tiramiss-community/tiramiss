@@ -1,0 +1,2193 @@
+{
+  "formatVersion": 1,
+  "fixedCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "evidence": "Pinned source module/AST execution with explicit Queue, scheduler, repository, clock, digest, UUID, decorator, backoff-function, pending-drain doubles. Worker options and lifecycle methods execute separately; no actual processor, Redis, BullMQ cleanup algorithm, Nest DI, HTTP or socket execution.",
+  "dependencyVersions": {
+    "typescript": "6.0.3",
+    "upstreamBullmq": "6.3.11"
+  },
+  "sources": {
+    "packages/backend/src/core/QueueService.ts": {
+      "blob": "c09fde4ce26238b4b10a4cde97363597b7a131ce",
+      "sha256": "abf3324184849ca3d1dbcd27004535eb42a835f36fd54d8b6b5a47d41d0b2333"
+    },
+    "packages/backend/src/queue/const.ts": {
+      "blob": "625204b7add1ae4685d382e582e1abef290fb2cc",
+      "sha256": "8b7aa84ca3778fdf044bd7c26916eb62405fb5443705077e298010cd50f628aa"
+    },
+    "packages/backend/src/core/QueueModule.ts": {
+      "blob": "3c893ea41912d8a4e376e5e0489dc2db3e317fdb",
+      "sha256": "c29b35a627270f282f1895eb1d728bd334260ceeae8c79b238c042b3427ba6cc"
+    },
+    "packages/backend/src/queue/QueueProcessorService.ts": {
+      "blob": "e7af23a79d1b4c452b66f186ea6fc4a6e12c7c2c",
+      "sha256": "571cdd8a7135819035cc509c2589d9e157d28ac4f84b3e042f4e688bb378740d"
+    },
+    "packages/backend/src/core/NoteCreateService.ts": {
+      "blob": "05e98541844d7f14e91263a78a03c9ec0139a89d",
+      "sha256": "cbae284975c937d89c0030b5f3cf47de373555c1ce34b65de81bcf495e93f4fe"
+    },
+    "packages/backend/src/core/NoteDraftService.ts": {
+      "blob": "e144138c2cee289210af211bf74687deb2860c10",
+      "sha256": "649f383fdd4ea7fed59f46724381495835af3b3da8cc71f44655d503d51d4896"
+    },
+    "packages/backend/src/queue/processors/CleanProcessorService.ts": {
+      "blob": "a26b69cd2b47645b189ed3a1f72aaa68009483ff",
+      "sha256": "12c90ce955fe25cbe39218b0d099b25d79a9a9c9d1729cf5701f52df1cee3a8f"
+    },
+    "packages/backend/package.json": {
+      "blob": "857fb4d7b742607295a9f4be881f4a4a3f29b45b",
+      "sha256": "7d9fb6c1e71dae2b65e2adb23d68dc5633fdc4bc590838b81e4f8f430d099b73"
+    }
+  },
+  "queueTypes": [
+    "system",
+    "endedPollNotification",
+    "postScheduledNote",
+    "deliver",
+    "inbox",
+    "db",
+    "relationship",
+    "objectStorage",
+    "userWebhookDeliver",
+    "systemWebhookDeliver"
+  ],
+  "observations": [
+    {
+      "id": "all-queue-constructors",
+      "layer": "queue-provider-factory",
+      "input": {
+        "config": {
+          "redisForJobQueue": {
+            "prefix": "fixture",
+            "host": "redis.example",
+            "port": 6379,
+            "keyPrefix": "must-not-reach-client"
+          }
+        }
+      },
+      "expected": {
+        "queues": [
+          {
+            "name": "system",
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:system"
+            }
+          },
+          {
+            "name": "endedPollNotification",
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:endedPollNotification"
+            }
+          },
+          {
+            "name": "postScheduledNote",
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:postScheduledNote"
+            }
+          },
+          {
+            "name": "deliver",
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:deliver"
+            }
+          },
+          {
+            "name": "inbox",
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:inbox"
+            }
+          },
+          {
+            "name": "db",
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:db"
+            }
+          },
+          {
+            "name": "relationship",
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:relationship"
+            }
+          },
+          {
+            "name": "objectStorage",
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:objectStorage"
+            }
+          },
+          {
+            "name": "userWebhookDeliver",
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:userWebhookDeliver"
+            }
+          },
+          {
+            "name": "systemWebhookDeliver",
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:systemWebhookDeliver"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "prefix-without-configured-prefix",
+      "layer": "base-queue-options",
+      "input": {
+        "redisForJobQueue": {
+          "host": "redis.example",
+          "port": 6379
+        }
+      },
+      "expected": {
+        "connection": {
+          "host": "redis.example",
+          "port": 6379
+        },
+        "prefix": "queue:deliver"
+      }
+    },
+    {
+      "id": "all-worker-options",
+      "layer": "worker-option-expression",
+      "input": {
+        "config": {
+          "redisForJobQueue": {
+            "prefix": "fixture",
+            "host": "redis.example",
+            "port": 6379,
+            "keyPrefix": "must-not-reach-client"
+          }
+        }
+      },
+      "expected": {
+        "workers": [
+          {
+            "queue": "system",
+            "sourceLine": 185,
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:system",
+              "metrics": {
+                "maxDataPoints": 10080
+              },
+              "autorun": false
+            },
+            "customBackoff": false,
+            "retentionFallback": null
+          },
+          {
+            "queue": "db",
+            "sourceLine": 239,
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:db",
+              "metrics": {
+                "maxDataPoints": 10080
+              },
+              "autorun": false
+            },
+            "customBackoff": false,
+            "retentionFallback": null
+          },
+          {
+            "queue": "deliver",
+            "sourceLine": 269,
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:deliver",
+              "metrics": {
+                "maxDataPoints": 10080
+              },
+              "autorun": false,
+              "concurrency": 128,
+              "limiter": {
+                "max": 128,
+                "duration": 1000
+              },
+              "settings": {}
+            },
+            "customBackoff": true,
+            "retentionFallback": null
+          },
+          {
+            "queue": "inbox",
+            "sourceLine": 307,
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:inbox",
+              "metrics": {
+                "maxDataPoints": 10080
+              },
+              "autorun": false,
+              "concurrency": 16,
+              "limiter": {
+                "max": 32,
+                "duration": 1000
+              },
+              "settings": {}
+            },
+            "customBackoff": true,
+            "retentionFallback": null
+          },
+          {
+            "queue": "userWebhookDeliver",
+            "sourceLine": 346,
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:userWebhookDeliver",
+              "metrics": {
+                "maxDataPoints": 10080
+              },
+              "autorun": false,
+              "concurrency": 64,
+              "limiter": {
+                "max": 64,
+                "duration": 1000
+              },
+              "settings": {}
+            },
+            "customBackoff": true,
+            "retentionFallback": null
+          },
+          {
+            "queue": "systemWebhookDeliver",
+            "sourceLine": 384,
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:systemWebhookDeliver",
+              "metrics": {
+                "maxDataPoints": 10080
+              },
+              "autorun": false,
+              "concurrency": 16,
+              "limiter": {
+                "max": 16,
+                "duration": 1000
+              },
+              "settings": {}
+            },
+            "customBackoff": true,
+            "retentionFallback": null
+          },
+          {
+            "queue": "relationship",
+            "sourceLine": 431,
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:relationship",
+              "metrics": {
+                "maxDataPoints": 10080
+              },
+              "autorun": false,
+              "concurrency": 16,
+              "limiter": {
+                "max": 64,
+                "duration": 1000
+              }
+            },
+            "customBackoff": false,
+            "retentionFallback": null
+          },
+          {
+            "queue": "objectStorage",
+            "sourceLine": 473,
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:objectStorage",
+              "metrics": {
+                "maxDataPoints": 10080
+              },
+              "autorun": false,
+              "concurrency": 16
+            },
+            "customBackoff": false,
+            "retentionFallback": null
+          },
+          {
+            "queue": "endedPollNotification",
+            "sourceLine": 504,
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:endedPollNotification",
+              "metrics": {
+                "maxDataPoints": 10080
+              },
+              "autorun": false
+            },
+            "customBackoff": false,
+            "retentionFallback": null
+          },
+          {
+            "queue": "postScheduledNote",
+            "sourceLine": 528,
+            "options": {
+              "connection": {
+                "prefix": "fixture",
+                "host": "redis.example",
+                "port": 6379
+              },
+              "prefix": "fixture:queue:postScheduledNote",
+              "metrics": {
+                "maxDataPoints": 10080
+              },
+              "autorun": false
+            },
+            "customBackoff": false,
+            "retentionFallback": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "workers-start",
+      "layer": "worker-lifecycle-method",
+      "input": {},
+      "expected": {
+        "calls": [
+          {
+            "queue": "system",
+            "method": "run"
+          },
+          {
+            "queue": "db",
+            "method": "run"
+          },
+          {
+            "queue": "deliver",
+            "method": "run"
+          },
+          {
+            "queue": "inbox",
+            "method": "run"
+          },
+          {
+            "queue": "userWebhookDeliver",
+            "method": "run"
+          },
+          {
+            "queue": "systemWebhookDeliver",
+            "method": "run"
+          },
+          {
+            "queue": "relationship",
+            "method": "run"
+          },
+          {
+            "queue": "objectStorage",
+            "method": "run"
+          },
+          {
+            "queue": "endedPollNotification",
+            "method": "run"
+          },
+          {
+            "queue": "postScheduledNote",
+            "method": "run"
+          }
+        ]
+      }
+    },
+    {
+      "id": "workers-onApplicationShutdown",
+      "layer": "worker-lifecycle-method",
+      "input": {},
+      "expected": {
+        "calls": [
+          {
+            "queue": "system",
+            "method": "close"
+          },
+          {
+            "queue": "db",
+            "method": "close"
+          },
+          {
+            "queue": "deliver",
+            "method": "close"
+          },
+          {
+            "queue": "inbox",
+            "method": "close"
+          },
+          {
+            "queue": "userWebhookDeliver",
+            "method": "close"
+          },
+          {
+            "queue": "systemWebhookDeliver",
+            "method": "close"
+          },
+          {
+            "queue": "relationship",
+            "method": "close"
+          },
+          {
+            "queue": "objectStorage",
+            "method": "close"
+          },
+          {
+            "queue": "endedPollNotification",
+            "method": "close"
+          },
+          {
+            "queue": "postScheduledNote",
+            "method": "close"
+          }
+        ]
+      }
+    },
+    {
+      "id": "system-scheduler-constructor",
+      "layer": "queue-service-constructor",
+      "input": {
+        "existingSchedulers": [
+          {
+            "key": "clean"
+          },
+          {
+            "key": "legacy-system-job"
+          }
+        ]
+      },
+      "expected": {
+        "calls": [
+          {
+            "queue": "system",
+            "method": "upsertJobScheduler",
+            "args": [
+              "tickCharts",
+              {
+                "pattern": "55 * * * *",
+                "immediately": false
+              },
+              {
+                "name": "tickCharts",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800
+                  },
+                  "removeOnFail": {
+                    "age": 604800
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "queue": "system",
+            "method": "upsertJobScheduler",
+            "args": [
+              "resyncCharts",
+              {
+                "pattern": "0 0 * * *",
+                "immediately": false
+              },
+              {
+                "name": "resyncCharts",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800
+                  },
+                  "removeOnFail": {
+                    "age": 604800
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "queue": "system",
+            "method": "upsertJobScheduler",
+            "args": [
+              "cleanCharts",
+              {
+                "pattern": "0 0 * * *",
+                "immediately": false
+              },
+              {
+                "name": "cleanCharts",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800
+                  },
+                  "removeOnFail": {
+                    "age": 604800
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "queue": "system",
+            "method": "upsertJobScheduler",
+            "args": [
+              "aggregateRetention",
+              {
+                "pattern": "0 0 * * *",
+                "immediately": false
+              },
+              {
+                "name": "aggregateRetention",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800
+                  },
+                  "removeOnFail": {
+                    "age": 604800
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "queue": "system",
+            "method": "upsertJobScheduler",
+            "args": [
+              "clean",
+              {
+                "pattern": "0 0 * * *",
+                "immediately": false
+              },
+              {
+                "name": "clean",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800
+                  },
+                  "removeOnFail": {
+                    "age": 604800
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "queue": "system",
+            "method": "upsertJobScheduler",
+            "args": [
+              "checkExpiredMutings",
+              {
+                "pattern": "*/5 * * * *",
+                "immediately": false
+              },
+              {
+                "name": "checkExpiredMutings",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800
+                  },
+                  "removeOnFail": {
+                    "age": 604800
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "queue": "system",
+            "method": "upsertJobScheduler",
+            "args": [
+              "bakeBufferedReactions",
+              {
+                "pattern": "0 0 * * *",
+                "immediately": false
+              },
+              {
+                "name": "bakeBufferedReactions",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800
+                  },
+                  "removeOnFail": {
+                    "age": 604800
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "queue": "system",
+            "method": "upsertJobScheduler",
+            "args": [
+              "checkModeratorsActivity",
+              {
+                "pattern": "30 * * * *",
+                "immediately": false
+              },
+              {
+                "name": "checkModeratorsActivity",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800
+                  },
+                  "removeOnFail": {
+                    "age": 604800
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "queue": "system",
+            "method": "upsertJobScheduler",
+            "args": [
+              "cleanRemoteNotes",
+              {
+                "pattern": "0 4 * * *",
+                "immediately": false
+              },
+              {
+                "name": "cleanRemoteNotes",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800
+                  },
+                  "removeOnFail": {
+                    "age": 604800
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "queue": "system",
+            "method": "getJobSchedulers",
+            "args": []
+          },
+          {
+            "queue": "system",
+            "method": "removeJobScheduler",
+            "args": [
+              "legacy-system-job"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "all-queue-service-producer-options",
+      "layer": "queue-service-producer",
+      "input": {
+        "methods": [
+          "deliver",
+          "deliverMany",
+          "inbox",
+          "scheduleAnnouncementArchive",
+          "createDeleteDriveFilesJob",
+          "createExportCustomEmojisJob",
+          "createExportNotesJob",
+          "createExportClipsJob",
+          "createExportFavoritesJob",
+          "createExportFollowingJob",
+          "createExportMuteJob",
+          "createExportBlockingJob",
+          "createExportUserListsJob",
+          "createExportAntennasJob",
+          "createDeleteAccountJob",
+          "createImportFollowingJob",
+          "createImportMutingJob",
+          "createImportBlockingJob",
+          "createImportUserListsJob",
+          "createImportCustomEmojisJob",
+          "createImportAntennasJob",
+          "createImportFollowingToDbJob",
+          "createImportBlockingToDbJob",
+          "createFollowJob",
+          "createUnfollowJob",
+          "createBlockJob",
+          "createUnblockJob",
+          "createDelayedUnfollowJob",
+          "createDeleteObjectStorageFileJob",
+          "createCleanRemoteFilesJob",
+          "userWebhookDeliver",
+          "systemWebhookDeliver"
+        ],
+        "fixture": "user, webhook, two bulk targets; arguments declared in executable probe; payload omitted from this retention projection"
+      },
+      "expected": {
+        "producers": [
+          {
+            "producer": "deliver",
+            "queue": "deliver",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "remote.example",
+                "opts": {
+                  "attempts": 12,
+                  "backoff": {
+                    "type": "custom"
+                  },
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "deliverMany",
+            "queue": "deliver",
+            "method": "addBulk",
+            "jobs": [
+              {
+                "name": "remote.example",
+                "opts": {
+                  "attempts": 12,
+                  "backoff": {
+                    "type": "custom"
+                  },
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              },
+              {
+                "name": "shared.example",
+                "opts": {
+                  "attempts": 12,
+                  "backoff": {
+                    "type": "custom"
+                  },
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "inbox",
+            "queue": "inbox",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "remote.example",
+                "opts": {
+                  "attempts": 8,
+                  "backoff": {
+                    "type": "custom"
+                  },
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "scheduleAnnouncementArchive",
+            "queue": "system",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "archiveAnnouncement",
+                "opts": {
+                  "jobId": "archiveAnnouncement-announcement-1800000005000",
+                  "delay": 5000,
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createDeleteDriveFilesJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "deleteDriveFiles",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createExportCustomEmojisJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "exportCustomEmojis",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createExportNotesJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "exportNotes",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createExportClipsJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "exportClips",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createExportFavoritesJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "exportFavorites",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createExportFollowingJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "exportFollowing",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createExportMuteJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "exportMuting",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createExportBlockingJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "exportBlocking",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createExportUserListsJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "exportUserLists",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createExportAntennasJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "exportAntennas",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createDeleteAccountJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "deleteAccount",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createImportFollowingJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "importFollowing",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createImportMutingJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "importMuting",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createImportBlockingJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "importBlocking",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createImportUserListsJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "importUserLists",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createImportCustomEmojisJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "importCustomEmojis",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createImportAntennasJob",
+            "queue": "db",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "importAntennas",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createImportFollowingToDbJob",
+            "queue": "db",
+            "method": "addBulk",
+            "jobs": [
+              {
+                "name": "importFollowingToDb",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              },
+              {
+                "name": "importFollowingToDb",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createImportBlockingToDbJob",
+            "queue": "db",
+            "method": "addBulk",
+            "jobs": [
+              {
+                "name": "importBlockingToDb",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              },
+              {
+                "name": "importBlockingToDb",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createFollowJob",
+            "queue": "relationship",
+            "method": "addBulk",
+            "jobs": [
+              {
+                "name": "follow",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createUnfollowJob",
+            "queue": "relationship",
+            "method": "addBulk",
+            "jobs": [
+              {
+                "name": "unfollow",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createBlockJob",
+            "queue": "relationship",
+            "method": "addBulk",
+            "jobs": [
+              {
+                "name": "block",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createUnblockJob",
+            "queue": "relationship",
+            "method": "addBulk",
+            "jobs": [
+              {
+                "name": "unblock",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createDelayedUnfollowJob",
+            "queue": "relationship",
+            "method": "addBulk",
+            "jobs": [
+              {
+                "name": "unfollow",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  },
+                  "delay": 5000
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createDeleteObjectStorageFileJob",
+            "queue": "objectStorage",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "deleteFile",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "createCleanRemoteFilesJob",
+            "queue": "objectStorage",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "cleanRemoteFiles",
+                "opts": {
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "userWebhookDeliver",
+            "queue": "userWebhookDeliver",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "hook",
+                "opts": {
+                  "attempts": 4,
+                  "backoff": {
+                    "type": "custom"
+                  },
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "producer": "systemWebhookDeliver",
+            "queue": "systemWebhookDeliver",
+            "method": "add",
+            "jobs": [
+              {
+                "name": "hook",
+                "opts": {
+                  "attempts": 4,
+                  "backoff": {
+                    "type": "custom"
+                  },
+                  "removeOnComplete": {
+                    "age": 604800,
+                    "count": 30
+                  },
+                  "removeOnFail": {
+                    "age": 604800,
+                    "count": 100
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "relationship-options-explicit-override",
+      "layer": "queue-service-private-helper",
+      "input": {
+        "opts": {
+          "delay": 7,
+          "removeOnComplete": true,
+          "removeOnFail": false
+        }
+      },
+      "expected": {
+        "name": "unfollow",
+        "data": {
+          "from": {
+            "id": "user"
+          },
+          "to": {
+            "id": "target"
+          },
+          "silent": false,
+          "withReplies": true
+        },
+        "opts": {
+          "removeOnComplete": true,
+          "removeOnFail": false,
+          "delay": 7
+        }
+      }
+    },
+    {
+      "id": "skip-deliver-null-content",
+      "layer": "queue-service-producer",
+      "input": {
+        "method": "deliver",
+        "content": null,
+        "to": "url"
+      },
+      "expected": {
+        "result": null,
+        "calls": []
+      }
+    },
+    {
+      "id": "skip-deliver-null-to",
+      "layer": "queue-service-producer",
+      "input": {
+        "method": "deliver",
+        "content": {},
+        "to": null
+      },
+      "expected": {
+        "result": null,
+        "calls": []
+      }
+    },
+    {
+      "id": "skip-deliverMany-null-content",
+      "layer": "queue-service-producer",
+      "input": {
+        "method": "deliverMany",
+        "content": null,
+        "to": {}
+      },
+      "expected": {
+        "result": null,
+        "calls": []
+      }
+    },
+    {
+      "id": "poll-ended-delay-5000",
+      "layer": "post-note-created-poll-conditional",
+      "input": {
+        "delay": 5000
+      },
+      "expected": {
+        "calls": [
+          {
+            "queue": "endedPollNotification",
+            "method": "add",
+            "args": [
+              "note",
+              {
+                "noteId": "note"
+              },
+              {
+                "delay": 5000,
+                "removeOnComplete": {
+                  "age": 604800,
+                  "count": 30
+                },
+                "removeOnFail": {
+                  "age": 604800,
+                  "count": 100
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "poll-ended-delay--5000",
+      "layer": "post-note-created-poll-conditional",
+      "input": {
+        "delay": -5000
+      },
+      "expected": {
+        "calls": [
+          {
+            "queue": "endedPollNotification",
+            "method": "add",
+            "args": [
+              "note",
+              {
+                "noteId": "note"
+              },
+              {
+                "delay": -5000,
+                "removeOnComplete": {
+                  "age": 604800,
+                  "count": 30
+                },
+                "removeOnFail": {
+                  "age": 604800,
+                  "count": 100
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheduled-note-future",
+      "layer": "note-draft-schedule-method",
+      "input": {
+        "id": "draft",
+        "isActuallyScheduled": true,
+        "scheduledAt": "2027-01-15T08:00:05.000Z"
+      },
+      "expected": {
+        "calls": [
+          {
+            "queue": "postScheduledNote",
+            "method": "add",
+            "args": [
+              "draft",
+              {
+                "noteDraftId": "draft"
+              },
+              {
+                "delay": 5000,
+                "removeOnComplete": {
+                  "age": 604800,
+                  "count": 30
+                },
+                "removeOnFail": {
+                  "age": 604800,
+                  "count": 100
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheduled-note-past",
+      "layer": "note-draft-schedule-method",
+      "input": {
+        "id": "draft",
+        "isActuallyScheduled": true,
+        "scheduledAt": "2027-01-15T07:59:59.999Z"
+      },
+      "expected": {
+        "calls": []
+      }
+    },
+    {
+      "id": "scheduled-note-disabled",
+      "layer": "note-draft-schedule-method",
+      "input": {
+        "id": "draft",
+        "isActuallyScheduled": false,
+        "scheduledAt": "2027-01-15T08:00:05.000Z"
+      },
+      "expected": {
+        "calls": []
+      }
+    },
+    {
+      "id": "scheduled-note-no-date",
+      "layer": "note-draft-schedule-method",
+      "input": {
+        "id": "draft",
+        "isActuallyScheduled": true,
+        "scheduledAt": null
+      },
+      "expected": {
+        "calls": []
+      }
+    },
+    {
+      "id": "manual-clear-completed",
+      "layer": "queue-service-management",
+      "input": {
+        "queue": "deliver",
+        "state": "completed"
+      },
+      "expected": {
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "completed"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "manual-clear-failed",
+      "layer": "queue-service-management",
+      "input": {
+        "queue": "deliver",
+        "state": "failed"
+      },
+      "expected": {
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "failed"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "manual-clear-*",
+      "layer": "queue-service-management",
+      "input": {
+        "queue": "deliver",
+        "state": "*"
+      },
+      "expected": {
+        "calls": [
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "completed"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "wait"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "active"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "paused"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "prioritized"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "delayed"
+            ]
+          },
+          {
+            "queue": "deliver",
+            "method": "clean",
+            "args": [
+              0,
+              0,
+              "failed"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "system-clean-data-threshold-0",
+      "layer": "system-clean-process-method",
+      "input": {
+        "now": 1800000000000,
+        "deactivateAntennaThreshold": 0,
+        "expiredRoles": [
+          "expired-role"
+        ]
+      },
+      "expected": {
+        "calls": [
+          {
+            "method": "info",
+            "text": "Cleaning..."
+          },
+          {
+            "repository": "userIps",
+            "method": "delete",
+            "criteria": {
+              "createdAt": {
+                "lessThan": "2026-10-17T08:00:00.000Z"
+              }
+            }
+          },
+          {
+            "method": "where",
+            "args": [
+              "assign.expiresAt IS NOT NULL"
+            ]
+          },
+          {
+            "method": "andWhere",
+            "args": [
+              "assign.expiresAt < :now",
+              {
+                "now": "2027-01-15T08:00:00.000Z"
+              }
+            ]
+          },
+          {
+            "repository": "roleAssignments",
+            "method": "delete",
+            "criteria": {
+              "id": {
+                "in": [
+                  "expired-role"
+                ]
+              }
+            }
+          },
+          {
+            "method": "cleanOutdatedGames"
+          },
+          {
+            "method": "succ",
+            "text": "Cleaned."
+          }
+        ],
+        "queueCleanCalls": 0
+      }
+    },
+    {
+      "id": "system-clean-data-threshold-86400000",
+      "layer": "system-clean-process-method",
+      "input": {
+        "now": 1800000000000,
+        "deactivateAntennaThreshold": 86400000,
+        "expiredRoles": [
+          "expired-role"
+        ]
+      },
+      "expected": {
+        "calls": [
+          {
+            "method": "info",
+            "text": "Cleaning..."
+          },
+          {
+            "repository": "userIps",
+            "method": "delete",
+            "criteria": {
+              "createdAt": {
+                "lessThan": "2026-10-17T08:00:00.000Z"
+              }
+            }
+          },
+          {
+            "repository": "antennas",
+            "method": "update",
+            "args": [
+              {
+                "lastUsedAt": {
+                  "lessThan": "2027-01-14T08:00:00.000Z"
+                }
+              },
+              {
+                "isActive": false
+              }
+            ]
+          },
+          {
+            "method": "where",
+            "args": [
+              "assign.expiresAt IS NOT NULL"
+            ]
+          },
+          {
+            "method": "andWhere",
+            "args": [
+              "assign.expiresAt < :now",
+              {
+                "now": "2027-01-15T08:00:00.000Z"
+              }
+            ]
+          },
+          {
+            "repository": "roleAssignments",
+            "method": "delete",
+            "criteria": {
+              "id": {
+                "in": [
+                  "expired-role"
+                ]
+              }
+            }
+          },
+          {
+            "method": "cleanOutdatedGames"
+          },
+          {
+            "method": "succ",
+            "text": "Cleaned."
+          }
+        ],
+        "queueCleanCalls": 0
+      }
+    },
+    {
+      "id": "queue-dispose-after-pending-drain",
+      "layer": "queue-module-dispose",
+      "input": {
+        "heldAllSettled": true
+      },
+      "expected": {
+        "beforeDrain": [],
+        "afterDrain": [
+          {
+            "queue": "system",
+            "method": "close",
+            "args": []
+          },
+          {
+            "queue": "endedPollNotification",
+            "method": "close",
+            "args": []
+          },
+          {
+            "queue": "postScheduledNote",
+            "method": "close",
+            "args": []
+          },
+          {
+            "queue": "deliver",
+            "method": "close",
+            "args": []
+          },
+          {
+            "queue": "inbox",
+            "method": "close",
+            "args": []
+          },
+          {
+            "queue": "db",
+            "method": "close",
+            "args": []
+          },
+          {
+            "queue": "relationship",
+            "method": "close",
+            "args": []
+          },
+          {
+            "queue": "objectStorage",
+            "method": "close",
+            "args": []
+          },
+          {
+            "queue": "userWebhookDeliver",
+            "method": "close",
+            "args": []
+          },
+          {
+            "queue": "systemWebhookDeliver",
+            "method": "close",
+            "args": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "source-retention-and-clean-site-scan",
+      "layer": "pinned-source-text-scan",
+      "input": {
+        "files": 950,
+        "excludes": "non-TS sources, dependencies; queue.clean matches exact receiver name, manual source review required for other receivers"
+      },
+      "expected": {
+        "defaultJobOptions": [],
+        "retentionSites": [
+          {
+            "file": "packages/backend/src/core/NoteCreateService.ts",
+            "line": 825
+          },
+          {
+            "file": "packages/backend/src/core/NoteDraftService.ts",
+            "line": 318
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 128
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 173
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 202
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 241
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 274
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 295
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 311
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 327
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 343
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 359
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 377
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 393
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 409
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 425
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 441
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 459
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 482
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 499
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 526
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 544
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 561
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 578
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 595
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 652
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 670
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 684
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 722
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 759
+          }
+        ],
+        "queueCleanSites": [
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 793
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 794
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 795
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 796
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 797
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 798
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 799
+          },
+          {
+            "file": "packages/backend/src/core/QueueService.ts",
+            "line": 802
+          }
+        ]
+      }
+    }
+  ]
+}

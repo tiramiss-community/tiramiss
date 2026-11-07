@@ -5,7 +5,7 @@
 import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
-import { Queue, Worker } from 'bullmq';
+import { Queue, UnrecoverableError, Worker } from 'bullmq';
 import { MiAccessToken, MiApp, MiModerationLog, MiRole, MiRoleAssignment } from 'backend-upstream/entities';
 import { baseQueueOptions, baseWorkerOptions } from '../../src/platform/job-queue/connection.js';
 import { createDeliverQueue, startDeliverWorker } from '../../src/platform/job-queue/deliver.js';
@@ -96,6 +96,78 @@ test.each(names)('every source selector reads only %s, including queues without 
 	expect(await response.json()).toMatchObject({ id: job.id, name: 'plain retained job', attempts: 0, isFailed: false, data: { marker: name, secret: name.endsWith('WebhookDeliver') ? '(redacted)' : 'top-secret', nested: { secret: 'nested-visible' } } });
 	expect(await (await request('show-job-logs', { queue: name, jobId: job.id })).json()).toEqual(['log-secret-visible']);
 	expect(await job.getState()).toBe('waiting');
+});
+
+test.each(names)('%s HTTP terminal history and clear preserve opposite state, unfinished work and neighbors', async name => {
+	const q = queue(name);
+	const foreign = new Queue(name, baseQueueOptions({ ...database.config.redisForJobQueue, prefix: `${database.config.redisForJobQueue.prefix}-terminal-neighbor` }, name, 5000));
+	const neighbor = queue(names[(names.indexOf(name) + 1) % names.length]);
+	const releaseSentinel = deferred();
+	let worker: Worker | undefined;
+	try {
+		const completed = await q.add('synthetic success', { marker: name }, { jobId: 'shared-terminal-id' });
+		const failed = await q.add('synthetic failure', { marker: name });
+		const sentinel = await q.add('completed sentinel', { marker: name });
+		await completed.log('completed history log');
+		await failed.log('failed history log');
+		await sentinel.log('completed sentinel log');
+		// These management fixtures do not imply business handlers exist for all ten queues.
+		worker = new Worker(name, async job => {
+			if (job.name === 'synthetic failure') {
+				throw new UnrecoverableError('synthetic terminal failure');
+			}
+			if (job.name === 'completed sentinel') {
+				await releaseSentinel.promise;
+			}
+			return 'synthetic result';
+		}, baseWorkerOptions(database.config.redisForJobQueue, name, 5000));
+		await vi.waitFor(async () => expect(await q.getJobCounts('completed', 'failed')).toEqual({ completed: 1, failed: 1 }));
+		await vi.waitFor(async () => expect(await sentinel.getState()).toBe('active'));
+		await q.pause();
+		const timestamp = Date.now() - 1209600000;
+		const waiting = await q.add('old paused work', { marker: 'paused' }, { timestamp });
+		const delayed = await q.add('old delayed work', { marker: 'delayed' }, { timestamp, delay: 1814400000 });
+		const prioritized = await q.add('old prioritized work', { marker: 'prioritized' }, { timestamp, priority: 1 });
+		const neighboringQueue = await neighbor.add('neighbor queue', {}, { jobId: completed.id });
+		const neighboringPrefix = await foreign.add('neighbor prefix', {}, { jobId: completed.id });
+		expect(await (await request('show-job', { queue: name, jobId: completed.id })).json()).toMatchObject({ id: completed.id, attempts: 1, returnValue: 'synthetic result', isFailed: false });
+		expect(await (await request('show-job', { queue: name, jobId: failed.id })).json()).toMatchObject({ id: failed.id, attempts: 1, failedReason: 'synthetic terminal failure', isFailed: true });
+		for (const [state, selected, opposite, oppositeState, oppositeLog] of [['completed', completed, failed, 'failed', 'failed history log'], ['failed', failed, sentinel, 'completed', 'completed sentinel log']] as const) {
+			if (state === 'failed') {
+				// Finalize after completed clear while the queue remains paused with unfinished work.
+				releaseSentinel.resolve();
+				await vi.waitFor(async () => expect(await sentinel.getState()).toBe('completed'));
+			}
+			const history = await (await request('jobs', { queue: name, state: [state] })).json() as { id: string }[];
+			expect(history.map(job => job.id)).toEqual([selected.id]);
+			expect((await request('clear', { queue: name, state })).status).toBe(204);
+			await vi.waitFor(async () => expect(await q.getJob(selected.id!)).toBeUndefined());
+			expect((await request('show-job', { queue: name, jobId: selected.id })).status).toBe(500);
+			expect(await (await request('show-job-logs', { queue: name, jobId: selected.id })).json()).toEqual([]);
+			expect(await (await request('jobs', { queue: name, state: [state] })).json()).toEqual([]);
+			expect(await opposite.getState()).toBe(oppositeState);
+			const response = await request('show-job', { queue: name, jobId: opposite.id });
+			expect(response.status).toBe(200);
+			expect(await response.json()).toMatchObject({ id: opposite.id, isFailed: oppositeState === 'failed' });
+			expect(await (await request('show-job-logs', { queue: name, jobId: opposite.id })).json()).toEqual([oppositeLog]);
+			const oppositeHistory = await (await request('jobs', { queue: name, state: [oppositeState] })).json() as { id: string }[];
+			expect(oppositeHistory.map(job => job.id)).toEqual([opposite.id]);
+			const stats = await (await request('queue-stats', { queue: name })).json() as any;
+			expect(stats).toMatchObject({ counts: { completed: state === 'failed' ? 1 : 0, failed: state === 'completed' ? 1 : 0, waiting: 1, delayed: 1, prioritized: 1 }, isPaused: true });
+			expect(stats.metrics.completed.meta.count).toBe(state === 'failed' ? 2 : 1);
+			expect(stats.metrics.failed.meta.count).toBe(1);
+			expect(await waiting.getState()).toBe('waiting');
+			expect(await delayed.getState()).toBe('delayed');
+			expect(await prioritized.getState()).toBe('prioritized');
+			expect(await neighboringQueue.getState()).toBe('waiting');
+			expect(await neighboringPrefix.getState()).toBe('waiting');
+		}
+	} finally {
+		releaseSentinel.resolve();
+		await worker?.close();
+		await foreign.obliterate({ force: true });
+		await foreign.close();
+	}
 });
 
 test.each([
