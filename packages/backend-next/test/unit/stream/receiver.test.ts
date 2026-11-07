@@ -145,3 +145,47 @@ test('a failed reaction read for one home listener does not suppress a sibling l
 	await expect(stream.publish({ channel: 'notesStream', message: note({ text: null, renoteId: 'r', renote: note({ reactions: { '❤': 1 } }) }) })).rejects.toThrow();
 	expect(sent).toMatchObject([{ body: { id: 'second', body: { renote: { myReaction: '❤' } } } }]);
 });
+
+test('follower content uses one current relationship read per publication across home subscriptions', async () => {
+	const sent: any[] = [];
+	let reads = 0;
+	const stream = createStreamConnection({ facts, now: () => 1794000000000, send: value => sent.push(value), repack: async () => null, reaction: async () => undefined, hidingFollowing: async () => {
+		reads++;
+		return new Set(reads === 1 ? ['a'] : []);
+	} });
+	for (const id of ['first', 'second']) {
+		await stream.receive({ type: 'connect', body: { id, channel: 'homeTimeline' } });
+	}
+	await stream.publish({ channel: 'notesStream', message: note({ visibility: 'followers' }) });
+	expect(sent.map(event => event.body.body.text)).toEqual(['snapshot', 'snapshot']);
+	expect(reads).toBe(1);
+	await stream.publish({ channel: 'notesStream', message: note({ visibility: 'followers' }) });
+	expect(sent.slice(2).map(event => event.body.body)).toEqual([
+		expect.objectContaining({ text: null, isHidden: true }),
+		expect.objectContaining({ text: null, isHidden: true }),
+	]);
+	expect(reads).toBe(2);
+});
+
+test('a rejected shared relationship read preserves unrelated listeners and retries on the next publication', async () => {
+	const sent: any[] = [];
+	let reads = 0;
+	const stream = createStreamConnection({ facts, now: () => 1794000000000, send: value => sent.push(value), repack: async () => null, reaction: async () => undefined, hidingFollowing: async () => {
+		if (++reads === 1) {
+			throw new Error('FOLLOWING_READ_FAILED');
+		}
+		return new Set(['a']);
+	} });
+	for (const id of ['first', 'second']) {
+		await stream.receive({ type: 'connect', body: { id, channel: 'homeTimeline' } });
+	}
+	await expect(stream.publish({ channel: 'notesStream', message: note({ visibility: 'followers' }) })).rejects.toThrow();
+	expect(sent).toEqual([]);
+	expect(reads).toBe(1);
+	await stream.publish({ channel: 'notesStream', message: note() });
+	expect(sent).toHaveLength(2);
+	expect(reads).toBe(1);
+	await stream.publish({ channel: 'notesStream', message: note({ visibility: 'followers' }) });
+	expect(sent).toHaveLength(4);
+	expect(reads).toBe(2);
+});

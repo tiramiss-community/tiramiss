@@ -12,6 +12,10 @@
 
 channelのrouting関係は10秒snapshot、本家NoteEntityServiceのfollowers本文hideは別のfollowing cacheである。新実装は後者を必要なfollowers本文に限定して現在DBから取得する。既存本家cacheの全invalidations/TTLを再実装した主張ではない。mute関係は本家cache fetcherと同様、期限切れrowをその場で除外しない。広域cache同期は#217。
 
+同じpublication内の複数home購読は本文hide用のfollowing取得Promiseを共有する。取得は必要になるまで開始せず、次のpublicationでは再取得する。失敗は各購読のcatchで集約し、後続publicationの処理は継続する。
+
+クライアントからの受信メッセージはguest/認証済みとも1 MiBまでとし、超過時は`ws`がclose code 1009で切断する。上限はfragmentの合計バイト数にも適用する。固定本家のWebSocketServerは`maxPayload`未指定で、今回使用する`ws` 8.22.0の既定値100 MiBより小さい上限を選んだ意図的差異である。connect/subNote等の制御メッセージに対して既定値の大きなbufferを許可しないためで、設定追加や送信イベントサイズの制限は行わない。
+
 常にcloneすること、JSON `null` frameを安全に無視することは本家実装との小さい差異。本家はhide不要時に元参照を返し、null frameのdestructureでTypeErrorになる。未実装channelとchannel/ch書込・readNotificationは無視し、利用可能とは広告しない。publisher/DB間の永続retry・exactly once・Create/Delete順序を追加しない。
 
 ## 比較の再現

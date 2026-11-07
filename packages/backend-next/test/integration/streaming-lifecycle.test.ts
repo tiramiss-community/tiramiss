@@ -51,6 +51,33 @@ afterEach(() => {
  vi.useRealTimers(); 
 });
 
+test.each(['guest', 'authenticated'] as const)('%s connections accept 1 MiB and reject oversized fragmented messages with 1009', async actor => {
+	const running = await start(ports(actor === 'guest' ? { authenticate: async () => null, readFacts: async () => emptyStreamFacts(null) } : {}));
+	const client = await connect(running.address);
+	const redis = new Redis(testConfig().redis);
+	const limit = 1024 * 1024;
+	try {
+		const command = JSON.stringify({ type: 'subNote', body: { id: 'payload-boundary' } });
+		client.socket.send(command.padEnd(limit, ' '));
+		const event = { channel: 'noteStream:payload-boundary', message: { type: 'deleted', body: { id: 'payload-boundary', userId: 'a', visibility: 'public', body: {} } } };
+		await vi.waitFor(async () => {
+			await redis.publish('example.test', JSON.stringify(event));
+			expect(client.messages).toContainEqual({ type: 'noteUpdated', body: { id: 'payload-boundary', type: 'deleted', body: {} } });
+		});
+		let code: number | undefined;
+		client.socket.once('close', value => {
+			code = value;
+		});
+		client.socket.send(' '.repeat(limit), { fin: false });
+		client.socket.send(' ', { fin: true });
+		await vi.waitFor(() => expect(code).toBe(1009));
+	} finally {
+		redis.disconnect();
+		client.socket.terminate();
+		await running.close();
+	}
+});
+
 test('heartbeat pings at each minute and terminates only when the last pong is more than two minutes old', async () => {
 	vi.useFakeTimers({ toFake: ['Date', 'setInterval', 'clearInterval'] });
 	const running = await start(ports());

@@ -61,6 +61,8 @@ for (const record of oracle.observations) {
 			const { stream, sent } = connection(emptyStreamFacts(record.input.user?.id ?? null));
 			await stream.receive({ type: 'connect', body: { id: 'channel-id', channel: record.input.channel, pong: record.input.pong } });
 			expect(sent).toEqual(record.sent);
+		} else {
+			throw new Error(`Unknown observation kind: ${record.kind}`);
 		}
 	});
 }

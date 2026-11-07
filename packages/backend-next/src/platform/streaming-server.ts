@@ -33,7 +33,7 @@ export async function openStreamingServer(server: Server, options: {
 	const tasks = new Set<Promise<unknown>>();
 	const upgrading = new Set<Duplex>();
 	const sessions = new Map<WebSocket, { publish(value: unknown): void; dispose(): void; lastPong: number }>();
-	const wss = new WebSocketServer({ noServer: true });
+	const wss = new WebSocketServer({ noServer: true, maxPayload: 1024 * 1024 });
 	const subscriber = new Redis({ ...options.redis, connectionName: `${options.redis.prefix}:posting-stream`, lazyConnect: true, retryStrategy: () => null, maxRetriesPerRequest: 0, disconnectTimeout: 0 });
 	const track = <T>(promise: Promise<T>): Promise<T> => {
 		tasks.add(promise);

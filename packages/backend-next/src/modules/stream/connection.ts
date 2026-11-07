@@ -83,6 +83,7 @@ export function createStreamConnection(ports: {
 				return;
 			}
 			const errors: unknown[] = [];
+			let hidingFollowing: Promise<ReadonlySet<string>> | undefined;
 			for (const [id, connection] of channels) {
 				try {
 					if (connection.name === 'homeTimeline' && channel === 'notesStream' && object(message)) {
@@ -100,7 +101,8 @@ export function createStreamConnection(ports: {
 								}
 							}
 							if (chain.some(n => n.visibility === 'followers' && n.userId !== facts.userId)) {
-								const following = await ports.hidingFollowing();
+								hidingFollowing ??= ports.hidingFollowing();
+								const following = await hidingFollowing;
 								hidingFacts = { ...facts, following: new Map([...following].map(userId => [userId, { withReplies: false }])) };
 							}
 						}
