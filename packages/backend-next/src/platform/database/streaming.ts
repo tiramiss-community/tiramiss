@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { settleAll } from '../settle-all.js';
-import { MiBlocking, MiChannelFollowing, MiChannelMuting, MiFollowing, MiMuting, MiNoteReaction, MiRenoteMuting, MiUser, MiUserProfile } from 'backend-upstream/entities';
+import { MiBlocking, MiChannelFollowing, MiChannelMuting, MiFollowing, MiMuting, MiNote, MiNoteReaction, MiRenoteMuting, MiUser, MiUserProfile } from 'backend-upstream/entities';
 import { emptyStreamFacts } from '../../modules/stream/public.js';
 import { readNotePlan, renderNote } from '../../modules/note/public.js';
 import { normalizeReaction } from '../../modules/note/public.js';
 import { createTokenAuthenticator } from './authenticate.js';
 import { createNoteReader } from './note-reader.js';
 import { readMeta } from './meta.js';
-import type { EntityManager } from 'typeorm';
+import { EntityNotFoundError, type EntityManager } from 'typeorm';
 import type { Redis } from 'ioredis';
 import type { Logger } from '../logger.js';
 import type { NoteMediaOptions } from './note-files.js';
@@ -47,7 +47,7 @@ export function createStreamingReader(manager: EntityManager, redis: Redis, logg
 		async repack(id: string, userId: string | null) {
 			const notes = await readNotePlan([id], reader.readNotes);
 			if (!notes.has(id)) {
-				return null;
+				throw new EntityNotFoundError(MiNote, { id });
 			}
 			const now = Date.now();
 			return renderNote(id, await reader.readMaterials(notes, userId, now), userId, now);

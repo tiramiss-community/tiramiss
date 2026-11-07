@@ -166,3 +166,16 @@ test('activity wakes the user/following flags and refreshed facts suppress a new
 	await vi.waitFor(() => expect(root.messages.some(m => m.body?.body?.id === 'after-muted')).toBe(true));
 	expect(root.messages.some(m => m.body?.body?.id === 'muted')).toBe(false);
 });
+
+test('deleted hidden main roots are skipped while the same WS client receives later queued events', async () => {
+	const root = await connect(seed.actors.root.token);
+	await root.channel('main');
+	const publisher = createPostingStream(resources.redis, database.config.url);
+	const note = { id: seed.codec.newId(Date.now()), userId: seed.actors.root.id, user: { id: seed.actors.root.id, host: null }, visibility: 'public', text: null, isHidden: true };
+	await publisher.main(seed.actors.root.id, 'notification', { id: 'deleted-hidden-notification', type: 'mention', userId: seed.actors.root.id, note });
+	await publisher.main(seed.actors.root.id, 'mention', note);
+	const later = { ...note, id: 'later-visible-snapshot', text: 'later', isHidden: false };
+	await publisher.main(seed.actors.root.id, 'mention', later);
+	await vi.waitFor(() => expect(root.messages).toContainEqual({ type: 'channel', body: { id: 'main', type: 'mention', body: later } }));
+	expect(root.messages.filter(m => m.type === 'channel')).toEqual([{ type: 'channel', body: { id: 'main', type: 'mention', body: later } }]);
+});

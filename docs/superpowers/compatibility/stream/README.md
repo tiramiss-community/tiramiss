@@ -29,6 +29,8 @@ pnpm --filter backend-next test test/unit/stream/source-compat.test.ts
 
 比較中に発見し修正した契約は、poll/replyを含むquoteをpureRenoteと扱わないこと、10秒routingと現在followers hideの分離、複数home購読の一件のreaction失敗が他購読を止めないこと。別のruntimeレビューではpending upgradeのTCP resetによる未処理ECONNRESETと、並列queryの早期rejectによるdrain漏れを再現し、それぞれ回帰テストを追加した。
 
+最終reviewでは、hiddenなmain通知/mentionのrootがpublication後に削除されるとnull payloadを送る差異を実メソッド比較で発見した。現在はroot欠落で本家同様にrejectし、そのイベントを送らず、同じWSの後続イベントを継続する。actual readerを使う通知/mention単体2件と実PG/Redis/WSのキュー継続でRED→GREENを確認した。
+
 ## 実依存とプロセス検証
 
 `test/integration/posting-websocket.test.ts` は実token/HTTP/PG/Redis/WSで作成→home/main mention+notification→購読削除、guest/他main漏洩抑止、受信者ごとのsnapshot/hide/myReaction、休眠解除とmute変更の10秒refreshを確認する。`streaming-lifecycle.test.ts` は実Redis/WSと明示clockでheartbeat/activity/停止時のpending auth/renderを確認する。

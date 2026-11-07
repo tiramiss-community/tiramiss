@@ -75,3 +75,10 @@ Baseline: isolated worktree at `8d3ca17349b95b5d587d71c195c8e0c1b64420ec`; froze
 - Exact commands and stdout logs retained in `/tmp/tiramiss-ws173-implementation.md` and `/tmp/tiramiss-ws173-*.log`; durable behavior evidence is in `../compatibility/stream/README.md` and tests. Parent owns final independent review, inventory/roadmap completion metadata and publication.
 
 Rulings: preserve safe-ignore for literal JSON null frames, always clone per receiver (documented narrow upstream differences); current DB following reads replace only the separate content-hiding cache, while routing/mute facts keep the 10s snapshot. No additional channels or durability/config contract. User authorized full inline implementation; no new design approval flow was introduced.
+
+
+### Final independent review correction
+
+Whole-branch review of product checkpoint `5e46444a01` found one P2: hidden main notification/mention repack returned null if its root disappeared after publication, unlike fixed upstream pack rejection. Actual-adapter unit2 and real WS queue regression were RED, then missing-root `EntityNotFoundError` suppressed the malformed event through existing listener/session isolation. A following valid publication still reaches the same client. This is the single authorized final fix wave; no metadata inventory files are part of its commit.
+
+Focused stream unit4files/77tests and posting WS integration1file/5tests pass; dependency build/typecheck and canonical shipping pass. Earlier full1820 and integration47 evidence remains attached to the product checkpoint; the focused correction adds2unit+1integration cases and does not claim a repeated full-suite run. Logs: `/tmp/tiramiss-ws173-{red-missing-main,red-missing-main-ws,fix-unit,fix-integration,fix-build,fix-typecheck,fix-shipping}.log`.
