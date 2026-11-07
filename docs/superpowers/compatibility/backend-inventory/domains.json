@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "40239a1244b1a088e4fe836e0c57360d0065c912",
+  "implementationCommit": "6a7e2e3e46c7ad49fed7e87f23a7b781c145532c",
   "domains": [
     {
       "id": "api-common",
@@ -1584,6 +1584,23 @@
         "packages/backend-next/test/integration/note-notifications.test.ts"
       ],
       "note": "#172の認可・物理削除・返信数減算・監査・Delete/Undo配送へ#173でDELETE前のdeleted Redis発行を接続。DELETE失敗でも発行済み。TL/検索#174、webhook#175、チャート#200、WebSocket#189、縦断#176は未完了。"
+    },
+    "capability:timeline": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/note/timeline-plan.ts",
+        "packages/backend-next/src/composition/posting-timelines.ts",
+        "packages/backend-next/src/platform/database/note-timelines.ts",
+        "packages/backend-next/src/platform/timeline-cache.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/note/timeline-plan.test.ts",
+        "packages/backend-next/test/unit/note/timeline-cache.test.ts",
+        "packages/backend-next/test/integration/note-timelines.test.ts",
+        "packages/backend-next/test/processes/note-timelines.test.ts",
+        "docs/superpowers/compatibility/note/timeline/reference-timeline.mjs"
+      ],
+      "note": "#174第1sliceでhome/local/user/list/channelのRedis書込producerと休眠判定を通常投稿へ接続。閲覧#185、検索#186、Role/antenna/featured等の更新、再構築#132/#133は未完了。"
     }
   }
 }

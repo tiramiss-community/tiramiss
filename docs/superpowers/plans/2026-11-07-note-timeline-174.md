@@ -44,6 +44,7 @@ PR #229をマージしたdevelop `67bcdf50d2cfc62d0e17e1792af940c849b15009` か�
 | `test:integration` timeline/resources/notification | PASS、3 files / 38 tests、schema差分0を含む |
 | `test:integration` note-create-relations/note-delete | PASS、2 files / 111 tests |
 | `test:process` timeline/delete/deliver/poll-ended | PASS、4 files / 12 tests |
+| inventory生成・`--check`、catalog/fixture Node tests | PASS、12監査行とTL capabilityをpartialへ同期、10 tests |
 
 実HTTP子のテストは投稿応答直後にSIGTERMを送り、正常終了後の専用RedisのIDを確認する。シグナル時に後続が必ず保留中だったとは主張しない。保留中のtimeline更新でcloseが待つことはgate付きpost-save単体テスト、開始済みold-ID直接更新はcache単体と失敗時の実Redisテストで別に確認する。
 
