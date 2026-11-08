@@ -1,0 +1,428 @@
+{
+  "schemaVersion": 1,
+  "implementationCommit": "e133a0fdebf0cfd538a07f264a4de1050486cb23",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "observationsSha256": "7427c62abb63c7a7414d9ad571450eb66bce15856ad0be9a5f4b02e1d554b8eb",
+  "sourceCaseCount": 95,
+  "environment": {
+    "node": "24.20.0",
+    "pnpm": "12.9.1",
+    "requestedNode": "26.4.0",
+    "node26Verified": false
+  },
+  "caseMapArtifact": {
+    "path": "/tmp/tiramiss-next243-parent-case-map-reviewfix1.json",
+    "sha256": "908768b2e2705abeedfc51fe07d99d7018012dbfcab7535b41e14dd4bd257561"
+  },
+  "helper": {
+    "file": "packages/backend-next/test/helpers/remote-source.ts",
+    "sourceSha256": "53b2fd462699a60294f575059cf61c6f9fbfb2a2f90c00763f723f09b0b9cd0b"
+  },
+  "measurements": {
+    "closest-units": {
+      "provenance": "new-runtime",
+      "implementationCommit": "e133a0fdebf0cfd538a07f264a4de1050486cb23",
+      "command": "pnpm --filter backend-next test test/unit/federation/remote-user.test.ts test/unit/federation/remote-actor.test.ts test/unit/federation/activity-fetch.test.ts test/unit/federation/local-actor.test.ts test/unit/note/create-note.test.ts --reporter=json --outputFile=/tmp/tiramiss-next243-reviewfix1-units.json",
+      "outcome": "PASS",
+      "passed": 243,
+      "failed": 0,
+      "skipped": 0,
+      "files": 5,
+      "seconds": null,
+      "artifact": "/tmp/tiramiss-next243-reviewfix1-units.json",
+      "artifactSha256": "9226bbe91ac61566a4a4ba5eaa939c257002bcd3ba4660906bef74a90aa4b009"
+    },
+    "integration": {
+      "provenance": "new-runtime",
+      "implementationCommit": "e133a0fdebf0cfd538a07f264a4de1050486cb23",
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55491 BACKEND_NEXT_TEST_REDIS_PORT=56391 BACKEND_NEXT_TEST_MEILI_PORT=57791 pnpm --filter backend-next test:integration test/integration/remote-user.test.ts test/integration/activitypub-actor.test.ts",
+      "outcome": "PASS",
+      "passed": 57,
+      "failed": 0,
+      "skipped": 0,
+      "files": 2,
+      "seconds": 12.21,
+      "artifact": "/tmp/tiramiss-next243-reviewfix1-integration.log",
+      "artifactSha256": "b4ae5521f1d07dc382baacaea0fa9072dc915f6a50676a281bc8373fd6c4978c"
+    },
+    "process": {
+      "provenance": "new-runtime",
+      "implementationCommit": "e133a0fdebf0cfd538a07f264a4de1050486cb23",
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55491 BACKEND_NEXT_TEST_REDIS_PORT=56391 BACKEND_NEXT_TEST_MEILI_PORT=57791 pnpm --filter backend-next test:process test/processes/remote-mentions.test.ts",
+      "outcome": "PASS",
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "files": 1,
+      "seconds": 6.12,
+      "artifact": "/tmp/tiramiss-next243-reviewfix1-process.log",
+      "artifactSha256": "2e92c235c317f6a1f8ea801d3a65e75431ea0f3532d2113f93032bb83021a2b3"
+    }
+  },
+  "consumers": [
+    {
+      "id": "resolve",
+      "file": "packages/backend-next/test/unit/federation/remote-user.test.ts",
+      "sourceSha256": "c9ef61ee44c5c89b5b4ba1b8988244594de2f2620decc71b6052c60b4237625c",
+      "declaration": "${fixture.id} runs resolution through the actual posting caller and preserves ordered source operations",
+      "selection": "c.id.startsWith('resolve-')",
+      "assertions": [
+        "expect(encode(events)).toEqual(fixture.expected.events);",
+        "expect(notes.at(-1)?.mentions).toEqual(expected ? [expected.id] : []);"
+      ],
+      "passedCaseIds": [
+        "resolve-local",
+        "resolve-self-host",
+        "resolve-idn",
+        "resolve-cross-host-first-self",
+        "resolve-local-self-link",
+        "resolve-no-self",
+        "resolve-age-0",
+        "resolve-age-86400000",
+        "resolve-age-86400001",
+        "resolve-age-null",
+        "resolve-stale-refresh-failure",
+        "resolve-failed-refresh-next-fresh",
+        "resolve-timestamp-write-failure",
+        "resolve-uri-write-failure",
+        "resolve-stale-webfinger-failure",
+        "resolve-stale-invalid-repair"
+      ],
+      "measurement": "closest-units",
+      "passedCaseCount": 16,
+      "renderedTitle": "$id runs resolution through the actual posting caller and preserves ordered source operations"
+    },
+    {
+      "id": "mentions",
+      "file": "packages/backend-next/test/unit/note/create-note.test.ts",
+      "sourceSha256": "75ec509617d547a8b284aa943128154528d02b539746ed243e345987e078272d",
+      "declaration": "mentions-independent-duplicates: each occurrence can fail before successful IDs are deduplicated",
+      "selection": "c.id === 'mentions-independent-duplicates'",
+      "assertions": [
+        "expect(world.notes[0].mentions).toEqual(fixture.expected.result.map((u: { id: string; }) => u.id));"
+      ],
+      "passedCaseIds": [
+        "mentions-independent-duplicates"
+      ],
+      "measurement": "closest-units",
+      "passedCaseCount": 1,
+      "renderedTitle": "$id: each occurrence can fail before successful IDs are deduplicated"
+    },
+    {
+      "id": "webfinger",
+      "file": "packages/backend-next/test/unit/federation/remote-user.test.ts",
+      "sourceSha256": "c9ef61ee44c5c89b5b4ba1b8988244594de2f2620decc71b6052c60b4237625c",
+      "declaration": "${fixture.id} compares the actual WebFinger URL against source HTTP arguments",
+      "selection": "c.id.startsWith('webfinger-')",
+      "assertions": [
+        "toThrow(fixture.expected.error.message)",
+        "toBe(fixture.expected.events[0].args[0])"
+      ],
+      "passedCaseIds": [
+        "webfinger-acct",
+        "webfinger-url",
+        "webfinger-invalid"
+      ],
+      "measurement": "closest-units",
+      "passedCaseCount": 3,
+      "renderedTitle": "$id compares the actual WebFinger URL against source HTTP arguments"
+    },
+    {
+      "id": "actor-plans",
+      "file": "packages/backend-next/test/unit/federation/remote-actor.test.ts",
+      "sourceSha256": "b50926a13272f148285a3dc0e524f376000ea3507026c7013c2abdc9e06c5468",
+      "declaration": "$id compares actual User/Profile/Key plans to source write projections",
+      "selection": "c.input.operation !== 'validate' && !c.input.fail && !c.input.duplicate && !c.input.deleted",
+      "assertions": [
+        "expect(encode(user)).toEqual(userEvent.args.patch ?? userEvent.args);",
+        "expect(encode(plan.profile)).toEqual(profileEvent.args.patch ?? profileEvent.args);",
+        "expect(encode(plan.publickey)).toEqual(keyEvent ? keyEvent.args.patch ?? keyEvent.args : { $undefined: true });"
+      ],
+      "passedCaseIds": [
+        "actor-create-Person",
+        "actor-create-Service",
+        "actor-create-Group",
+        "actor-create-Organization",
+        "actor-create-Application",
+        "actor-create-object-attachment",
+        "actor-create-profile-key",
+        "actor-refresh-profile-key",
+        "actor-refresh-missing-key",
+        "actor-refresh-defaults",
+        "actor-create-foreign-url",
+        "actor-create-bad-scheme",
+        "actor-create-collection-transient",
+        "actor-create-collection-rate-limited",
+        "actor-create-collection-denied",
+        "actor-refresh-foreign-url",
+        "actor-refresh-bad-scheme",
+        "actor-refresh-collection-transient",
+        "actor-refresh-collection-rate-limited",
+        "actor-refresh-collection-denied"
+      ],
+      "measurement": "closest-units",
+      "passedCaseCount": 20,
+      "renderedTitle": "$id compares actual User/Profile/Key plans to source write projections"
+    },
+    {
+      "id": "actor-refresh",
+      "file": "packages/backend-next/test/unit/federation/remote-actor.test.ts",
+      "sourceSha256": "b50926a13272f148285a3dc0e524f376000ea3507026c7013c2abdc9e06c5468",
+      "declaration": "${fixture.id} preserves source ordered update attempts and partial failures in the actual refresher",
+      "selection": "c.input.operation === 'refresh'",
+      "assertions": [
+        "expect(encode(events)).toEqual(fixture.expected.events);",
+        "await refresh(existing.id, plan);"
+      ],
+      "passedCaseIds": [
+        "actor-refresh-profile-key",
+        "actor-refresh-missing-key",
+        "actor-refresh-defaults",
+        "actor-refresh-profile-failure",
+        "actor-refresh-key-failure",
+        "actor-refresh-following-failure",
+        "actor-refresh-deleted",
+        "actor-refresh-foreign-url",
+        "actor-refresh-bad-scheme",
+        "actor-refresh-collection-transient",
+        "actor-refresh-collection-rate-limited",
+        "actor-refresh-collection-denied"
+      ],
+      "measurement": "closest-units",
+      "passedCaseCount": 12,
+      "renderedTitle": "$id preserves source ordered update attempts and partial failures in the actual refresher"
+    },
+    {
+      "id": "actor-create-failure",
+      "file": "packages/backend-next/test/unit/federation/remote-actor.test.ts",
+      "sourceSha256": "b50926a13272f148285a3dc0e524f376000ea3507026c7013c2abdc9e06c5468",
+      "declaration": "actor-create-profile-failure: actual insertion attempts User then Profile, and propagates failure for caller rollback",
+      "selection": "c.id === 'actor-create-profile-failure'",
+      "assertions": [
+        "expect(encode(events)).toEqual(fixture.expected.events);",
+        "await insertActor("
+      ],
+      "passedCaseIds": [
+        "actor-create-profile-failure"
+      ],
+      "measurement": "closest-units",
+      "passedCaseCount": 1,
+      "renderedTitle": "$id: actual insertion attempts User then Profile, and propagates failure for caller rollback"
+    },
+    {
+      "id": "actor-duplicates",
+      "file": "packages/backend-next/test/unit/note/create-note.test.ts",
+      "sourceSha256": "75ec509617d547a8b284aa943128154528d02b539746ed243e345987e078272d",
+      "declaration": "${id} recovers only a canonical URI row through the posting-owned transaction",
+      "selection": "['actor-create-duplicate-uri', 'actor-create-duplicate-missing']",
+      "assertions": [
+        "expect(encode(events)).toEqual(fixture.expected.events.filter",
+        "expect(world.notes[0].mentions).toEqual(fixture.input.duplicateMissing ? [] : ['remote']);"
+      ],
+      "passedCaseIds": [
+        "actor-create-duplicate-uri",
+        "actor-create-duplicate-missing"
+      ],
+      "measurement": "closest-units",
+      "passedCaseCount": 2,
+      "renderedTitle": "$id recovers only a canonical URI row through the posting-owned transaction"
+    },
+    {
+      "id": "actor-validation",
+      "file": "packages/backend-next/test/unit/federation/remote-actor.test.ts",
+      "sourceSha256": "b50926a13272f148285a3dc0e524f376000ea3507026c7013c2abdc9e06c5468",
+      "declaration": "$id validates the actual actor against the pinned projection",
+      "selection": "c.input.operation === 'validate'",
+      "assertions": [
+        "toThrow(fixture.expected.error.message)",
+        "toEqual(fixture.expected.result)"
+      ],
+      "passedCaseIds": [
+        "actor-validation-bad-type",
+        "actor-validation-bad-id",
+        "actor-validation-bad-inbox",
+        "actor-validation-bad-username",
+        "actor-validation-bad-key-host",
+        "actor-validation-bad-key-id",
+        "actor-validation-bad-followers",
+        "actor-validation-foreign-shared",
+        "actor-validation-empty-name",
+        "actor-validation-bad-name",
+        "actor-validation-bad-summary",
+        "actor-validation-missing-inbox"
+      ],
+      "measurement": "closest-units",
+      "passedCaseCount": 12,
+      "renderedTitle": "$id validates the actual actor against the pinned projection"
+    },
+    {
+      "id": "fetch",
+      "file": "packages/backend-next/test/unit/federation/activity-fetch.test.ts",
+      "sourceSha256": "80889bc87ad1032979260e87f0216455a3fc92d61e2f84fdc0ce7f979b9bc665",
+      "declaration": "${fixture.id} executes the actual acquisition session and compares source result and transport projections",
+      "selection": "c.area === 'fetch'",
+      "assertions": [
+        "const session = createActivitySession({",
+        "expect(encode(result)).toEqual(fixture.expected.result);",
+        "expect(requests.slice(before)).toEqual(projected);"
+      ],
+      "passedCaseIds": [
+        "fetch-signed",
+        "fetch-lazy-signer",
+        "fetch-actual-repeat",
+        "fetch-unsigned",
+        "fetch-alternate",
+        "fetch-alternate-cross-host",
+        "fetch-alternate-relative",
+        "fetch-alternate-failure",
+        "fetch-unsigned-html",
+        "fetch-ld-context",
+        "fetch-invalid-context",
+        "fetch-json-content",
+        "fetch-www-normalization",
+        "fetch-identity-mismatch",
+        "fetch-downgrade",
+        "fetch-fragment",
+        "fetch-repeated",
+        "fetch-limit-256",
+        "fetch-limit-257",
+        "fetch-object-passthrough",
+        "fetch-local",
+        "fetch-blocked"
+      ],
+      "measurement": "closest-units",
+      "passedCaseCount": 22,
+      "renderedTitle": "$id executes the actual acquisition session and compares source result and transport projections"
+    },
+    {
+      "id": "publication-render",
+      "file": "packages/backend-next/test/unit/federation/local-actor.test.ts",
+      "sourceSha256": "ec2cf7fa06dda4d9925795c7596dee8e166388397ce1f1eb520c41fdc834a056",
+      "declaration": "$id renders the consumed source signer projection with an actual context",
+      "selection": "['publication-local', 'publication-system', 'publication-bot', 'publication-deleted'].includes(c.id)",
+      "assertions": [
+        "expect(projection).toEqual(expected);"
+      ],
+      "passedCaseIds": [
+        "publication-local",
+        "publication-system",
+        "publication-bot",
+        "publication-deleted"
+      ],
+      "measurement": "closest-units",
+      "passedCaseCount": 4,
+      "renderedTitle": "$id renders the consumed source signer projection with an actual context"
+    },
+    {
+      "id": "publication-adapter",
+      "file": "packages/backend-next/test/unit/federation/local-actor.test.ts",
+      "sourceSha256": "ec2cf7fa06dda4d9925795c7596dee8e166388397ce1f1eb520c41fdc834a056",
+      "declaration": "${fixture.id} executes the actual HTTP adapter including Accept quality and source query ordering",
+      "selection": "c.area === 'publication'",
+      "assertions": [
+        "const app = createActivityPubActorApi({",
+        "expect(result).toEqual(fixture.expected.result);"
+      ],
+      "passedCaseIds": [
+        "publication-local",
+        "publication-system",
+        "publication-bot",
+        "publication-ld",
+        "publication-html",
+        "publication-quality-html",
+        "publication-quality-ap",
+        "publication-none",
+        "publication-missing",
+        "publication-suspended",
+        "publication-deleted",
+        "publication-remote",
+        "publication-remote-missing-uri",
+        "publication-remote-self-host"
+      ],
+      "measurement": "closest-units",
+      "passedCaseCount": 14,
+      "renderedTitle": "$id executes the actual HTTP adapter including Accept quality and source query ordering"
+    },
+    {
+      "id": "publication-http",
+      "file": "packages/backend-next/test/integration/activitypub-actor.test.ts",
+      "sourceSha256": "9caca1544698225e58dbd4e6269d9e21be165dcd00d9440c9e07c95edf89a95b",
+      "declaration": "$id measures real HTTP negotiation, source row filtering and signer publication",
+      "selection": "c.area === 'publication'",
+      "assertions": [
+        "expect(body.type).toBe(fixture.expected.result.type);",
+        "expect(response.headers.get('content-type')).toBe(events.find((e: { op: string; }) => e.op === 'type').args);",
+        "expect(key.owner).toBe(`http://local.test/users/${ids.get(fixture.id)}`);"
+      ],
+      "passedCaseIds": [
+        "publication-local",
+        "publication-system",
+        "publication-bot",
+        "publication-ld",
+        "publication-html",
+        "publication-quality-html",
+        "publication-quality-ap",
+        "publication-none",
+        "publication-missing",
+        "publication-suspended",
+        "publication-deleted",
+        "publication-remote",
+        "publication-remote-missing-uri",
+        "publication-remote-self-host"
+      ],
+      "measurement": "integration",
+      "passedCaseCount": 14,
+      "renderedTitle": "$id measures real HTTP negotiation, source row filtering and signer publication"
+    }
+  ],
+  "runtimeChecks": [
+    {
+      "file": "packages/backend-next/test/integration/remote-user.test.ts",
+      "sourceSha256": "c645b3ea54b81aa8a707270a4393788a5d1197d0748588a08b309dbecf2f8ef3",
+      "measurement": "integration",
+      "passed": 35,
+      "declarations": [
+        "actor-create-profile-key and actor-refresh-profile-key preserve supported rich scalar fields without tagged conversions",
+        "failure omission preserves input, mixed recipients, noExtract and authorization before network",
+        "failed refresh saves attempt first, repairs URI, omits this occurrence, and next lookup is fresh",
+        "canonical URI duplicate creation races recover one real actor with atomic Profile",
+        "actor-create-profile-failure rolls back User and optional Key but permits posting omission",
+        "optional key refresh updates without inserting missing key; deleted rows skip all actor writes; Following updates follower direction only",
+        "creation allows foreign Profile URL but refresh rejects it after persisting attempt; bad scheme is omitted",
+        "actors survive the real product mention limit and later Note/Poll insertion failures",
+        "malformed summary conversion preserves refresh User and Key commits before Profile failure",
+        "malformed sharedInbox refresh preserves actor, key, Profile and Following while saving the attempt",
+        "malformed followed-message preserves refresh User and Key commits while retaining Profile and Following",
+        "malformed followed-message creation rolls back the actor before Profile or Key survives",
+        "resolve-cross-host-first-self: unknown account accepts another actor host and first self even with HTML MIME",
+        "real PG freshness is inclusive at 24h, stale at one millisecond more, and fresh reads bypass federation-none",
+        "failed stale WebFinger and invalid cross-host repair retain attempt timestamps without inventing stale fallback",
+        "Meta.signToActivityPubGet=false uses the real unsigned acquisition path without signer discovery"
+      ]
+    },
+    {
+      "file": "packages/backend-next/test/integration/activitypub-actor.test.ts",
+      "sourceSha256": "9caca1544698225e58dbd4e6269d9e21be165dcd00d9440c9e07c95edf89a95b",
+      "measurement": "integration",
+      "passed": 22,
+      "declarations": [
+        "real signed GET discovers cold PEM; one same-host HTML alternate is parsed and re-signed",
+        "real streaming caps distinguish unsigned 256KiB from signed 10MiB",
+        "real 5000ms acquisition timeout cancels the response and normal direct SSRF guard blocks loopback"
+      ]
+    },
+    {
+      "file": "packages/backend-next/test/processes/remote-mentions.test.ts",
+      "sourceSha256": "c320c6ccb9c30fd119b39f97e00f7411cf59a3b569a642400f0948ef1d27f91c",
+      "measurement": "process",
+      "passed": 3,
+      "declarations": [
+        "cold system and author PEM discovery connects native posting to actual worker delivery, then refreshed follower sharedInbox changes the next destination",
+        "disconnected accepted resolution drains on SIGTERM and persists through an ordinary process restart",
+        "ordinary shutdown deadline terminates a blocked accepted resolution without inventing retry promotion"
+      ]
+    }
+  ],
+  "results": "docs/superpowers/compatibility/remote-user/runtime-results.md",
+  "upstreamHttpMeasured": false
+}

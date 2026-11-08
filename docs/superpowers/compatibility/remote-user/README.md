@@ -1,8 +1,10 @@
-# Remote-user fixed-source comparison inputs (#195 / next PR243)
+# Remote-user fixed-source comparison and runtime evidence (#195)
 
 These are **source-method observations**, pinned to upstream
-`8e07cf085adf7009583d234a208e30436f020e26`. They are inputs for Task 2,
-not evidence that the new runtime or the upstream HTTP server passes.
+`8e07cf085adf7009583d234a208e30436f020e26`. The unchanged 95 expectations are consumed by the reviewed core runtime at
+`e133a0fdebf0cfd538a07f264a4de1050486cb23`; [measured results and remaining owners](runtime-results.md)
+and [compact consumer bindings](runtime-evidence.json) record that separate evidence.
+No upstream full HTTP server was measured. `notes/create` remains partial; #195/#176/#127 remain incomplete.
 No product dependencies are required for the default validator:
 
 ```sh
@@ -55,9 +57,9 @@ The actor profile case uses intentionally tagged conversion doubles
 boundary at unit level; real HTML conversion and real database outcomes need
 separate integration assertions. Never persist those tags in product data.
 
-Declared consumers (Task 1 checks declarations; Task 3 checks actual consumers):
+Current consumers (Task3 checks current source hashes, actual fixture selections, expected-value assertion anchors and successful parent measurements):
 
-| Area | Planned consumer files |
+| Area | Consumer files |
 | --- | --- |
 | resolve | `packages/backend-next/test/unit/federation/remote-user.test.ts`, `packages/backend-next/test/unit/note/create-note.test.ts` |
 | actor | `packages/backend-next/test/unit/federation/remote-actor.test.ts`, `packages/backend-next/test/integration/remote-user.test.ts` |
@@ -93,7 +95,8 @@ UPSTREAM_SOURCE_MODE=verified-files UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstrea
 The fallback verifies Git blob hashes of **every read source file** against IDs
 obtained from `git ls-tree -r 8e07cf085adf7009583d234a208e30436f020e26 packages/backend/src`.
 It refuses changed/unpinned source bytes. Fingerprints and observations are the
-same in either mode. The fallback was the executed path in this sandbox.
+same in either mode. The initial source worker used the fallback; the parent later
+repeated full pinned Git-object `--check` twice successfully (see runtime results).
 
 Regeneration explicitly resolves TypeScript from the upstream root's installed
 node_modules, and node-html-parser, slacc, stringz, accepts and vary from that
@@ -148,5 +151,8 @@ featured and Move are incomplete external dependencies with explicit doubles;
 these are **not compatibility PASS results**. No real PostgreSQL defaults,
 constraints, rollback, actor concurrency, upstream HTTP, DNS/SSRF, TLS, streaming
 limits, queue delivery, rich actor publication or full MFM parsing is established.
-Task 2/3 must supply runtime/integration evidence separately. #195/#176/#127
-remain incomplete; this task does not change product behavior or those statuses.
+[Runtime results](runtime-results.md) separately establish the supported unit projections,
+real transport/DB and native posting-to-delivery slice. Their actor-effect table names
+implemented paths, existing concrete ownership and unresolved initial compatibility scope.
+All 95 unit cases are consumed; they are not 95 real HTTP cases. Hashes, titles and
+source bindings detect drift, not semantic parity. #195/#176/#127 remain incomplete.

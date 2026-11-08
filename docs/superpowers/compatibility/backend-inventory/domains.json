@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "7b6be9556a10ef786a7f6afc2665e0221c127036",
+  "implementationCommit": "e133a0fdebf0cfd538a07f264a4de1050486cb23",
   "domains": [
     {
       "id": "api-common",
@@ -693,7 +693,9 @@
       "apiNames": [],
       "implementation": [],
       "verification": [],
-      "differences": []
+      "differences": [
+        "#195のposting core取得/保存/refreshと最小actor/key公開はe133a0fdebf0cfd538a07f264a4de1050486cb23で実測。一般inbox/remote Notes/collections/WebFinger公開/relayとrich actor effectsは未完了。個別のpartial行が示す限定scopeであり、全領域の検証済みを意味しない。"
+      ]
     },
     {
       "id": "ap-outbound",
@@ -1648,7 +1650,10 @@
         "packages/backend-next/src/modules/note/antenna-plan.ts",
         "packages/backend-next/src/platform/database/note-antennas.ts",
         "packages/backend-next/src/platform/note-antennas.ts",
-        "packages/backend-next/src/composition/posting-antennas.ts"
+        "packages/backend-next/src/composition/posting-antennas.ts",
+        "packages/backend-next/src/composition/remote-users.ts",
+        "packages/backend-next/src/modules/federation/remote-user.ts",
+        "packages/backend-next/src/modules/federation/remote-actor.ts"
       ],
       "verification": [
         "packages/backend-next/test/integration/note-create.test.ts",
@@ -1685,12 +1690,17 @@
         "packages/backend-next/test/processes/note-antennas.test.ts",
         "docs/superpowers/compatibility/note/antenna/reference-antenna.mjs",
         "docs/superpowers/compatibility/note/antenna/source-observations.json",
-        "docs/superpowers/compatibility/note/antenna/README.md"
+        "docs/superpowers/compatibility/note/antenna/README.md",
+        "packages/backend-next/test/unit/federation/remote-user.test.ts",
+        "packages/backend-next/test/unit/federation/remote-actor.test.ts",
+        "packages/backend-next/test/integration/remote-user.test.ts",
+        "packages/backend-next/test/integration/activitypub-actor.test.ts",
+        "packages/backend-next/test/processes/remote-mentions.test.ts"
       ],
       "differences": [
-        "添付・投票・返信/Renote・channel・指定宛先・MFM抽出は#170で接続済み。未登録リモートユーザー宛てのメンションは#195まで保存前に501 NOT_IMPLEMENTEDで拒否し、登録済みリモートユーザーも#195まで再同期しない暫定制限（docs/backend-next/posting-contract.md）。完成版の意図的差異ではない。"
+        "#195 core remote取得/refreshと失敗出現の省略はe133a0fdebf0cfd538a07f264a4de1050486cb23で接続済み。旧501/stale省略はN7歴史証跡であり、現行coreの制限ではない。media/emoji #188/#195、user hashtag関係 #195、instance usersCount/metadata #215、chart #200、featured/Move/full actor/inbox/remote Notes #195、cache/remoteUserUpdated #217は未完了。全95 unitケースは95 real HTTPケースではない。postingComplete:falseとnotes/create partialを維持（docs/superpowers/compatibility/remote-user/runtime-results.md）。"
       ],
-      "note": "保存後のmain/home実受信・検索snapshot・Role TL・Renote featured・note hashtagに、antenna照合/一覧cache/internal受信/TL/raw publicationを接続。未登録remote mentionの501と登録済みremote再同期制限 #195、検索/hashtag閲覧 #186、featured閲覧 #185・reaction加点 #184、Role/antenna閲覧 #185・WS受信 #189、投稿全体の縦断 #176 は未完了。"
+      "note": "既存post-save producerにremote mention取得/core保存/refresh・最小actor/key公開・通常worker署名配送を接続。rich actor副作用、N7 C2/C10のqualified比較ギャップ #176、閲覧/API/WS等の既存所有者は残る。#195/#176/#127全体は未完了。"
     },
     "processor:EndedPollNotification": {
       "status": "partial",

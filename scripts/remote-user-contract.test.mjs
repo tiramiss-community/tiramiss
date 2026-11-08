@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFileSync, existsSync } from 'node:fs';
 import test from 'node:test';
 
@@ -60,7 +61,118 @@ function validate(data) {
 }
 
 test('committed projections have consumable outcomes and declared source boundaries', () => validate(dataset()));
-test('declared consumer bindings are documented (actual consumers verified by Task 3)', () => {
+const root = new URL('../', import.meta.url);
+const read = file => readFileSync(new URL(file, root), 'utf8');
+const sha = value => createHash('sha256').update(value).digest('hex');
+const runtime = () => JSON.parse(readFileSync(new URL('runtime-evidence.json', directory), 'utf8'));
+const implementationCommit = 'e133a0fdebf0cfd538a07f264a4de1050486cb23';
+const selections = {
+	resolve: c => c.id.startsWith('resolve-'),
+	mentions: c => c.id === 'mentions-independent-duplicates',
+	webfinger: c => c.id.startsWith('webfinger-'),
+	'actor-plans': c => c.area === 'actor' && c.input.operation !== 'validate' && !c.input.fail && !c.input.duplicate && !c.input.deleted,
+	'actor-refresh': c => c.area === 'actor' && c.input.operation === 'refresh',
+	'actor-create-failure': c => c.id === 'actor-create-profile-failure',
+	'actor-duplicates': c => ['actor-create-duplicate-uri', 'actor-create-duplicate-missing'].includes(c.id),
+	'actor-validation': c => c.area === 'actor' && c.input.operation === 'validate',
+	fetch: c => c.area === 'fetch',
+	'publication-render': c => ['publication-local', 'publication-system', 'publication-bot', 'publication-deleted'].includes(c.id),
+	'publication-adapter': c => c.area === 'publication',
+	'publication-http': c => c.area === 'publication',
+};
+const same = (a, b, message) => assert.deepEqual([...a].sort(), [...b].sort(), message);
+
+// These finite bindings were checked against the actual assertions and parent run JSON.
+// Source/title/hash checks detect later drift; they are not a semantic parity oracle.
+function validateRuntime(value, data = dataset(), sourceRead = read) {
+	assert.equal(value.schemaVersion, 1);
+	assert.equal(value.implementationCommit, implementationCommit, 'reviewed implementation commit');
+	assert.equal(value.upstreamCommit, data.upstreamCommit, 'fixed upstream');
+	assert.equal(value.observationsSha256, sha(readFileSync(new URL('observations.json', directory))), 'actual source fixture drift');
+	assert.equal(value.sourceCaseCount, 95);
+	assert.equal(data.cases.length, 95);
+	assert.equal(value.upstreamHttpMeasured, false, 'no upstream full HTTP measurement');
+	assert.deepEqual(value.environment, { node: '24.20.0', pnpm: '12.9.1', requestedNode: '26.4.0', node26Verified: false }, 'measured environment');
+	assert(read(value.results).length > 100, 'durable measured results');
+	for (const [id, expected] of Object.entries({ 'closest-units': [243, 5], integration: [57, 2], process: [3, 1] })) {
+		const measured = value.measurements[id];
+		assert(measured, `missing measurement ${id}`);
+		assert.equal(measured.provenance, 'new-runtime');
+		assert.equal(measured.implementationCommit, implementationCommit);
+		assert.equal(measured.outcome, 'PASS', 'successful measurement required');
+		assert.equal(measured.failed, 0, 'failed measurement');
+		assert.equal(measured.skipped, 0, 'skipped measurement');
+		assert.equal(measured.passed, expected[0], 'measured test count');
+		assert.equal(measured.files, expected[1], 'measured file count');
+		assert(measured.command.length > 40 && measured.artifact.startsWith('/tmp/'), 'actual run command and artifact');
+		assert.match(measured.artifactSha256, /^[a-f0-9]{64}$/);
+	}
+	assert.equal(sha(sourceRead(value.helper.file)), value.helper.sourceSha256, 'actual fixture import helper drift');
+	assert(sourceRead(value.helper.file).includes('compatibility/remote-user/observations.json'), 'actual source fixture import');
+	same(value.consumers.map(c => c.id), Object.keys(selections), 'all reviewed runtime consumers');
+	const consumed = new Set();
+	for (const consumer of value.consumers) {
+		const source = sourceRead(consumer.file);
+		assert(source.includes(consumer.declaration), 'current consumer declaration');
+		assert(source.includes(consumer.selection), 'current dataset selection');
+		assert(consumer.assertions.length > 0 && consumer.assertions.every(a => source.includes(a)), 'actual expected-value assertions');
+		assert.equal(sha(source), consumer.sourceSha256, 'current consumer source drift');
+		const selected = data.cases.filter(selections[consumer.id]).map(c => c.id);
+		assert(selected.length > 0, 'nonempty current dataset');
+		assert.equal(new Set(consumer.passedCaseIds).size, consumer.passedCaseIds.length, 'duplicate runtime case');
+		for (const id of consumer.passedCaseIds) {
+			assert(data.cases.some(c => c.id === id), 'unknown runtime case ID');
+			consumed.add(id);
+		}
+		same(consumer.passedCaseIds, selected, 'complete actual case consumption');
+		assert.equal(consumer.passedCaseCount, selected.length, 'measured consumed case count');
+		assert(value.measurements[consumer.measurement]?.outcome === 'PASS', 'consumer successful measurement');
+	}
+	same([...consumed], data.cases.map(c => c.id), 'all 95 cases consumed');
+	for (const check of value.runtimeChecks) {
+		assert(check.passed > 0 && value.measurements[check.measurement]?.outcome === 'PASS', 'runtime check measured');
+		const source = sourceRead(check.file);
+		assert(check.declarations.length && check.declarations.every(title => source.includes(`test('${title}',`)), 'actual runtime declarations');
+		assert.equal(sha(source), check.sourceSha256, 'runtime check source drift');
+	}
+	for (const files of Object.values(data.bindings)) {
+		for (const file of files) {
+			assert([...value.consumers, ...value.runtimeChecks].some(c => c.file === file), 'declared runtime file consumed');
+		}
+	}
+	assert.equal(sha(JSON.stringify(value)), '787a5b72cc0187fcab565137affa8a0285f1ef2879a4b92b3445f44c8087f987', 'reviewed finite runtime binding drift');
+}
+
+test('current runtime has reviewed consumer bindings and successful measurements', () => validateRuntime(runtime()));
+for (const [name, mutate, expected] of [
+	['missing measurement', d => { delete d.measurements.integration; }, /missing measurement/],
+	['failed measurement', d => { d.measurements.process.outcome = 'FAIL'; }, /successful measurement/],
+	['failed test count', d => { d.measurements['closest-units'].failed = 1; }, /failed measurement/],
+	['skipped measurement', d => { d.measurements.integration.skipped = 1; }, /skipped measurement/],
+	['missing consumer', d => { d.consumers.pop(); }, /all reviewed runtime consumers/],
+	['dropped case consumption', d => { d.consumers[0].passedCaseIds.pop(); }, /complete actual case consumption/],
+	['unknown runtime case ID', d => { d.consumers[0].passedCaseIds[0] = 'invented'; }, /unknown runtime case/],
+	['unmeasured consumer', d => { d.consumers[0].measurement = 'invented'; }, /consumer successful measurement/],
+	['wrong consumer declaration', d => { d.consumers[0].declaration = 'invented'; }, /current consumer declaration/],
+	['source drift', d => { d.consumers[0].sourceSha256 = '0'.repeat(64); }, /current consumer source drift/],
+	['missing assertions', d => { d.consumers[0].assertions = []; }, /actual expected-value assertions/],
+	['invented upstream HTTP', d => { d.upstreamHttpMeasured = true; }, /no upstream full HTTP/],
+	['premature implementation pin', d => { d.implementationCommit = 'b228a56f003b69d92b6eed2337af60e1ad9c9ad2'; }, /reviewed implementation commit/],
+]) {
+	test(`runtime reconciliation rejects ${name}`, () => {
+		const value = runtime(); mutate(value);
+		assert.throws(() => validateRuntime(value), expected);
+	});
+}
+test('runtime reconciliation rejects removal of expected-value comparison even with a new source digest', () => {
+	const value = runtime();
+	const consumer = value.consumers[0];
+	const source = read(consumer.file).replace(consumer.assertions[0], '');
+	consumer.sourceSha256 = sha(source);
+	assert.throws(() => validateRuntime(value, dataset(), file => file === consumer.file ? source : read(file)), /actual expected-value assertions/);
+});
+
+test('declared consumer bindings are documented alongside actual runtime bindings', () => {
 	const d = dataset();
 	const readme = readFileSync(new URL('README.md', directory), 'utf8');
 	for (const paths of Object.values(d.bindings)) for (const path of paths) assert(readme.includes(path));
