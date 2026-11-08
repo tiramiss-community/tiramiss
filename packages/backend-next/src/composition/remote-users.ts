@@ -2,14 +2,14 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { htmlToMfm, apType, webfingerUrl, selectWebfingerSelf, createActivitySession, createHostRules, isFederationAllowedHost, validateActor, prepareActor, collectionVisibility, insertActor, truncate } from '../modules/federation/public.js';
+import { htmlToMfm, apType, webfingerUrl, selectWebfingerSelf, createActivitySession, createHostRules, isFederationAllowedHost, toPuny, validateActor, prepareActor, collectionVisibility, insertActor, truncate } from '../modules/federation/public.js';
 import { createRemoteUserRepository, createRemoteActorTransactions } from '../platform/database/remote-users.js';
 import { createActorReader } from '../platform/database/local-actors.js';
 import { readMeta, readFederationPolicy } from '../platform/database/meta.js';
 import { renderLocalActor } from '../modules/federation/public.js';
 import type { DataSource } from 'typeorm';
 import type { FederationKeys } from './federation-keys.js';
-import type { OutboundHttp } from '../application/outbound-http.js';
+import type { OutboundHttp, OutboundSend } from '../application/outbound-http.js';
 import type { RemoteUserPorts } from '../modules/federation/public.js';
 import type { RuntimeConfig } from '../config/types.js';
 export function createRemoteUsers(parts: {
@@ -18,7 +18,26 @@ export function createRemoteUsers(parts: {
 	outboundHttp: OutboundHttp;
 }, config: RuntimeConfig): RemoteUserPorts {
 	const rules = createHostRules(new URL(config.url).host);
+	// Transport policy uses DNS hostnames: a nondefault port must not collapse either side to an empty host.
+	const withoutRootDot = (host: string) => host.replace(/\.$/, '');
+	const requestRules = createHostRules(withoutRootDot(new URL(config.url).hostname));
 	const readActor = createActorReader(parts.dataSource.manager, { includeSuspended: true });
+	const sendAllowed: OutboundSend = async (url, options = {}, extra) => {
+		const current = await readFederationPolicy(parts.dataSource.manager);
+		const policy = {
+			...current,
+			blockedHosts: current.blockedHosts.map(withoutRootDot),
+			federationHosts: current.federationHosts.map(withoutRootDot),
+		};
+		const validateUrl = (target: URL) => {
+			options.validateUrl?.(target);
+			if (!isFederationAllowedHost(policy, requestRules, withoutRootDot(toPuny(target.hostname)))) {
+				throw new Error('Instance is blocked');
+			}
+		};
+		validateUrl(new URL(url));
+		return parts.outboundHttp.send(url, { ...options, validateUrl }, extra);
+	};
 	const localId = (uri: string) => {
 		if (!rules.isUriLocal(uri)) {
 			return null;
@@ -33,7 +52,10 @@ export function createRemoteUsers(parts: {
 		async webfinger(account) {
 			const acct = `${account.username}@${account.host}`;
 			const url = webfingerUrl(acct, process.env.MISSKEY_WEBFINGER_USE_HTTP?.toLowerCase() === 'true');
-			const finger = await parts.outboundHttp.getJson(url, 'application/jrd+json, application/json') as {
+			const response = await sendAllowed(url, {
+				method: 'GET', headers: { Accept: 'application/jrd+json, application/json' }, timeoutMs: 5000, maxBytes: 262144,
+			});
+			const finger = await response.json() as {
 				links: {
 					rel?: string;
 					href: string;
@@ -43,7 +65,7 @@ export function createRemoteUsers(parts: {
 		},
 		async acquireActor(uri, existing, currentTime, newId) {
 			const session = createActivitySession({
-				http: parts.outboundHttp, signed: (await readMeta(parts.dataSource.manager)).signToActivityPubGet, clock: Date.now,
+				http: { send: sendAllowed }, signed: (await readMeta(parts.dataSource.manager)).signToActivityPubGet, clock: Date.now,
 				isSelfHost: rules.isSelfHost,
 				isAllowedHost: async host => isFederationAllowedHost(await readFederationPolicy(parts.dataSource.manager), rules, host),
 				async signer() {

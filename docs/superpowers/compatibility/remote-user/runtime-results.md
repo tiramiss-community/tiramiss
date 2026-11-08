@@ -43,6 +43,38 @@ The unchanged95 source cases explicitly double local parsing. The final repair a
 - Actor validation and core User/Profile/Publickey plans preserve supported scalar/default/optional-key branches. Refresh uses ordered independent writes: User, supplied existing-key UPDATE, Profile, Following. Failures retain earlier commits; missing key refresh never becomes insertion. Deleted local resolution is rejected without changing the source's deleted-row publication projection. Malformed supplied AP IDs reject before actor writes. Malformed description/followed-message conversion fails after the source-visible User/Key boundary; actor creation rolls back through its caller transaction.
 - Actual transport tests distinguish signed 10MiB and unsigned 256KiB streaming caps, real 5000ms cancellation, context/type/identity/redirect checks, one same-host absolute HTML alternate and swallowed alternate failure. Native HTTP/worker processes acquire cold system/author PEM through actual endpoints, verify signed GET/POST and digest, persist mentions, and deliver to the refreshed Following sharedInbox. Disconnect/SIGTERM drains accepted work through restart; the shutdown deadline terminates blocked work without inventing retry promotion.
 
+## Acquisition destination guards after review 5817026033
+
+The source-pinned measurements above describe the original core snapshot. The
+following guards are intentional changes from that source, proposed in this PR
+after [review 5817026033](https://github.com/tiramiss-community/tiramiss/pull/243#pullrequestreview-5817026033);
+the unchanged 95 observations do not establish parity for these new refusals.
+
+- Signed HTML acquisition refuses an HTTP alternate when the original URL is
+  HTTPS, before fetching that alternate. The original HTML is then validated
+  through the existing fallback. Permitted same-host alternates remain supported.
+- WebFinger and AP acquisition check the current federation policy before the
+  initial outgoing request and every followed redirect. A denied destination
+  receives no request, rather than relying on final object identity validation.
+  Each `send` reads one policy snapshot and uses it throughout that redirect
+  chain; this is not a promise of observing a policy change during an active chain.
+- This transport check compares normalized DNS hostnames, including the configured
+  local hostname, separately from ports. It removes a terminal DNS root dot from
+  the destination, local hostname and blocked/allowed list entries; list casing
+  and suffix rules otherwise remain unchanged. Existing source-compatible DB/business
+  host helpers remain unchanged. The narrow `OutboundSendOptions.validateUrl`
+  callback runs in node-fetch's agent-selection hook before each network request;
+  automatic redirect/header, timeout, response-size and status handling remain
+  owned by the existing HTTP client.
+
+New refusal errors use the existing per-occurrence posting failure path: literal
+text remains and the failed mention is omitted. Existing refresh-attempt writes
+still precede acquisition and are not rolled back by a guard failure. There is
+no new setting, retry, queue or capacity policy. The new
+`test/unit/federation/acquisition-policy.test.ts` uses actual composition and
+HTTP/proxy redirects with a supplied Meta repository; protocol-pair alternate
+checks use real signing with an injected HTTP boundary, not a measured TLS peer.
+
 ## Mention-resolution concurrency
 
 There is no shared concurrency or waiting-count limit for mention resolution.

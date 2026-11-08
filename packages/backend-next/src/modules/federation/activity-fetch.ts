@@ -74,7 +74,7 @@ export function createActivitySession(parts: {
 			const html = await response.text();
 			try {
 				const href = parse(html).querySelector('head > link[rel="alternate"][type="application/activity+json"]')?.getAttribute('href');
-				if (href && punyHost(url) === punyHost(href)) {
+				if (href && punyHost(url) === punyHost(href) && (new URL(url).protocol !== 'https:' || new URL(href).protocol === 'https:')) {
 					return await fetchActivity(href, false);
 				}
 			} catch { /* Source swallows parsing and alternate-fetch failures, then validates the original HTML. */ }

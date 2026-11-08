@@ -12,6 +12,8 @@ export interface OutboundSendOptions {
 	timeoutMs?: number;
 	maxBytes?: number;
 	allowLocalAddress?: boolean;
+	/** Called synchronously before each network request, including every redirect. Throw to refuse the destination. */
+	validateUrl?: (url: URL) => void;
 }
 
 export interface OutboundResponse {
