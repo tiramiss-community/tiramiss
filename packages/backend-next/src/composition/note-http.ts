@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { createRemoteUsers } from './remote-users.js';
+import { createActorHttp } from './actor-http.js';
 import { randomUUID } from 'node:crypto';
 import { createNoteDeleteApi } from '../http/note-delete-api.js';
 import { createNoteDeleter } from '../platform/database/note-deleter.js';
@@ -28,7 +30,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 	const writer = createNoteWriter(manager, resources.roleMaterials, codec.createdAtFromId);
 	const create = createCreateNote({
 		...writer, newId: codec.newId, currentTime: Date.now, matchesWords,
-		isSelfHost: createHostRules(new URL(config.url).host).isSelfHost,
+		remoteUsers: createRemoteUsers(resources, config),
 		transactions: createNoteWriteTransactions(resources.dataSource),
 		limit: createNoteRateLimiter(resources.redis),
 		afterSaved: input => resources.notePostSave.start(input),
@@ -44,6 +46,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 	});
 	const authenticate = createTokenAuthenticator(manager, resources.logger);
 	const app = createRoleHttpApp(resources, config)
+		.route('/', createActorHttp(resources, config))
 		.route('/', createNoteDeleteApi({ authenticate, deleteNote: deletion.deleteNote, logger: resources.logger }))
 		.route('/', createNoteApi({ authenticate, showNote: show.showNote, logger: resources.logger }))
 		.route('/', createNoteCreateApi({

@@ -29,30 +29,14 @@ export function createNoteWriter(manager: EntityManager, roles: RoleMaterialRead
 				followersCount: user.followersCount, followingCount: user.followingCount, notesCount: user.notesCount,
 			}, now);
 			const policies = evaluatePolicies({ userId: id, roles: applicable, basePolicies: meta.policies, uploadLimitBytes: 0 });
-			return { id, username: user.username, host: user.host, isSuspended: user.isSuspended, movedToUri: user.movedToUri, isBot: user.isBot, canPublicNote: policies.canPublicNote,
-												mentionLimit: policies.mentionLimit, rateLimitFactor: policies.rateLimitFactor, sensitiveWords: meta.sensitiveWords, prohibitedWords: meta.prohibitedWords };
+			return {
+				id, username: user.username, host: user.host, isSuspended: user.isSuspended, movedToUri: user.movedToUri, isBot: user.isBot, canPublicNote: policies.canPublicNote,
+				mentionLimit: policies.mentionLimit, rateLimitFactor: policies.rateLimitFactor, sensitiveWords: meta.sensitiveWords, prohibitedWords: meta.prohibitedWords
+			};
 		},
 		async readUserIds(ids: string[]): Promise<string[]> {
 			const users = await manager.getRepository(MiUser).find({ where: { id: In(ids) }, select: { id: true } });
 			return users.map(user => user.id);
-		},
-		async findUsersByAccount(accounts: { usernameLower: string; host: string | null }[]): Promise<{ id: string; usernameLower: string; host: string | null }[]> {
-			// (usernameLower, host) の一意索引を使う 1 回の問い合わせにまとめる。名前と host の組み合わせ違いで余分に返る行はここで捨てる。
-			const names = [...new Set(accounts.map(account => account.usernameLower))];
-			const hosts = [...new Set(accounts.flatMap(account => account.host === null ? [] : [account.host]))];
-			const hostConditions = [
-				...(accounts.some(account => account.host === null) ? ['user.host IS NULL'] : []),
-				...(hosts.length > 0 ? ['user.host IN (:...hosts)'] : []),
-			];
-			const users = await manager.getRepository(MiUser).createQueryBuilder('user')
-				.select(['user.id', 'user.usernameLower', 'user.host'])
-				.where('user.usernameLower IN (:...names)', { names })
-				.andWhere(`(${hostConditions.join(' OR ')})`, { hosts })
-				.getMany();
-			const requested = new Set(accounts.map(account => `${account.usernameLower}@${account.host ?? ''}`));
-			return users
-				.filter(user => requested.has(`${user.usernameLower}@${user.host ?? ''}`))
-				.map(user => ({ id: user.id, usernameLower: user.usernameLower, host: user.host }));
 		},
 		async readOwnedFiles(userId: string, fileIds: string[]): Promise<NoteAttachableFile[]> {
 			// 本家と同じく所有者と ID だけで絞る。ID の生成順ではなく指定順で返すため array_position で並べる。
@@ -77,7 +61,9 @@ export function createNoteWriter(manager: EntityManager, roles: RoleMaterialRead
 		isFollowing(followerId: string, followeeId: string): Promise<boolean> {
 			return manager.getRepository(MiFollowing).existsBy({ followerId, followeeId });
 		},
-		async readChannel(id: string, options: { includeArchived: boolean }): Promise<RelatedChannel | null> {
+		async readChannel(id: string, options: {
+			includeArchived: boolean;
+		}): Promise<RelatedChannel | null> {
 			const channel = await manager.getRepository(MiChannel).findOneBy(options.includeArchived ? { id } : { id, isArchived: false });
 			return channel && { id: channel.id, isSensitive: channel.isSensitive, allowRenoteToExternal: channel.allowRenoteToExternal, raw: { ...channel } };
 		},
@@ -97,7 +83,7 @@ export function createNoteWriter(manager: EntityManager, roles: RoleMaterialRead
 	};
 }
 
-function createNoteWrites(manager: EntityManager, assertActive: () => void = () => {}): NoteWrites {
+function createNoteWrites(manager: EntityManager, assertActive: () => void = () => { }): NoteWrites {
 	return {
 		async insertNote({ mentionedRemoteUsers, ...note }: NewNote): Promise<Record<string, unknown>> {
 			assertActive();

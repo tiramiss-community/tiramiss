@@ -13,8 +13,18 @@ import type { RuntimeConfig } from '../config/types.js';
  */
 export function createOutboundHttpClient(
 	config: Pick<RuntimeConfig, 'userAgent' | 'outboundHttp'>,
-	options: { checkPrivateAddress: boolean } = { checkPrivateAddress: process.env.NODE_ENV === 'production' },
-): OutboundHttp {
+	options: {
+		checkPrivateAddress: boolean;
+	} = { checkPrivateAddress: process.env.NODE_ENV === 'production' },
+): OutboundHttp & {
+	close(): Promise<void>;
+} {
 	const agents = createOutboundAgents({ ...config.outboundHttp, checkPrivateAddress: options.checkPrivateAddress });
-	return createOutboundHttp(agents, config.userAgent);
+	return {
+		...createOutboundHttp(agents, config.userAgent), async close() {
+			for (const agent of new Set([agents.httpNative, agents.httpsNative, agents.http, agents.https, agents.httpAgent, agents.httpsAgent])) {
+				agent.destroy();
+			}
+		}
+	};
 }

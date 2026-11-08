@@ -66,9 +66,11 @@ async function antenna(extra: Partial<MiAntenna> = {}) {
 }
 
 async function create(input: object = {}, name = 'alice') {
-	const response = await app.request('/api/notes/create', { method: 'POST', body: JSON.stringify({
+	const response = await app.request('/api/notes/create', {
+		method: 'POST', body: JSON.stringify({
 			i: users[name].token, text: 'Hello', localOnly: true, ...input
-		}) });
+		})
+	});
 	expect(response.status, await response.clone().text()).toBe(200);
 	const note = (await response.json()).createdNote;
 	await resources.notePostSave.idle();
@@ -85,17 +87,17 @@ beforeAll(async () => {
 	for (const name of ['alice', 'bob', 'carol', 'remote']) {
 		users[name] = { id: id(), token: `an${name.padEnd(14, '0')}` };
 		await source.getRepository(MiUser).insert({
-			...users[name], username: name === 'remote' ? 'Other' : name, usernameLower: name === 'remote' ? 'other' : name, host: name === 'remote' ? 'remote.example' : null, uri: name === 'remote' ? 'https://remote.example/users/other' : null
+			...users[name], lastFetchedAt: name === 'remote' ? new Date() : null, username: name === 'remote' ? 'Other' : name, usernameLower: name === 'remote' ? 'other' : name, host: name === 'remote' ? 'remote.example' : null, uri: name === 'remote' ? 'https://remote.example/users/other' : null
 		});
 		await source.getRepository(MiUserProfile).insert({ userId: users[name].id, url: name === 'remote' ? 'https://remote.example/profile' : null });
 	}
 	await source.getRepository(MiMeta).insert({ id: 'singleton' });
 	// Bootstrap rows prove active filtering before any internal event or first lookup.
 	await source.getRepository(MiAntenna).insert([{
-			id: 'bootstrap-active', userId: users.bob.id, name: 'active', src: 'all', withFile: false, withReplies: true, lastUsedAt: new Date(), isActive: true
-		}, {
-			id: 'bootstrap-inactive', userId: users.bob.id, name: 'inactive', src: 'all', withFile: false, withReplies: true, lastUsedAt: new Date(), isActive: false
-		}]);
+		id: 'bootstrap-active', userId: users.bob.id, name: 'active', src: 'all', withFile: false, withReplies: true, lastUsedAt: new Date(), isActive: true
+	}, {
+		id: 'bootstrap-inactive', userId: users.bob.id, name: 'inactive', src: 'all', withFile: false, withReplies: true, lastUsedAt: new Date(), isActive: false
+	}]);
 	await source.destroy();
 	resources = await connectResources(database.config, createLogger('antenna-test', line => logs.push(line)));
 	timeline = new Redis(database.config.redisForTimelines);
@@ -471,8 +473,8 @@ test('actual Redis subscriber normal close and subscribe rejection release their
 	try {
 		await expect(openNoteAntennas({
 			...options, subscriberConfig: { ...subscriberConfig, username, password: 'antenna-test-password' }, registerCleanup: close => {
- cleanups.push(close);
-}
+				cleanups.push(close);
+			}
 		})).rejects.toThrow(/NOPERM/);
 		expect(cleanups).toHaveLength(1);
 		await cleanups[0]();

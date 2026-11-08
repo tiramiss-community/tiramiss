@@ -28,7 +28,7 @@ test('loads copied entities without eagerly loading migration dependencies', asy
 	expect(output.trim()).toBe('false');
 	const source = new DataSource({ type: 'postgres', entities });
 	// Metadata construction validates cyclic relation targets without opening a DB.
-	await (source as unknown as { buildMetadatas(): Promise<void> }).buildMetadatas();
+	await (source as unknown as { buildMetadatas(): Promise<void>; }).buildMetadatas();
 	expect(source.getMetadata(MiRole).tableName).toBe('role');
 	expect(source.getMetadata('MiNote').tableName).toBe('note');
 	expect(source.getMetadata('MiNote').columns.find(column => column.propertyName === 'visibility')?.enum).toEqual(['public', 'home', 'followers', 'specified']);
@@ -43,7 +43,7 @@ test('loads copied entities without eagerly loading migration dependencies', asy
 	expect(source.getMetadata('MiHashtag').tableName).toBe('hashtag');
 	expect(source.getMetadata('MiAntenna').tableName).toBe('antenna');
 	expect(source.getMetadata('MiAntenna').relations.find(value => value.propertyName === 'userList')?.inverseEntityMetadata.tableName).toBe('user_list');
-	expect(source.entityMetadatas).toHaveLength(35);
+	expect(source.entityMetadatas).toHaveLength(36);
 	expect(source.getMetadata('MiWebhook').tableName).toBe('webhook');
 	expect(source.getMetadata('MiWebhook').relations.find(value => value.propertyName === 'user')?.inverseEntityMetadata.tableName).toBe('user');
 	for (const [model, table, relation] of [['MiMuting', 'muting', 'muter'], ['MiRenoteMuting', 'renote_muting', 'mutee'], ['MiNoteThreadMuting', 'note_thread_muting', 'user'], ['MiUserListMembership', 'user_list_membership', 'user']] as const) {
@@ -59,5 +59,6 @@ test('loads copied entities without eagerly loading migration dependencies', asy
 	expect(source.getMetadata('MiUserProfile').tableName).toBe('user_profile');
 	expect(source.getMetadata('MiSystemAccount').tableName).toBe('system_account');
 	expect(source.getMetadata('MiUserKeypair').tableName).toBe('user_keypair');
+	expect(source.getMetadata('MiUserPublickey').tableName).toBe('user_publickey');
 	expect(source.getMetadata('MiUsedUsername').tableName).toBe('used_username');
 });

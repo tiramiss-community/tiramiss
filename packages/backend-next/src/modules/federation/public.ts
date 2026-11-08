@@ -28,3 +28,12 @@ export type { DeliverOne, DeliverBatch, DeliverJob, DeliverJobOutcome, DeliverJo
 export { createDeliverToRelays } from './relay-delivery.js';
 export type { AttachLdSignature } from './relay-delivery.js';
 export { renderDeletedNoteActivity, createDeliverDeletedNote } from './note-deletion.js';
+export { normalizeAccount, classifyRemoteUser, webfingerUrl, selectWebfingerSelf } from './remote-user.js';
+export type { Account, ResolvedUser, RemoteUserFacts, RemoteUserPorts } from './remote-user.js';
+export { validateActor, prepareActor, collectionVisibility, insertActor, createActorRefresher, apType, truncate } from './remote-actor.js';
+export type { RemoteActorMaterial, RemoteActorPlan, RemoteActorCreateScope, RemoteActorUser, RemoteActorProfile, RemoteActorPublickey } from './remote-actor.js';
+export { createActivitySession, assertActivityIdentity } from './activity-fetch.js';
+export type { ActivitySession } from './activity-fetch.js';
+export { renderLocalActor } from './local-actor.js';
+export type { LocalActorFacts } from './local-actor.js';
+export { htmlToMfm } from './html-to-mfm.js';
