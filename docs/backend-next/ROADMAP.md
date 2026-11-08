@@ -130,13 +130,13 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 | セッション | 順序 |
 | --- | --- |
 | S1 連合 | PR #243のマージ → 共有rootの整理 → #176 → #195 inbox中核（署名検証・#215段階4） |
-| S2 API・ユーザー | #178 → ModerationLog appender → #180 → #182 → #181 → #179 |
+| S2 API・ユーザー | #178 → ModerationLog appender → #182のFollowRequest Entity同期 → #191 Page pack → #180 → #182の残り → #181 → #179 |
 | S3 イベント・通知 | #177 → #197 → #217 → #198 → #189 registry → #200 chart core |
-| S4 閲覧系 | #185 → LTL/GTL → TL系WebSocket channel → #186 → #187 |
+| S4 閲覧系 | #185 → LTL/GTL → TL系WebSocket channel（#189 registryの後）→ #186 → #187 |
 | S5 Drive・保守 | #188 → #199（定期ジョブのsliceから先に）→ #130 |
 | 独立トラック | #132 → #135 → #138 → #139の手順書の下書き |
 
-3本に絞る場合は「S1 連合」「#178 → #185 → #177 → #180 → #182 → #217」「#188 → #199 → #200」。空いたセッションは #191 Page pack → #193 /api/meta → #190 → #184 → #192 → #196の独立route → #194 meta/ad/stats の順で拾う。
+3本に絞る場合は「S1 連合」「#178 → #185 → #177 → #182のFollowRequest Entity同期 → #191 Page pack → #180 → #182の残り → #217 → #189 registry → TL系WebSocket channel」「#188 → #199 → #200」。空いたセッションは #193 /api/meta → #190 → #184 → #192（#189 registryの後）→ #191の残り → #196の独立route → #194 meta/ad/stats の順で拾う。#180のDetailedは#182のFollowRequest Entity同期と#191のPage packを待つため、どちらの案でも#180より先に出す。
 
 **同時に走らせない組み合わせ。** PR #243と#176・#215段階5・#195の別slice（着手はよいがマージは#243の後）。#178と#179・#181。#185と一覧API全般。#182と#195（Follow系rendererは#182が作る）。#189 registryとchannel追加。#136の本家固定SHA更新は全セッションを止めて単独で行う。
 
