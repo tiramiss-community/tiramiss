@@ -2,7 +2,7 @@
 
 新実装の調査・移植の途中で見つけた、本家（misskey-dev/misskey）の実装上の問題・リスクを残す。新実装でその挙動を引き継いだか、変えたかも記録する。本家へ報告・修正提案するときの材料にもする。
 
-基準の本家は `8e07cf085adf7009583d234a208e30436f020e26`（`backend-upstream/upstream-sync.json` と同じ）。
+基準の本家は `8e07cf085adf7009583d234a208e30436f020e26`（[`packages/backend-upstream/upstream-sync.json`](../../../packages/backend-upstream/upstream-sync.json) と同じ）。
 
 ## 書かないもの
 
@@ -34,7 +34,7 @@
 脆弱性になり得るもの（認証・認可の回避、情報漏洩、接続や資源を占有させられる挙動など）は、`security/` の下に同じ置き方で書く。例：`security/packages/backend/src/server/api/ApiCallService.md`。
 
 - `security/` はルートの `.gitignore` で除外しており、各自の手元にだけ残る。コミット・push・Issue・PR・外部サービスへの送信に、その内容を含めない。
-- AIエージェントは、見つけたものを `security/` に書いたうえでユーザーに伝える。本家への報告は、本家の[セキュリティ報告フォーム](https://github.com/misskey-dev/misskey/security/policy)から人が直接、非公開で行う。
+- 唯一の例外は、本家への非公開の報告。本家の[セキュリティ報告フォーム](https://github.com/misskey-dev/misskey/security/policy)から、人が直接行う。AIエージェントは見つけたものを `security/` に書いてユーザーに伝えるだけで、報告そのものは行わない。
 - IDは `SEC-001` から通し番号にし、公開側の索引には載せない。本家で修正・公表された後に公開側へ移すかは、人が判断する。
 
 ## 索引
