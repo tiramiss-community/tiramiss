@@ -103,8 +103,9 @@ function cli(configPath: string, args = ['--stopped']) {
 	}); child.stderr.on('data', chunk => {
 		output += chunk; 
 	});
+	// Output assertions must wait until both piped streams have closed.
 	const exit = new Promise<number | null>((resolve, reject) => {
-		child.once('error', reject); child.once('exit', resolve); 
+		child.once('error', reject); child.once('close', resolve);
 	});
 	return { child, exit, output: () => output };
 }
