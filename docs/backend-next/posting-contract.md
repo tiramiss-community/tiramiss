@@ -186,4 +186,15 @@ remote作者の`Instance.notesCount`はstats有効時に既存台帳のfetchOrRe
 
 単一HTTP observerがsourceのXev連携を置き換え、deliver/inboxのactiveイベント・現在active/waiting/delayedを即時/10000ms周期で発行する。最新先頭200件のメモリ履歴は再起動で失われる。停止時にinterval/listener/QueueEventsを解放し、開始済みread/control/監査を接続解放前に待つ。既存のRedis無再接続方針は管理接続にも適用する。
 
-[固定97観測・95公開投影の直接比較と新実装の実HTTP/PG/Redis/WS/process検証](../superpowers/compatibility/queue-admin/README.md)により#163の全14 API・QueueStats・実制御/認可/寿命条件を確認した。本家full server全体の比較ではない。通常保持/周期清掃#164、実payload互換/残仕事引継ぎ#165を次に進め、#176の残る縦断確認へ接続する。#124全体、他stream#189・他管理#194や全10業務workerの完成は含めない。
+[固定97観測・95公開投影の直接比較と新実装の実HTTP/PG/Redis/WS/process検証](../superpowers/compatibility/queue-admin/README.md)により#163の全14 API・QueueStats・実制御/認可/寿命条件を確認した。本家full server全体の比較ではない。通常保持/清掃#164は下記の実依存検証で確認した。次は実payload互換/残仕事引継ぎ#165を進め、#176の残る縦断確認へ接続する。#124全体、他stream#189・他管理#194や全10業務workerの完成は含めない。
+
+
+## 通常queue履歴の保持と清掃（#164）
+
+`deliver` / `endedPollNotification` / `userWebhookDeliver` の3 producerは成功`{ age: 604800, count: 30 }`・失敗`{ age: 604800, count: 100 }`を各jobへ渡す。保持は同じqueue・同じ終端状態への遷移時に働くlazy清掃で、静かなqueueの履歴が7日後に必ず消えるTTLではない。job名を跨ぐ終端集合に適用し、成功の清掃はfailedを、失敗の清掃はcompletedを削除しない。Queue既定値やWorker fallbackはなく、無設定legacy jobも後続のpolicy付きjobの清掃から保護されるとは限らない。
+
+固定本家の24観測（8 source・32 QueueService producerメソッド）と新実装の直接比較28件、3実producer/WorkerのRedis保持8件、全10管理selectorの終端履歴・clear追加10件を記録した。近傍を含む最終単体は4 files / 97 tests、結合は2 files / 49 testsが成功し、製品コードは変更していない。実Workerのhandler callbackは結果を制御するためのdoubleであり、本家full server比較や通知/AP/webhookの業務全体の証明にはしない。[再実行・検証範囲と所有者](../superpowers/compatibility/queue-retention/README.md)。
+
+自動保持と終端限定clearはwaiting/paused/prioritized/delayed/locked activeを残す。管理者が明示する非終端状態や`*`のclearは本家どおり破棄操作である。消えたjobは一覧/logsから消え、`show-job`は既存のmissing-job500、累積metricsは残る。非待機204と認可・監査は#163の契約を維持する。
+
+全10名の管理と現在3業務queueの保持を確認して#164の現行範囲を満たす。他7業務queueのproducer/handlerは未接続で、system保守#199/chart等#200、予約投稿#183、inbox#195、db#199、relationship#182、objectStorage#188（remote保守#199）、systemWebhook#198へ残る。system定期jobはage-onlyで、導入時に古いscheduler定義の整理も移植する。通知本体の保持は#177、他webhookイベントは#197、既存payload/schedulerの引継ぎは次の#165、完全停止切替は#139が所有する。#124/#176全体の完成とはしない。
