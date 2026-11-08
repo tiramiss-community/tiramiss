@@ -7,7 +7,6 @@ import { readDeliverJobSettings } from '../platform/database/meta.js';
 import { createIdCodec } from '../platform/id-codec.js';
 import { createInstanceLedger } from '../platform/instance-ledger.js';
 import { createApRequest } from './ap-request.js';
-import { createOutboundHttpClient } from './outbound-http.js';
 import type { RuntimeResources } from './create-runtime.js';
 import type { RuntimeConfig } from '../config/types.js';
 
@@ -18,7 +17,7 @@ import type { RuntimeConfig } from '../config/types.js';
 export function createDeliverJobHandler(resources: RuntimeResources, config: RuntimeConfig) {
 	const manager = resources.dataSource.manager;
 	const codec = createIdCodec(config.id);
-	const { signedPost } = createApRequest({ keys: resources.federationKeys, http: createOutboundHttpClient(config) }, config);
+	const { signedPost } = createApRequest({ keys: resources.federationKeys, http: resources.outboundHttp }, config);
 
 	return createDeliverJobProcessor({
 		readSettings: () => readDeliverJobSettings(manager),

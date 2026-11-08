@@ -14,7 +14,7 @@ export async function freePort(): Promise<number> {
 	await new Promise<void>((done) => {
 		server.listen(0, '127.0.0.1', done);
 	});
-	const port = (server.address() as { port: number }).port;
+	const port = (server.address() as { port: number; }).port;
 	await new Promise<void>((done, reject) => {
 		server.close((error) => (error ? reject(error) : done()));
 	});
@@ -27,6 +27,10 @@ export async function configuration(config: RuntimeConfig) {
 		path,
 		dump({
 			url: config.url,
+			proxy: config.outboundHttp.proxy, proxyBypassHosts: config.outboundHttp.proxyBypassHosts,
+			allowedPrivateNetworks: config.outboundHttp.allowedPrivateNetworks, outgoingAddress: config.outboundHttp.outgoingAddress,
+			deliverJobConcurrency: config.outboundHttp.deliverJobConcurrency,
+			deliverJobPerSec: config.deliverJob.deliverJobPerSec, deliverJobMaxAttempts: config.deliverJob.deliverJobMaxAttempts,
 			id: config.id,
 			fulltextSearch: config.fulltextSearch,
 			meilisearch: config.meilisearch,
@@ -66,7 +70,7 @@ export function launch(entrypoint: string, configPath: string, extraEnv: NodeJS.
 	child.on('message', (message) => {
 		messages.push(message);
 	});
-	const exit = new Promise<{ code: number | null; signal: NodeJS.Signals | null }>((done, reject) => {
+	const exit = new Promise<{ code: number | null; signal: NodeJS.Signals | null; }>((done, reject) => {
 		child.once('error', reject);
 		child.once('exit', (code, signal) => {
 			done({ code, signal });
@@ -81,7 +85,7 @@ export function launch(entrypoint: string, configPath: string, extraEnv: NodeJS.
 			.finally(() => {
 				clearTimeout(timeout);
 			})
-			.catch(() => {});
+			.catch(() => { });
 		child.on('message', (message) => {
 			if (message && typeof message === 'object' && 'type' in message && message.type === 'ready') {
 				clearTimeout(timeout);
@@ -92,7 +96,7 @@ export function launch(entrypoint: string, configPath: string, extraEnv: NodeJS.
 			reject(new Error(`Exited before ready: ${output}`));
 		}, reject);
 	});
-	void ready.catch(() => {});
+	void ready.catch(() => { });
 	return {
 		child,
 		ready,

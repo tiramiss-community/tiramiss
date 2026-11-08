@@ -22,7 +22,7 @@ let database: Awaited<ReturnType<typeof createTestDatabase>>;
 let resources: Awaited<ReturnType<typeof connectResources>>;
 let app: ReturnType<typeof createBackendHttpApp>;
 const codec = createIdCodec('aidx');
-const actors: Record<string, { id: string; token: string }> = {};
+const actors: Record<string, { id: string; token: string; }> = {};
 
 const idFields = new Set(['id', 'userId', 'replyId', 'renoteId', 'channelId', 'fileIds', 'visibleUserIds', 'mentions']);
 const timeFields = new Set(['createdAt', 'expiresAt']);
@@ -41,7 +41,7 @@ beforeAll(async () => {
 	database = await createTestDatabase();
 	database.config.url = 'http://127.0.0.1:61167';
 	await migrateDatabase(database.config.database);
-	resources = await connectResources(database.config, createLogger('note-create-test', () => {}));
+	resources = await connectResources(database.config, createLogger('note-create-test', () => { }));
 	const db = resources.dataSource;
 	for (const [i, name] of ['alice', 'limited', 'suspended', 'moved', 'bob'].entries()) {
 		const id = remember(name, codec.newId(Date.now() - 100000));
@@ -103,7 +103,7 @@ const pinned = [
 	'C8-channel', 'C8-archived', 'C8-external-renote', 'C8-extract', 'C8-no-extract', 'C8-specified',
 ];
 test.each(pinned)('%s matches fixed upstream HTTP, saved Note and immediate show', async name => {
-	const fixture = cases.find((c: { id: string }) => c.id === name);
+	const fixture = cases.find((c: { id: string; }) => c.id === name);
 	const params = resolveParams(fixture.params);
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { sensitiveWords: fixture.setup === 'sensitive' ? ['needle'] : [] });
 	const before = await resources.dataSource.getRepository(MiNote).count();
@@ -187,20 +187,21 @@ test('concurrent creates increment the author count once each after saving', asy
 	});
 });
 
-// 本家は未登録のリモートユーザーを WebFinger で取得する。#195 で接続するまでは、黙って捨てずに保存前に拒否する。
+// Resolution failures omit their occurrence; the literal text, CW and poll choices remain saved.
 // 設定 URL にポートがあると本家の自ホスト判定は一致しないため、'@probe_alice@127.0.0.1' もローカルの alice にならない。
 test.each([
 	{ text: '@nobody@unknown.example' }, { text: '@probe_alice@127.0.0.1' }, { cw: '@nobody@unknown.example' },
 	{ poll: { choices: ['@nobody@unknown.example', 'b'] } }, { text: '@probe_bob @nobody@unknown.example', visibility: 'specified', visibleUserIds: ['$bob'] },
-])('a mention of an unregistered remote user in %j is refused without saving a partial post', async params => {
+])('a failed remote mention in %j is omitted while its input is saved', async params => {
 	expect(database.config.url).toBe('http://127.0.0.1:61167');
 	const before = await resources.dataSource.getRepository(MiNote).count();
 	const polls = await resources.dataSource.getRepository(MiPoll).count();
 	const response = await call({ text: 'do not discard input', ...resolveParams(params) as object });
-	expect(response.status).toBe(501);
-	expect(await response.json()).toMatchObject({ error: { code: 'NOT_IMPLEMENTED' } });
-	expect(await resources.dataSource.getRepository(MiNote).count()).toBe(before);
-	expect(await resources.dataSource.getRepository(MiPoll).count()).toBe(polls);
+	expect(response.status).toBe(200);
+	const { createdNote } = await response.json();
+	expect(createdNote.text).toBe(params.text ?? 'do not discard input');
+	expect(await resources.dataSource.getRepository(MiNote).count()).toBe(before + 1);
+	expect(await resources.dataSource.getRepository(MiPoll).count()).toBe(polls + ('poll' in params ? 1 : 0));
 });
 
 // 本家 NoteCreateService.ts:673 と 710-720。observations の saved は attachedFileTypes と Poll の非正規化列を持たない。

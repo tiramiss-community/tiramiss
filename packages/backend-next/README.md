@@ -192,7 +192,7 @@ APの宛先規則は[本家配送の引き継ぎ](../../docs/backend-next/ap-del
 AP配送は #171 の最初の PR で接続した。HTTP子が投稿の後続処理で保存済みの投稿を読み直し、Create/Announceの表現と宛先を決めて `deliver` queueへ投入する。
 worker子は投票終了と同じ子で `deliver` のWorkerも動かし、本家どおりスキップ判定・署名付き送信・instance台帳の更新を行う。
 HTTP子も作者の鍵を読み、公開投稿のコピーへJSON-LD署名を1回付けて、既存のaccepted relayごとに個別の配送ジョブを投入する。外向きHTTPによる署名付き送信はworker子が行う。
-relay登録・受理/拒否・inbound検証・actor公開は#195、削除配送は#172で接続済み、チャートは#200。
+relay登録・受理/拒否・inbound検証・full actor公開は#195、削除配送は#172で接続済み、チャートは#200。
 本家との比較は[AP配送の比較資料](../../docs/superpowers/compatibility/ap-deliver/README.md)、業務規則と残りは[本家配送の引き継ぎ](../../docs/backend-next/ap-delivery-handoff.md)を参照する。
 基本text保存のためだけにjobやdispatcherを作らない。queue・payload・保持の値は[投稿の最小契約](../../docs/backend-next/posting-contract.md#通常ジョブ162)を参照する。
 
@@ -258,8 +258,8 @@ DB失敗やクライアント切断を理由に自動再作成しない。通常
 
 #170で添付（所有権・指定順・attachedFileTypes）と投票（NoteとPollを1つのtransactionで保存）、返信/Renote/引用・channel、
 指定宛先、MFM抽出（メンション・ハッシュタグ・絵文字）を接続した。メンションはローカルユーザーと登録済みリモートユーザーをDBで解決する。
-未登録のリモートユーザー宛ては、WebFingerによる解決（#195）まで501 `NOT_IMPLEMENTED`で保存前に拒否する。
-登録済みリモートユーザーも、#195までは `lastFetchedAt` が古くても再同期せずに使う（暫定制限）。
+未登録remote mentionはWebFinger→actor取得→呼出元所有transactionでcore保存する。登録済みremoteは `lastFetchedAt` が24時間を超える/nullの場合に先にattempt時刻・必要なURI補正を保存してrefreshする。各出現の失敗は本文/CW/pollを保持して省略し、先行書込は残る。保存前501とstale refresh省略は現行coreから除去済み。
+最小actor公開・system/author鍵発見・signed/unsigned取得と通常worker配送の[実測・比較限界・actor効果所有者](../../docs/superpowers/compatibility/remote-user/runtime-results.md)を参照。media/emoji・attached user hashtag・instance/chart・cache・featured/Move/full actor/inbox/remote Notes等は未完了。全95 unitケースは95 real HTTPケースを意味しない。
 投票終了ジョブ（#162）、AP配送（#171。既存のaccepted relayへの配送を含む）、投稿通知/stream producer（#173）と通常TL・Role timeline producer（#174）は接続済み。投稿webhookと下記のWebSocket受信も接続済み。検索・Role・featured・hashtag・antennaの通常producerも接続した。Role/antenna等の閲覧APIやWS channel、remote受信・chart・投稿全体#176は別に残る。
 最小契約と既存実装の撤去順は[投稿の最小契約](../../docs/backend-next/posting-contract.md)を参照。
 
@@ -343,4 +343,4 @@ node scripts/backend-contract-inventory.mjs --check
 node scripts/check-shipping.mjs
 ```
 
-Supervisor自然retry試験は通常の60–72秒backoffを待つ（test timeout180秒）。新WS接続へのlive通知でありreplayを証明しない。通常CIは記録済みfixtureを利用し、固定本家checkoutでの任意確認時だけ`BACKEND_NEXT_UPSTREAM_PATH=/path/to/pinned-upstream`を指定する。N7の限定成功でもremote mention501/stale refreshは#195に残り、投稿全体や本番切替の完成とはしない。
+Supervisor自然retry試験は通常の60–72秒backoffを待つ（test timeout180秒）。新WS接続へのlive通知でありreplayを証明しない。通常CIは記録済みfixtureを利用し、固定本家checkoutでの任意確認時だけ`BACKEND_NEXT_UPSTREAM_PATH=/path/to/pinned-upstream`を指定する。N7旧証跡の501/stale制限は履歴として固定し、#195の現行core取得/refresh実測で証明した部分だけをsupersedeする。rich actor効果・C2/C10比較ギャップ・投稿全体・本番切替は未完了。#242はマージ済みで#124はCLOSED、N7の監査時OPENは過去の事実として保持する。

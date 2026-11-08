@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { toPuny } from '../federation/public.js';
+import { normalizeAccount, classifyRemoteUser } from '../federation/public.js';
 import { NoteCreateError } from './create-contract.js';
 import { parseNoteInput } from './create-input.js';
 import { extractNoteContents } from './extract-contents.js';
@@ -13,6 +13,7 @@ import type {
 	MentionedRemoteUser, NewNote, NewPoll, NoteAttachableFile, NoteCreateActor, NoteCreateAuthor, NoteInput, NotePostSaveInput,
 	NoteVisibility, NoteWrites, RelatedChannel, RelatedNote,
 } from './create-contract.js';
+import type { Account, ResolvedUser, RemoteUserPorts } from '../federation/public.js';
 import type { TransactionRunner } from '../../application/transaction.js';
 
 interface RelatedFacts {
@@ -33,15 +34,6 @@ interface CorrectedContents {
 	extracted: ExtractedContents;
 }
 
-interface MentionAccount {
-	usernameLower: string;
-	host: string | null;
-}
-
-function accountKey(account: MentionAccount): string {
-	return `${account.usernameLower}@${account.host ?? ''}`;
-}
-
 const visibilityOrder: NoteVisibility[] = ['public', 'home', 'followers', 'specified'];
 
 // 本家 misc/is-renote.ts の isRenote && !isQuote。
@@ -58,15 +50,15 @@ export function createCreateNote(dependencies: {
 	limit(userId: string, factor: number): Promise<void>;
 	// 指定した ID のうち存在するユーザーの ID を返す。本家の findBy(In) と同じく順序を付けない。
 	readUserIds(ids: string[]): Promise<string[]>;
-	// 指定したアカウントのうち存在するユーザーを順序なしで返す。host が null ならローカルユーザー。
-	findUsersByAccount(accounts: MentionAccount[]): Promise<(MentionAccount & { id: string })[]>;
-	isSelfHost(host: string | null): boolean;
+	remoteUsers: RemoteUserPorts;
 	// 指定した ID の順に、投稿者が所有するファイルだけを返す。
 	readOwnedFiles(userId: string, fileIds: string[]): Promise<NoteAttachableFile[]>;
 	readNote(id: string): Promise<RelatedNote | null>;
 	isBlocking(blockerId: string, blockeeId: string): Promise<boolean>;
 	isFollowing(followerId: string, followeeId: string): Promise<boolean>;
-	readChannel(id: string, options: { includeArchived: boolean }): Promise<RelatedChannel | null>;
+	readChannel(id: string, options: {
+		includeArchived: boolean;
+	}): Promise<RelatedChannel | null>;
 	// 指定した ID の順に、リモートユーザーだけを返す。
 	readMentionedRemoteUsers(userIds: string[]): Promise<MentionedRemoteUser[]>;
 	writes: NoteWrites;
@@ -222,40 +214,71 @@ export function createCreateNote(dependencies: {
 		return { text, visibility, localOnly, visibleUserIds, extracted };
 	}
 
-	// 本家 RemoteUserResolveService.resolveUser と NoteCreateService.extractMentionedUsers。
+	async function resolveMention(input: Account): Promise<ResolvedUser> {
+		const ports = dependencies.remoteUsers;
+		const account = normalizeAccount(input, ports.selfHost);
+		const user = await ports.readByAccount(account);
+		if (account.host === null) {
+			if (!user) {
+				throw new Error('user not found');
+			}
+			return user;
+		}
+		const now = dependencies.currentTime();
+		if (classifyRemoteUser(user, now) === 'fresh') {
+			return user!;
+		}
+		if (user) {
+			await ports.markAttempt(user.id, now);
+		}
+		const uri = await ports.webfinger(account);
+		if (user) {
+			if (user.uri !== uri) {
+				if (new URL(uri).hostname !== account.host) {
+					throw new Error('Invalid uri');
+				}
+				await ports.repairUri(user.id, uri);
+			}
+			const plan = await ports.acquireActor(uri, user, dependencies.currentTime, dependencies.newId);
+			await ports.refreshActor(user.id, plan);
+			const refreshed = await ports.readByUri(uri);
+			if (!refreshed) {
+				throw new Error('user not found');
+			}
+			return refreshed;
+		}
+		const localId = ports.localId(uri);
+		if (localId !== null) {
+			const local = await ports.readLocal(localId);
+			if (!local) {
+				throw new Error('local user not found');
+			}
+			return local;
+		}
+		const plan = await ports.acquireActor(uri, null, dependencies.currentTime, dependencies.newId);
+		try {
+			return await ports.actorTransactions.run(scope => ports.insertActor(scope, plan));
+		} catch (error) {
+			if (error && typeof error === 'object' && 'code' in error && error.code === '23505') {
+				const canonical = await ports.readByUri(plan.uri);
+				if (canonical) {
+					return canonical;
+				}
+			}
+			throw error;
+		}
+	}
+
 	async function resolveMentions(author: NoteCreateAuthor, mentions: MentionToken[]): Promise<string[]> {
-		// 同じアカウントの表記違いは同じ行に解決されるため、出現順を保ったまままとめる。
-		const accounts = new Map<string, MentionAccount>();
-		for (const mention of mentions) {
-			const host = mention.host ?? author.host;
-			const account = { usernameLower: mention.username.toLowerCase(), host: host === null || dependencies.isSelfHost(host) ? null : toPuny(host) };
-			if (!accounts.has(accountKey(account))) {
-				accounts.set(accountKey(account), account);
-			}
-		}
-		if (accounts.size === 0) {
-			return [];
-		}
-		// 本家はメンションごとに問い合わせるが、結果は同じなので一度にまとめて引く。
-		const found = new Map((await dependencies.findUsersByAccount([...accounts.values()])).map(user => [accountKey(user), user.id]));
-		const ids: string[] = [];
-		for (const [key, account] of accounts) {
-			const id = found.get(key);
-			// 本家は未登録のリモートユーザーを WebFinger で取得する。#195 で接続するまでは黙って捨てずに拒否する。
-			// 登録済みなら lastFetchedAt が古くても再同期しない（再同期も通信が要るため #195 で扱う）。
-			if (id === undefined && account.host !== null) {
-				throw new NoteCreateError('NOT_IMPLEMENTED');
-			}
-			if (id !== undefined) {
-				ids.push(id);
-			}
-		}
-		// 見つからないローカルユーザーは本家どおり無視し、同じユーザーは最初の出現だけを残す。
-		return [...new Set(ids)];
+		const users = await Promise.all(mentions.map(mention => resolveMention({ username: mention.username, host: mention.host ?? author.host }).catch(() => null)));
+		return [...new Set(users.flatMap(user => user ? [user.id] : []))];
 	}
 
 	// 本家 NoteCreateService.ts:611-632。
-	function address(author: NoteCreateAuthor, reply: RelatedNote | null, corrected: CorrectedContents, mentioned: string[]): { mentions: string[]; visibleUserIds: string[] } {
+	function address(author: NoteCreateAuthor, reply: RelatedNote | null, corrected: CorrectedContents, mentioned: string[]): {
+		mentions: string[];
+		visibleUserIds: string[];
+	} {
 		const mentions = [...mentioned];
 		const visibleUserIds = [...corrected.visibleUserIds];
 		if (reply !== null && reply.userId !== author.id && !mentions.includes(reply.userId)) {
@@ -278,7 +301,10 @@ export function createCreateNote(dependencies: {
 		return { mentions, visibleUserIds: corrected.visibility === 'specified' ? visibleUserIds : [] };
 	}
 
-	function build(author: NoteCreateAuthor, data: NoteInput, related: RelatedFacts, corrected: CorrectedContents, addressed: { mentions: string[]; visibleUserIds: string[] }, id: string): Omit<NewNote, 'mentionedRemoteUsers'> {
+	function build(author: NoteCreateAuthor, data: NoteInput, related: RelatedFacts, corrected: CorrectedContents, addressed: {
+		mentions: string[];
+		visibleUserIds: string[];
+	}, id: string): Omit<NewNote, 'mentionedRemoteUsers'> {
 		const { renote, reply, channel } = related;
 		return {
 			id, userId: author.id, userHost: author.host,
@@ -354,8 +380,10 @@ export function createCreateNote(dependencies: {
 					renotedNoteId: related.renote !== null && related.renote.userId !== author.id && !author.isBot ? related.renote.id : null,
 					channelId: note.channelId,
 					pollExpiresAtMs: poll?.expiresAtMs ?? null,
-					createdSnapshot: { note, reply: related.reply, renote: related.renote, author: { id: author.id, username: author.username, host: author.host, isBot: author.isBot }, channel: related.channel,
-																								rawNote: rawNote ? { ...rawNote, reply: related.reply?.rawNote ?? null, renote: related.renote?.rawNote ?? null } : undefined },
+					createdSnapshot: {
+						note, reply: related.reply, renote: related.renote, author: { id: author.id, username: author.username, host: author.host, isBot: author.isBot }, channel: related.channel,
+						rawNote: rawNote ? { ...rawNote, reply: related.reply?.rawNote ?? null, renote: related.renote?.rawNote ?? null } : undefined
+					},
 				});
 			}
 		},

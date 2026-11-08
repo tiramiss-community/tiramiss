@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { expect, test } from 'vitest';
+import { readFileSync } from 'node:fs';
+import type { RemoteUserPorts, Account, RemoteActorCreateScope } from '../../../src/modules/federation/public.js';
 import { createHostRules } from '../../../src/modules/federation/public.js';
 import { createCreateNote } from '../../../src/modules/note/create-note.js';
 import { concatNoteContentsForKeywordCheck, matchesWords } from '../../../src/modules/note/keywords.js';
@@ -12,10 +14,19 @@ const author: NoteCreateAuthor = { id: 'author', username: 'author', host: null,
 const actor = { userId: 'author', canWriteNote: true };
 const ownedFiles: NoteAttachableFile[] = [{ id: 'img', type: 'image/png' }, { id: 'vid', type: 'video/mp4' }];
 const now = 1_000_000;
+const unavailable = async (): Promise<never> => {
+	throw new Error('remote unavailable');
+};
+const actorScope: RemoteActorCreateScope = { insertUser: unavailable, insertProfile: unavailable, insertPublickey: unavailable };
+const remotePorts: RemoteUserPorts = {
+	selfHost: 'example.com', localId: () => null, readByAccount: async () => null, readByUri: async () => null, readLocal: async () => null,
+	markAttempt: unavailable, repairUri: unavailable, webfinger: unavailable, acquireActor: unavailable, insertActor: unavailable, refreshActor: unavailable,
+	actorTransactions: { run: work => work(actorScope) },
+};
 const noRelations = {
 	readNote: async () => null, isBlocking: async () => false, isFollowing: async () => false,
 	readChannel: async () => null, readMentionedRemoteUsers: async () => [],
-	readUserIds: async () => [], findUsersByAccount: async () => [], isSelfHost: (host: string | null) => host === null,
+	readUserIds: async () => [], remoteUsers: remotePorts,
 };
 
 interface World {
@@ -24,10 +35,10 @@ interface World {
 	blockings?: [string, string][];
 	// [follower, followee]
 	followings?: [string, string][];
-	channels?: (RelatedChannel & { isArchived?: boolean })[];
-	remoteUsers?: (MentionedRemoteUser & { id: string })[];
+	channels?: (RelatedChannel & { isArchived?: boolean; })[];
+	remoteUsers?: (MentionedRemoteUser & { id: string; })[];
 	// この並びを DB の返却順とみなす。
-	users?: { id: string; username: string; host: string | null }[];
+	users?: { id: string; username: string; host: string | null; }[];
 }
 
 function related(id: string, facts: Partial<RelatedNote> = {}): RelatedNote {
@@ -37,14 +48,14 @@ function related(id: string, facts: Partial<RelatedNote> = {}): RelatedNote {
 	};
 }
 
-function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteAttachableFile[]; failPoll?: boolean; failRender?: boolean; world?: World; checkedAt?: number } = {}) {
+function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteAttachableFile[]; failPoll?: boolean; failRender?: boolean; world?: World; checkedAt?: number; ports?: Partial<RemoteUserPorts>; } = {}) {
 	const world = options.world ?? {};
 	const events: string[] = [];
 	const notes: NewNote[] = [];
 	const polls: NewPoll[] = [];
 	const after: NotePostSaveInput[] = [];
 	const fileReads: [string, string[]][] = [];
-	const accountReads: { usernameLower: string; host: string | null }[][] = [];
+	const accountReads: { usernameLower: string; host: string | null; }[][] = [];
 	const files = options.files ?? ownedFiles;
 	const writes = (scope: string): NoteWrites => ({
 		insertNote: async note => {
@@ -61,7 +72,7 @@ function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteA
 	});
 	const create = createCreateNote({
 		readAuthor: async () => facts,
-		limit: async () => {},
+		limit: async () => { },
 		readOwnedFiles: async (userId, ids) => {
 			events.push('files');
 			fileReads.push([userId, ids]);
@@ -89,21 +100,22 @@ function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteA
 			events.push('users');
 			return (world.users ?? []).filter(user => ids.includes(user.id)).map(user => user.id);
 		},
-		findUsersByAccount: async accounts => {
-			accountReads.push(accounts);
-			// 返却順に依存しないことを確かめるため、問い合わせ順と逆に返す。
-			return accounts.flatMap(account => (world.users ?? [])
-				.filter(user => user.username.toLowerCase() === account.usernameLower && user.host === account.host)
-				.map(user => ({ id: user.id, usernameLower: account.usernameLower, host: account.host }))).reverse();
+		remoteUsers: {
+			...remotePorts, readByAccount: async account => {
+				accountReads.push([{ usernameLower: account.username, host: account.host }]);
+				const user = world.users?.find(user => user.username.toLowerCase() === account.username && user.host === account.host);
+				return user ? { ...user, uri: null, lastFetchedAtMs: now, isDeleted: false } : null;
+			}, ...options.ports
 		},
-		isSelfHost: createHostRules('example.com').isSelfHost,
 		writes: writes('root'),
-		transactions: { run: async work => {
-			events.push('begin');
-			const result = await work(writes('tx'));
-			events.push('commit');
-			return result;
-		} },
+		transactions: {
+			run: async work => {
+				events.push('begin');
+				const result = await work(writes('tx'));
+				events.push('commit');
+				return result;
+			}
+		},
 		afterSaved: input => {
 			events.push('after');
 			after.push(input);
@@ -183,12 +195,14 @@ test('prohibited words reach poll choices and untrimmed text while sensitive wor
 
 test('rate executes before suspended, moved, scope and schema; factor<=0 skips rate', async () => {
 	const events: string[] = [];
-	const writes: NoteWrites = { insertNote: async () => {
-		events.push('insert');
-	}, insertPoll: async () => {} };
+	const writes: NoteWrites = {
+		insertNote: async () => {
+			events.push('insert');
+		}, insertPoll: async () => { }
+	};
 	const dependencies = {
 		...noRelations, readOwnedFiles: async () => [], writes, transactions: { run: async <T>(work: (scope: NoteWrites) => Promise<T>) => work(writes) },
-		afterSaved: () => {}, newId: () => 'new', currentTime: () => 123, matchesWords,
+		afterSaved: () => { }, newId: () => 'new', currentTime: () => 123, matchesWords,
 	};
 	const create = createCreateNote({
 		...dependencies,
@@ -200,9 +214,11 @@ test('rate executes before suspended, moved, scope and schema; factor<=0 skips r
 	});
 	await expect(create.createNote({ ...actor, canWriteNote: false }, {}, 123, async id => id)).rejects.toThrow('rate failure');
 	expect(events).toEqual(['rate:1']);
-	const noLimit = createCreateNote({ ...dependencies, readAuthor: async () => ({ ...author, rateLimitFactor: 0 }), limit: async () => {
-		throw new Error('must skip');
-	} });
+	const noLimit = createCreateNote({
+		...dependencies, readAuthor: async () => ({ ...author, rateLimitFactor: 0 }), limit: async () => {
+			throw new Error('must skip');
+		}
+	});
 	expect(await noLimit.createNote(actor, { text: 'hello' }, 123, async id => id)).toBe('new');
 });
 
@@ -221,12 +237,16 @@ test.each([
 test('an insert failure is not retried and never renders or starts post-save work', async () => {
 	let inserts = 0;
 	const events: string[] = [];
-	const writes: NoteWrites = { insertNote: async () => {
-		inserts++; throw new Error('DB outcome unknown');
-	}, insertPoll: async () => {} };
-	const create = createCreateNote({ ...noRelations, readAuthor: async () => author, readOwnedFiles: async () => [], writes, transactions: { run: work => work(writes) }, afterSaved: () => {
-		events.push('after');
-	}, newId: () => 'new', currentTime: () => 123, limit: async () => {}, matchesWords });
+	const writes: NoteWrites = {
+		insertNote: async () => {
+			inserts++; throw new Error('DB outcome unknown');
+		}, insertPoll: async () => { }
+	};
+	const create = createCreateNote({
+		...noRelations, readAuthor: async () => author, readOwnedFiles: async () => [], writes, transactions: { run: work => work(writes) }, afterSaved: () => {
+			events.push('after');
+		}, newId: () => 'new', currentTime: () => 123, limit: async () => { }, matchesWords
+	});
 	await expect(create.createNote(actor, { text: 'hello' }, 123, async id => {
 		events.push('render');
 		return id;
@@ -283,7 +303,7 @@ test.each([
 	[{ text: 'forbidden', fileIds: ['img'], renoteId: 'x', poll: { choices: ['a', 'b'], expiresAt: 1 } }, 'NO_SUCH_RENOTE_TARGET'],
 	[{ text: 'forbidden', fileIds: ['img'], poll: { choices: ['a', 'b'], expiresAt: 1 }, channelId: 'x' }, 'CANNOT_CREATE_ALREADY_EXPIRED_POLL'],
 	[{ text: 'forbidden', poll: { choices: ['@probe@unknown.test', 'b'] } }, 'CONTAINS_PROHIBITED_WORDS'],
-	[{ text: 'fine', poll: { choices: ['@probe@unknown.test', 'b'] } }, 'NOT_IMPLEMENTED'],
+	[{ text: 'fine', poll: { choices: ['@probe@unknown.test', 'b'] } }, null],
 	[{ text: 'fine', poll: { choices: ['#tag', 'b'] }, noExtractHashtags: true }, null],
 ] as const)('related checks precede word checks: %j', async (input, code) => {
 	const { createNote, notes } = setup({ ...author, prohibitedWords: ['forbidden'] });
@@ -510,18 +530,16 @@ test('mentions resolve local, self-host and registered remote accounts in order 
 		mentions: ['bob', 'remoteUser', 'carol'],
 		mentionedRemoteUsers: [{ uri: 'https://remote.test/users/r', username: 'r', host: 'remote.test' }],
 	});
-	// 表記違い・自サーバーの host 付きは同じアカウントにまとめ、1 回で問い合わせる。
-	expect(accountReads).toEqual([[
-		{ usernameLower: 'bob', host: null }, { usernameLower: 'nobody', host: null }, { usernameLower: 'r', host: 'remote.test' }, { usernameLower: 'carol', host: null },
-	]]);
+	expect(accountReads).toEqual([
+		[{ usernameLower: 'bob', host: null }], [{ usernameLower: 'nobody', host: null }], [{ usernameLower: 'r', host: 'remote.test' }],
+		[{ usernameLower: 'bob', host: null }], [{ usernameLower: 'carol', host: null }], [{ usernameLower: 'bob', host: null }],
+	]);
 });
 
-// 本家は未登録のリモートユーザーを WebFinger で取得する。#195 まではメンション解決の位置で保存前に拒否する。
+// Resolution precedes reply/recipient augmentation and the mention-limit check.
 test.each([
-	[{ text: '@nobody@unknown.test' }, author, 'NOT_IMPLEMENTED'],
-	[{ text: 'x', cw: '@nobody@unknown.test' }, author, 'NOT_IMPLEMENTED'],
 	[{ text: '@nobody@unknown.test forbidden' }, { ...author, prohibitedWords: ['forbidden'] }, 'CONTAINS_PROHIBITED_WORDS'],
-	[{ text: '@bob @carol @nobody@unknown.test' }, { ...author, mentionLimit: 1 }, 'NOT_IMPLEMENTED'],
+	[{ text: '@bob @carol @nobody@unknown.test' }, { ...author, mentionLimit: 1 }, 'CONTAINS_TOO_MANY_MENTIONS'],
 	[{ text: '@bob @carol' }, { ...author, mentionLimit: 1 }, 'CONTAINS_TOO_MANY_MENTIONS'],
 ] as const)('%j by %j is rejected with %s without saving', async (input, facts, code) => {
 	const { createNote, notes, polls } = setup({ ...facts, prohibitedWords: [...facts.prohibitedWords] }, { world: relationWorld });
@@ -573,4 +591,127 @@ test('recipients are read before attachments', async () => {
 	const { createNote, events } = setup(author, { world: relationWorld });
 	await createNote({ text: 'x', fileIds: ['img'], visibility: 'specified', visibleUserIds: ['bob'] });
 	expect(events.slice(0, 2)).toEqual(['users', 'files']);
+});
+
+// Resolution errors omit one occurrence while preserving all literal contents.
+test.each([
+	{ text: '@nobody@unknown.test' }, { text: 'x', cw: '@nobody@unknown.test' },
+	{ poll: { choices: ['@nobody@unknown.test', 'b'] } },
+	{ text: '@bob @nobody@unknown.test', visibility: 'specified', visibleUserIds: ['carol'] },
+])('failed remote acquisition preserves posting input %j', async input => {
+	const world = setup(author, { world: relationWorld });
+	await expect(world.createNote(input)).resolves.toEqual({ id: 'new' });
+	expect(world.notes[0]).toMatchObject({ text: input.text ?? null, cw: 'cw' in input ? input.cw : null, mentions: input.visibility ? ['bob', 'carol'] : [] });
+	if (input.poll) {
+		expect(world.polls[0].choices).toEqual(input.poll.choices);
+	}
+});
+
+const remoteGolden = JSON.parse(readFileSync(new URL('../../../../../docs/superpowers/compatibility/remote-user/observations.json', import.meta.url), 'utf8'));
+test('mentions-independent-duplicates: each occurrence can fail before successful IDs are deduplicated', async () => {
+	const fixture = remoteGolden.cases.find((c: { id: string; }) => c.id === 'mentions-independent-duplicates');
+	let index = 0;
+	const world = setup(author, {
+		ports: {
+			readByAccount: async account => {
+				const outcome = fixture.input.outcomes[index++];
+				if (outcome === 'failure') {
+					throw new Error('first occurrence fails');
+				}
+				return { id: outcome, username: account.username, host: account.host, uri: `https://remote.test/${outcome}`, lastFetchedAtMs: now, isDeleted: false };
+			}
+		}
+	});
+	await world.createNote({ text: fixture.input.tokens.map((name: string) => `@${name}@remote.test`).join(' ') });
+	expect(world.notes[0].mentions).toEqual(fixture.expected.result.map((u: { id: string; }) => u.id));
+	expect(index).toBe(fixture.input.tokens.length);
+});
+test.each(['text', 'cw', 'poll'])('unknown remote success in %s is saved before reply and specified augmentation', async field => {
+	const world = setup(author, {
+		world: relationWorld, ports: {
+			webfinger: async () => 'https://remote.test/new',
+			acquireActor: async () => ({ kind: 'create', id: 'remoteNew', uri: 'https://remote.test/new' } as never),
+			insertActor: async () => ({ id: 'remoteNew', username: 'canonical', host: 'remote.test', uri: 'https://remote.test/new' }),
+		}
+	});
+	const mention = '@new@remote.test';
+	await world.createNote({ text: field === 'text' ? mention : 'kept', ...(field === 'cw' ? { cw: mention } : {}), ...(field === 'poll' ? { poll: { choices: [mention, 'b'] } } : {}), replyId: 'public', visibility: 'specified', visibleUserIds: ['bob'] });
+	expect(world.notes[0].mentions).toEqual(['remoteNew', 'other', 'bob']);
+});
+test('authorization and noExtractMentions prevent acquisition I/O', async () => {
+	let reads = 0;
+	const world = setup(author, {
+		ports: {
+			readByAccount: async () => {
+				reads++; throw new Error('network');
+			}
+		}
+	});
+	await expect(world.createNote({ text: '@a@remote.test' }, null)).rejects.toMatchObject({ code: 'CREDENTIAL_REQUIRED' });
+	await world.createNote({ text: '@a@remote.test', noExtractMentions: true });
+	expect(reads).toBe(0);
+});
+
+for (const id of ['actor-create-duplicate-uri', 'actor-create-duplicate-missing']) {
+	test(`${id} recovers only a canonical URI row through the posting-owned transaction`, async () => {
+		const fixture = remoteGolden.cases.find((c: { id: string; }) => c.id === id);
+		const { validateActor, prepareActor, insertActor } = await import('../../../src/modules/federation/public.js');
+		const material = validateActor({ type: 'Person', id: 'https://remote.test/users/a', preferredUsername: 'Alice', inbox: 'https://remote.test/inbox' }, 'https://remote.test/request');
+		material.followingVisibility = material.followersVisibility = 'private';
+		const plan = await prepareActor(material, null, Date.parse('2027-01-15T08:00:00Z'), 'new-user');
+		const events: { op: string; args?: unknown; }[] = [];
+		const scope: RemoteActorCreateScope = {
+			insertUser: async user => {
+				events.push({ op: 'User.save', args: user }); throw Object.assign(new Error('duplicate'), { code: '23505' });
+			},
+			insertProfile: async () => {
+				throw Error('unexpected Profile');
+			}, insertPublickey: async () => {
+				throw Error('unexpected Key');
+			},
+		};
+		const world = setup(author, {
+			ports: {
+				webfinger: async () => 'https://remote.test/request', acquireActor: async () => plan, insertActor,
+				actorTransactions: {
+					run: async work => {
+						events.push({ op: 'transaction.begin' }); try {
+							return await work(scope);
+						} catch (error) {
+							events.push({ op: 'transaction.rollback' }); throw error;
+						}
+					}
+				},
+				readByUri: async uri => {
+					events.push({ op: 'User.find', args: { uri } }); return fixture.input.duplicateMissing ? null : { id: 'remote', username: 'Original', host: 'remote.test', uri, lastFetchedAtMs: now, isDeleted: false };
+				},
+			}
+		});
+		await world.createNote({ text: '@new@remote.test' });
+		const { encode } = await import('../../helpers/remote-source.js');
+		// Source's post-create media double emits an empty User.update; media acquisition remains explicitly excluded.
+		expect(encode(events)).toEqual(fixture.expected.events.filter((event: { op: string; args?: { patch?: object; }; }) => !(event.op === 'User.update' && event.args?.patch && Object.keys(event.args.patch).length === 0)));
+		expect(world.notes[0].mentions).toEqual(fixture.input.duplicateMissing ? [] : ['remote']);
+	});
+}
+
+test('successful actor timestamp is chosen after acquisition finishes', async () => {
+	const { validateActor, prepareActor } = await import('../../../src/modules/federation/public.js');
+	let savedAt = 0;
+	const options: NonNullable<Parameters<typeof setup>[1]> = {
+checkedAt: now, ports: {
+			webfinger: async () => 'https://remote.test/users/timed',
+			acquireActor: async (uri, existing, clock, id) => {
+				options.checkedAt = now + 5000;
+				const completedAt = typeof clock === 'function' ? clock() : clock;
+				const newId = typeof id === 'function' ? id(completedAt) : id;
+				const plan = await prepareActor(validateActor({ id: uri, type: 'Person', preferredUsername: 'timed', inbox: 'https://remote.test/inbox' }, uri), existing, completedAt, newId);
+				savedAt = plan.user.lastFetchedAt.getTime();
+				return plan;
+			},
+			insertActor: async (_scope, plan) => ({ id: plan.id, username: 'timed', host: 'remote.test', uri: plan.uri }),
+		}
+};
+	await setup(author, options).createNote({ text: '@timed@remote.test' });
+	expect(savedAt).toBe(now + 5000);
 });

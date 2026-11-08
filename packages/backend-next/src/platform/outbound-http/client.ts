@@ -44,7 +44,10 @@ export function createOutboundHttp(agents: OutboundAgents, userAgent: string): O
 			},
 			body: options.body as BodyInit | undefined,
 			size: options.maxBytes ?? defaultMaxBytes,
-			agent: target => agents.agentByUrl(target, false, allowLocalAddress),
+			agent: target => {
+				options.validateUrl?.(target);
+				return agents.agentByUrl(target, false, allowLocalAddress);
+			},
 			signal: controller.signal,
 		});
 

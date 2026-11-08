@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
@@ -15,6 +16,19 @@ const ledger = json(`${note}n7/coverage.json`);
 const historical = json(`${note}coverage.json`);
 const inventory = json('docs/superpowers/compatibility/backend-inventory/contracts.json').contracts;
 const sha = value => createHash('sha256').update(value).digest('hex');
+const historicalSourceCommit = 'f556283b8536592e77f0d76b046d0cb300fa70de';
+const historicalFiles = new Map();
+function readHistorical(file) {
+	if (!historicalFiles.has(file)) {
+		try {
+			historicalFiles.set(file, execFileSync('git', ['show', `${historicalSourceCommit}:${file}`], { cwd: root, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 }));
+		} catch (cause) {
+			throw new Error(`Historical source unavailable at ${historicalSourceCommit}:${file}; full Git history is required (no current-file fallback): ${cause.message}`, { cause });
+		}
+	}
+	return historicalFiles.get(file);
+}
+
 const unique = (values, label) => assert.equal(new Set(values).size, values.length, `duplicate ${label}`);
 const same = (actual, expected, label) => assert.deepEqual([...actual].sort(), [...expected].sort(), label);
 const owners = value => assert.ok(Array.isArray(value) && value.length && value.every(x => Number.isInteger(x) && x > 0), 'remaining owners');
@@ -73,6 +87,8 @@ const bindings = {
 
 function validate(value) {
 	assert.equal(value.schemaVersion, 1);
+	assert.equal(value.historicalSourceCommit, 'f556283b8536592e77f0d76b046d0cb300fa70de', 'historical full SHA required');
+	assert.ok(value.currentApplicability?.length === 2, 'explicit current supersession required');
 	assert.equal(value.upstreamCommit, historical.upstreamCommit);
 	assert.equal(value.postingComplete, false, 'posting completion remains blocked');
 	assert.equal(value.notesCreateStatus, 'partial', 'create stays partial');
@@ -92,7 +108,7 @@ function validate(value) {
 	}
 	for (const [id, ref] of Object.entries(value.evidence)) {
 		assert.ok(provenance.has(ref.provenance), 'known provenance');
-		const source = read(ref.file);
+		const source = readHistorical(ref.file);
 		assert.ok(source.includes(`('${ref.testTitle}',`), 'exact declaration title');
 		assert.equal(sha(source), ref.sourceSha256, 'evidence source drift; re-review assertions');
 		assert.ok(ref.assertions.length > 30, 'concrete assertion description');
@@ -153,7 +169,7 @@ function validate(value) {
 		assert.ok(item.applicable.length > 30 && item.excluded.length > 30, 'qualified F disposition');
 		for (const ref of item.observations ?? []) observation(ref);
 	}
-	for (const item of Object.values(value.profiles)) { evidence(item.evidence); owners(item.remainingOwners); if (item.reference) read(item.reference); }
+	for (const item of Object.values(value.profiles)) { evidence(item.evidence); owners(item.remainingOwners); if (item.reference) readHistorical(item.reference); }
 	for (const item of value.crossDomain) { owners(item.remainingOwners); assert.ok(value.profiles[item.profile]); }
 	assert.equal(sha(JSON.stringify(value.crossDomain)), bindings.crossDomain, 'cross-domain responsibilities drift');
 	unique(value.blockers.map(x => x.id), 'blockers');
@@ -163,7 +179,7 @@ function validate(value) {
 		assert.equal(blocker.owner, 195, 'blocker owner');
 		assert.equal(blocker.provenance, 'limitation');
 		same(blocker.blocks, [176, 127], 'completion blockers'); evidence(blocker.evidence);
-		if (blocker.implementation) read(blocker.implementation);
+		if (blocker.implementation) readHistorical(blocker.implementation);
 	}
 	assert.equal(value.evidence.limitation.provenance, 'limitation');
 	for (const [file, digest] of Object.entries(value.fixtureDigests)) assert.equal(sha(read(file)), digest, 'fixture dataset drift');
@@ -177,7 +193,7 @@ function validate(value) {
 	owners(audit.systemSchedulers.owners); evidence(audit.systemSchedulers.evidence);
 	same(audit.requirements.filter(x => x.issue).map(x => x.issue), [160, 162, 163, 164, 165], 'parent initial requirements');
 	assert.ok(audit.requirements.some(x => x.id === 'pg-runtime-removal'), 'PG removal');
-	for (const item of audit.requirements) { read(item.record); if (item.evidence) evidence(item.evidence); }
+	for (const item of audit.requirements) { readHistorical(item.record); if (item.evidence) evidence(item.evidence); }
 	assert.equal(audit.finalIndependentReview, 'PASS');
 	assert.equal(audit.issueStateAtAudit, 'OPEN');
 	assert.equal(audit.wholeBranchReview, 'APPROVE');
@@ -185,12 +201,57 @@ function validate(value) {
 	for (const criterion of audit.criteria) {
 		assert.equal(criterion.result, 'PASS');
 		for (const reference of criterion.references) {
-			const lines = read(reference.file).split('\n');
+			const lines = readHistorical(reference.file).split('\n');
 			assert.ok(Number.isSafeInteger(reference.line) && reference.line > 0 && reference.line <= lines.length && lines[reference.line - 1].trim().length > 0, 'reference line must identify nonempty content');
 		}
 	}
 	same(audit.closureReferences, ['Closes #124', 'Refs #176', 'Refs #127', 'Refs #139'], 'audited parent and remaining references');
+	validateCurrent(value);
 	for (const key of ['profiles', 'failureDispositions', 'blockers', 'parentAudit']) assert.equal(sha(JSON.stringify(value[key])), bindings[key], `ownership/disposition binding drift ${key}`);
+}
+
+function validateCurrent(value) {
+	const runtime = json('docs/superpowers/compatibility/remote-user/runtime-evidence.json');
+	assert.equal(runtime.implementationCommit, '33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45', 'current runtime pin');
+	assert.equal(value.notesCreateStatus, 'partial', 'create stays partial');
+	assert.equal(inventory.find(x => x.id === 'api:notes/create').status, 'partial', 'current create inventory stays partial');
+	same(Object.keys(value.runtimeEvidence ?? {}), ['remoteCore'], 'current runtime evidence required');
+	const evidence = value.runtimeEvidence.remoteCore;
+	assert.equal(evidence.provenance, 'new-runtime');
+	assert.equal(evidence.file, 'docs/superpowers/compatibility/remote-user/runtime-evidence.json');
+	assert.equal(evidence.implementationCommit, runtime.implementationCommit, 'current evidence commit');
+	same(evidence.measurements, ['closest-units', 'integration', 'process'], 'runtime measurements required');
+	for (const id of evidence.measurements) {
+		assert.equal(runtime.measurements[id]?.outcome, 'PASS', 'current successful measured evidence');
+		assert.equal(runtime.measurements[id]?.failed, 0, 'no failed runtime measurement');
+	}
+	same(evidence.consumers, runtime.consumers.map(c => c.id), 'runtime consumer bindings required');
+	assert(runtime.consumers.length > 0 && runtime.consumers.every(c => c.passedCaseIds.length > 0), 'nonempty runtime consumption');
+	const cases = json('docs/superpowers/compatibility/remote-user/observations.json').cases;
+	const consumed = runtime.consumers.flatMap(c => c.passedCaseIds);
+	same(new Set(consumed), cases.map(c => c.id), 'known consumed case IDs');
+	same(value.currentApplicability.map(x => x.blockerId), value.blockers.map(x => x.id), 'current supersession for both historical blockers');
+	for (const item of value.currentApplicability) {
+		assert.equal(item.historicalSourceCommit, value.historicalSourceCommit, 'supersession historical source');
+		assert.equal(item.status, 'superseded-core-only', 'scoped supersession required');
+		assert.equal(item.owner, 195);
+		same(item.blocks, [176, 127], 'remaining completion blockers');
+		const old = value.blockers.find(b => b.id === item.blockerId);
+		same(item.historicalEvidence, old.evidence, 'exact historical evidence link');
+		assert.equal(item.historicalBlocker, `blockers/${old.id}`, 'stable blocker supersession link');
+		same(item.runtimeEvidence, ['remoteCore'], 'measured supersession evidence required');
+		assert(item.scope.length > 50, 'concrete proven core scope');
+		assert(item.caseIds.length > 0, 'supersession case consumption required');
+		for (const id of item.caseIds) assert(consumed.includes(id), 'known consumed supersession case ID');
+		assert(item.remainingGapIds.length > 0 && item.remainingGapIds.every(id => value.currentRemaining.some(g => g.id === id)), 'remaining compatibility scope');
+	}
+	same(value.currentRemaining.map(x => x.id), ['media-emoji', 'user-hashtags', 'instance-metadata', 'charts', 'rich-actor', 'remote-cache', 'C2-rate-delta', 'C10-audit-stream'], 'qualified remaining gaps');
+	for (const gap of value.currentRemaining) {
+		owners(gap.owners);
+		assert.equal(gap.status, 'unresolved', 'remaining feature cannot be accepted wholesale');
+		assert(gap.scope.length > 30);
+	}
+	assert.equal(sha(JSON.stringify({ runtimeEvidence: value.runtimeEvidence, currentApplicability: value.currentApplicability, currentRemaining: value.currentRemaining })), 'af89d49875a88d0ed82466870fc856ddc9e73962ee1c8e92c3f6afdb09119669', 'current applicability binding drift');
 }
 
 test('N7 covers every C observation with qualified concrete evidence', () => validate(ledger));
@@ -200,6 +261,19 @@ test('N7 refuses completion while remote mention blockers remain', () => validat
 
 // Mutations exercise the in-memory ledger only; they never rewrite evidence.
 const mutations = [
+	['historical source drift', x => { x.evidence.create.sourceSha256 = '0'.repeat(64); }, /evidence source drift/],
+	['missing supersession', x => { x.currentApplicability = []; }, /explicit current supersession/],
+	['wrong historical supersession link', x => { x.currentApplicability[0].historicalSourceCommit = 'e133a0fdebf0cfd538a07f264a4de1050486cb23'; }, /supersession historical source/],
+	['missing runtime evidence', x => { delete x.runtimeEvidence.remoteCore; }, /current runtime evidence required/],
+	['missing supersession evidence', x => { x.currentApplicability[0].runtimeEvidence = []; }, /measured supersession evidence/],
+	['missing runtime measurement', x => { x.runtimeEvidence.remoteCore.measurements.pop(); }, /runtime measurements required/],
+	['missing runtime consumption', x => { x.runtimeEvidence.remoteCore.consumers = []; }, /runtime consumer bindings required/],
+	['unknown supersession case', x => { x.currentApplicability[0].caseIds = ['invented']; }, /known consumed supersession case/],
+	['missing consumed supersession case', x => { x.currentApplicability[0].caseIds = []; }, /supersession case consumption required/],
+	['unqualified supersession', x => { x.currentApplicability[0].status = 'PASS'; }, /scoped supersession required/],
+	['remaining scope dropped', x => { x.currentRemaining.pop(); }, /remaining compatibility scope|qualified remaining gaps/],
+	['missing historical SHA', x => { delete x.historicalSourceCommit; }, /historical full SHA/],
+	['wrong historical SHA', x => { x.historicalSourceCommit = 'e133a0fdebf0cfd538a07f264a4de1050486cb23'; }, /historical full SHA/],
 	['omitted group', x => x.cases.pop(), /C groups/],
 	['duplicate group', x => x.cases.push(x.cases[0]), /duplicate C/],
 	['unknown group', x => { x.cases[0].id = 'C99'; }, /C groups/],
@@ -210,7 +284,7 @@ const mutations = [
 	['unknown inventory ID', x => { x.contracts[0].id = 'invented'; }, /inventory identities/],
 	['promoted inventory row', x => { x.contracts[0].inventoryStatus = 'verified'; }, /inventory status/],
 	['unknown provenance', x => { x.evidence.create.provenance = 'parity'; }, /provenance/],
-	['missing evidence file', x => { x.evidence.create.file = 'missing.test.ts'; }, /ENOENT/],
+	['missing evidence file', x => { x.evidence.create.file = 'missing.test.ts'; }, /Historical source unavailable/],
 	['missing JSON key', x => { x.cases[0].observations[0].observation.key = 'C1-invented'; }, /JSON key/],
 	['wrong declaration title', x => { x.evidence.create.testTitle = 'fabricated rendered title'; }, /declaration title/],
 	['unknown dataset case', x => { x.evidence.create.dataset.caseIds[0] = 'C1-invented'; }, /dataset case/],
@@ -226,7 +300,7 @@ const mutations = [
 	['missing F disposition', x => x.failureDispositions.pop(), /F groups/],
 	['missing cutover handler', x => { delete x.parentAudit.unsupportedHandlers.inbox; }, /unsupported handlers/],
 	['dropped schedulers', x => { x.parentAudit.systemSchedulers.count = 0; }, /nine system schedulers/],
-	['blank parent reference line', x => { const file = 'docs/backend-next/posting-contract.md'; x.parentAudit.criteria[0].references[0] = { file, line: read(file).split('\n').findIndex(line => !line.trim()) + 1 }; }, /reference line must identify nonempty content/],
+	['blank parent reference line', x => { const file = 'docs/backend-next/posting-contract.md'; x.parentAudit.criteria[0].references[0] = { file, line: readHistorical(file).split('\n').findIndex(line => !line.trim()) + 1 }; }, /reference line must identify nonempty content/],
 	['out-of-range parent reference line', x => { x.parentAudit.criteria[0].references[0].line = Number.MAX_SAFE_INTEGER; }, /reference line must identify nonempty content/],
 	['limitation relabelled runtime', x => { x.evidence.limitation.provenance = 'new-runtime'; }, /binding drift/],
 	['redirected observation consumer', x => { x.cases[0].observations[0].evidence = ['terminal']; }, /observation dataset binding|observation binding drift/],

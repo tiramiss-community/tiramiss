@@ -1616,5 +1616,165 @@
     "docs/superpowers/compatibility/note/n3/observations.json": "ffa30353490737ae5ed6d52adc92c009075a35b6ea1800815afc4a4aa8fbd5f2",
     "docs/superpowers/compatibility/note/observations.json": "ba3d42b9648d3bb72a01394f54d61c9da442f9f8f7f5b71e60fa82646959a5f6",
     "docs/superpowers/compatibility/note/rate-observations.json": "93c76ad8ccafb6adc7b7d997ee7a565149872058277c39a3905214400fbceade"
-  }
+  },
+  "historicalSourceCommit": "f556283b8536592e77f0d76b046d0cb300fa70de",
+  "runtimeEvidence": {
+    "remoteCore": {
+      "provenance": "new-runtime",
+      "file": "docs/superpowers/compatibility/remote-user/runtime-evidence.json",
+      "implementationCommit": "33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45",
+      "consumers": [
+        "resolve",
+        "mentions",
+        "webfinger",
+        "actor-plans",
+        "actor-refresh",
+        "actor-create-failure",
+        "actor-duplicates",
+        "actor-validation",
+        "fetch",
+        "publication-render",
+        "publication-adapter",
+        "publication-http"
+      ],
+      "measurements": [
+        "closest-units",
+        "integration",
+        "process"
+      ]
+    }
+  },
+  "currentApplicability": [
+    {
+      "blockerId": "unknown-remote-mention-501",
+      "historicalBlocker": "blockers/unknown-remote-mention-501",
+      "historicalSourceCommit": "f556283b8536592e77f0d76b046d0cb300fa70de",
+      "historicalEvidence": [
+        "limitation"
+      ],
+      "status": "superseded-core-only",
+      "owner": 195,
+      "blocks": [
+        176,
+        127
+      ],
+      "runtimeEvidence": [
+        "remoteCore"
+      ],
+      "caseIds": [
+        "resolve-cross-host-first-self",
+        "actor-create-Person",
+        "mentions-independent-duplicates"
+      ],
+      "scope": "Measured posting acquisition/core persistence, occurrence failure omission and retained refresh writes supersede only this historical core blocker; rich actor effects and full posting compatibility remain incomplete.",
+      "remainingGapIds": [
+        "media-emoji",
+        "user-hashtags",
+        "instance-metadata",
+        "charts",
+        "rich-actor",
+        "remote-cache",
+        "C2-rate-delta",
+        "C10-audit-stream"
+      ]
+    },
+    {
+      "blockerId": "stale-remote-refresh",
+      "historicalBlocker": "blockers/stale-remote-refresh",
+      "historicalSourceCommit": "f556283b8536592e77f0d76b046d0cb300fa70de",
+      "historicalEvidence": [],
+      "status": "superseded-core-only",
+      "owner": 195,
+      "blocks": [
+        176,
+        127
+      ],
+      "runtimeEvidence": [
+        "remoteCore"
+      ],
+      "caseIds": [
+        "resolve-stale-refresh-failure",
+        "actor-refresh-profile-failure",
+        "resolve-age-86400001"
+      ],
+      "scope": "Measured posting acquisition/core persistence, occurrence failure omission and retained refresh writes supersede only this historical core blocker; rich actor effects and full posting compatibility remain incomplete.",
+      "remainingGapIds": [
+        "media-emoji",
+        "user-hashtags",
+        "instance-metadata",
+        "charts",
+        "rich-actor",
+        "remote-cache",
+        "C2-rate-delta",
+        "C10-audit-stream"
+      ]
+    }
+  ],
+  "currentRemaining": [
+    {
+      "id": "media-emoji",
+      "owners": [
+        188,
+        195
+      ],
+      "status": "unresolved",
+      "scope": "Actor media acquisition and custom emoji persistence/output remain incomplete."
+    },
+    {
+      "id": "user-hashtags",
+      "owners": [
+        195
+      ],
+      "status": "unresolved",
+      "scope": "Attached/detached user hashtag relationships and their counters remain incomplete."
+    },
+    {
+      "id": "instance-metadata",
+      "owners": [
+        215
+      ],
+      "status": "unresolved",
+      "scope": "Actor-driven instance usersCount and metadata are not established by posting notesCount."
+    },
+    {
+      "id": "charts",
+      "owners": [
+        200
+      ],
+      "status": "unresolved",
+      "scope": "Actor/user/instance chart writes and their full comparisons remain incomplete."
+    },
+    {
+      "id": "rich-actor",
+      "owners": [
+        195
+      ],
+      "status": "unresolved",
+      "scope": "Featured acquisition, Move effects, full actor publication, HTML/MFM, inbox/remote Notes/collections and general WebFinger/relay scope remain incomplete."
+    },
+    {
+      "id": "remote-cache",
+      "owners": [
+        217
+      ],
+      "status": "unresolved",
+      "scope": "Actor cache invalidation and remoteUserUpdated publication/consumption remain unconnected."
+    },
+    {
+      "id": "C2-rate-delta",
+      "owners": [
+        176
+      ],
+      "status": "unresolved",
+      "scope": "Original whole rate DB-delta object remains qualified, not full direct equality."
+    },
+    {
+      "id": "C10-audit-stream",
+      "owners": [
+        176
+      ],
+      "status": "unresolved",
+      "scope": "Original audit/stream objects remain qualified, not complete direct consumption."
+    }
+  ]
 }

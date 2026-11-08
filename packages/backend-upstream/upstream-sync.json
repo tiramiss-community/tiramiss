@@ -37,7 +37,8 @@
 		"src/models/UserListMembership.ts",
 		"src/models/ChannelFollowing.ts",
 		"src/models/ChannelMuting.ts",
-		"src/models/Antenna.ts"
+		"src/models/Antenna.ts",
+		"src/models/UserPublickey.ts"
 	],
 	"migrationDirectory": "migration",
 	"externalDependencies": [

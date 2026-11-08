@@ -27,13 +27,13 @@ HTTP成功は保存とレスポンス生成の成功。AP配送や通知の完�
 
 ## 関連入力（#170）
 
-添付・投票・返信/Renote/引用・channel・指定宛先・MFM抽出を、固定本家の `notes/create` と `NoteCreateService` に合わせて接続する。基本text作成の501暫定制限は、未登録リモートユーザー宛てメンションを除いて撤去する。
+添付・投票・返信/Renote/引用・channel・指定宛先・MFM抽出を、固定本家の `notes/create` と `NoteCreateService` に合わせて接続する。基本text作成の501暫定制限は撤去済み。未登録remote mentionも下記#195の限定経路で取得する。
 
 - **判定順**: 入力検証 → 指定宛先の取得 → 添付 → Renote対象 → 返信先 → 投票期限（本家どおり、`expiredAfter` は要求開始の時刻から数え、期限は関連の取得を終えた時点の時刻と比べる。Dateの範囲外の値は期限切れとせず、保存時のDBエラーで500）→ channel → 返信先によるchannelの補正 → channel投稿の強制（public・宛先なし・localOnly）→ sensitiveWords/canPublicNote（channelなしのみ）→ 禁止語（trim前のcw・text・選択肢）→ Renote対象/返信先による公開範囲・localOnlyの補正 → textのtrim → MFM抽出（text・cw・選択肢）→ メンション解決 → 返信先作者・指定宛先の追加 → メンション数上限 → 保存。複数の誤りでは最初のエラーを返す。エラーのcode/id/messageは本家どおり。
 - **存在・可視性・ブロックの確認**は保存と同じtransactionに入れない（本家も同じ）。確認後の削除・ブロックは検出しない。本家の `create()` 内でcacheによりブロックを再確認して500になる経路は、DBの確認と食い違う競合時だけに起きるため移植しない。
 - **保存**: 投票ありはNoteとPollを、UseCaseが所有する1つのtransactionで保存する。投票なしはNoteの単純insert。非正規化列（threadId・replyUserId/Host・renoteUserId/Host・renoteChannelId・attachedFileTypes・mentionedRemoteUsers）も本家と同じ値で保存する。
 - **保存後のcount**: user.notesCountに加え、返信先repliesCount、Renote対象renoteCount（他人の投稿・botでない投稿者のみ。引用も含む）、channelのnotesCount・lastNotedAt・usersCount（その投稿者のchannel内Noteが1件ならusersCount+1）を、保存後の原子的更新として行う。削除では返信先の `repliesCount` だけを1減らし、user・Renote・channelのcountは減らさない（#172）。作成応答の描画を終えてから開始し、応答の入れ子の返信先/Renote対象のcountを本家と同じく今回の加算前の値にする。
-- **メンション**: ローカルユーザーと登録済みリモートユーザーをDBで解決する。見つからないローカルユーザーは本家どおり無視する。自ホスト判定とホスト正規化は[連合の共通土台](federation-base-contract.md)を使う。登録済みリモートユーザーは `lastFetchedAt` に関係なく再同期せず使う。DBにない（未登録の）リモートユーザー宛ては、メンション解決の位置で保存前に501 `NOT_IMPLEMENTED`で拒否する。どちらも#195で除去する暫定制限であり、完成版の意図的差異にしない。
+- **メンション**: 各出現を独立に解決し、成功したIDを出現順で重複排除する。自ホスト/IDN正規化・WebFingerの最初の大文字小文字非依存self・未登録actor取得/呼出元所有transactionでのcore保存を接続した。登録済みremoteは24時間ちょうどまでfresh、超過/null時刻は先にattempt時刻と必要なURI補正を保存してrefreshする。失敗した出現は本文/CW/pollを保持して省略し、先行する時刻/URI/User/Key等の確定済み書込を巻き戻さない。後のlookupは新しくfreshとなった行を使える。登録済みのfresh lookupは取得を行わない。未登録remoteの保存前501とstale refresh省略は現行core経路から除去済み。media/emoji・attached user hashtag・instance/chart・cache等の残りは[測定範囲と所有者](../superpowers/compatibility/remote-user/runtime-results.md)を参照し、#195全体の完成とはしない。
 - **指定宛先とMFM抽出**: 指定宛先は本家と同じく順序を付けずに取得し、存在しないIDは黙って除く（保存順は入力順を保証しない）。ハッシュタグの長さの上限は本家どおり正規化前の値で判定するため、NFKCで128文字を超えるタグは保存時のDBエラーで500になる。mediaSilencedによる絵文字の除外はリモート投稿にだけ効くため、ローカル投稿の経路には入れない。
 - **後続Issueの材料**: 投票終了のjob登録と通知は、保存済みの `poll.expiresAt` を材料に #162 の最初の PR で接続した（下記「通常ジョブ（#162）」）。#170では空のjobを作らない。通知・stream（#173）、hashtag表・ランキング・検索索引・TL・antenna（#174）、webhook（#175）、AP配送（#171）、チャートは本Issueで実装しない。いずれも保存済みのNote列（mentions・mentionedRemoteUsers・tags・reply/renote/channel）から判断できる。
 
@@ -238,4 +238,6 @@ AP/webhook送信成功はbackup復元で取り消せず、復元したjobのretr
 
 [現在のN7台帳・実測・再現手順](../superpowers/compatibility/note/n7/README.md)に、C1–C10の全観測、F1–F8の現在の適用範囲と、notes94行/AP outbound10行の元ID・statusを保持した照合を記録した。固定本家HTTP観測、source-method比較、新実装の実process、制限回帰を分け、fixtureの存在だけで一致としない。通常HTTP保存→show→worker→通知/WS/AP/webhook/TL/検索→停止再開・自然retry→削除と、認可/保存失敗を既存harnessで検証した。実測は統合214件、processは別々の3実行で8＋5＋7件。これは本番切替の判定ではない。
 
-未登録remote mentionの保存前501、登録済みremote userのstale refresh省略、解決失敗時の本家の省略処理との差は#195が所有する未解消blocker。`api:notes/create`はpartial、`postingComplete`はfalseを維持する。#176/#127は未完了で、完了扱いの差異や保留強化へ読み替えない。#124は[N7の独立条件監査](../superpowers/compatibility/note/n7/README.md#remaining-ownership-and-124-audit)で現行全必須条件PASS（runtime `28e670721e6bd6e6ec117ddc67036d1951cd59a3`）。現行条件・コード・実assertion・比較記録・成功した実行を確認しており、必須子5件のCLOSED状態だけから判定しない。将来の人間のmerge時に`Closes #124`が適切で、GitHub上はそれまでOPEN。証跡task review・全branch最終レビューはSpec PASS / Quality APPROVE、最終shippingはlint/SPDX/locale PASS。この2026-11-08 N7最終判定が、上の過去sliceの「#124全体未完了」と監査待ちRefs記述を現在の判定として置き換える。未対応7handler・system9schedulerと切替#139は上記引継ぎ契約を維持する。
+#195の限定core runtime `33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45` は、未登録remote取得・stale refresh・失敗出現の省略から署名配送までを[固定source95件の消費と実測](../superpowers/compatibility/remote-user/runtime-results.md)で確認した。旧501/省略blockerは[N7](../superpowers/compatibility/note/n7/README.md)で履歴を固定し、証明したcoreだけをsupersedeする。rich actor効果、N7 C2 whole rate DB-delta/C10 audit-streamの比較ギャップを残し、`api:notes/create`はpartial、`postingComplete`はfalse。#195/#176/#127は未完了で、未移植機能を承認済み差異や保留強化にしない。
+
+#124はN7独立条件監査時に現行全必須条件PASS（runtime `28e670721e6bd6e6ec117ddc67036d1951cd59a3`）。監査時のOPENと当時のclosure referencesは履歴として保持する。現在は#242がマージ済みで#124はCLOSED。旧e133a0fでのscoped reviewはTask2 Spec PASS / Quality APPROVEであり、local URI parser修正後の全branch承認やCodeRabbit差分確認を意味しない。未対応7handler・system9schedulerと切替#139は上記引継ぎ契約を維持する。

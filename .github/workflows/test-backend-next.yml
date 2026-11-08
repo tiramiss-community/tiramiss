@@ -8,6 +8,8 @@ on:
       - 'docs/superpowers/compatibility/backend-inventory/**'
       - 'scripts/backend-contract-inventory*.mjs'
       - 'docs/superpowers/compatibility/note/**'
+      - 'docs/superpowers/compatibility/remote-user/**'
+      - 'scripts/remote-user-contract.test.mjs'
       - 'docs/superpowers/compatibility/ap-deliver/**'
       - 'scripts/note-contract-*.test.mjs'
       - 'packages/backend-next/**'
@@ -24,6 +26,8 @@ on:
       - 'docs/superpowers/compatibility/backend-inventory/**'
       - 'scripts/backend-contract-inventory*.mjs'
       - 'docs/superpowers/compatibility/note/**'
+      - 'docs/superpowers/compatibility/remote-user/**'
+      - 'scripts/remote-user-contract.test.mjs'
       - 'docs/superpowers/compatibility/ap-deliver/**'
       - 'scripts/note-contract-*.test.mjs'
       - 'packages/backend-next/**'
@@ -81,7 +85,7 @@ jobs:
           node --test scripts/backend-contract-inventory.test.mjs
           node scripts/backend-contract-inventory.mjs --check
       - name: Note comparison fixture references and contracts
-        run: node --test scripts/note-contract-*.test.mjs
+        run: node --test scripts/note-contract-*.test.mjs scripts/remote-user-contract.test.mjs
       - run: pnpm --filter backend-upstream sync:check
       - run: pnpm --filter backend-next... build
       - run: pnpm --filter backend-next... typecheck

@@ -102,12 +102,12 @@ Redis のキー名と値の形式は本家と揃える。こうしておけば�
 2. **鍵とシステムアカウント**
    - SystemAccount・UserKeypair・UsedUsername と、UserProfile とそれが参照する Entity を同期で複製する。
    - `generateRsaKeyPair`・`readUserKeypair`・`toSpkiPublicKeyPem`・`ensureSystemAccount` を実装する。
-   - #216 と合わせて、#160 の署名と、#195 の remote user 解決を解く。#170 のリモートメンションの 501 は、その後に #195 が除去する。
+   - #216 と合わせて、#160 の署名と、#195 の remote user 解決を解く。#170 のリモートメンション501は#195の現行core取得経路で除去済み（下記の測定範囲）。
    - 実装済み。4 つの関数は `src/composition/federation-keys.ts` の `createFederationKeys` で組み立てる。#160 の最初の PR は `readUserKeypair` を署名付き送信に使うが、通常起動からは呼ばない。#171 の最初の PR で、worker 子の配送ジョブから通常起動へ接続した。検証は[比較資料](../superpowers/compatibility/federation-base/README.md#新実装への接続)を参照。
 3. **インスタンス台帳と配送による状態更新**: 配送を接続する PR（#171）と同時に入れる。#160 の最初の PR は署名と結果の分類だけを持ち、台帳と状態の書き込みは入れない（2026-11-03 ユーザー決定）。
    - #171 の最初の PR で実装済み。台帳は `src/platform/instance-ledger.ts`、成功・失敗の patch は `src/modules/federation/instance.ts`、スキップ判定と書き込みの順は `src/modules/federation/deliver-job.ts`。本家の probe と実 DB/Redis で比べた（[比較資料](../superpowers/compatibility/ap-deliver/README.md)）。
    - 成功時の `fetchInstanceMetadata` は段階 5 まで呼ばない（一時的な差異）。チャートの更新は #200。
-4. **リモート鍵の参照と AP オブジェクトの排他**: UserPublickey を複製する。#195 の受信実装と同時に入れる。
+4. **リモート鍵の参照と AP オブジェクトの排他**: UserPublickeyは固定本家の機械同期で複製し、#195のposting core保存/refreshで使用。一般受信の鍵照会・AP object排他全体は未完了。
 5. **メタデータ取得**: #216 の `getHtml` と一緒に入れる。
 
 各段階は最初の利用者と同じ PR か、その直前の PR で通常起動へ接続する。利用者のいない adapter を先に積まない。
@@ -157,3 +157,9 @@ backend-next の note-authors は、UserLite.instance を作るために instanc
 - sharedInbox への 410 では、不通の記録と goneSuspended を順に書く。本家は並行に書き、未登録の host では初回登録の競合で goneSuspended を失うことがある。
 - 配送ジョブは Meta をジョブごとに DB から読む。本家は更新の通知で保つメモリ上の Meta を使う。プロセス間の通知（#217）ができるまでの扱いで、変更の反映が本家より早いだけ。
 - 消えた instance の行を更新しようとすると `INSTANCE_NOT_FOUND` を投げる。本家は TypeError になる。どちらも待たない更新の中で起き、新実装は log に残す。
+
+## #195 posting core取得の現行適用範囲
+
+実装 `33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45` でWebFinger→signed/unsigned AP取得、core User/Profile/Publickey保存/refresh、最小 `/users/:id` 公開とsystem/author PEM発見を通常起動へ接続した。[実測と固定95ケースの消費](../superpowers/compatibility/remote-user/runtime-results.md)はsource-method・新runtime・未実行の本家full HTTPを分ける。署名GET組立だけだった過去段階の記述は、その時点の分担である。
+
+media/emoji #188/#195、attached user hashtag関係 #195、actor由来instance usersCount/metadata #215、chart #200、featured/Move/full actor公開/inbox/remote Notes #195、cache/remoteUserUpdated #217は未完了。既存instance台帳・notesCountやscalarタグ/URI更新の存在でこれらを完了にしない。HTML/MFMは測定したsubset、公開actorは鍵発見に必要な最小投影に限定する。すべてGOALSの初期範囲に残り、承認済みの一括差異ではない。
