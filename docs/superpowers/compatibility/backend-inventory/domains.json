@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45",
+  "implementationCommit": "65f88fcd54b8b561779230ad8233e4cb0b262154",
   "domains": [
     {
       "id": "api-common",
@@ -27,9 +27,27 @@
         "test",
         "reset-db"
       ],
-      "implementation": [],
-      "verification": [],
-      "differences": []
+      "implementation": [
+        "packages/backend-next/src/http/api-endpoint.ts",
+        "packages/backend-next/src/http/api-request.ts",
+        "packages/backend-next/src/http/api-error.ts",
+        "packages/backend-next/src/modules/access/authorize.ts",
+        "packages/backend-next/src/modules/access/public.ts",
+        "packages/backend-next/src/platform/database/authenticate.ts",
+        "packages/backend-next/src/platform/api-rate-limit.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/http/api-endpoint.test.ts",
+        "packages/backend-next/test/unit/access/authorize.test.ts",
+        "packages/backend-next/test/integration/role-http.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "docs/superpowers/compatibility/api-common/README.md",
+        "packages/backend-next/test/unit/http/endpoint-access.test.ts",
+        "docs/superpowers/compatibility/api-common/endpoint-access.json"
+      ],
+      "differences": [
+        "G1〜G8（docs/superpowers/compatibility/api-common/README.md）。"
+      ]
     },
     {
       "id": "identity",
@@ -2465,6 +2483,28 @@
         "docs/superpowers/compatibility/queue-admin/README.md"
       ],
       "note": "#173のmain/homeTimeline・note購読に加え、#163でqueueStatsの接続/解除とchannel/chによるrequestLogを検証。他16channel・readNotification・他channel書込など全#189は未完了。"
+    },
+    "capability:api-common": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/http/api-endpoint.ts",
+        "packages/backend-next/src/http/api-request.ts",
+        "packages/backend-next/src/http/api-error.ts",
+        "packages/backend-next/src/modules/access/authorize.ts",
+        "packages/backend-next/src/platform/database/authenticate.ts",
+        "packages/backend-next/src/platform/api-rate-limit.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/http/api-endpoint.test.ts",
+        "packages/backend-next/test/unit/access/authorize.test.ts",
+        "packages/backend-next/test/integration/role-http.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "docs/superpowers/compatibility/api-common/README.md",
+        "packages/backend-next/test/unit/http/endpoint-access.test.ts"
+      ],
+      "differences": [
+        "承認済み・意図的差異はdocs/superpowers/compatibility/api-common/README.mdのG1〜G8。Role2・queue14 APIをgateへ載せた最初のslice。note APIの移行・未知endpoint404・allowGet・multipart(#188)・secure・requiredRolePolicy・匿名IP limit・user_ip・OpenAPIは未実装。"
+      ]
     }
   }
 }
