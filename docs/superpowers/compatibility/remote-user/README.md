@@ -80,8 +80,27 @@ assertion. JSON formatting whitespace is ignored by parsing and serialization;
 object key order, array order and values remain part of this seal. When evidence
 changes, first inspect the diff, verify the affected source/consumer hashes and
 case selections, and rerun the affected measurements. Update their provenance and
-results without attributing old runs to new code. Only after those checks, compute
-the candidate seal from the repository root:
+results without attributing old runs to new code.
+
+When replacing the measured implementation snapshot, confirm the new runtime
+commit exists and matches the code actually measured. Update `implementationCommit`
+and each measurement's commit in `runtime-evidence.json`, then update the
+`implementationCommit` constant in `scripts/remote-user-contract.test.mjs` and
+the `current runtime pin` assertion in `validateCurrent` in
+`scripts/note-contract-posting.test.mjs` to that same verified commit. In the former
+script, also reconcile the `measured environment` expectation and the
+`closest-units` / `integration` / `process` passed-count and file-count table with
+the actual new runs; retain zero-failure/zero-skip requirements and the individual
+source, selection and assertion checks. Do not change fixed values merely to make
+a test pass, or repin historical measurements that were not rerun.
+
+Update N7's current `runtimeEvidence.remoteCore` implementation binding and any
+affected current applicability references separately. Preserve its historical
+source pin, historical measurements and sealed audit evidence; a new runtime
+snapshot does not replace that independent historical verification. Review any
+legitimate changes to N7's current bindings and their seals independently.
+Only after these provenance and fixed-value checks, compute the candidate seal
+from the repository root:
 
 ```sh
 node --input-type=module -e 'import { readFileSync } from "node:fs"; import { createHash } from "node:crypto"; const value = JSON.parse(readFileSync("docs/superpowers/compatibility/remote-user/runtime-evidence.json", "utf8")); console.log(createHash("sha256").update(JSON.stringify(value)).digest("hex"));'
