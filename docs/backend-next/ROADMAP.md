@@ -27,7 +27,7 @@
 
 投稿の現在地（2026-11-07）: #170/#171、投稿に必要な通知・WebSocket受信 #173、投稿webhook #175 と通常TL/検索/集計producer #174 は実装・比較済み。#174 は PR #237 で完了した。#172の削除連携sliceでは、作成後続と削除の連携を、同じ投稿を使う実HTTP/worker・PG/Redis/Meili・WebSocket・fake AP/webhookで検証した。sourceと製品の独立レビューは承認済み。#172 の完了判定と、#176 の削除に絞って確認した範囲は[削除連携の計画](../superpowers/plans/2026-11-07-note-delete-integration-172.md)を参照する。後述の各sliceにある過去の残作業記述は当時の状態を示す。
 
-通常workerは投票終了・AP配送・投稿webhookのhandlerを実行する。#163の管理14 API・公開QueueStatsは下記の実依存検証で完了条件を満たす。#164の現在3業務queueの保持と全10名の終端清掃も下記の検証で完了条件を満たす。次は#165の実payload互換/残仕事引継ぎであり、#124と#176全体は未完了。他の実ジョブは担当領域へ残る。#169 / PR #212は、基本text作成のHTTP・保存・応答・後続count更新と、独自BullMQ transport/Redis復旧の撤去を完了。[PR #213](https://github.com/tiramiss-community/tiramiss/pull/213)でPG通知を直接保存へ分離し、残るPGジョブ/AP protocol・専用テスト・起動Entity登録・未使用依存を撤去した。新migrationは未解決の仕事を拒否し、通知本体を保持して不要9表/課金列を廃止する。マージ済みの独自migrationは履歴として保持するが、未使用adapterや不要テーブルを最終構成に残す方針ではない。
+通常workerは投票終了・AP配送・投稿webhookのhandlerを実行する。#163の管理14 API・公開QueueStatsは下記の実依存検証で完了条件を満たす。#164の現在3業務queueの保持と全10名の終端清掃も下記の検証で完了条件を満たす。実payload互換/残仕事引継ぎ#165は下記の停止専用checkerと実測範囲を確認し、最終切替#139へ渡す。#124と#176全体は未完了。他の実ジョブは担当領域へ残る。#169 / PR #212は、基本text作成のHTTP・保存・応答・後続count更新と、独自BullMQ transport/Redis復旧の撤去を完了。[PR #213](https://github.com/tiramiss-community/tiramiss/pull/213)でPG通知を直接保存へ分離し、残るPGジョブ/AP protocol・専用テスト・起動Entity登録・未使用依存を撤去した。新migrationは未解決の仕事を拒否し、通知本体を保持して不要9表/課金列を廃止する。マージ済みの独自migrationは履歴として保持するが、未使用adapterや不要テーブルを最終構成に残す方針ではない。
 
 ## 本家比較から分かった追加仕様
 
@@ -89,7 +89,7 @@ PR単位で一括revertせず、現在の参照・必要な業務規則・保存
 | Role初期範囲 / 残るRole API | #115（#116–#121完了）/ #181 |
 | 投稿の代表フロー | #125 → #127 → #170–#176（#167–#169完了）|
 | 通常ジョブ・署名HTTP・worker | #122 → #124 → #160 / #162 |
-| 本家queue管理・QueueStats / 履歴保持 / 実payload互換 | #163/#164実装・比較済み / #165未完了 |
+| 本家queue管理・QueueStats / 履歴保持 / 実payload互換 | #163/#164実装・比較済み / #165は停止専用検査・現在3業務handlerの実引継ぎを検証。7業務handlerと最終切替は各担当へ残る |
 | 全公開契約の棚卸し / 残る機能の実装 | #128 → #129 / #177–#200（領域別の所有者表は #128）|
 | 横断的な共通土台 | #215 連合の共通土台 / #216 外向きHTTP・SSRF / #217 プロセス間イベント・キャッシュ（いずれも #128 の子）|
 | 外部保存・部分完了 / 派生データ・必要な保守 | #130 と #188/#199 / #131 → #132/#133、#174/#185/#186/#200 |
@@ -158,4 +158,11 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 
 2026-11-08: #164の現在3業務queue（deliver/endedPollNotification/userWebhookDeliver）の通常保持と全10管理selectorの終端清掃を、コミット `2549ec263662c10cdd238448482f325c1693c035` の比較資料・テストで確認した。固定source24観測（8ファイル・32 producerメソッド）、新規直接比較28件、実Redis8件と全10名HTTP追加10件を分離して記録する。最終近傍単体4 files / 97 tests、結合2 files / 49 tests、build/typecheck、変更testのlint・SPDX・locale safetyは成功した。独立したsource/runtimeレビューは承認済みで、製品コードの変更は不要だった。[契約・実測・後続所有者](../superpowers/compatibility/queue-retention/README.md)、[計画](../superpowers/plans/2026-11-08-queue-retention-164.md)。
 
-保持は各jobの7日・成功30/失敗100設定を同じ終端状態への遷移時に適用し、静かなqueueの厳密TTLや周期清掃ではない。固定本家の全10 Queue/Workerにfallbackはなく、将来のsystem定期jobはage-onlyと古いscheduler定義の整理をその実装時に移植する。残る7業務handler、保守#199/chart等#200、通知本体#177は各担当が所有する。#164の現行条件を満たした後の必要なqueue作業は#165の実payload/scheduler互換・残仕事引継ぎで、切替は#139、親#124と投稿全体#176は未完了である。上の過去の進捗に残る#164未完了記述は当時の状態を示す。
+保持は各jobの7日・成功30/失敗100設定を同じ終端状態への遷移時に適用し、静かなqueueの厳密TTLや周期清掃ではない。固定本家の全10 Queue/Workerにfallbackはなく、将来のsystem定期jobはage-onlyと古いscheduler定義の整理をその実装時に移植する。残る7業務handler、保守#199/chart等#200、通知本体#177は各担当が所有する。#164の現行条件を満たした後の実payload/scheduler互換・残仕事引継ぎ#165は下記の検証へ進めた。切替は#139、親#124と投稿全体#176は未完了である。上の過去の進捗に残る#164未完了記述は当時の状態を示す。
+
+
+2026-11-08: #165の停止専用`check-queue-handoff --stopped`を追加し、raw Redisの読取だけで全10名の残仕事・payload/options・active/lock・repeat/scheduler・不明記録を検査する。固定本家の17 fixture・全10名・9 scheduler template・11 source guardを採取した。通常CIは記録済みsource引数＋明示したテストbinding＋現在のBullMQ 6.3.11を使い、別確認は固定sourceをbinding適用後に実行して本家installedの同版BullMQで保存する。本家full serverの実行比較ではない。[source/実依存の証明範囲と再実行](../superpowers/compatibility/queue-handoff/README.md)、[計画](../superpowers/plans/2026-11-08-queue-handoff-165.md)。
+
+近傍単体5 files / 135 tests（新checker38件）、通常CIと実sourceそれぞれの実Redis結合31件、通常CIのprocess4件が成功した。実sourceの通常built workerで3業務handler・全7 webhook envelopeを確認した1件と、旧BullMQ workerの60秒遅延retryを同ID・attempts1→2で継続した1件は、別々の成功した実行である。PG通知、署名付きAP HTTP、webhook snapshot/保存status、未対応7 queue/実system schedulerの拒否と検査前後の保持、CLIの有限終了/機密非出力を確認した。build/typecheck・変更ファイルquiet lintも成功した。processに既存のpg query deprecation warningがあり、成功結果と分けて記録する。
+
+#165は全形式の棚卸し・保持/旧側完了/拒否の判断・実検査とbackup/rollback手順・実旧状態の隔離検証の4条件を満たす範囲の完了候補である。最終切替の成功を示さない。現在3 handler以外の7 queueは未完了/failedがblockerで、systemの9 schedulerはwaiting=0でも#199/#200待ちとなる。systemのarchiveAnnouncementは#199、systemWebhookDeliverは#198、他の所有者と完全停止backup/復元は[現在の契約](posting-contract.md#停止下の既存queuepayload引継ぎ165)を参照する。7 webhookのtransport検証は新イベントproducer/管理API#197やreactionの完成ではない。#135/#138/#177を含む最終切替#139、親#124と投稿全体#176は未完了のまま残る。過去の進捗にある「次は#165」は当時の対応順を示す。

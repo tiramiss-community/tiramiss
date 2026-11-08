@@ -25,7 +25,7 @@ main/homeTimelineとnote購読は下記の#173受信sliceで`partial`とした�
 
 `implementationCommit`を`1f023061eb86a18a3113d29517cb7eded091edc6`へ進め、管理14 API・queueStats channel/capability・個別管理操作・packer/INFO/統計timer/service・4つのqueue監査書込を`verified`とした。全10 queue名と広いqueue能力は`partial`、channel/chもqueueStatsのrequestLogだけの`partial`とする。監査時判定`audit.A/B`と領域の担当は変更しない。serverStatsと広域Xev連携は未実装で、共有stream責務は`partial`に留める。
 
-固定97観測の95公開投影を直接照合し、sourceの寿命不足2件は差異として残す。新実装の全2499単体・関連45結合・10 processとbuild/typecheckが成功し、全14 API/10名・現在Role/scope・実Worker制御・公開WS/upgrade認可・非待機失敗/監査・接続断/部分起動/停止待機を検証した。source/productの独立仕様・品質レビューも承認済み。[再実行・証拠と制約](../queue-admin/README.md)。本家full server比較や全10業務workerの証明にはしない。通常保持/清掃#164は下記で検証した。次は残payload引継ぎ#165を進める。他WS#189・他管理#194、親#124と投稿全体#176は未完了。
+固定97観測の95公開投影を直接照合し、sourceの寿命不足2件は差異として残す。新実装の全2499単体・関連45結合・10 processとbuild/typecheckが成功し、全14 API/10名・現在Role/scope・実Worker制御・公開WS/upgrade認可・非待機失敗/監査・接続断/部分起動/停止待機を検証した。source/productの独立仕様・品質レビューも承認済み。[再実行・証拠と制約](../queue-admin/README.md)。本家full server比較や全10業務workerの証明にはしない。通常保持/清掃#164は下記で検証した。残payload引継ぎ#165の現在の検証範囲は下記を参照する。他WS#189・他管理#194、親#124と投稿全体#176は未完了。
 
 ## #164 通常保持・全10管理対象の終端清掃（2026-11-08）
 
@@ -33,7 +33,15 @@ main/homeTimelineとnote購読は下記の#173受信sliceで`partial`とした�
 
 固定sourceは24観測・8ファイル・32 QueueService producerメソッドの明示double実行。新実装との直接比較は追加28件、近傍を含む4 files / 97 testsが成功した。実Redis/BullMQの3 producer/Worker保持8件と全10名の管理HTTP終端清掃追加10件は2 files / 49 testsで成功し、製品コードの変更はなかった。source実行と、handler結果を制御した実adapter検証を区別し、本家full serverや全10業務handlerの実行とは扱わない。[再実行・境界・後続所有者](../queue-retention/README.md)。
 
-保持は7日・成功30/失敗100をjobに指定するlazy清掃で、同じqueue・同じ終端状態への次の遷移時に働く。Queue/Worker fallbackや周期履歴清掃を追加していない。現在3業務queue以外の7業務handler、system定期/保守#199/#200、通知本体#177は各担当へ残る。次は既存payload/schedulerの引継ぎ#165、切替は#139であり、`capability:queue`と各queue名は`partial`を維持する。親#124と投稿全体#176の完了には換算しない。
+保持は7日・成功30/失敗100をjobに指定するlazy清掃で、同じqueue・同じ終端状態への次の遷移時に働く。Queue/Worker fallbackや周期履歴清掃を追加していない。現在3業務queue以外の7業務handler、system定期/保守#199/#200、通知本体#177は各担当へ残る。既存payload/schedulerの引継ぎ#165は下記で検証し、切替は#139であり、`capability:queue`と各queue名は`partial`を維持する。親#124と投稿全体#176の完了には換算しない。
+
+## #165 停止専用検査と実payload引継ぎ（2026-11-08）
+
+`implementationCommit`を製品コミット `7b6be9556a10ef786a7f6afc2665e0221c127036` へ進めた。全10 queueの固定source台帳と停止専用raw Redis checkerを追加し、現在3業務handlerで元jobを引き継いだ。固定sourceは17 fixture・全10名・9 scheduler template・11 source guard。通常CIは記録済みsource引数＋明示テストbinding＋現在のBullMQ 6.3.11を使い、別確認は固定sourceをbinding適用後に実行し、本家installedの同版BullMQを使う。[再実行・実測・証明範囲](../queue-handoff/README.md)。本家full serverの比較ではない。
+
+近傍単体5 files / 135 tests（新checker38件）、通常CI/実sourceそれぞれの実Redis結合31件、通常CIのprocess全4件が成功した。実source modeの3業務handler/7 webhook送信1件と、旧BullMQが残した60秒遅延retryの同ID継続1件は別々のtargeted成功であり、実sourceの全4件一括成功とはしない。build/typecheck・変更runtime/testのquiet lintは成功し、processの既存pg query deprecation warningを記録した。
+
+既存の管理・保持の根拠を残し、現在の#165未完了表記と実装/検証参照だけを更新する。全2,119契約・1,432監査行の順序/ID・担当・status・監査A/Bは維持し、`capability:queue`と各queue名は`partial`のままとする。未対応7 handlerの未完了/failedやsystemの9 schedulerは実際の切替blockerであり、clearやscheduler削除で代用しない。7 webhookのtransport確認は他イベントproducer/API #197やreactionの完成ではない。#165の4条件に対応する完了候補と、完全停止切替#139・通知移行#177・親#124/投稿全体#176の完成を区別する。[所有者とbackup/rollback](../../../backend-next/posting-contract.md#停止下の既存queuepayload引継ぎ165)。
 
 ## #172 sliceと固定監査表の照合（2026-11-07）
 
@@ -178,7 +186,7 @@ channelのnotesCount/lastNotedAt/usersCountはpack/mention等の準備成功後�
 | [system webhook設定・配送](#domain-system-webhook) | 未実装 | [#198](https://github.com/tiramiss-community/tiramiss/issues/198) |
 | [import/export・移動/削除・保守ジョブ](#domain-maintenance) | 未実装 | [#199](https://github.com/tiramiss-community/tiramiss/issues/199) / #130, #139 |
 | [charts・retention・統計](#domain-analytics) | 未実装 | [#200](https://github.com/tiramiss-community/tiramiss/issues/200) / #132, #133 |
-| [ジョブ管理・照会・制御](#domain-queue) | 管理14 API/QueueStatsと現在3業務queueの保持・全10名の終端清掃は検証根拠あり、残payload引継ぎ等は未完了 | [#163](https://github.com/tiramiss-community/tiramiss/issues/163) / #124, #162, #164, #165 |
+| [ジョブ管理・照会・制御](#domain-queue) | 管理14 API/QueueStats・現在3業務queueの保持/実payload引継ぎ・全10名の停止専用検査を検証。7業務handlerと最終切替は未完了 | [#163](https://github.com/tiramiss-community/tiramiss/issues/163) / #124, #162, #164, #165 |
 | [起動・migration・CLI・配布](#domain-operations) | 部分実装 | [#138](https://github.com/tiramiss-community/tiramiss/issues/138) / #113, #135, #136, #137, #139, #162, #166 |
 | [連合の共通土台（システムアカウント・鍵・ホスト判定・排他）](#domain-federation-base) | 未実装（監査で追加） | [#215](https://github.com/tiramiss-community/tiramiss/issues/215) / #195, #124, #160, #171 |
 | [外向きHTTPとSSRF対策](#domain-outbound-http) | 未実装（監査で追加） | [#216](https://github.com/tiramiss-community/tiramiss/issues/216) / #160, #188, #195, #196, #197, #198 |
@@ -586,7 +594,7 @@ chart各系列/retention/statsと集計/tick/resync/clean、履歴的countと復
 - 本家: [QueueService.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/QueueService.ts)、[show-job.ts](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/server/api/endpoints/admin/queue/show-job.ts)。
 - 新実装: [管理UseCase](../../../../packages/backend-next/src/modules/queue/admin.ts)、[14 HTTP route](../../../../packages/backend-next/src/http/queue-api.ts)、[10 queue adapter](../../../../packages/backend-next/src/platform/job-queue/administration.ts)、[QueueStats observer](../../../../packages/backend-next/src/platform/queue-stats.ts)。
 - 検証根拠: [queue source比較](../../../../packages/backend-next/test/unit/queue/source-compat.test.ts)、[実HTTP/PG/Redis](../../../../packages/backend-next/test/integration/queue-admin.test.ts)、[実WS](../../../../packages/backend-next/test/integration/queue-stats.test.ts)、[通常HTTP子と寿命/障害](../../../../packages/backend-next/test/processes/queue-admin.test.ts)、[比較範囲と結果](../queue-admin/README.md)。
-- 既知差異: 管理14 API/公開QueueStatsは#163で検証済み。単一HTTP observerがXevを置き換え、即時/10秒周期・最新先頭200件のメモリ履歴を持つ。sourceの非待機204境界を維持して診断/終了待機を追加する。既存のRedis無再接続方針を管理/QueueEventsにも適用する。再起動を跨ぐ統計保持や全10業務workerを追加しない。通常保持/清掃#164は現在3業務queueと全10管理対象で検証した。残payload互換/引継ぎ#165と7業務producer/Worker等が残るため`capability:queue`と各queue名は`partial`を維持する。
+- 既知差異: 管理14 API/公開QueueStatsは#163で検証済み。単一HTTP observerがXevを置き換え、即時/10秒周期・最新先頭200件のメモリ履歴を持つ。sourceの非待機204境界を維持して診断/終了待機を追加する。既存のRedis無再接続方針を管理/QueueEventsにも適用する。再起動を跨ぐ統計保持や全10業務workerを追加しない。通常保持/清掃#164は現在3業務queueと全10管理対象で検証した。停止専用検査/実payload引継ぎ#165を検証した後も7業務producer/Worker等が残るため`capability:queue`と各queue名は`partial`を維持する。
 
 <a id="domain-operations"></a>
 

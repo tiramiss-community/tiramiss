@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "2549ec263662c10cdd238448482f325c1693c035",
+  "implementationCommit": "7b6be9556a10ef786a7f6afc2665e0221c127036",
   "domains": [
     {
       "id": "api-common",
@@ -926,7 +926,10 @@
         "packages/backend-next/src/composition/queue-http.ts",
         "packages/backend-next/src/platform/queue-stats.ts",
         "packages/backend-next/src/modules/stream/connection.ts",
-        "packages/backend-next/src/processes/http.ts"
+        "packages/backend-next/src/processes/http.ts",
+        "packages/backend-next/src/platform/job-queue/handoff.ts",
+        "packages/backend-next/src/platform/job-queue/handoff-policy.ts",
+        "packages/backend-next/src/entrypoints/check-queue-handoff.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/queue/source-compat.test.ts",
@@ -939,10 +942,14 @@
         "packages/backend-next/test/unit/job-queue/retention.test.ts",
         "packages/backend-next/test/integration/queue-retention.test.ts",
         "docs/superpowers/compatibility/queue-retention/observations.json",
-        "docs/superpowers/compatibility/queue-retention/README.md"
+        "docs/superpowers/compatibility/queue-retention/README.md",
+        "packages/backend-next/test/unit/job-queue/handoff.test.ts",
+        "packages/backend-next/test/integration/queue-handoff.test.ts",
+        "packages/backend-next/test/processes/queue-handoff.test.ts",
+        "docs/superpowers/compatibility/queue-handoff/observations.json"
       ],
       "differences": [
-        "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165の残payload引継ぎは未完了。",
+        "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165で全10名の停止専用読取検査と現在3業務handlerの実payload引継ぎを検証。未対応7 queueの未完了/failedとsystem schedulerは切替を拒否し、最終切替#139は未完了。",
         "#163で公開queueStatsを固定sourceの公開投影と実Redis/WS/processで検証。guestとread:account appが購読可能（appのupgrade認可は維持）。単一HTTP observerがdeliver/inboxを即時/10000ms観測し最新先頭200件をメモリ保持。Xevを導入せず、停止時にQueueEvents/listener/開始済み処理を解放/待機する。再起動を跨ぐ保持はない。",
         "既存のRedis無再接続方針を維持し、管理/QueueEvents接続断も子の異常終了とする。本家BullMQの無期限再接続との差異。業務workerは既存の投票終了・deliver・userWebhookの3種のみ。"
       ]
@@ -2095,9 +2102,10 @@
         "packages/backend-next/test/integration/queue-admin.test.ts",
         "packages/backend-next/test/processes/queue-admin.test.ts",
         "docs/superpowers/compatibility/queue-admin/observations.json",
-        "docs/superpowers/compatibility/queue-admin/README.md"
+        "docs/superpowers/compatibility/queue-admin/README.md",
+        "docs/superpowers/compatibility/queue-handoff/observations.json"
       ],
-      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165の残payload引継ぎは未完了。"
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165で全10名の停止専用読取検査と現在3業務handlerの実payload引継ぎを検証。未対応7 queueの未完了/failedとsystem schedulerは切替を拒否し、最終切替#139は未完了。"
     },
     "api:admin/queue/deliver-delayed": {
       "status": "verified",
@@ -2113,9 +2121,10 @@
         "packages/backend-next/test/integration/queue-admin.test.ts",
         "packages/backend-next/test/processes/queue-admin.test.ts",
         "docs/superpowers/compatibility/queue-admin/observations.json",
-        "docs/superpowers/compatibility/queue-admin/README.md"
+        "docs/superpowers/compatibility/queue-admin/README.md",
+        "docs/superpowers/compatibility/queue-handoff/observations.json"
       ],
-      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165の残payload引継ぎは未完了。"
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165で全10名の停止専用読取検査と現在3業務handlerの実payload引継ぎを検証。未対応7 queueの未完了/failedとsystem schedulerは切替を拒否し、最終切替#139は未完了。"
     },
     "api:admin/queue/inbox-delayed": {
       "status": "verified",
@@ -2131,9 +2140,10 @@
         "packages/backend-next/test/integration/queue-admin.test.ts",
         "packages/backend-next/test/processes/queue-admin.test.ts",
         "docs/superpowers/compatibility/queue-admin/observations.json",
-        "docs/superpowers/compatibility/queue-admin/README.md"
+        "docs/superpowers/compatibility/queue-admin/README.md",
+        "docs/superpowers/compatibility/queue-handoff/observations.json"
       ],
-      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165の残payload引継ぎは未完了。"
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165で全10名の停止専用読取検査と現在3業務handlerの実payload引継ぎを検証。未対応7 queueの未完了/failedとsystem schedulerは切替を拒否し、最終切替#139は未完了。"
     },
     "api:admin/queue/jobs": {
       "status": "verified",
@@ -2149,9 +2159,10 @@
         "packages/backend-next/test/integration/queue-admin.test.ts",
         "packages/backend-next/test/processes/queue-admin.test.ts",
         "docs/superpowers/compatibility/queue-admin/observations.json",
-        "docs/superpowers/compatibility/queue-admin/README.md"
+        "docs/superpowers/compatibility/queue-admin/README.md",
+        "docs/superpowers/compatibility/queue-handoff/observations.json"
       ],
-      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165の残payload引継ぎは未完了。"
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165で全10名の停止専用読取検査と現在3業務handlerの実payload引継ぎを検証。未対応7 queueの未完了/failedとsystem schedulerは切替を拒否し、最終切替#139は未完了。"
     },
     "api:admin/queue/pause": {
       "status": "verified",
@@ -2167,9 +2178,10 @@
         "packages/backend-next/test/integration/queue-admin.test.ts",
         "packages/backend-next/test/processes/queue-admin.test.ts",
         "docs/superpowers/compatibility/queue-admin/observations.json",
-        "docs/superpowers/compatibility/queue-admin/README.md"
+        "docs/superpowers/compatibility/queue-admin/README.md",
+        "docs/superpowers/compatibility/queue-handoff/observations.json"
       ],
-      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165の残payload引継ぎは未完了。"
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165で全10名の停止専用読取検査と現在3業務handlerの実payload引継ぎを検証。未対応7 queueの未完了/failedとsystem schedulerは切替を拒否し、最終切替#139は未完了。"
     },
     "api:admin/queue/promote-jobs": {
       "status": "verified",
@@ -2185,9 +2197,10 @@
         "packages/backend-next/test/integration/queue-admin.test.ts",
         "packages/backend-next/test/processes/queue-admin.test.ts",
         "docs/superpowers/compatibility/queue-admin/observations.json",
-        "docs/superpowers/compatibility/queue-admin/README.md"
+        "docs/superpowers/compatibility/queue-admin/README.md",
+        "docs/superpowers/compatibility/queue-handoff/observations.json"
       ],
-      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165の残payload引継ぎは未完了。"
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165で全10名の停止専用読取検査と現在3業務handlerの実payload引継ぎを検証。未対応7 queueの未完了/failedとsystem schedulerは切替を拒否し、最終切替#139は未完了。"
     },
     "api:admin/queue/queue-stats": {
       "status": "verified",
@@ -2203,9 +2216,10 @@
         "packages/backend-next/test/integration/queue-admin.test.ts",
         "packages/backend-next/test/processes/queue-admin.test.ts",
         "docs/superpowers/compatibility/queue-admin/observations.json",
-        "docs/superpowers/compatibility/queue-admin/README.md"
+        "docs/superpowers/compatibility/queue-admin/README.md",
+        "docs/superpowers/compatibility/queue-handoff/observations.json"
       ],
-      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165の残payload引継ぎは未完了。"
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165で全10名の停止専用読取検査と現在3業務handlerの実payload引継ぎを検証。未対応7 queueの未完了/failedとsystem schedulerは切替を拒否し、最終切替#139は未完了。"
     },
     "api:admin/queue/queues": {
       "status": "verified",
@@ -2221,9 +2235,10 @@
         "packages/backend-next/test/integration/queue-admin.test.ts",
         "packages/backend-next/test/processes/queue-admin.test.ts",
         "docs/superpowers/compatibility/queue-admin/observations.json",
-        "docs/superpowers/compatibility/queue-admin/README.md"
+        "docs/superpowers/compatibility/queue-admin/README.md",
+        "docs/superpowers/compatibility/queue-handoff/observations.json"
       ],
-      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165の残payload引継ぎは未完了。"
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165で全10名の停止専用読取検査と現在3業務handlerの実payload引継ぎを検証。未対応7 queueの未完了/failedとsystem schedulerは切替を拒否し、最終切替#139は未完了。"
     },
     "api:admin/queue/remove-job": {
       "status": "verified",
@@ -2239,9 +2254,10 @@
         "packages/backend-next/test/integration/queue-admin.test.ts",
         "packages/backend-next/test/processes/queue-admin.test.ts",
         "docs/superpowers/compatibility/queue-admin/observations.json",
-        "docs/superpowers/compatibility/queue-admin/README.md"
+        "docs/superpowers/compatibility/queue-admin/README.md",
+        "docs/superpowers/compatibility/queue-handoff/observations.json"
       ],
-      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165の残payload引継ぎは未完了。"
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165で全10名の停止専用読取検査と現在3業務handlerの実payload引継ぎを検証。未対応7 queueの未完了/failedとsystem schedulerは切替を拒否し、最終切替#139は未完了。"
     },
     "api:admin/queue/resume": {
       "status": "verified",
@@ -2257,9 +2273,10 @@
         "packages/backend-next/test/integration/queue-admin.test.ts",
         "packages/backend-next/test/processes/queue-admin.test.ts",
         "docs/superpowers/compatibility/queue-admin/observations.json",
-        "docs/superpowers/compatibility/queue-admin/README.md"
+        "docs/superpowers/compatibility/queue-admin/README.md",
+        "docs/superpowers/compatibility/queue-handoff/observations.json"
       ],
-      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165の残payload引継ぎは未完了。"
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165で全10名の停止専用読取検査と現在3業務handlerの実payload引継ぎを検証。未対応7 queueの未完了/failedとsystem schedulerは切替を拒否し、最終切替#139は未完了。"
     },
     "api:admin/queue/retry-job": {
       "status": "verified",
@@ -2275,9 +2292,10 @@
         "packages/backend-next/test/integration/queue-admin.test.ts",
         "packages/backend-next/test/processes/queue-admin.test.ts",
         "docs/superpowers/compatibility/queue-admin/observations.json",
-        "docs/superpowers/compatibility/queue-admin/README.md"
+        "docs/superpowers/compatibility/queue-admin/README.md",
+        "docs/superpowers/compatibility/queue-handoff/observations.json"
       ],
-      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165の残payload引継ぎは未完了。"
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165で全10名の停止専用読取検査と現在3業務handlerの実payload引継ぎを検証。未対応7 queueの未完了/failedとsystem schedulerは切替を拒否し、最終切替#139は未完了。"
     },
     "api:admin/queue/show-job": {
       "status": "verified",
@@ -2293,9 +2311,10 @@
         "packages/backend-next/test/integration/queue-admin.test.ts",
         "packages/backend-next/test/processes/queue-admin.test.ts",
         "docs/superpowers/compatibility/queue-admin/observations.json",
-        "docs/superpowers/compatibility/queue-admin/README.md"
+        "docs/superpowers/compatibility/queue-admin/README.md",
+        "docs/superpowers/compatibility/queue-handoff/observations.json"
       ],
-      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165の残payload引継ぎは未完了。"
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165で全10名の停止専用読取検査と現在3業務handlerの実payload引継ぎを検証。未対応7 queueの未完了/failedとsystem schedulerは切替を拒否し、最終切替#139は未完了。"
     },
     "api:admin/queue/show-job-logs": {
       "status": "verified",
@@ -2311,9 +2330,10 @@
         "packages/backend-next/test/integration/queue-admin.test.ts",
         "packages/backend-next/test/processes/queue-admin.test.ts",
         "docs/superpowers/compatibility/queue-admin/observations.json",
-        "docs/superpowers/compatibility/queue-admin/README.md"
+        "docs/superpowers/compatibility/queue-admin/README.md",
+        "docs/superpowers/compatibility/queue-handoff/observations.json"
       ],
-      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165の残payload引継ぎは未完了。"
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165で全10名の停止専用読取検査と現在3業務handlerの実payload引継ぎを検証。未対応7 queueの未完了/failedとsystem schedulerは切替を拒否し、最終切替#139は未完了。"
     },
     "api:admin/queue/stats": {
       "status": "verified",
@@ -2329,9 +2349,10 @@
         "packages/backend-next/test/integration/queue-admin.test.ts",
         "packages/backend-next/test/processes/queue-admin.test.ts",
         "docs/superpowers/compatibility/queue-admin/observations.json",
-        "docs/superpowers/compatibility/queue-admin/README.md"
+        "docs/superpowers/compatibility/queue-admin/README.md",
+        "docs/superpowers/compatibility/queue-handoff/observations.json"
       ],
-      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165の残payload引継ぎは未完了。"
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165で全10名の停止専用読取検査と現在3業務handlerの実payload引継ぎを検証。未対応7 queueの未完了/failedとsystem schedulerは切替を拒否し、最終切替#139は未完了。"
     },
     "capability:queue": {
       "status": "partial",
@@ -2343,7 +2364,10 @@
         "packages/backend-next/src/composition/queue-http.ts",
         "packages/backend-next/src/platform/queue-stats.ts",
         "packages/backend-next/src/modules/stream/connection.ts",
-        "packages/backend-next/src/processes/http.ts"
+        "packages/backend-next/src/processes/http.ts",
+        "packages/backend-next/src/platform/job-queue/handoff.ts",
+        "packages/backend-next/src/platform/job-queue/handoff-policy.ts",
+        "packages/backend-next/src/entrypoints/check-queue-handoff.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/queue/source-compat.test.ts",
@@ -2356,9 +2380,13 @@
         "packages/backend-next/test/unit/job-queue/retention.test.ts",
         "packages/backend-next/test/integration/queue-retention.test.ts",
         "docs/superpowers/compatibility/queue-retention/observations.json",
-        "docs/superpowers/compatibility/queue-retention/README.md"
+        "docs/superpowers/compatibility/queue-retention/README.md",
+        "docs/superpowers/compatibility/queue-handoff/observations.json",
+        "packages/backend-next/test/unit/job-queue/handoff.test.ts",
+        "packages/backend-next/test/integration/queue-handoff.test.ts",
+        "packages/backend-next/test/processes/queue-handoff.test.ts"
       ],
-      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165の残payload引継ぎは未完了。 全10業務workerの追加を意味しない。"
+      "note": "#163で全14管理API・10名の照会/制御を固定sourceと実HTTP/PG/Redisで検証。現在moderatorとread/write:admin:queueを確認。clear/promote/retry/removeと監査の非待機境界は維持し、診断・終了待機を追加。#164で現在3業務queueの通常保持と全10名の終端履歴/清掃を実Redisで検証。7業務producer/Workerは未接続。#165で全10名の停止専用読取検査と現在3業務handlerの実payload引継ぎを検証。未対応7 queueの未完了/failedとsystem schedulerは切替を拒否し、最終切替#139は未完了。 全10業務workerの追加を意味しない。"
     },
     "capability:queue-stats": {
       "status": "verified",

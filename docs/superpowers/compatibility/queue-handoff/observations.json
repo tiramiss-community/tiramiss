@@ -1,0 +1,984 @@
+{
+  "formatVersion": 1,
+  "sourceCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "sources": {
+    "packages/backend/src/core/activitypub/ApRequestService.ts": {
+      "blob": "3eff199491c84654783574e41dbd5cf0a5bfd070",
+      "sha256": "7ad7451ea2652fee5da830309b006b5b778066eea6e10ad94cfa50729e4c9b02"
+    },
+    "packages/backend/src/core/QueueService.ts": {
+      "blob": "c09fde4ce26238b4b10a4cde97363597b7a131ce",
+      "sha256": "abf3324184849ca3d1dbcd27004535eb42a835f36fd54d8b6b5a47d41d0b2333"
+    },
+    "packages/backend/src/queue/const.ts": {
+      "blob": "625204b7add1ae4685d382e582e1abef290fb2cc",
+      "sha256": "8b7aa84ca3778fdf044bd7c26916eb62405fb5443705077e298010cd50f628aa"
+    },
+    "packages/backend/src/core/NoteCreateService.ts": {
+      "blob": "05e98541844d7f14e91263a78a03c9ec0139a89d",
+      "sha256": "cbae284975c937d89c0030b5f3cf47de373555c1ce34b65de81bcf495e93f4fe"
+    },
+    "packages/backend/src/core/NoteDraftService.ts": {
+      "blob": "e144138c2cee289210af211bf74687deb2860c10",
+      "sha256": "649f383fdd4ea7fed59f46724381495835af3b3da8cc71f44655d503d51d4896"
+    },
+    "packages/backend/package.json": {
+      "blob": "857fb4d7b742607295a9f4be881f4a4a3f29b45b",
+      "sha256": "7d9fb6c1e71dae2b65e2adb23d68dc5633fdc4bc590838b81e4f8f430d099b73"
+    },
+    "packages/backend/src/core/QueueModule.ts": {
+      "blob": "3c893ea41912d8a4e376e5e0489dc2db3e317fdb",
+      "sha256": "c29b35a627270f282f1895eb1d728bd334260ceeae8c79b238c042b3427ba6cc"
+    },
+    "packages/backend/src/queue/types.ts": {
+      "blob": "0b74f18b13c3052c2ff31981fded1e4a552f0dbd",
+      "sha256": "731e81e3bda3ee8b57b246a3ce3944c983e42db95e341744a9f671cc5d0b92e3"
+    },
+    "packages/backend/src/config.ts": {
+      "blob": "09435ce5c2810a32a0194b8a3322b6ac6c8b5938",
+      "sha256": "ff8ca6f4e42b5687913a5b023ce3d873db5e2e198270f481f5a8da29df337643"
+    },
+    "packages/backend/src/models/Webhook.ts": {
+      "blob": "5f833115cc3c6286ceeef727bb3b9107a60eec73",
+      "sha256": "109604689d80426bcab64164367698d3d012afb9263c997ec88f5ec5f9403324"
+    },
+    "packages/backend/src/core/UserWebhookService.ts": {
+      "blob": "9b0a598a1ba2ffc2f19189c25e2407884c71efd5",
+      "sha256": "068fbc86c881a5a8beb13402597fdd5ac29007368a3110808ed4b5a741ea4462"
+    }
+  },
+  "toolchain": {
+    "typescript": "6.0.3",
+    "upstreamBullmq": "6.3.11"
+  },
+  "evidence": "Pinned complete producer methods/module and poll conditional; explicit Queue/scheduler/decorator/clock/UUID doubles. Actual source createDigest uses node:crypto. No Redis, BullMQ generation, Nest DI, full server or business worker execution.",
+  "doubles": {
+    "now": 1800000000000,
+    "eventId": "00000000-0000-4000-8000-000000000001",
+    "schedulerRows": [
+      {
+        "key": "clean"
+      },
+      {
+        "key": "legacy-system-job"
+      }
+    ]
+  },
+  "queueTypes": [
+    "system",
+    "endedPollNotification",
+    "postScheduledNote",
+    "deliver",
+    "inbox",
+    "db",
+    "relationship",
+    "objectStorage",
+    "userWebhookDeliver",
+    "systemWebhookDeliver"
+  ],
+  "queueOptions": [
+    {
+      "queue": "system",
+      "options": {
+        "connection": {
+          "prefix": "fixture",
+          "host": "redis.example",
+          "port": 6379,
+          "db": 0
+        },
+        "prefix": "fixture:queue:system"
+      }
+    },
+    {
+      "queue": "endedPollNotification",
+      "options": {
+        "connection": {
+          "prefix": "fixture",
+          "host": "redis.example",
+          "port": 6379,
+          "db": 0
+        },
+        "prefix": "fixture:queue:endedPollNotification"
+      }
+    },
+    {
+      "queue": "postScheduledNote",
+      "options": {
+        "connection": {
+          "prefix": "fixture",
+          "host": "redis.example",
+          "port": 6379,
+          "db": 0
+        },
+        "prefix": "fixture:queue:postScheduledNote"
+      }
+    },
+    {
+      "queue": "deliver",
+      "options": {
+        "connection": {
+          "prefix": "fixture",
+          "host": "redis.example",
+          "port": 6379,
+          "db": 0
+        },
+        "prefix": "fixture:queue:deliver"
+      }
+    },
+    {
+      "queue": "inbox",
+      "options": {
+        "connection": {
+          "prefix": "fixture",
+          "host": "redis.example",
+          "port": 6379,
+          "db": 0
+        },
+        "prefix": "fixture:queue:inbox"
+      }
+    },
+    {
+      "queue": "db",
+      "options": {
+        "connection": {
+          "prefix": "fixture",
+          "host": "redis.example",
+          "port": 6379,
+          "db": 0
+        },
+        "prefix": "fixture:queue:db"
+      }
+    },
+    {
+      "queue": "relationship",
+      "options": {
+        "connection": {
+          "prefix": "fixture",
+          "host": "redis.example",
+          "port": 6379,
+          "db": 0
+        },
+        "prefix": "fixture:queue:relationship"
+      }
+    },
+    {
+      "queue": "objectStorage",
+      "options": {
+        "connection": {
+          "prefix": "fixture",
+          "host": "redis.example",
+          "port": 6379,
+          "db": 0
+        },
+        "prefix": "fixture:queue:objectStorage"
+      }
+    },
+    {
+      "queue": "userWebhookDeliver",
+      "options": {
+        "connection": {
+          "prefix": "fixture",
+          "host": "redis.example",
+          "port": 6379,
+          "db": 0
+        },
+        "prefix": "fixture:queue:userWebhookDeliver"
+      }
+    },
+    {
+      "queue": "systemWebhookDeliver",
+      "options": {
+        "connection": {
+          "prefix": "fixture",
+          "host": "redis.example",
+          "port": 6379,
+          "db": 0
+        },
+        "prefix": "fixture:queue:systemWebhookDeliver"
+      }
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "deliver-single",
+      "producer": "QueueService.deliver",
+      "queue": "deliver",
+      "method": "add",
+      "jobs": [
+        {
+          "name": "remote.example",
+          "data": {
+            "user": {
+              "id": "user"
+            },
+            "content": "{\"id\":\"https://local.example/notes/n/activity\",\"type\":\"Create\",\"object\":{\"id\":\"https://local.example/notes/n\",\"type\":\"Note\",\"content\":\"old payload\"}}",
+            "digest": "SHA-256=lELl0yArZx/Skh3fRkuFyoktqbRM8BSQFtjm3bN7XDM=",
+            "to": "https://remote.example/inbox",
+            "isSharedInbox": false
+          },
+          "opts": {
+            "attempts": 12,
+            "backoff": {
+              "type": "custom"
+            },
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "deliver-bulk",
+      "producer": "QueueService.deliverMany",
+      "queue": "deliver",
+      "method": "addBulk",
+      "jobs": [
+        {
+          "name": "remote.example",
+          "data": {
+            "user": {
+              "id": "user"
+            },
+            "content": "{\"id\":\"https://local.example/notes/n/activity\",\"type\":\"Create\",\"object\":{\"id\":\"https://local.example/notes/n\",\"type\":\"Note\",\"content\":\"old payload\"}}",
+            "digest": "SHA-256=lELl0yArZx/Skh3fRkuFyoktqbRM8BSQFtjm3bN7XDM=",
+            "to": "https://remote.example/inbox",
+            "isSharedInbox": false
+          },
+          "opts": {
+            "attempts": 12,
+            "backoff": {
+              "type": "custom"
+            },
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        },
+        {
+          "name": "shared.example",
+          "data": {
+            "user": {
+              "id": "user"
+            },
+            "content": "{\"id\":\"https://local.example/notes/n/activity\",\"type\":\"Create\",\"object\":{\"id\":\"https://local.example/notes/n\",\"type\":\"Note\",\"content\":\"old payload\"}}",
+            "digest": "SHA-256=lELl0yArZx/Skh3fRkuFyoktqbRM8BSQFtjm3bN7XDM=",
+            "to": "https://shared.example/inbox",
+            "isSharedInbox": true
+          },
+          "opts": {
+            "attempts": 12,
+            "backoff": {
+              "type": "custom"
+            },
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "webhook-note",
+      "producer": "QueueService.userWebhookDeliver",
+      "queue": "userWebhookDeliver",
+      "method": "add",
+      "jobs": [
+        {
+          "name": "hook",
+          "data": {
+            "type": "note",
+            "content": {
+              "note": {
+                "id": "note",
+                "text": "snapshot"
+              }
+            },
+            "webhookId": "hook",
+            "userId": "user",
+            "to": "https://hook.example/path",
+            "secret": "fixture-secret",
+            "createdAt": 1800000000000,
+            "eventId": "00000000-0000-4000-8000-000000000001"
+          },
+          "opts": {
+            "attempts": 4,
+            "backoff": {
+              "type": "custom"
+            },
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "webhook-reply",
+      "producer": "QueueService.userWebhookDeliver",
+      "queue": "userWebhookDeliver",
+      "method": "add",
+      "jobs": [
+        {
+          "name": "hook",
+          "data": {
+            "type": "reply",
+            "content": {
+              "note": {
+                "id": "note",
+                "text": "snapshot"
+              }
+            },
+            "webhookId": "hook",
+            "userId": "user",
+            "to": "https://hook.example/path",
+            "secret": "fixture-secret",
+            "createdAt": 1800000000000,
+            "eventId": "00000000-0000-4000-8000-000000000001"
+          },
+          "opts": {
+            "attempts": 4,
+            "backoff": {
+              "type": "custom"
+            },
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "webhook-renote",
+      "producer": "QueueService.userWebhookDeliver",
+      "queue": "userWebhookDeliver",
+      "method": "add",
+      "jobs": [
+        {
+          "name": "hook",
+          "data": {
+            "type": "renote",
+            "content": {
+              "note": {
+                "id": "note",
+                "text": "snapshot"
+              }
+            },
+            "webhookId": "hook",
+            "userId": "user",
+            "to": "https://hook.example/path",
+            "secret": "fixture-secret",
+            "createdAt": 1800000000000,
+            "eventId": "00000000-0000-4000-8000-000000000001"
+          },
+          "opts": {
+            "attempts": 4,
+            "backoff": {
+              "type": "custom"
+            },
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "webhook-mention",
+      "producer": "QueueService.userWebhookDeliver",
+      "queue": "userWebhookDeliver",
+      "method": "add",
+      "jobs": [
+        {
+          "name": "hook",
+          "data": {
+            "type": "mention",
+            "content": {
+              "note": {
+                "id": "note",
+                "text": "snapshot"
+              }
+            },
+            "webhookId": "hook",
+            "userId": "user",
+            "to": "https://hook.example/path",
+            "secret": "fixture-secret",
+            "createdAt": 1800000000000,
+            "eventId": "00000000-0000-4000-8000-000000000001"
+          },
+          "opts": {
+            "attempts": 4,
+            "backoff": {
+              "type": "custom"
+            },
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "webhook-follow",
+      "producer": "QueueService.userWebhookDeliver",
+      "queue": "userWebhookDeliver",
+      "method": "add",
+      "jobs": [
+        {
+          "name": "hook",
+          "data": {
+            "type": "follow",
+            "content": {
+              "user": {
+                "id": "target",
+                "username": "old-user",
+                "host": null
+              }
+            },
+            "webhookId": "hook",
+            "userId": "user",
+            "to": "https://hook.example/path",
+            "secret": "fixture-secret",
+            "createdAt": 1800000000000,
+            "eventId": "00000000-0000-4000-8000-000000000001"
+          },
+          "opts": {
+            "attempts": 4,
+            "backoff": {
+              "type": "custom"
+            },
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "webhook-unfollow",
+      "producer": "QueueService.userWebhookDeliver",
+      "queue": "userWebhookDeliver",
+      "method": "add",
+      "jobs": [
+        {
+          "name": "hook",
+          "data": {
+            "type": "unfollow",
+            "content": {
+              "user": {
+                "id": "target",
+                "username": "old-user",
+                "host": null
+              }
+            },
+            "webhookId": "hook",
+            "userId": "user",
+            "to": "https://hook.example/path",
+            "secret": "fixture-secret",
+            "createdAt": 1800000000000,
+            "eventId": "00000000-0000-4000-8000-000000000001"
+          },
+          "opts": {
+            "attempts": 4,
+            "backoff": {
+              "type": "custom"
+            },
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "webhook-followed",
+      "producer": "QueueService.userWebhookDeliver",
+      "queue": "userWebhookDeliver",
+      "method": "add",
+      "jobs": [
+        {
+          "name": "hook",
+          "data": {
+            "type": "followed",
+            "content": {
+              "user": {
+                "id": "target",
+                "username": "old-user",
+                "host": null
+              }
+            },
+            "webhookId": "hook",
+            "userId": "user",
+            "to": "https://hook.example/path",
+            "secret": "fixture-secret",
+            "createdAt": 1800000000000,
+            "eventId": "00000000-0000-4000-8000-000000000001"
+          },
+          "opts": {
+            "attempts": 4,
+            "backoff": {
+              "type": "custom"
+            },
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "inbox",
+      "producer": "QueueService.inbox",
+      "queue": "inbox",
+      "method": "add",
+      "jobs": [
+        {
+          "name": "remote.example",
+          "data": {
+            "activity": {
+              "id": "https://remote.example/activity",
+              "type": "Create"
+            },
+            "signature": {
+              "keyId": "https://remote.example/key",
+              "algorithm": "rsa-sha256"
+            }
+          },
+          "opts": {
+            "attempts": 8,
+            "backoff": {
+              "type": "custom"
+            },
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "system-archive",
+      "producer": "QueueService.scheduleAnnouncementArchive",
+      "queue": "system",
+      "method": "add",
+      "jobs": [
+        {
+          "name": "archiveAnnouncement",
+          "data": {
+            "announcementId": "announcement",
+            "autoArchiveAt": 1800000005000
+          },
+          "opts": {
+            "jobId": "archiveAnnouncement-announcement-1800000005000",
+            "delay": 5000,
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "db-import",
+      "producer": "QueueService.createImportFollowingToDbJob",
+      "queue": "db",
+      "method": "addBulk",
+      "jobs": [
+        {
+          "name": "importFollowingToDb",
+          "data": {
+            "user": {
+              "id": "user"
+            },
+            "target": "https://remote.example/users/target",
+            "withReplies": true
+          },
+          "opts": {
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "relationship-delayed",
+      "producer": "QueueService.createDelayedUnfollowJob",
+      "queue": "relationship",
+      "method": "addBulk",
+      "jobs": [
+        {
+          "name": "unfollow",
+          "data": {
+            "from": {
+              "id": "user"
+            },
+            "to": {
+              "id": "target"
+            },
+            "requestId": "request"
+          },
+          "opts": {
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            },
+            "delay": 5000
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-storage",
+      "producer": "QueueService.createDeleteObjectStorageFileJob",
+      "queue": "objectStorage",
+      "method": "add",
+      "jobs": [
+        {
+          "name": "deleteFile",
+          "data": {
+            "key": "object-key"
+          },
+          "opts": {
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "system-webhook",
+      "producer": "QueueService.systemWebhookDeliver",
+      "queue": "systemWebhookDeliver",
+      "method": "add",
+      "jobs": [
+        {
+          "name": "hook",
+          "data": {
+            "type": "abuseReport",
+            "content": {
+              "id": "report"
+            },
+            "webhookId": "hook",
+            "to": "https://hook.example/path",
+            "secret": "fixture-secret",
+            "createdAt": 1800000000000,
+            "eventId": "00000000-0000-4000-8000-000000000001"
+          },
+          "opts": {
+            "attempts": 4,
+            "backoff": {
+              "type": "custom"
+            },
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "poll-future",
+      "producer": "NoteCreateService.postNoteCreated poll conditional",
+      "queue": "endedPollNotification",
+      "method": "add",
+      "jobs": [
+        {
+          "name": "note",
+          "data": {
+            "noteId": "note"
+          },
+          "opts": {
+            "delay": 5000,
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "scheduled-note",
+      "producer": "NoteDraftService.schedule",
+      "queue": "postScheduledNote",
+      "method": "add",
+      "jobs": [
+        {
+          "name": "draft",
+          "data": {
+            "noteDraftId": "draft"
+          },
+          "opts": {
+            "delay": 5000,
+            "removeOnComplete": {
+              "age": 604800,
+              "count": 30
+            },
+            "removeOnFail": {
+              "age": 604800,
+              "count": 100
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "schedulers": [
+    {
+      "id": "tickCharts",
+      "repeat": {
+        "pattern": "55 * * * *",
+        "immediately": false
+      },
+      "template": {
+        "name": "tickCharts",
+        "opts": {
+          "removeOnComplete": {
+            "age": 604800
+          },
+          "removeOnFail": {
+            "age": 604800
+          }
+        }
+      }
+    },
+    {
+      "id": "resyncCharts",
+      "repeat": {
+        "pattern": "0 0 * * *",
+        "immediately": false
+      },
+      "template": {
+        "name": "resyncCharts",
+        "opts": {
+          "removeOnComplete": {
+            "age": 604800
+          },
+          "removeOnFail": {
+            "age": 604800
+          }
+        }
+      }
+    },
+    {
+      "id": "cleanCharts",
+      "repeat": {
+        "pattern": "0 0 * * *",
+        "immediately": false
+      },
+      "template": {
+        "name": "cleanCharts",
+        "opts": {
+          "removeOnComplete": {
+            "age": 604800
+          },
+          "removeOnFail": {
+            "age": 604800
+          }
+        }
+      }
+    },
+    {
+      "id": "aggregateRetention",
+      "repeat": {
+        "pattern": "0 0 * * *",
+        "immediately": false
+      },
+      "template": {
+        "name": "aggregateRetention",
+        "opts": {
+          "removeOnComplete": {
+            "age": 604800
+          },
+          "removeOnFail": {
+            "age": 604800
+          }
+        }
+      }
+    },
+    {
+      "id": "clean",
+      "repeat": {
+        "pattern": "0 0 * * *",
+        "immediately": false
+      },
+      "template": {
+        "name": "clean",
+        "opts": {
+          "removeOnComplete": {
+            "age": 604800
+          },
+          "removeOnFail": {
+            "age": 604800
+          }
+        }
+      }
+    },
+    {
+      "id": "checkExpiredMutings",
+      "repeat": {
+        "pattern": "*/5 * * * *",
+        "immediately": false
+      },
+      "template": {
+        "name": "checkExpiredMutings",
+        "opts": {
+          "removeOnComplete": {
+            "age": 604800
+          },
+          "removeOnFail": {
+            "age": 604800
+          }
+        }
+      }
+    },
+    {
+      "id": "bakeBufferedReactions",
+      "repeat": {
+        "pattern": "0 0 * * *",
+        "immediately": false
+      },
+      "template": {
+        "name": "bakeBufferedReactions",
+        "opts": {
+          "removeOnComplete": {
+            "age": 604800
+          },
+          "removeOnFail": {
+            "age": 604800
+          }
+        }
+      }
+    },
+    {
+      "id": "checkModeratorsActivity",
+      "repeat": {
+        "pattern": "30 * * * *",
+        "immediately": false
+      },
+      "template": {
+        "name": "checkModeratorsActivity",
+        "opts": {
+          "removeOnComplete": {
+            "age": 604800
+          },
+          "removeOnFail": {
+            "age": 604800
+          }
+        }
+      }
+    },
+    {
+      "id": "cleanRemoteNotes",
+      "repeat": {
+        "pattern": "0 4 * * *",
+        "immediately": false
+      },
+      "template": {
+        "name": "cleanRemoteNotes",
+        "opts": {
+          "removeOnComplete": {
+            "age": 604800
+          },
+          "removeOnFail": {
+            "age": 604800
+          }
+        }
+      }
+    }
+  ],
+  "schedulerCleanup": [
+    {
+      "queue": "system",
+      "method": "removeJobScheduler",
+      "args": [
+        "legacy-system-job"
+      ]
+    }
+  ]
+}

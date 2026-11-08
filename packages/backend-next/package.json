@@ -16,6 +16,7 @@
 		"migrate": "node built/entrypoints/migrate.js",
 		"check-migrations": "node built/entrypoints/check-migrations.js",
 		"check-schema": "node built/entrypoints/check-schema.js",
+		"check-queue-handoff": "node built/entrypoints/check-queue-handoff.js",
 		"start:http": "node built/entrypoints/http.js",
 		"start:worker": "node built/entrypoints/worker.js",
 		"start": "node built/entrypoints/supervisor.js"
