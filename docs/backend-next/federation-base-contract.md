@@ -160,6 +160,6 @@ backend-next の note-authors は、UserLite.instance を作るために instanc
 
 ## #195 posting core取得の現行適用範囲
 
-実装 `e133a0fdebf0cfd538a07f264a4de1050486cb23` でWebFinger→signed/unsigned AP取得、core User/Profile/Publickey保存/refresh、最小 `/users/:id` 公開とsystem/author PEM発見を通常起動へ接続した。[実測と固定95ケースの消費](../superpowers/compatibility/remote-user/runtime-results.md)はsource-method・新runtime・未実行の本家full HTTPを分ける。署名GET組立だけだった過去段階の記述は、その時点の分担である。
+実装 `33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45` でWebFinger→signed/unsigned AP取得、core User/Profile/Publickey保存/refresh、最小 `/users/:id` 公開とsystem/author PEM発見を通常起動へ接続した。[実測と固定95ケースの消費](../superpowers/compatibility/remote-user/runtime-results.md)はsource-method・新runtime・未実行の本家full HTTPを分ける。署名GET組立だけだった過去段階の記述は、その時点の分担である。
 
 media/emoji #188/#195、attached user hashtag関係 #195、actor由来instance usersCount/metadata #215、chart #200、featured/Move/full actor公開/inbox/remote Notes #195、cache/remoteUserUpdated #217は未完了。既存instance台帳・notesCountやscalarタグ/URI更新の存在でこれらを完了にしない。HTML/MFMは測定したsubset、公開actorは鍵発見に必要な最小投影に限定する。すべてGOALSの初期範囲に残り、承認済みの一括差異ではない。

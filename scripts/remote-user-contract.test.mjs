@@ -65,7 +65,7 @@ const root = new URL('../', import.meta.url);
 const read = file => readFileSync(new URL(file, root), 'utf8');
 const sha = value => createHash('sha256').update(value).digest('hex');
 const runtime = () => JSON.parse(readFileSync(new URL('runtime-evidence.json', directory), 'utf8'));
-const implementationCommit = 'e133a0fdebf0cfd538a07f264a4de1050486cb23';
+const implementationCommit = '33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45';
 const selections = {
 	resolve: c => c.id.startsWith('resolve-'),
 	mentions: c => c.id === 'mentions-independent-duplicates',
@@ -94,7 +94,7 @@ function validateRuntime(value, data = dataset(), sourceRead = read) {
 	assert.equal(value.upstreamHttpMeasured, false, 'no upstream full HTTP measurement');
 	assert.deepEqual(value.environment, { node: '24.20.0', pnpm: '12.9.1', requestedNode: '26.4.0', node26Verified: false }, 'measured environment');
 	assert(read(value.results).length > 100, 'durable measured results');
-	for (const [id, expected] of Object.entries({ 'closest-units': [243, 5], integration: [57, 2], process: [3, 1] })) {
+	for (const [id, expected] of Object.entries({ 'closest-units': [254, 5], integration: [61, 2], process: [3, 1] })) {
 		const measured = value.measurements[id];
 		assert(measured, `missing measurement ${id}`);
 		assert.equal(measured.provenance, 'new-runtime');
@@ -140,7 +140,7 @@ function validateRuntime(value, data = dataset(), sourceRead = read) {
 			assert([...value.consumers, ...value.runtimeChecks].some(c => c.file === file), 'declared runtime file consumed');
 		}
 	}
-	assert.equal(sha(JSON.stringify(value)), '787a5b72cc0187fcab565137affa8a0285f1ef2879a4b92b3445f44c8087f987', 'reviewed finite runtime binding drift');
+	assert.equal(sha(JSON.stringify(value)), 'bf9d31151ea883b376eee11f8ad12f3216ab03269cc88e7357965f80d91cf917', 'reviewed finite runtime binding drift');
 }
 
 test('current runtime has reviewed consumer bindings and successful measurements', () => validateRuntime(runtime()));

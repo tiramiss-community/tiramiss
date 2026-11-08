@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "implementationCommit": "e133a0fdebf0cfd538a07f264a4de1050486cb23",
+  "implementationCommit": "33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45",
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
   "observationsSha256": "7427c62abb63c7a7414d9ad571450eb66bce15856ad0be9a5f4b02e1d554b8eb",
   "sourceCaseCount": 95,
@@ -11,8 +11,8 @@
     "node26Verified": false
   },
   "caseMapArtifact": {
-    "path": "/tmp/tiramiss-next243-parent-case-map-reviewfix1.json",
-    "sha256": "908768b2e2705abeedfc51fe07d99d7018012dbfcab7535b41e14dd4bd257561"
+    "path": "/tmp/tiramiss-next243-finalfix-case-map.json",
+    "sha256": "f86e816d7a4424dbd3b6f5721dc5d85d4017536c873451e18c3a3d4cfb7f5b2f"
   },
   "helper": {
     "file": "packages/backend-next/test/helpers/remote-source.ts",
@@ -21,49 +21,49 @@
   "measurements": {
     "closest-units": {
       "provenance": "new-runtime",
-      "implementationCommit": "e133a0fdebf0cfd538a07f264a4de1050486cb23",
-      "command": "pnpm --filter backend-next test test/unit/federation/remote-user.test.ts test/unit/federation/remote-actor.test.ts test/unit/federation/activity-fetch.test.ts test/unit/federation/local-actor.test.ts test/unit/note/create-note.test.ts --reporter=json --outputFile=/tmp/tiramiss-next243-reviewfix1-units.json",
+      "implementationCommit": "33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45",
+      "command": "pnpm --filter backend-next test test/unit/federation/remote-user.test.ts test/unit/federation/remote-actor.test.ts test/unit/federation/activity-fetch.test.ts test/unit/federation/local-actor.test.ts test/unit/note/create-note.test.ts --reporter=json --outputFile=/tmp/tiramiss-next243-finalfix-units.json",
       "outcome": "PASS",
-      "passed": 243,
+      "passed": 254,
       "failed": 0,
       "skipped": 0,
       "files": 5,
       "seconds": null,
-      "artifact": "/tmp/tiramiss-next243-reviewfix1-units.json",
-      "artifactSha256": "9226bbe91ac61566a4a4ba5eaa939c257002bcd3ba4660906bef74a90aa4b009"
+      "artifact": "/tmp/tiramiss-next243-finalfix-units.json",
+      "artifactSha256": "f2eb2c6cbf5fe52e44f26dbc5540b0a4019fb89bff5b7a878d559b68b3805a5c"
     },
     "integration": {
       "provenance": "new-runtime",
-      "implementationCommit": "e133a0fdebf0cfd538a07f264a4de1050486cb23",
+      "implementationCommit": "33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45",
       "command": "BACKEND_NEXT_TEST_DB_PORT=55491 BACKEND_NEXT_TEST_REDIS_PORT=56391 BACKEND_NEXT_TEST_MEILI_PORT=57791 pnpm --filter backend-next test:integration test/integration/remote-user.test.ts test/integration/activitypub-actor.test.ts",
       "outcome": "PASS",
-      "passed": 57,
+      "passed": 61,
       "failed": 0,
       "skipped": 0,
       "files": 2,
-      "seconds": 12.21,
-      "artifact": "/tmp/tiramiss-next243-reviewfix1-integration.log",
-      "artifactSha256": "b4ae5521f1d07dc382baacaea0fa9072dc915f6a50676a281bc8373fd6c4978c"
+      "seconds": 13.71,
+      "artifact": "/tmp/tiramiss-next243-finalfix-integration.log",
+      "artifactSha256": "81f7ccbbd7f954856034130b004c6a530ea4a6d1a6102cae06174a0c682b1f3d"
     },
     "process": {
       "provenance": "new-runtime",
-      "implementationCommit": "e133a0fdebf0cfd538a07f264a4de1050486cb23",
+      "implementationCommit": "33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45",
       "command": "BACKEND_NEXT_TEST_DB_PORT=55491 BACKEND_NEXT_TEST_REDIS_PORT=56391 BACKEND_NEXT_TEST_MEILI_PORT=57791 pnpm --filter backend-next test:process test/processes/remote-mentions.test.ts",
       "outcome": "PASS",
       "passed": 3,
       "failed": 0,
       "skipped": 0,
       "files": 1,
-      "seconds": 6.12,
-      "artifact": "/tmp/tiramiss-next243-reviewfix1-process.log",
-      "artifactSha256": "2e92c235c317f6a1f8ea801d3a65e75431ea0f3532d2113f93032bb83021a2b3"
+      "seconds": 7.31,
+      "artifact": "/tmp/tiramiss-next243-finalfix-process.log",
+      "artifactSha256": "1e693370afc9e615567a143353365b23e12cd41bfd1d368f03510b655ddbcef3"
     }
   },
   "consumers": [
     {
       "id": "resolve",
       "file": "packages/backend-next/test/unit/federation/remote-user.test.ts",
-      "sourceSha256": "c9ef61ee44c5c89b5b4ba1b8988244594de2f2620decc71b6052c60b4237625c",
+      "sourceSha256": "ebaad9e80f6d8ebea1de014d260a5cde9b98b3d8705919d180edd6b73f03569c",
       "declaration": "${fixture.id} runs resolution through the actual posting caller and preserves ordered source operations",
       "selection": "c.id.startsWith('resolve-')",
       "assertions": [
@@ -111,7 +111,7 @@
     {
       "id": "webfinger",
       "file": "packages/backend-next/test/unit/federation/remote-user.test.ts",
-      "sourceSha256": "c9ef61ee44c5c89b5b4ba1b8988244594de2f2620decc71b6052c60b4237625c",
+      "sourceSha256": "ebaad9e80f6d8ebea1de014d260a5cde9b98b3d8705919d180edd6b73f03569c",
       "declaration": "${fixture.id} compares the actual WebFinger URL against source HTTP arguments",
       "selection": "c.id.startsWith('webfinger-')",
       "assertions": [
@@ -378,9 +378,9 @@
   "runtimeChecks": [
     {
       "file": "packages/backend-next/test/integration/remote-user.test.ts",
-      "sourceSha256": "c645b3ea54b81aa8a707270a4393788a5d1197d0748588a08b309dbecf2f8ef3",
+      "sourceSha256": "6bf7b3d886547d94b4f43f31b58ce223517fc53f081012d5a156701d9e324a32",
       "measurement": "integration",
-      "passed": 35,
+      "passed": 39,
       "declarations": [
         "actor-create-profile-key and actor-refresh-profile-key preserve supported rich scalar fields without tagged conversions",
         "failure omission preserves input, mixed recipients, noExtract and authorization before network",

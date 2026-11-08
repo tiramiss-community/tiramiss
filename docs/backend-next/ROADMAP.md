@@ -171,6 +171,6 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 
 #242はマージ済みで#124はCLOSED。N7の全必須条件PASS・監査時OPEN・当時のclosure referencesは履歴として保存する。#176/#127は未完了で、その他7handler/system9scheduler・閲覧/通知/全WS/保守/切替は既存所有者に残る。
 
-2026-11-08: #195の限定core runtime `e133a0fdebf0cfd538a07f264a4de1050486cb23` で未登録remote mention取得、stale refreshと失敗出現の省略、最小actor/key公開から通常worker署名配送までを接続した。[source95ケースの実消費・実測・残責任](../superpowers/compatibility/remote-user/runtime-results.md)に、全3 P2修正後の近傍単体243/5 files、結合57/2 files、native process3/1 fileを別実行として記録する。Task2のscoped reviewはSpec PASS / Quality APPROVE。全branch最終レビュー・最終CodeRabbitを代替しない。
+2026-11-08: #195の限定core runtime `33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45` で未登録remote mention取得、stale refreshと失敗出現の省略、最小actor/key公開から通常worker署名配送までを接続した。[source95ケースの実消費・実測・残責任](../superpowers/compatibility/remote-user/runtime-results.md)に、local URI parser修正後の近傍単体254/5 files、結合61/2 files、native process3/1 fileを別実行として記録する。旧e133a0fでのTask2 scoped reviewはSpec PASS / Quality APPROVE。77b6c405の全branchレビューで指摘されたlocal URI parserとEOF改行を修正した。修正後の独立再レビュー・CodeRabbit差分確認は未記録である。
 
 media/emoji #188/#195、user hashtag関係 #195、actor由来instance usersCount/metadata #215、chart #200、featured/Move/full actor/inbox/remote Notes #195、cache/remoteUserUpdated #217とN7 C2/C10のqualified比較ギャップ #176が残る。旧501/stale blockerは履歴を保持して証明したcoreのみsupersedeする。`notes/create` partial / `postingComplete:false`と#195/#176/#127未完了を維持し、未移植機能を後続強化へ読み替えない。

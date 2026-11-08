@@ -1622,7 +1622,7 @@
     "remoteCore": {
       "provenance": "new-runtime",
       "file": "docs/superpowers/compatibility/remote-user/runtime-evidence.json",
-      "implementationCommit": "e133a0fdebf0cfd538a07f264a4de1050486cb23",
+      "implementationCommit": "33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45",
       "consumers": [
         "resolve",
         "mentions",

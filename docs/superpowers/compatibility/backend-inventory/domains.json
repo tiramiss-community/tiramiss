@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "e133a0fdebf0cfd538a07f264a4de1050486cb23",
+  "implementationCommit": "33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45",
   "domains": [
     {
       "id": "api-common",
@@ -694,7 +694,7 @@
       "implementation": [],
       "verification": [],
       "differences": [
-        "#195のposting core取得/保存/refreshと最小actor/key公開はe133a0fdebf0cfd538a07f264a4de1050486cb23で実測。一般inbox/remote Notes/collections/WebFinger公開/relayとrich actor effectsは未完了。個別のpartial行が示す限定scopeであり、全領域の検証済みを意味しない。"
+        "#195のposting core取得/保存/refreshと最小actor/key公開は33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45で実測。一般inbox/remote Notes/collections/WebFinger公開/relayとrich actor effectsは未完了。個別のpartial行が示す限定scopeであり、全領域の検証済みを意味しない。"
       ]
     },
     {
@@ -1698,7 +1698,7 @@
         "packages/backend-next/test/processes/remote-mentions.test.ts"
       ],
       "differences": [
-        "#195 core remote取得/refreshと失敗出現の省略はe133a0fdebf0cfd538a07f264a4de1050486cb23で接続済み。旧501/stale省略はN7歴史証跡であり、現行coreの制限ではない。media/emoji #188/#195、user hashtag関係 #195、instance usersCount/metadata #215、chart #200、featured/Move/full actor/inbox/remote Notes #195、cache/remoteUserUpdated #217は未完了。全95 unitケースは95 real HTTPケースではない。postingComplete:falseとnotes/create partialを維持（docs/superpowers/compatibility/remote-user/runtime-results.md）。"
+        "#195 core remote取得/refreshと失敗出現の省略は33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45で接続済み。旧501/stale省略はN7歴史証跡であり、現行coreの制限ではない。media/emoji #188/#195、user hashtag関係 #195、instance usersCount/metadata #215、chart #200、featured/Move/full actor/inbox/remote Notes #195、cache/remoteUserUpdated #217は未完了。全95 unitケースは95 real HTTPケースではない。postingComplete:falseとnotes/create partialを維持（docs/superpowers/compatibility/remote-user/runtime-results.md）。"
       ],
       "note": "既存post-save producerにremote mention取得/core保存/refresh・最小actor/key公開・通常worker署名配送を接続。rich actor副作用、N7 C2/C10のqualified比較ギャップ #176、閲覧/API/WS等の既存所有者は残る。#195/#176/#127全体は未完了。"
     },

@@ -4,7 +4,7 @@
 
 `responsibility` などの監査行は [audit-items.json](audit-items.json) から取り込む。「（監査: 曖昧）」等は [網羅性監査](../../../backend-next/coverage-audit.md) の割り当て前の判定。
 
-本家: `8e07cf085adf7009583d234a208e30436f020e26` / 新実装監査基準: `e133a0fdebf0cfd538a07f264a4de1050486cb23`。
+本家: `8e07cf085adf7009583d234a208e30436f020e26` / 新実装監査基準: `33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45`。
 
 ## ap-inbound (14)
 

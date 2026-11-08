@@ -212,7 +212,7 @@ function validate(value) {
 
 function validateCurrent(value) {
 	const runtime = json('docs/superpowers/compatibility/remote-user/runtime-evidence.json');
-	assert.equal(runtime.implementationCommit, 'e133a0fdebf0cfd538a07f264a4de1050486cb23', 'current runtime pin');
+	assert.equal(runtime.implementationCommit, '33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45', 'current runtime pin');
 	assert.equal(value.notesCreateStatus, 'partial', 'create stays partial');
 	assert.equal(inventory.find(x => x.id === 'api:notes/create').status, 'partial', 'current create inventory stays partial');
 	same(Object.keys(value.runtimeEvidence ?? {}), ['remoteCore'], 'current runtime evidence required');
@@ -251,7 +251,7 @@ function validateCurrent(value) {
 		assert.equal(gap.status, 'unresolved', 'remaining feature cannot be accepted wholesale');
 		assert(gap.scope.length > 30);
 	}
-	assert.equal(sha(JSON.stringify({ runtimeEvidence: value.runtimeEvidence, currentApplicability: value.currentApplicability, currentRemaining: value.currentRemaining })), 'f756fc0bab23a70b283e82f9ce6e4a105736780c88612a2265f803e67d1b2aca', 'current applicability binding drift');
+	assert.equal(sha(JSON.stringify({ runtimeEvidence: value.runtimeEvidence, currentApplicability: value.currentApplicability, currentRemaining: value.currentRemaining })), 'af89d49875a88d0ed82466870fc856ddc9e73962ee1c8e92c3f6afdb09119669', 'current applicability binding drift');
 }
 
 test('N7 covers every C observation with qualified concrete evidence', () => validate(ledger));

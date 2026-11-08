@@ -1,9 +1,10 @@
 # Remote-user fixed-source comparison and runtime evidence (#195)
 
 These are **source-method observations**, pinned to upstream
-`8e07cf085adf7009583d234a208e30436f020e26`. The unchanged 95 expectations are consumed by the reviewed core runtime at
-`e133a0fdebf0cfd538a07f264a4de1050486cb23`; [measured results and remaining owners](runtime-results.md)
+`8e07cf085adf7009583d234a208e30436f020e26`. The unchanged 95 expectations are consumed by the measured core runtime at
+`33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45`; [measured results and remaining owners](runtime-results.md)
 and [compact consumer bindings](runtime-evidence.json) record that separate evidence.
+The local URI parser repair adds 11 literal composition and 4 real-DB regressions backed by pinned ApDbResolverService parsing; these supplement the 95 observations and are documented in runtime results.
 No upstream full HTTP server was measured. `notes/create` remains partial; #195/#176/#127 remain incomplete.
 No product dependencies are required for the default validator:
 
