@@ -6,7 +6,8 @@ import { createApiEndpoints } from '../http/api-endpoint.js';
 import { createQueueEndpoints } from '../http/queue-api.js';
 import { createQueueAdmin } from '../modules/queue/public.js';
 import { createTokenAuthenticator } from '../platform/database/authenticate.js';
-import { appendQueueAudit, createQueueActorReader } from '../platform/database/queue-admin.js';
+import { appendModerationLog } from '../platform/database/moderation-log.js';
+import { createQueueActorReader } from '../platform/database/queue-admin.js';
 import { DiagnosticError } from '../platform/diagnostic-error.js';
 import { createIdCodec } from '../platform/id-codec.js';
 import { openQueueAdministration } from '../platform/job-queue/administration.js';
@@ -29,7 +30,7 @@ export async function openQueueHttp(resources: RuntimeResources, config: Runtime
 		const stats = await openQueueStats({ ...options, counts: queues.counts });
 		const admin = createQueueAdmin({
 			queues, readActor: createQueueActorReader(resources.dataSource.manager, codec.createdAtFromId),
-			appendAudit: record => appendQueueAudit(resources.dataSource.manager, record, codec.newId),
+			appendAudit: record => appendModerationLog(resources.dataSource.manager, record, codec.newId),
 			onError: (error, operation) => resources.logger.error('queue-admin.detached-failed', { operation, error }),
 		});
 		let closing: Promise<void> | undefined;
