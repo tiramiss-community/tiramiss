@@ -135,9 +135,21 @@ async function websocket(port: number, actor = 'root') {
 	};
 }
 
-async function stop(child: ReturnType<typeof launch>) {
+async function deadline<T>(work: Promise<T>, timeoutMs: number, message: string): Promise<T> {
+	let timer: ReturnType<typeof setTimeout> | undefined;
+	try {
+		return await Promise.race([work, new Promise<never>((_, reject) => {
+			timer = setTimeout(() => reject(new Error(message)), timeoutMs);
+		})]);
+	} finally {
+		clearTimeout(timer);
+	}
+}
+
+async function stop(child: ReturnType<typeof launch>, timeoutMs = 15000) {
+	// Leave headroom beyond the product's 10-second child shutdown deadline.
 	child.child.kill('SIGTERM');
-	expect((await child.exit).code, child.output()).toBe(0);
+	expect((await deadline(child.exit, timeoutMs, 'Graceful shutdown timed out')).code, child.output()).toBe(0);
 }
 
 async function queueIdle(queues: Queue[]) {
@@ -370,10 +382,63 @@ async function postingGraph() {
 	const queues = ['deliver', 'userWebhookDeliver', 'endedPollNotification'].map(name => new Queue(name, baseQueueOptions(value.redisForJobQueue, name, 5000)));
 	const graphs: ReturnType<typeof launch>[] = [];
 	const streams: Awaited<ReturnType<typeof websocket>>[] = [];
-	const children = (graph: ReturnType<typeof launch>) => (graph.messages.find((m: any) => m.role === 'supervisor') as { children: { role: string; pid: number }[] } | undefined)?.children ?? [];
+	const recorded = new Map<ReturnType<typeof launch>, { role: string; pid: number; identity: string }[]>();
+	let closed = false;
+	// Start time prevents a recycled PID from becoming a cleanup target.
+	const identity = (pid: number) => {
+		try {
+			return readFileSync(`/proc/${pid}/stat`, 'utf8').split(') ').at(-1)!.split(' ')[19];
+		} catch (error) {
+			if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+				return undefined;
+			}
+			throw error;
+		}
+	};
+	const children = (graph: ReturnType<typeof launch>) => recorded.get(graph) ?? [];
 	const gone = (graph: ReturnType<typeof launch>) => {
 		for (const child of children(graph)) {
-			expect(() => process.kill(child.pid, 0), `leaked ${child.role} PID ${child.pid}`).toThrow();
+			expect(identity(child.pid), `leaked ${child.role} PID ${child.pid}`).not.toBe(child.identity);
+		}
+	};
+	const shutdown = async (graph: ReturnType<typeof launch>, timeoutMs: number) => {
+		try {
+			if (graph.child.exitCode === null && graph.child.signalCode === null) {
+				await stop(graph, timeoutMs);
+			}
+			gone(graph);
+		} catch (failure) {
+			const failures = [failure];
+			for (const child of children(graph)) {
+				try {
+					if (identity(child.pid) === child.identity) {
+						process.kill(child.pid, 'SIGKILL');
+					}
+				} catch (error) {
+					if ((error as NodeJS.ErrnoException).code !== 'ESRCH') {
+						failures.push(error);
+					}
+				}
+			}
+			try {
+				// Resume a stopped parent so it can reap its killed children first.
+				if (graph.child.exitCode === null && graph.child.signalCode === null) {
+					graph.child.kill('SIGCONT');
+				}
+				try {
+					await deadline(graph.exit, 1000, 'Forced shutdown requires SIGKILL');
+				} catch {
+					graph.child.kill('SIGKILL');
+					await deadline(graph.exit, 5000, 'Forced Supervisor exit timed out');
+				}
+				await vi.waitFor(() => gone(graph), { timeout: 5000, interval: 20 });
+			} catch (error) {
+				failures.push(error);
+			}
+			if (failures.length === 1) {
+				throw failure;
+			}
+			throw new AggregateError(failures, 'Supervisor shutdown and fallback cleanup failed', { cause: failure });
 		}
 	};
 	return {
@@ -382,11 +447,17 @@ async function postingGraph() {
 			const graph = launch('built/entrypoints/supervisor.js', config.path);
 			graphs.push(graph);
 			await graph.ready;
+			const announced = (graph.messages.find((message: any) => message.role === 'supervisor') as { children: { role: string; pid: number }[] }).children;
+			recorded.set(graph, announced.map(child => {
+				const start = identity(child.pid);
+				expect(start, `missing ready ${child.role} PID ${child.pid}`).toBeDefined();
+				return { ...child, identity: start! };
+			}));
 			expect(children(graph).map(child => child.role)).toEqual(['http', 'worker']);
 			return graph;
 		},
-		async stop(graph: ReturnType<typeof launch>) {
-			await stop(graph); gone(graph);
+		async stop(graph: ReturnType<typeof launch>, timeoutMs = 15000) {
+			await shutdown(graph, timeoutMs);
 		},
 		async stream(actor = 'root') {
 			const stream = await websocket(port, actor);
@@ -400,32 +471,31 @@ async function postingGraph() {
 			}
 			return tasks.results.map(task => task.uid);
 		},
-		async close() {
+		async close(timeoutMs = 15000) {
+			if (closed) {
+				return;
+			}
+			closed = true;
+			const failures: unknown[] = [];
+			const attempt = async (cleanup: () => unknown) => {
+				try {
+					await cleanup();
+				} catch (error) {
+					failures.push(error);
+				}
+			};
 			for (const stream of streams) {
 				stream.socket.terminate();
 			}
-			try {
-				for (const graph of graphs) {
-					if (graph.child.exitCode === null && graph.child.signalCode === null) {
-						graph.child.kill('SIGTERM');
-					}
-					await graph.exit;
-					// Check before fallback cleanup so leaked children fail the test.
-					try {
-						gone(graph);
-					} finally {
-						for (const child of children(graph)) {
-							try {
-								process.kill(child.pid, 'SIGKILL');
-							} catch { /* Already exited. */ }
-						}
-					}
-				}
-			} finally {
-				for (const queue of queues) {
-					await queue.obliterate({ force: true }); await queue.close();
-				}
-				redis.disconnect(); timelines.disconnect(); await config.close();
+			for (const graph of graphs) {
+				await attempt(() => shutdown(graph, timeoutMs));
+			}
+			for (const queue of queues) {
+				await attempt(() => queue.obliterate({ force: true }));
+				await attempt(() => queue.close());
+			}
+			redis.disconnect(); timelines.disconnect(); await attempt(() => config.close());
+			await attempt(async () => {
 				const task = await index.delete().catch((error: unknown) => {
 					expect(error).toMatchObject({ cause: { code: 'index_not_found' } });
 					return null;
@@ -433,10 +503,47 @@ async function postingGraph() {
 				if (task) {
 					await client.tasks.waitForTask(task);
 				}
+			});
+			if (failures.length === 1) {
+				throw failures[0];
+			}
+			if (failures.length > 1) {
+				throw new AggregateError(failures, 'Posting graph cleanup failed');
 			}
 		},
 	};
 }
+
+test.each(['stop', 'close'] as const)('N7 test cleanup bounds a frozen Supervisor during %s', async operation => {
+	const f = await postingGraph();
+	let rescue: ReturnType<typeof setTimeout> | undefined;
+	try {
+		const graph = await f.start();
+		const children = (graph.messages.find((message: any) => message.role === 'supervisor') as { children: { pid: number }[] }).children;
+		// A regressed helper must fail without leaving the suite itself frozen.
+		let rescued = false;
+		rescue = setTimeout(() => {
+			rescued = true;
+			graph.child.kill('SIGCONT');
+		}, 2000);
+		graph.child.kill('SIGSTOP');
+		await vi.waitFor(() => expect(readFileSync(`/proc/${graph.child.pid}/stat`, 'utf8').split(') ').at(-1)!.split(' ')[0]).toBe('T'));
+		await expect(operation === 'stop' ? f.stop(graph, 100) : f.close(100)).rejects.toThrow(/Graceful shutdown timed out/);
+		expect(rescued, 'cleanup needed the independent test rescue').toBe(false);
+		expect(graph.child.exitCode !== null || graph.child.signalCode !== null).toBe(true);
+		for (const child of children) {
+			expect(() => process.kill(child.pid, 0)).toThrow();
+		}
+	} finally {
+		clearTimeout(rescue);
+		for (const graph of f.graphs) {
+			if (graph.child.exitCode === null && graph.child.signalCode === null) {
+				graph.child.kill('SIGCONT');
+			}
+		}
+		await f.close();
+	}
+});
 
 async function controlPoll(port: number, operation: 'pause' | 'resume') {
 	const response = await fetch(`http://127.0.0.1:${port}/api/admin/queue/${operation}`, {
