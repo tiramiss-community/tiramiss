@@ -51,8 +51,7 @@ function setup(options: { moderator?: boolean; suspended?: boolean; exists?: boo
 	return { ...useCase, events, work };
 }
 
-const actor = { userId: 'author', native: true } as const;
-const unscoped = { userId: 'author', native: false, permissions: new Set<string>() } as const;
+const actor = { userId: 'author', canWriteNote: true };
 test('author deletion decrements reply, starts delivery before delete, and does not audit', async () => {
 	const world = setup();
 	await world.deleteNote(actor, { noteId: 'note1' }, 10000);
@@ -78,7 +77,7 @@ test('synchronous rendering failure precedes local deletion', async () => {
 test.each([
 	[null, {}, {}, 'CREDENTIAL_REQUIRED'],
 	[actor, {}, { suspended: true }, 'YOUR_ACCOUNT_SUSPENDED'],
-	[unscoped, {}, {}, 'PERMISSION_DENIED'],
+	[{ ...actor, canWriteNote: false }, {}, {}, 'PERMISSION_DENIED'],
 	[actor, {}, {}, 'INVALID_PARAM'],
 	[actor, { noteId: 'note1' }, { exists: false }, 'NO_SUCH_NOTE'],
 	[{ ...actor, userId: 'other' }, { noteId: 'note1' }, {}, 'ACCESS_DENIED'],

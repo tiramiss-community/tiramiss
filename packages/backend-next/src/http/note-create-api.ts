@@ -4,8 +4,10 @@
  */
 import { Hono } from 'hono';
 import { NoteCreateError } from '../modules/note/public.js';
+import { allowsPermission } from '../modules/access/public.js';
 import { apiErrorResponse, commonApiError, INTERNAL_ERROR } from './api-error.js';
 import { readApiRequest, registerApiRoute } from './api-request.js';
+import type { AccessCredential } from '../modules/access/public.js';
 import type { JsonObject, NoteCreateActor, NoteCreateErrorCode } from '../modules/note/public.js';
 import type { Logger } from '../platform/logger.js';
 
@@ -38,8 +40,16 @@ const errors: Record<NoteCreateErrorCode, {
 	CONTAINS_TOO_MANY_MENTIONS: { message: 'Cannot post because it exceeds the allowed number of mentions.', id: '4de0363a-3046-481b-9b0f-feff3e211025', kind: 'client', status: 400 },
 };
 
+/**
+ * noteのUseCaseはgateへ移るまで従来の資格の形を受け取る。
+ * permission集合から必要なscopeだけをここで写し、認証結果へ真偽値を戻さない。
+ */
+export function toNoteActor(credential: AccessCredential | null): NoteCreateActor | null {
+	return credential === null ? null : { userId: credential.userId, canWriteNote: allowsPermission(credential, 'write:notes') };
+}
+
 export function createNoteCreateApi(dependencies: {
-	authenticate(token: string | null | undefined): Promise<{ credential: NoteCreateActor } | null>;
+	authenticate(token: string | null | undefined): Promise<{ credential: AccessCredential } | null>;
 	createNote<T>(actor: NoteCreateActor | null, input: unknown, now: number, render: (noteId: string, viewerId: string) => Promise<T>): Promise<T>;
 	readCreatedNote(id: string, viewerId: string, now: number): Promise<JsonObject>;
 	logger: Logger;
@@ -53,7 +63,7 @@ export function createNoteCreateApi(dependencies: {
 		// 描画は保存の後にだけ呼ばれるため、ここで ID が分かれば Note は保存済み。
 		let savedNoteId: string | undefined;
 		try {
-			const actor = (await dependencies.authenticate(request.token))?.credential ?? null;
+			const actor = toNoteActor((await dependencies.authenticate(request.token))?.credential ?? null);
 			const now = Date.now();
 			const createdNote = await dependencies.createNote(actor, request.input, now, (id, viewerId) => {
 				savedNoteId = id;

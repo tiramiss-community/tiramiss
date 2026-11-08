@@ -5,7 +5,9 @@
 import { Hono } from 'hono';
 import { NoteDeleteError } from '../modules/note/public.js';
 import { apiErrorResponse, commonApiError, INTERNAL_ERROR } from './api-error.js';
+import { toNoteActor } from './note-create-api.js';
 import { readApiRequest, registerApiRoute } from './api-request.js';
+import type { AccessCredential } from '../modules/access/public.js';
 import type { NoteCreateActor, NoteDeleteErrorCode } from '../modules/note/public.js';
 import type { Logger } from '../platform/logger.js';
 
@@ -21,7 +23,7 @@ const errors: Record<NoteDeleteErrorCode, { message: string; id: string; kind: '
 };
 
 export function createNoteDeleteApi(dependencies: {
-	authenticate(token: string | null | undefined): Promise<{ credential: NoteCreateActor } | null>;
+	authenticate(token: string | null | undefined): Promise<{ credential: AccessCredential } | null>;
 	deleteNote(actor: NoteCreateActor | null, input: unknown, now: number): Promise<void>;
 	logger: Logger;
 }) {
@@ -32,7 +34,7 @@ export function createNoteDeleteApi(dependencies: {
 			return request;
 		}
 		try {
-			const actor = (await dependencies.authenticate(request.token))?.credential ?? null;
+			const actor = toNoteActor((await dependencies.authenticate(request.token))?.credential ?? null);
 			const now = Date.now();
 			await dependencies.deleteNote(actor, request.input, now);
 			return context.body(null, 204);

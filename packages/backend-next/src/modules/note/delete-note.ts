@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { allowsPermission } from '../access/public.js';
 import { Ajv } from 'ajv';
 import { isPureRenote } from '../federation/public.js';
 import type { NoteCreateActor } from './create-contract.js';
@@ -63,7 +62,7 @@ export function createDeleteNote(ports: {
 			if (facts.isSuspended) {
 				throw new NoteDeleteError('YOUR_ACCOUNT_SUSPENDED');
 			}
-			if (!allowsPermission(actor, 'write:notes')) {
+			if (!actor.canWriteNote) {
 				throw new NoteDeleteError('PERMISSION_DENIED');
 			}
 			if (!validate(input)) {
