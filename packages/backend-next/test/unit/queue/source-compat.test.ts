@@ -5,10 +5,11 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { expect, test, vi } from 'vitest';
-import { AuthenticationFailed, CredentialRequired } from '../../../src/http/authentication-error.js';
+import { AuthenticationFailed, createAccessRequest } from '../../../src/modules/access/public.js';
 import { testConfig } from '../../helpers/database.js';
 import { createQueueAdmin } from '../../../src/modules/queue/admin.js';
-import { createQueueApi } from '../../../src/http/queue-api.js';
+import { createApiEndpoints } from '../../../src/http/api-endpoint.js';
+import { createQueueEndpoints } from '../../../src/http/queue-api.js';
 import { openQueueAdministration } from '../../../src/platform/job-queue/administration.js';
 import type { QueueOperation } from '../../../src/modules/queue/public.js';
 
@@ -68,7 +69,7 @@ vi.mock('bullmq', async original => {
 const corpus = JSON.parse(readFileSync(new URL('../../../../../docs/superpowers/compatibility/queue-admin/observations.json', import.meta.url), 'utf8')) as { observations: { id: string; layer: string; input: any; expected: any }[] };
 const clone = (value: unknown) => value === undefined ? null : JSON.parse(JSON.stringify(value));
 const turn = () => new Promise(resolve => setImmediate(resolve));
-const actor = { userId: 'actor', canReadQueue: true, canWriteQueue: true };
+const actor = createAccessRequest({ requireModerator: true, kind: 'write:admin:queue' }, { userId: 'actor', native: true });
 
 async function setup(input: any) {
 	const options = input.doubles ?? {};
@@ -102,7 +103,7 @@ async function setup(input: any) {
 	const registry = await openQueueAdministration({ redis: testConfig().redisForJobQueue, connectTimeoutMs: 1000, logger: { info() { }, error() { } }, onLost() { } });
 	const name = input.actor ?? 'moderator';
 	const admin = createQueueAdmin({
-		queues: registry, readActor: async () => ({ isSuspended: name.includes('suspended'), isModerator: name !== 'member' }), appendAudit: async (record: any) => {
+		queues: registry, readActor: async () => ({ isSuspended: name.includes('suspended'), isMoved: false, isModerator: name !== 'member', isAdministrator: false }), appendAudit: async (record: any) => {
 			calls.push({ method: 'moderation.insert', value: { id: 'audit-id', userId: record.actorId, type: record.type, info: {} } });
 			if (options.fail === 'audit') {
 				throw new Error('fixture audit failed');
@@ -111,15 +112,16 @@ async function setup(input: any) {
 			errors.push((error as Error).message);
 		}
 	});
-	const app = createQueueApi({
-		admin, logger: { info() { }, error() { } }, authenticate: async () => {
+	const app = createApiEndpoints({
+		endpoints: createQueueEndpoints(admin), logger: { info() { }, error() { } }, authenticate: async () => {
 			if (name === 'anonymous') {
-				throw new CredentialRequired();
+				return null;
 			}
 			if (name === 'invalid-token') {
 				throw new AuthenticationFailed();
 			}
-			return { ...actor, userId: name === 'root' || name === 'root-suspended' ? 'root' : 'actor', canReadQueue: name !== 'wrong-scope', canWriteQueue: !['wrong-scope', 'read-only-scope'].includes(name) };
+			const permissions = name === 'wrong-scope' ? [] : name === 'read-only-scope' ? ['read:admin:queue'] : ['read:admin:queue', 'write:admin:queue'];
+			return { credential: { userId: name === 'root' || name === 'root-suspended' ? 'root' : 'actor', native: false, permissions: new Set(permissions) } };
 		}
 	});
 	return {

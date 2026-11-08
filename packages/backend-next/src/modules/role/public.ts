@@ -12,7 +12,7 @@ export { createAttemptEvaluation, createRequestEvaluation } from './evaluation.j
 export type { RoleEvaluation, RoleEvaluationSession, RoleFactsChange, RoleFactsReader } from './evaluation.js';
 export { EvaluationClosed, EvaluationInvalidated } from './evaluation-memo.js';
 export { createUpdateRole } from './update-role.js';
-export type { RoleActor, RoleDefinition, RolePatch, RoleAuthorizationFacts, RoleUpdateScope, RoleChanges, RoleDefinitionsChanged } from './update-contract.js';
-export { ActorSuspended, ActorNotFound, ModeratorRequired, AdministratorRequired, CredentialScopeDenied, RoleNotFound } from './errors.js';
+export type { RoleDefinition, RolePatch, RoleAuthorizationFacts, RoleUpdateScope, RoleChanges, RoleDefinitionsChanged } from './update-contract.js';
+export { RoleNotFound } from './errors.js';
+export { roleAccessFacts } from './access.js';
 export { createShowRole, type RoleShowData } from './show-role.js';
-export { RoleInputInvalid } from './errors.js';

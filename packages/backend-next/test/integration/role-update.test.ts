@@ -8,19 +8,22 @@ import { MiMeta, MiModerationLog, MiRole, MiRoleAssignment, MiUser } from 'backe
 import type { DataSource } from 'typeorm';
 import type { TransactionRunner } from '../../src/application/transaction.js';
 import type { RoleUpdateScope } from '../../src/modules/role/update-contract.js';
-import { createAttemptEvaluation, createUpdateRole, AdministratorRequired, ActorNotFound } from '../../src/modules/role/public.js';
+import { createAttemptEvaluation, createUpdateRole } from '../../src/modules/role/public.js';
+import { AuthenticationFailed } from '../../src/modules/access/public.js';
 import { createRoleUpdateTransactions } from '../../src/platform/database/role-update.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
 import { migrateDatabase } from '../../src/platform/database/migrate.js';
 import { createTestDatabase } from '../helpers/database.js';
 import { deferred } from '../unit/role/fixtures.js';
+import { createAccessRequest, type AccessCredential } from '../../src/modules/access/public.js';
 
+const request = (credential: AccessCredential | null) => createAccessRequest({ requireAdmin: true, kind: 'write:admin:roles' }, credential);
 const atMs = Date.parse('2026-10-17T12:00:00Z');
 // ID codec自体は#120で設定に接続する。このテストは日時を保持するaidx形式を注入する。
 const newId = (time: number) => time.toString(36).padStart(8, '0') + randomBytes(4).toString('hex');
 const actorId = newId(atMs - 100000);
 const roleId = newId(atMs - 10000);
-const actor = { userId: actorId, credentialGrant: { readRole: true, updateRole: true } };
+const actor = { userId: actorId, native: true } as const;
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 let source: DataSource;
 let transactions: TransactionRunner<RoleUpdateScope>;
@@ -83,7 +86,7 @@ test('preserves omitted columns, clears nulls, replaces JSON, and audits full sa
 	const before = await stored();
 	const policies = { unknown: { arbitrary: ['value'] } };
 	const condFormula = { unknown: 'retained verbatim' };
-	await updater().updateRole(actor, { roleId, name: 'after', color: null, iconUrl: null, policies, condFormula }, createAttemptEvaluation(atMs));
+	await updater().updateRole(request(actor), { roleId, name: 'after', color: null, iconUrl: null, policies, condFormula }, createAttemptEvaluation(atMs));
 	const after = await stored();
 	expect(after).toMatchObject({ name: 'after', description: 'keep', color: null, iconUrl: null, policies, condFormula });
 	expect(after.policies).toEqual(policies);
@@ -98,7 +101,7 @@ test('preserves omitted columns, clears nulls, replaces JSON, and audits full sa
 
 test('updates the timestamp and audits even when the patch is empty', async () => {
 	const before = await stored();
-	await updater().updateRole(actor, { roleId }, createAttemptEvaluation(atMs));
+	await updater().updateRole(request(actor), { roleId }, createAttemptEvaluation(atMs));
 	const after = await stored();
 	expect(after).toEqual({ ...before, updatedAt: new Date(atMs) });
 	expect(await logs()).toHaveLength(1);
@@ -107,7 +110,7 @@ test('updates the timestamp and audits even when the patch is empty', async () =
 
 test('updates every permitted field but ignores extra keys and undefined values', async () => {
 	const before = await stored();
-	await updater().updateRole(actor, { roleId, name: undefined, description: 'changed', target: 'conditional', isPublic: true,
+	await updater().updateRole(request(actor), { roleId, name: undefined, description: 'changed', target: 'conditional', isPublic: true,
 		isAdministrator: true, isModerator: true, isExplorable: true, asBadge: true,
 		preserveAssignmentOnMoveAccount: true, canEditMembersByModerator: true, displayOrder: 9,
 		...{ id: 'forged', updatedAt: new Date(0), lastUsedAt: new Date(0) },
@@ -127,7 +130,7 @@ test.each(['role', 'audit'] as const)('rolls back both writes on actual %s stora
 	} else {
 		await source.query("ALTER TABLE moderation_log ADD CONSTRAINT audit_update_test_failure CHECK (type <> 'updateRole')");
 	}
-	await expect(updater().updateRole(actor, { roleId, name: 'rejected' }, createAttemptEvaluation(atMs))).rejects.toThrow();
+	await expect(updater().updateRole(request(actor), { roleId, name: 'rejected' }, createAttemptEvaluation(atMs))).rejects.toThrow();
 	expect(await stored()).toEqual(before);
 	expect(await logs()).toEqual([]);
 	expect(notifications).toEqual([]);
@@ -148,7 +151,7 @@ test('rejects credentials revoked in the DB even if the operation memo still gra
 	try {
 		expect((await session.getPrivileges(actorId)).isAdministrator).toBe(true);
 		await source.getRepository(MiRoleAssignment).deleteAll();
-		await expect(updater().updateRole(actor, { roleId, isAdministrator: true }, evaluation)).rejects.toBeInstanceOf(AdministratorRequired);
+		await expect(updater().updateRole(request(actor), { roleId, isAdministrator: true }, evaluation)).rejects.toMatchObject({ reason: 'ADMINISTRATOR_REQUIRED' });
 		expect((await session.getPrivileges(actorId)).isAdministrator).toBe(true);
 		expect(await logs()).toEqual([]);
 	} finally {
@@ -162,14 +165,14 @@ test('evaluates conditional administrator facts from DB and permits revoking its
 		target: 'conditional', isAdministrator: true,
 		condFormula: { id: 'condition', type: 'createdMoreThan', sec: 50 },
 	});
-	await updater().updateRole(actor, { roleId, isAdministrator: false }, createAttemptEvaluation(atMs));
+	await updater().updateRole(request(actor), { roleId, isAdministrator: false }, createAttemptEvaluation(atMs));
 	expect((await stored()).isAdministrator).toBe(false);
-	await expect(updater().updateRole(actor, { roleId, isAdministrator: true }, createAttemptEvaluation(atMs))).rejects.toBeInstanceOf(AdministratorRequired);
+	await expect(updater().updateRole(request(actor), { roleId, isAdministrator: true }, createAttemptEvaluation(atMs))).rejects.toMatchObject({ reason: 'ADMINISTRATOR_REQUIRED' });
 	expect(await logs()).toHaveLength(1);
 });
 
 test('rejects an actor that no longer exists', async () => {
-	await expect(updater().updateRole({ ...actor, userId: 'missing' }, { roleId }, createAttemptEvaluation(atMs))).rejects.toBeInstanceOf(ActorNotFound);
+	await expect(updater().updateRole(request({ ...actor, userId: 'missing' }), { roleId }, createAttemptEvaluation(atMs))).rejects.toBeInstanceOf(AuthenticationFailed);
 	expect(await logs()).toEqual([]);
 });
 
@@ -191,9 +194,9 @@ test.each([false, true])('serializes concurrent patches and records actual befor
 			} } });
 		}),
 	};
-	const a = updater(coordinated, () => atMs).updateRole(actor, { roleId, name: 'first' }, createAttemptEvaluation(atMs));
+	const a = updater(coordinated, () => atMs).updateRole(request(actor), { roleId, name: 'first' }, createAttemptEvaluation(atMs));
 	await locked.promise;
-	const b = updater(coordinated, () => atMs + 1).updateRole(actor, { roleId, ...(sameField ? { name: 'second' } : { description: 'second' }) }, createAttemptEvaluation(atMs));
+	const b = updater(coordinated, () => atMs + 1).updateRole(request(actor), { roleId, ...(sameField ? { name: 'second' } : { description: 'second' }) }, createAttemptEvaluation(atMs));
 	try {
 		await vi.waitFor(async () => {
 			const waiting = await source.query("SELECT pid FROM pg_stat_activity WHERE datname = current_database() AND wait_event_type = 'Lock' AND query LIKE '%role%'");
@@ -233,7 +236,7 @@ test('preserves committed writes when the commit acknowledgement is reported as 
 			throw uncertain;
 		},
 	};
-	await expect(updater(acknowledgementLost).updateRole(actor, { roleId, name: 'committed' }, createAttemptEvaluation(atMs))).rejects.toBe(uncertain);
+	await expect(updater(acknowledgementLost).updateRole(request(actor), { roleId, name: 'committed' }, createAttemptEvaluation(atMs))).rejects.toBe(uncertain);
 	expect(attempts).toBe(1);
 	expect((await stored()).name).toBe('committed');
 	expect(await logs()).toHaveLength(1);
@@ -247,7 +250,7 @@ test('keeps role and audit committed when the post-commit publisher fails', asyn
 			throw new Error('redis unavailable');
 		},
 	} });
-	await expect(useCase.updateRole(actor, { roleId, name: 'committed' }, createAttemptEvaluation(atMs))).resolves.toBeUndefined();
+	await expect(useCase.updateRole(request(actor), { roleId, name: 'committed' }, createAttemptEvaluation(atMs))).resolves.toBeUndefined();
 	expect((await stored()).name).toBe('committed');
 	expect(await logs()).toHaveLength(1);
 });
@@ -263,7 +266,7 @@ test('does not cancel an already authorized operation when another operation rev
 			return facts;
 		} } })),
 	};
-	await updater(revokeAfterRead).updateRole(actor, { roleId, name: 'authorized' }, createAttemptEvaluation(atMs));
+	await updater(revokeAfterRead).updateRole(request(actor), { roleId, name: 'authorized' }, createAttemptEvaluation(atMs));
 	expect((await stored()).name).toBe('authorized');
 	expect(await logs()).toHaveLength(1);
 });
@@ -294,7 +297,7 @@ test('committed update invalidates real local/remote material caches and the ope
 		expect((await session.getPrivileges(actorId)).isAdministrator).toBe(false);
 		await b.readRoles();
 		await createUpdateRole({ transactions, clock: () => atMs, changes: a.changes })
-			.updateRole(actor, { roleId, isAdministrator: true }, evaluation);
+			.updateRole(request(actor), { roleId, isAdministrator: true }, evaluation);
 		expect((await session.getPrivileges(actorId)).isAdministrator).toBe(true);
 		await vi.waitFor(async () => {
 			expect((await b.readRoles())[0].isAdministrator).toBe(true);
@@ -303,7 +306,7 @@ test('committed update invalidates real local/remote material caches and the ope
 		publisher.disconnect();
 		await vi.waitFor(() => expect(publisher.status).toBe('end'));
 		await createUpdateRole({ transactions, clock: () => atMs, changes: a.changes })
-			.updateRole(actor, { roleId, name: 'committed despite Redis loss' }, evaluation);
+			.updateRole(request(actor), { roleId, name: 'committed despite Redis loss' }, evaluation);
 		expect((await stored()).name).toBe('committed despite Redis loss');
 		expect(await source.getRepository(MiModerationLog).count()).toBe(2);
 	} finally {

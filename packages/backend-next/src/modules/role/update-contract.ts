@@ -9,11 +9,6 @@ export interface RoleDefinition extends RoleUpdateSnapshot, EvaluationRole {}
 
 export type RolePatch = Partial<Omit<RoleDefinition, 'id' | 'updatedAtMs' | 'lastUsedAtMs'>>;
 
-export interface RoleActor {
-	userId: string;
-	credentialGrant: { readRole: boolean; updateRole: boolean };
-}
-
 export interface RoleAuthorizationFacts {
 	user: UserRoleFacts;
 	instance: InstanceRoleFacts;

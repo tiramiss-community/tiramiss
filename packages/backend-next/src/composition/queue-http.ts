@@ -2,7 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { createQueueApi } from '../http/queue-api.js';
+import { createApiEndpoints } from '../http/api-endpoint.js';
+import { createQueueEndpoints } from '../http/queue-api.js';
 import { createQueueAdmin } from '../modules/queue/public.js';
 import { createTokenAuthenticator } from '../platform/database/authenticate.js';
 import { appendQueueAudit, createQueueActorReader } from '../platform/database/queue-admin.js';
@@ -41,7 +42,12 @@ export async function openQueueHttp(resources: RuntimeResources, config: Runtime
 			await close();
 			throw lost;
 		}
-		return { api: createQueueApi({ authenticate: createTokenAuthenticator(resources.dataSource.manager, resources.logger), admin, logger: resources.logger }), stats, close };
+		const api = createApiEndpoints({
+			endpoints: createQueueEndpoints(admin),
+			authenticate: createTokenAuthenticator(resources.dataSource.manager, resources.logger),
+			logger: resources.logger,
+		});
+		return { api, stats, close };
 	} catch (error) {
 		await queues.close();
 		throw error;

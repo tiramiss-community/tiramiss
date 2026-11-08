@@ -113,7 +113,7 @@ for (const fixture of cases) {
 			},
 			afterSaved: () => { }, currentTime: () => sourceNow, newId: () => 'note', matchesWords: () => false,
 		});
-		const post = () => useCase.createNote({ userId: 'author', canWriteNote: true }, { text: `@ALICE${host === null ? '' : '@' + host}` }, sourceNow, async id => id);
+		const post = () => useCase.createNote({ userId: 'author', native: true }, { text: `@ALICE${host === null ? '' : '@' + host}` }, sourceNow, async id => id);
 		await post();
 		if (input.followup) {
 			await post();

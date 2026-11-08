@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { allowsPermission } from '../access/public.js';
 import { normalizeAccount, classifyRemoteUser } from '../federation/public.js';
 import { NoteCreateError } from './create-contract.js';
 import { parseNoteInput } from './create-input.js';
@@ -85,7 +86,7 @@ export function createCreateNote(dependencies: {
 		if (author.movedToUri) {
 			throw new NoteCreateError('YOUR_ACCOUNT_MOVED');
 		}
-		if (!actor.canWriteNote) {
+		if (!allowsPermission(actor, 'write:notes')) {
 			throw new NoteCreateError('PERMISSION_DENIED');
 		}
 		return author;

@@ -5,7 +5,7 @@
 import { DiagnosticError } from './diagnostic-error.js';
 import { Redis } from 'ioredis';
 import { WebSocket, WebSocketServer } from 'ws';
-import { AuthenticationFailed } from '../http/authentication-error.js';
+import { AuthenticationFailed } from '../modules/access/public.js';
 import { createStreamConnection } from '../modules/stream/public.js';
 import type { Server, IncomingMessage } from 'node:http';
 import type { Duplex } from 'node:stream';

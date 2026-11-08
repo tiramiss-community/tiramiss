@@ -8,7 +8,6 @@ export const QUEUE_OPERATIONS = ['clear', 'deliver-delayed', 'inbox-delayed', 'r
 export type QueueOperation = typeof QUEUE_OPERATIONS[number];
 export type QueueState = 'active' | 'wait' | 'delayed' | 'completed' | 'failed';
 export type ClearState = QueueState | 'paused' | 'prioritized' | '*';
-export interface QueueActor { userId: string; canReadQueue: boolean; canWriteQueue: boolean }
 export interface QueueJob {
 	id?: string; name: string; data: unknown; opts: unknown; timestamp: number;
 	processedOn?: number; processedBy?: string; finishedOn?: number; progress: unknown;

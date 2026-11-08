@@ -9,7 +9,7 @@ import { createLogger } from '../../../src/platform/logger.js';
 function setup(createNote: (render: (noteId: string, viewerId: string) => Promise<unknown>) => Promise<unknown>) {
 	const logs: Record<string, unknown>[] = [];
 	const app = createNoteCreateApi({
-		authenticate: async () => ({ userId: 'author', canWriteNote: true }),
+		authenticate: async () => ({ credential: { userId: 'author', native: true } }),
 		createNote: async <T>(_actor: unknown, _input: unknown, _now: number, render: (noteId: string, viewerId: string) => Promise<T>) => createNote(render) as Promise<T>,
 		readCreatedNote: async () => {
 			throw new Error('render failed');

@@ -2,10 +2,9 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-export interface NoteCreateActor {
-	userId: string;
-	canWriteNote: boolean;
-}
+import type { AccessCredential } from '../access/public.js';
+
+export type NoteCreateActor = AccessCredential;
 
 export type NoteVisibility = 'public' | 'home' | 'followers' | 'specified';
 

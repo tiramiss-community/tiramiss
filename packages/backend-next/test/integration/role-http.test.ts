@@ -91,6 +91,19 @@ test('rejects GET with empty 405 but accepts PUT under the same authentication c
 	expect(await response.text()).toBe('');
 	expect((await call('show', {}, seeded.actors.root.token, undefined, 'PUT')).status).toBe(200);
 });
+test.each(['show', 'update'])('%s answers browser preflight and marks responses private like every upstream API route', async endpoint => {
+	const success = await call(endpoint, {});
+	expect(success.headers.get('access-control-allow-origin')).toBe('*');
+	expect(success.headers.get('cache-control')).toBe('private, max-age=0, must-revalidate');
+	const denied = await call(endpoint, {}, null);
+	expect(denied.status).toBe(401);
+	expect(denied.headers.get('access-control-allow-origin')).toBe('*');
+	expect(denied.headers.get('cache-control')).toBe('private, max-age=0, must-revalidate');
+	const options = await fetch(`${base}/api/admin/roles/${endpoint}`, { method: 'OPTIONS', headers: { Origin: 'https://client.test', 'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'authorization,content-type' } });
+	expect(options.status).toBe(204);
+	expect(options.headers.get('access-control-allow-methods')).toBe('GET,HEAD,POST');
+	expect(options.headers.get('access-control-allow-headers')).toBe('authorization,content-type');
+});
 test.each(['show', 'update'])('%s checks qualification and scope before invalid input', async endpoint => {
 	const denied = await call(endpoint, { roleId: '!', name: null }, seeded.actors.ordinaryNoScope.token);
 	expect((await denied.json()).error.code).toBe('ROLE_PERMISSION_DENIED');
@@ -154,7 +167,11 @@ test.each([{ displayOrder: 1.5 }, { name: 'x'.repeat(257) }])('keeps DB constrai
 	const count = await db.getRepository(MiModerationLog).count();
 	const response = await call('update', input);
 	expect(response.status).toBe(500);
-	expect(await response.json()).toEqual({ error: { message: 'Internal error occurred. Please contact us if the error persists.', code: 'INTERNAL_ERROR', id: '5d37dbcb-891e-41ca-a3d6-e690c97775ac', kind: 'server' } });
+	// 本家のhandler段階の失敗と同じく、内部情報は動的なため形だけを固定する。
+	expect(await response.json()).toEqual({ error: {
+		message: 'Internal error occurred. Please contact us if the error persists.', code: 'INTERNAL_ERROR', id: '5d37dbcb-891e-41ca-a3d6-e690c97775ac', kind: 'server',
+		info: { e: { message: expect.any(String), code: 'QueryFailedError', id: expect.stringMatching(/^[0-9a-f-]{36}$/) } },
+	} });
 	expect(await db.getRepository(MiRole).findOneByOrFail({ id: seeded.roleId })).toEqual(before);
 	expect(await db.getRepository(MiModerationLog).count()).toBe(count);
 });

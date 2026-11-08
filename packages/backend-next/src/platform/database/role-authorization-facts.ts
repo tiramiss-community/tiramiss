@@ -5,7 +5,7 @@
 import { MiRole, MiRoleAssignment, MiUser } from 'backend-upstream/entities';
 import type { EntityManager } from 'typeorm';
 import type { RoleAuthorizationFacts } from '../../modules/role/public.js';
-import { ActorNotFound } from '../../modules/role/public.js';
+import { AuthenticationFailed } from '../../modules/access/public.js';
 import { roleDefinition } from './role-mapping.js';
 import { readMeta } from './meta.js';
 
@@ -16,7 +16,8 @@ export async function readRoleAuthorizationFacts(
 ): Promise<RoleAuthorizationFacts> {
 	const user = await manager.getRepository(MiUser).findOneBy({ id: actorId });
 	if (user === null) {
-		throw new ActorNotFound();
+		// トークンの照合後にユーザーが消えた場合は、照合の失敗と同じ扱いにする。
+		throw new AuthenticationFailed();
 	}
 	const instance = await readMeta(manager);
 	const roles = await manager.getRepository(MiRole).find();

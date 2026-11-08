@@ -4,6 +4,7 @@
  */
 import { expect, test } from 'vitest';
 import { readFileSync } from 'node:fs';
+import type { AccessCredential } from '../../../src/modules/access/public.js';
 import type { RemoteUserPorts, Account, RemoteActorCreateScope } from '../../../src/modules/federation/public.js';
 import { createHostRules } from '../../../src/modules/federation/public.js';
 import { createCreateNote } from '../../../src/modules/note/create-note.js';
@@ -11,7 +12,8 @@ import { concatNoteContentsForKeywordCheck, matchesWords } from '../../../src/mo
 import type { MentionedRemoteUser, NewNote, NewPoll, NoteAttachableFile, NoteCreateAuthor, NotePostSaveInput, NoteWrites, RelatedChannel, RelatedNote } from '../../../src/modules/note/create-contract.js';
 
 const author: NoteCreateAuthor = { id: 'author', username: 'author', host: null, isSuspended: false, movedToUri: null, isBot: false, canPublicNote: true, mentionLimit: 20, rateLimitFactor: 1, sensitiveWords: [], prohibitedWords: [] };
-const actor = { userId: 'author', canWriteNote: true };
+const actor: AccessCredential = { userId: 'author', native: true };
+const unscoped: AccessCredential = { userId: 'author', native: false, permissions: new Set() };
 const ownedFiles: NoteAttachableFile[] = [{ id: 'img', type: 'image/png' }, { id: 'vid', type: 'video/mp4' }];
 const now = 1_000_000;
 const unavailable = async (): Promise<never> => {
@@ -212,7 +214,7 @@ test('rate executes before suspended, moved, scope and schema; factor<=0 skips r
 			throw new Error('rate failure');
 		},
 	});
-	await expect(create.createNote({ ...actor, canWriteNote: false }, {}, 123, async id => id)).rejects.toThrow('rate failure');
+	await expect(create.createNote(unscoped, {}, 123, async id => id)).rejects.toThrow('rate failure');
 	expect(events).toEqual(['rate:1']);
 	const noLimit = createCreateNote({
 		...dependencies, readAuthor: async () => ({ ...author, rateLimitFactor: 0 }), limit: async () => {
@@ -227,7 +229,7 @@ test.each([
 	[author, null, 'CREDENTIAL_REQUIRED'],
 	[{ ...author, isSuspended: true }, actor, 'YOUR_ACCOUNT_SUSPENDED'],
 	[{ ...author, movedToUri: 'https://moved.test/' }, actor, 'YOUR_ACCOUNT_MOVED'],
-	[author, { ...actor, canWriteNote: false }, 'PERMISSION_DENIED'],
+	[author, unscoped, 'PERMISSION_DENIED'],
 ] as const)('credentials and actor facts reject before invalid input (%s)', async (facts, credential, code) => {
 	const { createNote, notes } = setup(facts);
 	await expect(createNote({}, credential)).rejects.toMatchObject({ code });
