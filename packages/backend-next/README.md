@@ -76,9 +76,31 @@ queueごとのprefixは本家と同じ`<prefix>:queue:<queue名>`。各子は投
 
 `/streaming` の `connect` で `channel: "queueStats"` を購読し、`{ type: "ch", body: { id: "stats", type: "requestLog", body: { id: "log", length: 10 } } }` を購読ID `stats` へ送る（`channel`も同じ）と履歴を得る。公開channelなのでguestや受理済み`read:account` appはqueue管理資格なしで購読できる。HTTPに1つのobserverがdeliver/inboxのactiveイベントと現在件数を即時/10秒周期で発行し、最新先頭200件をメモリ保持する。再起動を跨ぐ保持はない。
 
-pause/resumeは制御完了を待つ。clear/promote/retry/removeと監査は本家の非待機HTTP204を維持し、失敗を診断して開始済み処理を停止時に待つ。QueueEvents・listener・intervalもHTTP停止へ接続する。管理接続にも既存の無再接続方針を適用する。[固定source比較・実依存検証・差異](../../docs/superpowers/compatibility/queue-admin/README.md)。通常保持/清掃#164は[保持の比較・実依存検証](../../docs/superpowers/compatibility/queue-retention/README.md)で確認済み。次は残payload引継ぎ#165を進める。
+pause/resumeは制御完了を待つ。clear/promote/retry/removeと監査は本家の非待機HTTP204を維持し、失敗を診断して開始済み処理を停止時に待つ。QueueEvents・listener・intervalもHTTP停止へ接続する。管理接続にも既存の無再接続方針を適用する。[固定source比較・実依存検証・差異](../../docs/superpowers/compatibility/queue-admin/README.md)。通常保持/清掃#164は[保持の比較・実依存検証](../../docs/superpowers/compatibility/queue-retention/README.md)で確認済み。停止下の残payload引継ぎ#165は[下記の専用checker](#停止下のqueue引継ぎ確認165)で確認する。
 
 現在の業務queueは `deliver` / `endedPollNotification` / `userWebhookDeliver` の3つ。成功7日/30件・失敗7日/100件を各jobに指定し、同じqueue・同じ終端状態への次の遷移時に清掃する。静かな履歴の7日後の消去は保証しない。Queue/Workerの保持fallbackはなく、無設定jobも後続jobの共有終端集合の清掃対象にはなり得る。終端限定clearは未完了jobを残すが、明示`*`/非終端clearは破棄操作である。全10名の管理handleは残る7業務producer/Workerの完成を意味しない。通知本体の保持は#177、保守/定期jobは#199/#200などの各担当へ残る。
+
+## 停止下のqueue引継ぎ確認（#165）
+
+ビルド後、旧新すべてのHTTP・worker・scheduler・scanner・補助producerを完全停止し、復元した隔離先を向く設定で実行する。
+
+```sh
+MISSKEY_CONFIG_YML=/secure/candidate.yml pnpm --filter backend-next check-queue-handoff --stopped
+```
+
+`--stopped`をちょうど1回指定する。これは利用者による完全停止の確認であり、分散した全プロセスの停止をコマンドが証明するものではない。引数不正は設定読込/接続前に非0終了する。
+
+通常と同じ設定読込を使い、`redisForJobQueue`（省略時は`redis`）のhost/port/DB/auth/TLS/prefixを検査する。通常Redis・pubsub・timeline Redisと取り違えない。未指定prefixは設定URLのhost（portを含む）、DBは0が既定。ioredisのkeyPrefixを外し、BullMQ prefix `<prefix>:queue:<queue名>` にさらにqueue名が付くため、物理rootは`<prefix>:queue:<queue名>:<queue名>`。空prefixなら`queue:<queue名>:<queue名>`となる。過去の独自adapter用prefixは呼出元が選んでおり、別途棚卸しする。
+
+checkerはraw Redisの読取だけで全10 queueを調べ、Queue/Worker/QueueEvents、DB接続、通常アプリ起動を使わない。job ID/name/data/options/試行数/遅延時刻/paused/履歴を元のまま保持し、export/replay・変換・retry/promote/clear・scheduler変更をしない。接続/command期限は`backendNext.startupTimeoutMs`、再接続とoffline queueは無効で、終了時に接続を解放する。
+
+JSONの`ready`、各`queues`の`queue`/`counts`/`paused`/`blockers`、全体`blockers`を返す。件数はwait/paused/active/delayed/prioritized/waiting-children/completed/failed/repeat、拒否理由は固定codeとcountのみ。job/Redis key/scheduler ID・payload・URL・secret・例外本文は出力しない。`ready:true`だけexit0、blockerと検査失敗はexit1となる。
+
+active/lock/stalled、scheduler/repeat/dependency、未対応queue、payload/options不整合、孤立/不明な記録は拒否する。理由codeは`ACTIVE`/`LOCK`/`STALLED`/`SCHEDULER`/`DEPENDENCY`/`UNSUPPORTED_QUEUE`/`INVALID_PAYLOAD`/`UNSUPPORTED_OPTIONS`/`UNKNOWN_RECORD`/`UNKNOWN_QUEUE`。引数不足は`STOPPED_ATTESTATION_REQUIRED`、その他引数不正は`INVALID_ARGUMENTS`、接続等の検査失敗は`QUEUE_HANDOFF_INSPECTION_FAILED`となる。
+
+現在3業務handlerの対応jobだけを保持でき、他7 queueは未完了とfailedが切替を止める。completed履歴だけなら保持可能。systemの9定期schedulerはwaiting=0でも#199/#200待ちのblockerである。failedのretryは別の運用判断とし、検査のためにqueueを消去しない。[queueごとの判定・所有者と#139のbackup/rollback](../../docs/backend-next/posting-contract.md#停止下の既存queuepayload引継ぎ165)を参照する。
+
+成功は検査時のqueue条件だけを示す。未移植機能の確認#135、配布#138、通知移行#177、完全停止切替#139、親#124/投稿全体#176の完成はそれぞれ別に確認する。[固定sourceと実旧BullMQの証拠・新workerの実測範囲](../../docs/superpowers/compatibility/queue-handoff/README.md)も参照する。
 
 ## 検証
 
@@ -108,6 +130,15 @@ docker compose -p backend-next-test -f packages/backend-next/compose.test.yml do
 ```sh
 pnpm --filter backend-next test test/unit/job-queue/retention.test.ts test/unit/job-queue/deliver.test.ts test/unit/job-queue/ended-poll-notification.test.ts test/unit/job-queue/user-webhook.test.ts
 pnpm --filter backend-next test:integration test/integration/queue-retention.test.ts test/integration/queue-admin.test.ts
+```
+
+#165の近傍検証は次を使う。通常CIは記録済み引数＋明示的なテストbinding＋現在の同版BullMQを使う。固定本家sourceと本家installed BullMQを実行する別確認は、`BACKEND_NEXT_UPSTREAM_PATH=/path/to/pinned-upstream`を結合/プロセステストに渡す。[両modeの再実行と実測範囲](../../docs/superpowers/compatibility/queue-handoff/README.md#実redis業務handlerとprocessの検証)を参照する。
+
+```sh
+pnpm --filter backend-next test test/unit/job-queue/handoff.test.ts
+pnpm --filter backend-next test:integration test/integration/queue-handoff.test.ts
+pnpm --filter backend-next... build
+pnpm --filter backend-next test:process test/processes/queue-handoff.test.ts
 ```
 
 `check-schema`は検証用DBで使う。同期したEntityの対象に限って定義差分を検出し、DDLは実行しない。

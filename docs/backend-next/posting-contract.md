@@ -186,7 +186,7 @@ remote作者の`Instance.notesCount`はstats有効時に既存台帳のfetchOrRe
 
 単一HTTP observerがsourceのXev連携を置き換え、deliver/inboxのactiveイベント・現在active/waiting/delayedを即時/10000ms周期で発行する。最新先頭200件のメモリ履歴は再起動で失われる。停止時にinterval/listener/QueueEventsを解放し、開始済みread/control/監査を接続解放前に待つ。既存のRedis無再接続方針は管理接続にも適用する。
 
-[固定97観測・95公開投影の直接比較と新実装の実HTTP/PG/Redis/WS/process検証](../superpowers/compatibility/queue-admin/README.md)により#163の全14 API・QueueStats・実制御/認可/寿命条件を確認した。本家full server全体の比較ではない。通常保持/清掃#164は下記の実依存検証で確認した。次は実payload互換/残仕事引継ぎ#165を進め、#176の残る縦断確認へ接続する。#124全体、他stream#189・他管理#194や全10業務workerの完成は含めない。
+[固定97観測・95公開投影の直接比較と新実装の実HTTP/PG/Redis/WS/process検証](../superpowers/compatibility/queue-admin/README.md)により#163の全14 API・QueueStats・実制御/認可/寿命条件を確認した。本家full server全体の比較ではない。通常保持/清掃#164は下記の実依存検証で確認した。実payload互換/残仕事引継ぎ#165は下記の停止専用検査へ接続し、#176の残る縦断確認へ渡す。#124全体、他stream#189・他管理#194や全10業務workerの完成は含めない。
 
 
 ## 通常queue履歴の保持と清掃（#164）
@@ -197,4 +197,39 @@ remote作者の`Instance.notesCount`はstats有効時に既存台帳のfetchOrRe
 
 自動保持と終端限定clearはwaiting/paused/prioritized/delayed/locked activeを残す。管理者が明示する非終端状態や`*`のclearは本家どおり破棄操作である。消えたjobは一覧/logsから消え、`show-job`は既存のmissing-job500、累積metricsは残る。非待機204と認可・監査は#163の契約を維持する。
 
-全10名の管理と現在3業務queueの保持を確認して#164の現行範囲を満たす。他7業務queueのproducer/handlerは未接続で、system保守#199/chart等#200、予約投稿#183、inbox#195、db#199、relationship#182、objectStorage#188（remote保守#199）、systemWebhook#198へ残る。system定期jobはage-onlyで、導入時に古いscheduler定義の整理も移植する。通知本体の保持は#177、他webhookイベントは#197、既存payload/schedulerの引継ぎは次の#165、完全停止切替は#139が所有する。#124/#176全体の完成とはしない。
+全10名の管理と現在3業務queueの保持を確認して#164の現行範囲を満たす。他7業務queueのproducer/handlerは未接続で、system保守#199/chart等#200、予約投稿#183、inbox#195、db#199、relationship#182、objectStorage#188（remote保守#199）、systemWebhook#198へ残る。system定期jobはage-onlyで、導入時に古いscheduler定義の整理も移植する。通知本体の保持は#177、他webhookイベントは#197、既存payload/schedulerの引継ぎは下記#165、完全停止切替は#139が所有する。#124/#176全体の完成とはしない。
+
+
+## 停止下の既存queue/payload引継ぎ（#165）
+
+固定本家 `8e07cf085adf7009583d234a208e30436f020e26` と新実装はともに BullMQ `6.3.11` を使う。現在の3業務queueは、同じRedis DB・prefix上の元jobを保持して引き継ぐ。job ID・name・data・opts・試行数・delayed score・paused状態・終端履歴をexport/replayや再投入で作り直さず、queue形式を変換しない。note/webhook/draft IDを使うjob名とBullMQ job IDは別であり、同名jobを重複排除しない。
+
+[全10 queueの固定source台帳・実引数fixture・検証範囲](../superpowers/compatibility/queue-handoff/README.md)と[実装計画](../superpowers/plans/2026-11-08-queue-handoff-165.md)を参照する。17 fixture・全10名・9 scheduler・11 source guardのsource抽出/double観測と、実Redis/業務handlerの検証を区別する。通常CIは記録済みsource引数へ明示したテストbindingを適用し、現在の同版BullMQで保存する。別確認は固定sourceの呼出し前にbindingを渡して再実行し、本家installed BullMQで保存する。後者で3業務handler・7 webhookの実HTTP/PG結果と、旧Workerが残した60秒retryの同ID継続を確認した。本家full serverの実行比較ではない。
+
+| queue | 保持・停止前の扱い | 未対応の所有者 |
+| --- | --- | --- |
+| `deliver` | 対応payload/optionsのwait/paused/prioritized/delayedを元jobのまま保持。failedはfailedのままで自動retryしない | AP配送の既存handler |
+| `endedPollNotification` | 同じnoteId・ID・nameと遅延時刻を保持し、既存handlerでPG通知へ進む | 通知保存差異・移行は#177 |
+| `userWebhookDeliver` | 投稿4種とfollow/unfollow/followedの7種の投入時snapshotをそのまま送る。reactionは未対応 | 他イベントproducer/APIは#197 |
+| `system` | completed履歴は保持可能。未完了・failed・scheduler定義/次回instanceは切替を拒否する | 保守・announcementは#199、chart等は#200 |
+| `postScheduledNote` | completed履歴以外の未完了・failedを拒否する | #183 |
+| `inbox` | 同上 | #195 |
+| `db` | 同上 | #199 |
+| `relationship` | delayed unfollowを含め、同上 | #182 |
+| `objectStorage` | 同上 | #188、remote保守は#199 |
+| `systemWebhookDeliver` | 同上 | #198 |
+
+全queueでactive・lock・stalled・waiting-children/dependency・repeat/scheduler・孤立/不明な記録を拒否する。lock期限切れや結果不明の仕事を失敗・安全な再実行とみなさない。未対応の仕事は旧実装で通常完了させて再停止するか、担当機能の実装まで切替を待つ。未対応7 queueのfailedも、処理結果とretry方針を判断できないため拒否する。clear・scheduler削除・無断retry/promoteで条件を作らない。
+
+固定本家はsystemへ9定期schedulerを登録し、古い定義を整理する。waiting=0でも定義と未来の仕事が残り、現在は#199/#200待ちの実際のblockerとなる。`archiveAnnouncement`もdbではなくsystemの遅延jobで、明示jobIdを持つ。予約投稿はdraft.idをjob名にし、通常の自動job IDと`{noteDraftId}`を持つ。いずれも管理用handleの存在を業務実装済みの根拠にしない。
+
+### #139へ渡す停止・backup・rollback
+
+1. 旧release/新candidate・設定を固定し、PG、各Redisのendpoint/DB/prefix、専用`redisForJobQueue`、過去の独自adapterで選んだprefix、暗号/署名鍵、storage、外部検索を棚卸しする。旧新のHTTP・worker・scheduler・scanner・補助producerをすべて停止し、終了期限とactiveの結果を確認する。
+2. 停止したPG・job Redisを含む必要なRedis・storage等の外部状態を、同じ復旧点へ戻せるcoordinated backupとして取得し、隔離した復元先へ戻す。バックアップやpayloadには秘密が含まれるため、保管先は安全に管理しリポジトリや検査出力へ含めない。
+3. 復元先を向く正確なcandidate設定で[停止専用checker](../../packages/backend-next/README.md#停止下のqueue引継ぎ確認165)を実行する。blockerは旧実装/担当機能で解決して完全停止・backup・復元・再検査を繰り返すか、切替を延期する。
+4. 必要な停止下migration・`check-migrations`・検証用DBの`check-schema`を確認してから、隔離先で新実プロセスを起動する。外部効果、通常delayed retry、停止と再開を確認する。checker成功だけで#135の未対応確認・#138の配布・#177の通知移行・#139の最終切替を完了扱いしない。
+
+検査だけを行い、新consumerの消費やmigration前であれば、元の停止済み依存先を変更せず旧binary/configへ戻せる。消費またはmigration後は新プロセスを停止し、PGとRedisのcoordinated backup、必要な外部状態の復旧を揃えてから旧binary/configを起動する。migrationのdownだけでは廃止済みjobを再現できず、PG通知保存先の差異もbinaryだけでは戻らない。
+
+AP/webhook送信成功はbackup復元で取り消せず、復元したjobのretryで重複送信し得る。結果不明の外部効果も照合が必要で、通常BullMQ以上のexactly-once保証や独自台帳は追加しない。#165の検査・実payload互換の完了と、#124/#176の全体完成を区別する。
