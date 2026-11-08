@@ -214,8 +214,14 @@ test('built CLI has bounded success, refusal, stopped attestation and connection
 	const config = value(); const file = await configuration(config); const inspect = await control(config);
 	try {
 		const empty = cli(file.path); expect(await empty.exit, empty.output()).toBe(0);
-		for (const args of [[], ['--stopped', '--secret-invalid']]) {
-			const rejected = cli('/sentinel-secret/missing-config', args); expect(await rejected.exit).toBe(1); expect(rejected.output()).not.toMatch(/sentinel-secret|secret-invalid/); 
+		for (const { args, code } of [
+			{ args: [], code: 'STOPPED_ATTESTATION_REQUIRED' },
+			{ args: ['--stopped', '--secret-invalid'], code: 'INVALID_ARGUMENTS' },
+		]) {
+			const rejected = cli('/sentinel-secret/missing-config', args);
+			expect(await rejected.exit).toBe(1);
+			expect(rejected.output()).toBe(`${JSON.stringify({ ready: false, code })}\n`);
+			expect(rejected.output()).not.toMatch(/sentinel-secret|secret-invalid/);
 		}
 		await inspect.queue('deliver').add('sentinel-secret-name', { to: 'https://sentinel-secret.example', secret: 'sentinel-secret' });
 		const blocked = cli(file.path); expect(await blocked.exit).toBe(1); expect(blocked.output()).toContain('INVALID_PAYLOAD'); expect(blocked.output()).not.toContain('sentinel-secret');

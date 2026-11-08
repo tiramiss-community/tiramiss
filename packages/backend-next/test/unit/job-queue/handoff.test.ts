@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { execFileSync } from 'node:child_process';
 import { expect, test } from 'vitest';
 import { classifyHandoffJob } from '../../../src/platform/job-queue/handoff-policy.js';
 import type { QueueName } from '../../../src/modules/queue/public.js';
@@ -55,16 +54,4 @@ test('malformed progress cannot cross the BullMQ decoder boundary, while valid J
 	expect(classifyHandoffJob('endedPollNotification', 'failed', { ...poll, progress: '{' })).toBe('UNKNOWN_RECORD');
 	expect(classifyHandoffJob('endedPollNotification', 'wait', { ...poll, progress: '{"processed":1}' })).toBeNull();
 	expect(classifyHandoffJob('endedPollNotification', 'completed', { ...poll, progress: '{' })).toBeNull();
-});
-
-// Removing the stopped gate must fail before config/Redis can be contacted.
-test('the command refuses an unattested live inspection without exposing configuration errors', () => {
-	let output = '';
-	try {
-		execFileSync(process.execPath, ['built/entrypoints/check-queue-handoff.js'], { encoding: 'utf8', env: { ...process.env, MISSKEY_CONFIG_YML: '/sentinel-secret/config.yml' }, stdio: 'pipe' });
-	} catch (error) {
-		output = String((error as { stderr: string }).stderr);
-	}
-	expect(output).toContain('STOPPED_ATTESTATION_REQUIRED');
-	expect(output).not.toContain('sentinel-secret');
 });
