@@ -47,7 +47,8 @@ Use a consumer adapter to project actual results/writes into these shapes.
 TypeORM patches that omit an update; a missing JSON key means no own property,
 and `null` means explicit null. Decode recursively when comparing raw objects,
 or encode the actual projection with this convention. Dates are ISO strings.
-The tag object is reserved by this schema. Input patches use the same convention.
+The tag object is reserved by this schema. Input patches use the same convention. Inputs are serialized before source execution
+can mutate them; the foreign sharedInbox saved input is replayed against its output.
 
 The actor profile case uses intentionally tagged conversion doubles
 (`converted:` / `field:`). Compare converted fields with the same injected
@@ -77,7 +78,7 @@ UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibilit
 
 By default the script reads `git show <pin>:<path>`. It extracts literal method
 parameters and bodies using TypeScript AST, transpiles them and executes them in
-VM contexts with explicit boundaries. Helpers execute their pinned source too;
+VM contexts with explicit boundaries. Helpers, including StatusError retryability, execute their pinned source too;
 the signer executes the extracted ApRequestCreator class, including private methods.
 The route handler/negotiation are extracted AST bodies. No handwritten resolver
 or actor implementation supplies expected values.
@@ -110,7 +111,9 @@ filtering, cross-host new accounts, local self links, exact age boundaries,
 pre-attempt timestamp/URI retention, missing self, WebFinger failure and invalid
 repair. Mention occurrences independently resolve before ID deduplication; the
 first identical occurrence fails while later occurrences and an alias succeed.
-Actor cases execute validation and core creation/refresh for all five actor
+The 95 cases include creation/refresh HTTP 429 collection failures: creation
+projects private visibility while refresh retains visibility with an own undefined
+patch. Actor cases execute validation and core creation/refresh for all five actor
 types, optional key writes, profile fields/defaults, truncation, collection error
 asymmetry, URL asymmetry, foreign sharedInbox stripping, duplicate recovery,
 deleted skip and partial write failures. Missing key refresh attempts an UPDATE,

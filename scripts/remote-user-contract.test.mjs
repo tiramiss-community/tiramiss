@@ -8,7 +8,8 @@ import test from 'node:test';
 
 const directory = new URL('../docs/superpowers/compatibility/remote-user/', import.meta.url);
 const anchors = ['resolve-local', 'resolve-stale-refresh-failure', 'mentions-independent-duplicates',
-	'actor-create-Person', 'actor-refresh-profile-failure', 'fetch-signed', 'fetch-unsigned',
+	'actor-create-Person', 'actor-refresh-profile-failure', 'actor-validation-foreign-shared',
+	'actor-create-collection-rate-limited', 'actor-refresh-collection-rate-limited', 'fetch-signed', 'fetch-unsigned',
 	'fetch-alternate', 'publication-system', 'publication-local'];
 function dataset() {
 	assert(existsSync(new URL('observations.json', directory)), 'durable observations must exist');
@@ -48,6 +49,14 @@ function validate(data) {
 	const stale = data.cases.find(c => c.id === 'resolve-stale-refresh-failure').expected;
 	assert.deepEqual(stale.events.map(e => e.op), ['User.find', 'User.update', 'WebFinger', 'User.update', 'Person.update'], 'retained write order');
 	assert(stale.state.lastFetchedAt && stale.state.uri, 'retained state required');
+	assertForeignShared(data);
+	assertRateLimited(data);
+	const statusError = data.methods['misc/status-error.ts'];
+	assert.equal(statusError?.path, 'packages/backend/src/misc/status-error.ts', 'pinned StatusError source');
+	assert.match(statusError.sha256, /^[a-f0-9]{64}$/);
+	for (const operation of ['create', 'refresh']) {
+		assert(data.cases.find(c => c.id === `actor-${operation}-collection-rate-limited`).methods.includes('misc/status-error.ts'));
+	}
 }
 
 test('committed projections have consumable outcomes and declared source boundaries', () => validate(dataset()));
@@ -64,7 +73,30 @@ for (const [name, mutate] of [
 	['undeclared double', d => { d.cases[0].doubles.push('invented'); }],
 	['duplicate ID', d => { d.cases.push(d.cases[0]); }],
 	['signed limit', d => { d.cases.find(c => c.id === 'fetch-signed').expected.events.find(e => e.op === 'fetch').args.size = 262144; }],
+	['foreign shared inbox input', d => { d.cases.find(c => c.id === 'actor-validation-foreign-shared').input.patch.endpoints.sharedInbox = { $undefined: true }; }],
+	['429 refresh visibility', d => { d.cases.find(c => c.id === 'actor-refresh-collection-rate-limited').expected.events.find(e => e.op === 'Profile.update').args.patch.followingVisibility = 'private'; }],
+	['status error fingerprint', d => { delete d.methods['misc/status-error.ts']; }],
 	['write order', d => { d.cases.find(c => c.id === 'actor-refresh-profile-failure').expected.events.reverse(); }],
 ]) test(`validator rejects ${name}`, () => {
 	const d = dataset(); mutate(d); assert.throws(() => validate(d));
 });
+
+// These assertions intentionally compare saved inputs and source projections separately.
+function assertForeignShared(data) {
+	const c = data.cases.find(c => c.id === 'actor-validation-foreign-shared');
+	assert.equal(c.input.patch.endpoints.sharedInbox, 'https://other.test/inbox', 'saved input before mutation');
+	assert.deepEqual(c.expected.result.endpoints.sharedInbox, { $undefined: true });
+	assert(Object.hasOwn(c.expected.result, 'sharedInbox'));
+	assert.deepEqual(c.expected.result.sharedInbox, { $undefined: true });
+}
+function assertRateLimited(data) {
+	const cases = data.cases;
+	const created = cases.find(c => c.id === 'actor-create-collection-rate-limited');
+	const refreshed = cases.find(c => c.id === 'actor-refresh-collection-rate-limited');
+	assert.equal(created.input.collectionFail, 429);
+	assert.equal(refreshed.input.collectionFail, 429);
+	assert.equal(created.expected.events.find(e => e.op === 'Profile.save').args.followingVisibility, 'private');
+	assert.deepEqual(refreshed.expected.events.find(e => e.op === 'Profile.update').args.patch.followingVisibility, { $undefined: true });
+}
+test('foreign shared inbox keeps its original saved input and own undefined outputs', () => assertForeignShared(dataset()));
+test('429 collection failure is private on creation and retained on refresh', () => assertRateLimited(dataset()));

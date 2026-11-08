@@ -2,6 +2,10 @@
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
   "methods": {
+    "misc/status-error.ts": {
+      "path": "packages/backend/src/misc/status-error.ts",
+      "sha256": "6fb2644dd29ffa37bbf57207b471af65d5b1ad5864febe9af3fa75fd01a65348"
+    },
     "core/activitypub/type.ts": {
       "path": "packages/backend/src/core/activitypub/type.ts",
       "sha256": "1604b3f151853a6be8d7dd61ed349b126ac1cf1ad0da0177b8e8c61456ce08af"
@@ -3431,7 +3435,8 @@
         "ApPersonService.createPerson",
         "ApPersonService.updatePerson",
         "ApPersonService.analyzeAttachments",
-        "ApPersonService.isPublicCollection"
+        "ApPersonService.isPublicCollection",
+        "misc/status-error.ts"
       ],
       "input": {
         "operation": "create",
@@ -3439,6 +3444,149 @@
           "following": "https://remote.test/following"
         },
         "collectionFail": 503
+      },
+      "expected": {
+        "result": {
+          "id": "new-user",
+          "avatarId": null,
+          "bannerId": null,
+          "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+          "name": {
+            "$undefined": true
+          },
+          "isLocked": {
+            "$undefined": true
+          },
+          "movedToUri": {
+            "$undefined": true
+          },
+          "movedAt": null,
+          "alsoKnownAs": [],
+          "isExplorable": {
+            "$undefined": true
+          },
+          "username": "Alice",
+          "usernameLower": "alice",
+          "host": "remote.test",
+          "inbox": "https://remote.test/inbox",
+          "sharedInbox": null,
+          "followersUri": {
+            "$undefined": true
+          },
+          "featured": {
+            "$undefined": true
+          },
+          "uri": "https://remote.test/users/a",
+          "tags": [],
+          "isBot": false,
+          "isCat": false,
+          "requireSigninToViewContents": false,
+          "makeNotesFollowersOnlyBefore": null,
+          "makeNotesHiddenBefore": null,
+          "emojis": []
+        },
+        "events": [
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": null,
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "query": "new-user",
+              "patch": {}
+            }
+          }
+        ]
+      },
+      "doubles": [
+        "db",
+        "clock",
+        "actorServices",
+        "conversion",
+        "logger",
+        "utility"
+      ]
+    },
+    {
+      "id": "actor-create-collection-rate-limited",
+      "area": "actor",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.validateActor",
+        "ApPersonService.createPerson",
+        "ApPersonService.updatePerson",
+        "ApPersonService.analyzeAttachments",
+        "ApPersonService.isPublicCollection",
+        "misc/status-error.ts"
+      ],
+      "input": {
+        "operation": "create",
+        "patch": {
+          "following": "https://remote.test/following"
+        },
+        "collectionFail": 429
       },
       "expected": {
         "result": {
@@ -3573,7 +3721,8 @@
         "ApPersonService.createPerson",
         "ApPersonService.updatePerson",
         "ApPersonService.analyzeAttachments",
-        "ApPersonService.isPublicCollection"
+        "ApPersonService.isPublicCollection",
+        "misc/status-error.ts"
       ],
       "input": {
         "operation": "create",
@@ -3779,7 +3928,8 @@
         "ApPersonService.createPerson",
         "ApPersonService.updatePerson",
         "ApPersonService.analyzeAttachments",
-        "ApPersonService.isPublicCollection"
+        "ApPersonService.isPublicCollection",
+        "misc/status-error.ts"
       ],
       "input": {
         "operation": "refresh",
@@ -3787,6 +3937,107 @@
           "following": "https://remote.test/following"
         },
         "collectionFail": 503
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "User.update",
+            "args": {
+              "query": {
+                "id": "remote",
+                "isDeleted": false
+              },
+              "patch": {
+                "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+                "inbox": "https://remote.test/inbox",
+                "sharedInbox": null,
+                "followersUri": {
+                  "$undefined": true
+                },
+                "featured": {
+                  "$undefined": true
+                },
+                "emojis": [],
+                "name": {
+                  "$undefined": true
+                },
+                "tags": [],
+                "isBot": false,
+                "isCat": false,
+                "isLocked": {
+                  "$undefined": true
+                },
+                "movedToUri": null,
+                "alsoKnownAs": null,
+                "isExplorable": {
+                  "$undefined": true
+                }
+              }
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "query": {
+                "userId": "remote"
+              },
+              "patch": {
+                "url": {
+                  "$undefined": true
+                },
+                "fields": [],
+                "description": null,
+                "followedMessage": null,
+                "followingVisibility": {
+                  "$undefined": true
+                },
+                "followersVisibility": "private",
+                "birthday": null,
+                "location": null
+              }
+            }
+          },
+          {
+            "op": "Following.update",
+            "args": {
+              "query": {
+                "followerId": "remote"
+              },
+              "patch": {
+                "followerSharedInbox": null
+              }
+            }
+          }
+        ]
+      },
+      "doubles": [
+        "db",
+        "clock",
+        "actorServices",
+        "conversion",
+        "logger",
+        "utility"
+      ]
+    },
+    {
+      "id": "actor-refresh-collection-rate-limited",
+      "area": "actor",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.validateActor",
+        "ApPersonService.createPerson",
+        "ApPersonService.updatePerson",
+        "ApPersonService.analyzeAttachments",
+        "ApPersonService.isPublicCollection",
+        "misc/status-error.ts"
+      ],
+      "input": {
+        "operation": "refresh",
+        "patch": {
+          "following": "https://remote.test/following"
+        },
+        "collectionFail": 429
       },
       "expected": {
         "result": "skip",
@@ -3879,7 +4130,8 @@
         "ApPersonService.createPerson",
         "ApPersonService.updatePerson",
         "ApPersonService.analyzeAttachments",
-        "ApPersonService.isPublicCollection"
+        "ApPersonService.isPublicCollection",
+        "misc/status-error.ts"
       ],
       "input": {
         "operation": "refresh",
@@ -4211,9 +4463,7 @@
         "operation": "validate",
         "patch": {
           "endpoints": {
-            "sharedInbox": {
-              "$undefined": true
-            }
+            "sharedInbox": "https://other.test/inbox"
           }
         }
       },

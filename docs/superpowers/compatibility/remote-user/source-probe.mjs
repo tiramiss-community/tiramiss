@@ -33,6 +33,7 @@ const pinnedBlobs = {
   "misc/check-https.ts": "15a54f6ce7e2f6ce7809e4d12a4294f005a93166",
   "misc/normalize-for-search.ts": "3f19617e1480f14167f980f2bec85fd3438fd7c1",
   "misc/prelude/array.ts": "f741a0c9133911688727cd72499b7476e3783a56",
+  "misc/status-error.ts": "c3533db60759a0f82ca7ee82772b89899e5cc942",
   "misc/truncate.ts": "1c8a274609a122aa16521b22ac76618938ebc354",
   "server/ActivityPubServerService.ts": "51b46a10c05f44a598a33938ef26ce12bbad2c59"
 };
@@ -64,10 +65,9 @@ class Clock extends Date {
 	constructor(...args) { super(...(args.length ? args : [now])); }
 	static now() { return now; }
 }
-class StatusError extends Error { constructor(message, statusCode) { super(message); this.statusCode = statusCode; this.isRetryable = statusCode >= 500; } }
 class IdentifiableError extends Error { constructor(id, message) { super(message); this.id = id; } }
 const globals = { URL, Date: Clock, Error, Buffer, AbortController, process: { env: { NODE_ENV: 'production' } },
-	StatusError, IdentifiableError, htmlParser, RsaKeyPair, promisify, createPublicKey,
+	IdentifiableError, htmlParser, RsaKeyPair, promisify, createPublicKey,
 	IsNull: () => null, chalk: { magenta: x => x, yellow: x => x }, nameLength: 128, summaryLength: 2048 };
 function evaluate(text) {
 	return vm.runInNewContext(ts.transpile(text, { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS }), globals);
@@ -89,6 +89,8 @@ function moduleSource(path) {
 	vm.runInNewContext(ts.transpile(literal, { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS }), { ...globals, exports });
 	return exports;
 }
+const { StatusError } = moduleSource('misc/status-error.ts');
+globals.StatusError = StatusError;
 Object.assign(globals, moduleSource('core/activitypub/type.ts'));
 Object.assign(globals, moduleSource('core/activitypub/misc/check-against-url.ts'));
 Object.assign(globals, moduleSource('core/activitypub/misc/validator.ts'));
@@ -170,12 +172,13 @@ const doubles = {
 };
 const cases = [];
 async function capture(id, area, input, ids, boundaries, run) {
+	const savedInput = plain(input);
 	const events = [];
 	const event = (op, args) => events.push({ op, ...(args === undefined ? {} : { args: plain(args) }) });
 	let expected;
 	try { expected = { result: plain(await run(event)), events }; }
 	catch (e) { expected = { error: { message: e.message, ...(e.id ? { id: e.id } : {}) }, events }; }
-	cases.push({ id, area, provenance: 'literal-source-method', methods: ids, input: plain(input), expected, doubles: [...new Set([...boundaries, 'logger', ...(area === 'resolve' || area === 'actor' || area === 'fetch' || area === 'publication' ? ['utility'] : [])])] });
+	cases.push({ id, area, provenance: 'literal-source-method', methods: ids, input: savedInput, expected, doubles: [...new Set([...boundaries, 'logger', ...(area === 'resolve' || area === 'actor' || area === 'fetch' || area === 'publication' ? ['utility'] : [])])] });
 	return cases.at(-1);
 }
 const rids = ['RemoteUserResolveService.resolveUser', 'RemoteUserResolveService.resolveSelf'];
@@ -239,7 +242,7 @@ f.createPerson = method(personPath, 'ApPersonService', 'createPerson');
 const actor = (patch = {}) => ({ type: 'Person', id: 'https://remote.test/users/a', preferredUsername: 'Alice', inbox: 'https://remote.test/inbox', ...patch });
 const aids = ['ApPersonService.validateActor', 'ApPersonService.createPerson', 'ApPersonService.updatePerson', 'ApPersonService.analyzeAttachments', 'ApPersonService.isPublicCollection'];
 async function actorCase(id, input) {
-	return capture(id, 'actor', input, aids, ['db', 'clock', 'actorServices', 'conversion'], async event => {
+	return capture(id, 'actor', input, [...aids, ...(input.collectionFail ? ['misc/status-error.ts'] : [])], ['db', 'clock', 'actorServices', 'conversion'], async event => {
 		const material = actor(input.patch);
 		const existing = { id: 'remote', username: 'Original', host: 'remote.test', uri: material.id, movedToUri: null, movedAt: null };
 		const resolver = {
@@ -308,6 +311,7 @@ for (const operation of ['create', 'refresh']) {
 	await actorCase(`actor-${operation}-foreign-url`, { operation, patch: { url: 'https://other.test/@a' } });
 	await actorCase(`actor-${operation}-bad-scheme`, { operation, patch: { url: 'ftp://remote.test/a' } });
 	await actorCase(`actor-${operation}-collection-transient`, { operation, patch: { following: 'https://remote.test/following' }, collectionFail: 503 });
+	await actorCase(`actor-${operation}-collection-rate-limited`, { operation, patch: { following: 'https://remote.test/following' }, collectionFail: 429 });
 	await actorCase(`actor-${operation}-collection-denied`, { operation, patch: { following: 'https://remote.test/following' }, collectionFail: 403 });
 }
 for (const [label, patch] of Object.entries({
@@ -317,6 +321,12 @@ for (const [label, patch] of Object.entries({
 	'foreign-shared': { endpoints: { sharedInbox: 'https://other.test/inbox' } }, 'empty-name': { name: '' },
 	'bad-name': { name: 1 }, 'bad-summary': { summary: 1 }, 'missing-inbox': { inbox: undefined },
 })) await actorCase(`actor-validation-${label}`, { operation: 'validate', patch });
+
+// Replay the saved foreign-host input: regeneration must not serialize post-validation mutation.
+const foreignShared = cases.find(c => c.id === 'actor-validation-foreign-shared');
+const savedActor = actor(JSON.parse(JSON.stringify(foreignShared.input.patch)));
+assert.deepEqual(plain(f.validateActor.call({ utilityService, logger }, savedActor, 'https://remote.test/request')),
+	foreignShared.expected.result, 'saved foreign sharedInbox input must replay its own undefined outputs');
 
 // Public, non-production test key; never used for credentials.
 const testPrivateKey = "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDRZ8cmnqlrdvje\ny6+iFboJDQiQoEOQkBucsS8Rah5BmBB91iJq/GHG7FQ1NooKmc+U2zzU5WcmXRTP\nmrjg1apEfL60WpBW5gDG3InHk4OBeIKu0URgIPh5vjPcm4x8eyMEq3pqS9BgGLZy\ntuhMrePx2kw32QoY0cdGLXNIOQpa/dduhPLdvsor7XcEdb1L1KfyaHCxyxgsTPuJ\nSoNR2RMnoAnTX4YUPANFNticReu1khBD03CrSxbPMPfy/Eamtm22oZRPAUh7cMaY\nFLCYuvVlu46hWZ65soSX6Cicvaer0zAhQhIO6AuFSnS1Nir12ejrwkdWFHyI6JRa\nG1eck9bRAgMBAAECggEAT3ZG/yOz/ICf/cNjOWlvN+IHPwJhwSi+IZ6m0r/nDVML\n5wRr+Rceb2LcrXitt0oYmE79bXhDxS4LKKB4yXCq9OQ1ZbD8Fs2eu9eSPPaAL5Aw\nXvAwNx4ry97eRTeNfusnJa2AfXeZce3OxgccbYSK/AqvY33rs/Fe4gV7OovSnyYG\nIr3iIYo8mNpUDfvjzzmOIHqKBaFVVSmOUkjL2UWt9kdpXdJtrJjmRU+wyHDO2QAP\nrHtvjjGbCIbvK4nT66R2wIGF0jdaoH5UO03ji9993SUJwYYBfoNqeTjknxYdPvpC\nvsxgeVCLRID4EaWNlXSa1U3xgFC8FjfTdyExE8EMdQKBgQD1viWVSvE3mtzMB2pw\nRSLLan14CNIQ+aY0VaGP0SvxXhdZ/yQOwIFPn8GKeGeSt0Ga/F5jGIaJjStN6kxI\nwV736K2IT2KPQqkF9g8QAHdj7Rp2dHs3+Yb+iCrwc5KGpXVuyPkz9n/WjaqBTXq0\n8axJY7gWANhIsrYUOTKtVIkGxwKBgQDaJVpIGI8GbzBCz4EbW1FHs2ckWIWfhcFv\nOJwyFCw381Vyfs4T3eN/fBj6WJkrXMMa5y1IhS2ZX1w1XisaQtkL6Tq7Y6zhGiK7\nr28J72Q2iczymLsqP3H5vPt9MTNRzpFfNk2W9QQsuKolbWsdSvJ1/wzkR7d/yS/G\nnzVva9U9pwKBgQCt5h4gdMUYLU28UC8hPbtuqXAahltpSdE0zbgj1si66HOr6yJw\nEggv+YRzYdshdu9FJvwAMjXalvyjCX9sKPL0ikJq6Ip9iJWls0dbcokKPJpyYuFj\nbf/6lQ+V0qNJB0N/31aCUBiNEvkqwVJpQ3BBCwEVCQoE//pbe1KCWAUTtwKBgQCz\nBLBANhc5eomqaktTPe9H3gwooZSWwtdpBJX56uAW0lQu760CVLdbaWW+HHMmSKu8\nKjbZKqGvGbi7+xl4JZ+kzLNsEHJREHesel2vU4tzzkYoV/pQw1wvTE0+AeBRpClc\nb13hIhVY9fp7WH3svhKXjsTvmYMXFO1mHEVnuKB4RQKBgQC0wmCaLtijGjQGS7pX\nStFgqO3miRW6Cm3iyGtlgG/trSkZoGSvfNAu5DPlzakoxbUwZLPFzgEHnll9quYv\n1dKoStscOJWhwnP8BAoGU89GBNuOXGvUFg1BUURymAHVaH3LS3Z3YMBOgD/Z3Dgf\nB0CUQudjiL3RoFzDpgKf+tMI9A==\n-----END PRIVATE KEY-----\n";
