@@ -361,6 +361,7 @@
 	"src/models/DriveFile.ts",
 	"src/models/DriveFolder.ts",
 	"src/models/Emoji.ts",
+	"src/models/FollowRequest.ts",
 	"src/models/Following.ts",
 	"src/models/Hashtag.ts",
 	"src/models/Instance.ts",

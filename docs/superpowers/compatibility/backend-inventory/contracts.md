@@ -4,7 +4,7 @@
 
 `responsibility` などの監査行は [audit-items.json](audit-items.json) から取り込む。「（監査: 曖昧）」等は [網羅性監査](../../../backend-next/coverage-audit.md) の割り当て前の判定。
 
-本家: `8e07cf085adf7009583d234a208e30436f020e26` / 新実装監査基準: `e03c4fbf2920c8dbec5e798df702265af986d579`。
+本家: `8e07cf085adf7009583d234a208e30436f020e26` / 新実装監査基準: `b6832111a5817f30c33334d8091e7f80e79dbe33`。
 
 ## ap-inbound (14)
 
@@ -716,7 +716,7 @@
 | emoji | [instance公開情報・emoji・announcement](README.md#domain-discovery) / [#193](https://github.com/tiramiss-community/tiramiss/issues/193) | 未実装 | [source](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/models/Emoji.ts#L1)  | — |
 | flash | [pages・Play・gallery](README.md#domain-content) / [#191](https://github.com/tiramiss-community/tiramiss/issues/191) | 未実装 | [source](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/models/Flash.ts#L1)  | — |
 | flash_like | [pages・Play・gallery](README.md#domain-content) / [#191](https://github.com/tiramiss-community/tiramiss/issues/191) | 未実装 | [source](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/models/FlashLike.ts#L1)  | — |
-| follow_request | [follow・block・mute・関係管理](README.md#domain-social) / [#182](https://github.com/tiramiss-community/tiramiss/issues/182) | 未実装 | [source](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/models/FollowRequest.ts#L1)  | — |
+| follow_request | [follow・block・mute・関係管理](README.md#domain-social) / [#182](https://github.com/tiramiss-community/tiramiss/issues/182) | 部分実装 | [source](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/models/FollowRequest.ts#L1)  | [upstream-sync.json](../../../../packages/backend-upstream/upstream-sync.json) / [package-imports.test.ts](../../../../packages/backend-next/test/package-imports.test.ts) / [migrations.test.ts](../../../../packages/backend-next/test/integration/migrations.test.ts) |
 | following | [follow・block・mute・関係管理](README.md#domain-social) / [#182](https://github.com/tiramiss-community/tiramiss/issues/182) | 未実装 | [source](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/models/Following.ts#L1)  | — |
 | gallery_like | [pages・Play・gallery](README.md#domain-content) / [#191](https://github.com/tiramiss-community/tiramiss/issues/191) | 未実装 | [source](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/models/GalleryLike.ts#L1)  | — |
 | gallery_post | [pages・Play・gallery](README.md#domain-content) / [#191](https://github.com/tiramiss-community/tiramiss/issues/191) | 未実装 | [source](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/models/GalleryPost.ts#L1)  | — |
