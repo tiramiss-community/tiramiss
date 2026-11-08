@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+// Linux-only: Supervisor PID identity and suspension checks require /proc and SIGSTOP/SIGCONT.
 import { randomUUID } from 'node:crypto';
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
@@ -33,8 +34,12 @@ interface SourceObservation {
 }
 const sourceObservations = (JSON.parse(readFileSync(new URL('../../../../docs/superpowers/compatibility/note/delete-integration/observations.json', import.meta.url), 'utf8')) as { observations: SourceObservation[] }).observations;
 
-interface HookReceipt { type: string; body: { note: { id: string; text: string } } }
-interface StreamMessage { type: string; body: { id?: string; type?: string; body?: { id?: string; note?: { id: string }; deletedAt?: string } } }
+interface HookReceipt {
+	type: string; body: { note: { id: string; text: string } };
+	server: string; hookId: string; userId: string; eventId: string; createdAt: number;
+	raw: string; receivedAt: number; secret: string | string[] | undefined;
+}
+interface StreamMessage { type: string; body: { id?: string; type?: string; body?: { id?: string; note?: { id: string }; deletedAt?: string; type?: string } } }
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 let source: DataSource;
 let seeded: Awaited<ReturnType<typeof seedRoleHttp>>;
@@ -42,6 +47,7 @@ let inbox: Awaited<ReturnType<typeof startInboxRecorder>>;
 let hookServer: ReturnType<typeof createServer>;
 let publicKeyPem: string;
 const hooks: HookReceipt[] = [];
+const hookStatuses = new Map<string, number>();
 const client = new Meilisearch({ host: `http://127.0.0.1:${process.env.BACKEND_NEXT_TEST_MEILI_PORT ?? 57779}` });
 
 beforeAll(async () => {
@@ -67,8 +73,10 @@ beforeAll(async () => {
 		for await (const chunk of request) {
 			chunks.push(chunk as Buffer);
 		}
-		hooks.push(JSON.parse(Buffer.concat(chunks).toString()) as HookReceipt);
-		response.writeHead(204).end();
+		const raw = Buffer.concat(chunks).toString();
+		const payload = JSON.parse(raw) as HookReceipt;
+		hooks.push({ ...payload, raw, receivedAt: Date.now(), secret: request.headers['x-misskey-hook-secret'] });
+		response.writeHead(hookStatuses.get(payload.hookId) ?? 204).end();
 	});
 	await new Promise<void>(resolve => hookServer.listen(0, '127.0.0.1', resolve));
 	const hookUrl = `http://127.0.0.1:${(hookServer.address() as { port: number }).port}/hook`;
@@ -103,8 +111,8 @@ async function api(port: number, endpoint: string, input: object, actor = 'ordin
 	return fetch(`http://127.0.0.1:${port}/api/notes/${endpoint}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ i: seeded.actors[actor].token, ...input }) });
 }
 
-async function websocket(port: number) {
-	const socket = new WebSocket(`ws://127.0.0.1:${port}/streaming?i=${seeded.actors.root.token}`);
+async function websocket(port: number, actor = 'root') {
+	const socket = new WebSocket(`ws://127.0.0.1:${port}/streaming?i=${seeded.actors[actor].token}`);
 	const messages: StreamMessage[] = [];
 	socket.on('message', data => messages.push(JSON.parse(data.toString()) as StreamMessage));
 	await new Promise<void>((resolve, reject) => {
@@ -128,9 +136,21 @@ async function websocket(port: number) {
 	};
 }
 
-async function stop(child: ReturnType<typeof launch>) {
+async function deadline<T>(work: Promise<T>, timeoutMs: number, message: string): Promise<T> {
+	let timer: ReturnType<typeof setTimeout> | undefined;
+	try {
+		return await Promise.race([work, new Promise<never>((_, reject) => {
+			timer = setTimeout(() => reject(new Error(message)), timeoutMs);
+		})]);
+	} finally {
+		clearTimeout(timer);
+	}
+}
+
+async function stop(child: ReturnType<typeof launch>, timeoutMs = 15000) {
+	// Leave headroom beyond the product's 10-second child shutdown deadline.
 	child.child.kill('SIGTERM');
-	expect((await child.exit).code, child.output()).toBe(0);
+	expect((await deadline(child.exit, timeoutMs, 'Graceful shutdown timed out')).code, child.output()).toBe(0);
 }
 
 async function queueIdle(queues: Queue[]) {
@@ -347,5 +367,494 @@ test('failed held unindex submission preserves HTTP 204 and drains once with a s
 		expect(await source.getRepository(MiNote).existsBy({ id: noteId })).toBe(false);
 	} finally {
 		held.release(); await http.close(); await config.close(); await gateway.close();
+	}
+});
+
+// Shared with the existing deletion proof above: real recipients, PG, timelines,
+// search and WS. These tests add ordinary queued-work continuation, not replay
+// or exactly-once guarantees.
+async function postingGraph() {
+	const port = await freePort();
+	const value = processConfig(port);
+	const config = await configuration(value);
+	const index = client.index(`${value.meilisearch!.index}---notes`);
+	const redis = new Redis(value.redis);
+	const timelines = new Redis(value.redisForTimelines!);
+	const queues = ['deliver', 'userWebhookDeliver', 'endedPollNotification'].map(name => new Queue(name, baseQueueOptions(value.redisForJobQueue, name, 5000)));
+	const graphs: ReturnType<typeof launch>[] = [];
+	const streams: Awaited<ReturnType<typeof websocket>>[] = [];
+	const recorded = new Map<ReturnType<typeof launch>, { role: string; pid: number; identity: string }[]>();
+	let closed = false;
+	// Start time prevents a recycled PID from becoming a cleanup target.
+	const identity = (pid: number) => {
+		try {
+			return readFileSync(`/proc/${pid}/stat`, 'utf8').split(') ').at(-1)!.split(' ')[19];
+		} catch (error) {
+			if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+				return undefined;
+			}
+			throw error;
+		}
+	};
+	const children = (graph: ReturnType<typeof launch>) => recorded.get(graph) ?? [];
+	const gone = (graph: ReturnType<typeof launch>) => {
+		for (const child of children(graph)) {
+			expect(identity(child.pid), `leaked ${child.role} PID ${child.pid}`).not.toBe(child.identity);
+		}
+	};
+	const shutdown = async (graph: ReturnType<typeof launch>, timeoutMs: number) => {
+		try {
+			if (graph.child.exitCode === null && graph.child.signalCode === null) {
+				await stop(graph, timeoutMs);
+			}
+			gone(graph);
+		} catch (failure) {
+			const failures = [failure];
+			for (const child of children(graph)) {
+				try {
+					if (identity(child.pid) === child.identity) {
+						process.kill(child.pid, 'SIGKILL');
+					}
+				} catch (error) {
+					if ((error as NodeJS.ErrnoException).code !== 'ESRCH') {
+						failures.push(error);
+					}
+				}
+			}
+			try {
+				// Resume a stopped parent so it can reap its killed children first.
+				if (graph.child.exitCode === null && graph.child.signalCode === null) {
+					graph.child.kill('SIGCONT');
+				}
+				try {
+					await deadline(graph.exit, 1000, 'Forced shutdown requires SIGKILL');
+				} catch {
+					graph.child.kill('SIGKILL');
+					await deadline(graph.exit, 5000, 'Forced Supervisor exit timed out');
+				}
+				await vi.waitFor(() => gone(graph), { timeout: 5000, interval: 20 });
+			} catch (error) {
+				failures.push(error);
+			}
+			if (failures.length === 1) {
+				throw failure;
+			}
+			throw new AggregateError(failures, 'Supervisor shutdown and fallback cleanup failed', { cause: failure });
+		}
+	};
+	return {
+		port, value, index, redis, timelines, queues, graphs,
+		async start() {
+			const graph = launch('built/entrypoints/supervisor.js', config.path);
+			graphs.push(graph);
+			await graph.ready;
+			const announced = (graph.messages.find((message: any) => message.role === 'supervisor') as { children: { role: string; pid: number }[] }).children;
+			recorded.set(graph, announced.map(child => {
+				const start = identity(child.pid);
+				expect(start, `missing ready ${child.role} PID ${child.pid}`).toBeDefined();
+				return { ...child, identity: start! };
+			}));
+			expect(children(graph).map(child => child.role)).toEqual(['http', 'worker']);
+			return graph;
+		},
+		async stop(graph: ReturnType<typeof launch>, timeoutMs = 15000) {
+			await shutdown(graph, timeoutMs);
+		},
+		async stream(actor = 'root') {
+			const stream = await websocket(port, actor);
+			streams.push(stream);
+			return stream;
+		},
+		async tasksApplied() {
+			const tasks = await client.tasks.getTasks({ indexUids: [index.uid], limit: 1000 });
+			for (const task of tasks.results) {
+				expect((await client.tasks.waitForTask(task.uid, { timeout: 10000, interval: 20 })).status).toBe('succeeded');
+			}
+			return tasks.results.map(task => task.uid);
+		},
+		async close(timeoutMs = 15000) {
+			if (closed) {
+				return;
+			}
+			closed = true;
+			const failures: unknown[] = [];
+			const attempt = async (cleanup: () => unknown) => {
+				try {
+					await cleanup();
+				} catch (error) {
+					failures.push(error);
+				}
+			};
+			for (const stream of streams) {
+				stream.socket.terminate();
+			}
+			for (const graph of graphs) {
+				await attempt(() => shutdown(graph, timeoutMs));
+			}
+			for (const queue of queues) {
+				await attempt(() => queue.obliterate({ force: true }));
+				await attempt(() => queue.close());
+			}
+			redis.disconnect(); timelines.disconnect(); await attempt(() => config.close());
+			await attempt(async () => {
+				const task = await index.delete().catch((error: unknown) => {
+					expect(error).toMatchObject({ cause: { code: 'index_not_found' } });
+					return null;
+				});
+				if (task) {
+					await client.tasks.waitForTask(task);
+				}
+			});
+			if (failures.length === 1) {
+				throw failures[0];
+			}
+			if (failures.length > 1) {
+				throw new AggregateError(failures, 'Posting graph cleanup failed');
+			}
+		},
+	};
+}
+
+test.each(['stop', 'close'] as const)('N7 test cleanup bounds a frozen Supervisor during %s', async operation => {
+	const f = await postingGraph();
+	let rescue: ReturnType<typeof setTimeout> | undefined;
+	try {
+		const graph = await f.start();
+		const children = (graph.messages.find((message: any) => message.role === 'supervisor') as { children: { pid: number }[] }).children;
+		// A regressed helper must fail without leaving the suite itself frozen.
+		let rescued = false;
+		rescue = setTimeout(() => {
+			rescued = true;
+			graph.child.kill('SIGCONT');
+		}, 2000);
+		graph.child.kill('SIGSTOP');
+		await vi.waitFor(() => expect(readFileSync(`/proc/${graph.child.pid}/stat`, 'utf8').split(') ').at(-1)!.split(' ')[0]).toBe('T'));
+		await expect(operation === 'stop' ? f.stop(graph, 100) : f.close(100)).rejects.toThrow(/Graceful shutdown timed out/);
+		expect(rescued, 'cleanup needed the independent test rescue').toBe(false);
+		expect(graph.child.exitCode !== null || graph.child.signalCode !== null).toBe(true);
+		for (const child of children) {
+			expect(() => process.kill(child.pid, 0)).toThrow();
+		}
+	} finally {
+		clearTimeout(rescue);
+		for (const graph of f.graphs) {
+			if (graph.child.exitCode === null && graph.child.signalCode === null) {
+				graph.child.kill('SIGCONT');
+			}
+		}
+		await f.close();
+	}
+});
+
+async function controlPoll(port: number, operation: 'pause' | 'resume') {
+	const response = await fetch(`http://127.0.0.1:${port}/api/admin/queue/${operation}`, {
+		method: 'POST', headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ i: seeded.actors.root.token, queue: 'endedPollNotification' }),
+	});
+	expect(response.status, await response.clone().text()).toBe(204);
+}
+
+function identity(job: { id?: string; name: string; data: unknown; opts: unknown }) {
+	return structuredClone({ id: job.id, name: job.name, data: job.data, opts: job.opts });
+}
+
+async function delayedScore(queue: Queue, id: string) {
+	const score = await (await queue.getBackend().client).zscore(queue.toKey('delayed'), id);
+	expect(score).not.toBeNull();
+	return Number(score);
+}
+
+function pollEnded(noteId: string) {
+	return source.query("SELECT recipient_id, notifier_id FROM backend_internal.notification WHERE note_id=$1 AND notification_type='pollEnded'", [noteId]);
+}
+
+function noUnexpectedDiagnostics(graphs: ReturnType<typeof launch>[]) {
+	for (const graph of graphs) {
+		expect(graph.output()).not.toMatch(/note-post-save.failed|note-post-delete.failed|shutdown.timeout|search-\w+.failed|deliver.instance-update-failed|webhook.status-update-failed/);
+	}
+}
+
+function jobFailures(graph: ReturnType<typeof launch>) {
+	return graph.output().split('\n').filter(line => line.includes('"event":"job.failed"')).map(line => JSON.parse(line) as { queue: string; reason?: string; error?: { name: string } });
+}
+
+test('N7 Supervisor preserves HTTP-created posting work across stop/restart and natural retries', async () => {
+	const f = await postingGraph();
+	const [ap, webhook, pollQueue] = f.queues;
+	inbox.respond('/inbox/remote', 503);
+	hookStatuses.set('author-hook', 429);
+	try {
+		const first = await f.start();
+		const author = await f.stream('ordinary');
+		const viewer = await f.stream();
+		await controlPoll(f.port, 'pause');
+		expect(await pollQueue.isPaused()).toBe(true);
+		const tag = `retry${randomUUID().replaceAll('-', '')}`;
+		const text = `@root #${tag} restart poll`;
+		const startedAt = Date.now();
+		const response = await api(f.port, 'create', { text, visibility: 'public', poll: { choices: ['one', 'two'], expiredAfter: 3000 } });
+		const finishedAt = Date.now();
+		expect(response.status, await response.clone().text()).toBe(200);
+		const { createdNote } = await response.json() as { createdNote: { id: string; poll: { expiresAt: string } } };
+		const noteId = createdNote.id;
+		const row = await source.getRepository(MiNote).findOneByOrFail({ id: noteId });
+		const poll = await source.getRepository(MiPoll).findOneByOrFail({ noteId });
+		expect(row).toMatchObject({ userId: seeded.actors.ordinary.id, text, visibility: 'public', hasPoll: true, tags: [tag], mentions: [seeded.actors.root.id] });
+		expect(poll).toMatchObject({ choices: ['one', 'two'], votes: [0, 0], multiple: false, userId: row.userId, noteVisibility: 'public' });
+		const expiry = poll.expiresAt!.getTime();
+		expect(expiry).toBe(new Date(createdNote.poll.expiresAt).getTime());
+		expect(expiry).toBeGreaterThanOrEqual(startedAt + 3000);
+		expect(expiry).toBeLessThanOrEqual(finishedAt + 3000);
+		const shown = await api(f.port, 'show', { noteId });
+		expect(shown.status).toBe(200);
+		expect(await shown.json()).toMatchObject({ id: noteId, text, poll: { expiresAt: poll.expiresAt!.toISOString() } });
+		await vi.waitFor(async () => {
+			for (const type of ['note', 'mention', 'notification']) {
+				expect(viewer.messages.some(m => m.body.type === type && (m.body.body?.id === noteId || m.body.body?.note?.id === noteId))).toBe(true);
+			}
+			expect(await source.query('SELECT notification_type FROM backend_internal.notification WHERE note_id=$1', [noteId])).toEqual([{ notification_type: 'mention' }]);
+			expect(await f.timelines.lrange('list:localTimeline', 0, -1)).toContain(noteId);
+			expect(await f.timelines.lrange(`list:homeTimeline:${seeded.actors.root.id}`, 0, -1)).toContain(noteId);
+			expect(await f.redis.sismember(`hashtagUsers:${tag}`, row.userId)).toBe(1);
+			expect((await f.index.getDocument(noteId)).text).toBe(text);
+		}, { timeout: 15000, interval: 30 });
+		await f.tasksApplied();
+		await vi.waitFor(async () => {
+			for (const queue of [ap, webhook]) {
+				expect((await queue.getJobs(['delayed'])).filter(j => queue === ap ? j.data.content.includes(noteId) : j.data.webhookId === 'author-hook' && j.data.content.note.id === noteId)).toHaveLength(1);
+			}
+		}, { timeout: 10000 });
+		const apJob = (await ap.getJobs(['delayed'])).find(j => j.data.content.includes(noteId))!;
+		const hookJob = (await webhook.getJobs(['delayed'])).find(j => j.data.webhookId === 'author-hook' && j.data.content.note.id === noteId)!;
+		const pollJob = (await pollQueue.getJobs(['delayed', 'waiting'])).find(j => j.data.noteId === noteId)!;
+		expect(pollJob).toBeDefined();
+		expect(pollJob.name).toBe(noteId);
+		expect(pollJob.data).toEqual({ noteId });
+		expect(pollJob.opts.delay).toBeGreaterThan(0);
+		expect(pollJob.opts).toMatchObject({ removeOnComplete: { age: 604800, count: 30 }, removeOnFail: { age: 604800, count: 100 } });
+		// Queue timestamp is taken just after the expiry-derived delay is computed.
+		expect(pollJob.timestamp + pollJob.opts.delay!).toBeGreaterThanOrEqual(expiry);
+		expect(pollJob.timestamp + pollJob.opts.delay!).toBeLessThan(expiry + 1000);
+		const saved = [apJob, hookJob, pollJob].map(identity);
+		const scores: number[] = [];
+		for (const [queue, job, attempts] of [[ap, apJob, 12], [webhook, hookJob, 4]] as const) {
+			expect(job.attemptsMade).toBe(1);
+			expect(job.delay).toBeGreaterThanOrEqual(60000);
+			expect(job.delay).toBeLessThanOrEqual(72000);
+			expect(job.opts).toMatchObject({ attempts, backoff: { type: 'custom' }, removeOnComplete: { age: 604800, count: 30 }, removeOnFail: { age: 604800, count: 100 } });
+			scores.push(await delayedScore(queue, job.id!));
+		}
+		expect(deliveries(noteId)).toHaveLength(1);
+		expect(deliveries(noteId)[0].verify(publicKeyPem)).toEqual({ signature: true, digest: true });
+		expect(deliveries(noteId)[0].body).toBe(apJob.data.content);
+		expect(deliveries(noteId)[0].headers.digest).toBe(apJob.data.digest);
+		expect(receipts(noteId).filter(r => r.hookId === 'viewer-hook').map(r => r.type)).toEqual(['mention']);
+		const firstHook = receipts(noteId).find(r => r.hookId === 'author-hook')!;
+		expect(firstHook).toMatchObject({ secret: 'test-only', server: f.value.url, userId: row.userId, eventId: hookJob.data.eventId, createdAt: hookJob.data.createdAt, body: hookJob.data.content });
+		expect(firstHook.raw).toBe(JSON.stringify({ server: f.value.url, hookId: 'author-hook', userId: row.userId, eventId: hookJob.data.eventId, createdAt: hookJob.data.createdAt, type: 'note', body: hookJob.data.content }));
+		await f.stop(first);
+		expect(Date.now()).toBeLessThan(Math.min(...scores.map(score => Math.floor(score / 4096))));
+		for (const [i, queue] of f.queues.entries()) {
+			const retained = (await queue.getJob(saved[i].id!))!;
+			expect(identity(retained)).toEqual(saved[i]);
+			expect(retained.attemptsMade).toBe(i === 2 ? 0 : 1);
+			if (i < 2) {
+				expect(await delayedScore(queue, retained.id!)).toBe(scores[i]);
+			}
+		}
+		expect(await source.getRepository(MiNote).findOneByOrFail({ id: noteId })).toEqual(row);
+		expect(await source.getRepository(MiPoll).findOneByOrFail({ noteId })).toEqual(poll);
+		expect(await pollEnded(noteId)).toEqual([]);
+		inbox.respond('/inbox/remote', 202); hookStatuses.delete('author-hook');
+		const second = await f.start();
+		const reconnected = await f.stream('ordinary');
+		await vi.waitFor(() => expect(author.socket.readyState).toBe(WebSocket.CLOSED));
+		expect((await api(f.port, 'show', { noteId })).status).toBe(200);
+		if (Date.now() < expiry) {
+			await new Promise(resolve => setTimeout(resolve, expiry - Date.now()));
+		}
+		expect(await pollEnded(noteId)).toEqual([]);
+		expect(await pollQueue.isPaused()).toBe(true);
+		await controlPoll(f.port, 'resume');
+		await vi.waitFor(async () => {
+			expect(await pollEnded(noteId)).toEqual([{ recipient_id: row.userId, notifier_id: null }]);
+			expect(reconnected.messages.some(m => m.body.type === 'notification' && m.body.body?.type === 'pollEnded' && m.body.body.note?.id === noteId)).toBe(true);
+			expect(await (await pollQueue.getJob(pollJob.id!))!.getState()).toBe('completed');
+		}, { timeout: 10000 });
+		expect(identity((await pollQueue.getJob(pollJob.id!))!)).toEqual(saved[2]);
+		// Both real failures retry concurrently after their original natural deadlines.
+		await vi.waitFor(async () => {
+			for (const [queue, id] of [[ap, apJob.id!], [webhook, hookJob.id!]] as const) {
+				const job = (await queue.getJob(id))!;
+				expect(await job.getState()).toBe('completed'); expect(job.attemptsMade).toBe(2);
+			}
+		}, { timeout: 85000, interval: 100 });
+		for (const [i, queue] of [ap, webhook].entries()) {
+			expect(identity((await queue.getJob(saved[i].id!))!)).toEqual(saved[i]);
+		}
+		const apReceipts = deliveries(noteId);
+		expect(apReceipts).toHaveLength(2);
+		const hookReceipts = receipts(noteId).filter(r => r.hookId === 'author-hook');
+		expect(hookReceipts).toHaveLength(2);
+		expect(apReceipts[1].receivedAt).toBeGreaterThanOrEqual(Math.floor(scores[0] / 4096));
+		expect(hookReceipts[1].receivedAt).toBeGreaterThanOrEqual(Math.floor(scores[1] / 4096));
+		for (const pair of [apReceipts, hookReceipts]) {
+			expect(pair[1].receivedAt - pair[0].receivedAt).toBeGreaterThanOrEqual(60000);
+		}
+		for (const receipt of apReceipts) {
+			expect(receipt.verify(publicKeyPem)).toEqual({ signature: true, digest: true });
+			expect(receipt.keyId).toBe(`${f.value.url}/users/${row.userId}#main-key`);
+			expect(receipt.body).toBe(apJob.data.content); expect(receipt.headers.digest).toBe(apJob.data.digest);
+		}
+		expect(hookReceipts[1].raw).toBe(firstHook.raw); expect(hookReceipts[1].secret).toBe(firstHook.secret);
+		await queueIdle(f.queues);
+		// Existing full deletion cases remain the primary proof. Reuse their helpers
+		// here with the history snapshot taken AFTER pollEnded; WS is newly live.
+		await reconnected.subscribe(noteId);
+		const before = await history(noteId, tag, f.redis, f.timelines);
+		const beforeHooks = structuredClone(receipts(noteId));
+		expect((await api(f.port, 'delete', { noteId })).status).toBe(204);
+		await vi.waitFor(() => expect(reconnected.messages.find(m => m.type === 'noteUpdated')).toMatchObject({ body: { id: noteId, type: 'deleted' } }));
+		await vi.waitFor(async () => {
+			expect(deliveries(noteId).map(d => JSON.parse(d.body).type)).toEqual(['Create', 'Create', 'Delete']);
+			await expect(f.index.getDocument(noteId)).rejects.toMatchObject({ cause: { code: 'document_not_found' } });
+		}, { timeout: 10000 });
+		await queueIdle(f.queues); await f.stop(second); await f.tasksApplied();
+		expect(await source.getRepository(MiNote).existsBy({ id: noteId })).toBe(false);
+		expect(await source.getRepository(MiPoll).existsBy({ noteId })).toBe(false);
+		expect(await history(noteId, tag, f.redis, f.timelines)).toEqual(before);
+		expect(receipts(noteId)).toEqual(beforeHooks);
+		expect(deliveries(noteId).map(d => JSON.parse(d.body).type)).toEqual(['Create', 'Create', 'Delete']);
+		expect(deliveries(noteId)[2].verify(publicKeyPem)).toEqual({ signature: true, digest: true });
+		await expect(f.index.getDocument(noteId)).rejects.toMatchObject({ cause: { code: 'document_not_found' } });
+		const third = await f.start();
+		const missing = await api(f.port, 'show', { noteId });
+		expect(missing.status).toBe(400); expect(await missing.json()).toMatchObject({ error: { code: 'NO_SUCH_NOTE' } });
+		await f.stop(third); noUnexpectedDiagnostics(f.graphs);
+		expect(jobFailures(first).map(entry => entry.queue).sort()).toEqual(['deliver', 'userWebhookDeliver']);
+		expect(jobFailures(second)).toEqual([]); expect(jobFailures(third)).toEqual([]);
+	} finally {
+		inbox.respond('/inbox/remote', 202); hookStatuses.clear(); await f.close();
+	}
+}, 180000);
+
+async function postingState(f: Awaited<ReturnType<typeof postingGraph>>) {
+	await f.tasksApplied();
+	const values = async (redis: Redis, pattern: string, prefix: string) => {
+		const keys = (await redis.keys(pattern)).sort();
+		return Promise.all(keys.map(async key => ({ key, value: await redis.dump(key.slice(prefix.length)) })));
+	};
+	return {
+		notes: await source.getRepository(MiNote).count(), polls: await source.getRepository(MiPoll).count(),
+		authorCount: (await source.getRepository(MiUser).findOneByOrFail({ id: seeded.actors.ordinary.id })).notesCount,
+		notifications: await source.query('SELECT * FROM backend_internal.notification ORDER BY notification_id'),
+		hashtags: await source.getRepository(MiHashtag).find({ order: { name: 'ASC' } }),
+		hashtagUsers: await values(f.redis, `${f.value.redis.keyPrefix}hashtagUsers:*`, f.value.redis.keyPrefix!),
+		rankings: await values(f.redis, `${f.value.redis.keyPrefix}featuredHashtagsRanking:*`, f.value.redis.keyPrefix!),
+		timelines: await values(f.timelines, `${f.value.redisForTimelines!.keyPrefix}list:*`, f.value.redisForTimelines!.keyPrefix!),
+		jobs: await Promise.all(f.queues.map(async queue => (await queue.getJobs(['waiting', 'active', 'delayed', 'completed', 'failed'])).map(identity).sort((a, b) => a.id!.localeCompare(b.id!)))),
+		// Concurrent startup settings submissions are unrelated to posting. Compare
+		// every other accepted task, including document additions/deletions.
+		tasks: (await client.tasks.getTasks({ indexUids: [f.index.uid], limit: 1000 })).results.filter(task => task.type !== 'settingsUpdate').map(task => task.uid),
+		documents: (await f.index.getDocuments()).results,
+		hooks: structuredClone(hooks), inboxCount: inbox.deliveries.length,
+	};
+}
+
+test('N7 Supervisor rejects credentials and rolls back Poll failure without posting effects', async () => {
+	const f = await postingGraph();
+	const golden = JSON.parse(readFileSync(new URL('../../../../docs/superpowers/compatibility/note/observations.json', import.meta.url), 'utf8'));
+	const moved = { id: seeded.codec.newId(Date.now()), token: 'movedn7'.padEnd(16, '0') };
+	await source.getRepository(MiUser).insert({ id: moved.id, token: moved.token, username: 'movedn7', usernameLower: 'movedn7', movedToUri: 'https://moved.example/users/n7' });
+	let trigger = false;
+	try {
+		const graph = await f.start();
+		const observer = await f.stream();
+		// Await index availability and applied settings, without depending on how
+		// many adapters submit startup settings in this process graph.
+		await vi.waitFor(async () => expect((await f.index.getStats()).numberOfDocuments).toBe(0), { timeout: 10000 });
+		const before = await postingState(f);
+		const streamStart = observer.messages.length;
+		for (const [name, token] of [
+			['C2-guest', null], ['C2-invalid', 'invalid-n7-token'], ['C2-suspended', seeded.actors.suspended.token],
+			['C2-moved', moved.token], ['C2-no-scope', seeded.actors.ordinaryNoScope.token],
+		] as const) {
+			const response = await fetch(`http://127.0.0.1:${f.port}/api/notes/create`, {
+				method: 'POST', headers: { 'Content-Type': 'application/json' },
+				// Invalid input still yields the named credential rejection first.
+				body: JSON.stringify({ i: token, text: 42, poll: { choices: [] } }),
+			});
+			expect({ status: response.status, body: await response.json(), wwwAuthenticate: response.headers.get('www-authenticate') }, name).toEqual({ status: golden[name].status, body: golden[name].body, wwwAuthenticate: golden[name].wwwAuthenticate });
+			expect({ notes: await source.getRepository(MiNote).count() - before.notes, polls: await source.getRepository(MiPoll).count() - before.polls }, name).toEqual(golden[name].delta);
+		}
+		// Fixed upstream NoteCreateService inserts Note/Poll in one transaction,
+		// before post-save effects. Inject at the second INSERT, not at a double.
+		await source.query("CREATE FUNCTION n7_reject_poll() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF 'fail-poll-n7' = ANY(NEW.choices) THEN RAISE EXCEPTION 'injected Poll insert failure'; END IF; RETURN NEW; END $$");
+		await source.query('CREATE TRIGGER n7_reject_poll BEFORE INSERT ON poll FOR EACH ROW EXECUTE FUNCTION n7_reject_poll()');
+		trigger = true;
+		try {
+			const failed = await api(f.port, 'create', { text: '@root #rollbackn7 rollback', poll: { choices: ['fail-poll-n7', 'two'], expiredAfter: 3000 } });
+			expect(failed.status).toBe(500);
+		} finally {
+			await source.query('DROP TRIGGER n7_reject_poll ON poll');
+			await source.query('DROP FUNCTION n7_reject_poll()');
+			trigger = false;
+		}
+		// Graceful shutdown drains accepted producers and handlers. Absence is
+		// measured after that barrier, not inferred from a brief receipt timeout.
+		await f.stop(graph);
+		expect(await postingState(f)).toEqual(before);
+		expect(observer.messages.slice(streamStart).filter(m => m.type === 'noteUpdated' || m.type === 'channel' && ['note', 'mention', 'notification'].includes(m.body.type ?? ''))).toEqual([]);
+		noUnexpectedDiagnostics(f.graphs);
+		expect(graph.output()).not.toContain('job.failed');
+	} finally {
+		if (trigger) {
+			await source.query('DROP TRIGGER n7_reject_poll ON poll');
+			await source.query('DROP FUNCTION n7_reject_poll()');
+		}
+		await f.close();
+	}
+});
+
+test('N7 Supervisor keeps terminal AP 404 failed without recreating the post', async () => {
+	const f = await postingGraph();
+	inbox.respond('/inbox/remote', 404);
+	try {
+		const graph = await f.start();
+		const viewer = await f.stream();
+		const before = (await source.getRepository(MiUser).findOneByOrFail({ id: seeded.actors.ordinary.id })).notesCount;
+		const tag = `terminal${randomUUID().replaceAll('-', '')}`;
+		const text = `@root #${tag} terminal AP`;
+		const response = await api(f.port, 'create', { text });
+		expect(response.status, await response.clone().text()).toBe(200);
+		const noteId = (await response.json() as { createdNote: { id: string } }).createdNote.id;
+		const show = await api(f.port, 'show', { noteId });
+		expect(show.status).toBe(200); expect(await show.json()).toMatchObject({ id: noteId, text });
+		const [ap, webhook, poll] = f.queues;
+		await vi.waitFor(async () => {
+			expect(await ap.getJobCounts('waiting', 'active', 'delayed', 'failed', 'completed')).toEqual({ waiting: 0, active: 0, delayed: 0, failed: 1, completed: 0 });
+			expect((await f.index.getDocument(noteId)).text).toBe(text);
+			expect(receipts(noteId).map(r => r.type).sort()).toEqual(['mention', 'note']);
+			expect(viewer.messages.some(m => m.body.type === 'notification' && m.body.body?.note?.id === noteId)).toBe(true);
+			expect(await f.timelines.lrange('list:localTimeline', 0, -1)).toContain(noteId);
+			expect(await f.redis.sismember(`hashtagUsers:${tag}`, seeded.actors.ordinary.id)).toBe(1);
+		}, { timeout: 15000 });
+		await queueIdle([webhook, poll]); await f.tasksApplied();
+		await f.stop(graph);
+		const jobs = await ap.getJobs(['waiting', 'active', 'delayed', 'completed', 'failed']);
+		expect(jobs).toHaveLength(1);
+		expect(await jobs[0].getState()).toBe('failed');
+		expect(jobs[0].attemptsMade).toBe(1); expect(jobs[0].opts.attempts).toBe(12);
+		expect(jobs[0].failedReason).toBe('404 Not Found');
+		expect(jobFailures(graph)).toEqual([expect.objectContaining({ queue: 'deliver', reason: '404 Not Found', error: expect.objectContaining({ name: 'UnrecoverableError' }) })]);
+		expect(deliveries(noteId)).toHaveLength(1);
+		expect(deliveries(noteId)[0].verify(publicKeyPem)).toEqual({ signature: true, digest: true });
+		expect(await source.getRepository(MiNote).findOneByOrFail({ id: noteId })).toMatchObject({ text, userId: seeded.actors.ordinary.id });
+		expect(await source.getRepository(MiNote).countBy({ text })).toBe(1);
+		expect((await source.getRepository(MiUser).findOneByOrFail({ id: seeded.actors.ordinary.id })).notesCount).toBe(before + 1);
+		expect(await source.query('SELECT notification_type FROM backend_internal.notification WHERE note_id=$1', [noteId])).toEqual([{ notification_type: 'mention' }]);
+		noUnexpectedDiagnostics(f.graphs);
+	} finally {
+		inbox.respond('/inbox/remote', 202); await f.close();
 	}
 });

@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { Queue } from 'bullmq';
 import { Redis } from 'ioredis';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
-import { MiChannel, MiFollowing, MiRelay, MiMeta, MiNote, MiUser, MiUserKeypair, MiUserProfile } from 'backend-upstream/entities';
+import { MiChannel, MiFollowing, MiRelay, MiMeta, MiNote, MiUser, MiUserKeypair, MiUserProfile, MiRole, MiRoleAssignment } from 'backend-upstream/entities';
 import { verifyLdSignature } from '../helpers/ld-signature.js';
 import { baseQueueOptions } from '../../src/platform/job-queue/connection.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
@@ -167,6 +167,67 @@ test('notes created over HTTP are delivered by the worker process to the fake in
 		await http.close();
 		await worker.close();
 		await config.close();
+	}
+});
+
+// Composed evidence: C4 corrected-operation HTTP/storage observations plus pinned
+// ApRendererService home-plain source-method audiences, not an upstream server run.
+test.each(['sensitive', 'policy'])('C4-%s correction reaches source-backed home AP audiences', async correction => {
+	const port = await freePort();
+	const value = processConfig({ http: { port } });
+	const config = await configuration(value);
+	const roleId = seeded.codec.newId(Date.now());
+	if (correction === 'sensitive') {
+		await source.getRepository(MiMeta).update('singleton', { sensitiveWords: ['needle'] });
+	} else {
+		await source.getRepository(MiRole).insert({ id: roleId, name: 'no public', description: '', updatedAt: new Date(), lastUsedAt: new Date() });
+		await source.query('UPDATE role SET policies=$1 WHERE id=$2', [{ canPublicNote: { useDefault: false, priority: 1, value: false } }, roleId]);
+		await source.getRepository(MiRoleAssignment).insert({ id: seeded.codec.newId(Date.now()), roleId, userId: ids.alice });
+	}
+	const inspect = new Queue('deliver', baseQueueOptions(value.redisForJobQueue, 'deliver', 5000));
+	const http = launch('built/entrypoints/http.js', config.path);
+	const worker = launch('built/entrypoints/worker.js', config.path);
+	try {
+		await Promise.all([http.ready, worker.ready]);
+		const response = await fetch(`http://127.0.0.1:${port}/api/notes/create`, {
+			method: 'POST', headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ i: seeded.actors.ordinary.token, text: correction === 'sensitive' ? 'needle' : 'hello', visibility: 'public' }),
+		});
+		expect(response.status).toBe(200);
+		const { createdNote } = await response.json() as { createdNote: { id: string; visibility: string } };
+		expect(createdNote.visibility).toBe((observations[`C4-${correction}`] as { saved: { visibility: string } }).saved.visibility);
+		expect((await source.getRepository(MiNote).findOneByOrFail({ id: createdNote.id })).visibility).toBe('home');
+		const show = await fetch(`http://127.0.0.1:${port}/api/notes/show`, {
+			method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ i: seeded.actors.ordinary.token, noteId: createdNote.id }),
+		});
+		expect(show.status).toBe(200);
+		expect(await show.json()).toMatchObject({ id: createdNote.id, visibility: 'home' });
+		// Drain accepted producers first; then queue completion bounds absence of relay delivery.
+		http.child.kill('SIGTERM');
+		expect((await http.exit).code, http.output()).toBe(0);
+		await vi.waitFor(async () => expect(await inspect.getJobCounts('waiting', 'active', 'delayed', 'completed', 'failed')).toEqual({ waiting: 0, active: 0, delayed: 0, completed: 1, failed: 0 }), { timeout: 10000 });
+		const received = inbox.deliveries.filter(d => d.body.includes(`/notes/${createdNote.id}/activity`));
+		expect(received.map(d => d.path)).toEqual(['/inbox/shared']);
+		const render = JSON.parse(readFileSync(new URL('../../../../docs/superpowers/compatibility/ap-deliver/render-cases.json', import.meta.url), 'utf8'));
+		const fixed = JSON.parse(render.cases.find((entry: { id: string }) => entry.id === 'home-plain').activity);
+		const audience = (activity: { to: string[]; cc: string[] }) => ({ to: activity.to, cc: activity.cc });
+		const expected = JSON.parse(JSON.stringify(audience(fixed)).replaceAll(`${render.inputs.selfUrl}/users/alice`, `${value.url}/users/${ids.alice}`));
+		const actual = JSON.parse(received[0].body);
+		expect(audience(actual)).toEqual(expected);
+		expect(audience(actual.object)).toEqual(expected);
+		expect(received[0].verify(publicKeyPem)).toEqual({ signature: true, digest: true });
+		worker.child.kill('SIGTERM');
+		expect((await worker.exit).code, worker.output()).toBe(0);
+		expect(http.output()).not.toContain('note-post-save.failed');
+		expect(worker.output()).not.toContain('job.failed');
+	} finally {
+		await http.close(); await worker.close();
+		await inspect.obliterate({ force: true }); await inspect.close(); await config.close();
+		await source.getRepository(MiMeta).update('singleton', { sensitiveWords: [] });
+		if (correction === 'policy') {
+			await source.getRepository(MiRoleAssignment).delete({ roleId });
+			await source.getRepository(MiRole).delete(roleId);
+		}
 	}
 });
 

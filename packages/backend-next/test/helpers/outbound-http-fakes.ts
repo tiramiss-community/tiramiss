@@ -532,6 +532,7 @@ export async function startFakeServers(): Promise<FakeServers> {
 
 /** 偽の inbox が受け取った 1 件の配送。`verified` は受信した値のまま検証した結果。 */
 export interface RecordedDelivery {
+	receivedAt: number;
 	path: string;
 	headers: Record<string, string | string[]>;
 	body: string;
@@ -569,6 +570,7 @@ export async function startInboxRecorder(): Promise<InboxRecorder> {
 		}
 		const received: ReceivedRequest = { listener: 'inbox', method: req.method ?? '', path: req.url ?? '', headers, body: Buffer.concat(chunks) };
 		deliveries.push({
+			receivedAt: Date.now(),
 			path: received.path,
 			headers,
 			body: received.body.toString('utf8'),

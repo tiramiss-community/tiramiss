@@ -327,3 +327,20 @@ pnpm --filter backend-next test:process test/processes/note-antennas.test.ts
 ```
 
 実依存検証は通常認証HTTP・PostgreSQL・分離したtimeline Redis・pubsub、internal設定受信、raw payload全列、部分失敗、即削除後のsnapshot、SQL拒否、subscriber解放を扱う。通常HTTP子の照会保留中SIGTERMと、managed子の5分batchを待たず終了時flushして終了0を観測する。source corpusの抽出実行とは別の証拠として記録する。
+
+## N7投稿検証（#176）
+
+[証拠の種類・実測・残るblocker](../../docs/superpowers/compatibility/note/n7/README.md)を参照。既存の検証手順で専用依存を準備し、repo rootで実行する。既定portを使い、並行時だけ既存の`BACKEND_NEXT_TEST_DB_PORT` / `BACKEND_NEXT_TEST_REDIS_PORT` / `BACKEND_NEXT_TEST_MEILI_PORT`を上書きする。依存のinstallや共有DBへのmigrationは以下に含めない。process試験はbuild済み成果物が必要。 `note-delete-integration.test.ts`は`/proc/<pid>/stat`と`SIGSTOP`/`SIGCONT`を使うLinux専用のため、CIやWSLなどのLinux環境で実行する。
+
+```sh
+pnpm --filter backend-next... typecheck
+pnpm --filter backend-next test:integration test/integration/note-create.test.ts test/integration/note-posting-lifecycle.test.ts test/integration/note-create-relations.test.ts test/integration/note-show.test.ts test/integration/note-delete.test.ts test/integration/deliver-queue.test.ts test/integration/user-webhook.test.ts
+pnpm --filter backend-next test:process test/processes/note-delete-integration.test.ts
+pnpm --filter backend-next test:process test/processes/note-deliver.test.ts
+pnpm --filter backend-next test:process test/processes/posting-websocket.test.ts test/processes/poll-ended.test.ts
+node --test scripts/note-contract-*.test.mjs scripts/backend-contract-inventory.test.mjs
+node scripts/backend-contract-inventory.mjs --check
+node scripts/check-shipping.mjs
+```
+
+Supervisor自然retry試験は通常の60–72秒backoffを待つ（test timeout180秒）。新WS接続へのlive通知でありreplayを証明しない。通常CIは記録済みfixtureを利用し、固定本家checkoutでの任意確認時だけ`BACKEND_NEXT_UPSTREAM_PATH=/path/to/pinned-upstream`を指定する。N7の限定成功でもremote mention501/stale refreshは#195に残り、投稿全体や本番切替の完成とはしない。
