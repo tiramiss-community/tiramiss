@@ -54,21 +54,56 @@ node docs/superpowers/compatibility/queue-retention/reference-queue-retention.cj
 
 probe は本家 module、完全な AST method、完全な Worker option expression、poll の条件ブロックを実行する。Queue / scheduler / repository / query / logger / Reversi / clock / digest / UUID / decorator / backoff function / pending drain は明示的な double。Worker の processor callback は実行しない。Nest DI、本家 full server、Redis、BullMQ の保持アルゴリズム、実 worker・API・socket の成功を証明しない。source scan の `queue.clean` は receiver 名一致なので、それだけを全清掃の網羅証明にせず、固定 source の他の `.clean(` 呼び出しも手で確認した（chart 保守のみ）。
 
-## 現在の接続範囲
+## 現在の接続範囲と実依存検証（2026-11-08）
 
-作業基点 `6246c3605a` の backend-next には `deliver` / `endedPollNotification` / `userWebhookDeliver` の3業務 producer・Worker が接続済みで、それぞれ本家の7日・30/100設定を job ごとに渡している。全10名の管理 handle は #163 で接続済み。管理 handle の存在は system / postScheduledNote / inbox / db / relationship / objectStorage / systemWebhookDeliver の7業務 Worker・producer が完成したことを意味しない。
+検証根拠をコミット `2549ec263662c10cdd238448482f325c1693c035` に固定した。backend-next の `deliver` / `endedPollNotification` / `userWebhookDeliver` の3業務 producer・Worker は、それぞれ本家の7日・成功30件/失敗100件を job ごとに渡す。全10名の管理 handle は #163 で接続済みである。#164 はこの現在の接続範囲の通常保持と全10名の管理履歴・終端清掃を検証した。製品コードの不一致は見つからず、変更は比較資料・テスト・文書のみとなった。
 
-#164 では現在接続する3 queue の実際の保持を検証する。未移植機能を空 handler や新しい周期 worker で埋めない。将来追加する producer は本資料の該当行を利用し、その機能の実仕事から保持を検証する。既存 job の opts を上書きする migration、無設定 job に7日を強制する Worker fallback は追加しない。#165 の残 payload・定期 job・完全停止引継ぎの確認、#124/#176 全体、7業務 queue の機能完成を本資料だけで完了扱いしない。
+### 実際の保持動作
 
-## 実 Redis / BullMQ で必要な検証
+`age: 604800` は厳密な7日後の期限ではない。同じ queue が同じ completed / failed 状態へ次の job を移すときに、経過時間と件数に基づいて履歴を削除する。読み取りや Worker 再開だけでは古い履歴は消えず、完了による清掃は失敗履歴を、失敗による清掃は完了履歴を削除しない。件数と age は job 名別でなく queue の終端集合全体に働く。
 
-以下は source probe から分離した実依存検証の recipe である。専用 Redis と一意の test prefix を使い、実接続のある3 queue の実 producer options / Worker adapter と #163 の照会窓口を使う。短縮ポリシーの単独テストだけで、本番の7日・30/100設定との一致を示したことにしない。
+Queue の `defaultJobOptions` と Worker の保持 fallback は追加していない。保持 opts のない legacy job はそのまま完了しても残るが、同じ終端集合へ後から入る別名の policy 付き job の清掃対象にはなり得る。管理 handle は既存 job の opts を変更しない。system 定期 job の age-only policy と単発 job の30/100 policyも、同じ集合でそれぞれの終端遷移に従う。
 
-1. **件数**: 実 Worker で31件を成功、101件を最終失敗させ、待機中の処理完了を `finishedOn` / `getJob` で確認してから、それぞれ最新30件・100件が残ることと最古 job / logs が消えることを確かめる。結果値・失敗理由・stack・opts が残ることも管理照会で見る。同じ queue の異なる job 名を混ぜ、名前別の上限と誤認しない。
-2. **7日と lazy cleanup**: 完了・失敗させた test job の終端 sorted-set score と `finishedOn` だけを test の Redis 接続で7日より前へ backdate する。読み取り・pause/resume・時刻経過だけでは消えないことを確認する。その後、同じ queue の同じ終端状態へ次の job を移し、期限超過履歴が消え、期間内履歴が残ることを確認する。成功だけ進めても failed 履歴が清掃されるとは仮定しない。タイマーの固定待ちに頼らず、十分な境界幅を持たせる。実行時刻ちょうどの閾値を試す場合は BullMQ の transition 時刻も制御する。
-3. **retry**: 一時失敗後の backoff/delayed と、最終失敗の failed を区別する。最終失敗から #163 の retry を実行し、成功へ移った job は completed に残り、他の失敗履歴・成功履歴の上限がそれぞれ働くことを確かめる。retention により既に消えた ID は取得できない。poll は source どおり attempts 未指定なので、通常自動 retry を追加しない。
-4. **未完了の保護**: 同じ queue に wait、pause 中に投入した paused、未来の delayed、処理を gate で止め lock を保つ active を用意する。別 job の成功/最終失敗を使って保持清掃を発生させる。全 sentinel の ID・payload・状態が残り、resume / gate 解放後に実行できることを確認する。active の lock を故意に失わせる stalled 検査とは混ぜない。
-5. **無設定・上書きの境界**: `removeOnComplete` / `removeOnFail` のない legacy test job は、source にない Worker fallback で消さない。ただし同じ終端集合の他 job が持つ count/age 清掃から保護されるとは限らないため、別 test prefix で単独挙動と混在挙動を分ける。`true` / `false` / 数値 / object は BullMQ の job opts として尊重されることを確認する。これらの投入口を業務 API に新設しない。
-6. **管理と終了**: 清掃後の counts / jobs / show-job / logs を #163 の通常管理窓口で確認する。手動 clear の破棄は別ケースへ分ける。開始済み job を待機して Worker を閉じ、Queue を解放する。正常停止と Redis 接続喪失の既存 process 検証を再利用し、保持のために独立の周期プロセスや shutdown clean を追加しない。
+自動保持と `clear(completed)` / `clear(failed)` は未完了 job を残す。管理者が明示する非終端状態の clear や `clear('*')` は本家どおり破棄操作であり、未完了 job の保護操作ではない。削除後は job / logs / 一覧から消え、既存 `show-job` は missing-job の500を返す。統計の累積完了・失敗数は履歴削除で減らない。
 
-実依存検証の件数・実行結果は #164 の実装/検証記録へ別途残す。この source fixture の24観測を実 Redis テスト件数に加算しない。
+### 検証の根拠と境界
+
+[直接比較の単体テスト](../../../../packages/backend-next/test/unit/job-queue/retention.test.ts) は、実際の3 producer の opts と全10 Queue / Worker の共通設定を source 観測に直接照合する。新規28件と近傍3ファイルを合わせた97件が成功した。比較に渡す実値の保持設定を一時的に `true` へ変えた negative control は3件が失敗し、復元後の最終実行は成功した。製品コードを変更して失敗を作ったものではない。
+
+[実 Redis の保持テスト](../../../../packages/backend-next/test/integration/queue-retention.test.ts) の8件は、3種類の実 producer / Worker adapter と実 BullMQ 6.3.11 / Redis を使う。handler callback だけが成功・最終失敗・一時失敗を制御する。通知保存・AP配送・webhook送信の業務全体をこの callback で検証したとは扱わず、既存の各業務テストを引き継ぐ。
+
+- 各 queue で異なる job 名の31成功・101最終失敗を処理し、実際に保存された7日・30/100 opts、30/100の残存、削除 hash / logs と残存する結果・試行・失敗情報を確認した。同時刻の job の挿入順は仮定しない。
+- Worker 停止中に test fixture の終端 ZSET score と hash の `finishedOn` だけを7日±60000msへ backdate した。再開・読み取り後の残存と、次の同状態遷移による期限超過分だけの削除を3 queueで確認した。厳密な閾値一致や7日間の実待機を測定したとは扱わない。
+- 無設定 legacy job の残存と、後続の policy 付き job による同じ終端集合の清掃、別 queue / prefix の同ID jobの隔離を確認した。
+- 実 deliver Worker の通常12試行/backoffで delayed retry を観測した。自動清掃と終端 clear 後も、retry・paused waiting・prioritized・未来 delayed・lockを保つactiveは残る。retryをpromoteし、同ID・2試行目の成功と失敗情報の残存を確認した。gateは必ず解放してWorker停止を待つ。
+
+[管理HTTPの追加10件](../../../../packages/backend-next/test/integration/queue-admin.test.ts) は全10 selectorの実 Redis 履歴を `show-job` / `jobs` / `queue-stats` で確認する。test用Workerで作った完了・失敗履歴をそれぞれclearし、逆の終端履歴・logsと未完了job、別queue/prefixを残す。failed-only clear前にも新しいcompleted履歴を作り、両方向の独立性を確認した。既存の認可・非待機204・`clear('*')`・実配送retry・停止の検証も保持している。7つの未接続業務 handler を実行した証明ではない。
+
+| 実行コマンド（repo root） | 結果 |
+| --- | --- |
+| `node docs/superpowers/compatibility/queue-retention/reference-queue-retention.cjs /path/to/pinned-upstream --check` | PASS、24 source観測・8 source・32 producerメソッド |
+| `pnpm --filter backend-next test test/unit/job-queue/retention.test.ts test/unit/job-queue/deliver.test.ts test/unit/job-queue/ended-poll-notification.test.ts test/unit/job-queue/user-webhook.test.ts` | PASS、4 files / 97 tests |
+| `BACKEND_NEXT_TEST_DB_PORT=55486 BACKEND_NEXT_TEST_REDIS_PORT=56386 pnpm --filter backend-next test:integration test/integration/queue-retention.test.ts test/integration/queue-admin.test.ts` | PASS、2 files / 49 tests（追加18件） |
+| `pnpm --filter backend-next... build` / `pnpm --filter backend-next... typecheck` | PASS |
+| `node scripts/check-shipping.mjs --base 6246c3605a5d150c61ba8b4f965db651f70c7138` | PASS、変更3 testのquiet lint・SPDX 3195 files・locale safety |
+
+実依存検証には専用 PostgreSQL `55486` / Redis `56386` と一意のtest prefixを使った。sourceの24観測と実テスト件数を足し合わせない。本家 full server、Nest DI、全10業務 handler、長期間のwall-clock expiryを検証したとの主張はしない。起動・停止処理は変更せず、#162/#163の既存process検証を引き継ぐ。schema/API定義も変更していないためmigration検査・旧backend向け型再生成は対象外である。
+
+## 後続の所有者
+
+| queue / データ | 現在と残る担当 |
+| --- | --- |
+| `deliver` | 業務接続・保持検証済み。他機能のAP producerは各担当 |
+| `endedPollNotification` | 業務接続・保持検証済み。PG通知本体の保持・閲覧・既読・push・移行は #177 |
+| `userWebhookDeliver` | 投稿の業務接続・保持検証済み。他イベントと設定管理は #197 |
+| `system` | 管理のみ。保守・単発announcement archiveは #199、chart/集計/bufferは #200。実scheduler導入時に9定期jobのage-only optsと古いscheduler定義の整理を移植する |
+| `postScheduledNote` | 管理のみ。予約投稿のproducer/handlerは #183 |
+| `inbox` | 管理のみ。受信producer/handlerは #195 |
+| `db` | 管理のみ。import/export・account削除は #199 |
+| `relationship` | 管理のみ。関係処理のproducer/handlerは #182 |
+| `objectStorage` | 管理のみ。削除/storage handlerは #188、remote保守は #199 と調整 |
+| `systemWebhookDeliver` | 管理のみ。producer/handlerは #198 |
+| 既存Redis payload / scheduler | consume/drain/変換・rollback/backupの確認は #165、完全停止切替は #139 |
+| 運用情報 | #138 がage/count、lazy清掃、履歴と累積統計、明示clearの説明を利用する |
+
+#164 の現行完了条件はsource調査・現在の通常保持接続・実Redisと管理照会・通知/保守の引継ぎを対象とし、上の証拠で満たす。次は #165 の実payload互換・残仕事引継ぎを進める。将来追加するproducerは本資料の該当source policy（保持しない設定も含む）をその機能の実仕事へ移植する。管理handleだけを根拠に3 producerのcount値を全queueへ一律適用しない。#124 / #176全体、#177 / #199等の機能完了には換算しない。

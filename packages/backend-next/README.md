@@ -76,7 +76,9 @@ queueごとのprefixは本家と同じ`<prefix>:queue:<queue名>`。各子は投
 
 `/streaming` の `connect` で `channel: "queueStats"` を購読し、`{ type: "ch", body: { id: "stats", type: "requestLog", body: { id: "log", length: 10 } } }` を購読ID `stats` へ送る（`channel`も同じ）と履歴を得る。公開channelなのでguestや受理済み`read:account` appはqueue管理資格なしで購読できる。HTTPに1つのobserverがdeliver/inboxのactiveイベントと現在件数を即時/10秒周期で発行し、最新先頭200件をメモリ保持する。再起動を跨ぐ保持はない。
 
-pause/resumeは制御完了を待つ。clear/promote/retry/removeと監査は本家の非待機HTTP204を維持し、失敗を診断して開始済み処理を停止時に待つ。QueueEvents・listener・intervalもHTTP停止へ接続する。管理接続にも既存の無再接続方針を適用する。[固定source比較・実依存検証・差異](../../docs/superpowers/compatibility/queue-admin/README.md)。通常保持/清掃#164、残payload引継ぎ#165は別作業となる。
+pause/resumeは制御完了を待つ。clear/promote/retry/removeと監査は本家の非待機HTTP204を維持し、失敗を診断して開始済み処理を停止時に待つ。QueueEvents・listener・intervalもHTTP停止へ接続する。管理接続にも既存の無再接続方針を適用する。[固定source比較・実依存検証・差異](../../docs/superpowers/compatibility/queue-admin/README.md)。通常保持/清掃#164は[保持の比較・実依存検証](../../docs/superpowers/compatibility/queue-retention/README.md)で確認済み。次は残payload引継ぎ#165を進める。
+
+現在の業務queueは `deliver` / `endedPollNotification` / `userWebhookDeliver` の3つ。成功7日/30件・失敗7日/100件を各jobに指定し、同じqueue・同じ終端状態への次の遷移時に清掃する。静かな履歴の7日後の消去は保証しない。Queue/Workerの保持fallbackはなく、無設定jobも後続jobの共有終端集合の清掃対象にはなり得る。終端限定clearは未完了jobを残すが、明示`*`/非終端clearは破棄操作である。全10名の管理handleは残る7業務producer/Workerの完成を意味しない。通知本体の保持は#177、保守/定期jobは#199/#200などの各担当へ残る。
 
 ## 検証
 
@@ -100,6 +102,13 @@ docker compose -p backend-next-test -f packages/backend-next/compose.test.yml do
 `BACKEND_NEXT_TEST_DB_PORT` / `BACKEND_NEXT_TEST_REDIS_PORT` / `BACKEND_NEXT_TEST_MEILI_PORT`で変更できる。
 結合・プロセステストは専用DBに接続し、`backend_next_<ランダムID>`のDBだけを作成・削除する。
 本番設定は読み込まない。
+
+#164の保持・清掃に絞る場合は、専用のPostgreSQL/Redis起動後に次を実行する。source oracleの再実行は[保持比較資料](../../docs/superpowers/compatibility/queue-retention/README.md#実行と直接比較)を参照する。handler結果を制御した実adapter検証とsource比較を分け、既存の各業務・processテストを引き継ぐ。
+
+```sh
+pnpm --filter backend-next test test/unit/job-queue/retention.test.ts test/unit/job-queue/deliver.test.ts test/unit/job-queue/ended-poll-notification.test.ts test/unit/job-queue/user-webhook.test.ts
+BACKEND_NEXT_TEST_DB_PORT=55486 BACKEND_NEXT_TEST_REDIS_PORT=56386 pnpm --filter backend-next test:integration test/integration/queue-retention.test.ts test/integration/queue-admin.test.ts
+```
 
 `check-schema`は検証用DBで使う。同期したEntityの対象に限って定義差分を検出し、DDLは実行しない。
 本家の未同期Entityに対応するテーブルを削除対象として扱わない。
