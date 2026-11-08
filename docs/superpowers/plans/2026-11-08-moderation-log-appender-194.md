@@ -50,7 +50,7 @@
 
 - [x] Add the record type and the shared insert, and route the three writers through it.
 - [x] Add the integration test. Rerun the writers' existing tests: `queue-admin`, `role-update`, `role-http`, `role-acceptance`, `note-delete`, `note-delete-integration`, `queue/source-compat`, `role/update-role` and `note/delete-note`.
-- [ ] Record the evidence in the backend inventory and add a ROADMAP summary.
+- [x] Record the evidence in the backend inventory and add a ROADMAP summary. `implementationCommit` is `e03c4fbf2920c8dbec5e798df702265af986d579`.
 
 ## Verification record (2026-11-08)
 

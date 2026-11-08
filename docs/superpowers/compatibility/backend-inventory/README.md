@@ -21,6 +21,12 @@ Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装
 
 main/homeTimelineとnote購読は下記の#173受信sliceで`partial`とした。queueStatsは#163で`verified`、channel/chはそのrequestLogのみ`partial`。他16channel・readNotification・他channel書込は未実装。その他の入口も個別行のstatusに従う。これは見送りではなく、担当 Issue による設計・実装・比較が必要な状態。棚卸しの整合性検査自体はHTTP/連合機能の比較テストではない。`verified`の根拠は各行に記録した個別の比較・実依存検証に従う。
 
+## #194 ModerationLog共通appenderの照合（2026-11-08）
+
+`implementationCommit`を`e03c4fbf2920c8dbec5e798df702265af986d579`へ進めた。`service:ModerationLogService`と`responsibility:instance-moderation:15`（info省略時の空オブジェクト）を`partial`とした。Role・note削除の実装時に記録していなかった`deleteNote`・`updateRole`の種別行には、既存の結合テストを根拠に付けて`partial`とした。queueの種別4行は`verified`のまま、根拠に共通appenderを加えた。全行の監査A/B・担当domain・本家source/lineは維持する。
+
+根拠は新しい結合テスト（実PGで空info・jsonb直列化・呼び出し元トランザクションへの参加・失敗の伝播）と、3経路の既存テストである。本家の残る49種と`admin/show-moderation-logs`・`ModerationLogEntityService`は`not_implemented`のまま、各機能のsliceで追加する。[計画と検証](../../plans/2026-11-08-moderation-log-appender-194.md)。
+
 ## #178 API共通gate最初のsliceの照合（2026-11-08）
 
 `implementationCommit`を`65f88fcd54b8b561779230ad8233e4cb0b262154`へ進め、`capability:api-common`と監査16行（トークン抽出・認証種別・lastUsedAt・認証失敗応答・共通gate・rate limit・Ajv・応答規則・route共通設定・関連service・CORS mount）を`partial`とした。全行の監査A/B・担当domain・本家source/lineは維持する。Role 2・queue 14 APIはgateへ移ったが、既存の`verified`根拠は変えない。
