@@ -43,6 +43,32 @@ The unchanged95 source cases explicitly double local parsing. The final repair a
 - Actor validation and core User/Profile/Publickey plans preserve supported scalar/default/optional-key branches. Refresh uses ordered independent writes: User, supplied existing-key UPDATE, Profile, Following. Failures retain earlier commits; missing key refresh never becomes insertion. Deleted local resolution is rejected without changing the source's deleted-row publication projection. Malformed supplied AP IDs reject before actor writes. Malformed description/followed-message conversion fails after the source-visible User/Key boundary; actor creation rolls back through its caller transaction.
 - Actual transport tests distinguish signed 10MiB and unsigned 256KiB streaming caps, real 5000ms cancellation, context/type/identity/redirect checks, one same-host absolute HTML alternate and swallowed alternate failure. Native HTTP/worker processes acquire cold system/author PEM through actual endpoints, verify signed GET/POST and digest, persist mentions, and deliver to the refreshed Following sharedInbox. Disconnect/SIGTERM drains accepted work through restart; the shutdown deadline terminates blocked work without inventing retry promotion.
 
+## Mention-resolution concurrency
+
+There is no shared concurrency or waiting-count limit for mention resolution.
+`create-note.ts` starts every extracted occurrence through `Promise.all`, catches
+each resolution failure separately and deduplicates successful user IDs afterward.
+This follows pinned `NoteCreateService.extractMentionedUsers` (lines 1051–1066).
+The successful-mention limit is checked later, after reply/specified-recipient
+augmentation; failed resolutions do not count toward it. Consequently many
+distinct unresolved mentions, including across posts, can cause concurrent HTTP
+and database work. Shared outbound agents, per-request limits and posting rate
+limits do not establish a process-wide concurrency or waiting-count bound. No
+load benchmark or bounded-resource guarantee was measured for this slice.
+
+Review [5816986990](https://github.com/tiramiss-community/tiramiss/pull/243#pullrequestreview-5816986990)
+proposes a shared bounded resolver that omits overflow occurrences. That policy
+is not adopted here: a queue-full rejection would omit an otherwise resolvable
+mention based on other posts' load, changing the source's saved recipients and
+potential delivery. Serializing work can also change the observed freshness,
+write and independent duplicate-occurrence outcomes. The existing catch handles
+actual resolution failures; it is not evidence that new admission rejections
+are source-compatible. Under GOALS' source-equivalent initial scope and this
+plan's exclusion of capacity work, resource admission is a separate policy
+decision, requiring explicit limits, sharing scope, overload behavior and
+compatibility validation. The concurrency/load concern remains unmitigated;
+this disposition does not claim it is impossible or already controlled.
+
 ## Actor effects and remaining initial scope
 
 | Effect | Concrete current state | Remaining compatibility gap / owner |
