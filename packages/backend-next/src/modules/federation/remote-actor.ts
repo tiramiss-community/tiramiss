@@ -135,14 +135,15 @@ export function apType(value: unknown): string | null {
 	const type = Array.isArray(value.type) ? value.type[0] : value.type;
 	return typeof type === 'string' ? type : null;
 }
-export function apId(value: unknown): string | undefined {
+export function apId(value: unknown): string {
 	if (typeof value === 'string') {
 		return value;
 	}
-	if (value && typeof value === 'object' && 'id' in value) {
-		return value.id as string | undefined;
+	const id = value != null ? (value as { id?: unknown; }).id : undefined;
+	if (typeof id === 'string') {
+		return id;
 	}
-	return undefined;
+	throw new Error('cannot determine id');
 }
 
 function href(value: unknown): string | undefined {
@@ -291,15 +292,25 @@ export async function prepareActor(material: RemoteActorMaterial, existing: Remo
 			requireSigninToViewContents: p.requireSigninToViewContents === true, makeNotesFollowersOnlyBefore: p.makeNotesFollowersOnlyBefore ?? null, makeNotesHiddenBefore: p.makeNotesHiddenBefore ?? null,
 		});
 	}
+	let followedMessage: string | null = null;
+	let profileError = material.profileError;
+	if (!profileError) {
+		try {
+			followedMessage = p._misskey_followedMessage != null ? truncate(p._misskey_followedMessage, 256)! : null;
+		} catch (error) {
+			// Profile conversion follows committed User/Key refreshes in the source.
+			profileError = { name: error instanceof Error ? error.name : 'Error', message: error instanceof Error ? error.message : String(error) };
+		}
+	}
 	const profile: RemoteActorProfile = {
 		...(refresh ? {} : { userId: id, userHost: host }), description: material.description ?? null,
-		followedMessage: p._misskey_followedMessage != null ? truncate(p._misskey_followedMessage, 256)! : null,
+		followedMessage,
 		url, fields: material.fields ?? [], followingVisibility: material.followingVisibility, followersVisibility: material.followersVisibility,
 		birthday: p['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/)?.[0] ?? null, location: p['vcard:Address'] ?? null,
 	};
 	return {
 		kind: refresh ? 'refresh' : 'create', id, uri: p.id, user, profile,
-		...(material.profileError ? { profileError: material.profileError } : {}),
+		...(profileError ? { profileError } : {}),
 		...(p.publicKey ? { publickey: { ...(refresh ? {} : { userId: id }), keyId: p.publicKey.id, keyPem: p.publicKey.publicKeyPem } } : {}),
 	};
 }

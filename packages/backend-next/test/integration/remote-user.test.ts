@@ -304,6 +304,83 @@ test('malformed summary conversion preserves refresh User and Key commits before
 	expect((await resources.dataSource.getRepository(MiUserProfile).findOneByOrFail({ userId: row.id })).description).toBe('Remote profile');
 });
 
+test.each([
+	{ name: 'badfollowing', patch: { following: { type: 'Collection', items: [] } } },
+	{ name: 'badfollowers', patch: { followers: 7 } },
+	{ name: 'badshared', patch: { sharedInbox: { type: 'Link', href: 'http://remote.test/inbox' } } },
+])('malformed supplied AP ID omits unknown actor $name while preserving text', async ({ name, patch }) => {
+	register(name, patch);
+	const text = `retain @${name}@remote.test`;
+	const result = await post({ text });
+	expect(result.status).toBe(200);
+	const saved = await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id });
+	expect(saved).toMatchObject({ text, mentions: [] });
+	expect(await resources.dataSource.getRepository(MiUser).countBy({ usernameLower: name, host: 'remote.test' })).toBe(0);
+});
+
+test('malformed sharedInbox refresh preserves actor, key, Profile and Following while saving the attempt', async () => {
+	const name = 'retainshared';
+	register(name, { name: 'retained name', publicKey: { id: `${peer.origin}/users/${name}#key`, publicKeyPem: 'old key' } });
+	await post({ text: `@${name}@remote.test` });
+	const row = await remote(name);
+	const profile = await resources.dataSource.getRepository(MiUserProfile).findOneByOrFail({ userId: row.id });
+	const key = await resources.dataSource.getRepository(MiUserPublickey).findOneByOrFail({ userId: row.id });
+	const followingId = codec.newId(Date.now());
+	await resources.dataSource.getRepository(MiFollowing).insert({ id: followingId, followerId: row.id, followeeId: authorId, followerHost: row.host, followerInbox: row.inbox, followerSharedInbox: row.sharedInbox });
+	const following = await resources.dataSource.getRepository(MiFollowing).findOneByOrFail({ id: followingId });
+	await stale(row.id);
+	register(name, { name: 'must not save', inbox: `${peer.origin}/inbox/must-not-save`, sharedInbox: { type: 'Link', href: `${peer.origin}/inbox/new` }, _misskey_summary: 'must not save', publicKey: { id: `${peer.origin}/users/${name}#new`, publicKeyPem: 'must not save' } });
+	const text = `retain @${name}@remote.test`;
+	const attemptedAt = Date.now();
+	const result = await post({ text });
+	expect(result.status).toBe(200);
+	expect(await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).toMatchObject({ text, mentions: [] });
+	const saved = await remote(name);
+	expect(saved.lastFetchedAt!.getTime()).toBeGreaterThanOrEqual(attemptedAt);
+	expect(saved).toEqual({ ...row, lastFetchedAt: saved.lastFetchedAt });
+	expect(await resources.dataSource.getRepository(MiUserPublickey).findOneByOrFail({ userId: row.id })).toEqual(key);
+	expect(await resources.dataSource.getRepository(MiUserProfile).findOneByOrFail({ userId: row.id })).toEqual(profile);
+	expect(await resources.dataSource.getRepository(MiFollowing).findOneByOrFail({ id: followingId })).toEqual(following);
+});
+
+test('malformed followed-message preserves refresh User and Key commits while retaining Profile and Following', async () => {
+	const name = 'followedconversion';
+	register(name, { publicKey: { id: `${peer.origin}/users/${name}#key`, publicKeyPem: 'old key' }, _misskey_followedMessage: 'retained message' });
+	await post({ text: `@${name}@remote.test` });
+	const row = await remote(name);
+	const profile = await resources.dataSource.getRepository(MiUserProfile).findOneByOrFail({ userId: row.id });
+	const followingId = codec.newId(Date.now());
+	await resources.dataSource.getRepository(MiFollowing).insert({ id: followingId, followerId: row.id, followeeId: authorId, followerHost: row.host, followerInbox: row.inbox, followerSharedInbox: row.sharedInbox });
+	const following = await resources.dataSource.getRepository(MiFollowing).findOneByOrFail({ id: followingId });
+	await stale(row.id);
+	register(name, { name: 'committed name', inbox: `${peer.origin}/inbox/committed`, endpoints: { sharedInbox: `${peer.origin}/inbox/committed-shared` }, _misskey_summary: 'must not save', _misskey_followedMessage: 17, publicKey: { id: `${peer.origin}/users/${name}#new`, publicKeyPem: 'new key' } });
+	const text = `retain @${name}@remote.test`;
+	const attemptedAt = Date.now();
+	const result = await post({ text });
+	expect(result.status).toBe(200);
+	expect(await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).toMatchObject({ text, mentions: [] });
+	const saved = await remote(name);
+	expect(saved.lastFetchedAt!.getTime()).toBeGreaterThanOrEqual(attemptedAt);
+	expect(saved).toMatchObject({ name: 'committed name', inbox: `${peer.origin}/inbox/committed`, sharedInbox: `${peer.origin}/inbox/committed-shared` });
+	expect(await resources.dataSource.getRepository(MiUserPublickey).findOneByOrFail({ userId: row.id })).toMatchObject({ keyId: `${peer.origin}/users/${name}#new`, keyPem: 'new key' });
+	expect(await resources.dataSource.getRepository(MiUserProfile).findOneByOrFail({ userId: row.id })).toEqual(profile);
+	expect(await resources.dataSource.getRepository(MiFollowing).findOneByOrFail({ id: followingId })).toEqual(following);
+});
+
+test('malformed followed-message creation rolls back the actor before Profile or Key survives', async () => {
+	const name = 'badfollowedcreate';
+	register(name, { _misskey_followedMessage: 17, publicKey: { id: `${peer.origin}/users/${name}#key`, publicKeyPem: 'new key' } });
+	const text = `retain @${name}@remote.test`;
+	const before = await resources.dataSource.getRepository(MiUserProfile).count();
+	const keys = await resources.dataSource.getRepository(MiUserPublickey).count();
+	const result = await post({ text });
+	expect(result.status).toBe(200);
+	expect(await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).toMatchObject({ text, mentions: [] });
+	expect(await resources.dataSource.getRepository(MiUser).countBy({ usernameLower: name, host: 'remote.test' })).toBe(0);
+	expect(await resources.dataSource.getRepository(MiUserProfile).count()).toBe(before);
+	expect(await resources.dataSource.getRepository(MiUserPublickey).count()).toBe(keys);
+});
+
 test('resolve-cross-host-first-self: unknown account accepts another actor host and first self even with HTML MIME', async () => {
 	peer.route('other.test');
 	actors.set('/users/cross_target', plainActor('http://other.test', 'cross_target'));
@@ -312,6 +389,24 @@ test('resolve-cross-host-first-self: unknown account accepts another actor host 
 	const row = await resources.dataSource.getRepository(MiUser).findOneByOrFail({ usernameLower: 'cross_target', host: 'other.test' });
 	expect((await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).mentions).toEqual([row.id]);
 	expect(row.uri).toBe('http://other.test/users/cross_target');
+});
+
+test.each([false, true])('remote self-link to local user with isDeleted=%s retains text and includes only a live target', async isDeleted => {
+	const id = codec.newId(Date.now());
+	const name = isDeleted ? 'deleted_self_target' : 'live_self_target';
+	const account = isDeleted ? 'deletedself' : 'liveself';
+	await resources.dataSource.getRepository(MiUser).insert({ id, username: name, usernameLower: name, isDeleted });
+	await resources.dataSource.getRepository(MiUserProfile).insert({ userId: id });
+	links.set(account, [{ rel: 'self', href: `http://local.test/users/${id}` }]);
+	const text = `retain @${account}@remote.test`;
+	const before = peer.requests.length;
+	const result = await post({ text });
+	expect(result.status).toBe(200);
+	const saved = await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id });
+	expect(saved.text).toBe(text);
+	expect(saved.mentions).toEqual(isDeleted ? [] : [id]);
+	expect(peer.requests.slice(before)).toHaveLength(1);
+	expect(peer.requests[before].path).toContain('/.well-known/webfinger?');
 });
 
 test('real PG freshness is inclusive at 24h, stale at one millisecond more, and fresh reads bypass federation-none', async () => {

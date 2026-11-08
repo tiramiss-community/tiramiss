@@ -18,7 +18,7 @@ export function createRemoteUserRepository(manager: EntityManager) {
 	return {
 		readByAccount: async (account: Account) => facts(await users.findOneBy({ usernameLower: account.username, host: account.host ?? IsNull() })),
 		readByUri: async (uri: string) => facts(await users.findOneBy({ uri })),
-		readLocal: async (id: string) => facts(await users.findOneBy({ id, host: IsNull() })),
+		readLocal: async (id: string) => facts(await users.findOneBy({ id, host: IsNull(), isDeleted: false })),
 		async markAttempt(id: string, now: number): Promise<void> {
 			await users.update(id, { lastFetchedAt: new Date(now) });
 		},

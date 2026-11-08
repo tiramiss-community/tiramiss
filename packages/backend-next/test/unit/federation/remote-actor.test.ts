@@ -10,6 +10,15 @@ import { remoteSource, encode, decode, sourceNow } from '../../helpers/remote-so
 import type { RemoteUserFacts } from '../../../src/modules/federation/public.js';
 
 const existing: RemoteUserFacts = { id: 'remote', username: 'Original', host: 'remote.test', uri: 'https://remote.test/users/a', lastFetchedAtMs: null, isDeleted: false, movedToUri: null };
+test.each([
+	{ following: { type: 'Collection', items: [] } },
+	{ followers: 7 },
+	{ followers: { id: 17 } },
+	{ sharedInbox: { type: 'Link', href: 'https://remote.test/inbox' } },
+])('supplied malformed AP ID %j is rejected before actor writes', patch => {
+	expect(() => validateActor({ type: 'Person', id: existing.uri, preferredUsername: 'Alice', inbox: 'https://remote.test/inbox', ...patch }, existing.uri!)).toThrow('cannot determine id');
+});
+
 const cases = remoteSource.cases.filter((c: { area: string; }) => c.area === 'actor');
 test.each(cases.filter((c: { input: { operation?: string; }; }) => c.input.operation === 'validate'))('$id validates the actual actor against the pinned projection', fixture => {
 	const actor = { type: 'Person', id: 'https://remote.test/users/a', preferredUsername: 'Alice', inbox: 'https://remote.test/inbox', ...decode(fixture.input.patch) as object };
@@ -164,6 +173,33 @@ test('description failure is delayed until after the User/Key commits on refresh
 		}
 	}, await prepareActor(material, null, sourceNow, 'new-user'))).rejects.toThrow('Invalid URL');
 	expect(events).toEqual(['User']);
+});
+
+test.each(['create', 'refresh'])('malformed followed-message fails at the %s Profile boundary', async operation => {
+	const { createActorRefresher } = await import('../../../src/modules/federation/public.js');
+	const material = validateActor({ type: 'Person', id: existing.uri, preferredUsername: 'Alice', inbox: 'https://remote.test/inbox', publicKey: { id: `${existing.uri}#new`, publicKeyPem: 'new key' }, _misskey_followedMessage: 17 }, existing.uri!);
+	const events: string[] = [];
+	const userWrite = async () => {
+		events.push('User'); return true;
+	};
+	const keyWrite = async () => {
+		events.push('Key');
+	};
+	const profileWrite = async () => {
+		events.push('Profile');
+	};
+	const write = async () => {
+		const plan = await prepareActor(material, operation === 'refresh' ? existing : null, sourceNow, 'new-user');
+		return operation === 'refresh'
+			? createActorRefresher({ updateUser: userWrite, updatePublickey: keyWrite, updateProfile: profileWrite, updateFollowing: async () => {
+				events.push('Following');
+			} })(existing.id, plan)
+			: insertActor({ insertUser: async () => {
+				await userWrite();
+			}, insertProfile: profileWrite, insertPublickey: keyWrite }, plan);
+	};
+	await expect(write()).rejects.toThrow('Input must be a string');
+	expect(events).toEqual(operation === 'refresh' ? ['User', 'Key'] : ['User']);
 });
 
 test.each([undefined, null, [], { url: null }, {}].map(icon => ({ icon })))('explicit absent media $icon clears supported core fields without claiming image acquisition', async ({ icon }) => {
