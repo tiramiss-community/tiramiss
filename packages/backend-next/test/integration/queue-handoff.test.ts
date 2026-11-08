@@ -12,7 +12,7 @@ import { Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
 import { expect, test } from 'vitest';
 import { QUEUE_NAMES } from '../../src/modules/queue/public.js';
-import { baseQueueOptions } from '../../src/platform/job-queue/connection.js';
+import { baseQueueOptions, baseWorkerOptions } from '../../src/platform/job-queue/connection.js';
 import { inspectQueueHandoff } from '../../src/platform/job-queue/handoff.js';
 import { testConfig } from '../helpers/database.js';
 
@@ -210,7 +210,38 @@ test('active work is refused with or without its lock; a wrong Redis type fails 
 	}
 });
 
-test.each(['marker', 'events', 'id', 'pc', 'stalled-check', 'limiter', 'metrics:completed', 'metrics:failed:data', 'job-logs'])('wrong-type %s metadata is refused without modifying its encoded value', async suffix => {
+test('a stopped metrics-enabled worker leaves compatible failed history while real failed dependencies remain blocked', async () => {
+	const f = await fixture();
+	let worker: Worker | undefined;
+	let running: Promise<void> | undefined;
+	try {
+		const queue = f.queue('endedPollNotification');
+		const job = await queue.add('note', { noteId: 'note' });
+		const failedWorker = new Worker(queue.name, async (): Promise<void> => {
+			throw new Error('controlled terminal failure');
+		}, { ...baseWorkerOptions(f.redis, queue.name, 5000), autorun: false });
+		worker = failedWorker;
+		const failed = new Promise<void>(resolve => failedWorker.once('failed', () => resolve()));
+		running = failedWorker.run();
+		await failed;
+		await failedWorker.close();
+		await running;
+		expect(await job.getState()).toBe('failed');
+		expect(await f.client.type(queue.toKey('metrics:failed'))).toBe('hash');
+		expect(await f.client.hget(queue.toKey('metrics:failed'), 'count')).toBe('1');
+		await unchanged(f, true);
+
+		await f.client.sadd(queue.toKey(`${job.id}:failed`), 'unresolved-child');
+		const blocked = await unchanged(f, false);
+		expect(blocked.queues.find(item => item.queue === 'endedPollNotification')!.blockers).toEqual([{ code: 'DEPENDENCY', count: 1 }]);
+	} finally {
+		await worker?.close();
+		await running;
+		await f.close();
+	}
+});
+
+test.each(['marker', 'events', 'id', 'pc', 'stalled-check', 'limiter', 'metrics:completed', 'metrics:failed', 'metrics:failed:data', 'job-logs'])('wrong-type %s metadata is refused without modifying its encoded value', async suffix => {
 	const f = await fixture();
 	try {
 		const queue = f.queue('endedPollNotification');

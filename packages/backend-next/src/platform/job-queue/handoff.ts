@@ -94,15 +94,15 @@ async function inspectQueue(client: Redis, root: string, queue: HandoffQueueRepo
 			add(report.blockers, 'LOCK');
 		} else if (suffix.startsWith('repeat:')) {
 			add(report.blockers, 'SCHEDULER');
+		} else if (/^metrics:(completed|failed)(:data)?$/.test(suffix)) {
+			await checkType(client, key, suffix.endsWith(':data') ? 'list' : 'hash', report.blockers);
+			continue;
 		} else if (suffix.endsWith(':dependencies') || suffix.endsWith(':processed') || suffix.endsWith(':failed') || suffix.endsWith(':unsuccessful')) {
 			add(report.blockers, 'DEPENDENCY');
 		} else if (indexed.has(suffix)) {
 			continue;
 		} else if (suffix.endsWith(':logs') && indexed.has(suffix.slice(0, -5))) {
 			await checkType(client, key, 'list', report.blockers);
-			continue;
-		} else if (/^metrics:(completed|failed)(:data)?$/.test(suffix)) {
-			await checkType(client, key, suffix.endsWith(':data') ? 'list' : 'hash', report.blockers);
 			continue;
 		} else {
 			add(report.blockers, 'UNKNOWN_RECORD');
