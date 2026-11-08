@@ -43,7 +43,7 @@ test('loads copied entities without eagerly loading migration dependencies', asy
 	expect(source.getMetadata('MiHashtag').tableName).toBe('hashtag');
 	expect(source.getMetadata('MiAntenna').tableName).toBe('antenna');
 	expect(source.getMetadata('MiAntenna').relations.find(value => value.propertyName === 'userList')?.inverseEntityMetadata.tableName).toBe('user_list');
-	expect(source.entityMetadatas).toHaveLength(36);
+	expect(source.entityMetadatas).toHaveLength(37);
 	expect(source.getMetadata('MiWebhook').tableName).toBe('webhook');
 	expect(source.getMetadata('MiWebhook').relations.find(value => value.propertyName === 'user')?.inverseEntityMetadata.tableName).toBe('user');
 	for (const [model, table, relation] of [['MiMuting', 'muting', 'muter'], ['MiRenoteMuting', 'renote_muting', 'mutee'], ['MiNoteThreadMuting', 'note_thread_muting', 'user'], ['MiUserListMembership', 'user_list_membership', 'user']] as const) {
@@ -61,4 +61,8 @@ test('loads copied entities without eagerly loading migration dependencies', asy
 	expect(source.getMetadata('MiUserKeypair').tableName).toBe('user_keypair');
 	expect(source.getMetadata('MiUserPublickey').tableName).toBe('user_publickey');
 	expect(source.getMetadata('MiUsedUsername').tableName).toBe('used_username');
+	expect(source.getMetadata('MiFollowRequest').tableName).toBe('follow_request');
+	for (const relation of ['follower', 'followee']) {
+		expect(source.getMetadata('MiFollowRequest').relations.find(value => value.propertyName === relation)?.inverseEntityMetadata.tableName).toBe('user');
+	}
 });
