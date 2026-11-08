@@ -4,7 +4,7 @@
  */
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { createHash, createPublicKey, verify } from 'node:crypto';
+import { createHash, createPublicKey, generateKeyPairSync, verify } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { promisify } from 'node:util';
@@ -328,9 +328,15 @@ const savedActor = actor(JSON.parse(JSON.stringify(foreignShared.input.patch)));
 assert.deepEqual(plain(f.validateActor.call({ utilityService, logger }, savedActor, 'https://remote.test/request')),
 	foreignShared.expected.result, 'saved foreign sharedInbox input must replay its own undefined outputs');
 
-// Public, non-production test key; never used for credentials.
-const testPrivateKey = "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDRZ8cmnqlrdvje\ny6+iFboJDQiQoEOQkBucsS8Rah5BmBB91iJq/GHG7FQ1NooKmc+U2zzU5WcmXRTP\nmrjg1apEfL60WpBW5gDG3InHk4OBeIKu0URgIPh5vjPcm4x8eyMEq3pqS9BgGLZy\ntuhMrePx2kw32QoY0cdGLXNIOQpa/dduhPLdvsor7XcEdb1L1KfyaHCxyxgsTPuJ\nSoNR2RMnoAnTX4YUPANFNticReu1khBD03CrSxbPMPfy/Eamtm22oZRPAUh7cMaY\nFLCYuvVlu46hWZ65soSX6Cicvaer0zAhQhIO6AuFSnS1Nir12ejrwkdWFHyI6JRa\nG1eck9bRAgMBAAECggEAT3ZG/yOz/ICf/cNjOWlvN+IHPwJhwSi+IZ6m0r/nDVML\n5wRr+Rceb2LcrXitt0oYmE79bXhDxS4LKKB4yXCq9OQ1ZbD8Fs2eu9eSPPaAL5Aw\nXvAwNx4ry97eRTeNfusnJa2AfXeZce3OxgccbYSK/AqvY33rs/Fe4gV7OovSnyYG\nIr3iIYo8mNpUDfvjzzmOIHqKBaFVVSmOUkjL2UWt9kdpXdJtrJjmRU+wyHDO2QAP\nrHtvjjGbCIbvK4nT66R2wIGF0jdaoH5UO03ji9993SUJwYYBfoNqeTjknxYdPvpC\nvsxgeVCLRID4EaWNlXSa1U3xgFC8FjfTdyExE8EMdQKBgQD1viWVSvE3mtzMB2pw\nRSLLan14CNIQ+aY0VaGP0SvxXhdZ/yQOwIFPn8GKeGeSt0Ga/F5jGIaJjStN6kxI\nwV736K2IT2KPQqkF9g8QAHdj7Rp2dHs3+Yb+iCrwc5KGpXVuyPkz9n/WjaqBTXq0\n8axJY7gWANhIsrYUOTKtVIkGxwKBgQDaJVpIGI8GbzBCz4EbW1FHs2ckWIWfhcFv\nOJwyFCw381Vyfs4T3eN/fBj6WJkrXMMa5y1IhS2ZX1w1XisaQtkL6Tq7Y6zhGiK7\nr28J72Q2iczymLsqP3H5vPt9MTNRzpFfNk2W9QQsuKolbWsdSvJ1/wzkR7d/yS/G\nnzVva9U9pwKBgQCt5h4gdMUYLU28UC8hPbtuqXAahltpSdE0zbgj1si66HOr6yJw\nEggv+YRzYdshdu9FJvwAMjXalvyjCX9sKPL0ikJq6Ip9iJWls0dbcokKPJpyYuFj\nbf/6lQ+V0qNJB0N/31aCUBiNEvkqwVJpQ3BBCwEVCQoE//pbe1KCWAUTtwKBgQCz\nBLBANhc5eomqaktTPe9H3gwooZSWwtdpBJX56uAW0lQu760CVLdbaWW+HHMmSKu8\nKjbZKqGvGbi7+xl4JZ+kzLNsEHJREHesel2vU4tzzkYoV/pQw1wvTE0+AeBRpClc\nb13hIhVY9fp7WH3svhKXjsTvmYMXFO1mHEVnuKB4RQKBgQC0wmCaLtijGjQGS7pX\nStFgqO3miRW6Cm3iyGtlgG/trSkZoGSvfNAu5DPlzakoxbUwZLPFzgEHnll9quYv\n1dKoStscOJWhwnP8BAoGU89GBNuOXGvUFg1BUURymAHVaH3LS3Z3YMBOgD/Z3Dgf\nB0CUQudjiL3RoFzDpgKf+tMI9A==\n-----END PRIVATE KEY-----\n";
-const keypair = { privateKey: testPrivateKey, publicKey: createPublicKey(testPrivateKey).export({ type: 'spki', format: 'pem' }) };
+// Ephemeral signing keys never enter the serialized observation projection.
+const generatedKeypair = generateKeyPairSync('rsa', {
+	modulusLength: 2048,
+	publicKeyEncoding: { type: 'spki', format: 'pem' },
+	privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
+});
+const keypair = { privateKey: generatedKeypair.privateKey, publicKey: generatedKeypair.publicKey };
+// Public-only renderer input preserves the publication cases' existing SPKI projection.
+const publicationKeypair = { publicKey: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0WfHJp6pa3b43suvohW6\nCQ0IkKBDkJAbnLEvEWoeQZgQfdYiavxhxuxUNTaKCpnPlNs81OVnJl0Uz5q44NWq\nRHy+tFqQVuYAxtyJx5ODgXiCrtFEYCD4eb4z3JuMfHsjBKt6akvQYBi2crboTK3j\n8dpMN9kKGNHHRi1zSDkKWv3XboTy3b7KK+13BHW9S9Sn8mhwscsYLEz7iUqDUdkT\nJ6AJ01+GFDwDRTbYnEXrtZIQQ9Nwq0sWzzD38vxGprZttqGUTwFIe3DGmBSwmLr1\nZbuOoVmeubKEl+gonL2nq9MwIUISDugLhUp0tTYq9dno68JHVhR8iOiUWhtXnJPW\n0QIDAQAB\n-----END PUBLIC KEY-----\n" };
 const activityContext = 'https://www.w3.org/ns/activitystreams';
 async function fetchCase(id, input) {
 	return capture(id, 'fetch', input, ['Resolver.resolve', 'ApRequestService.signedGet', 'ApRequestCreator', 'HttpRequestService.getActivityJson', 'HttpRequestService.send', 'core/activitypub/misc/check-against-url.ts', 'core/activitypub/misc/validator.ts'], ['transport', 'keys', 'clock', 'localFacts'], async event => {
@@ -407,7 +413,7 @@ async function publication(id, input) {
 		const renderer = { config,
 			userEntityService: { genLocalUserUri: id => `${config.url}/users/${id}` },
 			userProfilesRepository: { findOneByOrFail: async () => ({ fields: [], description: null }) },
-			userKeypairService: { getUserKeypair: async () => keypair }, getEmojis: async () => [],
+			userKeypairService: { getUserKeypair: async () => publicationKeypair }, getEmojis: async () => [],
 			renderIdenticon: () => null, renderSystemAvatar: () => null, renderSystemBanner: () => null,
 		};
 		renderer.renderKey = f.renderKey.bind(renderer);

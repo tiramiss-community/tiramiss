@@ -99,8 +99,13 @@ Regeneration explicitly resolves TypeScript from the upstream root's installed
 node_modules, and node-html-parser, slacc, stringz, accepts and vary from that
 checkout's backend installation. These are source-environment tools, never a
 borrowed product dependency tree. No install, symlink or dependency-directory
-modification is performed. slacc is initialized with one thread. The embedded
-RSA private key is a public test fixture; SPKI export/signing/verification are real.
+modification is performed. slacc is initialized with one thread. Signing uses a
+fresh RSA 2048-bit pair generated at execution time; no private key is embedded.
+Only redacted signature headers and verification booleans enter observations.
+The publication renderer separately receives the existing fixed public SPKI as
+an injected input, preserving its six public-key projections byte for byte.
+The dataset's historical `keys` boundary label stays stable; signing and renderer
+inputs follow this split. SPKI export/signing/verification execute real code.
 Observed environment: Node 24.20.0; repository `.node-version` requests 26.4.0.
 This is not Node 26 verification.
 
