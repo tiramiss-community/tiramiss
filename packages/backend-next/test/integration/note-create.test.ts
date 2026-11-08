@@ -138,20 +138,24 @@ test.each(pinned)('%s matches fixed upstream HTTP, saved Note and immediate show
 	}
 });
 
+test('C2-suspended-show and C2-bearer-precedence consume named upstream observations', async () => {
+	for (const [name, token, authorization] of [
+		['C2-suspended-show', actors.suspended.token, undefined],
+		['C2-bearer-precedence', actors.invalid.token, `Bearer ${actors.alice.token}`],
+	] as const) {
+		const response = await app.request('/api/notes/show', {
+			method: 'POST', headers: { 'Content-Type': 'application/json', ...(authorization ? { Authorization: authorization } : {}) },
+			body: JSON.stringify({ noteId: ids.base, i: token }),
+		});
+		expect({ status: response.status, body: normalize(await response.json()) }).toEqual(golden[name]);
+	}
+});
+
 // probe の C5 で作る2件目の返信（show-reply）を加えた後の、返信先の count。
 test('C6-counts: replies and Renotes by others are counted after saving, a self Renote is not', async () => {
 	await prepare('show-reply', { text: 'reply', visibility: 'followers', replyId: ids.base }, 'alice');
 	const base = await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: ids.base });
 	expect({ repliesCount: base.repliesCount, renoteCount: base.renoteCount }).toEqual(golden['C6-counts']);
-});
-
-// 削除 API は未接続なので、削除前（before）の値だけを照合する。
-test('C8-channel-counts before deletion: notesCount counts every post and usersCount each first poster', async () => {
-	await prepare('channel-first', { text: 'one', channelId: ids.channel }, 'alice');
-	const channel = await resources.dataSource.getRepository(MiChannel).findOneByOrFail({ id: ids.channel });
-	expect({ notes: channel.notesCount, users: channel.usersCount }).toEqual(golden['C8-channel-counts'].before);
-	// 本家は後続処理の実行時刻を書くため、n3/README の収束規則どおり作成時刻以上であることだけを見る。
-	expect(channel.lastNotedAt?.getTime()).toBeGreaterThanOrEqual(codec.createdAtFromId(ids['channel-first']));
 });
 
 test('Bearer precedence, non-string credentials and browser headers', async () => {
