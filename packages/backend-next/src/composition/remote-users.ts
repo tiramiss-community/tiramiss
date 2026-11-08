@@ -23,8 +23,9 @@ export function createRemoteUsers(parts: {
 		if (!rules.isUriLocal(uri)) {
 			return null;
 		}
-		const match = new URL(uri).pathname.match(/^\/users\/([^/]+)$/);
-		return match?.[1] ?? null;
+		// Source AP-ID resolution uses the first user ID and permits the remaining path.
+		const [, type, id] = new URL(uri).pathname.split('/');
+		return type === 'users' ? id ?? null : null;
 	};
 	return {
 		...createRemoteUserRepository(parts.dataSource.manager), selfHost: new URL(config.url).host, localId, insertActor,

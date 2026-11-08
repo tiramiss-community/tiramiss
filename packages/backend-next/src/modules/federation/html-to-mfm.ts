@@ -257,4 +257,3 @@ export function htmlToMfm(html: string, hashtagNames?: string[]): string {
 		}
 	}
 }
-

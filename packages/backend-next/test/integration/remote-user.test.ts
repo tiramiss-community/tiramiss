@@ -409,6 +409,26 @@ test.each([false, true])('remote self-link to local user with isDeleted=%s retai
 	expect(peer.requests[before].path).toContain('/.well-known/webfinger?');
 });
 
+test.each([
+	{ suffix: '/', isDeleted: false },
+	{ suffix: '/inbox', isDeleted: false },
+	{ suffix: '/', isDeleted: true },
+	{ suffix: '/inbox', isDeleted: true },
+])('remote local self-link suffix=$suffix isDeleted=$isDeleted preserves the source live-user resolution', async ({ suffix, isDeleted }) => {
+	const id = codec.newId(Date.now());
+	const account = `selfrest_${id}`;
+	await resources.dataSource.getRepository(MiUser).insert({ id, username: account, usernameLower: account, isDeleted });
+	await resources.dataSource.getRepository(MiUserProfile).insert({ userId: id });
+	links.set(account, [{ rel: 'self', href: `http://local.test/users/${id}${suffix}` }]);
+	const text = `retain @${account}@remote.test`;
+	const before = peer.requests.length;
+	const result = await post({ text });
+	expect(result.status).toBe(200);
+	expect(await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).toMatchObject({ text, mentions: isDeleted ? [] : [id] });
+	expect(peer.requests.slice(before)).toHaveLength(1);
+	expect(peer.requests[before].path).toContain('/.well-known/webfinger?');
+});
+
 test('real PG freshness is inclusive at 24h, stale at one millisecond more, and fresh reads bypass federation-none', async () => {
 	register('boundary'); await post({ text: '@boundary@remote.test' }); const row = await remote('boundary');
 	const fixed = Date.now();

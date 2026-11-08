@@ -4,10 +4,32 @@
  */
 import { expect, test } from 'vitest';
 import { createCreateNote } from '../../../src/modules/note/create-note.js';
+import { createRemoteUsers } from '../../../src/composition/remote-users.js';
+import { createDataSource } from '../../../src/platform/database/data-source.js';
+import { testConfig } from '../../helpers/database.js';
 import { normalizeAccount, classifyRemoteUser, webfingerUrl, selectWebfingerSelf } from '../../../src/modules/federation/public.js';
 import { remoteSource, sourceNow, encode } from '../../helpers/remote-source.js';
 import type { RemoteUserFacts, RemoteUserPorts, RemoteActorPlan } from '../../../src/modules/federation/public.js';
 import type { NewNote, NoteWrites } from '../../../src/modules/note/public.js';
+
+test.each([
+	{ path: 'http://local.test/users/live', id: 'live' },
+	{ path: 'http://local.test/users/live/', id: 'live' },
+	{ path: 'http://local.test/users/live/inbox', id: 'live' },
+	{ path: 'http://local.test/users/live/inbox/rest', id: 'live' },
+	{ path: 'http://local.test/notes/live', id: null },
+	{ path: 'http://local.test/users', id: null },
+	{ path: 'http://local.test/users/', id: '' },
+	{ path: 'http://local.test/users//live', id: '' },
+	{ path: 'http://remote.test/users/live', id: null },
+	{ path: 'http://local.test.evil/users/live', id: null },
+	{ path: 'http://local.test:1234/users/live', id: null },
+])('local user URI $path resolves the source user ID without treating rest as another object family', ({ path, id }) => {
+	const config = testConfig();
+	config.url = 'http://local.test';
+	const ports = createRemoteUsers({ dataSource: createDataSource(config.database), federationKeys: undefined as never, outboundHttp: undefined as never }, config);
+	expect(ports.localId(path)).toBe(id);
+});
 
 const cases = remoteSource.cases.filter((c: { id: string; }) => c.id.startsWith('resolve-'));
 for (const fixture of cases) {
