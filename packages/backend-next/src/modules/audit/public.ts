@@ -30,3 +30,14 @@ export interface RoleUpdateAudit {
 	after: RoleUpdateSnapshot;
 	occurredAtMs: number;
 }
+
+/** 本家 `moderationLogTypes` のうち、新実装が記録する種別。記録を足す機能が自分の種別を追加する。 */
+export type ModerationLogType = 'updateRole' | 'deleteNote' | 'clearQueue' | 'promoteQueue' | 'pauseQueue' | 'resumeQueue';
+
+/** moderation_log へ追記する1件。`info` を省略すると本家と同じく空オブジェクトを保存する。 */
+export interface ModerationLogEntry {
+	actorId: string;
+	type: ModerationLogType;
+	info?: Record<string, unknown>;
+	occurredAtMs: number;
+}

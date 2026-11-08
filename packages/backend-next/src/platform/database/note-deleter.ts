@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { In, IsNull, Not } from 'typeorm';
-import { MiModerationLog, MiNote, MiUser } from 'backend-upstream/entities';
+import { MiNote, MiUser } from 'backend-upstream/entities';
 import { evaluatePolicies, evaluatePrivileges, selectApplicableRoles } from '../../modules/role/public.js';
+import { appendModerationLog } from './moderation-log.js';
 import { readRoleAuthorizationFacts } from './role-authorization-facts.js';
 import type { EntityManager } from 'typeorm';
 import type { DeletedNoteSnapshot } from '../../modules/note/public.js';
@@ -73,8 +74,8 @@ export async function appendNoteDeleteAudit(manager: EntityManager, input: {
 	snapshot: DeletedNoteSnapshot; actorId: string; occurredAtMs: number;
 }, newId: (now: number) => string): Promise<void> {
 	const { snapshot } = input;
-	// QueryDeepPartialEntity は任意の JSONB 値を表せないため、JSON 値だけを parameter として渡す。
-	await manager.getRepository(MiModerationLog).createQueryBuilder().insert().values({
-		id: newId(input.occurredAtMs), userId: input.actorId, type: 'deleteNote', info: () => 'CAST(:info AS jsonb)',
-	}).setParameter('info', JSON.stringify({ noteId: snapshot.id, noteUserId: snapshot.userId, noteUserUsername: snapshot.authorUsername, noteUserHost: snapshot.authorHost, note: snapshot.auditNote })).execute();
+	await appendModerationLog(manager, {
+		actorId: input.actorId, type: 'deleteNote', occurredAtMs: input.occurredAtMs,
+		info: { noteId: snapshot.id, noteUserId: snapshot.userId, noteUserUsername: snapshot.authorUsername, noteUserHost: snapshot.authorHost, note: snapshot.auditNote },
+	}, newId);
 }

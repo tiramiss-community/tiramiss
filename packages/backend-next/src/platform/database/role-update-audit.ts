@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { MiModerationLog } from 'backend-upstream/entities';
+import { appendModerationLog } from './moderation-log.js';
 import type { EntityManager } from 'typeorm';
 import type { RoleUpdateAudit, RoleUpdateSnapshot } from '../../modules/audit/public.js';
 
@@ -20,11 +20,8 @@ export async function appendRoleUpdateAudit(
 	record: RoleUpdateAudit,
 	newId: (occurredAtMs: number) => string,
 ): Promise<void> {
-	// QueryDeepPartialEntity cannot represent the upstream Record<string, any> JSONB field; bind only that value as SQL.
-	await manager.getRepository(MiModerationLog).createQueryBuilder().insert().values({
-		id: newId(record.occurredAtMs), userId: record.actorId, type: 'updateRole',
-		info: () => 'CAST(:info AS jsonb)',
-	}).setParameter('info', JSON.stringify({
-		roleId: record.roleId, before: snapshot(record.before), after: snapshot(record.after),
-	})).execute();
+	await appendModerationLog(manager, {
+		actorId: record.actorId, type: 'updateRole', occurredAtMs: record.occurredAtMs,
+		info: { roleId: record.roleId, before: snapshot(record.before), after: snapshot(record.after) },
+	}, newId);
 }
