@@ -128,6 +128,58 @@ test('permitted actor redirects still pass strict identity and return a creation
 });
 
 test.each([
+	{ entry: 'remote.test.', origin: 'http://remote.test' },
+	{ entry: 'remote.test', origin: 'http://remote.test.' },
+])('actor entry policy and sending agree for DNS root-dot allowlists: $entry -> $origin', async ({ entry, origin }) => {
+	peer.respond(async () => ({ body: plainActor(origin, 'alice') }));
+	const plan = await ports({ federation: 'specified', federationHosts: [entry] }).acquireActor(`${origin}/users/alice`, null, Date.now, () => 'new-actor');
+	expect(plan.uri).toBe(`${origin}/users/alice`);
+	expect(peer.requests).toHaveLength(1);
+});
+
+test('a ported remote actor is fetched instead of being treated as the ported local instance', async () => {
+	const origin = 'http://remote.test:8080';
+	peer.respond(async () => ({ body: plainActor(origin, 'alice') }));
+	const plan = await ports({ federation: 'specified', federationHosts: ['remote.test'] }, 'http://local.test:3000').acquireActor(`${origin}/users/alice`, null, Date.now, () => 'new-actor');
+	expect(plan.uri).toBe(`${origin}/users/alice`);
+	expect(peer.requests.map(req => req.headers.host)).toEqual(['remote.test:8080']);
+});
+
+test('local user IDs require the same hostname and nondefault port', () => {
+	const remote = ports({}, 'http://local.test:3000');
+	expect(remote.localId('http://local.test:3000/users/alice')).toBe('alice');
+	expect(remote.localId('http://local.test:3001/users/alice')).toBeNull();
+	expect(remote.localId('http://remote.test:3000/users/alice')).toBeNull();
+});
+
+test('a real local ported actor uses local resolution without network', async () => {
+	const url = 'http://local.test:3000/users/alice';
+	const session = createActivitySession({
+		signed: false, clock: Date.now,
+		isSelfHost: host => host === 'local.test:3000', isAllowedHost: async () => true,
+		signer: async () => {
+			throw new Error('unexpected signer');
+		},
+		resolveLocal: async uri => ({ id: uri, source: 'local' }),
+		http: { send: async () => {
+			throw new Error('unexpected network');
+		} },
+	});
+	expect(await session.resolve(url)).toEqual({ id: url, source: 'local' });
+});
+
+test.each([false, true])('denied follower collection remains a visibility fallback, refresh=%s', async refresh => {
+	peer.respond(async req => req.path === '/followers'
+		? { status: 302, headers: { Location: 'http://www.remote.test/followers' } }
+		: { body: plainActor('http://remote.test', 'alice', { followers: 'http://remote.test/followers' }) });
+	const existing = refresh ? { id: 'existing', username: 'alice', host: 'remote.test', uri: 'http://remote.test/users/alice', lastFetchedAtMs: null, isDeleted: false } : null;
+	const plan = await ports({ blockedHosts: ['www.remote.test'] }).acquireActor('http://remote.test/users/alice', existing, Date.now, () => 'new-actor');
+	expect(plan.profile.followersVisibility).toBe(refresh ? undefined : 'private');
+	expect(plan.uri).toBe('http://remote.test/users/alice');
+	expect(peer.requests.map(req => [req.headers.host, req.path])).toEqual([['remote.test', '/users/alice'], ['remote.test', '/followers']]);
+});
+
+test.each([
 	['https:', 'http:', false],
 	['https:', 'https:', true],
 	['http:', 'http:', true],

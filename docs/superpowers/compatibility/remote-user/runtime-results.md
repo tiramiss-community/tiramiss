@@ -67,13 +67,25 @@ the unchanged 95 observations do not establish parity for these new refusals.
   automatic redirect/header, timeout, response-size and status handling remain
   owned by the existing HTTP client.
 
-New refusal errors use the existing per-occurrence posting failure path: literal
-text remains and the failed mention is omitted. Existing refresh-attempt writes
-still precede acquisition and are not rolled back by a guard failure. There is
+When WebFinger or the Actor itself fails to resolve because of a refusal, the
+existing per-occurrence posting failure path retains literal text and omits that
+failed mention. Policy-guard refusals during collection acquisition have a different
+outcome: `collectionVisibility` catches them, using `private` on creation and retaining the previous visibility
+on refresh (an own `undefined` patch). Actor acquisition can therefore continue
+and the mention can still be saved. Existing refresh-attempt writes precede
+acquisition and are not rolled back by a guard failure. There is
 no new setting, retry, queue or capacity policy. The new
 `test/unit/federation/acquisition-policy.test.ts` uses actual composition and
 HTTP/proxy redirects with a supplied Meta repository; protocol-pair alternate
 checks use real signing with an injected HTTP boundary, not a measured TLS peer.
+
+Follow-up review 5817115107 also aligns the Actor-entry allowlist check with the
+same terminal-dot policy normalization used by sending. AP self-routing and local
+user URI lookup compare normalized URL authorities including nondefault ports,
+so different ported hosts cannot alias through an empty DB-host projection. These
+are AP-boundary changes; the existing DB host projection and general host helpers
+remain unchanged. The source observations do not establish parity for this
+ported self-routing correction.
 
 ## Mention-resolution concurrency
 

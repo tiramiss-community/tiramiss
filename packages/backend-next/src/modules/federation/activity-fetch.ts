@@ -55,7 +55,9 @@ export function createActivitySession(parts: {
 	http: Pick<OutboundHttp, 'send'>;
 	signed: boolean;
 	clock(): number;
-	isSelfHost(host: string): boolean;
+	/** URL authority, including a nondefault port; not the DB host projection. */
+	isSelfHost(authority: string): boolean;
+	/** DNS hostname; transport separately checks every followed destination. */
 	isAllowedHost(host: string): Promise<boolean>;
 	signer(): Promise<HttpSignatureKey>;
 	resolveLocal(uri: string): Promise<Record<string, unknown>>;
@@ -74,6 +76,7 @@ export function createActivitySession(parts: {
 			const html = await response.text();
 			try {
 				const href = parse(html).querySelector('head > link[rel="alternate"][type="application/activity+json"]')?.getAttribute('href');
+				// Same-host alternates retain the entry policy; production transport also validates each outgoing destination.
 				if (href && punyHost(url) === punyHost(href) && (new URL(url).protocol !== 'https:' || new URL(href).protocol === 'https:')) {
 					return await fetchActivity(href, false);
 				}
@@ -100,8 +103,8 @@ export function createActivitySession(parts: {
 				throw new ActivityFetchError('d592da9f-822f-4d91-83d7-4ceefabcf3d2', `hit recursion limit: ${extractDbHost(value)}`);
 			}
 			history.add(value);
-			const host = extractDbHost(value);
-			if (parts.isSelfHost(host)) {
+			const host = new URL(value).hostname;
+			if (parts.isSelfHost(punyHost(value))) {
 				return parts.resolveLocal(value);
 			}
 			if (!await parts.isAllowedHost(host)) {
