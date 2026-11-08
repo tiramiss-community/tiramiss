@@ -2,10 +2,11 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { ActorNotFound, ActorSuspended, CredentialScopeDenied, ModeratorRequired } from '../role/public.js';
+import { requireCredential } from '../access/public.js';
 import { QUEUE_NAMES } from './contracts.js';
 import { readQueueInput } from './input.js';
-import type { ClearState, QueueActor, QueueAdministration, QueueAudit, QueueJob, QueueName, QueueOperation, QueueState } from './contracts.js';
+import type { AccessFacts, AccessRequest } from '../access/public.js';
+import type { ClearState, QueueAdministration, QueueAudit, QueueJob, QueueName, QueueOperation, QueueState } from './contracts.js';
 
 function pack(queue: QueueName, job: QueueJob) {
 	let data = job.data;
@@ -32,7 +33,7 @@ function redisInfo(info: string) {
 
 export function createQueueAdmin(ports: {
 	queues: QueueAdministration;
-	readActor(userId: string, now: number): Promise<{ isSuspended: boolean; isModerator: boolean } | null>;
+	readActor(userId: string, now: number): Promise<AccessFacts>;
 	appendAudit(record: QueueAudit): Promise<void>;
 	onError(error: unknown, operation: string): void;
 }) {
@@ -49,21 +50,9 @@ export function createQueueAdmin(ports: {
 				await Promise.allSettled([...pending]);
 			}
 		},
-		async execute(actor: QueueActor, operation: QueueOperation, rawInput: unknown, now: number): Promise<unknown> {
-			const facts = await ports.readActor(actor.userId, now);
-			if (!facts) {
-				throw new ActorNotFound();
-			}
-			if (facts.isSuspended) {
-				throw new ActorSuspended();
-			}
-			if (!facts.isModerator) {
-				throw new ModeratorRequired();
-			}
-			const write = ['clear', 'promote-jobs', 'pause', 'resume', 'retry-job', 'remove-job'].includes(operation);
-			if (!(write ? actor.canWriteQueue : actor.canReadQueue)) {
-				throw new CredentialScopeDenied();
-			}
+		async execute(access: AccessRequest, operation: QueueOperation, rawInput: unknown, now: number): Promise<unknown> {
+			const actor = requireCredential(access.credential);
+			access.authorize(await ports.readActor(actor.userId, now));
 			const input = readQueueInput(operation, rawInput);
 			const { queues } = ports;
 			const audit = (type: QueueAudit['type']) => detached(ports.appendAudit({ actorId: actor.userId, type, occurredAtMs: now }), 'audit');

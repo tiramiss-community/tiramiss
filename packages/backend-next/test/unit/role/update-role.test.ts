@@ -4,12 +4,16 @@
  */
 import { expect, test } from 'vitest';
 import { createUpdateRole } from '../../../src/modules/role/update-role.js';
-import { ActorSuspended, AdministratorRequired, CredentialScopeDenied, RoleNotFound } from '../../../src/modules/role/errors.js';
+import { RoleNotFound } from '../../../src/modules/role/errors.js';
 import { createAttemptEvaluation } from '../../../src/modules/role/evaluation.js';
-import type { RoleActor, RoleDefinition, RoleUpdateScope } from '../../../src/modules/role/update-contract.js';
+import type { AccessCredential } from '../../../src/modules/access/public.js';
+import type { RoleDefinition, RoleUpdateScope } from '../../../src/modules/role/update-contract.js';
 import { atMs, assignment, role, user } from './fixtures.js';
+import { createAccessRequest } from '../../../src/modules/access/public.js';
 
-const actor: RoleActor = { userId: 'user', credentialGrant: { readRole: true, updateRole: true } };
+const request = (credential: AccessCredential | null) => createAccessRequest({ requireAdmin: true, kind: 'write:admin:roles' }, credential);
+const actor: AccessCredential = { userId: 'user', native: true };
+const scoped = (...permissions: string[]): AccessCredential => ({ userId: 'user', native: false, permissions: new Set(permissions) });
 const definition = (): RoleDefinition => ({
 	...role(), name: 'before', description: 'keep', color: '#fff', iconUrl: 'icon',
 	updatedAtMs: atMs - 1000, lastUsedAtMs: atMs - 2000,
@@ -73,33 +77,34 @@ function setup() {
 
 test('saves and audits before commit, then invalidates local materials and publishes', async () => {
 	const s = setup();
-	await s.useCase.updateRole(actor, { roleId: 'manual', name: 'after' }, createAttemptEvaluation(atMs));
+	await s.useCase.updateRole(request(actor), { roleId: 'manual', name: 'after' }, createAttemptEvaluation(atMs));
 	expect(s.events).toEqual(['save', 'audit', 'commit', 'local', 'publish']);
 });
 
 test.each([
-	{ suspended: true, root: true, admin: true, scope: true, error: ActorSuspended },
-	{ suspended: false, root: false, admin: false, scope: false, error: AdministratorRequired },
-	{ suspended: false, root: true, admin: false, scope: false, error: CredentialScopeDenied },
-])('preserves rejection order for $error.name', async ({ suspended, root, admin, scope, error }) => {
+	{ suspended: true, root: true, admin: true, scope: true, reason: 'YOUR_ACCOUNT_SUSPENDED' },
+	{ suspended: false, root: false, admin: false, scope: false, reason: 'ADMINISTRATOR_REQUIRED' },
+	{ suspended: false, root: true, admin: false, scope: false, reason: 'PERMISSION_DENIED' },
+])('preserves rejection order for $reason', async ({ suspended, root, admin, scope, reason }) => {
 	const s = setup();
 	s.facts.user.isSuspended = suspended;
 	s.facts.instance.rootUserId = root ? 'user' : null;
 	s.facts.roles[0].isAdministrator = admin;
-	await expect(s.useCase.updateRole({ ...actor, credentialGrant: { readRole: true, updateRole: scope } }, { roleId: 'missing' }, createAttemptEvaluation(atMs))).rejects.toBeInstanceOf(error);
+	const credential = scope ? scoped('read:admin:roles', 'write:admin:roles') : scoped('read:admin:roles');
+	await expect(s.useCase.updateRole(request(credential), { roleId: 'missing' }, createAttemptEvaluation(atMs))).rejects.toMatchObject({ reason });
 	expect(s.events).toEqual([]);
 });
 
 test('rejects a missing target after authorization', async () => {
 	const s = setup();
-	await expect(s.useCase.updateRole(actor, { roleId: 'missing' }, createAttemptEvaluation(atMs))).rejects.toBeInstanceOf(RoleNotFound);
+	await expect(s.useCase.updateRole(request(actor), { roleId: 'missing' }, createAttemptEvaluation(atMs))).rejects.toBeInstanceOf(RoleNotFound);
 	expect(s.events).toEqual([]);
 });
 
 test('cannot authorize itself using the requested promotion', async () => {
 	const s = setup();
 	s.facts.instance.rootUserId = null;
-	await expect(s.useCase.updateRole(actor, { roleId: 'manual', isAdministrator: true }, createAttemptEvaluation(atMs))).rejects.toBeInstanceOf(AdministratorRequired);
+	await expect(s.useCase.updateRole(request(actor), { roleId: 'manual', isAdministrator: true }, createAttemptEvaluation(atMs))).rejects.toMatchObject({ reason: 'ADMINISTRATOR_REQUIRED' });
 	expect(s.events).toEqual([]);
 });
 
@@ -108,7 +113,7 @@ test('uses conditional administrator privileges from pre-update facts', async ()
 	s.facts.instance.rootUserId = null;
 	s.facts.roles[0] = { ...definition(), target: 'conditional', condFormula: { type: 'isLocal' }, isAdministrator: true };
 	s.facts.assignments = [];
-	await s.useCase.updateRole(actor, { roleId: 'manual', isAdministrator: false }, createAttemptEvaluation(atMs));
+	await s.useCase.updateRole(request(actor), { roleId: 'manual', isAdministrator: false }, createAttemptEvaluation(atMs));
 	expect(s.events).toContain('commit');
 });
 
@@ -117,13 +122,13 @@ test('rejects an administrator assignment expiring exactly at the evaluation tim
 	s.facts.instance.rootUserId = null;
 	s.facts.roles[0].isAdministrator = true;
 	s.facts.assignments[0].expiresAtMs = atMs;
-	await expect(s.useCase.updateRole(actor, { roleId: 'manual' }, createAttemptEvaluation(atMs))).rejects.toBeInstanceOf(AdministratorRequired);
+	await expect(s.useCase.updateRole(request(actor), { roleId: 'manual' }, createAttemptEvaluation(atMs))).rejects.toMatchObject({ reason: 'ADMINISTRATOR_REQUIRED' });
 });
 
 test.each(['save', 'audit', 'commit'] as const)('propagates %s failure without retry or notification', async (failure) => {
 	const s = setup();
 	s.fail(failure);
-	await expect(s.useCase.updateRole(actor, { roleId: 'manual' }, createAttemptEvaluation(atMs))).rejects.toBe(s.sentinel);
+	await expect(s.useCase.updateRole(request(actor), { roleId: 'manual' }, createAttemptEvaluation(atMs))).rejects.toBe(s.sentinel);
 	expect(s.events).not.toContain('local');
 	expect(s.events).not.toContain('publish');
 	expect(s.events.filter(event => event === 'save').length).toBe(failure === 'save' ? 0 : 1);
@@ -134,7 +139,7 @@ test.each(['invalidateLocal', 'publish'] as const)('keeps the committed update s
 	s.changes[method] = () => {
 		throw new Error('notification failed');
 	};
-	await expect(s.useCase.updateRole(actor, { roleId: 'manual' }, createAttemptEvaluation(atMs))).resolves.toBeUndefined();
+	await expect(s.useCase.updateRole(request(actor), { roleId: 'manual' }, createAttemptEvaluation(atMs))).resolves.toBeUndefined();
 	expect(s.events).toContain('commit');
 });
 
@@ -154,7 +159,7 @@ test('invalidates operation memos after commit and preserves their reference tim
 	s.facts.instance.rootUserId = null;
 	s.facts.roles[0].isAdministrator = true;
 	expect((await session.getPrivileges('user')).isAdministrator).toBe(true);
-	await s.useCase.updateRole(actor, { roleId: 'manual' }, evaluation);
+	await s.useCase.updateRole(request(actor), { roleId: 'manual' }, evaluation);
 	s.facts.roles[0].isAdministrator = false;
 	expect((await session.getPrivileges('user')).isAdministrator).toBe(false);
 	expect(reads).toBe(2);
@@ -164,17 +169,17 @@ test('invalidates operation memos after commit and preserves their reference tim
 
 test('rejects malformed input after authorization but before looking up the target', async () => {
 	const s = setup();
-	await expect(s.useCase.updateRole(actor, { roleId: '!', name: null }, createAttemptEvaluation(atMs)))
+	await expect(s.useCase.updateRole(request(actor), { roleId: '!', name: null }, createAttemptEvaluation(atMs)))
 		.rejects.toMatchObject({ param: '#/properties/roleId/format' });
 	expect(s.events).toEqual([]);
 	s.facts.user.isSuspended = true;
-	await expect(s.useCase.updateRole(actor, {}, createAttemptEvaluation(atMs))).rejects.toBeInstanceOf(ActorSuspended);
+	await expect(s.useCase.updateRole(request(actor), {}, createAttemptEvaluation(atMs))).rejects.toMatchObject({ reason: 'YOUR_ACCOUNT_SUSPENDED' });
 });
 
 test('snapshots supported input before asynchronous authorization and lock waits', async () => {
  const s = setup();
  const input = { roleId: 'manual', name: 'after', policies: { limit: { value: 1 } } };
- const pending = s.useCase.updateRole(actor, input, createAttemptEvaluation(atMs));
+ const pending = s.useCase.updateRole(request(actor), input, createAttemptEvaluation(atMs));
  input.name = 'mutated';
  input.policies.limit.value = 2;
  await pending;

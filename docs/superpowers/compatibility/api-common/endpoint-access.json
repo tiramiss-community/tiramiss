@@ -1,0 +1,133 @@
+{
+	"upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+	"endpoints": [
+		{
+			"name": "admin/queue/clear",
+			"access": {
+				"requireCredential": true,
+				"requireModerator": true,
+				"kind": "write:admin:queue"
+			}
+		},
+		{
+			"name": "admin/queue/deliver-delayed",
+			"access": {
+				"requireCredential": true,
+				"requireModerator": true,
+				"kind": "read:admin:queue"
+			}
+		},
+		{
+			"name": "admin/queue/inbox-delayed",
+			"access": {
+				"requireCredential": true,
+				"requireModerator": true,
+				"kind": "read:admin:queue"
+			}
+		},
+		{
+			"name": "admin/queue/jobs",
+			"access": {
+				"requireCredential": true,
+				"requireModerator": true,
+				"kind": "read:admin:queue"
+			}
+		},
+		{
+			"name": "admin/queue/pause",
+			"access": {
+				"requireCredential": true,
+				"requireModerator": true,
+				"kind": "write:admin:queue"
+			}
+		},
+		{
+			"name": "admin/queue/promote-jobs",
+			"access": {
+				"requireCredential": true,
+				"requireModerator": true,
+				"kind": "write:admin:queue"
+			}
+		},
+		{
+			"name": "admin/queue/queue-stats",
+			"access": {
+				"requireCredential": true,
+				"requireModerator": true,
+				"kind": "read:admin:queue"
+			}
+		},
+		{
+			"name": "admin/queue/queues",
+			"access": {
+				"requireCredential": true,
+				"requireModerator": true,
+				"kind": "read:admin:queue"
+			}
+		},
+		{
+			"name": "admin/queue/remove-job",
+			"access": {
+				"requireCredential": true,
+				"requireModerator": true,
+				"kind": "write:admin:queue"
+			}
+		},
+		{
+			"name": "admin/queue/resume",
+			"access": {
+				"requireCredential": true,
+				"requireModerator": true,
+				"kind": "write:admin:queue"
+			}
+		},
+		{
+			"name": "admin/queue/retry-job",
+			"access": {
+				"requireCredential": true,
+				"requireModerator": true,
+				"kind": "write:admin:queue"
+			}
+		},
+		{
+			"name": "admin/queue/show-job",
+			"access": {
+				"requireCredential": true,
+				"requireModerator": true,
+				"kind": "read:admin:queue"
+			}
+		},
+		{
+			"name": "admin/queue/show-job-logs",
+			"access": {
+				"requireCredential": true,
+				"requireModerator": true,
+				"kind": "read:admin:queue"
+			}
+		},
+		{
+			"name": "admin/queue/stats",
+			"access": {
+				"requireCredential": true,
+				"requireModerator": true,
+				"kind": "read:admin:queue"
+			}
+		},
+		{
+			"name": "admin/roles/show",
+			"access": {
+				"requireCredential": true,
+				"requireModerator": true,
+				"kind": "read:admin:roles"
+			}
+		},
+		{
+			"name": "admin/roles/update",
+			"access": {
+				"requireCredential": true,
+				"requireAdmin": true,
+				"kind": "write:admin:roles"
+			}
+		}
+	]
+}

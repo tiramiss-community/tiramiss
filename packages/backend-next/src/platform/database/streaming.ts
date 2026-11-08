@@ -7,6 +7,7 @@ import { MiBlocking, MiChannelFollowing, MiChannelMuting, MiFollowing, MiMuting,
 import { emptyStreamFacts } from '../../modules/stream/public.js';
 import { readNotePlan, renderNote } from '../../modules/note/public.js';
 import { normalizeReaction } from '../../modules/note/public.js';
+import { allowsPermission } from '../../modules/access/public.js';
 import { createTokenAuthenticator } from './authenticate.js';
 import { createNoteReader } from './note-reader.js';
 import { readMeta } from './meta.js';
@@ -20,7 +21,14 @@ export function createStreamingReader(manager: EntityManager, redis: Redis, logg
 	const authenticate = createTokenAuthenticator(manager, logger);
 	const reader = createNoteReader(manager, redis, options);
 	return {
-		authenticate: async (token: string | null) => token == null ? null : authenticate(token),
+		async authenticate(token: string | null) {
+			const caller = await authenticate(token);
+			return caller === null ? null : {
+				userId: caller.credential.userId,
+				canReadAccount: allowsPermission(caller.credential, 'read:account'),
+				isSuspended: caller.isSuspended,
+			};
+		},
 		async readFacts(userId: string | null): Promise<StreamFacts> {
 			const facts = emptyStreamFacts(userId);
 			facts.ugcVisibilityForVisitor = (await readMeta(manager)).ugcVisibilityForVisitor;

@@ -2,7 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { createRoleApi } from '../http/role-api.js';
+import { createApiEndpoints } from '../http/api-endpoint.js';
+import { createRoleEndpoints } from '../http/role-api.js';
 import { createShowRole, createUpdateRole } from '../modules/role/public.js';
 import { createIdCodec } from '../platform/id-codec.js';
 import { createTokenAuthenticator } from '../platform/database/authenticate.js';
@@ -23,6 +24,9 @@ export function createRoleHttpApp(resources: RuntimeResources, config: RuntimeCo
 		transactions: createRoleUpdateTransactions(resources.dataSource, { createdAtFromId: codec.createdAtFromId, newAuditId: codec.newId }),
 		changes: resources.roleMaterials.changes, clock: Date.now,
 	});
-	return createRoleApi({ authenticate: createTokenAuthenticator(manager, resources.logger),
-																								showRole: show.showRole, updateRole: update.updateRole, logger: resources.logger });
+	return createApiEndpoints({
+		endpoints: createRoleEndpoints({ showRole: show.showRole, updateRole: update.updateRole }),
+		authenticate: createTokenAuthenticator(manager, resources.logger),
+		logger: resources.logger,
+	});
 }

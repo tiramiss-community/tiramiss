@@ -2,8 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Ajv } from 'ajv';
-import { RoleInputInvalid } from './errors.js';
+import { compileInput } from '../access/public.js';
 import type { RolePatch } from './update-contract.js';
 
 const properties = {
@@ -16,19 +15,14 @@ const properties = {
 	preserveAssignmentOnMoveAccount: { type: 'boolean' }, canEditMembersByModerator: { type: 'boolean' },
 	displayOrder: { type: 'number' }, policies: { type: 'object' },
 };
-const ajv = new Ajv({ useDefaults: true });
-ajv.addFormat('misskey:id', /^[a-zA-Z0-9]+$/);
 const schema = (fields: object) => ({ type: 'object', properties: fields, required: ['roleId'] });
-const validators = { show: ajv.compile(schema({ roleId: properties.roleId })), update: ajv.compile(schema(properties)) };
+const validators = {
+	show: compileInput<Record<string, unknown> & { roleId: string }>(schema({ roleId: properties.roleId })),
+	update: compileInput<Record<string, unknown> & { roleId: string }>(schema(properties)),
+};
 
 export function parseRoleInput(input: unknown, operation: 'show' | 'update'): { roleId: string; patch: RolePatch } {
-	const validate = validators[operation];
-	if (!validate(input)) {
-		const error = validate.errors![0];
-		throw new RoleInputInvalid(error.schemaPath, error.message!);
-	}
-
-	const data = input as Record<string, unknown> & { roleId: string };
+	const data = validators[operation](input);
 	const patch = Object.fromEntries(Object.keys(properties)
 		.filter(key => key !== 'roleId' && Object.hasOwn(data, key) && data[key] !== undefined)
 		.map(key => [key, data[key]])) as RolePatch;

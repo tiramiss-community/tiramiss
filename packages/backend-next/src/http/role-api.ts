@@ -2,64 +2,41 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Hono } from 'hono';
-import { bodyLimit } from 'hono/body-limit';
-import { createRequestEvaluation, type RoleActor, type RoleEvaluation, type RoleShowData } from '../modules/role/public.js';
+import { createRequestEvaluation, RoleNotFound, type RoleEvaluation, type RoleShowData } from '../modules/role/public.js';
 import { roleResponse } from './role-response.js';
-import { apiErrorResponse } from './api-error.js';
-import type { Logger } from '../platform/logger.js';
+import type { AccessRequest } from '../modules/access/public.js';
+import type { ApiEndpoint } from './api-endpoint.js';
+import type { ApiErrorBody } from './api-error.js';
 
-export function createRoleApi(dependencies: {
-	authenticate(token: string | null | undefined): Promise<RoleActor>;
-	showRole(actor: RoleActor, input: unknown, evaluation: RoleEvaluation): Promise<RoleShowData>;
-	updateRole(actor: RoleActor, input: unknown, evaluation: RoleEvaluation): Promise<void>;
-	logger: Logger;
-}) {
-	const app = new Hono();
-	for (const operation of ['show', 'update'] as const) {
-		app.all(`/api/admin/roles/${operation}`, bodyLimit({
-			maxSize: 1024 * 1024,
-			// 未読の本文を残した接続を次のリクエストへ再利用しない。
-			onError: context => context.body(null, 413, { Connection: 'close' }),
-		}), async context => {
-			if (context.req.method === 'GET') {
-				return context.body(null, 405);
-			}
+function noSuchRole(id: string) {
+	return (error: unknown): ApiErrorBody | undefined => error instanceof RoleNotFound ? { message: 'No such role.', code: 'NO_SUCH_ROLE', id } : undefined;
+}
 
-			let input: unknown;
-			try {
-				const text = await context.req.text();
-				input = text === '' ? undefined : JSON.parse(text);
-			} catch {
-				return context.body(null, 400);
-			}
-
-			const authorization = context.req.header('authorization');
-			const bodyToken = input !== null && typeof input === 'object' ? (input as Record<string, unknown>).i : undefined;
-			const token = authorization?.startsWith('Bearer ') ? authorization.slice(7) : bodyToken;
-			if (token != null && typeof token !== 'string') {
-				return context.body(null, 400);
-			}
-
-			const evaluation = createRequestEvaluation(Date.now);
-			try {
-				const actor = await dependencies.authenticate(token);
-				if (operation === 'show') {
-					return context.json(roleResponse(await dependencies.showRole(actor, input, evaluation)));
-				}
-
-				await dependencies.updateRole(actor, input, evaluation);
-				return context.body(null, 204);
-			} catch (error) {
-				const response = apiErrorResponse(error, operation);
-				if (response.status === 500) {
-					dependencies.logger.error('role-api.failed', { operation, error });
-				}
-				return response;
-			} finally {
-				evaluation.close();
-			}
-		});
+async function withEvaluation<T>(work: (evaluation: RoleEvaluation) => Promise<T>): Promise<T> {
+	const evaluation = createRequestEvaluation(Date.now);
+	try {
+		return await work(evaluation);
+	} finally {
+		evaluation.close();
 	}
-	return app;
+}
+
+export function createRoleEndpoints(dependencies: {
+	showRole(access: AccessRequest, input: unknown, evaluation: RoleEvaluation): Promise<RoleShowData>;
+	updateRole(access: AccessRequest, input: unknown, evaluation: RoleEvaluation): Promise<void>;
+}): ApiEndpoint[] {
+	return [
+		{
+			name: 'admin/roles/show',
+			access: { requireCredential: true, requireModerator: true, kind: 'read:admin:roles' },
+			handle: (access, input) => withEvaluation(async evaluation => roleResponse(await dependencies.showRole(access, input, evaluation))),
+			errors: noSuchRole('07dc7d34-c0d8-49b7-96c6-db3ce64ee0b3'),
+		},
+		{
+			name: 'admin/roles/update',
+			access: { requireCredential: true, requireAdmin: true, kind: 'write:admin:roles' },
+			handle: (access, input) => withEvaluation(evaluation => dependencies.updateRole(access, input, evaluation)),
+			errors: noSuchRole('cd23ef55-09ad-428a-ac61-95a45e124b32'),
+		},
+	];
 }

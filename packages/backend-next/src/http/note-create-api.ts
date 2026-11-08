@@ -3,18 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Hono } from 'hono';
-import { cors } from 'hono/cors';
-import { bodyLimit } from 'hono/body-limit';
 import { NoteCreateError } from '../modules/note/public.js';
-import { apiErrorResponse } from './api-error.js';
+import { allowsPermission } from '../modules/access/public.js';
+import { apiErrorResponse, commonApiError, INTERNAL_ERROR } from './api-error.js';
+import { readApiRequest, registerApiRoute } from './api-request.js';
+import type { AccessCredential } from '../modules/access/public.js';
 import type { JsonObject, NoteCreateActor, NoteCreateErrorCode } from '../modules/note/public.js';
 import type { Logger } from '../platform/logger.js';
 
 const errors: Record<NoteCreateErrorCode, {
 	message: string;
 	id: string;
-	kind: string;
-	status: 400 | 401 | 403 | 429 | 501;
+	kind: 'client' | 'permission';
+	status: 400 | 401 | 403 | 429;
 }> = {
 	CREDENTIAL_REQUIRED: { message: 'Credential required.', id: '1384574d-a912-4b81-8601-c7b1c4085df1', kind: 'client', status: 401 },
 	AUTHENTICATION_FAILED: { message: 'Authentication failed. Please ensure your token is correct.', id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14', kind: 'client', status: 401 },
@@ -39,64 +40,47 @@ const errors: Record<NoteCreateErrorCode, {
 	CONTAINS_TOO_MANY_MENTIONS: { message: 'Cannot post because it exceeds the allowed number of mentions.', id: '4de0363a-3046-481b-9b0f-feff3e211025', kind: 'client', status: 400 },
 };
 
+/**
+ * noteのUseCaseはgateへ移るまで従来の資格の形を受け取る。
+ * permission集合から必要なscopeだけをここで写し、認証結果へ真偽値を戻さない。
+ */
+export function toNoteActor(credential: AccessCredential | null): NoteCreateActor | null {
+	return credential === null ? null : { userId: credential.userId, canWriteNote: allowsPermission(credential, 'write:notes') };
+}
+
 export function createNoteCreateApi(dependencies: {
-	authenticate(token: string): Promise<NoteCreateActor>;
+	authenticate(token: string | null | undefined): Promise<{ credential: AccessCredential } | null>;
 	createNote<T>(actor: NoteCreateActor | null, input: unknown, now: number, render: (noteId: string, viewerId: string) => Promise<T>): Promise<T>;
 	readCreatedNote(id: string, viewerId: string, now: number): Promise<JsonObject>;
 	logger: Logger;
 }) {
 	const app = new Hono();
-	app.use('/api/notes/create', cors({ origin: '*', allowMethods: ['GET', 'HEAD', 'POST'] }));
-	app.use('/api/notes/create', async (context, next) => {
-		context.header('Cache-Control', 'private, max-age=0, must-revalidate');
-		await next();
-	});
-	app.all('/api/notes/create', bodyLimit({ maxSize: 1024 * 1024, onError: c => c.body(null, 413, { Connection: 'close' }) }), async context => {
-		if (context.req.method === 'GET') {
-			return context.body(null, 405);
-		}
-		let input: unknown;
-		try {
-			const text = await context.req.text();
-			input = text === '' ? undefined : JSON.parse(text);
-		} catch {
-			return context.body(null, 400);
-		}
-		const bodyToken = input !== null && typeof input === 'object' ? (input as Record<string, unknown>).i : undefined;
-		const authorization = context.req.header('authorization');
-		const token = authorization?.startsWith('Bearer ') ? authorization.slice(7) : bodyToken;
-		if (token != null && typeof token !== 'string') {
-			return context.body(null, 400);
+	registerApiRoute(app, '/api/notes/create', async context => {
+		const request = await readApiRequest(context);
+		if (request instanceof Response) {
+			return request;
 		}
 		// 描画は保存の後にだけ呼ばれるため、ここで ID が分かれば Note は保存済み。
 		let savedNoteId: string | undefined;
 		try {
-			const actor = token == null ? null : await dependencies.authenticate(token);
+			const actor = toNoteActor((await dependencies.authenticate(request.token))?.credential ?? null);
 			const now = Date.now();
-			const createdNote = await dependencies.createNote(actor, input, now, (id, viewerId) => {
+			const createdNote = await dependencies.createNote(actor, request.input, now, (id, viewerId) => {
 				savedNoteId = id;
 				return dependencies.readCreatedNote(id, viewerId, now);
 			});
 			return context.json({ createdNote });
 		} catch (error) {
 			if (error instanceof NoteCreateError) {
-				const { status, ...body } = errors[error.code];
-				if (error.code === 'CREDENTIAL_REQUIRED') {
-					context.header('WWW-Authenticate', 'Bearer realm="Misskey"');
-				} else if (error.code === 'AUTHENTICATION_FAILED' || error.code === 'PERMISSION_DENIED' || (body.kind === 'client' && status !== 429)) {
-					const reason = error.code === 'AUTHENTICATION_FAILED' ? 'invalid_token' : error.code === 'PERMISSION_DENIED' ? 'insufficient_scope' : 'invalid_request';
-					context.header('WWW-Authenticate', `Bearer realm="Misskey", error="${reason}", error_description="${body.message}"`);
-				} else if (status === 429 && error.info && 'resetMs' in error.info && typeof error.info.resetMs === 'number') {
-					context.header('Retry-After', Math.max(0, Math.ceil((error.info.resetMs - Date.now()) / 1000)).toString());
-				}
-				return context.json({ error: { ...body, code: error.code, ...(error.info ? { info: error.info } : {}) } }, status);
+				return apiErrorResponse({ ...errors[error.code], code: error.code, info: error.info });
 			}
-			const response = apiErrorResponse(error, 'show');
-			if (response.status === 500) {
-				// 応答は本家どおり保存前の失敗と同じ 500 にするが、再送による重複を調べられるよう保存済みの Note を残す。
-				dependencies.logger.error('note-create.failed', { error, savedNoteId });
+			const known = commonApiError(error);
+			if (known) {
+				return apiErrorResponse(known);
 			}
-			return response;
+			// 応答は本家どおり保存前の失敗と同じ 500 にするが、再送による重複を調べられるよう保存済みの Note を残す。
+			dependencies.logger.error('note-create.failed', { error, savedNoteId });
+			return apiErrorResponse(INTERNAL_ERROR);
 		}
 	});
 	return app;

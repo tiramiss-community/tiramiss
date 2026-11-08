@@ -4,11 +4,13 @@
  */
 import { expect, test } from 'vitest';
 import { createShowRole } from '../../../src/modules/role/show-role.js';
-import { ActorSuspended, ModeratorRequired, CredentialScopeDenied, RoleNotFound } from '../../../src/modules/role/errors.js';
+import { RoleNotFound } from '../../../src/modules/role/errors.js';
 import { createAttemptEvaluation } from '../../../src/modules/role/evaluation.js';
 import { atMs, role, user } from './fixtures.js';
+import { createAccessRequest, type AccessCredential } from '../../../src/modules/access/public.js';
 
-const actor = { userId: 'user', credentialGrant: { readRole: true, updateRole: true } };
+const request = (credential: AccessCredential | null) => createAccessRequest({ requireModerator: true, kind: 'read:admin:roles' }, credential);
+const actor = { userId: 'user', native: true } as const;
 
 function setup() {
 	const facts = { user: user(), instance: { rootUserId: 'user' as string | null, basePolicies: {} }, roles: [role()], assignments: [] };
@@ -27,20 +29,20 @@ function setup() {
 
 test('returns fetched role and count after moderator authorization', async () => {
 	const s = setup();
-	expect(await s.useCase.showRole(actor, { roleId: 'manual' }, createAttemptEvaluation(atMs))).toEqual(s.data);
+	expect(await s.useCase.showRole(request(actor), { roleId: 'manual' }, createAttemptEvaluation(atMs))).toEqual(s.data);
 	expect(s.reads()).toBe(1);
 });
-test.each([ActorSuspended, ModeratorRequired, CredentialScopeDenied])('checks %s before input or existence', async error => {
+test.each(['YOUR_ACCOUNT_SUSPENDED', 'MODERATOR_REQUIRED', 'PERMISSION_DENIED'])('checks %s before input or existence', async reason => {
 	const s = setup();
-	s.facts.user.isSuspended = error === ActorSuspended;
-	s.facts.instance.rootUserId = error === ModeratorRequired ? null : 'user';
-	await expect(s.useCase.showRole({ ...actor, credentialGrant: { readRole: false, updateRole: false } }, { roleId: '!' }, createAttemptEvaluation(atMs)))
-		.rejects.toBeInstanceOf(error);
+	s.facts.user.isSuspended = reason === 'YOUR_ACCOUNT_SUSPENDED';
+	s.facts.instance.rootUserId = reason === 'MODERATOR_REQUIRED' ? null : 'user';
+	await expect(s.useCase.showRole(request({ userId: 'user', native: false, permissions: new Set(['write:admin:roles']) }), { roleId: '!' }, createAttemptEvaluation(atMs)))
+		.rejects.toMatchObject({ reason });
 	expect(s.reads()).toBe(0);
 });
 test('checks input before role existence', async () => {
 	const s = setup();
-	await expect(s.useCase.showRole(actor, {}, createAttemptEvaluation(atMs))).rejects.toMatchObject({ param: '#/required' });
+	await expect(s.useCase.showRole(request(actor), {}, createAttemptEvaluation(atMs))).rejects.toMatchObject({ param: '#/required' });
 	expect(s.reads()).toBe(0);
-	await expect(s.useCase.showRole(actor, { roleId: 'missing' }, createAttemptEvaluation(atMs))).rejects.toBeInstanceOf(RoleNotFound);
+	await expect(s.useCase.showRole(request(actor), { roleId: 'missing' }, createAttemptEvaluation(atMs))).rejects.toBeInstanceOf(RoleNotFound);
 });

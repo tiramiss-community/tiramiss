@@ -21,6 +21,12 @@ Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装
 
 main/homeTimelineとnote購読は下記の#173受信sliceで`partial`とした。queueStatsは#163で`verified`、channel/chはそのrequestLogのみ`partial`。他16channel・readNotification・他channel書込は未実装。その他の入口も個別行のstatusに従う。これは見送りではなく、担当 Issue による設計・実装・比較が必要な状態。棚卸しの整合性検査自体はHTTP/連合機能の比較テストではない。`verified`の根拠は各行に記録した個別の比較・実依存検証に従う。
 
+## #178 API共通gate最初のsliceの照合（2026-11-08）
+
+`implementationCommit`を`65f88fcd54b8b561779230ad8233e4cb0b262154`へ進め、`capability:api-common`と監査16行（トークン抽出・認証種別・lastUsedAt・認証失敗応答・共通gate・rate limit・Ajv・応答規則・route共通設定・関連service・CORS mount）を`partial`とした。全行の監査A/B・担当domain・本家source/lineは維持する。Role 2・queue 14 APIはgateへ移ったが、既存の`verified`根拠は変えない。
+
+根拠は新実装の単体（判定順・route guard・段階別500・本家meta 16件との照合）と、既存の固定比較（queue 67観測、Role 28ケース、note結合）である。本家full serverとの同時比較ではない。note APIのgate移行・未知endpoint 404・allowGet・multipart（#188）・secure・requiredRolePolicy・匿名IP limit・user_ip・OpenAPIは`not_implemented`または`partial`のまま残す。[比較資料と意図的差異G1〜G8](../api-common/README.md)。
+
 ## #163 管理APIとQueueStatsの照合（2026-11-08）
 
 `implementationCommit`を`1f023061eb86a18a3113d29517cb7eded091edc6`へ進め、管理14 API・queueStats channel/capability・個別管理操作・packer/INFO/統計timer/service・4つのqueue監査書込を`verified`とした。全10 queue名と広いqueue能力は`partial`、channel/chもqueueStatsのrequestLogだけの`partial`とする。監査時判定`audit.A/B`と領域の担当は変更しない。serverStatsと広域Xev連携は未実装で、共有stream責務は`partial`に留める。

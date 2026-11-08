@@ -2,11 +2,12 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { ActorSuspended, ModeratorRequired, CredentialScopeDenied, RoleNotFound } from './errors.js';
-import { selectApplicableRoles } from './applicable-roles.js';
-import { evaluatePrivileges } from './privileges.js';
+import { requireCredential } from '../access/public.js';
+import { RoleNotFound } from './errors.js';
+import { roleAccessFacts } from './access.js';
 import { prepareRoleInput } from './input.js';
-import type { RoleActor, RoleAuthorizationFacts, RoleDefinition } from './update-contract.js';
+import type { AccessRequest } from '../access/public.js';
+import type { RoleAuthorizationFacts, RoleDefinition } from './update-contract.js';
 import type { RoleEvaluation } from './evaluation.js';
 
 export interface RoleShowData {
@@ -20,20 +21,11 @@ export function createShowRole(dependencies: {
 	roles: { read(roleId: string, atMs: number): Promise<RoleShowData | null> };
 }) {
 	return {
-		async showRole(actor: RoleActor, rawInput: unknown, evaluation: RoleEvaluation): Promise<RoleShowData> {
+		async showRole(access: AccessRequest, rawInput: unknown, evaluation: RoleEvaluation): Promise<RoleShowData> {
 			const readInput = prepareRoleInput(rawInput, 'show');
+			const actor = requireCredential(access.credential);
 			const facts = await dependencies.authorizationFacts.read(actor.userId);
-			if (facts.user.isSuspended) {
-				throw new ActorSuspended();
-			}
-
-			const roles = selectApplicableRoles(facts.roles, facts.assignments, facts.user, evaluation.atMs);
-			if (!evaluatePrivileges(actor.userId, facts.instance.rootUserId, roles).isModerator) {
-				throw new ModeratorRequired();
-			}
-			if (!actor.credentialGrant.readRole) {
-				throw new CredentialScopeDenied();
-			}
+			access.authorize(roleAccessFacts(actor.userId, facts, evaluation.atMs));
 
 			const { roleId } = readInput();
 			const data = await dependencies.roles.read(roleId, evaluation.atMs);
