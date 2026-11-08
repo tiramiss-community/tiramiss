@@ -38,14 +38,14 @@ const bindings = {
     "delivery": "014a64eb4042bab5655ade550dd87f9adf23afee843023ee4bfe4c041ae7892a",
     "delete-http": "e8ed999436709917903ef2db1b0748c062f53d61ec8732a9aa8417c16b1185d7",
     "delete-audit": "a1d0622ec18168e8d93e8dcfa8466bb268ef92156f65a16bee4dfbd56877fca3",
-    "restart": "a4b0702439f42ca85942fab14c4fe350986dae5113534b78fb7921777cfd68c6",
-    "reject": "f3f4c1922b10a1556a95ca0d80ac3d9f9fc540379bcefc400473b9bd078df959",
-    "terminal": "377ceace1e68366ff4e30f1742cbba0fab203215469db1b60ff9fddc213cee9f",
+    "restart": "3184086cfc221b3b75eef5a030664ddc6f0f9cbb892a06a425b1b82e28c1cdae",
+    "reject": "027f5a2eeb569c0a195b80b4e18a527fff69142e4ce94fd004ac124cda6a5a9a",
+    "terminal": "b087fb3b687cbd6b71cb68259f551ca15a2e40d9aa5fb41a11e8807eb9e8fa83",
     "handoff": "573723a5f81d3a7050e6753902bcf7b6121b14301872c6899601e1f3b08262f1",
     "scheduler": "8675969e26bcda38a9c354360b22d6ce283608f581b10c57637b63a1d74f9756",
     "missing-handlers": "57eca24c025f54b68a945ff732e1cf963928f5119614dadecb2320b40a40c997",
     "correction": "e4f9b3a704ea5985145abb75373df4f1bc92929c2d46e7344c56200649d93cd2",
-    "cleanup": "4d5321b53762cec904f008dfeacad458fbadc11e4ea66785bfe7095973c2e6b7",
+    "cleanup": "08a7ccd2729ec3e02bf8f93ce69eadcc476c687c1771fb53c05c4b7ccaacce77",
     "limitation": "391b419aa77a7591023877ee123d14252a116242f3dc01a64490f853278200f1",
     "delete-ap": "db803c5dedaf2daa70cf947f03fbc8a3e68aa7955c0aad70d23415892d2d2ea5",
     "n3": "54eec3b34146861ad34e53b1e7ba0ff0a6816d8050c6079333b945580c58a8e2"
@@ -68,7 +68,7 @@ const bindings = {
   "profiles": "e9914118e6dabb04b4fccfa17a211a065a7814d01fb3fa4ccc7f54510d82d467",
   "failureDispositions": "600937144af9952e473acf97d110f56b39de0b259a54338e9d1ff0398a40d3bf",
   "blockers": "963a1911cd4d9788775a69f4da949110081e1859a253ca3af2de1a0f824631a6",
-  "parentAudit": "f7ca3de1df81eceaba3660b4f8c4260ff4ab4c9b65859bf230b75b8a47854a36"
+  "parentAudit": "9d7a3f89c917adefa30bccb1a1635f89c23ba9e2cf15e6113c2dba27012f6a19"
 };
 
 function validate(value) {
@@ -184,7 +184,10 @@ function validate(value) {
 	assert.equal(audit.criteria.length, 10, 'current parent criteria');
 	for (const criterion of audit.criteria) {
 		assert.equal(criterion.result, 'PASS');
-		for (const reference of criterion.references) { read(reference.file); assert.ok(Number.isInteger(reference.line) && reference.line > 0); }
+		for (const reference of criterion.references) {
+			const lines = read(reference.file).split('\n');
+			assert.ok(Number.isSafeInteger(reference.line) && reference.line > 0 && reference.line <= lines.length && lines[reference.line - 1].trim().length > 0, 'reference line must identify nonempty content');
+		}
 	}
 	same(audit.closureReferences, ['Closes #124', 'Refs #176', 'Refs #127', 'Refs #139'], 'audited parent and remaining references');
 	for (const key of ['profiles', 'failureDispositions', 'blockers', 'parentAudit']) assert.equal(sha(JSON.stringify(value[key])), bindings[key], `ownership/disposition binding drift ${key}`);
@@ -223,6 +226,8 @@ const mutations = [
 	['missing F disposition', x => x.failureDispositions.pop(), /F groups/],
 	['missing cutover handler', x => { delete x.parentAudit.unsupportedHandlers.inbox; }, /unsupported handlers/],
 	['dropped schedulers', x => { x.parentAudit.systemSchedulers.count = 0; }, /nine system schedulers/],
+	['blank parent reference line', x => { const file = 'docs/backend-next/posting-contract.md'; x.parentAudit.criteria[0].references[0] = { file, line: read(file).split('\n').findIndex(line => !line.trim()) + 1 }; }, /reference line must identify nonempty content/],
+	['out-of-range parent reference line', x => { x.parentAudit.criteria[0].references[0].line = Number.MAX_SAFE_INTEGER; }, /reference line must identify nonempty content/],
 	['limitation relabelled runtime', x => { x.evidence.limitation.provenance = 'new-runtime'; }, /binding drift/],
 	['redirected observation consumer', x => { x.cases[0].observations[0].evidence = ['terminal']; }, /observation dataset binding|observation binding drift/],
 ];

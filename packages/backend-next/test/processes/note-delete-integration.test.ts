@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+// Linux-only: Supervisor PID identity and suspension checks require /proc and SIGSTOP/SIGCONT.
 import { randomUUID } from 'node:crypto';
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';

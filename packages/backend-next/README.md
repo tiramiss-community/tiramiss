@@ -330,7 +330,7 @@ pnpm --filter backend-next test:process test/processes/note-antennas.test.ts
 
 ## N7投稿検証（#176）
 
-[証拠の種類・実測・残るblocker](../../docs/superpowers/compatibility/note/n7/README.md)を参照。既存の検証手順で専用依存を準備し、repo rootで実行する。既定portを使い、並行時だけ既存の`BACKEND_NEXT_TEST_DB_PORT` / `BACKEND_NEXT_TEST_REDIS_PORT` / `BACKEND_NEXT_TEST_MEILI_PORT`を上書きする。依存のinstallや共有DBへのmigrationは以下に含めない。process試験はbuild済み成果物が必要。
+[証拠の種類・実測・残るblocker](../../docs/superpowers/compatibility/note/n7/README.md)を参照。既存の検証手順で専用依存を準備し、repo rootで実行する。既定portを使い、並行時だけ既存の`BACKEND_NEXT_TEST_DB_PORT` / `BACKEND_NEXT_TEST_REDIS_PORT` / `BACKEND_NEXT_TEST_MEILI_PORT`を上書きする。依存のinstallや共有DBへのmigrationは以下に含めない。process試験はbuild済み成果物が必要。 `note-delete-integration.test.ts`は`/proc/<pid>/stat`と`SIGSTOP`/`SIGCONT`を使うLinux専用のため、CIやWSLなどのLinux環境で実行する。
 
 ```sh
 pnpm --filter backend-next... typecheck

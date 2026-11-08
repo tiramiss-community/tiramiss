@@ -742,21 +742,21 @@
     "restart": {
       "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
       "testTitle": "N7 Supervisor preserves HTTP-created posting work across stop/restart and natural retries",
-      "sourceSha256": "87d7b58a101a044e835dad66bb5fc8cbd95ba67c46e91736d860b33a4befe40e",
+      "sourceSha256": "702d073618dc46b2a65346283a472aee85192ef9ed6643eb16b1494c1956b135",
       "provenance": "new-runtime",
       "assertions": "Real native HTTP Note/Poll/show, PG/WS/TL/hashtag/search, paused poll, same three jobs/options/due scores, stop children, reconnect WS, resume poll, natural AP503/webhook429 attempts1->2, stable bodies/digests/envelopes, signatures, delete/unindex and retained history."
     },
     "reject": {
       "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
       "testTitle": "N7 Supervisor rejects credentials and rolls back Poll failure without posting effects",
-      "sourceSha256": "87d7b58a101a044e835dad66bb5fc8cbd95ba67c46e91736d860b33a4befe40e",
+      "sourceSha256": "702d073618dc46b2a65346283a472aee85192ef9ed6643eb16b1494c1956b135",
       "provenance": "new-runtime",
       "assertions": "Five C2 exact credential errors/challenges/deltas; marker-only Poll INSERT trigger500; graceful drain then whole PG/Redis/queues/search/receipts state comparison and no posting WS."
     },
     "terminal": {
       "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
       "testTitle": "N7 Supervisor keeps terminal AP 404 failed without recreating the post",
-      "sourceSha256": "87d7b58a101a044e835dad66bb5fc8cbd95ba67c46e91736d860b33a4befe40e",
+      "sourceSha256": "702d073618dc46b2a65346283a472aee85192ef9ed6643eb16b1494c1956b135",
       "provenance": "new-runtime",
       "assertions": "Real HTTP-created post, terminal unrecoverable404 one failed job/receipt attempt1; no replacement/delay; Note/show and ordinary effects survive."
     },
@@ -792,7 +792,7 @@
     "cleanup": {
       "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
       "testTitle": "N7 test cleanup bounds a frozen Supervisor during %s",
-      "sourceSha256": "87d7b58a101a044e835dad66bb5fc8cbd95ba67c46e91736d860b33a4befe40e",
+      "sourceSha256": "702d073618dc46b2a65346283a472aee85192ef9ed6643eb16b1494c1956b135",
       "provenance": "new-runtime",
       "assertions": "SIGSTOP confirmed state T; test deadline rejection, owned PID/starttime cleanup, no rescue, repeated close safe.",
       "dataset": {"file": "packages/backend-next/test/processes/note-delete-integration.test.ts", "caseIds": ["stop", "close"], "parameters": ["stop", "close"], "sourceExpression": "test.each(['stop', 'close'] as const)"}
@@ -1275,7 +1275,7 @@
           },
           {
             "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
-            "line": 594
+            "line": 595
           }
         ]
       },
@@ -1329,11 +1329,11 @@
           },
           {
             "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
-            "line": 647
+            "line": 648
           },
           {
             "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
-            "line": 818
+            "line": 819
           }
         ]
       },
@@ -1441,7 +1441,7 @@
           },
           {
             "file": "docs/backend-next/posting-contract.md",
-            "line": 221
+            "line": 226
           }
         ]
       },
@@ -1452,27 +1452,27 @@
         "references": [
           {
             "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
-            "line": 580
+            "line": 581
           },
           {
             "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
-            "line": 622
+            "line": 623
           },
           {
             "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
-            "line": 655
+            "line": 656
           },
           {
             "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
-            "line": 679
+            "line": 680
           },
           {
             "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
-            "line": 686
+            "line": 687
           },
           {
             "file": "docs/superpowers/compatibility/note/n7/README.md",
-            "line": 25
+            "line": 29
           }
         ]
       },
