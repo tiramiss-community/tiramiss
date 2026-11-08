@@ -74,6 +74,25 @@ order; `--check` provides the full optional source replay comparison.
 
 ## Regeneration
 
+`scripts/remote-user-contract.test.mjs` intentionally seals the reviewed finite
+`runtime-evidence.json` object with the `reviewed finite runtime binding drift`
+assertion. JSON formatting whitespace is ignored by parsing and serialization;
+object key order, array order and values remain part of this seal. When evidence
+changes, first inspect the diff, verify the affected source/consumer hashes and
+case selections, and rerun the affected measurements. Update their provenance and
+results without attributing old runs to new code. Only after those checks, compute
+the candidate seal from the repository root:
+
+```sh
+node --input-type=module -e 'import { readFileSync } from "node:fs"; import { createHash } from "node:crypto"; const value = JSON.parse(readFileSync("docs/superpowers/compatibility/remote-user/runtime-evidence.json", "utf8")); console.log(createHash("sha256").update(JSON.stringify(value)).digest("hex"));'
+```
+
+Review that candidate and replace only the expected SHA256 in the named assertion;
+keep its individual checks intact. If N7's separately sealed evidence changes,
+review and update its bindings independently rather than bypassing a failing seal.
+Run `node --test scripts/remote-user-contract.test.mjs scripts/note-contract-posting.test.mjs`
+afterward. A new hash alone does not validate new evidence.
+
 ```sh
 UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/remote-user/source-probe.mjs --write
 UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/remote-user/source-probe.mjs --check

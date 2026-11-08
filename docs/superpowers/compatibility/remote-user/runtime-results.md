@@ -4,6 +4,17 @@ Measured core runtime: `33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45`; original bran
 
 ## Provenance and actual gates
 
+Paths under `/tmp` in this document and `runtime-evidence.json`, including the
+case map and raw test logs/JSON, identify **nonpersistent local execution
+artifacts**. They are not committed, uploaded or guaranteed to exist in another
+environment or a later session. Their SHA256 values identify the original bytes
+only while those bytes are available; the repository validator checks declared
+bindings, not the existence or contents of those temporary artifacts. The durable
+records are the commands, snapshots, assertions, counts and limitations committed
+here. To obtain independently inspectable raw output, rerun the listed commands
+at the stated snapshot and retain that new run's artifacts and provenance;
+timings and raw artifact hashes may differ.
+
 The unchanged [95 source-method cases](observations.json) have SHA256 `7427c62abb63c7a7414d9ad571450eb66bce15856ad0be9a5f4b02e1d554b8eb`. They execute extracted methods with explicit doubles. Two full pinned Git-object runs of `UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/remote-user/source-probe.mjs --check` passed after the ephemeral RSA key-generation repair (`/tmp/tiramiss-next243-keygen-check1.log` and `check2.log`); the 15 source Node checks passed. Publication uses a fixed **public-only** SPKI input, while signing generates an ephemeral RSA key. No upstream full HTTP server was run.
 
 [Compact runtime bindings](runtime-evidence.json) connect actual consumer declarations, selected case IDs, expected-value assertions and source digests to successful run IDs. The fresh parent map `/tmp/tiramiss-next243-finalfix-case-map.json` at `33e6718…` was checked against the actual passing assertion names in the unit JSON: all 95 distinct IDs have a passing consumer. Unit projections include injected conversion/HTTP/DB boundaries; **95 consumed unit cases do not mean 95 real HTTP comparisons**. The publication integration subset consumes 14 cases with identity/key expectations adjusted for real generated users and keys. Hashes and source/title binding detect drift; actual assertions, review and measured runs provide the proof.

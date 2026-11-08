@@ -39,8 +39,10 @@ export function createActivityPubActorApi(parts: {
 			}
 			return c.redirect(user.uri, 301);
 		}
+		const body = JSON.stringify(renderLocalActor(user, parts.selfUrl, await parts.publicKey(user.id)));
+
 		c.header('Cache-Control', 'public, max-age=180');
 		c.header('Content-Type', `${negotiation.type([ap, ld]) === ld ? ld + '; profile="https://www.w3.org/ns/activitystreams"' : ap}; charset=utf-8`);
-		return c.body(JSON.stringify(renderLocalActor(user, parts.selfUrl, await parts.publicKey(user.id))));
+		return c.body(body);
 	});
 }
