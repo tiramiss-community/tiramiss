@@ -83,3 +83,6 @@ vite.config.local-dev.ts.timestamp-*
 
 # Affinity
 *.af~lock~
+
+# 本家実装のセキュリティに関わる気になる点（公開しない手元の記録）
+/docs/backend-next/upstream-findings/security/
