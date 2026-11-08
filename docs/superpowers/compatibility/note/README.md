@@ -251,3 +251,7 @@ home/local/user/list/channel（files/replies含む）の固定本家メソッド
 [antenna固定source](antenna/README.md)は184観測を保存し、新実装は87のmatcher結果/条件付き照会trace、24のage/tail/random timeline commandとpublication開始順、5つの実TypeORM/PG raw payloadを直接消費する。通常認証HTTP→実PG→専用timeline Redis/pubsubではcache/internal event、visibility/list/follow、作成時author/channel、file/CW/reply/renote、失敗/削除/停止を別に検証する。本家full serverの同時起動比較ではない。
 
 [全通常更新の責任監査](derived-updates/README.md)はchannelの準備成功後・3独立SQL境界とremote Instance.notesCountを具体的な欠落として検出し、本sliceで接続した。counterの固定source17件のうち6つのbatch/timer/flush結果を新実装unitへ直接照合し、実PG/Redisの登録/cache残留・管理者HTTP削除/失敗・終了flushも確認する。#174判定をproducer責任で行い、閲覧/管理/WS/chart/remote受信/#176/#132/#133を同時に完成したとは扱わない。上の過去sliceの残作業は当時の状態を示す。
+
+## 2026-11-08 N7 applicability
+
+[Bounded N7 evidence and reproduction](n7/README.md) maps historical C/F observations to current assertions and remaining gaps without replacing the original ledger/history. Remote501 and stale refresh remain #195 blockers; #176/#127 remain incomplete.

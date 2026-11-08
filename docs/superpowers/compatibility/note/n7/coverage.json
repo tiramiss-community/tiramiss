@@ -1,0 +1,1620 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-08",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "baselineCommit": "47edf3d17369bdeae4f2c95475a810e52b68c610",
+  "runtimeCommit": "28e670721e6bd6e6ec117ddc67036d1951cd59a3",
+  "postingComplete": false,
+  "notesCreateStatus": "partial",
+  "cases": [
+    {
+      "id": "C1",
+      "owners": [168, 169, 171],
+      "observations": [
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C1-basic", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C1-basic"
+        },
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C1-show", "provenance": "upstream-http"}, "evidence": ["plain-show"], "assertions": "Direct C1-show full JSON equality; native and App reads."},
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C1-user-count", "provenance": "upstream-http"},
+          "evidence": ["user-count"],
+          "assertions": "Whole before/afterCreate/afterDelete object; HTTP delete 204, physical absence, drained post-save/delete."
+        }
+      ],
+      "remaining": {"reason": "Observation comparisons are bounded to recorded normalization, fixtures and operation paths; surrounding feature responsibilities remain in contracts/crossDomain.", "owners": [176]}
+    },
+    {
+      "id": "C2",
+      "owners": [169, 178, 179],
+      "observations": [
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C2-guest", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C2-guest"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C2-invalid", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C2-invalid"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C2-suspended", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C2-suspended"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C2-moved", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C2-moved"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C2-no-scope", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C2-no-scope"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C2-app-denied", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C2-app-denied"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C2-native", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C2-native"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C2-scoped", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C2-scoped"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C2-app-permission", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C2-app-permission"
+        },
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C2-suspended-show", "provenance": "upstream-http"}, "evidence": ["read-auth"], "assertions": "Both complete status/body goldens before later counter mutations."},
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C2-moved-delete", "provenance": "upstream-http"}, "evidence": ["moved-delete"], "assertions": "Direct C2-moved-delete status/body; suspended/scope rejection."},
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C2-bearer-precedence", "provenance": "upstream-http"}, "evidence": ["read-auth"], "assertions": "Both complete status/body goldens before later counter mutations."},
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/rate-observations.json", "key": "C2-rate-first-invalid", "provenance": "upstream-http"},
+          "evidence": ["rate"],
+          "assertions": "Direct normalized status/body/challenge equality for C2-rate-first-invalid and C2-rate-before-input, future reset checks, zero author Note count. C2-rate-db-delta is not directly compared as a whole object."
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/rate-observations.json", "key": "C2-rate-before-input", "provenance": "upstream-http"},
+          "evidence": ["rate"],
+          "assertions": "Direct normalized status/body/challenge equality for C2-rate-first-invalid and C2-rate-before-input, future reset checks, zero author Note count. C2-rate-db-delta is not directly compared as a whole object."
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/rate-observations.json", "key": "C2-rate-db-delta", "provenance": "upstream-http"},
+          "evidence": ["rate"],
+          "assertions": "Production rate gate 429/reset and ordering; this does not directly compare the historical accelerated rate-observations objects.",
+          "remaining": {"reason": "Historical accelerated rate observation is preserved; production rate assertions cover ordering/reset but do not compare this exact historical dataset. Full IP/non-string quota matrix remains outside the probe.", "owners": [178, 179]}
+        }
+      ],
+      "remaining": {"reason": "Observation comparisons are bounded to recorded normalization, fixtures and operation paths; surrounding feature responsibilities remain in contracts/crossDomain.", "owners": [176]}
+    },
+    {
+      "id": "C3",
+      "owners": [170, 188],
+      "observations": [
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C3-missing", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C3-missing"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C3-whitespace", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C3-whitespace"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C3-long", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C3-long"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C3-empty-cw", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C3-empty-cw"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C3-cw-only", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C3-cw-only"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C3-missing-file", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C3-missing-file"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C3-foreign-file", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C3-foreign-file"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C3-file-precedence", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C3-file-precedence"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C3-empty-file-precedence", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C3-empty-file-precedence"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C3-media-alias", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C3-media-alias"
+        }
+      ],
+      "remaining": {"reason": "Observation comparisons are bounded to recorded normalization, fixtures and operation paths; surrounding feature responsibilities remain in contracts/crossDomain.", "owners": [176]}
+    },
+    {
+      "id": "C4",
+      "owners": [168, 169, 171],
+      "observations": [
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C4-sensitive", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C4-sensitive"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C4-policy", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C4-policy"
+        }
+      ],
+      "remaining": {"reason": "Observation comparisons are bounded to recorded normalization, fixtures and operation paths; surrounding feature responsibilities remain in contracts/crossDomain.", "owners": [176]},
+      "additionalEvidence": ["correction"],
+      "sourceDataset": {"file": "docs/superpowers/compatibility/ap-deliver/render-cases.json", "key": "cases", "caseId": "home-plain", "provenance": "source-method"}
+    },
+    {
+      "id": "C5",
+      "owners": [168, 170],
+      "observations": [
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-followers-bob", "provenance": "upstream-http"},
+          "evidence": ["show"],
+          "assertions": "Full normalized show body/status for each visibility and viewer.",
+          "caseId": "C5-followers-bob"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-followers-follower", "provenance": "upstream-http"},
+          "evidence": ["show"],
+          "assertions": "Full normalized show body/status for each visibility and viewer.",
+          "caseId": "C5-followers-follower"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-followers-alice", "provenance": "upstream-http"},
+          "evidence": ["show"],
+          "assertions": "Full normalized show body/status for each visibility and viewer.",
+          "caseId": "C5-followers-alice"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-followers-outsider", "provenance": "upstream-http"},
+          "evidence": ["show"],
+          "assertions": "Full normalized show body/status for each visibility and viewer.",
+          "caseId": "C5-followers-outsider"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-followers-guest", "provenance": "upstream-http"},
+          "evidence": ["show"],
+          "assertions": "Full normalized show body/status for each visibility and viewer.",
+          "caseId": "C5-followers-guest"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-specified-bob", "provenance": "upstream-http"},
+          "evidence": ["show"],
+          "assertions": "Full normalized show body/status for each visibility and viewer.",
+          "caseId": "C5-specified-bob"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-specified-follower", "provenance": "upstream-http"},
+          "evidence": ["show"],
+          "assertions": "Full normalized show body/status for each visibility and viewer.",
+          "caseId": "C5-specified-follower"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-specified-alice", "provenance": "upstream-http"},
+          "evidence": ["show"],
+          "assertions": "Full normalized show body/status for each visibility and viewer.",
+          "caseId": "C5-specified-alice"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-specified-outsider", "provenance": "upstream-http"},
+          "evidence": ["show"],
+          "assertions": "Full normalized show body/status for each visibility and viewer.",
+          "caseId": "C5-specified-outsider"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-specified-guest", "provenance": "upstream-http"},
+          "evidence": ["show"],
+          "assertions": "Full normalized show body/status for each visibility and viewer.",
+          "caseId": "C5-specified-guest"
+        },
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-reply-author", "provenance": "upstream-http"}, "evidence": ["detail"], "assertions": "Direct reply body and self/other full normalized JSON."},
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-missing", "provenance": "upstream-http"}, "evidence": ["show-errors"], "assertions": "Exact missing/user/server errors and challenge."},
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-user-restricted", "provenance": "upstream-http"}, "evidence": ["show-errors"], "assertions": "Exact missing/user/server errors and challenge."},
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-server-restricted", "provenance": "upstream-http"}, "evidence": ["show-errors"], "assertions": "Exact missing/user/server errors and challenge."},
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-detail-self", "provenance": "upstream-http"}, "evidence": ["detail"], "assertions": "Direct reply body and self/other full normalized JSON."},
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-detail-other", "provenance": "upstream-http"}, "evidence": ["detail"], "assertions": "Direct reply body and self/other full normalized JSON."},
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-removed-file", "provenance": "upstream-http"}, "evidence": ["show-time"], "assertions": "Removed file and time-followers/time-hidden full status/body."},
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-time-followers-outsider", "provenance": "upstream-http"}, "evidence": ["show-time"], "assertions": "Removed file and time-followers/time-hidden full status/body."},
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-time-followers-author", "provenance": "upstream-http"}, "evidence": ["show-time"], "assertions": "Removed file and time-followers/time-hidden full status/body."},
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-time-hidden-follower", "provenance": "upstream-http"}, "evidence": ["show-time"], "assertions": "Removed file and time-followers/time-hidden full status/body."},
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C5-time-hidden-author", "provenance": "upstream-http"}, "evidence": ["show-time"], "assertions": "Removed file and time-followers/time-hidden full status/body."}
+      ],
+      "remaining": {"reason": "Observation comparisons are bounded to recorded normalization, fixtures and operation paths; surrounding feature responsibilities remain in contracts/crossDomain.", "owners": [176]}
+    },
+    {
+      "id": "C6",
+      "owners": [170, 171],
+      "observations": [
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C6-missing-reply", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C6-missing-reply"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C6-missing-renote", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C6-missing-renote"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C6-reply", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C6-reply"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C6-pure-renote", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C6-pure-renote"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C6-quote", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C6-quote"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C6-reply-pure", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C6-reply-pure"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C6-renote-pure", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C6-renote-pure"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C6-invisible-reply", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C6-invisible-reply"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C6-invisible-renote", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C6-invisible-renote"
+        },
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C6-counts", "provenance": "upstream-http"}, "evidence": ["count"], "assertions": "Direct complete golden C6-counts object."}
+      ],
+      "remaining": {"reason": "Observation comparisons are bounded to recorded normalization, fixtures and operation paths; surrounding feature responsibilities remain in contracts/crossDomain.", "owners": [176]}
+    },
+    {
+      "id": "C7",
+      "owners": [170, 173],
+      "observations": [
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C7-default", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C7-default"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C7-expired", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C7-expired"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C7-relative-priority", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C7-relative-priority"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C7-duplicate", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C7-duplicate"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C7-one", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C7-one"
+        }
+      ],
+      "remaining": {"reason": "Observation comparisons are bounded to recorded normalization, fixtures and operation paths; surrounding feature responsibilities remain in contracts/crossDomain.", "owners": [176]}
+    },
+    {
+      "id": "C8",
+      "owners": [170, 171],
+      "observations": [
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C8-channel", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C8-channel"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C8-archived", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C8-archived"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C8-external-renote", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C8-external-renote"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C8-extract", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C8-extract"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C8-no-extract", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C8-no-extract"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C8-specified", "provenance": "upstream-http"},
+          "evidence": ["create"],
+          "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+          "caseId": "C8-specified"
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C8-channel-counts", "provenance": "upstream-http"},
+          "evidence": ["channel-count"],
+          "assertions": "Whole historical (3,2) -> (3,2) -> (4,3) with two deletes/repost and lastNotedAt lower bound."
+        }
+      ],
+      "remaining": {"reason": "Observation comparisons are bounded to recorded normalization, fixtures and operation paths; surrounding feature responsibilities remain in contracts/crossDomain.", "owners": [176]}
+    },
+    {
+      "id": "C9",
+      "owners": [159, 160, 162, 171],
+      "observations": [
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C9-public", "provenance": "upstream-http"},
+          "evidence": ["delivery"],
+          "assertions": "Full normalized activity/path equality against C9 by visibility/pure/quote; RSA/Digest and relay LD verified. localOnly/channel absence is finite 500ms observation."
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C9-home", "provenance": "upstream-http"},
+          "evidence": ["delivery"],
+          "assertions": "Full normalized activity/path equality against C9 by visibility/pure/quote; RSA/Digest and relay LD verified. localOnly/channel absence is finite 500ms observation."
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C9-followers", "provenance": "upstream-http"},
+          "evidence": ["delivery"],
+          "assertions": "Full normalized activity/path equality against C9 by visibility/pure/quote; RSA/Digest and relay LD verified. localOnly/channel absence is finite 500ms observation."
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C9-specified", "provenance": "upstream-http"},
+          "evidence": ["delivery"],
+          "assertions": "Full normalized activity/path equality against C9 by visibility/pure/quote; RSA/Digest and relay LD verified. localOnly/channel absence is finite 500ms observation."
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C9-pure", "provenance": "upstream-http"},
+          "evidence": ["delivery"],
+          "assertions": "Full normalized activity/path equality against C9 by visibility/pure/quote; RSA/Digest and relay LD verified. localOnly/channel absence is finite 500ms observation."
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C9-quote", "provenance": "upstream-http"},
+          "evidence": ["delivery"],
+          "assertions": "Full normalized activity/path equality against C9 by visibility/pure/quote; RSA/Digest and relay LD verified. localOnly/channel absence is finite 500ms observation."
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C9-localOnly", "provenance": "upstream-http"},
+          "evidence": ["delivery"],
+          "assertions": "Full normalized activity/path equality against C9 by visibility/pure/quote; RSA/Digest and relay LD verified. localOnly/channel absence is finite 500ms observation."
+        }
+      ],
+      "remaining": {"reason": "Observation comparisons are bounded to recorded normalization, fixtures and operation paths; surrounding feature responsibilities remain in contracts/crossDomain.", "owners": [176]}
+    },
+    {
+      "id": "C10",
+      "owners": [172, 173],
+      "observations": [
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C10-other", "provenance": "upstream-http"}, "evidence": ["delete-http"], "assertions": "Direct other/author/repeat status/body and deleted show."},
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C10-author", "provenance": "upstream-http"}, "evidence": ["delete-http"], "assertions": "Direct other/author/repeat status/body and deleted show."},
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C10-deleted-stream", "provenance": "upstream-http"},
+          "evidence": ["restart"],
+          "assertions": "Real native HTTP Note/Poll/show, PG/WS/TL/hashtag/search, paused poll, same three jobs/options/due scores, stop children, reconnect WS, resume poll, natural AP503/webhook429 attempts1->2, stable bodies/digests/envelopes, signatures, delete/unindex and retained history.",
+          "remaining": {
+            "reason": "Related current-runtime assertions exist, but this exact original observation is not directly consumed by that assertion. Preserve the historical fixture; detailed source/delete comparisons remain in delete-integration and note-delete evidence. No full parity claim from this mapping.",
+            "owners": [176, 172]
+          }
+        },
+        {"observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C10-repeat", "provenance": "upstream-http"}, "evidence": ["delete-http"], "assertions": "Direct other/author/repeat status/body and deleted show."},
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C10-moderator", "provenance": "upstream-http"},
+          "evidence": ["delete-audit"],
+          "assertions": "Current moderator audit row/snapshot assertions; not direct equality of C10-moderator/C10-audit historical observation.",
+          "remaining": {
+            "reason": "Related current-runtime assertions exist, but this exact original observation is not directly consumed by that assertion. Preserve the historical fixture; detailed source/delete comparisons remain in delete-integration and note-delete evidence. No full parity claim from this mapping.",
+            "owners": [176, 172]
+          }
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C10-audit", "provenance": "upstream-http"},
+          "evidence": ["delete-audit"],
+          "assertions": "Current moderator audit row/snapshot assertions; not direct equality of C10-moderator/C10-audit historical observation.",
+          "remaining": {
+            "reason": "Related current-runtime assertions exist, but this exact original observation is not directly consumed by that assertion. Preserve the historical fixture; detailed source/delete comparisons remain in delete-integration and note-delete evidence. No full parity claim from this mapping.",
+            "owners": [176, 172]
+          }
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C10-Delete", "provenance": "upstream-http"},
+          "evidence": ["delete-ap"],
+          "assertions": "Direct normalized paths/activities equality for C10-Delete/Undo/fallback and F8 nonpublic late follower/relay destinations, independent RSA/Digest/LD verification."
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C10-Undo", "provenance": "upstream-http"},
+          "evidence": ["delete-ap"],
+          "assertions": "Direct normalized paths/activities equality for C10-Delete/Undo/fallback and F8 nonpublic late follower/relay destinations, independent RSA/Digest/LD verification."
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/observations.json", "key": "C10-fallback", "provenance": "upstream-http"},
+          "evidence": ["delete-ap"],
+          "assertions": "Direct normalized paths/activities equality for C10-Delete/Undo/fallback and F8 nonpublic late follower/relay destinations, independent RSA/Digest/LD verification."
+        },
+        {
+          "observation": {"file": "docs/superpowers/compatibility/note/delete-failure-cases.json", "key": "repliesCount", "provenance": "source-method"},
+          "evidence": ["restart"],
+          "assertions": "Real native HTTP Note/Poll/show, PG/WS/TL/hashtag/search, paused poll, same three jobs/options/due scores, stop children, reconnect WS, resume poll, natural AP503/webhook429 attempts1->2, stable bodies/digests/envelopes, signatures, delete/unindex and retained history.",
+          "remaining": {
+            "reason": "Related current-runtime assertions exist, but this exact original observation is not directly consumed by that assertion. Preserve the historical fixture; detailed source/delete comparisons remain in delete-integration and note-delete evidence. No full parity claim from this mapping.",
+            "owners": [176, 172]
+          }
+        }
+      ],
+      "remaining": {"reason": "Observation comparisons are bounded to recorded normalization, fixtures and operation paths; surrounding feature responsibilities remain in contracts/crossDomain.", "owners": [176]}
+    }
+  ],
+  "failureDispositions": [
+    {"id": "F1", "evidence": ["reject"], "applicable": "Keep Note/Poll transaction rollback, no automatic recreation.", "excluded": "Durable request/commit-to-queue loss-zero recovery is retired.", "remainingOwners": [159], "retiredGuaranteesImplemented": false},
+    {
+      "id": "F2",
+      "evidence": ["restart"],
+      "applicable": "Keep ordinary enqueued job identity across restart and natural retry.",
+      "excluded": "No recovery of work never enqueued or Redis loss reconstruction.",
+      "remainingOwners": [159],
+      "retiredGuaranteesImplemented": false
+    },
+    {"id": "F3", "evidence": ["reject", "delete-http"], "applicable": "Keep actual auth and transaction/failure boundaries.", "excluded": "No new cross-operation locking/ownership protocol.", "remainingOwners": [159, 161], "retiredGuaranteesImplemented": false},
+    {
+      "id": "F4",
+      "evidence": ["restart", "terminal"],
+      "applicable": "Keep ordinary classification/retry and observed deletion boundary.",
+      "excluded": "Strong Create/Delete ordering, unknown-send ownership/cancellation are deferred.",
+      "remainingOwners": [159, 161],
+      "retiredGuaranteesImplemented": false
+    },
+    {
+      "id": "F5",
+      "evidence": ["restart", "channel-count"],
+      "applicable": "Keep delayed effects and retained notification/TL/hashtag history.",
+      "excluded": "No purge, replay or exactly-once reconstruction.",
+      "remainingOwners": [132, 133],
+      "retiredGuaranteesImplemented": false
+    },
+    {
+      "id": "F6",
+      "evidence": ["terminal", "handoff"],
+      "applicable": "Keep HTTP classification/backoff, retention and stopped handoff refusal.",
+      "excluded": "No capacity admission or universal job reader.",
+      "remainingOwners": [166, 139],
+      "retiredGuaranteesImplemented": false
+    },
+    {
+      "id": "F7",
+      "evidence": ["cleanup"],
+      "applicable": "Keep finite test cleanup and ordinary process lifecycle only.",
+      "excluded": "PG claim/lease/fencing/exactly-once are retired additional guarantees.",
+      "remainingOwners": [159, 161],
+      "retiredGuaranteesImplemented": false
+    },
+    {
+      "id": "F8",
+      "evidence": ["delete-ap"],
+      "applicable": "Keep directly compared F8 nonpublic late-follower/relay Delete recipients in existing deletion process test; restart adds public deletion only.",
+      "excluded": "Fixed-recipient strengthening remains deferred; restart alone does not compare F8 nonpublic observations.",
+      "remainingOwners": [161],
+      "retiredGuaranteesImplemented": false,
+      "observations": [
+        {"file": "docs/superpowers/compatibility/note/observations.json", "key": "F8-upstream-home", "provenance": "upstream-http"},
+        {"file": "docs/superpowers/compatibility/note/observations.json", "key": "F8-upstream-followers", "provenance": "upstream-http"},
+        {"file": "docs/superpowers/compatibility/note/observations.json", "key": "F8-upstream-specified", "provenance": "upstream-http"}
+      ]
+    }
+  ],
+  "evidence": {
+    "create": {
+      "file": "packages/backend-next/test/integration/note-create.test.ts",
+      "testTitle": "%s matches fixed upstream HTTP, saved Note and immediate show",
+      "sourceSha256": "bec7fe3c11046bed86df9e647ed39788bcf71f952064b8769910df515ea645df",
+      "provenance": "new-runtime",
+      "assertions": "Exact normalized status/body/challenge, Note/Poll deltas and saved columns selected by golden[name]; successful create is shown immediately.",
+      "dataset": {
+        "file": "docs/superpowers/compatibility/note/http-cases.json",
+        "caseIds": [
+          "C1-basic",
+          "C2-guest",
+          "C2-invalid",
+          "C2-suspended",
+          "C2-moved",
+          "C2-no-scope",
+          "C2-app-denied",
+          "C2-native",
+          "C2-scoped",
+          "C2-app-permission",
+          "C3-missing",
+          "C3-whitespace",
+          "C3-long",
+          "C3-empty-cw",
+          "C3-cw-only",
+          "C4-sensitive",
+          "C4-policy",
+          "C3-missing-file",
+          "C3-foreign-file",
+          "C3-file-precedence",
+          "C3-empty-file-precedence",
+          "C3-media-alias",
+          "C7-default",
+          "C7-expired",
+          "C7-relative-priority",
+          "C7-duplicate",
+          "C7-one",
+          "C6-missing-reply",
+          "C6-missing-renote",
+          "C6-reply",
+          "C6-pure-renote",
+          "C6-quote",
+          "C6-reply-pure",
+          "C6-renote-pure",
+          "C6-invisible-reply",
+          "C6-invisible-renote",
+          "C8-channel",
+          "C8-archived",
+          "C8-external-renote",
+          "C8-extract",
+          "C8-no-extract",
+          "C8-specified"
+        ],
+        "sourceExpression": "test.each(pinned)"
+      }
+    },
+    "show": {
+      "file": "packages/backend-next/test/integration/note-show.test.ts",
+      "testTitle": "C5 $visibility/$actor equals pinned full JSON",
+      "sourceSha256": "21ea09803b0b4dbed9bbbe1ef4d3a0c2a23c23652040dc6c1f0a94c33ea7e627",
+      "provenance": "new-runtime",
+      "assertions": "Full normalized show body/status for each visibility and viewer.",
+      "dataset": {
+        "file": "docs/superpowers/compatibility/note/observations.json",
+        "caseIds": ["C5-followers-bob", "C5-followers-follower", "C5-followers-alice", "C5-followers-outsider", "C5-followers-guest", "C5-specified-bob", "C5-specified-follower", "C5-specified-alice", "C5-specified-outsider", "C5-specified-guest"],
+        "sourceExpression": "test.each(['followers', 'specified'].flatMap"
+      }
+    },
+    "plain-show": {
+      "file": "packages/backend-next/test/integration/note-show.test.ts",
+      "testTitle": "C1 plain note show equals pinned JSON and App tokens remain valid without note scopes",
+      "sourceSha256": "21ea09803b0b4dbed9bbbe1ef4d3a0c2a23c23652040dc6c1f0a94c33ea7e627",
+      "provenance": "new-runtime",
+      "assertions": "Direct C1-show full JSON equality; native and App reads."
+    },
+    "user-count": {
+      "file": "packages/backend-next/test/integration/note-posting-lifecycle.test.ts",
+      "testTitle": "C1-user-count matches fixed upstream create/delete history",
+      "sourceSha256": "049e9708d0d843bc4e9a1486992290e7e0a62ce3d16e83b086240ffc634e4273",
+      "provenance": "new-runtime",
+      "assertions": "Whole before/afterCreate/afterDelete object; HTTP delete 204, physical absence, drained post-save/delete."
+    },
+    "channel-count": {
+      "file": "packages/backend-next/test/integration/note-posting-lifecycle.test.ts",
+      "testTitle": "C8-channel-counts matches fixed upstream deletion and repost history",
+      "sourceSha256": "049e9708d0d843bc4e9a1486992290e7e0a62ce3d16e83b086240ffc634e4273",
+      "provenance": "new-runtime",
+      "assertions": "Whole historical (3,2) -> (3,2) -> (4,3) with two deletes/repost and lastNotedAt lower bound."
+    },
+    "read-auth": {
+      "file": "packages/backend-next/test/integration/note-create.test.ts",
+      "testTitle": "C2-suspended-show and C2-bearer-precedence consume named upstream observations",
+      "sourceSha256": "bec7fe3c11046bed86df9e647ed39788bcf71f952064b8769910df515ea645df",
+      "provenance": "new-runtime",
+      "assertions": "Both complete status/body goldens before later counter mutations."
+    },
+    "moved-delete": {
+      "file": "packages/backend-next/test/integration/note-delete.test.ts",
+      "testTitle": "moved author may delete, suspended/scope credentials fail before input validation",
+      "sourceSha256": "0bf4661d7e27c75ba1572aa28c460b4e0484f53479e27736dc724f3cb26f81ed",
+      "provenance": "new-runtime",
+      "assertions": "Direct C2-moved-delete status/body; suspended/scope rejection."
+    },
+    "rate": {
+      "file": "packages/backend-next/test/integration/note-create.test.ts",
+      "testTitle": "production rate limit consumes invalid input first and precedes suspended/moved/scope checks",
+      "sourceSha256": "bec7fe3c11046bed86df9e647ed39788bcf71f952064b8769910df515ea645df",
+      "provenance": "new-runtime",
+      "assertions": "Direct normalized status/body/challenge equality for C2-rate-first-invalid and C2-rate-before-input, future reset checks, zero author Note count. C2-rate-db-delta is not directly compared as a whole object."
+    },
+    "count": {
+      "file": "packages/backend-next/test/integration/note-create.test.ts",
+      "testTitle": "C6-counts: replies and Renotes by others are counted after saving, a self Renote is not",
+      "sourceSha256": "bec7fe3c11046bed86df9e647ed39788bcf71f952064b8769910df515ea645df",
+      "provenance": "new-runtime",
+      "assertions": "Direct complete golden C6-counts object."
+    },
+    "detail": {
+      "file": "packages/backend-next/test/integration/note-show.test.ts",
+      "testTitle": "C5 reply-author, detail self and other equal pinned full JSON",
+      "sourceSha256": "21ea09803b0b4dbed9bbbe1ef4d3a0c2a23c23652040dc6c1f0a94c33ea7e627",
+      "provenance": "new-runtime",
+      "assertions": "Direct reply body and self/other full normalized JSON."
+    },
+    "show-errors": {
+      "file": "packages/backend-next/test/integration/note-show.test.ts",
+      "testTitle": "C5 missing, author and server error order equals pinned errors",
+      "sourceSha256": "21ea09803b0b4dbed9bbbe1ef4d3a0c2a23c23652040dc6c1f0a94c33ea7e627",
+      "provenance": "new-runtime",
+      "assertions": "Exact missing/user/server errors and challenge."
+    },
+    "show-time": {
+      "file": "packages/backend-next/test/integration/note-show.test.ts",
+      "testTitle": "C5 removed attachment and time-boundary output equal pinned full JSON",
+      "sourceSha256": "21ea09803b0b4dbed9bbbe1ef4d3a0c2a23c23652040dc6c1f0a94c33ea7e627",
+      "provenance": "new-runtime",
+      "assertions": "Removed file and time-followers/time-hidden full status/body."
+    },
+    "delivery": {
+      "file": "packages/backend-next/test/processes/note-deliver.test.ts",
+      "testTitle": "notes created over HTTP are delivered by the worker process to the fake inboxes like the pinned upstream (including accepted relay)",
+      "sourceSha256": "fa7d8545183f9938f4a363fd601b185aea8eb939c79e292c9a25b9d135bd7d1a",
+      "provenance": "new-runtime",
+      "assertions": "Full normalized activity/path equality against C9 by visibility/pure/quote; RSA/Digest and relay LD verified. localOnly/channel absence is finite 500ms observation."
+    },
+    "delete-http": {
+      "file": "packages/backend-next/test/integration/note-delete.test.ts",
+      "testTitle": "C10 other, author, repeat and deleted show match fixed upstream",
+      "sourceSha256": "0bf4661d7e27c75ba1572aa28c460b4e0484f53479e27736dc724f3cb26f81ed",
+      "provenance": "new-runtime",
+      "assertions": "Direct other/author/repeat status/body and deleted show."
+    },
+    "delete-audit": {
+      "file": "packages/backend-next/test/integration/note-delete.test.ts",
+      "testTitle": "moderator audit retains the entire deleted row and author information",
+      "sourceSha256": "0bf4661d7e27c75ba1572aa28c460b4e0484f53479e27736dc724f3cb26f81ed",
+      "provenance": "new-runtime",
+      "assertions": "Current moderator audit row/snapshot assertions; not direct equality of C10-moderator/C10-audit historical observation."
+    },
+    "restart": {
+      "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
+      "testTitle": "N7 Supervisor preserves HTTP-created posting work across stop/restart and natural retries",
+      "sourceSha256": "87d7b58a101a044e835dad66bb5fc8cbd95ba67c46e91736d860b33a4befe40e",
+      "provenance": "new-runtime",
+      "assertions": "Real native HTTP Note/Poll/show, PG/WS/TL/hashtag/search, paused poll, same three jobs/options/due scores, stop children, reconnect WS, resume poll, natural AP503/webhook429 attempts1->2, stable bodies/digests/envelopes, signatures, delete/unindex and retained history."
+    },
+    "reject": {
+      "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
+      "testTitle": "N7 Supervisor rejects credentials and rolls back Poll failure without posting effects",
+      "sourceSha256": "87d7b58a101a044e835dad66bb5fc8cbd95ba67c46e91736d860b33a4befe40e",
+      "provenance": "new-runtime",
+      "assertions": "Five C2 exact credential errors/challenges/deltas; marker-only Poll INSERT trigger500; graceful drain then whole PG/Redis/queues/search/receipts state comparison and no posting WS."
+    },
+    "terminal": {
+      "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
+      "testTitle": "N7 Supervisor keeps terminal AP 404 failed without recreating the post",
+      "sourceSha256": "87d7b58a101a044e835dad66bb5fc8cbd95ba67c46e91736d860b33a4befe40e",
+      "provenance": "new-runtime",
+      "assertions": "Real HTTP-created post, terminal unrecoverable404 one failed job/receipt attempt1; no replacement/delay; Note/show and ordinary effects survive."
+    },
+    "handoff": {
+      "file": "packages/backend-next/test/processes/queue-handoff.test.ts",
+      "testTitle": "old transient retry resumes naturally under the new worker while terminal failed work remains failed",
+      "sourceSha256": "f47182b004bf70a24023bd54f49b728daea1684749734f0c4b036a8cc569b8f5",
+      "provenance": "new-runtime",
+      "assertions": "Old Worker first failure uses handler double; same delayed job naturally resumes under real new worker, terminal history stays failed. Separate proof from real503 restart."
+    },
+    "scheduler": {
+      "file": "packages/backend-next/test/integration/queue-handoff.test.ts",
+      "testTitle": "actual source system scheduler and delayed occurrence remain a blocker with zero waiting jobs",
+      "sourceSha256": "58c826faeb214046715c39448421b90f3fd428f19415581726110446ac03dc8f",
+      "provenance": "new-runtime",
+      "assertions": "Real saved scheduler/next occurrence remains intact and refuses handoff."
+    },
+    "missing-handlers": {
+      "file": "packages/backend-next/test/integration/queue-handoff.test.ts",
+      "testTitle": "real old jobs for all seven missing handlers, including delayed drafts and relationships, remain blocked and intact",
+      "sourceSha256": "58c826faeb214046715c39448421b90f3fd428f19415581726110446ac03dc8f",
+      "provenance": "new-runtime",
+      "assertions": "All seven unsupported handlers refuse unfinished/failed work and preserve Redis records."
+    },
+    "correction": {
+      "file": "packages/backend-next/test/processes/note-deliver.test.ts",
+      "testTitle": "C4-%s correction reaches source-backed home AP audiences",
+      "sourceSha256": "fa7d8545183f9938f4a363fd601b185aea8eb939c79e292c9a25b9d135bd7d1a",
+      "provenance": "new-runtime",
+      "assertions": "Public input becomes home in HTTP/storage/show; activity and object to/cc projected from source-method home-plain; only follower signed receipt, drained queues exclude relay.",
+      "dataset": {"file": "docs/superpowers/compatibility/note/observations.json", "caseIds": ["C4-sensitive", "C4-policy"], "parameters": ["sensitive", "policy"], "sourceExpression": "test.each(['sensitive', 'policy'])"}
+    },
+    "cleanup": {
+      "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
+      "testTitle": "N7 test cleanup bounds a frozen Supervisor during %s",
+      "sourceSha256": "87d7b58a101a044e835dad66bb5fc8cbd95ba67c46e91736d860b33a4befe40e",
+      "provenance": "new-runtime",
+      "assertions": "SIGSTOP confirmed state T; test deadline rejection, owned PID/starttime cleanup, no rescue, repeated close safe.",
+      "dataset": {"file": "packages/backend-next/test/processes/note-delete-integration.test.ts", "caseIds": ["stop", "close"], "parameters": ["stop", "close"], "sourceExpression": "test.each(['stop', 'close'] as const)"}
+    },
+    "limitation": {
+      "file": "packages/backend-next/test/integration/note-create.test.ts",
+      "testTitle": "a mention of an unregistered remote user in %j is refused without saving a partial post",
+      "sourceSha256": "bec7fe3c11046bed86df9e647ed39788bcf71f952064b8769910df515ea645df",
+      "provenance": "limitation",
+      "assertions": "Five real declared inputs return501/NOT_IMPLEMENTED with no Note/Poll delta; limitation only.",
+      "dataset": {
+        "file": "packages/backend-next/test/integration/note-create.test.ts",
+        "caseIds": [0, 1, 2, 3, 4],
+        "parameters": [
+          {"text": "@nobody@unknown.example"},
+          {"text": "@probe_alice@127.0.0.1"},
+          {"cw": "@nobody@unknown.example"},
+          {"poll": {"choices": ["@nobody@unknown.example", "b"]}},
+          {"text": "@probe_bob @nobody@unknown.example", "visibility": "specified", "visibleUserIds": ["$bob"]}
+        ],
+        "sourceExpression": "test.each(["
+      }
+    },
+    "delete-ap": {
+      "file": "packages/backend-next/test/processes/note-delete.test.ts",
+      "testTitle": "C10 Delete, Undo, missing-original fallback and F8 nonpublic late followers match fixed upstream with raw signature verification",
+      "sourceSha256": "4a851e18636a61f35945bb5d1921da337e33f7f86da9762735ecfe0dd5831d6d",
+      "provenance": "new-runtime",
+      "assertions": "Direct normalized paths/activities equality for C10-Delete/Undo/fallback and F8 nonpublic late follower/relay destinations, independent RSA/Digest/LD verification."
+    },
+    "n3": {
+      "file": "packages/backend-next/test/integration/note-create-relations.test.ts",
+      "testTitle": "%s",
+      "sourceSha256": "f4b66d7718b992b10bcdfacedccc454caeca03b602abd1d556f2f6760818d336",
+      "provenance": "new-runtime",
+      "assertions": "Direct N3 HTTP/saved/count JSON comparison and successful show. N3-MN-visible-order recipient arrays are sets; N3-HE-nfkc-expanding omits dynamic info.e after asserting QueryFailedError.",
+      "dataset": {
+        "file": "docs/superpowers/compatibility/note/n3/http-cases.json",
+        "caseIds": [
+          "N3-FP-poll-no-text",
+          "N3-FP-whitespace-file",
+          "N3-FP-whitespace-poll",
+          "N3-FP-multiple",
+          "N3-FP-future-absolute",
+          "N3-FP-expires-zero",
+          "N3-FP-prohibited-choice",
+          "N3-FP-missing-file-and-renote",
+          "N3-FP-files-17",
+          "N3-FP-files-duplicate",
+          "N3-FP-media-empty",
+          "N3-FP-attached-types",
+          "N3-FP-poll-sensitive-home",
+          "N3-FP-poll-channel",
+          "N3-FP-poll-specified",
+          "N3-RR-renote-other-followers",
+          "N3-RR-renote-own-followers",
+          "N3-RR-renote-own-specified",
+          "N3-RR-renote-blocked",
+          "N3-RR-quote-blocked",
+          "N3-RR-reply-blocked",
+          "N3-RR-renote-blocking",
+          "N3-RR-reply-blocking",
+          "N3-RR-reply-specified-public",
+          "N3-RR-reply-specified",
+          "N3-RR-reply-own-specified",
+          "N3-RR-reply-home",
+          "N3-RR-reply-followers",
+          "N3-RR-renote-home",
+          "N3-RR-quote-home",
+          "N3-RR-reply-localonly",
+          "N3-RR-renote-localonly",
+          "N3-RR-reply-and-renote",
+          "N3-RR-reply-and-renote-missing",
+          "N3-RR-renote-whitespace",
+          "N3-RR-quote-pure",
+          "N3-RR-reply-invisible-pure",
+          "N3-RR-bot-renote",
+          "N3-RR-bot-reply",
+          "N3-RR-self-reply",
+          "N3-RR-self-quote",
+          "N3-RR-other-quote",
+          "N3-RR-other-pure",
+          "N3-RR-thread-first",
+          "N3-RR-thread-nested",
+          "N3-RR-reply-remote",
+          "N3-RR-renote-remote",
+          "N3-CH-missing",
+          "N3-CH-null",
+          "N3-CH-closed-internal-renote",
+          "N3-CH-open-external-renote",
+          "N3-CH-reply-adopt",
+          "N3-CH-reply-other-channel",
+          "N3-CH-reply-outside-with-channel",
+          "N3-CH-reply-archived",
+          "N3-CH-sensitive-skip",
+          "N3-CH-renote-home",
+          "N3-CH-count-note",
+          "N3-CH-count-pure",
+          "N3-CH-count-reply",
+          "N3-MN-visible-missing",
+          "N3-MN-specified-empty",
+          "N3-MN-visible-order",
+          "N3-MN-dedupe",
+          "N3-MN-missing-local",
+          "N3-MN-suspended",
+          "N3-MN-remote",
+          "N3-MN-remote-visible",
+          "N3-MN-limit-boundary",
+          "N3-MN-limit-over",
+          "N3-MN-limit-dedupe",
+          "N3-MN-limit-self",
+          "N3-MN-limit-reply-boundary",
+          "N3-MN-limit-reply-over",
+          "N3-MN-limit-visible-boundary",
+          "N3-MN-limit-visible-over",
+          "N3-MN-noextract-reply",
+          "N3-MN-cw-choice",
+          "N3-HE-case-dup",
+          "N3-HE-cw-choice",
+          "N3-HE-over-32",
+          "N3-HE-length",
+          "N3-HE-fullwidth",
+          "N3-HE-only-hashtags-off",
+          "N3-HE-emoji-case-dup",
+          "N3-HE-inline-code",
+          "N3-HE-nfkc-expanding",
+          "N3-FP-choices-11",
+          "N3-FP-choice-empty",
+          "N3-FP-choice-51",
+          "N3-FP-expired-after-zero",
+          "N3-MN-visible-duplicate",
+          "N3-RR-renote-null-no-text",
+          "N3-RR-renote-empty-text",
+          "N3-RR-renote-duplicate",
+          "N3-RR-renote-quote",
+          "N3-RR-reply-mentioned-only-specified",
+          "N3-CH-quote-closed-external",
+          "N3-ORD-reply-before-expired",
+          "N3-ORD-expired-before-channel",
+          "N3-ORD-channel-before-prohibited",
+          "N3-ORD-prohibited-before-mentions"
+        ],
+        "sourceExpression": "test.each(cases.map(fixture => [fixture.id, fixture] as const))"
+      }
+    }
+  },
+  "profiles": {
+    "creation": {"scope": "Local create validation/correction, saved Note/Poll and extraction in recorded C cases. Remote lookup/refresh and surrounding APIs remain separate.", "evidence": ["create", "reject", "user-count", "n3"], "remainingOwners": [195, 183, 184]},
+    "packing": {
+      "scope": "Viewer-specific notes/show full JSON, hidden/detail/time fields and batched rendering in current show tests; this does not certify every shared packer caller or Drive management.",
+      "evidence": ["show", "detail", "show-time", "plain-show"],
+      "remainingOwners": [184, 188, 195]
+    },
+    "delivery": {
+      "scope": "Local posting outbound render/signature/recipients, accepted relay and ordinary transport retry; not inbound verification, relay management, outbox serving or every AP caller.",
+      "evidence": ["delivery", "correction", "restart", "terminal"],
+      "remainingOwners": [195, 215]
+    },
+    "deletion": {"scope": "HTTP delete authorization and physical deletion, Delete/Undo/fallback and retained-history integration; charts and stronger ordering remain separate.", "evidence": ["delete-http", "restart", "delete-ap"], "remainingOwners": [200, 161]},
+    "notification": {
+      "scope": "Posting mention/reply/renote/quote/follow-notify conditions, PG save and live main/homeTimeline/note subscription; full notification lifecycle and other channels remain separate.",
+      "evidence": ["restart", "reject"],
+      "remainingOwners": [177, 189, 217]
+    },
+    "derived": {
+      "scope": "Ordinary posting TL/Role/antenna/search/featured/hashtag/channel and instance counter producers, audited in derived-updates; reader/API and historical reconstruction remain separate.",
+      "evidence": ["restart", "channel-count"],
+      "reference": "docs/superpowers/compatibility/note/derived-updates/README.md",
+      "remainingOwners": [185, 186, 132, 133, 217]
+    },
+    "queue": {
+      "scope": "Three real posting handlers, ordinary retry/retention, all ten management selectors and stopped handoff; not every producer/handler.",
+      "evidence": ["restart", "terminal", "handoff", "missing-handlers", "scheduler"],
+      "remainingOwners": [139, 183, 182, 188, 195, 198, 199, 200]
+    },
+    "chart": {"scope": "Instance counter is separately implemented; historical chart producer/series is not established by posting tests.", "evidence": [], "remainingOwners": [200]},
+    "utility": {"scope": "Posting-facing utility behavior only where consumed by C cases; shared utility algorithms and unrelated callers are not certified by end-to-end fixtures.", "evidence": ["create", "show"], "remainingOwners": [176, 195, 217]}
+  },
+  "contracts": [
+    {"id": "ap-module:ApDeliverManagerService", "domain": "notes", "inventoryStatus": "partial", "subcontract": "ApDeliverManagerService", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-module:ApMfmService", "domain": "notes", "inventoryStatus": "partial", "subcontract": "ApMfmService", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-module:ApRendererService", "domain": "notes", "inventoryStatus": "partial", "subcontract": "ApRendererService", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-module:ApRequestCreator", "domain": "ap-outbound", "inventoryStatus": "partial", "subcontract": "ApRequestCreator", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-module:ApRequestService", "domain": "ap-outbound", "inventoryStatus": "partial", "subcontract": "ApRequestService", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-module:JsonLd", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "JsonLd", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-module:JsonLdService", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "JsonLdService", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-render:renderAnnounce", "domain": "notes", "inventoryStatus": "partial", "subcontract": "renderAnnounce", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-render:renderCreate", "domain": "notes", "inventoryStatus": "partial", "subcontract": "renderCreate", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-render:renderDelete", "domain": "notes", "inventoryStatus": "partial", "subcontract": "renderDelete", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-render:renderDocument", "domain": "notes", "inventoryStatus": "partial", "subcontract": "renderDocument", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-render:renderHashtag", "domain": "notes", "inventoryStatus": "partial", "subcontract": "renderHashtag", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-render:renderMention", "domain": "notes", "inventoryStatus": "partial", "subcontract": "renderMention", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-render:renderNote", "domain": "notes", "inventoryStatus": "partial", "subcontract": "renderNote", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-render:renderTombstone", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "renderTombstone", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-render:renderUndo", "domain": "notes", "inventoryStatus": "partial", "subcontract": "renderUndo", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-send-site:ApDeliverManagerService.execute -> deliverMany", "domain": "notes", "inventoryStatus": "partial", "subcontract": "ApDeliverManagerService.execute -> deliverMany", "profile": "delivery", "remainingOwners": [195, 215]},
+    {
+      "id": "ap-send-site:NoteDeleteService.deliverToConcerned -> deliverToFollowers",
+      "domain": "notes",
+      "inventoryStatus": "partial",
+      "subcontract": "NoteDeleteService.deliverToConcerned -> deliverToFollowers",
+      "profile": "delivery",
+      "remainingOwners": [195, 215]
+    },
+    {"id": "ap-send-site:NoteDeleteService.deliverToConcerned -> deliverToUsers", "domain": "notes", "inventoryStatus": "partial", "subcontract": "NoteDeleteService.deliverToConcerned -> deliverToUsers", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "ap-send-site:RelayService.deliverToRelays -> deliver", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "RelayService.deliverToRelays -> deliver", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "api:notes/create", "domain": "notes", "inventoryStatus": "partial", "subcontract": "notes/create", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "api:notes/delete", "domain": "notes", "inventoryStatus": "partial", "subcontract": "notes/delete", "profile": "deletion", "remainingOwners": [200, 161]},
+    {"id": "api:notes/show", "domain": "notes", "inventoryStatus": "verified", "subcontract": "notes/show", "profile": "packing", "remainingOwners": [184, 188, 195]},
+    {"id": "capability:ap-outbound", "domain": "ap-outbound", "inventoryStatus": "partial", "subcontract": "投稿AP送信・宛先・結果不明（保存・副作用・共通能力）", "profile": "queue", "remainingOwners": [139, 183, 182, 188, 195, 198, 199, 200]},
+    {"id": "capability:notes", "domain": "notes", "inventoryStatus": "partial", "subcontract": "投稿初期フロー（保存・副作用・共通能力）", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "entity:note", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "note", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "meta-setting:hiddenTags", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "hiddenTags", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "meta-setting:prohibitedWords", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "prohibitedWords", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "meta-setting:sensitiveWords", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "sensitiveWords", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "notification-type:mention", "domain": "notes", "inventoryStatus": "partial", "subcontract": "mention", "profile": "notification", "remainingOwners": [177, 189, 217]},
+    {"id": "notification-type:note", "domain": "notes", "inventoryStatus": "partial", "subcontract": "note", "profile": "notification", "remainingOwners": [177, 189, 217]},
+    {"id": "notification-type:quote", "domain": "notes", "inventoryStatus": "partial", "subcontract": "quote", "profile": "notification", "remainingOwners": [177, 189, 217]},
+    {"id": "notification-type:renote", "domain": "notes", "inventoryStatus": "partial", "subcontract": "renote", "profile": "notification", "remainingOwners": [177, 189, 217]},
+    {"id": "notification-type:reply", "domain": "notes", "inventoryStatus": "partial", "subcontract": "reply", "profile": "notification", "remainingOwners": [177, 189, 217]},
+    {"id": "packer:NoteEntityService", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "NoteEntityService", "profile": "packing", "remainingOwners": [184, 188, 195]},
+    {"id": "processor:Deliver", "domain": "ap-outbound", "inventoryStatus": "partial", "subcontract": "Deliver", "profile": "queue", "remainingOwners": [139, 183, 182, 188, 195, 198, 199, 200]},
+    {"id": "queue-producer:deliverMany", "domain": "notes", "inventoryStatus": "partial", "subcontract": "deliverMany", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "responsibility:activitypub:09", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "outbox/activity 用の Create・Announce 判別パック", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "responsibility:activitypub:11", "domain": "ap-outbound", "inventoryStatus": "partial", "subcontract": "アウトバウンドAP GET/POSTの HTTP Signature 署名生成", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "responsibility:activitypub:15", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "JSON-LD署名(RsaSignature2017)の生成・検証とローダ制限", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "responsibility:activitypub:37", "domain": "notes", "inventoryStatus": "partial", "subcontract": "配送先 inbox の重複排除(sharedInbox 優先)", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "responsibility:activitypub:40", "domain": "notes", "inventoryStatus": "partial", "subcontract": "ローカルNoteのAP表現(宛先・引用・投票・センシティブ・絵文字)", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "responsibility:activitypub:44", "domain": "notes", "inventoryStatus": "partial", "subcontract": "AP @context 定義と独自拡張語彙", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "responsibility:instance-moderation:14", "domain": "notes", "inventoryStatus": "partial", "subcontract": "ロールタイムライン用のFanout Redisリストへのノート追加とストリーム配信", "profile": "derived", "remainingOwners": [185, 186, 132, 133, 217]},
+    {"id": "responsibility:instance-moderation:54", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "リレーへのアクティビティ配送(LD署名付与、to補完)", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "responsibility:instance-moderation:58", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "ミュート語キーワード判定(RE2正規表現/AND語/CW・投票選択肢結合)", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "responsibility:job-processors:04", "domain": "ap-outbound", "inventoryStatus": "partial", "subcontract": "配送エラーの再試行可否分類と410 goneSuspended", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "responsibility:job-processors:13", "domain": "ap-outbound", "inventoryStatus": "partial", "subcontract": "配送先ごとの特別な既定ジョブ結果文字列(スキップ/Success)", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "responsibility:job-processors:27", "domain": "notes", "inventoryStatus": "partial", "subcontract": "投票終了通知(投稿者と投票者のローカルユーザーのみ)", "profile": "notification", "remainingOwners": [177, 189, 217]},
+    {"id": "responsibility:misc-utils:06", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "ミュート済みインスタンス判定(note/通知)", "profile": "utility", "remainingOwners": [176, 195, 217]},
+    {"id": "responsibility:misc-utils:09", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "時間経過によるノート非表示(shouldHideNoteByTime)", "profile": "packing", "remainingOwners": [184, 188, 195]},
+    {"id": "responsibility:misc-utils:20", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "MFMからのメンション/ハッシュタグ/カスタム絵文字抽出", "profile": "utility", "remainingOwners": [176, 195, 217]},
+    {"id": "responsibility:misc-utils:21", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "検索用文字列正規化(NFKC+小文字化)", "profile": "utility", "remainingOwners": [176, 195, 217]},
+    {"id": "responsibility:misc-utils:24", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "Renote/引用/返信の判定規則", "profile": "utility", "remainingOwners": [176, 195, 217]},
+    {"id": "responsibility:misc-utils:30", "domain": "ap-outbound", "inventoryStatus": "partial", "subcontract": "HTTPエラー用の例外型(FastifyReplyError/IdentifiableError/StatusError)", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "responsibility:misc-utils:31", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "DebounceLoader(同一tick内のロードを集約)", "profile": "utility", "remainingOwners": [176, 195, 217]},
+    {"id": "responsibility:notes-core:01", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "投稿作成: 参照先に応じた可視性・チャンネル・localOnly の強制補正", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "responsibility:notes-core:02", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "投稿作成: センシティブワード・ロールポリシーによる public から home への自動降格", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "responsibility:notes-core:03", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "投稿作成: 禁止ワード検査によるリジェクト", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "responsibility:notes-core:04", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "投稿作成: 入力検証 (fetchAndCreate) と IdentifiableError ID 体系", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "responsibility:notes-core:05", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "投稿作成: テキスト正規化とメンション/ハッシュタグ/絵文字の抽出", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "responsibility:notes-core:06", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "投稿作成: 返信先/specified 宛先の暗黙メンション追加とメンション上限", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "responsibility:notes-core:07", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "投稿作成: note 行の非正規化列とメンション情報の保存", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "responsibility:notes-core:08", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "投稿作成: 投票付きノートの note+poll トランザクション挿入", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "responsibility:notes-core:09", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "投稿作成: 挿入後の副作用を非同期(setImmediate)で実行し、シャットダウンで中断", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "responsibility:notes-core:10", "domain": "notes", "inventoryStatus": "partial", "subcontract": "投稿作成: チャート・インスタンス統計の更新", "profile": "chart", "remainingOwners": [200]},
+    {"id": "responsibility:notes-core:11", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "投稿作成: ユーザー notesCount/updatedAt 加算とハッシュタグ更新", "profile": "derived", "remainingOwners": [185, 186, 132, 133, 217]},
+    {"id": "responsibility:notes-core:12", "domain": "notes", "inventoryStatus": "partial", "subcontract": "投稿作成: 返信・リノート・チャンネルのカウンタ加算", "profile": "derived", "remainingOwners": [185, 186, 132, 133, 217]},
+    {"id": "responsibility:notes-core:13", "domain": "notes", "inventoryStatus": "partial", "subcontract": "投稿作成: renote 時のハイライト(featured)ランキング確率的加点", "profile": "derived", "remainingOwners": [185, 186, 132, 133, 217]},
+    {"id": "responsibility:notes-core:14", "domain": "notes", "inventoryStatus": "partial", "subcontract": "投稿作成: fanout タイムライン (Redis) への push 先決定ロジック", "profile": "derived", "remainingOwners": [185, 186, 132, 133, 217]},
+    {"id": "responsibility:notes-core:16", "domain": "notes", "inventoryStatus": "partial", "subcontract": "Fanout TL: ホームのフォロワー休眠 (hibernation) の確率的判定", "profile": "derived", "remainingOwners": [185, 186, 132, 133, 217]},
+    {"id": "responsibility:notes-core:21", "domain": "notes", "inventoryStatus": "partial", "subcontract": "NotificationManager: 投稿起因の通知の重複排除と優先順位", "profile": "notification", "remainingOwners": [177, 189, 217]},
+    {"id": "responsibility:notes-core:22", "domain": "notes", "inventoryStatus": "partial", "subcontract": "投稿作成: ストリーム・ロールTL・webhook・メイン/メンションイベント", "profile": "notification", "remainingOwners": [177, 189, 217]},
+    {"id": "responsibility:notes-core:23", "domain": "notes", "inventoryStatus": "partial", "subcontract": "投稿作成: フォロー通知(notify: normal)の発行", "profile": "notification", "remainingOwners": [177, 189, 217]},
+    {"id": "responsibility:notes-core:24", "domain": "notes", "inventoryStatus": "partial", "subcontract": "投稿作成: アンテナ照合と Redis/ストリーム追加", "profile": "derived", "remainingOwners": [185, 186, 132, 133, 217]},
+    {"id": "responsibility:notes-core:27", "domain": "notes", "inventoryStatus": "partial", "subcontract": "投稿作成: 投票終了通知ジョブの遅延投入と全文検索への索引登録", "profile": "derived", "remainingOwners": [185, 186, 132, 133, 217]},
+    {"id": "responsibility:notes-core:28", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "投稿作成: ActivityPub 配送先の決定", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "responsibility:notes-core:29", "domain": "notes", "inventoryStatus": "partial", "subcontract": "投稿削除: カウンタ・ストリーム・チャート・索引・配送・モデログ", "profile": "deletion", "remainingOwners": [200, 161]},
+    {"id": "responsibility:notes-core:30", "domain": "notes", "inventoryStatus": "partial", "subcontract": "投稿削除: AP 配送(Delete/Undo Announce)と配送先の決定", "profile": "deletion", "remainingOwners": [200, 161]},
+    {"id": "responsibility:packers:01", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "ノートのvisibility遡及変換(makeNotesFollowersOnlyBefore)", "profile": "packing", "remainingOwners": [184, 188, 195]},
+    {"id": "responsibility:packers:02", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "ノート閲覧者別の本文非表示(shouldHideNote/hideNote)", "profile": "packing", "remainingOwners": [184, 188, 195]},
+    {"id": "responsibility:packers:04", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "純リノートの判定と出現ノートID集約", "profile": "packing", "remainingOwners": [184, 188, 195]},
+    {"id": "responsibility:packers:05", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "自分のリアクション(myReaction)の段階的解決", "profile": "packing", "remainingOwners": [184, 188, 195]},
+    {"id": "responsibility:packers:07", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "リモートカスタム絵文字リアクションの絵文字解決", "profile": "packing", "remainingOwners": [184, 188, 195]},
+    {"id": "responsibility:packers:08", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "タイトル付きノートの本文合成", "profile": "packing", "remainingOwners": [184, 188, 195]},
+    {"id": "responsibility:packers:09", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "packedノートのoptional項目省略ルール", "profile": "packing", "remainingOwners": [184, 188, 195]},
+    {"id": "responsibility:packers:10", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "ノートpackの再帰深度制御とDebounceLoader", "profile": "packing", "remainingOwners": [184, 188, 195]},
+    {"id": "responsibility:packers:11", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "投票結果の閲覧者別isVoted付与", "profile": "packing", "remainingOwners": [184, 188, 195]},
+    {"id": "responsibility:packers:12", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "ノートpackManyの一括プリフェッチ", "profile": "packing", "remainingOwners": [184, 188, 195]},
+    {"id": "responsibility:packers:13", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "チャンネルの要約情報付与とピン留めノート順序", "profile": "packing", "remainingOwners": [184, 188, 195]},
+    {"id": "responsibility:packers:25", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "DriveFile URL決定ロジック(メディアプロキシ/リモートキャッシュ切れ)", "profile": "packing", "remainingOwners": [184, 188, 195]},
+    {"id": "responsibility:queue-daemons-charts:03", "domain": "notes", "inventoryStatus": "partial", "subcontract": "配送ジョブのペイロード構築とダイジェスト事前計算", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "responsibility:queue-daemons-charts:11", "domain": "notes", "inventoryStatus": "partial", "subcontract": "ユーザー Webhook 配送ジョブの生成", "profile": "queue", "remainingOwners": [139, 183, 182, 188, 195, 198, 199, 200]},
+    {"id": "responsibility:queue-daemons-charts:33", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "ノート作成・削除時のチャート更新(notes / per-user-notes / instance)", "profile": "chart", "remainingOwners": [200]},
+    {"id": "service:MfmService", "domain": "notes", "inventoryStatus": "partial", "subcontract": "MfmService", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "service:NoteCreateService", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "NoteCreateService", "profile": "creation", "remainingOwners": [195, 183, 184]},
+    {"id": "service:NoteDeleteService", "domain": "notes", "inventoryStatus": "partial", "subcontract": "NoteDeleteService", "profile": "deletion", "remainingOwners": [200, 161]},
+    {"id": "service:QueueService", "domain": "ap-outbound", "inventoryStatus": "partial", "subcontract": "QueueService", "profile": "queue", "remainingOwners": [139, 183, 182, 188, 195, 198, 199, 200]},
+    {"id": "service:RelayService", "domain": "notes", "inventoryStatus": "not_implemented", "subcontract": "RelayService", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "service:UtilityService", "domain": "ap-outbound", "inventoryStatus": "partial", "subcontract": "UtilityService", "profile": "delivery", "remainingOwners": [195, 215]},
+    {"id": "stream-event:MainEvent.mention", "domain": "notes", "inventoryStatus": "partial", "subcontract": "MainEvent.mention", "profile": "notification", "remainingOwners": [177, 189, 217]},
+    {"id": "stream-event:MainEvent.renote", "domain": "notes", "inventoryStatus": "partial", "subcontract": "MainEvent.renote", "profile": "notification", "remainingOwners": [177, 189, 217]},
+    {"id": "stream-event:MainEvent.reply", "domain": "notes", "inventoryStatus": "partial", "subcontract": "MainEvent.reply", "profile": "notification", "remainingOwners": [177, 189, 217]},
+    {"id": "stream-event:NoteEvent.deleted", "domain": "notes", "inventoryStatus": "partial", "subcontract": "NoteEvent.deleted", "profile": "notification", "remainingOwners": [177, 189, 217]}
+  ],
+  "crossDomain": [
+    {
+      "ids": ["responsibility:notes-core:15", "responsibility:notes-core:25", "responsibility:notes-core:40", "responsibility:notes-core:41", "responsibility:notes-core:42", "responsibility:notes-core:44"],
+      "profile": "derived",
+      "remainingOwners": [185, 186, 180, 195, 132, 133],
+      "remaining": "Readers/antenna CRUD, profile-attached hashtags and rebuild remain separate."
+    },
+    {"ids": ["responsibility:notes-core:31", "responsibility:notes-core:32"], "profile": "creation", "remainingOwners": [183], "remaining": "Drafts and scheduling entrypoints remain unsupported."},
+    {
+      "ids": ["responsibility:notes-core:34", "responsibility:notes-core:35", "responsibility:notes-core:36", "responsibility:notes-core:37", "responsibility:notes-core:38", "responsibility:notes-core:39"],
+      "profile": "creation",
+      "remainingOwners": [184],
+      "remaining": "Voting/reactions/buffering remain unsupported."
+    },
+    {"ids": ["posting-notification-lifecycle"], "profile": "notification", "remainingOwners": [177, 184], "remaining": "Notification APIs/read/unread/push/migration and voting/reactions."},
+    {"ids": ["posting-live-stream"], "profile": "notification", "remainingOwners": [189, 217], "remaining": "Other channels/writes and broad event/cache contracts."},
+    {"ids": ["posting-webhook-events"], "profile": "queue", "remainingOwners": [197], "remaining": "Four posting events only; management and other event producers remain."},
+    {"ids": ["posting-chart-series"], "profile": "chart", "remainingOwners": [200], "remaining": "Historical series/producers remain."},
+    {"ids": ["posting-remote-resolution"], "profile": "creation", "remainingOwners": [195], "remaining": "Unknown remote501, failed-resolution omission and stale refresh remain blockers."},
+    {"ids": ["posting-drive-material"], "profile": "packing", "remainingOwners": [188], "remaining": "DB file facts do not prove binary upload/storage."},
+    {"ids": ["posting-delivery-metadata"], "profile": "delivery", "remainingOwners": [215], "remaining": "Instance metadata after delivery remains stage5."},
+    {"ids": ["posting-cutover"], "profile": "queue", "remainingOwners": [135, 138, 139], "remaining": "Full shutdown backup/restore and production cutover not certified."}
+  ],
+  "blockers": [
+    {
+      "id": "unknown-remote-mention-501",
+      "owner": 195,
+      "blocks": [176, 127],
+      "status": "unresolved",
+      "provenance": "limitation",
+      "evidence": ["limitation"],
+      "remaining": "Upstream resolves via WebFinger/Person and omits failed resolution; current extracted text/CW/poll/specified combinations reject501 before persistence."
+    },
+    {
+      "id": "stale-remote-refresh",
+      "owner": 195,
+      "blocks": [176, 127],
+      "status": "unresolved",
+      "provenance": "limitation",
+      "evidence": [],
+      "implementation": "packages/backend-next/src/modules/note/create-note.ts",
+      "upstreamSource": "packages/backend/src/core/RemoteUserResolveService.ts",
+      "remaining": "Registered users are used without refresh; upstream null/older-than24h lastFetchedAt triggers resynchronization. No invented parity test."
+    }
+  ],
+  "parentAudit": {
+    "issue": 124,
+    "assessment": "2026-11-08 independent audit PASS for every current mandatory #124 criterion after inspecting code, assertions, lasting comparison records and successful raw execution logs; not inferred from closed child states. Closes #124 is suitable for future human merge. GitHub #124 remains OPEN until merge; no direct close/edit is authorized.",
+    "finalIndependentReview": "PASS",
+    "requirements": [
+      {
+        "issue": 160,
+        "record": "docs/superpowers/compatibility/ap-deliver/README.md",
+        "evidence": [
+          "delivery",
+          "terminal"
+        ]
+      },
+      {
+        "issue": 162,
+        "record": "docs/backend-next/posting-contract.md",
+        "evidence": [
+          "restart",
+          "reject"
+        ]
+      },
+      {
+        "issue": 163,
+        "record": "docs/superpowers/compatibility/queue-admin/README.md",
+        "evidence": [
+          "restart"
+        ]
+      },
+      {
+        "issue": 164,
+        "record": "docs/superpowers/compatibility/queue-retention/README.md",
+        "evidence": [
+          "handoff"
+        ]
+      },
+      {
+        "issue": 165,
+        "mergedPR": 241,
+        "record": "docs/superpowers/compatibility/queue-handoff/README.md",
+        "evidence": [
+          "handoff",
+          "missing-handlers",
+          "scheduler"
+        ]
+      },
+      {
+        "id": "pg-runtime-removal",
+        "record": "docs/backend-next/posting-contract.md",
+        "pullRequests": [
+          212,
+          213
+        ],
+        "remaining": "Notification body PG save remains; request/item/claim/dispatch/AP snapshot/host lease and9tables removed without altering applied history."
+      }
+    ],
+    "unsupportedHandlers": {
+      "system": [
+        199,
+        200
+      ],
+      "postScheduledNote": [
+        183
+      ],
+      "inbox": [
+        195
+      ],
+      "db": [
+        199
+      ],
+      "relationship": [
+        182
+      ],
+      "objectStorage": [
+        188,
+        199
+      ],
+      "systemWebhookDeliver": [
+        198
+      ]
+    },
+    "systemSchedulers": {
+      "count": 9,
+      "owners": [
+        199,
+        200
+      ],
+      "evidence": [
+        "scheduler"
+      ]
+    },
+    "cutoverOwners": [
+      135,
+      138,
+      139
+    ],
+    "closureReferences": [
+      "Closes #124",
+      "Refs #176",
+      "Refs #127",
+      "Refs #139"
+    ],
+    "reviewedRuntimeCommit": "28e670721e6bd6e6ec117ddc67036d1951cd59a3",
+    "issueStateAtAudit": "OPEN",
+    "wholeBranchReview": "APPROVE",
+    "mandatoryChildren": {
+      "issues": [
+        160,
+        162,
+        163,
+        164,
+        165
+      ],
+      "states": "CLOSED",
+      "basis": "Current criteria/code/test audit, not child-state inference; deferred159/161/166 and folded historical conditions are excluded by the current parent contract."
+    },
+    "criteria": [
+      {
+        "id": "typed-contract",
+        "criterion": "Typed submission/batch and ordinary retry/admin keep BullMQ Job, transport and retry APIs outside ordinary business contracts.",
+        "result": "PASS",
+        "references": [
+          {
+            "file": "packages/backend-next/src/modules/federation/deliver-job.ts",
+            "line": 16
+          },
+          {
+            "file": "packages/backend-next/src/modules/federation/note-delivery.ts",
+            "line": 37
+          },
+          {
+            "file": "packages/backend-next/src/platform/job-queue/deliver.ts",
+            "line": 80
+          }
+        ]
+      },
+      {
+        "id": "minimal-http",
+        "criterion": "PR212 basic text HTTP and public BullMQ adapters; internal Lua transport/rebuild removed.",
+        "result": "PASS",
+        "references": [
+          {
+            "file": "docs/backend-next/posting-contract.md",
+            "line": 7
+          },
+          {
+            "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
+            "line": 594
+          }
+        ]
+      },
+      {
+        "id": "pg-retirement",
+        "criterion": "PR213 direct PG notification save/flush; no ordinary request/claim/AP snapshot/page/host-lease runtime or entity registrations; guarded nine-table/charge retirement preserves notifications and applied history. Down is schema-only rollback.",
+        "result": "PASS",
+        "references": [
+          {
+            "file": "packages/backend-next/src/platform/database/notification/persistence.ts",
+            "line": 26
+          },
+          {
+            "file": "packages/backend-next/src/platform/database/data-source.ts",
+            "line": 19
+          },
+          {
+            "file": "packages/backend-next/src/platform/database/retire-durable-work-migration.ts",
+            "line": 13
+          },
+          {
+            "file": "packages/backend-next/test/integration/retire-durable-work.test.ts",
+            "line": 75
+          },
+          {
+            "file": "packages/backend-next/test/integration/retire-durable-work.test.ts",
+            "line": 105
+          },
+          {
+            "file": "packages/backend-next/test/integration/retire-durable-work.test.ts",
+            "line": 117
+          }
+        ]
+      },
+      {
+        "id": "signed-http-160",
+        "criterion": "Fixed signature/key/body/digest and HTTP outcome/network/timeout classification; actual signed receipts, AP503 retry and AP404 terminal failure. signedGet/remote resolution remains195.",
+        "result": "PASS",
+        "references": [
+          {
+            "file": "docs/superpowers/compatibility/ap-request/README.md",
+            "line": 81
+          },
+          {
+            "file": "packages/backend-next/test/integration/ap-request.test.ts",
+            "line": 69
+          },
+          {
+            "file": "packages/backend-next/test/unit/federation/signed-post.test.ts",
+            "line": 53
+          },
+          {
+            "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
+            "line": 647
+          },
+          {
+            "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
+            "line": 818
+          }
+        ]
+      },
+      {
+        "id": "workers-162",
+        "criterion": "Three necessary real handlers use public add/addBulk/Worker, source attempts/backoff/limiter and stop acquisition then await active then release; startup/loss/deadline paths tested.",
+        "result": "PASS",
+        "references": [
+          {
+            "file": "packages/backend-next/src/processes/worker.ts",
+            "line": 31
+          },
+          {
+            "file": "packages/backend-next/src/platform/job-queue/connection.ts",
+            "line": 55
+          },
+          {
+            "file": "packages/backend-next/test/processes/poll-ended.test.ts",
+            "line": 138
+          },
+          {
+            "file": "packages/backend-next/test/processes/note-deliver.test.ts",
+            "line": 234
+          },
+          {
+            "file": "docs/superpowers/compatibility/ap-deliver/README.md",
+            "line": 167
+          }
+        ]
+      },
+      {
+        "id": "admin-163",
+        "criterion": "All14 queue API and QueueStats contracts:10 selectors, qualification/current role/scope, ordinary controls, HTTP/WS history and failure lifecycle.95 public projections of97 source observations; two source listener lifetime differences recorded.",
+        "result": "PASS",
+        "references": [
+          {
+            "file": "docs/superpowers/compatibility/queue-admin/README.md",
+            "line": 72
+          },
+          {
+            "file": "packages/backend-next/src/http/queue-api.ts",
+            "line": 21
+          },
+          {
+            "file": "packages/backend-next/test/integration/queue-admin.test.ts",
+            "line": 173
+          },
+          {
+            "file": "packages/backend-next/test/integration/queue-admin.test.ts",
+            "line": 311
+          },
+          {
+            "file": "packages/backend-next/src/platform/queue-stats.ts",
+            "line": 81
+          }
+        ]
+      },
+      {
+        "id": "retention-164",
+        "criterion": "Three producers retain source7day/30complete/100failed options; lazy same-terminal-state cleanup and all10 management selectors preserve unfinished/locked work; no strict TTL or invented periodic cleanup.",
+        "result": "PASS",
+        "references": [
+          {
+            "file": "docs/superpowers/compatibility/queue-retention/README.md",
+            "line": 59
+          },
+          {
+            "file": "packages/backend-next/test/integration/queue-retention.test.ts",
+            "line": 105
+          },
+          {
+            "file": "packages/backend-next/test/integration/queue-retention.test.ts",
+            "line": 221
+          },
+          {
+            "file": "packages/backend-next/test/integration/queue-admin.test.ts",
+            "line": 101
+          }
+        ]
+      },
+      {
+        "id": "handoff-165",
+        "criterion": "All10 names/prefix/payload/ID/delayed states and9 scheduler census; stopped raw-read checker consumes supported original jobs or refuses unsupported/scheduled/partial work intact. Backup/rollback handoff exists; final cutover139 remains.",
+        "result": "PASS",
+        "references": [
+          {
+            "file": "docs/superpowers/compatibility/queue-handoff/README.md",
+            "line": 11
+          },
+          {
+            "file": "packages/backend-next/src/platform/job-queue/handoff-policy.ts",
+            "line": 46
+          },
+          {
+            "file": "packages/backend-next/test/integration/queue-handoff.test.ts",
+            "line": 113
+          },
+          {
+            "file": "packages/backend-next/test/processes/queue-handoff.test.ts",
+            "line": 138
+          },
+          {
+            "file": "packages/backend-next/test/processes/queue-handoff.test.ts",
+            "line": 186
+          },
+          {
+            "file": "docs/backend-next/posting-contract.md",
+            "line": 221
+          }
+        ]
+      },
+      {
+        "id": "real-business-process",
+        "criterion": "Native HTTP Note/Poll through real Redis/BullMQ and Supervisor, signed inbox/webhook, PG/WS/TL/search, natural60-72s retry, original job/options/due scores across stop/restart. No promote/backdating or empty-handler substitute; current full file8PASS/77.93s.",
+        "result": "PASS",
+        "references": [
+          {
+            "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
+            "line": 580
+          },
+          {
+            "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
+            "line": 622
+          },
+          {
+            "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
+            "line": 655
+          },
+          {
+            "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
+            "line": 679
+          },
+          {
+            "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
+            "line": 686
+          },
+          {
+            "file": "docs/superpowers/compatibility/note/n7/README.md",
+            "line": 25
+          }
+        ]
+      },
+      {
+        "id": "remaining-ownership",
+        "criterion": "PG notification bodies remain; notification API/read/push/migration177, other streams189 and webhook producers/API197 remain assigned. Parent closure does not complete all jobs/posting or cutover.",
+        "result": "PASS",
+        "references": [
+          {
+            "file": "docs/superpowers/compatibility/queue-retention/README.md",
+            "line": 94
+          },
+          {
+            "file": "docs/superpowers/compatibility/stream/README.md",
+            "line": 1
+          },
+          {
+            "file": "docs/superpowers/compatibility/user-webhook/README.md",
+            "line": 1
+          }
+        ]
+      }
+    ]
+  },
+  "sliceDatasets": [
+    {
+      "file": "docs/superpowers/compatibility/note/n3/observations.json",
+      "keys": [
+        "N3-FP-poll-no-text",
+        "N3-FP-whitespace-file",
+        "N3-FP-whitespace-poll",
+        "N3-FP-multiple",
+        "N3-FP-future-absolute",
+        "N3-FP-expires-zero",
+        "N3-FP-prohibited-choice",
+        "N3-FP-missing-file-and-renote",
+        "N3-FP-files-17",
+        "N3-FP-files-duplicate",
+        "N3-FP-media-empty",
+        "N3-FP-attached-types",
+        "N3-FP-poll-sensitive-home",
+        "N3-FP-poll-channel",
+        "N3-FP-poll-specified",
+        "N3-RR-renote-other-followers",
+        "N3-RR-renote-own-followers",
+        "N3-RR-renote-own-specified",
+        "N3-RR-renote-blocked",
+        "N3-RR-quote-blocked",
+        "N3-RR-reply-blocked",
+        "N3-RR-renote-blocking",
+        "N3-RR-reply-blocking",
+        "N3-RR-reply-specified-public",
+        "N3-RR-reply-specified",
+        "N3-RR-reply-own-specified",
+        "N3-RR-reply-home",
+        "N3-RR-reply-followers",
+        "N3-RR-renote-home",
+        "N3-RR-quote-home",
+        "N3-RR-reply-localonly",
+        "N3-RR-renote-localonly",
+        "N3-RR-reply-and-renote",
+        "N3-RR-reply-and-renote-missing",
+        "N3-RR-renote-whitespace",
+        "N3-RR-quote-pure",
+        "N3-RR-reply-invisible-pure",
+        "N3-RR-bot-renote",
+        "N3-RR-bot-reply",
+        "N3-RR-self-reply",
+        "N3-RR-self-quote",
+        "N3-RR-other-quote",
+        "N3-RR-other-pure",
+        "N3-RR-thread-first",
+        "N3-RR-thread-nested",
+        "N3-RR-reply-remote",
+        "N3-RR-renote-remote",
+        "N3-CH-missing",
+        "N3-CH-null",
+        "N3-CH-closed-internal-renote",
+        "N3-CH-open-external-renote",
+        "N3-CH-reply-adopt",
+        "N3-CH-reply-other-channel",
+        "N3-CH-reply-outside-with-channel",
+        "N3-CH-reply-archived",
+        "N3-CH-sensitive-skip",
+        "N3-CH-renote-home",
+        "N3-CH-count-note",
+        "N3-CH-count-pure",
+        "N3-CH-count-reply",
+        "N3-MN-visible-missing",
+        "N3-MN-specified-empty",
+        "N3-MN-visible-order",
+        "N3-MN-dedupe",
+        "N3-MN-missing-local",
+        "N3-MN-suspended",
+        "N3-MN-remote",
+        "N3-MN-remote-visible",
+        "N3-MN-limit-boundary",
+        "N3-MN-limit-over",
+        "N3-MN-limit-dedupe",
+        "N3-MN-limit-self",
+        "N3-MN-limit-reply-boundary",
+        "N3-MN-limit-reply-over",
+        "N3-MN-limit-visible-boundary",
+        "N3-MN-limit-visible-over",
+        "N3-MN-noextract-reply",
+        "N3-MN-cw-choice",
+        "N3-HE-case-dup",
+        "N3-HE-cw-choice",
+        "N3-HE-over-32",
+        "N3-HE-length",
+        "N3-HE-fullwidth",
+        "N3-HE-only-hashtags-off",
+        "N3-HE-emoji-case-dup",
+        "N3-HE-inline-code",
+        "N3-HE-nfkc-expanding",
+        "N3-FP-choices-11",
+        "N3-FP-choice-empty",
+        "N3-FP-choice-51",
+        "N3-FP-expired-after-zero",
+        "N3-MN-visible-duplicate",
+        "N3-RR-renote-null-no-text",
+        "N3-RR-renote-empty-text",
+        "N3-RR-renote-duplicate",
+        "N3-RR-renote-quote",
+        "N3-RR-reply-mentioned-only-specified",
+        "N3-CH-quote-closed-external",
+        "N3-ORD-reply-before-expired",
+        "N3-ORD-expired-before-channel",
+        "N3-ORD-channel-before-prohibited",
+        "N3-ORD-prohibited-before-mentions"
+      ],
+      "evidence": ["n3"],
+      "provenance": "upstream-http"
+    }
+  ],
+  "fixtureDigests": {
+    "docs/superpowers/compatibility/ap-deliver/render-cases.json": "6ad351c950cd8f9ec5ae995a7cfcca3dcf3c2d8cb55104ec727bc1dac66420ac",
+    "docs/superpowers/compatibility/note/delete-failure-cases.json": "b44d57f3bb1789a4d23b6792050ba2ce0bfefa3c3985f6286d2c0e7fdc022c56",
+    "docs/superpowers/compatibility/note/http-cases.json": "393b0e5cff93228b464f76c4332f22f3b1903a8bba2a9b18f82219584b0d5e6d",
+    "docs/superpowers/compatibility/note/n3/http-cases.json": "c453e6071c3fd75c89cd49b673ff5df65226d0b5222098bdcf12049589563ad3",
+    "docs/superpowers/compatibility/note/n3/observations.json": "ffa30353490737ae5ed6d52adc92c009075a35b6ea1800815afc4a4aa8fbd5f2",
+    "docs/superpowers/compatibility/note/observations.json": "ba3d42b9648d3bb72a01394f54d61c9da442f9f8f7f5b71e60fa82646959a5f6",
+    "docs/superpowers/compatibility/note/rate-observations.json": "93c76ad8ccafb6adc7b7d997ee7a565149872058277c39a3905214400fbceade"
+  }
+}

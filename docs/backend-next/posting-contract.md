@@ -233,3 +233,9 @@ remote作者の`Instance.notesCount`はstats有効時に既存台帳のfetchOrRe
 検査だけを行い、新consumerの消費やmigration前であれば、元の停止済み依存先を変更せず旧binary/configへ戻せる。消費またはmigration後は新プロセスを停止し、PGとRedisのcoordinated backup、必要な外部状態の復旧を揃えてから旧binary/configを起動する。migrationのdownだけでは廃止済みjobを再現できず、PG通知保存先の差異もbinaryだけでは戻らない。
 
 AP/webhook送信成功はbackup復元で取り消せず、復元したjobのretryで重複送信し得る。結果不明の外部効果も照合が必要で、通常BullMQ以上のexactly-once保証や独自台帳は追加しない。#165の検査・実payload互換の完了と、#124/#176の全体完成を区別する。
+
+## N7の限定検証と残る互換差分（2026-11-08）
+
+[現在のN7台帳・実測・再現手順](../superpowers/compatibility/note/n7/README.md)に、C1–C10の全観測、F1–F8の現在の適用範囲と、notes94行/AP outbound10行の元ID・statusを保持した照合を記録した。固定本家HTTP観測、source-method比較、新実装の実process、制限回帰を分け、fixtureの存在だけで一致としない。通常HTTP保存→show→worker→通知/WS/AP/webhook/TL/検索→停止再開・自然retry→削除と、認可/保存失敗を既存harnessで検証した。実測は統合214件、processは別々の3実行で8＋5＋7件。これは本番切替の判定ではない。
+
+未登録remote mentionの保存前501、登録済みremote userのstale refresh省略、解決失敗時の本家の省略処理との差は#195が所有する未解消blocker。`api:notes/create`はpartial、`postingComplete`はfalseを維持する。#176/#127は未完了で、完了扱いの差異や保留強化へ読み替えない。#124は[N7の独立条件監査](../superpowers/compatibility/note/n7/README.md#remaining-ownership-and-124-audit)で現行全必須条件PASS（runtime `28e670721e6bd6e6ec117ddc67036d1951cd59a3`）。現行条件・コード・実assertion・比較記録・成功した実行を確認しており、必須子5件のCLOSED状態だけから判定しない。将来の人間のmerge時に`Closes #124`が適切で、GitHub上はそれまでOPEN。証跡task review・全branch最終レビューはSpec PASS / Quality APPROVE、最終shippingはlint/SPDX/locale PASS。この2026-11-08 N7最終判定が、上の過去sliceの「#124全体未完了」と監査待ちRefs記述を現在の判定として置き換える。未対応7handler・system9schedulerと切替#139は上記引継ぎ契約を維持する。

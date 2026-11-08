@@ -722,5 +722,11 @@
         }
       ]
     }
-  ]
+  ],
+  "n7Applicability": {
+    "date": "2026-11-08",
+    "ledger": "n7/coverage.json",
+    "postingComplete": false,
+    "note": "Original cases/statuses/observations/remaining are historical and unchanged. Current ordinary applicability is recorded in the adjacent N7 ledger; remote501/stale refresh remain195 blockers."
+  }
 }
