@@ -103,11 +103,11 @@ docker compose -p backend-next-test -f packages/backend-next/compose.test.yml do
 結合・プロセステストは専用DBに接続し、`backend_next_<ランダムID>`のDBだけを作成・削除する。
 本番設定は読み込まない。
 
-#164の保持・清掃に絞る場合は、専用のPostgreSQL/Redis起動後に次を実行する。source oracleの再実行は[保持比較資料](../../docs/superpowers/compatibility/queue-retention/README.md#実行と直接比較)を参照する。handler結果を制御した実adapter検証とsource比較を分け、既存の各業務・processテストを引き継ぐ。
+#164の保持・清掃に絞る場合は、上記のCompose手順で専用のPostgreSQL/Redisを起動後に次を実行する。source oracleの再実行は[保持比較資料](../../docs/superpowers/compatibility/queue-retention/README.md#実行と直接比較)を参照する。handler結果を制御した実adapter検証とsource比較を分け、既存の各業務・processテストを引き継ぐ。
 
 ```sh
 pnpm --filter backend-next test test/unit/job-queue/retention.test.ts test/unit/job-queue/deliver.test.ts test/unit/job-queue/ended-poll-notification.test.ts test/unit/job-queue/user-webhook.test.ts
-BACKEND_NEXT_TEST_DB_PORT=55486 BACKEND_NEXT_TEST_REDIS_PORT=56386 pnpm --filter backend-next test:integration test/integration/queue-retention.test.ts test/integration/queue-admin.test.ts
+pnpm --filter backend-next test:integration test/integration/queue-retention.test.ts test/integration/queue-admin.test.ts
 ```
 
 `check-schema`は検証用DBで使う。同期したEntityの対象に限って定義差分を検出し、DDLは実行しない。
