@@ -154,7 +154,7 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 1. inboxのfailedジョブの扱い：#139の前に全activityのhandlerを必須とするか、契約を変えるか（期限切れを待つ、受理だけする等）。クリティカルパスの長さが大きく変わる。
 2. 共有Entityを担当ごとに同期するか、1本のPRでまとめて同期するか。
 3. queueの登録表への作り直しを、既存3 queueを最初の利用者とするrefactorとして認めるか（「汎用基盤を先に作り込まない」との関係）。
-4. #176を閉じる条件に、PR #243で残る範囲（media/emoji・instance・chart・cache）を含めるか。
+4. **確定済み（2026-11-09）:** #176はPR #243で残るmedia/emoji・instance・chart・cache等の初期機能を実装するまで未完了とする。担当の割り当てだけでは閉じない。これらは強化や承認済み差異ではなく、`Closes #176` / `Closes #127` は使わない。
 5. #115・#122は残りを#181・#199/#200へ移してcloseするか。
 
 ## 再開時に確認すること
@@ -229,3 +229,5 @@ media/emoji #188/#195、user hashtag関係 #195、actor由来instance usersCount
 2026-11-08: S2のModerationLog appenderの次として、#182の最初の小PRで固定本家の`FollowRequest` Entityを`backend-upstream`へ同期した（実装コミット `b6832111a5817f30c33334d8091e7f80e79dbe33`）。読み込み・`user`への2関係と、実PGでのschema差分0を確認した。読み書きする業務はまだない。following/requests API・承認/拒否・AP・UserDetailedNotMeは#182・#180の後続sliceで扱う。[棚卸しの照合](../superpowers/compatibility/backend-inventory/README.md#182-followrequest-entity同期の照合2026-11-08)。次は#191のPage pack、その後#180。
 
 2026-11-09: この変更で HTTP・既存 worker・CI の shared-root 構造抽出を実装した。[計画と検証状況](../superpowers/plans/2026-11-09-shared-roots-s1.md)。登録は静的かつ明示的で、追加 worker の自動発見や登録漏れの実行時検知は行わない。S1 の次は #176、続いて inbox の #195。N7 の closure の判断を解決するものではなく、queue の対応範囲も拡大しない。
+
+2026-11-09: #176の限定比較で既存のC2 rate DB差分とC10 moderator応答・監査・削除streamの4観測を直接照合した。親の結合検証は86件/3ファイルPASS、残る初期機能は上記の確定条件に従う。[比較と検証計画](../superpowers/plans/2026-11-09-note-n7-176.md)。
