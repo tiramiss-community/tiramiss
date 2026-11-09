@@ -9,9 +9,8 @@ on:
       - 'scripts/backend-contract-inventory*.mjs'
       - 'docs/superpowers/compatibility/note/**'
       - 'docs/superpowers/compatibility/remote-user/**'
-      - 'scripts/remote-user-contract.test.mjs'
+      - 'scripts/*-contract*.test.mjs'
       - 'docs/superpowers/compatibility/ap-deliver/**'
-      - 'scripts/note-contract-*.test.mjs'
       - 'packages/backend-next/**'
       - 'packages/backend-upstream/**'
       - 'packages/shared/eslint.config.js'
@@ -27,9 +26,8 @@ on:
       - 'scripts/backend-contract-inventory*.mjs'
       - 'docs/superpowers/compatibility/note/**'
       - 'docs/superpowers/compatibility/remote-user/**'
-      - 'scripts/remote-user-contract.test.mjs'
+      - 'scripts/*-contract*.test.mjs'
       - 'docs/superpowers/compatibility/ap-deliver/**'
-      - 'scripts/note-contract-*.test.mjs'
       - 'packages/backend-next/**'
       - 'packages/backend-upstream/**'
       - 'packages/shared/eslint.config.js'
@@ -81,11 +79,9 @@ jobs:
       - run: pnpm install --frozen-lockfile --filter backend-next...
       - run: git diff --exit-code pnpm-lock.yaml
       - name: Backend public contract inventory
-        run: |
-          node --test scripts/backend-contract-inventory.test.mjs
-          node scripts/backend-contract-inventory.mjs --check
-      - name: Note comparison fixture references and contracts
-        run: node --test scripts/note-contract-*.test.mjs scripts/remote-user-contract.test.mjs
+        run: node scripts/backend-contract-inventory.mjs --check
+      - name: Backend comparison fixture references and contracts
+        run: node --test scripts/*-contract*.test.mjs
       - run: pnpm --filter backend-upstream sync:check
       - run: pnpm --filter backend-next... build
       - run: pnpm --filter backend-next... typecheck

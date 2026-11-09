@@ -1,0 +1,82 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import { Hono } from 'hono';
+import { expect, test, vi } from 'vitest';
+import { createBackendHttpApp } from '../../../src/composition/http-app.js';
+import { createBackendHttpApp as legacy } from '../../../src/composition/note-http.js';
+import { testConfig } from '../../helpers/database.js';
+import type { RuntimeResources } from '../../../src/composition/create-runtime.js';
+
+function fixture() {
+	const events: string[] = [];
+	const repository = { find: vi.fn(async () => [{ federation: 'all' }]), findOne: vi.fn(async () => null), findOneBy: vi.fn(async () => null), findOneByOrFail: vi.fn(async () => ({ federation: 'all' })), findBy: vi.fn(async () => []) };
+	const resources = {
+		dataSource: { manager: { getRepository: () => repository } },
+		logger: { error: vi.fn() },
+		roleMaterials: { get changes() {
+			events.push('role'); return {};
+		} },
+		notePostSave: { start: vi.fn() },
+		notePostDelete: { get start() {
+			events.push('note'); return vi.fn();
+		} },
+	} as unknown as RuntimeResources;
+	return { resources, events, repository };
+}
+
+test('composed app retains Role, Actor, Note, optional queue and unknown route behavior', async () => {
+	const { resources, events } = fixture();
+	const config = testConfig();
+	const queue = new Hono().post('/api/test-queue', c => c.text('queue'));
+	const app = createBackendHttpApp(resources, config, queue);
+	expect(events).toEqual(['note', 'role']);
+	expect(legacy).toBe(createBackendHttpApp);
+	expect([...new Set(app.routes.map(route => route.path))]).toEqual([
+		'/api/admin/roles/show', '/api/admin/roles/update', '/users/:id',
+		'/api/notes/delete', '/api/notes/show', '/api/notes/create', '/api/test-queue',
+	]);
+	for (const path of ['admin/roles/show', 'admin/roles/update', 'notes/delete', 'notes/create']) {
+		const response = await app.request(`/api/${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+		expect(response.status).toBe(401);
+		expect(await response.json()).toHaveProperty('error.code', 'CREDENTIAL_REQUIRED');
+	}
+	const show = await app.request('/api/notes/show', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+	expect(show.status).toBe(400);
+	expect(await show.json()).toHaveProperty('error.code', 'INVALID_PARAM');
+	const actor = await app.request('/users/missing', { headers: { Accept: 'application/activity+json' } });
+	expect(actor.status).toBe(404);
+	expect(actor.headers.get('vary')).toBe('Accept');
+	expect(await (await app.request('/api/test-queue', { method: 'POST' })).text()).toBe('queue');
+	expect((await createBackendHttpApp(resources, config).request('/api/test-queue', { method: 'POST' })).status).toBe(404);
+	expect((await app.request('/unknown')).status).toBe(404);
+	const preflight = await app.request('/api/notes/show', { method: 'OPTIONS' });
+	expect(preflight.status).toBe(204);
+	expect(preflight.headers.get('access-control-allow-origin')).toBe('*');
+	const invalid = await app.request('/api/notes/show', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer invalid' }, body: '{}' });
+	expect(invalid.status).toBe(401);
+	expect(await invalid.json()).toHaveProperty('error.code', 'AUTHENTICATION_FAILED');
+	expect(invalid.headers.get('www-authenticate')).toContain('Bearer');
+});
+
+test('Note preparation failure escapes unchanged before Role construction', () => {
+	const { resources, events } = fixture();
+	const failure = new Error('note preparation failed');
+	Object.defineProperty(resources.notePostDelete, 'start', { get() {
+		throw failure;
+	} });
+	expect(() => createBackendHttpApp(resources, testConfig())).toThrow(failure);
+	expect(events).toEqual([]);
+});
+
+test('Role authentication infrastructure failure retains the base app error response', async () => {
+	const { resources, repository } = fixture();
+	repository.findOne.mockRejectedValueOnce(new Error('database unavailable'));
+	const response = await createBackendHttpApp(resources, testConfig()).request('/api/admin/roles/show', {
+		method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer invalid' }, body: '{}',
+	});
+	expect(response.status).toBe(500);
+	expect(await response.json()).toHaveProperty('error.code', 'INTERNAL_ERROR');
+	expect(response.headers.get('cache-control')).toBe('private, max-age=0, must-revalidate');
+});
