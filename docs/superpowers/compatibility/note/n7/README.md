@@ -17,7 +17,9 @@ The ledger maps every original C1–C10 observation to an assertion or a qualifi
 
 F1–F8 dispositions retain ordinary transactions, auth, failure boundaries, delayed/historical effects and BullMQ behavior. PG request ledgers, claim/lease/fencing, capacity admission, loss-zero commit→queue recovery, stronger Create/Delete ordering and exactly-once effects are not reinstated.
 
-The focused [Node checker](../../../../../scripts/note-contract-posting.test.mjs) checks identities, provenance, owners, JSON keys, exact source declaration titles, finite parameter/dataset bindings and source/fixture digests. It rejects missing/duplicate/unknown groups/IDs and completion while either remote blocker remains. Its reviewed binding fingerprints require re-review when consumers/data change. **It detects drift, not semantic parity by itself.** Fixture presence, a title match or a limitation test is insufficient proof; the actual assertions and runtime results require review. Qualified gaps remain visible, including C10 audit/stream observations not directly consumed as whole original objects and the accelerated rate DB-delta object.
+The focused [Node checker](../../../../../scripts/note-contract-posting.test.mjs) checks identities, provenance, owners, JSON keys, exact source declaration titles, finite parameter/dataset bindings and source/fixture digests. It rejects missing/duplicate/unknown groups/IDs and completion while either remote blocker remains. Its reviewed binding fingerprints require re-review when consumers/data change. **It detects drift, not semantic parity by itself.** Fixture presence, a title match or a limitation test is insufficient proof; the actual assertions and runtime results require review.
+
+At the 2026-11-08 N7 snapshot, qualified gaps included C10 audit/stream observations not directly consumed as whole original objects and the accelerated rate DB-delta object. The [current bounded C2/C10 comparisons](#current-bounded-c2c10-comparisons-2026-11-09) resolve only those two comparison gaps; the six actor gaps remain unresolved.
 
 ## Measured runtime results
 
