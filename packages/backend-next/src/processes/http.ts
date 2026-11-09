@@ -5,7 +5,7 @@
 import { createServer, type Server } from 'node:http';
 import { chmod } from 'node:fs/promises';
 import { getRequestListener } from '@hono/node-server';
-import { createBackendHttpApp } from '../composition/note-http.js';
+import { createBackendHttpApp } from '../composition/http-app.js';
 import { openPostingWebSocket } from '../composition/posting-websocket.js';
 import { openQueueHttp } from '../composition/queue-http.js';
 import { startManagedProcess } from './lifecycle.js';

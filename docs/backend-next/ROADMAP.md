@@ -227,3 +227,5 @@ media/emoji #188/#195、user hashtag関係 #195、actor由来instance usersCount
 2026-11-08: S2の#178の次として、moderation_logへの書き込みを共通appender（`platform/database/moderation-log.ts`の`appendModerationLog`、記録型は`modules/audit`）へ集約した。実装コミットは `e03c4fbf2920c8dbec5e798df702265af986d579`。queue・Role更新・note削除の3経路は、非待機かトランザクション内か・info・id時刻を変えずに書き込みだけを移した。以後の所有は#194で、新しい種別は記録する機能のsliceが追加する。[計画と検証](../superpowers/plans/2026-11-08-moderation-log-appender-194.md)。次は#182のFollowRequest Entity同期。
 
 2026-11-08: S2のModerationLog appenderの次として、#182の最初の小PRで固定本家の`FollowRequest` Entityを`backend-upstream`へ同期した（実装コミット `b6832111a5817f30c33334d8091e7f80e79dbe33`）。読み込み・`user`への2関係と、実PGでのschema差分0を確認した。読み書きする業務はまだない。following/requests API・承認/拒否・AP・UserDetailedNotMeは#182・#180の後続sliceで扱う。[棚卸しの照合](../superpowers/compatibility/backend-inventory/README.md#182-followrequest-entity同期の照合2026-11-08)。次は#191のPage pack、その後#180。
+
+2026-11-09: この変更で HTTP・既存 worker・CI の shared-root 構造抽出を実装した。[計画と検証状況](../superpowers/plans/2026-11-09-shared-roots-s1.md)。登録は静的かつ明示的で、追加 worker の自動発見や登録漏れの実行時検知は行わない。S1 の次は #176、続いて inbox の #195。N7 の closure の判断を解決するものではなく、queue の対応範囲も拡大しない。
