@@ -2,20 +2,20 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { createRemoteUsers } from './remote-users.js';
 import { randomUUID } from 'node:crypto';
 import { createNoteDeleteApi } from '../http/note-delete-api.js';
 import { createNoteDeleter } from '../platform/database/note-deleter.js';
 import { createNoteDeleteRateLimiter } from '../platform/note-delete-rate-limit.js';
 import { createNoteApi } from '../http/note-api.js';
 import { createNoteCreateApi } from '../http/note-create-api.js';
-import { createNoteWriter, createNoteWriteTransactions } from '../platform/database/note-writer.js';
 import { createNoteRateLimiter } from '../platform/note-rate-limit.js';
-import { createCreateNote, createDeleteNote, createShowNote, matchesWords, readNotePlan, renderNote } from '../modules/note/public.js';
+import { createDeleteNote, createShowNote, readNotePlan, renderNote } from '../modules/note/public.js';
 import { createHostRules, renderDeletedNoteActivity } from '../modules/federation/public.js';
 import { createNoteReader } from '../platform/database/note-reader.js';
 import { createTokenAuthenticator } from '../platform/database/authenticate.js';
 import { createIdCodec } from '../platform/id-codec.js';
+import { createNoteApplication } from './note.js';
+import { createRemoteUsers } from './remote-users.js';
 import type { RuntimeResources } from './create-runtime.js';
 import type { RuntimeConfig } from '../config/types.js';
 import type { Hono } from 'hono';
@@ -25,11 +25,9 @@ export function prepareNoteRoutes(resources: RuntimeResources, config: RuntimeCo
 	const codec = createIdCodec(config.id);
 	const reader = createNoteReader(manager, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId });
 	const show = createShowNote(reader);
-	const writer = createNoteWriter(manager, resources.roleMaterials, codec.createdAtFromId);
-	const create = createCreateNote({
-		...writer, newId: codec.newId, currentTime: Date.now, matchesWords,
+	const create = createNoteApplication({
+		dataSource: resources.dataSource, roleMaterials: resources.roleMaterials, ids: codec, clock: Date.now,
 		remoteUsers: createRemoteUsers(resources, config),
-		transactions: createNoteWriteTransactions(resources.dataSource),
 		limit: createNoteRateLimiter(resources.redis),
 		afterSaved: input => resources.notePostSave.start(input),
 	});

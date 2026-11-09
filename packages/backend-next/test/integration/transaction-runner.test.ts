@@ -2,10 +2,11 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { afterAll, beforeAll, expect, test } from 'vitest';
+import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { createTestDatabase } from '../helpers/database.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
 import { createTransactionRunner } from '../../src/platform/database/transaction-runner.js';
+import type { TransactionLifetime } from '../../src/platform/database/transaction-runner.js';
 import type { DataSource } from 'typeorm';
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 let source: DataSource;
@@ -68,6 +69,25 @@ test('gives concurrent operations distinct transaction scopes and database trans
 		release();
 	}
 	expect(await a).not.toEqual(b);
+});
+
+test('expires lifetime and preserves a synchronous bind failure on a real source', async () => {
+	const failure = new Error('bind rejected');
+	let capturedLifetime!: TransactionLifetime;
+	const work = vi.fn();
+	const runner = createTransactionRunner(source, (_manager, lifetime) => {
+		capturedLifetime = lifetime;
+		throw failure;
+	});
+	const pending = runner.run(work);
+	await expect(pending).rejects.toBe(failure);
+	expect(work).not.toHaveBeenCalled();
+	expect(() => capturedLifetime.assertActive()).toThrow('The transaction has ended');
+
+	const next = createTransactionRunner(source, manager => ({
+		read: () => manager.query('SELECT 42 AS value'),
+	}));
+	await expect(next.run(scope => scope.read())).resolves.toEqual([{ value: 42 }]);
 });
 
 test.each(['commit', 'rollback'] as const)('rejects escaped writes after %s', async outcome => {

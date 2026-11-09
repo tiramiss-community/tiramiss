@@ -22,6 +22,7 @@ let database: Awaited<ReturnType<typeof createTestDatabase>>;
 let resources: Awaited<ReturnType<typeof connectResources>>;
 let app: ReturnType<typeof createBackendHttpApp>;
 const codec = createIdCodec('aidx');
+const logLines: string[] = [];
 const actors: Record<string, { id: string; token: string; }> = {};
 
 const idFields = new Set(['id', 'userId', 'replyId', 'renoteId', 'channelId', 'fileIds', 'visibleUserIds', 'mentions']);
@@ -41,7 +42,7 @@ beforeAll(async () => {
 	database = await createTestDatabase();
 	database.config.url = 'http://127.0.0.1:61167';
 	await migrateDatabase(database.config.database);
-	resources = await connectResources(database.config, createLogger('note-create-test', () => { }));
+	resources = await connectResources(database.config, createLogger('note-create-test', line => logLines.push(line)));
 	const db = resources.dataSource;
 	for (const [i, name] of ['alice', 'limited', 'suspended', 'moved', 'bob'].entries()) {
 		const id = remember(name, codec.newId(Date.now() - 100000));
@@ -283,14 +284,23 @@ test('a failing Poll insert leaves neither Note nor Poll and starts no post-save
 });
 
 // transaction の外へ持ち出した書き込み口で、commit 後に別の自動 commit として保存させない。
-test('rejects note writes after their transaction has ended', async () => {
+test.each([false, true])('rejects note writes after their transaction has ended, rollback=%s', async rollback => {
 	const db = resources.dataSource;
 	const notes = await db.getRepository(MiNote).count();
 	const polls = await db.getRepository(MiPoll).count();
 	let ended!: NoteWrites;
-	await createNoteWriteTransactions(db).run(async writes => {
+	const failure = new Error('callback rejected');
+	const pending = createNoteWriteTransactions(db).run(async writes => {
 		ended = writes;
+		if (rollback) {
+			throw failure;
+		}
 	});
+	if (rollback) {
+		await expect(pending).rejects.toBe(failure);
+	} else {
+		await pending;
+	}
 	const noteId = codec.newId(Date.now());
 	await expect(ended.insertNote({
 		id: noteId, userId: actors.alice.id, userHost: null, text: 'ended', cw: null, visibility: 'public', localOnly: false, reactionAcceptance: null, channelId: null,
@@ -381,5 +391,35 @@ test('word controls, CW precedence, and Unicode length boundaries reach stored N
 		expect((await call({ text: 'hello', cw: 'c'.repeat(101) })).status).toBe(400);
 	} finally {
 		await db.getRepository(MiMeta).update('singleton', { sensitiveWords: [], prohibitedWords: [] });
+	}
+});
+
+test('response read failure preserves committed Poll, saved ID and dynamically replaced post-save start', async () => {
+	await resources.notePostSave.idle();
+	const db = resources.dataSource;
+	const before = await db.getRepository(MiUser).findOneByOrFail({ id: actors.alice.id });
+	const notes = await db.getRepository(MiNote).count();
+	const polls = await db.getRepository(MiPoll).count();
+	logLines.length = 0;
+	// The canonical root has already been constructed. Retain late binding to start.
+	const start = resources.notePostSave.start;
+	const successor = vi.spyOn(resources.notePostSave, 'start').mockImplementation(input => start(input));
+	const repository = db.manager.getRepository(MiNote);
+	const read = vi.spyOn(repository, 'findBy').mockRejectedValueOnce(new Error('response read failed'));
+	try {
+		const response = await call({ text: 'response-read-failure-253', localOnly: true, poll: { choices: ['a', 'b'] } });
+		expect(response.status).toBe(500);
+		expect(read).toHaveBeenCalled();
+		const note = await repository.findOneByOrFail({ text: 'response-read-failure-253', userId: before.id });
+		expect(await db.getRepository(MiNote).count()).toBe(notes + 1);
+		expect(await db.getRepository(MiPoll).count()).toBe(polls + 1);
+		expect(await db.getRepository(MiPoll).findOneBy({ noteId: note.id })).not.toBeNull();
+		expect(successor).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ noteId: note.id }));
+		expect(logLines.map(line => JSON.parse(line))).toContainEqual(expect.objectContaining({ savedNoteId: note.id }));
+		await resources.notePostSave.idle();
+		expect((await db.getRepository(MiUser).findOneByOrFail({ id: before.id })).notesCount).toBe(before.notesCount + 1);
+	} finally {
+		read.mockRestore();
+		successor.mockRestore();
 	}
 });
