@@ -94,7 +94,7 @@ function validateRuntime(value, data = dataset(), sourceRead = read) {
 	assert.equal(value.upstreamHttpMeasured, false, 'no upstream full HTTP measurement');
 	assert.deepEqual(value.environment, { node: '24.20.0', pnpm: '12.9.1', requestedNode: '26.4.0', node26Verified: false }, 'measured environment');
 	assert(read(value.results).length > 100, 'durable measured results');
-	for (const [id, expected] of Object.entries({ 'closest-units': [254, 5], integration: [61, 2], process: [3, 1] })) {
+	for (const [id, expected] of Object.entries({ 'closest-units': [254, 5], integration: [61, 2], process: [3, 1], 'closest-units-foundation-253': [257, 5] })) {
 		const measured = value.measurements[id];
 		assert(measured, `missing measurement ${id}`);
 		assert.equal(measured.provenance, 'new-runtime');
@@ -106,6 +106,12 @@ function validateRuntime(value, data = dataset(), sourceRead = read) {
 		assert.equal(measured.files, expected[1], 'measured file count');
 		assert(measured.command.length > 40 && measured.artifact.startsWith('/tmp/'), 'actual run command and artifact');
 		assert.match(measured.artifactSha256, /^[a-f0-9]{64}$/);
+		if (id === 'closest-units-foundation-253') {
+			assert.equal(measured.executionCommit, 'c952ec7a5d8fa0adfc8f939eaf5c0b94bbd6d423', 'renewed unit execution commit');
+			assert.deepEqual(measured.environment, { node: '26.4.0', pnpm: '12.9.1' }, 'renewed unit environment');
+			assert.equal(measured.workingTree, 'dirty', 'renewed unit tree identity');
+			assert.equal(Object.keys(measured.consumerSha256).length, 5, 'renewed unit consumers');
+		}
 	}
 	assert.equal(sha(sourceRead(value.helper.file)), value.helper.sourceSha256, 'actual fixture import helper drift');
 	assert(sourceRead(value.helper.file).includes('compatibility/remote-user/observations.json'), 'actual source fixture import');
@@ -128,6 +134,9 @@ function validateRuntime(value, data = dataset(), sourceRead = read) {
 		assert.equal(consumer.passedCaseCount, selected.length, 'measured consumed case count');
 		assert(value.measurements[consumer.measurement]?.outcome === 'PASS', 'consumer successful measurement');
 	}
+	for (const [file, digest] of Object.entries(value.measurements['closest-units-foundation-253'].consumerSha256)) {
+		assert.equal(sha(sourceRead(file)), digest, 'renewed unit source identity');
+	}
 	same([...consumed], data.cases.map(c => c.id), 'all 95 cases consumed');
 	for (const check of value.runtimeChecks) {
 		assert(check.passed > 0 && value.measurements[check.measurement]?.outcome === 'PASS', 'runtime check measured');
@@ -140,7 +149,7 @@ function validateRuntime(value, data = dataset(), sourceRead = read) {
 			assert([...value.consumers, ...value.runtimeChecks].some(c => c.file === file), 'declared runtime file consumed');
 		}
 	}
-	assert.equal(sha(JSON.stringify(value)), 'bf9d31151ea883b376eee11f8ad12f3216ab03269cc88e7357965f80d91cf917', 'reviewed finite runtime binding drift');
+	assert.equal(sha(JSON.stringify(value)), '1a9693700e6c60549fb01a753e6b55ca1aad14002b83422db06a563884f894f7', 'reviewed finite runtime binding drift');
 }
 
 test('current runtime has reviewed consumer bindings and successful measurements', () => validateRuntime(runtime()));
@@ -149,6 +158,9 @@ for (const [name, mutate, expected] of [
 	['failed measurement', d => { d.measurements.process.outcome = 'FAIL'; }, /successful measurement/],
 	['failed test count', d => { d.measurements['closest-units'].failed = 1; }, /failed measurement/],
 	['skipped measurement', d => { d.measurements.integration.skipped = 1; }, /skipped measurement/],
+	['missing renewed unit measurement', d => { delete d.measurements['closest-units-foundation-253']; }, /missing measurement/],
+	['failed renewed unit measurement', d => { d.measurements['closest-units-foundation-253'].outcome = 'FAIL'; }, /successful measurement/],
+	['unmeasured renewed source', d => { d.measurements['closest-units-foundation-253'].consumerSha256['packages/backend-next/test/unit/note/create-note.test.ts'] = '0'.repeat(64); }, /renewed unit source identity/],
 	['missing consumer', d => { d.consumers.pop(); }, /all reviewed runtime consumers/],
 	['dropped case consumption', d => { d.consumers[0].passedCaseIds.pop(); }, /complete actual case consumption/],
 	['unknown runtime case ID', d => { d.consumers[0].passedCaseIds[0] = 'invented'; }, /unknown runtime case/],

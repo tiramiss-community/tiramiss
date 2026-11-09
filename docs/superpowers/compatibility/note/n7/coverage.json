@@ -1767,13 +1767,13 @@
       "consumer": {
         "file": "packages/backend-next/test/integration/note-create.test.ts",
         "testTitle": "production rate limit consumes invalid input first and precedes suspended/moved/scope checks",
-        "sourceSha256": "180a0d0086fbd9e2389b28051aaa804f40916db9ad0e9ece549d3fcdc8cd21e2",
+        "sourceSha256": "4180fe9dc8e1aa107736cc80650a0c62d50e2934477da8f9d65f888e1e4c3fc0",
         "assertions": [
           "const notesBefore = await db.getRepository(MiNote).count();",
           "expect({ notes: await db.getRepository(MiNote).count() - notesBefore }).toEqual(rateGolden['C2-rate-db-delta']);"
         ]
       },
-      "measurementId": "c2-c10-integration-2026-11-09"
+      "measurementId": "c2-c10-foundation-253-2026-11-09"
     },
     {
       "observation": {
@@ -1791,7 +1791,7 @@
           "expect({ status: response.status, body: null }).toEqual(golden['C10-moderator']);"
         ]
       },
-      "measurementId": "c2-c10-integration-2026-11-09"
+      "measurementId": "c2-c10-foundation-253-2026-11-09"
     },
     {
       "observation": {
@@ -1814,7 +1814,7 @@
           "expect(await resources.dataSource.getRepository(MiNote).findOneBy({ id: target })).toBeNull();"
         ]
       },
-      "measurementId": "c2-c10-integration-2026-11-09"
+      "measurementId": "c2-c10-foundation-253-2026-11-09"
     },
     {
       "observation": {
@@ -1841,7 +1841,7 @@
           "expect(observed).toEqual(golden['C10-deleted-stream']);"
         ]
       },
-      "measurementId": "c2-c10-integration-2026-11-09"
+      "measurementId": "c2-c10-foundation-253-2026-11-09"
     }
   ],
   "comparisonMeasurements": {
@@ -1864,6 +1864,26 @@
       "node": "v24.20.0",
       "pnpm": "12.9.1",
       "measurementBoundary": "Parent test broker ran the frozen current consumers with dedicated real services; HEAD does not contain these uncommitted assertions. No native process measurement was added."
+    },
+    "c2-c10-foundation-253-2026-11-09": {
+      "executionCommit": "c952ec7a5d8fa0adfc8f939eaf5c0b94bbd6d423",
+      "workingTree": "dirty",
+      "consumerSha256": {
+        "packages/backend-next/test/integration/note-create.test.ts": "4180fe9dc8e1aa107736cc80650a0c62d50e2934477da8f9d65f888e1e4c3fc0",
+        "packages/backend-next/test/integration/note-delete.test.ts": "ca37a4844b7e5de8099315017bc29a51d87f88869e6d30f676f35ad4e1e0fc1e",
+        "packages/backend-next/test/integration/note-notifications.test.ts": "82848127da56601736c781c9ef66445bb6aa549c779e60c10c1d6568a4b67a24"
+      },
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55442 BACKEND_NEXT_TEST_REDIS_PORT=56389 pnpm --filter backend-next test:integration test/integration/note-create.test.ts test/integration/note-delete.test.ts test/integration/note-notifications.test.ts --reporter=json --outputFile=/tmp/tiramiss-256-review/c2-c10-integration.json",
+      "outcome": "PASS",
+      "passed": 88,
+      "failed": 0,
+      "pending": 0,
+      "testFiles": 3,
+      "durationSeconds": 13.054,
+      "finishedAt": "2026-11-09T06:48:07.840619+00:00",
+      "node": "v26.4.0",
+      "pnpm": "12.9.1",
+      "measurementBoundary": "Parent worktree reran the three frozen consumer files with dedicated real PostgreSQL and Redis after #253. Execution HEAD includes the production and consumer changes; only comparison documentation was dirty. Original fixture observations and historical measurement records are preserved. No native process or upstream full HTTP measurement was added."
     }
   }
 }
