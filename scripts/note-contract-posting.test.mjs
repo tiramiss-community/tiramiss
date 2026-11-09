@@ -222,13 +222,13 @@ const currentComparisonBindings = {
     "consumer": {
       "file": "packages/backend-next/test/integration/note-create.test.ts",
       "testTitle": "production rate limit consumes invalid input first and precedes suspended/moved/scope checks",
-      "sourceSha256": "180a0d0086fbd9e2389b28051aaa804f40916db9ad0e9ece549d3fcdc8cd21e2",
+      "sourceSha256": "4180fe9dc8e1aa107736cc80650a0c62d50e2934477da8f9d65f888e1e4c3fc0",
       "assertions": [
         "const notesBefore = await db.getRepository(MiNote).count();",
         "expect({ notes: await db.getRepository(MiNote).count() - notesBefore }).toEqual(rateGolden['C2-rate-db-delta']);"
       ]
     },
-    "measurementId": "c2-c10-integration-2026-11-09"
+    "measurementId": "c2-c10-foundation-253-2026-11-09"
   },
   "C10-moderator": {
     "observation": {
@@ -246,7 +246,7 @@ const currentComparisonBindings = {
         "expect({ status: response.status, body: null }).toEqual(golden['C10-moderator']);"
       ]
     },
-    "measurementId": "c2-c10-integration-2026-11-09"
+    "measurementId": "c2-c10-foundation-253-2026-11-09"
   },
   "C10-audit": {
     "observation": {
@@ -269,7 +269,7 @@ const currentComparisonBindings = {
         "expect(await resources.dataSource.getRepository(MiNote).findOneBy({ id: target })).toBeNull();"
       ]
     },
-    "measurementId": "c2-c10-integration-2026-11-09"
+    "measurementId": "c2-c10-foundation-253-2026-11-09"
   },
   "C10-deleted-stream": {
     "observation": {
@@ -296,7 +296,7 @@ const currentComparisonBindings = {
         "expect(observed).toEqual(golden['C10-deleted-stream']);"
       ]
     },
-    "measurementId": "c2-c10-integration-2026-11-09"
+    "measurementId": "c2-c10-foundation-253-2026-11-09"
   }
 };
 function validateComparisons(value) {
@@ -324,7 +324,7 @@ function validateComparisons(value) {
 		assert.ok(Number.isSafeInteger(measurement.passed) && measurement.passed > 0, 'measured passing count');
 		assert.ok(measurement.command.includes('test:integration test/integration/note-create.test.ts test/integration/note-delete.test.ts test/integration/note-notifications.test.ts'), 'measured comparison command');
 	}
-	assert.equal(sha(JSON.stringify(value.comparisonMeasurements)), 'a169809708924fcb94c9c4ca1f0f356a72e9f4c409b68809dc49453db3a26136', 'current measurement provenance/count binding');
+	assert.equal(sha(JSON.stringify(value.comparisonMeasurements)), '02904b0d7994639bd2acd7ca0d8dca3d1c4fb1a4ae50d026cbba67a444861b4d', 'current measurement provenance/count binding');
 }
 
 function validateCurrent(value) {
@@ -443,9 +443,9 @@ for (const key of Object.keys(currentComparisonBindings)) {
 }
 for (const [name, mutate, error] of [
 	['missing measurement', x => { delete x.comparisonMeasurements; }, /current measurement required/],
-	['failed measurement', x => { x.comparisonMeasurements['c2-c10-integration-2026-11-09'].outcome = 'FAIL'; }, /current measurement PASS/],
-	['nonzero failures', x => { x.comparisonMeasurements['c2-c10-integration-2026-11-09'].failed = 1; }, /current measurement zero failures/],
-	['unmeasured source', x => { x.comparisonMeasurements['c2-c10-integration-2026-11-09'].consumerSha256[currentComparisonBindings['C2-rate-db-delta'].consumer.file] = '0'.repeat(64); }, /measured consumer identity/],
+	['failed measurement', x => { x.comparisonMeasurements['c2-c10-foundation-253-2026-11-09'].outcome = 'FAIL'; }, /current measurement PASS/],
+	['nonzero failures', x => { x.comparisonMeasurements['c2-c10-foundation-253-2026-11-09'].failed = 1; }, /current measurement zero failures/],
+	['unmeasured source', x => { x.comparisonMeasurements['c2-c10-foundation-253-2026-11-09'].consumerSha256[currentComparisonBindings['C2-rate-db-delta'].consumer.file] = '0'.repeat(64); }, /measured consumer identity/],
 ]) test(`N7 rejects current ${name}`, () => {
 	const invalid = structuredClone(ledger); mutate(invalid);
 	assert.throws(() => validateCurrent(invalid), error);
@@ -460,9 +460,9 @@ for (const id of ['media-emoji', 'user-hashtags', 'instance-metadata', 'charts',
 
 test('N7 validates the four current comparison bindings and measured tree', () => validateCurrent(ledger));
 for (const [name, mutate, error] of [
-	['execution provenance', x => { x.comparisonMeasurements['c2-c10-integration-2026-11-09'].executionCommit = '0'.repeat(40); }, /current measurement provenance/],
-	['measurement counts', x => { x.comparisonMeasurements['c2-c10-integration-2026-11-09'].passed++; }, /current measurement provenance/],
-	['measurement command', x => { x.comparisonMeasurements['c2-c10-integration-2026-11-09'].command = 'invented'; }, /measured comparison command/],
+	['execution provenance', x => { x.comparisonMeasurements['c2-c10-foundation-253-2026-11-09'].executionCommit = '0'.repeat(40); }, /current measurement provenance/],
+	['measurement counts', x => { x.comparisonMeasurements['c2-c10-foundation-253-2026-11-09'].passed++; }, /current measurement provenance/],
+	['measurement command', x => { x.comparisonMeasurements['c2-c10-foundation-253-2026-11-09'].command = 'invented'; }, /measured comparison command/],
 	['consumer assertions', x => { x.currentComparisons[0].consumer.assertions.pop(); }, /current consumer binding/],
 	['duplicate current observation', x => { x.currentComparisons.push(x.currentComparisons[0]); }, /duplicate current observations/],
 ]) test(`N7 rejects current ${name}`, () => {

@@ -100,19 +100,8 @@ function createNoteWrites(manager: EntityManager, assertActive: () => void = () 
 }
 
 export function createNoteWriteTransactions(source: DataSource): TransactionRunner<NoteWrites> {
-	const transactions = createTransactionRunner(source, manager => manager);
-	return {
-		run: work => transactions.run(async manager => {
-			let active = true;
-			try {
-				return await work(createNoteWrites(manager, () => {
-					if (!active) {
-						throw new Error('The note write transaction has ended');
-					}
-				}));
-			} finally {
-				active = false;
-			}
-		}),
-	};
+	return createTransactionRunner<NoteWrites>(
+		source,
+		(manager, { assertActive }) => createNoteWrites(manager, assertActive),
+	);
 }

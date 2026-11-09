@@ -57,6 +57,34 @@
       "seconds": 7.31,
       "artifact": "/tmp/tiramiss-next243-finalfix-process.log",
       "artifactSha256": "1e693370afc9e615567a143353365b23e12cd41bfd1d368f03510b655ddbcef3"
+    },
+    "closest-units-foundation-253": {
+      "provenance": "new-runtime",
+      "implementationCommit": "33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45",
+      "executionCommit": "c952ec7a5d8fa0adfc8f939eaf5c0b94bbd6d423",
+      "workingTree": "dirty",
+      "environment": {
+        "node": "26.4.0",
+        "pnpm": "12.9.1"
+      },
+      "command": "pnpm --filter backend-next test test/unit/federation/remote-user.test.ts test/unit/federation/remote-actor.test.ts test/unit/federation/activity-fetch.test.ts test/unit/federation/local-actor.test.ts test/unit/note/create-note.test.ts --reporter=json --outputFile=/tmp/tiramiss-256-review/remote-units.json",
+      "outcome": "PASS",
+      "passed": 257,
+      "failed": 0,
+      "skipped": 0,
+      "files": 5,
+      "seconds": 2.02,
+      "finishedAt": "2026-11-09T06:53:20.268825+00:00",
+      "artifact": "/tmp/tiramiss-256-review/remote-units.json",
+      "artifactSha256": "4a94d88d69d3d953270950106a5d91b7eba4f2091178e2492beaab13facffbdb",
+      "consumerSha256": {
+        "packages/backend-next/test/unit/federation/remote-user.test.ts": "ebaad9e80f6d8ebea1de014d260a5cde9b98b3d8705919d180edd6b73f03569c",
+        "packages/backend-next/test/unit/federation/remote-actor.test.ts": "b50926a13272f148285a3dc0e524f376000ea3507026c7013c2abdc9e06c5468",
+        "packages/backend-next/test/unit/federation/activity-fetch.test.ts": "80889bc87ad1032979260e87f0216455a3fc92d61e2f84fdc0ce7f979b9bc665",
+        "packages/backend-next/test/unit/federation/local-actor.test.ts": "ec2cf7fa06dda4d9925795c7596dee8e166388397ce1f1eb520c41fdc834a056",
+        "packages/backend-next/test/unit/note/create-note.test.ts": "bc0ffc398e8e833395bc24bfd0864b945fa1ea99405e6e4a7b45c8c3dbfc92a8"
+      },
+      "measurementBoundary": "Remeasured the five frozen unit consumers after #253 at the execution commit; implementationCommit remains the historical remote-core pin. The original unit/integration/process receipts and source95 case dataset remain intact. Dirty changes only renew comparison records. No native process or upstream full HTTP run was added."
     }
   },
   "consumers": [
@@ -95,7 +123,7 @@
     {
       "id": "mentions",
       "file": "packages/backend-next/test/unit/note/create-note.test.ts",
-      "sourceSha256": "75ec509617d547a8b284aa943128154528d02b539746ed243e345987e078272d",
+      "sourceSha256": "bc0ffc398e8e833395bc24bfd0864b945fa1ea99405e6e4a7b45c8c3dbfc92a8",
       "declaration": "mentions-independent-duplicates: each occurrence can fail before successful IDs are deduplicated",
       "selection": "c.id === 'mentions-independent-duplicates'",
       "assertions": [
@@ -104,7 +132,7 @@
       "passedCaseIds": [
         "mentions-independent-duplicates"
       ],
-      "measurement": "closest-units",
+      "measurement": "closest-units-foundation-253",
       "passedCaseCount": 1,
       "renderedTitle": "$id: each occurrence can fail before successful IDs are deduplicated"
     },
@@ -212,7 +240,7 @@
     {
       "id": "actor-duplicates",
       "file": "packages/backend-next/test/unit/note/create-note.test.ts",
-      "sourceSha256": "75ec509617d547a8b284aa943128154528d02b539746ed243e345987e078272d",
+      "sourceSha256": "bc0ffc398e8e833395bc24bfd0864b945fa1ea99405e6e4a7b45c8c3dbfc92a8",
       "declaration": "${id} recovers only a canonical URI row through the posting-owned transaction",
       "selection": "['actor-create-duplicate-uri', 'actor-create-duplicate-missing']",
       "assertions": [
@@ -223,7 +251,7 @@
         "actor-create-duplicate-uri",
         "actor-create-duplicate-missing"
       ],
-      "measurement": "closest-units",
+      "measurement": "closest-units-foundation-253",
       "passedCaseCount": 2,
       "renderedTitle": "$id recovers only a canonical URI row through the posting-owned transaction"
     },

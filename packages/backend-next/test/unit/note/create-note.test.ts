@@ -2,12 +2,12 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { expect, test } from 'vitest';
 import { readFileSync } from 'node:fs';
-import type { RemoteUserPorts, Account, RemoteActorCreateScope } from '../../../src/modules/federation/public.js';
+import { expect, test } from 'vitest';
 import { createHostRules } from '../../../src/modules/federation/public.js';
 import { createCreateNote } from '../../../src/modules/note/create-note.js';
 import { concatNoteContentsForKeywordCheck, matchesWords } from '../../../src/modules/note/keywords.js';
+import type { RemoteUserPorts, Account, RemoteActorCreateScope } from '../../../src/modules/federation/public.js';
 import type { MentionedRemoteUser, NewNote, NewPoll, NoteAttachableFile, NoteCreateAuthor, NotePostSaveInput, NoteWrites, RelatedChannel, RelatedNote } from '../../../src/modules/note/create-contract.js';
 
 const author: NoteCreateAuthor = { id: 'author', username: 'author', host: null, isSuspended: false, movedToUri: null, isBot: false, canPublicNote: true, mentionLimit: 20, rateLimitFactor: 1, sensitiveWords: [], prohibitedWords: [] };
@@ -48,7 +48,7 @@ function related(id: string, facts: Partial<RelatedNote> = {}): RelatedNote {
 	};
 }
 
-function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteAttachableFile[]; failPoll?: boolean; failRender?: boolean; world?: World; checkedAt?: number; ports?: Partial<RemoteUserPorts>; } = {}) {
+function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteAttachableFile[]; failPoll?: boolean; failRender?: boolean; renderWait?: () => Promise<void>; world?: World; checkedAt?: number; ports?: Partial<RemoteUserPorts>; } = {}) {
 	const world = options.world ?? {};
 	const events: string[] = [];
 	const notes: NewNote[] = [];
@@ -105,7 +105,7 @@ function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteA
 				accountReads.push([{ usernameLower: account.username, host: account.host }]);
 				const user = world.users?.find(user => user.username.toLowerCase() === account.username && user.host === account.host);
 				return user ? { ...user, uri: null, lastFetchedAtMs: now, isDeleted: false } : null;
-			}, ...options.ports
+			}, ...options.ports,
 		},
 		writes: writes('root'),
 		transactions: {
@@ -114,7 +114,7 @@ function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteA
 				const result = await work(writes('tx'));
 				events.push('commit');
 				return result;
-			}
+			},
 		},
 		afterSaved: input => {
 			events.push('after');
@@ -126,6 +126,7 @@ function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteA
 	});
 	const render = async (id: string, viewerId: string) => {
 		events.push(`render:${id}:${viewerId}`);
+		await options.renderWait?.();
 		if (options.failRender) {
 			throw new Error('render failed');
 		}
@@ -198,7 +199,7 @@ test('rate executes before suspended, moved, scope and schema; factor<=0 skips r
 	const writes: NoteWrites = {
 		insertNote: async () => {
 			events.push('insert');
-		}, insertPoll: async () => { }
+		}, insertPoll: async () => { },
 	};
 	const dependencies = {
 		...noRelations, readOwnedFiles: async () => [], writes, transactions: { run: async <T>(work: (scope: NoteWrites) => Promise<T>) => work(writes) },
@@ -217,7 +218,7 @@ test('rate executes before suspended, moved, scope and schema; factor<=0 skips r
 	const noLimit = createCreateNote({
 		...dependencies, readAuthor: async () => ({ ...author, rateLimitFactor: 0 }), limit: async () => {
 			throw new Error('must skip');
-		}
+		},
 	});
 	expect(await noLimit.createNote(actor, { text: 'hello' }, 123, async id => id)).toBe('new');
 });
@@ -240,12 +241,12 @@ test('an insert failure is not retried and never renders or starts post-save wor
 	const writes: NoteWrites = {
 		insertNote: async () => {
 			inserts++; throw new Error('DB outcome unknown');
-		}, insertPoll: async () => { }
+		}, insertPoll: async () => { },
 	};
 	const create = createCreateNote({
 		...noRelations, readAuthor: async () => author, readOwnedFiles: async () => [], writes, transactions: { run: work => work(writes) }, afterSaved: () => {
 			events.push('after');
-		}, newId: () => 'new', currentTime: () => 123, limit: async () => { }, matchesWords
+		}, newId: () => 'new', currentTime: () => 123, limit: async () => { }, matchesWords,
 	});
 	await expect(create.createNote(actor, { text: 'hello' }, 123, async id => {
 		events.push('render');
@@ -255,11 +256,28 @@ test('an insert failure is not retried and never renders or starts post-save wor
 	expect(events).toEqual([]);
 });
 
-test('post-save work starts after rendering, even when rendering a saved Note fails', async () => {
-	const { createNote, events, notes } = setup(author, { failRender: true });
-	await expect(createNote({ text: 'hello' })).rejects.toThrow('render failed');
-	expect(notes).toHaveLength(1);
-	expect(events).toEqual(['root:note', 'render:new:author', 'after']);
+test.each([false, true].flatMap(poll => [false, true].map(reject => ({ poll, reject }))))('post-save work waits for render settlement poll=$poll reject=$reject', async ({ poll, reject }) => {
+	const rendering = deferred<void>();
+	const entered = deferred<void>();
+	const { createNote, after } = setup(author, { renderWait: () => {
+		entered.resolve(); return rendering.promise;
+	} });
+	const failure = new Error('render failed');
+	const pending = createNote({ text: 'hello', ...(poll ? { poll: { choices: ['a', 'b'] } } : {}) });
+	const settled = reject ? expect(pending).rejects.toBe(failure) : expect(pending).resolves.toEqual({ id: 'new' });
+	try {
+		await entered.promise;
+		expect(after).toEqual([]);
+	} finally {
+		if (reject) {
+			rendering.reject(failure);
+		} else {
+			rendering.resolve();
+		}
+		await settled;
+	}
+	expect(after).toHaveLength(1);
+	expect(after[0]).toMatchObject({ noteId: 'new', createdSnapshot: { note: { hasPoll: poll } } });
 });
 
 // 本家 NoteCreateService.ts:573-591: trim 前の text では行頭にならないコードブロックが、trim 後はコードブロックになる。
@@ -619,8 +637,8 @@ test('mentions-independent-duplicates: each occurrence can fail before successfu
 					throw new Error('first occurrence fails');
 				}
 				return { id: outcome, username: account.username, host: account.host, uri: `https://remote.test/${outcome}`, lastFetchedAtMs: now, isDeleted: false };
-			}
-		}
+			},
+		},
 	});
 	await world.createNote({ text: fixture.input.tokens.map((name: string) => `@${name}@remote.test`).join(' ') });
 	expect(world.notes[0].mentions).toEqual(fixture.expected.result.map((u: { id: string; }) => u.id));
@@ -632,7 +650,7 @@ test.each(['text', 'cw', 'poll'])('unknown remote success in %s is saved before 
 			webfinger: async () => 'https://remote.test/new',
 			acquireActor: async () => ({ kind: 'create', id: 'remoteNew', uri: 'https://remote.test/new' } as never),
 			insertActor: async () => ({ id: 'remoteNew', username: 'canonical', host: 'remote.test', uri: 'https://remote.test/new' }),
-		}
+		},
 	});
 	const mention = '@new@remote.test';
 	await world.createNote({ text: field === 'text' ? mention : 'kept', ...(field === 'cw' ? { cw: mention } : {}), ...(field === 'poll' ? { poll: { choices: [mention, 'b'] } } : {}), replyId: 'public', visibility: 'specified', visibleUserIds: ['bob'] });
@@ -644,8 +662,8 @@ test('authorization and noExtractMentions prevent acquisition I/O', async () => 
 		ports: {
 			readByAccount: async () => {
 				reads++; throw new Error('network');
-			}
-		}
+			},
+		},
 	});
 	await expect(world.createNote({ text: '@a@remote.test' }, null)).rejects.toMatchObject({ code: 'CREDENTIAL_REQUIRED' });
 	await world.createNote({ text: '@a@remote.test', noExtractMentions: true });
@@ -680,12 +698,12 @@ for (const id of ['actor-create-duplicate-uri', 'actor-create-duplicate-missing'
 						} catch (error) {
 							events.push({ op: 'transaction.rollback' }); throw error;
 						}
-					}
+					},
 				},
 				readByUri: async uri => {
 					events.push({ op: 'User.find', args: { uri } }); return fixture.input.duplicateMissing ? null : { id: 'remote', username: 'Original', host: 'remote.test', uri, lastFetchedAtMs: now, isDeleted: false };
 				},
-			}
+			},
 		});
 		await world.createNote({ text: '@new@remote.test' });
 		const { encode } = await import('../../helpers/remote-source.js');
@@ -699,7 +717,7 @@ test('successful actor timestamp is chosen after acquisition finishes', async ()
 	const { validateActor, prepareActor } = await import('../../../src/modules/federation/public.js');
 	let savedAt = 0;
 	const options: NonNullable<Parameters<typeof setup>[1]> = {
-checkedAt: now, ports: {
+		checkedAt: now, ports: {
 			webfinger: async () => 'https://remote.test/users/timed',
 			acquireActor: async (uri, existing, clock, id) => {
 				options.checkedAt = now + 5000;
@@ -710,8 +728,17 @@ checkedAt: now, ports: {
 				return plan;
 			},
 			insertActor: async (_scope, plan) => ({ id: plan.id, username: 'timed', host: 'remote.test', uri: plan.uri }),
-		}
-};
+		},
+	};
 	await setup(author, options).createNote({ text: '@timed@remote.test' });
 	expect(savedAt).toBe(now + 5000);
 });
+
+function deferred<T>() {
+	let resolve!: (value: T | PromiseLike<T>) => void;
+	let reject!: (reason: unknown) => void;
+	const promise = new Promise<T>((yes, no) => {
+		resolve = yes; reject = no;
+	});
+	return { promise, resolve, reject };
+}

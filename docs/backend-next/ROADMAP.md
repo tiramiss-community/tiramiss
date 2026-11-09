@@ -236,3 +236,8 @@ media/emoji #188/#195、user hashtag関係 #195、actor由来instance usersCount
 ## #251 stage 1 の限定着手（2026-11-09）
 
 ユーザー承認により、更新UseCaseが増える前の区切りで共通transaction lifetimeとRole show/update compositionのみをstage 1として実装する。Task 2はRole factory抽出と既存HTTP入口からの委譲まで。実測・残る所有箇所は[運用inventory](application-foundation-inventory.md)を参照。統合後のbuild/typecheck・単体2,801件・DB28件・Role acceptance65件・停止時2件は通過。Note/Pollのstage 2とmokurokuのstage 3は別途承認・調整を要し、既存の対応順・blocked-byは変更しない。
+
+
+## #253 stage 2 の限定実装（2026-11-09）
+
+上の #251 stage 1 記録は当時の状態。承認済みの #253 では Note/Poll writer の共通 lifetime 接続と作成専用 `composition/note.ts` factory を実装し、通常 HTTP の作成 assembly を委譲した。投票なしの直接 insert、投票の両行 atomic write、remote 解決・応答描画・後続の transaction 外境界と開始順を維持する。[実装計画](../superpowers/plans/2026-11-09-backend-next-note-foundation-253.md)、[運用 inventory の実測と検証](application-foundation-inventory.md)。統合先で build/typecheck・単体2,811件・実 DB217件・process17件と後続待機1件・upstream sync は PASS。worker の sandbox EPERM は検証履歴として台帳に残す。作成用 constructor は3→factory1、Note 固有 runner2→1・lifetime owner1→0、対象3ファイルは179→200行。stage 3 #254/#255、通知/remote-user/system-account の残責任と `connect-resources.ts` の投稿系組み立ては残る。#251 全体完了や全 platform→composition 依存の解消を意味せず、既存対応順・blocked-by を変更しない。

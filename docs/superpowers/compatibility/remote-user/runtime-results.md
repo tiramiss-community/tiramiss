@@ -127,3 +127,18 @@ this disposition does not claim it is impossible or already controlled.
 | HTML/MFM | Real HTML parser conversion measured for the supported formatting/link/mention/paragraph subset | Full rich HTML/MFM behavior remains #195, not implied by tagged source conversion doubles |
 
 None of these missing initial features is an accepted blanket difference or a deferred enhancement. General inbox/remote Notes/collections/WebFinger publication/relay management remain #195. Seven missing queue handlers, nine system schedulers and cutover retain the owners in [N7](../note/n7/README.md) and [posting contract](../../../backend-next/posting-contract.md). Qualified N7 C2 whole rate DB-delta and C10 audit/stream comparison gaps remain #176. `notes/create` stays **partial**, `postingComplete` stays **false**, and GOALS' full initial scope remains unchanged.
+
+
+## #253 consumer remeasurement (2026-11-09)
+
+PR #256 expanded the render-settlement characterization in `test/unit/note/create-note.test.ts`. The source identity used by the mentions and canonical-URI duplicate consumers therefore changed, while those assertions and source case IDs remained unchanged. The root contract suite detected this second stale identity after the C2/C10 comparison renewal.
+
+The five frozen unit files were rerun at execution HEAD `c952ec7a5d8fa0adfc8f939eaf5c0b94bbd6d423`, with only comparison records dirty. Command:
+
+```sh
+pnpm --filter backend-next test test/unit/federation/remote-user.test.ts test/unit/federation/remote-actor.test.ts test/unit/federation/activity-fetch.test.ts test/unit/federation/local-actor.test.ts test/unit/note/create-note.test.ts --reporter=json --outputFile=/tmp/tiramiss-256-review/remote-units.json
+```
+
+Observed **257 passed / 5 files**, 0 failed and 0 skipped, 2.02 seconds, finished `2026-11-09T06:53:20.268825+00:00`, Node 26.4.0 / pnpm 12.9.1. Consumer digests were identical before and after the run; the JSON artifact SHA256 is `4a94d88d69d3d953270950106a5d91b7eba4f2091178e2492beaab13facffbdb`. The three extra cases relative to the original 254 come from the expanded render-settlement matrix.
+
+`runtime-evidence.json` preserves the original 254-unit, integration and process records and their environment. Its new `closest-units-foundation-253` receipt records the current execution commit, Node environment, five source digests and result separately; only the two consumers in the changed Note unit file point to it. `implementationCommit` remains the historical remote-core pin, while `executionCommit` identifies the actual current run. The validator checks this additional receipt and rejects missing, failed or unmeasured renewed evidence. This adds no source cases, upstream HTTP comparisons or completion claims; the 95-case dataset, remaining ownership and core-only scope stay unchanged. Temporary artifacts have the same nonpersistent status described above.
