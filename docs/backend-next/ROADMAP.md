@@ -231,3 +231,8 @@ media/emoji #188/#195、user hashtag関係 #195、actor由来instance usersCount
 2026-11-09: この変更で HTTP・既存 worker・CI の shared-root 構造抽出を実装した。[計画と検証状況](../superpowers/plans/2026-11-09-shared-roots-s1.md)。登録は静的かつ明示的で、追加 worker の自動発見や登録漏れの実行時検知は行わない。S1 の次は #176、続いて inbox の #195。N7 の closure の判断を解決するものではなく、queue の対応範囲も拡大しない。
 
 2026-11-09: #176の限定比較で既存のC2 rate DB差分とC10 moderator応答・監査・削除streamの4観測を直接照合した。親の結合検証は86件/3ファイルPASS、残る初期機能は上記の確定条件に従う。[比較と検証計画](../superpowers/plans/2026-11-09-note-n7-176.md)。
+
+
+## #251 stage 1 の限定着手（2026-11-09）
+
+ユーザー承認により、更新UseCaseが増える前の区切りで共通transaction lifetimeとRole show/update compositionのみをstage 1として実装する。Task 2はRole factory抽出と既存HTTP入口からの委譲まで。実測・残る所有箇所は[運用inventory](application-foundation-inventory.md)を参照。統合後のbuild/typecheck・単体2,801件・DB28件・Role acceptance65件・停止時2件は通過。Note/Pollのstage 2とmokurokuのstage 3は別途承認・調整を要し、既存の対応順・blocked-byは変更しない。

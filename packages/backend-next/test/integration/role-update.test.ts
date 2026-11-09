@@ -5,7 +5,7 @@
 import { randomBytes } from 'node:crypto';
 import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 import { MiMeta, MiModerationLog, MiRole, MiRoleAssignment, MiUser } from 'backend-upstream/entities';
-import type { DataSource } from 'typeorm';
+import type { DataSource, QueryRunner } from 'typeorm';
 import type { TransactionRunner } from '../../src/application/transaction.js';
 import type { RoleUpdateScope } from '../../src/modules/role/update-contract.js';
 import { createAttemptEvaluation, createUpdateRole } from '../../src/modules/role/public.js';
@@ -216,14 +216,83 @@ test.each([false, true])('serializes concurrent patches and records actual befor
 	expect(await stored()).toMatchObject({ name: sameField ? 'second' : 'first', description: sameField ? 'keep' : 'second' });
 });
 
-test('rejects transaction capabilities after their transaction has ended', async () => {
+test.each(['commit', 'rollback'] as const)('rejects all transaction capabilities after %s without changing stored rows', async outcome => {
+	const before = await stored();
+	const failure = new Error('reject callback');
 	let ended!: RoleUpdateScope;
-	await transactions.run(async tx => {
+	let snapshot!: NonNullable<Awaited<ReturnType<RoleUpdateScope['roles']['getForUpdate']>>>;
+	const pending = transactions.run(async tx => {
 		ended = tx;
+		snapshot = (await tx.roles.getForUpdate(roleId))!;
+		if (outcome === 'rollback') {
+			throw failure;
+		}
 	});
-	await expect(ended.roles.getForUpdate(roleId)).rejects.toThrow('ended');
-	await expect(ended.roles.savePatch(roleId, {}, atMs)).rejects.toThrow('ended');
-	await expect(ended.authorizationFacts.read(actorId)).rejects.toThrow('ended');
+	if (outcome === 'rollback') {
+		await expect(pending).rejects.toBe(failure);
+	} else {
+		await pending;
+	}
+	await expect(ended.roles.getForUpdate(roleId)).rejects.toThrow('The transaction has ended');
+	await expect(ended.roles.savePatch(roleId, { name: 'escaped' }, atMs)).rejects.toThrow('The transaction has ended');
+	await expect(ended.authorizationFacts.read(actorId)).rejects.toThrow('The transaction has ended');
+	await expect(ended.auditLogs.appendRoleUpdate({ actorId, roleId, before: snapshot, after: snapshot, occurredAtMs: atMs }))
+		.rejects.toThrow('The transaction has ended');
+	expect(await stored()).toEqual(before);
+	expect(await logs()).toEqual([]);
+});
+
+test('authorization reads transaction-local changes and all capabilities share one QueryRunner', async () => {
+	const before = await stored();
+	const failure = new Error('roll back local authorization evidence');
+	const queries: { query: string; runner: QueryRunner | undefined }[] = [];
+	let recording = false;
+	const logQuery = source.logger.logQuery.bind(source.logger);
+	const spy = vi.spyOn(source.logger, 'logQuery').mockImplementation((query, parameters, runner) => {
+		if (recording) {
+			queries.push({ query, runner });
+		}
+		logQuery(query, parameters, runner);
+	});
+	let ended!: RoleUpdateScope;
+	try {
+		await expect(transactions.run(async tx => {
+			ended = tx;
+			recording = true;
+			const snapshot = (await tx.roles.getForUpdate(roleId))!;
+			const after = await tx.roles.savePatch(roleId, { isAdministrator: true }, atMs);
+			const facts = await tx.authorizationFacts.read(actorId);
+			expect(facts.roles.find(role => role.id === roleId)?.isAdministrator).toBe(true);
+			recording = false;
+			expect((await stored()).isAdministrator).toBe(false);
+			recording = true;
+			await tx.auditLogs.appendRoleUpdate({ actorId, roleId, before: snapshot, after, occurredAtMs: atMs });
+			recording = false;
+			throw failure;
+		})).rejects.toBe(failure);
+	} finally {
+		recording = false;
+		spy.mockRestore();
+	}
+	const runner = queries.find(({ query }) => query.includes('FOR UPDATE'))?.runner;
+	expect(runner).toBeDefined();
+	for (const pattern of [
+		/FOR UPDATE/,
+		/UPDATE "role"/,
+		/FROM "user"/,
+		/FROM "meta"/,
+		/FROM "role"/,
+		/FROM "role_assignment"/,
+		/INSERT INTO "moderation_log"/,
+	]) {
+		const matching = queries.filter(({ query }) => pattern.test(query));
+		expect(matching.length, pattern.source).toBeGreaterThan(0);
+		expect(matching.every(query => query.runner === runner), pattern.source).toBe(true);
+	}
+	expect(queries.every(query => query.runner === runner)).toBe(true);
+	expect(await stored()).toEqual(before);
+	expect(await logs()).toEqual([]);
+	await expect(ended.authorizationFacts.read(actorId)).rejects.toThrow('The transaction has ended');
 });
 
 test('preserves committed writes when the commit acknowledgement is reported as uncertain without retrying', async () => {

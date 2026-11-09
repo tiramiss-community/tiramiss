@@ -69,3 +69,30 @@ test('gives concurrent operations distinct transaction scopes and database trans
 	}
 	expect(await a).not.toEqual(b);
 });
+
+test.each(['commit', 'rollback'] as const)('rejects escaped writes after %s', async outcome => {
+	const runner = createTransactionRunner(source, (manager, lifetime) => ({
+		append: async (value: number): Promise<void> => {
+			lifetime.assertActive();
+			await manager.query('INSERT INTO transaction_test.values VALUES ($1)', [value]);
+		},
+	}));
+	let escaped!: { append(value: number): Promise<void> };
+	const failure = new Error('reject guarded transaction');
+	const pending = runner.run(async scope => {
+		escaped = scope;
+		await scope.append(outcome === 'commit' ? 10 : 11);
+		if (outcome === 'rollback') {
+			throw failure;
+		}
+	});
+	if (outcome === 'rollback') {
+		await expect(pending).rejects.toBe(failure);
+	} else {
+		await pending;
+	}
+	await expect(escaped.append(99)).rejects.toThrow('The transaction has ended');
+	expect(await source.query('SELECT value FROM transaction_test.values WHERE value = 99')).toEqual([]);
+	expect(await source.query('SELECT value FROM transaction_test.values WHERE value = $1', [outcome === 'commit' ? 10 : 11]))
+		.toEqual(outcome === 'commit' ? [{ value: 10 }] : []);
+});

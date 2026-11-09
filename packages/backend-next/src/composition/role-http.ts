@@ -2,31 +2,30 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { createRoleApplication } from './role.js';
 import { createApiEndpoints } from '../http/api-endpoint.js';
 import { createRoleEndpoints } from '../http/role-api.js';
-import { createShowRole, createUpdateRole } from '../modules/role/public.js';
 import { createIdCodec } from '../platform/id-codec.js';
 import { createTokenAuthenticator } from '../platform/database/authenticate.js';
-import { readRoleAuthorizationFacts } from '../platform/database/role-authorization-facts.js';
-import { createRoleShowReader } from '../platform/database/role-show.js';
-import { createRoleUpdateTransactions } from '../platform/database/role-update.js';
 import type { RuntimeResources } from './create-runtime.js';
 import type { RuntimeConfig } from '../config/types.js';
 
-export function createRoleHttpApp(resources: RuntimeResources, config: RuntimeConfig) {
+export function createRoleHttpApp(
+	resources: Pick<RuntimeResources, 'dataSource' | 'logger'> & {
+		roleMaterials: Pick<RuntimeResources['roleMaterials'], 'changes'>;
+	},
+	config: Pick<RuntimeConfig, 'id'>,
+) {
 	const codec = createIdCodec(config.id);
-	const manager = resources.dataSource.manager;
-	const show = createShowRole({
-		authorizationFacts: { read: id => readRoleAuthorizationFacts(manager, id, codec.createdAtFromId) },
-		roles: createRoleShowReader(manager, codec.createdAtFromId),
-	});
-	const update = createUpdateRole({
-		transactions: createRoleUpdateTransactions(resources.dataSource, { createdAtFromId: codec.createdAtFromId, newAuditId: codec.newId }),
-		changes: resources.roleMaterials.changes, clock: Date.now,
+	const application = createRoleApplication({
+		dataSource: resources.dataSource,
+		ids: { createdAtFromId: codec.createdAtFromId, newAuditId: codec.newId },
+		clock: Date.now,
+		changes: resources.roleMaterials.changes,
 	});
 	return createApiEndpoints({
-		endpoints: createRoleEndpoints({ showRole: show.showRole, updateRole: update.updateRole }),
-		authenticate: createTokenAuthenticator(manager, resources.logger),
+		endpoints: createRoleEndpoints(application),
+		authenticate: createTokenAuthenticator(resources.dataSource.manager, resources.logger),
 		logger: resources.logger,
 	});
 }
