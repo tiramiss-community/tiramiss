@@ -1673,9 +1673,7 @@
         "instance-metadata",
         "charts",
         "rich-actor",
-        "remote-cache",
-        "C2-rate-delta",
-        "C10-audit-stream"
+        "remote-cache"
       ]
     },
     {
@@ -1704,9 +1702,7 @@
         "instance-metadata",
         "charts",
         "rich-actor",
-        "remote-cache",
-        "C2-rate-delta",
-        "C10-audit-stream"
+        "remote-cache"
       ]
     }
   ],
@@ -1759,22 +1755,115 @@
       ],
       "status": "unresolved",
       "scope": "Actor cache invalidation and remoteUserUpdated publication/consumption remain unconnected."
-    },
-    {
-      "id": "C2-rate-delta",
-      "owners": [
-        176
-      ],
-      "status": "unresolved",
-      "scope": "Original whole rate DB-delta object remains qualified, not full direct equality."
-    },
-    {
-      "id": "C10-audit-stream",
-      "owners": [
-        176
-      ],
-      "status": "unresolved",
-      "scope": "Original audit/stream objects remain qualified, not complete direct consumption."
     }
-  ]
+  ],
+  "currentComparisons": [
+    {
+      "observation": {
+        "file": "docs/superpowers/compatibility/note/rate-observations.json",
+        "key": "C2-rate-db-delta",
+        "provenance": "upstream-http"
+      },
+      "consumer": {
+        "file": "packages/backend-next/test/integration/note-create.test.ts",
+        "testTitle": "production rate limit consumes invalid input first and precedes suspended/moved/scope checks",
+        "sourceSha256": "180a0d0086fbd9e2389b28051aaa804f40916db9ad0e9ece549d3fcdc8cd21e2",
+        "assertions": [
+          "const notesBefore = await db.getRepository(MiNote).count();",
+          "expect({ notes: await db.getRepository(MiNote).count() - notesBefore }).toEqual(rateGolden['C2-rate-db-delta']);"
+        ]
+      },
+      "measurementId": "c2-c10-integration-2026-11-09"
+    },
+    {
+      "observation": {
+        "file": "docs/superpowers/compatibility/note/observations.json",
+        "key": "C10-moderator",
+        "provenance": "upstream-http"
+      },
+      "consumer": {
+        "file": "packages/backend-next/test/integration/note-delete.test.ts",
+        "testTitle": "moderator audit retains the entire deleted row and author information",
+        "sourceSha256": "ca37a4844b7e5de8099315017bc29a51d87f88869e6d30f676f35ad4e1e0fc1e",
+        "assertions": [
+          "const response = await call(target, 'moderator');",
+          "expect(await response.text()).toBe('');",
+          "expect({ status: response.status, body: null }).toEqual(golden['C10-moderator']);"
+        ]
+      },
+      "measurementId": "c2-c10-integration-2026-11-09"
+    },
+    {
+      "observation": {
+        "file": "docs/superpowers/compatibility/note/observations.json",
+        "key": "C10-audit",
+        "provenance": "upstream-http"
+      },
+      "consumer": {
+        "file": "packages/backend-next/test/integration/note-delete.test.ts",
+        "testTitle": "moderator audit retains the entire deleted row and author information",
+        "sourceSha256": "ca37a4844b7e5de8099315017bc29a51d87f88869e6d30f676f35ad4e1e0fc1e",
+        "assertions": [
+          "expect(audit.userId).toBe(actors.get('moderator')!.id);",
+          "expect(audit.info.noteId).toBe(target);",
+          "expect(audit.info.noteUserId).toBe(actors.get('alice')!.id);",
+          "userId: '$moderator', type: audit.type, noteId: '$moderated-target', noteUserId: '$alice',",
+          "noteUserUsername: audit.info.noteUserUsername, noteUserHost: audit.info.noteUserHost,",
+          "}).toEqual(golden['C10-audit']);",
+          "note: JSON.parse(JSON.stringify(before))",
+          "expect(await resources.dataSource.getRepository(MiNote).findOneBy({ id: target })).toBeNull();"
+        ]
+      },
+      "measurementId": "c2-c10-integration-2026-11-09"
+    },
+    {
+      "observation": {
+        "file": "docs/superpowers/compatibility/note/observations.json",
+        "key": "C10-deleted-stream",
+        "provenance": "upstream-http"
+      },
+      "consumer": {
+        "file": "packages/backend-next/test/integration/note-notifications.test.ts",
+        "testTitle": "successful author deletion matches the complete upstream deleted stream",
+        "sourceSha256": "82848127da56601736c781c9ef66445bb6aa549c779e60c10c1d6568a4b67a24",
+        "assertions": [
+          "const note = await create({ text: 'delete', visibility: 'public', localOnly: false });",
+          "expect(response.status).toBe(204);",
+          "await resources.notePostDelete.idle();",
+          "expect(await resources.dataSource.getRepository(MiNote).findOneBy({ id: note.id })).toBeNull();",
+          "const observed = messages.filter(m => m.channel === `noteStream:${note.id}`).map(m => {",
+          "expect(body.id).toBe(note.id);",
+          "expect(body.userId).toBe(users.alice.id);",
+          "expect(typeof body.body.deletedAt).toBe('string');",
+          "expect(Number.isFinite(deletedAt)).toBe(true);",
+          "expect(deletedAt).toBeGreaterThanOrEqual(startedAt);",
+          "expect(deletedAt).toBeLessThanOrEqual(endedAt);",
+          "expect(observed).toEqual(golden['C10-deleted-stream']);"
+        ]
+      },
+      "measurementId": "c2-c10-integration-2026-11-09"
+    }
+  ],
+  "comparisonMeasurements": {
+    "c2-c10-integration-2026-11-09": {
+      "executionCommit": "cf8968694f01eaad637992af86281b7e3f339908",
+      "workingTree": "dirty",
+      "consumerSha256": {
+        "packages/backend-next/test/integration/note-create.test.ts": "180a0d0086fbd9e2389b28051aaa804f40916db9ad0e9ece549d3fcdc8cd21e2",
+        "packages/backend-next/test/integration/note-delete.test.ts": "ca37a4844b7e5de8099315017bc29a51d87f88869e6d30f676f35ad4e1e0fc1e",
+        "packages/backend-next/test/integration/note-notifications.test.ts": "82848127da56601736c781c9ef66445bb6aa549c779e60c10c1d6568a4b67a24"
+      },
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55493 BACKEND_NEXT_TEST_REDIS_PORT=56393 BACKEND_NEXT_TEST_MEILI_PORT=57793 pnpm --filter backend-next test:integration test/integration/note-create.test.ts test/integration/note-delete.test.ts test/integration/note-notifications.test.ts --reporter=json --outputFile=/tmp/tiramiss-s1-n7-final-integration.json",
+      "outcome": "PASS",
+      "passed": 86,
+      "failed": 0,
+      "pending": 0,
+      "testFiles": 3,
+      "durationSeconds": 14.507,
+      "finishedAt": "2026-11-09T00:51:30.754657+00:00",
+      "node": "v24.20.0",
+      "pnpm": "12.9.1",
+      "measurementBoundary": "Parent test broker ran the frozen current consumers with dedicated real services; HEAD does not contain these uncommitted assertions. No native process measurement was added."
+    }
+  }
 }

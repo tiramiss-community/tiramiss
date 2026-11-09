@@ -210,7 +210,125 @@ function validate(value) {
 	for (const key of ['profiles', 'failureDispositions', 'blockers', 'parentAudit']) assert.equal(sha(JSON.stringify(value[key])), bindings[key], `ownership/disposition binding drift ${key}`);
 }
 
+
+// Four reviewed current consumers; historical replay above remains unchanged.
+const currentComparisonBindings = {
+  "C2-rate-db-delta": {
+    "observation": {
+      "file": "docs/superpowers/compatibility/note/rate-observations.json",
+      "key": "C2-rate-db-delta",
+      "provenance": "upstream-http"
+    },
+    "consumer": {
+      "file": "packages/backend-next/test/integration/note-create.test.ts",
+      "testTitle": "production rate limit consumes invalid input first and precedes suspended/moved/scope checks",
+      "sourceSha256": "180a0d0086fbd9e2389b28051aaa804f40916db9ad0e9ece549d3fcdc8cd21e2",
+      "assertions": [
+        "const notesBefore = await db.getRepository(MiNote).count();",
+        "expect({ notes: await db.getRepository(MiNote).count() - notesBefore }).toEqual(rateGolden['C2-rate-db-delta']);"
+      ]
+    },
+    "measurementId": "c2-c10-integration-2026-11-09"
+  },
+  "C10-moderator": {
+    "observation": {
+      "file": "docs/superpowers/compatibility/note/observations.json",
+      "key": "C10-moderator",
+      "provenance": "upstream-http"
+    },
+    "consumer": {
+      "file": "packages/backend-next/test/integration/note-delete.test.ts",
+      "testTitle": "moderator audit retains the entire deleted row and author information",
+      "sourceSha256": "ca37a4844b7e5de8099315017bc29a51d87f88869e6d30f676f35ad4e1e0fc1e",
+      "assertions": [
+        "const response = await call(target, 'moderator');",
+        "expect(await response.text()).toBe('');",
+        "expect({ status: response.status, body: null }).toEqual(golden['C10-moderator']);"
+      ]
+    },
+    "measurementId": "c2-c10-integration-2026-11-09"
+  },
+  "C10-audit": {
+    "observation": {
+      "file": "docs/superpowers/compatibility/note/observations.json",
+      "key": "C10-audit",
+      "provenance": "upstream-http"
+    },
+    "consumer": {
+      "file": "packages/backend-next/test/integration/note-delete.test.ts",
+      "testTitle": "moderator audit retains the entire deleted row and author information",
+      "sourceSha256": "ca37a4844b7e5de8099315017bc29a51d87f88869e6d30f676f35ad4e1e0fc1e",
+      "assertions": [
+        "expect(audit.userId).toBe(actors.get('moderator')!.id);",
+        "expect(audit.info.noteId).toBe(target);",
+        "expect(audit.info.noteUserId).toBe(actors.get('alice')!.id);",
+        "userId: '$moderator', type: audit.type, noteId: '$moderated-target', noteUserId: '$alice',",
+        "noteUserUsername: audit.info.noteUserUsername, noteUserHost: audit.info.noteUserHost,",
+        "}).toEqual(golden['C10-audit']);",
+        "note: JSON.parse(JSON.stringify(before))",
+        "expect(await resources.dataSource.getRepository(MiNote).findOneBy({ id: target })).toBeNull();"
+      ]
+    },
+    "measurementId": "c2-c10-integration-2026-11-09"
+  },
+  "C10-deleted-stream": {
+    "observation": {
+      "file": "docs/superpowers/compatibility/note/observations.json",
+      "key": "C10-deleted-stream",
+      "provenance": "upstream-http"
+    },
+    "consumer": {
+      "file": "packages/backend-next/test/integration/note-notifications.test.ts",
+      "testTitle": "successful author deletion matches the complete upstream deleted stream",
+      "sourceSha256": "82848127da56601736c781c9ef66445bb6aa549c779e60c10c1d6568a4b67a24",
+      "assertions": [
+        "const note = await create({ text: 'delete', visibility: 'public', localOnly: false });",
+        "expect(response.status).toBe(204);",
+        "await resources.notePostDelete.idle();",
+        "expect(await resources.dataSource.getRepository(MiNote).findOneBy({ id: note.id })).toBeNull();",
+        "const observed = messages.filter(m => m.channel === `noteStream:${note.id}`).map(m => {",
+        "expect(body.id).toBe(note.id);",
+        "expect(body.userId).toBe(users.alice.id);",
+        "expect(typeof body.body.deletedAt).toBe('string');",
+        "expect(Number.isFinite(deletedAt)).toBe(true);",
+        "expect(deletedAt).toBeGreaterThanOrEqual(startedAt);",
+        "expect(deletedAt).toBeLessThanOrEqual(endedAt);",
+        "expect(observed).toEqual(golden['C10-deleted-stream']);"
+      ]
+    },
+    "measurementId": "c2-c10-integration-2026-11-09"
+  }
+};
+function validateComparisons(value) {
+	const rows = value.currentComparisons ?? [];
+	unique(rows.map(row => row.observation.key), 'current observations');
+	same(rows.map(row => row.observation.key), Object.keys(currentComparisonBindings), 'four current observations required');
+	for (const row of rows) {
+		const expected = currentComparisonBindings[row.observation.key];
+		assert.deepEqual(row.observation, expected.observation, 'current observation provenance/file binding');
+		assert.deepEqual(row.consumer, expected.consumer, 'current consumer binding');
+		const source = read(row.consumer.file);
+		assert.equal(sha(source), row.consumer.sourceSha256, 'current consumer source drift');
+		assert.ok(source.includes(`('${row.consumer.testTitle}',`), 'current consumer title');
+		for (const fragment of row.consumer.assertions) assert.ok(source.includes(fragment), 'current assertion fragment');
+		assert.ok(value.fixtureDigests[row.observation.file], 'current fixture digest required');
+		assert.equal(sha(read(row.observation.file)), value.fixtureDigests[row.observation.file], 'current fixture drift');
+		assert.equal(row.measurementId, expected.measurementId, 'current measurement binding');
+		const measurement = value.comparisonMeasurements?.[row.measurementId];
+		assert.ok(measurement, 'current measurement required');
+		assert.equal(measurement.outcome, 'PASS', 'current measurement PASS required');
+		assert.equal(measurement.failed, 0, 'current measurement zero failures');
+		assert.match(measurement.executionCommit, /^[a-f0-9]{40}$/, 'current execution commit');
+		assert.equal(measurement.workingTree, 'dirty', 'measured dirty tree identity');
+		assert.equal(measurement.consumerSha256[row.consumer.file], row.consumer.sourceSha256, 'measured consumer identity');
+		assert.ok(Number.isSafeInteger(measurement.passed) && measurement.passed > 0, 'measured passing count');
+		assert.ok(measurement.command.includes('test:integration test/integration/note-create.test.ts test/integration/note-delete.test.ts test/integration/note-notifications.test.ts'), 'measured comparison command');
+	}
+	assert.equal(sha(JSON.stringify(value.comparisonMeasurements)), 'a169809708924fcb94c9c4ca1f0f356a72e9f4c409b68809dc49453db3a26136', 'current measurement provenance/count binding');
+}
+
 function validateCurrent(value) {
+	validateComparisons(value);
 	const runtime = json('docs/superpowers/compatibility/remote-user/runtime-evidence.json');
 	assert.equal(runtime.implementationCommit, '33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45', 'current runtime pin');
 	assert.equal(value.notesCreateStatus, 'partial', 'create stays partial');
@@ -245,13 +363,13 @@ function validateCurrent(value) {
 		for (const id of item.caseIds) assert(consumed.includes(id), 'known consumed supersession case ID');
 		assert(item.remainingGapIds.length > 0 && item.remainingGapIds.every(id => value.currentRemaining.some(g => g.id === id)), 'remaining compatibility scope');
 	}
-	same(value.currentRemaining.map(x => x.id), ['media-emoji', 'user-hashtags', 'instance-metadata', 'charts', 'rich-actor', 'remote-cache', 'C2-rate-delta', 'C10-audit-stream'], 'qualified remaining gaps');
+	same(value.currentRemaining.map(x => x.id), ['media-emoji', 'user-hashtags', 'instance-metadata', 'charts', 'rich-actor', 'remote-cache'], 'qualified remaining gaps');
 	for (const gap of value.currentRemaining) {
 		owners(gap.owners);
 		assert.equal(gap.status, 'unresolved', 'remaining feature cannot be accepted wholesale');
 		assert(gap.scope.length > 30);
 	}
-	assert.equal(sha(JSON.stringify({ runtimeEvidence: value.runtimeEvidence, currentApplicability: value.currentApplicability, currentRemaining: value.currentRemaining })), 'af89d49875a88d0ed82466870fc856ddc9e73962ee1c8e92c3f6afdb09119669', 'current applicability binding drift');
+	assert.equal(sha(JSON.stringify({ runtimeEvidence: value.runtimeEvidence, currentApplicability: value.currentApplicability, currentRemaining: value.currentRemaining })), 'a83d45ad6ab3efaaf93b2ab0473d3c18399271e807562c264be99b2aa926812e', 'current applicability binding drift');
 }
 
 test('N7 covers every C observation with qualified concrete evidence', () => validate(ledger));
@@ -312,3 +430,42 @@ for (const [name, mutate, expected] of mutations) {
 		assert.throws(() => validate(invalid), expected);
 	});
 }
+
+for (const key of Object.keys(currentComparisonBindings)) {
+	for (const [name, mutate, error] of [
+		['missing observation', x => { x.currentComparisons = x.currentComparisons.filter(r => r.observation.key !== key); }, /four current observations/],
+		['wrong consumer', x => { x.currentComparisons.find(r => r.observation.key === key).consumer.file = 'packages/backend-next/test/integration/remote-user.test.ts'; }, /current consumer binding/],
+		['changed provenance', x => { x.currentComparisons.find(r => r.observation.key === key).observation.provenance = 'source-method'; }, /current observation provenance/],
+	]) test(`N7 rejects current ${key} ${name}`, () => {
+		const invalid = structuredClone(ledger); mutate(invalid);
+		assert.throws(() => validateCurrent(invalid), error);
+	});
+}
+for (const [name, mutate, error] of [
+	['missing measurement', x => { delete x.comparisonMeasurements; }, /current measurement required/],
+	['failed measurement', x => { x.comparisonMeasurements['c2-c10-integration-2026-11-09'].outcome = 'FAIL'; }, /current measurement PASS/],
+	['nonzero failures', x => { x.comparisonMeasurements['c2-c10-integration-2026-11-09'].failed = 1; }, /current measurement zero failures/],
+	['unmeasured source', x => { x.comparisonMeasurements['c2-c10-integration-2026-11-09'].consumerSha256[currentComparisonBindings['C2-rate-db-delta'].consumer.file] = '0'.repeat(64); }, /measured consumer identity/],
+]) test(`N7 rejects current ${name}`, () => {
+	const invalid = structuredClone(ledger); mutate(invalid);
+	assert.throws(() => validateCurrent(invalid), error);
+});
+for (const id of ['media-emoji', 'user-hashtags', 'instance-metadata', 'charts', 'rich-actor', 'remote-cache']) {
+	test(`N7 rejects dropping actor gap ${id}`, () => {
+		const invalid = structuredClone(ledger);
+		invalid.currentRemaining = invalid.currentRemaining.filter(gap => gap.id !== id);
+		assert.throws(() => validateCurrent(invalid), /remaining compatibility scope|qualified remaining gaps/);
+	});
+}
+
+test('N7 validates the four current comparison bindings and measured tree', () => validateCurrent(ledger));
+for (const [name, mutate, error] of [
+	['execution provenance', x => { x.comparisonMeasurements['c2-c10-integration-2026-11-09'].executionCommit = '0'.repeat(40); }, /current measurement provenance/],
+	['measurement counts', x => { x.comparisonMeasurements['c2-c10-integration-2026-11-09'].passed++; }, /current measurement provenance/],
+	['measurement command', x => { x.comparisonMeasurements['c2-c10-integration-2026-11-09'].command = 'invented'; }, /measured comparison command/],
+	['consumer assertions', x => { x.currentComparisons[0].consumer.assertions.pop(); }, /current consumer binding/],
+	['duplicate current observation', x => { x.currentComparisons.push(x.currentComparisons[0]); }, /duplicate current observations/],
+]) test(`N7 rejects current ${name}`, () => {
+	const invalid = structuredClone(ledger); mutate(invalid);
+	assert.throws(() => validateCurrent(invalid), error);
+});

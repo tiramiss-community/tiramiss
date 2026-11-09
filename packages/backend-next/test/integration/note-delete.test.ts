@@ -74,10 +74,20 @@ test('moved author may delete, suspended/scope credentials fail before input val
 test('moderator audit retains the entire deleted row and author information', async () => {
 	const target = await note();
 	const before = await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: target });
-	expect((await call(target, 'moderator')).status).toBe(204);
+	const response = await call(target, 'moderator');
+	expect(await response.text()).toBe('');
+	expect({ status: response.status, body: null }).toEqual(golden['C10-moderator']);
 	await resources.notePostDelete.idle();
 	const audit = await resources.dataSource.getRepository(MiModerationLog).findOneByOrFail({ userId: actors.get('moderator')!.id, type: 'deleteNote' });
 	expect(audit.info).toEqual({ noteId: target, noteUserId: actors.get('alice')!.id, noteUserUsername: 'probe_alice', noteUserHost: null, note: JSON.parse(JSON.stringify(before)) });
+	expect(audit.userId).toBe(actors.get('moderator')!.id);
+	expect(audit.info.noteId).toBe(target);
+	expect(audit.info.noteUserId).toBe(actors.get('alice')!.id);
+	expect({
+		userId: '$moderator', type: audit.type, noteId: '$moderated-target', noteUserId: '$alice',
+		noteUserUsername: audit.info.noteUserUsername, noteUserHost: audit.info.noteUserHost,
+	}).toEqual(golden['C10-audit']);
+	expect(await resources.dataSource.getRepository(MiNote).findOneBy({ id: target })).toBeNull();
 });
 test('current expired moderator assignment is denied without waiting for role cache TTL', async () => {
 	const roleId = id();

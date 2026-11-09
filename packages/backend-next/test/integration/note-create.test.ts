@@ -323,6 +323,7 @@ test('production rate limit consumes invalid input first and precedes suspended/
 	try {
 		const production = createBackendHttpApp(resources, database.config);
 		const request = (i: string) => production.request('/api/notes/create', { method: 'POST', body: JSON.stringify({ i }) });
+		const notesBefore = await db.getRepository(MiNote).count();
 		const first = await request(token);
 		expect({ status: first.status, body: await first.json(), wwwAuthenticate: first.headers.get('www-authenticate') }).toEqual(rateGolden['C2-rate-first-invalid']);
 		await db.getRepository(MiUser).update(userId, { isSuspended: true, movedToUri: 'https://moved.test/' });
@@ -335,6 +336,7 @@ test('production rate limit consumes invalid input first and precedes suspended/
 		expect(Number(second.headers.get('retry-after'))).toBeGreaterThan(0);
 		expect({ status: second.status, body: { error: { ...body.error, info: { ...body.error.info, reset: '$future-epoch-seconds', resetMs: '$future-epoch-milliseconds' } } }, wwwAuthenticate: second.headers.get('www-authenticate') }).toEqual(rateGolden['C2-rate-before-input']);
 		expect(await db.getRepository(MiNote).countBy({ userId })).toBe(0);
+		expect({ notes: await db.getRepository(MiNote).count() - notesBefore }).toEqual(rateGolden['C2-rate-db-delta']);
 	} finally {
 		vi.unstubAllEnvs();
 	}

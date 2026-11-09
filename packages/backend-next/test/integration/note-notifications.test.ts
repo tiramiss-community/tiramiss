@@ -131,6 +131,28 @@ test('specified raw producer event is unhidden; recipient detail still follows v
 	expect(messages.find(m => m.channel === 'notesStream' && m.message.id === note.id)!.message).toMatchObject({ text: '@bob secret', visibleUserIds: [users.carol.id] });
 	expect(main('bob', 'mention')[0]).toMatchObject({ id: note.id, isHidden: true, text: null });
 });
+test('successful author deletion matches the complete upstream deleted stream', async () => {
+	const note = await create({ text: 'delete', visibility: 'public', localOnly: false });
+	const startedAt = Date.now();
+	const response = await app.request('/api/notes/delete', { method: 'POST', body: JSON.stringify({ i: users.alice.token, noteId: note.id }) });
+	const endedAt = Date.now();
+	expect(response.status).toBe(204);
+	await resources.notePostDelete.idle();
+	expect(await resources.dataSource.getRepository(MiNote).findOneBy({ id: note.id })).toBeNull();
+	await vi.waitFor(() => expect(messages.some(m => m.channel === `noteStream:${note.id}`)).toBe(true));
+	const observed = messages.filter(m => m.channel === `noteStream:${note.id}`).map(m => {
+		const body = m.message.body;
+		expect(body.id).toBe(note.id);
+		expect(body.userId).toBe(users.alice.id);
+		expect(typeof body.body.deletedAt).toBe('string');
+		const deletedAt = Date.parse(body.body.deletedAt);
+		expect(Number.isFinite(deletedAt)).toBe(true);
+		expect(deletedAt).toBeGreaterThanOrEqual(startedAt);
+		expect(deletedAt).toBeLessThanOrEqual(endedAt);
+		return { ...m, channel: 'noteStream:$delete-target', message: { ...m.message, body: { ...body, id: '$delete-target', userId: '$alice', body: { ...body.body, deletedAt: '$time' } } } };
+	});
+	expect(observed).toEqual(golden['C10-deleted-stream']);
+});
 test('deletion publishes exact deleted payload even when later DB delete fails', async () => {
 	const note = await create({ text: 'delete' });
 	await resources.dataSource.query(`CREATE FUNCTION refuse_delete() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'injected'; END $$`);
