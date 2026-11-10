@@ -37,6 +37,9 @@ allowBuilds:
   pnpm: true
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
+  # Adopt the explicitly reviewed, project-owned queue release.
+  - '@mokurokujs/core@0.2.0'
+  - '@mokurokujs/bullmq-adapter@0.2.0'
   - '@misskey-dev/*'
   - '@syuilo/aiscript'
   - buraha
