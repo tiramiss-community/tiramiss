@@ -83,3 +83,11 @@ source-onlyの `stream-producer-dispose-source-limits` と `stream-pending-log-l
 | `pnpm --filter backend-next... build` / `pnpm --filter backend-next... typecheck` | PASS |
 
 独立したsource/product仕様・品質レビューで承認された範囲と上の実依存検証により、#163の14 API・QueueStats・制御/認可/終了条件を満たす。本家full serverと新実装serverの同時比較、全10業務worker、全stream基盤を検証したという意味ではない。既存Redisの無再接続方針は管理/QueueEventsにも適用し、切断時はSupervisorの通常異常終了となる。通常保持/清掃#164は[別途sourceと実Redisで検証した](../queue-retention/README.md)。実payload互換/残仕事引継ぎ#165、他16channel・他のWS書込#189、他の管理#194、投稿全体の縦断#176と親#124は未完了。[計画](../../plans/2026-11-08-queue-admin-163.md) と [現行契約](../../../backend-next/posting-contract.md#queue管理と公開queuestats163) を後続の入口とする。
+
+## #255 runtime consumer validation (2026-11-10)
+
+The migrated-worker global pause/retry/resume case remains distinct from local worker pause; the 14 API contracts, ten selectors, authorization and QueueStats expectations are retained.
+
+The parent's separate serial queue integration run passed **185 tests / 10 files, 0 failed/pending** (Node v26.4.0, pnpm 12.9.1; isolated `backend-next-255`, PostgreSQL `55455`, Redis `56395`). The earlier overlapping run had 184 passes / 1 globalSubscriber interference failure; it is not recorded as PASS. [Current runtime paths, exact commands and artifact receipt](../queue-runtime/README.md) distinguish these new consumers from the unchanged frozen source observations. No new pinned-source run is claimed.
+
+Initial process validation has **57 passed / 4 failed / 8 files**; only the new queue-runtime cases fail. Final process gate PASS: the unchanged seven process files passed 43 cases; the corrected new file passed all 18 cases in a separate execution. Remaining seven handlers, nine schedulers, #139 cutover and existing feature owners are unchanged.

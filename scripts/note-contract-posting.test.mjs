@@ -228,7 +228,7 @@ const currentComparisonBindings = {
         "expect({ notes: await db.getRepository(MiNote).count() - notesBefore }).toEqual(rateGolden['C2-rate-db-delta']);"
       ]
     },
-    "measurementId": "c2-c10-foundation-253-2026-11-09"
+    "measurementId": "c2-c10-mokuroku-255-2026-11-10"
   },
   "C10-moderator": {
     "observation": {
@@ -246,7 +246,7 @@ const currentComparisonBindings = {
         "expect({ status: response.status, body: null }).toEqual(golden['C10-moderator']);"
       ]
     },
-    "measurementId": "c2-c10-foundation-253-2026-11-09"
+    "measurementId": "c2-c10-mokuroku-255-2026-11-10"
   },
   "C10-audit": {
     "observation": {
@@ -269,7 +269,7 @@ const currentComparisonBindings = {
         "expect(await resources.dataSource.getRepository(MiNote).findOneBy({ id: target })).toBeNull();"
       ]
     },
-    "measurementId": "c2-c10-foundation-253-2026-11-09"
+    "measurementId": "c2-c10-mokuroku-255-2026-11-10"
   },
   "C10-deleted-stream": {
     "observation": {
@@ -280,7 +280,7 @@ const currentComparisonBindings = {
     "consumer": {
       "file": "packages/backend-next/test/integration/note-notifications.test.ts",
       "testTitle": "successful author deletion matches the complete upstream deleted stream",
-      "sourceSha256": "82848127da56601736c781c9ef66445bb6aa549c779e60c10c1d6568a4b67a24",
+      "sourceSha256": "e62f43605d5cab15f67d23548a9a40e7cb769508b8bd08ccc3f92e815e66c36e",
       "assertions": [
         "const note = await create({ text: 'delete', visibility: 'public', localOnly: false });",
         "expect(response.status).toBe(204);",
@@ -296,7 +296,7 @@ const currentComparisonBindings = {
         "expect(observed).toEqual(golden['C10-deleted-stream']);"
       ]
     },
-    "measurementId": "c2-c10-foundation-253-2026-11-09"
+    "measurementId": "c2-c10-mokuroku-255-2026-11-10"
   }
 };
 function validateComparisons(value) {
@@ -324,7 +324,7 @@ function validateComparisons(value) {
 		assert.ok(Number.isSafeInteger(measurement.passed) && measurement.passed > 0, 'measured passing count');
 		assert.ok(measurement.command.includes('test:integration test/integration/note-create.test.ts test/integration/note-delete.test.ts test/integration/note-notifications.test.ts'), 'measured comparison command');
 	}
-	assert.equal(sha(JSON.stringify(value.comparisonMeasurements)), '02904b0d7994639bd2acd7ca0d8dca3d1c4fb1a4ae50d026cbba67a444861b4d', 'current measurement provenance/count binding');
+	assert.equal(sha(JSON.stringify(value.comparisonMeasurements)), 'd16c6e164a150fe881b21864c264d2504a7229f5165359ebf76368024e430e12', 'current measurement provenance/count binding');
 }
 
 function validateCurrent(value) {
@@ -443,9 +443,9 @@ for (const key of Object.keys(currentComparisonBindings)) {
 }
 for (const [name, mutate, error] of [
 	['missing measurement', x => { delete x.comparisonMeasurements; }, /current measurement required/],
-	['failed measurement', x => { x.comparisonMeasurements['c2-c10-foundation-253-2026-11-09'].outcome = 'FAIL'; }, /current measurement PASS/],
-	['nonzero failures', x => { x.comparisonMeasurements['c2-c10-foundation-253-2026-11-09'].failed = 1; }, /current measurement zero failures/],
-	['unmeasured source', x => { x.comparisonMeasurements['c2-c10-foundation-253-2026-11-09'].consumerSha256[currentComparisonBindings['C2-rate-db-delta'].consumer.file] = '0'.repeat(64); }, /measured consumer identity/],
+	['failed measurement', x => { x.comparisonMeasurements['c2-c10-mokuroku-255-2026-11-10'].outcome = 'FAIL'; }, /current measurement PASS/],
+	['nonzero failures', x => { x.comparisonMeasurements['c2-c10-mokuroku-255-2026-11-10'].failed = 1; }, /current measurement zero failures/],
+	['unmeasured source', x => { x.comparisonMeasurements['c2-c10-mokuroku-255-2026-11-10'].consumerSha256[currentComparisonBindings['C2-rate-db-delta'].consumer.file] = '0'.repeat(64); }, /measured consumer identity/],
 ]) test(`N7 rejects current ${name}`, () => {
 	const invalid = structuredClone(ledger); mutate(invalid);
 	assert.throws(() => validateCurrent(invalid), error);
@@ -460,9 +460,9 @@ for (const id of ['media-emoji', 'user-hashtags', 'instance-metadata', 'charts',
 
 test('N7 validates the four current comparison bindings and measured tree', () => validateCurrent(ledger));
 for (const [name, mutate, error] of [
-	['execution provenance', x => { x.comparisonMeasurements['c2-c10-foundation-253-2026-11-09'].executionCommit = '0'.repeat(40); }, /current measurement provenance/],
-	['measurement counts', x => { x.comparisonMeasurements['c2-c10-foundation-253-2026-11-09'].passed++; }, /current measurement provenance/],
-	['measurement command', x => { x.comparisonMeasurements['c2-c10-foundation-253-2026-11-09'].command = 'invented'; }, /measured comparison command/],
+	['execution provenance', x => { x.comparisonMeasurements['c2-c10-mokuroku-255-2026-11-10'].executionCommit = '0'.repeat(40); }, /current measurement provenance/],
+	['measurement counts', x => { x.comparisonMeasurements['c2-c10-mokuroku-255-2026-11-10'].passed++; }, /current measurement provenance/],
+	['measurement command', x => { x.comparisonMeasurements['c2-c10-mokuroku-255-2026-11-10'].command = 'invented'; }, /measured comparison command/],
 	['consumer assertions', x => { x.currentComparisons[0].consumer.assertions.pop(); }, /current consumer binding/],
 	['duplicate current observation', x => { x.currentComparisons.push(x.currentComparisons[0]); }, /duplicate current observations/],
 ]) test(`N7 rejects current ${name}`, () => {

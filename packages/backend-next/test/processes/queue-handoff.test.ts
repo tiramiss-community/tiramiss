@@ -42,10 +42,12 @@ let source: ReturnType<typeof createDataSource>;
 let seeded: Awaited<ReturnType<typeof seedRoleHttp>>;
 let server: ReturnType<typeof createServer>;
 let origin: string;
-const requests: { path: string;
+const requests: {
+	path: string;
 	headers: Record<string, unknown>;
 	raw: string;
-	body: any }[] = [];
+	body: any;
+}[] = [];
 
 beforeAll(async () => {
 	database = await createTestDatabase();
@@ -164,10 +166,15 @@ test('stopped source fixture jobs retain deliver single/bulk, delayed poll and s
 				const stored = await inspect.queue(fixture.queue).getJob(original.id);
 				expect(stored).toMatchObject({ id: original.id, name: original.name, data: original.data, opts: original.opts, attemptsMade: 1 });
 				if (fixture.queue === 'deliver') {
+					expect(stored!.returnvalue).toBe('Success');
 					const delivery = received.find(request => request.path === new URL(original.data.to).pathname)!;
 					expect(delivery.raw).toBe(original.data.content); expect(delivery.headers.digest).toBe(original.data.digest); expect(delivery.headers.signature).toEqual(expect.stringContaining(`keyId="${config.url}/users/${userId}#main-key"`));
 				}
+				if (fixture.queue === 'endedPollNotification') {
+					expect(stored!.returnvalue).toBeNull();
+				}
 				if (fixture.queue === 'userWebhookDeliver') {
+					expect(stored!.returnvalue).toBe('Success');
 					const request = received.find(request => request.body.eventId === original.data.eventId && request.body.type === original.data.type)!;
 					expect(request.headers['x-misskey-hook-secret']).toBe('fixture-secret');
 					expect(request.body).toEqual({ server: config.url, hookId: webhookId, userId, eventId: original.data.eventId, createdAt: original.data.createdAt, type: original.data.type, body: original.data.content });
@@ -202,7 +209,7 @@ test('old transient retry resumes naturally under the new worker while terminal 
 		expect(await terminal.getState()).toBe('failed');
 		await vi.waitFor(async () => expect(await retried.getState()).toBe('completed'), { timeout: 75000, interval: 200 });
 		expect(Date.now() - time).toBeGreaterThan(55000);
-		expect(await queue.getJob(retry.id)).toMatchObject({ id: retry.id, name: retry.name, data: retry.data, opts: retry.opts, attemptsMade: 2 });
+		expect(await queue.getJob(retry.id)).toMatchObject({ id: retry.id, name: retry.name, data: retry.data, opts: retry.opts, attemptsMade: 2, returnvalue: 'Success' });
 		expect(await queue.getJob(failed.id)).toMatchObject({ id: failed.id, attemptsMade: 1, failedReason: 'fixture terminal failure' }); expect(await terminal.getState()).toBe('failed');
 		expect(requests.slice(requestStart).filter(request => request.path === '/retry-inbox')).toHaveLength(1);
 		worker.child.kill('SIGTERM'); expect((await worker.exit).code, worker.output()).toBe(0);

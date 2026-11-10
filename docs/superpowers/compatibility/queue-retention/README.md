@@ -107,3 +107,11 @@ Queue の `defaultJobOptions` と Worker の保持 fallback は追加してい�
 | 運用情報 | #138 がage/count、lazy清掃、履歴と累積統計、明示clearの説明を利用する |
 
 #164 の現行完了条件はsource調査・現在の通常保持接続・実Redisと管理照会・通知/保守の引継ぎを対象とし、上の証拠で満たす。次は #165 の実payload互換・残仕事引継ぎを進める。将来追加するproducerは本資料の該当source policy（保持しない設定も含む）をその機能の実仕事へ移植する。管理handleだけを根拠に3 producerのcount値を全queueへ一律適用しない。#124 / #176全体、#177 / #199等の機能完了には換算しない。
+
+## #255 runtime consumer validation (2026-11-10)
+
+The three migrated producers and fresh separately owned worker runtimes retain per-job age/count options, absent constructor fallback, 30/100 trimming and lazy cleanup. Controlled callbacks remain retention evidence, separate from real business-handler tests.
+
+The parent's separate serial queue integration run passed **185 tests / 10 files, 0 failed/pending** (Node v26.4.0, pnpm 12.9.1; isolated `backend-next-255`, PostgreSQL `55455`, Redis `56395`). The earlier overlapping run had 184 passes / 1 globalSubscriber interference failure; it is not recorded as PASS. [Current runtime paths, exact commands and artifact receipt](../queue-runtime/README.md) distinguish these new consumers from the unchanged frozen source observations. No new pinned-source run is claimed.
+
+Initial process validation has **57 passed / 4 failed / 8 files**; only the new queue-runtime cases fail. Final process gate PASS: the unchanged seven process files passed 43 cases; the corrected new file passed all 18 cases in a separate execution. Remaining seven handlers, nine schedulers, #139 cutover and existing feature owners are unchanged.

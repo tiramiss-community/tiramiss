@@ -2,12 +2,9 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { randomUUID } from 'node:crypto';
-import { Queue, UnrecoverableError, Worker } from 'bullmq';
+import { UnrecoverableError } from 'bullmq';
 import { OutboundStatusError } from '../../application/outbound-http.js';
-import { baseQueueOptions, baseWorkerOptions, onConnectionEnd, runWorker } from './connection.js';
-import { httpRelatedBackoff } from './deliver.js';
-import type { RedisConfig } from '../../config/types.js';
+import type { JobHandler } from '@mokurokujs/core';
 import type { OutboundSend } from '../../application/outbound-http.js';
 import type { Logger } from '../logger.js';
 
@@ -15,36 +12,16 @@ export const USER_WEBHOOK_DELIVER = 'userWebhookDeliver';
 export type UserWebhookEvent = 'note' | 'reply' | 'renote' | 'mention';
 export interface UserWebhookTarget { id: string; userId: string; url: string; secret: string }
 export interface UserWebhookJob { webhookId: string; userId: string; to: string; secret: string; type: UserWebhookEvent; content: { note: Record<string, unknown> }; createdAt: number; eventId: string }
-interface Connection { redis: RedisConfig; connectTimeoutMs: number; logger: Logger }
+export type StoredUserWebhookJob = Omit<UserWebhookJob, 'type' | 'content'> & (
+	| { type: UserWebhookEvent; content: { note: Record<string, unknown> } }
+	| { type: 'follow' | 'unfollow' | 'followed'; content: { user: Record<string, unknown> } }
+);
 
 export function userWebhookJob(hook: UserWebhookTarget, type: UserWebhookEvent, content: UserWebhookJob['content'], createdAt: number, eventId: string) {
 	return {
 		name: hook.id,
 		data: { webhookId: hook.id, userId: hook.userId, to: hook.url, secret: hook.secret, type, content, createdAt, eventId },
-		opts: { attempts: 4, backoff: { type: 'custom' }, removeOnComplete: { age: 604800, count: 30 }, removeOnFail: { age: 604800, count: 100 } },
-	};
-}
-
-export function createUserWebhookQueue(options: Connection & { onLost(): void }) {
-	const queue = new Queue(USER_WEBHOOK_DELIVER, baseQueueOptions(options.redis, USER_WEBHOOK_DELIVER, options.connectTimeoutMs));
-	let closing = false;
-	queue.on('error', error => options.logger.error('job-queue.error', { queue: USER_WEBHOOK_DELIVER, error }));
-	return {
-		async ready() {
-			await queue.waitUntilReady();
-			await onConnectionEnd(queue, () => {
-				if (!closing) {
-					options.onLost();
-				}
-			});
-		},
-		async enqueue(hook: UserWebhookTarget, type: UserWebhookEvent, note: Record<string, unknown>) {
-			const job = userWebhookJob(hook, type, { note }, Date.now(), randomUUID());
-			await queue.add(job.name, job.data, job.opts);
-		},
-		async close() {
-			closing = true; await queue.close();
-		},
+		opts: { attempts: 4, backoff: { type: 'custom' as const }, removeOnComplete: { age: 604800, count: 30 }, removeOnFail: { age: 604800, count: 100 } },
 	};
 }
 
@@ -56,7 +33,7 @@ export function createUserWebhookProcessor(options: { send: OutboundSend; url: s
 		void work.finally(() => pending.delete(work));
 	};
 	return {
-		async process(job: UserWebhookJob): Promise<string> {
+		async process(job: StoredUserWebhookJob): Promise<string> {
 			try {
 				const response = await options.send(job.to, {
 					method: 'POST', headers: { 'User-Agent': 'Misskey-Hooks', 'X-Misskey-Host': new URL(options.url).host, 'X-Misskey-Hook-Id': job.webhookId, 'X-Misskey-Hook-Secret': job.secret, 'Content-Type': 'application/json' },
@@ -81,21 +58,13 @@ export function createUserWebhookProcessor(options: { send: OutboundSend; url: s
 	};
 }
 
-export function createUserWebhookJobProcessor(process: (job: UserWebhookJob) => Promise<string>, logger: Logger) {
-	return async (job: { id?: string; name: string; attemptsMade: number; data: UserWebhookJob }) => {
+export function createUserWebhookJobProcessor(process: (job: StoredUserWebhookJob) => Promise<string>, logger: Logger): JobHandler<StoredUserWebhookJob, string> {
+	return async (payload, context) => {
 		try {
-			return await process(job.data);
+			return await process(payload);
 		} catch (error) {
-			logger.error('job.failed', { queue: USER_WEBHOOK_DELIVER, jobId: job.id, jobName: job.name, attemptsMade: job.attemptsMade, errorName: error instanceof Error ? error.name : 'UnknownError' });
+			logger.error('job.failed', { queue: USER_WEBHOOK_DELIVER, jobId: context.jobId, jobName: context.jobName, attemptsMade: context.attempt - 1, errorName: error instanceof Error ? error.name : 'UnknownError' });
 			throw error;
 		}
 	};
-}
-
-export async function startUserWebhookWorker(options: Connection & { process(job: UserWebhookJob): Promise<string>; reportFailure(error: Error): void }) {
-	const worker = new Worker<UserWebhookJob>(USER_WEBHOOK_DELIVER, createUserWebhookJobProcessor(options.process, options.logger), {
-		...baseWorkerOptions(options.redis, USER_WEBHOOK_DELIVER, options.connectTimeoutMs), autorun: false,
-		concurrency: 64, limiter: { max: 64, duration: 1000 }, settings: { backoffStrategy: attempts => httpRelatedBackoff(attempts) },
-	});
-	return await runWorker(worker, { queue: USER_WEBHOOK_DELIVER, logger: options.logger, reportFailure: options.reportFailure });
 }

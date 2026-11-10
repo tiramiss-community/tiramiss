@@ -11,12 +11,13 @@ import { connectResources } from '../../src/platform/connect-resources.js';
 import { migrateDatabase } from '../../src/platform/database/migrate.js';
 import { createIdCodec } from '../../src/platform/id-codec.js';
 import { baseQueueOptions } from '../../src/platform/job-queue/connection.js';
-import { createDeliverQueue, DELIVER, startDeliverWorker } from '../../src/platform/job-queue/deliver.js';
+import { DELIVER } from '../../src/platform/job-queue/deliver.js';
 import { signRsaSignature2017 } from '../../src/platform/jsonld-signature.js';
 import { verifyLdSignature } from '../helpers/ld-signature.js';
 import { generateRsaKeyPair } from '../../src/platform/key-pair.js';
 import { createLogger } from '../../src/platform/logger.js';
 import { createTestDatabase } from '../helpers/database.js';
+import { openBusinessJobProducers, openDeliverWorker } from '../helpers/business-jobs.js';
 import { startInboxRecorder } from '../helpers/outbound-http-fakes.js';
 import type { RuntimeConfig } from '../../src/config/types.js';
 import type { InboxRecorder } from '../helpers/outbound-http-fakes.js';
@@ -29,7 +30,7 @@ const logs: Record<string, unknown>[] = [];
 const alice = createIdCodec('aidx').newId(Date.now());
 
 let config: RuntimeConfig;
-let queue: ReturnType<typeof createDeliverQueue>;
+let queue: ReturnType<typeof openBusinessJobProducers>;
 let inspect: Queue;
 let stopWorker: (() => Promise<void>) | undefined;
 
@@ -69,11 +70,11 @@ beforeEach(async () => {
 	logs.length = 0;
 
 	const connection = { redis: config.redisForJobQueue, connectTimeoutMs: 5000, logger: resources.logger };
-	queue = createDeliverQueue({ ...connection, deliverJobMaxAttempts: config.deliverJob.deliverJobMaxAttempts, onLost: () => {} });
+	queue = openBusinessJobProducers({ ...connection, deliverJobMaxAttempts: config.deliverJob.deliverJobMaxAttempts, onLost: () => {} });
 	await queue.ready();
 	inspect = new Queue(DELIVER, baseQueueOptions(config.redisForJobQueue, DELIVER, 5000));
 	const handler = createDeliverJobHandler(resources, config);
-	const stop = await startDeliverWorker({
+	const stop = await openDeliverWorker({
 		...connection,
 		config: {},
 		process: handler.process,
@@ -169,7 +170,7 @@ test('blocked and suspended destinations complete with the upstream skip results
 	await resources.dataSource.getRepository(MiMeta).update({ id: 'x' }, { federation: 'all' });
 	await resources.dataSource.getRepository(MiInstance).insert({ id: 'suspended', host: '', firstRetrievedAt: new Date(), suspensionState: 'manuallySuspended' });
 	const handler = createDeliverJobHandler(resources, config);
-	const stop = await startDeliverWorker({ redis: config.redisForJobQueue, connectTimeoutMs: 5000, logger: resources.logger, config: {}, process: handler.process, reportFailure: () => {} });
+	const stop = await openDeliverWorker({ redis: config.redisForJobQueue, connectTimeoutMs: 5000, logger: resources.logger, config: {}, process: handler.process, reportFailure: () => {} });
 	stopWorker = stop;
 	await deliverTo(['/inbox/suspended', true]);
 

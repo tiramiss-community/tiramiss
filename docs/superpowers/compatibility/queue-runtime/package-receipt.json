@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "issue": 255,
+  "source": "published-npm",
+  "packages": [
+    {
+      "name": "@mokurokujs/core",
+      "version": "0.2.0",
+      "filename": "mokurokujs-core-0.2.0.tgz",
+      "size": 16215,
+      "unpackedSize": 62723,
+      "shasum": "346d8d086020d0ccb36afb5ec618f66b22c8dd6b",
+      "integrity": "sha512-sEAM3XQDa+DbMo0rLdSHFANBk7UxcQbUC0FJjNMIGFeg9HP3l33DoOfX5Jxw3z91ZDatcVgImqxfADZL0pl0vw==",
+      "tarballSha256": "a355982d96603486ebb320c09e68e81921ffd82441a753fbf19d22bb2a9ab81d",
+      "packedDependencies": {},
+      "packedPeerDependencies": {},
+      "packedPeerDependenciesMeta": {},
+      "packedExports": {
+        ".": {
+          "types": "./dist/index.d.ts",
+          "import": "./dist/index.js"
+        }
+      }
+    },
+    {
+      "name": "@mokurokujs/bullmq-adapter",
+      "version": "0.2.0",
+      "filename": "mokurokujs-bullmq-adapter-0.2.0.tgz",
+      "size": 37666,
+      "unpackedSize": 150232,
+      "shasum": "f1ecf6a10c3ee83613360be71df9bf683da11bca",
+      "integrity": "sha512-F6UpUG7N0XRtyt/iixNhlp0rlDfgpripkYjlJJ++gdZlj2weae9c64AiQoATKpvsDSMOcNYsFSf2sYi4iLRB+w==",
+      "tarballSha256": "91319c9f0d0691b6498bb75bae24815ff93c42d59c3737d3bad7c63b3cb82b22",
+      "packedDependencies": {
+        "zod": "^4.0.0",
+        "@mokurokujs/core": "^0.2.0"
+      },
+      "packedPeerDependencies": {
+        "bullmq": "^5.16.0 || ^6.3.11",
+        "ioredis": "^5.0.0"
+      },
+      "packedPeerDependenciesMeta": {
+        "ioredis": {
+          "optional": true
+        }
+      },
+      "packedExports": {
+        ".": {
+          "types": "./dist/index.d.ts",
+          "import": "./dist/index.js"
+        }
+      }
+    }
+  ],
+  "installation": {
+    "command": "pnpm install --frozen-lockfile --filter backend-next... --strict-peer-dependencies",
+    "outcome": "PASS",
+    "node": "v26.4.0",
+    "pnpm": "12.9.1",
+    "manifest": "packages/backend-next/package.json",
+    "manifestSha256": "e37eaa139a2287f6edbe34f75f03cf9404e6a8cca4f34fb7af5081fdae8bfb58",
+    "lockfile": "pnpm-lock.yaml",
+    "lockfileSha256": "e474c3a7f29b6afd20c165a345d8598be532c7c3ef4793938c7b8a1536d927d9",
+    "workspacePolicy": "pnpm-workspace.yaml",
+    "workspacePolicySha256": "75272da6534bc983219a8de6d741b29e4c02d3960cad4a9699b321d49d1fd407",
+    "resolvedVersions": {
+      "@mokurokujs/core": "0.2.0",
+      "@mokurokujs/bullmq-adapter": "0.2.0",
+      "bullmq": "6.3.11",
+      "ioredis": "5.11.1"
+    },
+    "strictPeerDependencies": true,
+    "minimumReleaseAge": 10080,
+    "minimumReleaseAgeExceptions": [
+      "@mokurokujs/core@0.2.0",
+      "@mokurokujs/bullmq-adapter@0.2.0"
+    ],
+    "exportAndSingletonCheck": {
+      "outcome": "PASS",
+      "source": "Parent adoption verification: published ESM exports, one core resolution shared with adapter, one BullMQ resolution; no peer bypass."
+    },
+    "provenance": "Parent verified adoption before runtime integration. These manifest/lock/policy bytes match adoption HEAD 2046dfe8041ba925998fa75c34e51e4a5a515910; install logs do not independently capture execution HEAD or clean/dirty state.",
+    "artifacts": [
+      {
+        "path": "/tmp/tiramiss-255-artifacts/npm/pack.json",
+        "sha256": "a05043c80175962700120810dee79887eae746460eea02d823636e3d097cc4fa"
+      },
+      {
+        "path": "/tmp/tiramiss-255-artifacts/adopt-install.log",
+        "sha256": "c0ef9797c11f4b421414790888a9b2631f5edfe0e0ee5a7f1064473d8f44a43f"
+      },
+      {
+        "path": "/tmp/tiramiss-255-artifacts/adopt-frozen.log",
+        "sha256": "894d06582f7ca497cbf4d4e37ec9d6ef67d33327ee9fe855d5a6c09fb1318afe"
+      },
+      {
+        "path": "/tmp/tiramiss-255-artifacts/adopt-shipping.log",
+        "sha256": "9940dcc52647cdef3ee65aaf31e7795553635360437ce4a7bfdd42f051f99c80"
+      }
+    ]
+  },
+  "measurements": [
+    {
+      "id": "all-unit",
+      "command": "pnpm --filter backend-next test --reporter=json --outputFile=/tmp/tiramiss-255-artifacts/all-unit.json",
+      "outcome": "PASS",
+      "passed": 2828,
+      "failed": 0,
+      "pending": 0,
+      "skipped": 0,
+      "files": 86,
+      "artifact": "/tmp/tiramiss-255-artifacts/all-unit.json",
+      "artifactSha256": "96c1517d5a8c2094a1c8086cfc1ebac5c740df9c35c156251f96b307f2000ad6",
+      "scope": "All backend-next unit tests; not a real-process gate."
+    },
+    {
+      "id": "queue-integration-serial",
+      "command": "pnpm --filter backend-next test:integration test/integration/business-job-runtime.test.ts test/integration/resources.test.ts test/integration/queue-admin.test.ts test/integration/queue-stats.test.ts test/integration/queue-retention.test.ts test/integration/queue-handoff.test.ts test/integration/poll-ended-job.test.ts test/integration/deliver-queue.test.ts test/integration/deliver-processor.test.ts test/integration/user-webhook.test.ts --reporter=json --outputFile=/tmp/tiramiss-255-artifacts/queue-integration-serial.json",
+      "outcome": "PASS",
+      "passed": 185,
+      "failed": 0,
+      "pending": 0,
+      "skipped": 0,
+      "files": 10,
+      "artifact": "/tmp/tiramiss-255-artifacts/queue-integration-serial.json",
+      "artifactSha256": "512070f2c6185e633f1c5a5d5873f0f63725510eb5a8b157b5186b662011b729",
+      "scope": "Real dependency consumer suites, run separately from process suite; controlled retention handlers are distinct from real business-handler coverage.",
+      "environment": {
+        "composeProject": "backend-next-255",
+        "dbPort": 55455,
+        "redisPort": 56395,
+        "meiliPort": 57795
+      }
+    },
+    {
+      "id": "c2-c10-integration",
+      "command": "pnpm --filter backend-next test:integration test/integration/note-create.test.ts test/integration/note-delete.test.ts test/integration/note-notifications.test.ts --reporter=json --outputFile=/tmp/tiramiss-255-artifacts/c2-c10-integration.json",
+      "outcome": "PASS",
+      "passed": 88,
+      "failed": 0,
+      "pending": 0,
+      "skipped": 0,
+      "files": 3,
+      "artifact": "/tmp/tiramiss-255-artifacts/c2-c10-integration.json",
+      "artifactSha256": "2a1a16a31296336ca7e5c4425ef695000d411089082dec6168b6b9a801e28a90",
+      "scope": "Three current N7 consumers; full dirty-tree/source provenance is in coverage.json comparisonMeasurements.",
+      "environment": {
+        "composeProject": "backend-next-255",
+        "dbPort": 55455,
+        "redisPort": 56395,
+        "meiliPort": 57795
+      }
+    },
+    {
+      "id": "queue-process",
+      "command": "pnpm --filter backend-next test:process test/processes/queue-runtime.test.ts test/processes/queue-handoff.test.ts test/processes/queue-admin.test.ts test/processes/poll-ended.test.ts test/processes/note-deliver.test.ts test/processes/children.test.ts test/processes/supervisor.test.ts test/processes/posting-websocket.test.ts --reporter=json --outputFile=/tmp/tiramiss-255-artifacts/queue-process.json",
+      "outcome": "FAIL",
+      "passed": 57,
+      "failed": 4,
+      "pending": 0,
+      "skipped": 0,
+      "files": 8,
+      "artifact": "/tmp/tiramiss-255-artifacts/queue-process.json",
+      "artifactSha256": "6bb3553159d391fd933eb2fe0f12f4f67d636516d75dd9624d57b3c5ae0ac3de",
+      "scope": "Initial integrated process run: seven unchanged process files pass all43cases; four new queue-runtime cases fail. The full new18casefile is superseded by queue-runtime-fixed; failure history retained.",
+      "environment": {
+        "composeProject": "backend-next-255",
+        "dbPort": 55455,
+        "redisPort": 56395,
+        "meiliPort": 57795
+      }
+    },
+    {
+      "id": "queue-runtime-fixed",
+      "command": "pnpm --filter backend-next test:process test/processes/queue-runtime.test.ts --reporter=json --outputFile=/tmp/tiramiss-255-artifacts/queue-runtime-fixed.json",
+      "outcome": "PASS",
+      "passed": 18,
+      "failed": 0,
+      "pending": 0,
+      "skipped": 0,
+      "files": 1,
+      "artifact": "/tmp/tiramiss-255-artifacts/queue-runtime-fixed.json",
+      "artifactSha256": "1e79a313c50cae74cde360fe1ed1948861b98c3394352f5ee5a263ab7fc59f5c",
+      "scope": "Full added process file after test-only fixture/observation corrections; separate execution from the unchanged seven process files (43 passing cases) in the initial run. Production sources unchanged.",
+      "sourceSha256": {
+        "packages/backend-next/test/fixtures/queue-runtime-failure.mjs": "51a05ead789d32329223070b3ec5b7982c2a90f37bd90392ae4d02f8c444a1b7",
+        "packages/backend-next/test/processes/queue-runtime.test.ts": "59fb81e97334a4346849f1a61294ffb1ed2c5a893730114c937601c015392e52"
+      },
+      "environment": {
+        "composeProject": "backend-next-255",
+        "dbPort": 55455,
+        "redisPort": 56395,
+        "meiliPort": 57795
+      }
+    }
+  ],
+  "measurementProvenance": "Parent integrated measurements on uncommitted runtime/test changes. Only the C2/C10 receipt independently records execution HEAD, dirty-tree identity, wall time and unchanged before/after consumer hashes; do not infer committed implementation or a clean tree from other reporter artifacts.",
+  "finalProcessGate": {
+    "status": "PASS",
+    "measurements": [
+      "queue-process",
+      "queue-runtime-fixed"
+    ],
+    "boundary": "43 cases in seven unchanged process files plus 18 cases in the corrected new file passed in separate executions, not one combined green run. All share unchanged production code. Initial four failures remain recorded.",
+    "passed": 61,
+    "failedCurrent": 0,
+    "files": 8
+  },
+  "artifactRetention": "Artifact paths record the actual local evidence location. Raw tarballs/reports/logs are not stored in this repository; retain them externally for replay/audit. SHA values identify bytes, not permanent availability."
+}

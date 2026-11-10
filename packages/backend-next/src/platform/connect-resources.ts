@@ -1,4 +1,3 @@
-import { createOutboundHttpClient } from '../composition/outbound-http.js';
 /*
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
@@ -6,6 +5,7 @@ import { createOutboundHttpClient } from '../composition/outbound-http.js';
 import { randomBytes } from 'node:crypto';
 import { MiInstance } from 'backend-upstream/entities';
 import { Redis } from 'ioredis';
+import { createOutboundHttpClient } from '../composition/outbound-http.js';
 import { createPostingAntennas } from '../composition/posting-antennas.js';
 import { createHostRules } from '../modules/federation/public.js';
 import { createPostingHashtags } from '../composition/posting-hashtags.js';
@@ -29,14 +29,13 @@ import { createTimelineCache } from './timeline-cache.js';
 import { createNoteTimelineReader } from './database/note-timelines.js';
 import { createPostingStream } from './posting-stream.js';
 import { openUserWebhooks } from './user-webhooks.js';
-import { createUserWebhookQueue, USER_WEBHOOK_DELIVER } from './job-queue/user-webhook.js';
+import { createBusinessJobDefinitions, createBusinessJobProducers } from './job-queue/business-jobs.js';
+import { createBusinessJobRuntime } from './job-queue/runtime.js';
 import { createNotePostDelete } from './note-post-delete.js';
 import { appendNoteDeleteAudit, readDeletionConcernedUsers } from './database/note-deleter.js';
 import { createAcceptedRelayReader } from './database/accepted-relays.js';
 import { signRsaSignature2017 } from './jsonld-signature.js';
 import { createNotePostSave, createNotePostSaveWork } from './note-post-save.js';
-import { createPollEndedQueue, ENDED_POLL_NOTIFICATION } from './job-queue/ended-poll-notification.js';
-import { createDeliverQueue, DELIVER } from './job-queue/deliver.js';
 import { createNotePostSaveCounts } from './database/note-post-save-counts.js';
 import { createNoteActivityReader } from './database/note-activity.js';
 import { createDeliveryRecipientReader } from './database/delivery-recipients.js';
@@ -235,31 +234,25 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		}
 
 		// 本家と同じくどの子も投入口を持つ。後続処理より先に登録し、後続処理の完了を待ってから閉じる。
-		const pollEndedQueue = createPollEndedQueue({
-			redis: config.redisForJobQueue, connectTimeoutMs: config.processes.startupTimeoutMs, logger,
-			onLost: onQueueLost(ENDED_POLL_NOTIFICATION),
-		});
-		scope.defer(pollEndedQueue.close);
-		await pollEndedQueue.ready();
-		if (cancelled) {
-			throw timeout;
-		}
-
-		const deliverQueue = createDeliverQueue({
-			redis: config.redisForJobQueue, connectTimeoutMs: config.processes.startupTimeoutMs, logger,
+		const jobConfig = {
+			redis: config.redisForJobQueue, connectTimeoutMs: config.processes.startupTimeoutMs,
 			deliverJobMaxAttempts: config.deliverJob.deliverJobMaxAttempts,
-			onLost: onQueueLost(DELIVER),
-		});
-		scope.defer(deliverQueue.close);
-		await deliverQueue.ready();
+			deliverJobConcurrency: config.outboundHttp.deliverJobConcurrency, deliverJobPerSec: config.deliverJob.deliverJobPerSec,
+		};
+		const definitions = createBusinessJobDefinitions(jobConfig);
+		const producer = createBusinessJobRuntime({ ...jobConfig, onError: event => {
+			logger.error('job-queue.error', { queue: event.queue, error: event.error });
+			if (event.reason === 'connection-ended') {
+				onQueueLost(event.queue)();
+			}
+		} });
+		scope.defer(producer.stop);
+		await producer.runtime.ready(definitions.queues, { timeout: config.processes.startupTimeoutMs });
 		if (cancelled) {
 			throw timeout;
 		}
-
-		const webhookQueue = createUserWebhookQueue({ redis: config.redisForJobQueue, connectTimeoutMs: config.processes.startupTimeoutMs, logger, onLost: onQueueLost(USER_WEBHOOK_DELIVER) });
-		scope.defer(webhookQueue.close);
-		await webhookQueue.ready();
-		const webhooks = await openUserWebhooks({ manager: dataSource.manager, redis: config.redisForPubsub, url: config.url, timeoutMs: config.processes.startupTimeoutMs, enqueue: webhookQueue.enqueue, registerCleanup: cleanup => scope.defer(cleanup) });
+		const jobs = createBusinessJobProducers(producer, definitions, jobConfig);
+		const webhooks = await openUserWebhooks({ manager: dataSource.manager, redis: config.redisForPubsub, url: config.url, timeoutMs: config.processes.startupTimeoutMs, enqueue: jobs.enqueueWebhook, registerCleanup: cleanup => scope.defer(cleanup) });
 		if (cancelled) {
 			await webhooks.close();
 			throw timeout;
@@ -274,7 +267,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 				const key = await federationKeys.readUserKeypair(author.id);
 				return signRsaSignature2017(activity, { privateKeyPem: key.privateKeyPem, creator: `${config.url}/users/${author.id}#main-key` }, new Date(), randomBytes(16).toString('hex'));
 			},
-			enqueue: deliverQueue.deliverOne,
+			enqueue: jobs.deliverOne,
 		});
 		const recipients = createDeliveryRecipientReader(dataSource.manager);
 		const postingSearch = createPostingSearch(dataSource.manager, config, logger);
@@ -331,13 +324,13 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 				currentTime: Date.now, random: () => Math.random(),
 			}),
 			antennas: createPostingAntennas({ ...antennas, listContains: antennaReader.listContains, fullApAccount: createHostRules(new URL(config.url).host).fullApAccount, cache: timelineCache, publish: postingStream.antenna }),
-			schedulePollEnded: pollEndedQueue.schedule,
+			schedulePollEnded: jobs.schedulePollEnded,
 			// 本家と同じく投稿を受けた子で表現と宛先を決め、送信は worker の子に任せる。
 			deliver: postingNotifications.createdEvents(createDeliverCreatedNote({
 				readNote: createNoteActivityReader(dataSource.manager, { ...config.noteMedia, url: config.url, createdAtFromId: createIdCodec(config.id).createdAtFromId }),
 				readUsers: recipients.readUsers,
 				readFollowerInboxes: recipients.readFollowerInboxes,
-				enqueue: deliverQueue.deliverMany,
+				enqueue: jobs.deliverMany,
 				deliverToRelays,
 				selfUrl: config.url,
 				currentTime: Date.now,
@@ -349,7 +342,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			readFollowerInboxes: recipients.readFollowerInboxes,
 			readConcernedUsers: (snapshot: import('../modules/note/public.js').DeletedNoteSnapshot) => readDeletionConcernedUsers(dataSource.manager, snapshot),
 			deliverToRelays,
-			enqueue: deliverQueue.deliverMany,
+			enqueue: jobs.deliverMany,
 		});
 		const notePostDelete = createNotePostDelete(input => input.kind === 'instanceCounts'
 			? noteInstanceCounts.deleted(input.snapshot.authorHost)

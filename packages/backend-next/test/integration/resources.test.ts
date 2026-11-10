@@ -8,20 +8,25 @@ import { createTestDatabase } from '../helpers/database.js';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createLogger } from '../../src/platform/logger.js';
 
-const deliverQueueHooks = vi.hoisted(() => ({ beforeReady: undefined as undefined | (() => Promise<void>) }));
-vi.mock('../../src/platform/job-queue/deliver.js', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('../../src/platform/job-queue/deliver.js')>();
+const runtimeHooks = vi.hoisted(() => ({
+	afterReady: undefined as undefined | (() => Promise<void>),
+	onError: undefined as undefined | ((event: { reason: string }) => void),
+}));
+vi.mock('../../src/platform/job-queue/runtime.js', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('../../src/platform/job-queue/runtime.js')>();
 	return {
 		...actual,
-		createDeliverQueue: (options: Parameters<typeof actual.createDeliverQueue>[0]) => {
-			const queue = actual.createDeliverQueue(options);
-			return {
-				...queue,
-				async ready() {
-					await deliverQueueHooks.beforeReady?.();
-					await queue.ready();
-				},
+		createBusinessJobRuntime: (options: Parameters<typeof actual.createBusinessJobRuntime>[0]) => {
+			const owner = actual.createBusinessJobRuntime({ ...options, onError(event) {
+				options.onError(event);
+				runtimeHooks.onError?.(event);
+			} });
+			const ready = owner.runtime.ready.bind(owner.runtime);
+			owner.runtime.ready = async (...args) => {
+				await ready(...args);
+				await runtimeHooks.afterReady?.();
 			};
+			return owner;
 		},
 	};
 });
@@ -92,19 +97,24 @@ test('reports loss of the job queue connection and closes it normally without a 
 	expect(reported).toBe(false);
 });
 
-test('fails startup when a job queue connection is lost while later connections are still opening', async () => {
+test('fails startup on connection loss after producer readiness while later initialization is held', async () => {
 	const { Redis } = await import('ioredis');
 	const { randomUUID } = await import('node:crypto');
 	const connectionName = `job-queue-${randomUUID()}`;
 	const control = new Redis(database.config.redis);
-	deliverQueueHooks.beforeReady = async () => {
-		// 投入口の Queue は接続に名前を付けないため connectionName で見分ける。先に開いた投票終了の投入口が最小の ID を持つ。
+	let lossObserved = false;
+	runtimeHooks.onError = event => {
+		lossObserved ||= event.reason === 'connection-ended';
+	};
+	runtimeHooks.afterReady = async () => {
+		// 3 queue 共通の connectionName で投入口の接続を選び、1本を切断する。
+		// client ID の順序と queue の対応は前提にしない。
 		const ids = String(await control.client('LIST')).split('\n')
 			.filter(line => line.includes(`name=${connectionName} `))
 			.map(line => Number(line.match(/^id=(\d+)/)![1]));
 		expect(ids).not.toHaveLength(0);
 		await control.client('KILL', 'ID', String(Math.min(...ids)));
-		await new Promise(resolve => setTimeout(resolve, 100));
+		await vi.waitFor(() => expect(lossObserved).toBe(true));
 	};
 	try {
 		const outcome = await connectResources({ ...database.config, redisForJobQueue: { ...database.config.redisForJobQueue, connectionName } }, logger)
@@ -112,9 +122,13 @@ test('fails startup when a job queue connection is lost while later connections 
 				await resources.close();
 				return 'started';
 			}, (error: unknown) => error);
-		expect(outcome).toMatchObject({ code: 'JOB_QUEUE_REDIS_ENDED', details: { queue: 'endedPollNotification' } });
+		expect(outcome).toMatchObject({
+			code: 'JOB_QUEUE_REDIS_ENDED',
+			details: { queue: expect.stringMatching(/^(endedPollNotification|deliver|userWebhookDeliver)$/) },
+		});
 	} finally {
-		deliverQueueHooks.beforeReady = undefined;
+		runtimeHooks.afterReady = undefined;
+		runtimeHooks.onError = undefined;
 		control.disconnect();
 	}
 
@@ -213,7 +227,7 @@ test('startup rejects loss of the timeline connection while later resources are 
 	const { randomUUID } = await import('node:crypto');
 	const connectionName = `timeline174-${randomUUID()}`;
 	const control = new Redis(database.config.redis);
-	deliverQueueHooks.beforeReady = async () => {
+	runtimeHooks.afterReady = async () => {
 		const line = String(await control.client('LIST')).split('\n').find(entry => entry.includes(`name=${connectionName} `));
 		expect(line).toBeDefined();
 		await control.client('KILL', 'ID', line!.match(/^id=(\d+)/)![1]);
@@ -226,7 +240,8 @@ test('startup rejects loss of the timeline connection while later resources are 
 		}, (error: unknown) => error);
 		expect(result).toMatchObject({ code: 'TIMELINES_REDIS_ENDED' });
 	} finally {
-		deliverQueueHooks.beforeReady = undefined;
+		runtimeHooks.afterReady = undefined;
+		runtimeHooks.onError = undefined;
 		control.disconnect();
 	}
 });
@@ -244,7 +259,7 @@ test('publishes role notifications through the dedicated pubsub connection', asy
 
 test('dedicated reaction Redis uses its configured namespace, reports loss, and closes all connections', async () => {
 	const resources = await connectResources({ ...database.config,
-		redisForReactions: { ...database.config.redis, db: 1, keyPrefix: 'note168-reactions:' } }, logger);
+																																												redisForReactions: { ...database.config.redis, db: 1, keyPrefix: 'note168-reactions:' } }, logger);
 	try {
 		await resources.reactionsRedis.set('probe', 'dedicated');
 		expect(await resources.redis.get('probe')).toBeNull();

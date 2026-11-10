@@ -7,9 +7,7 @@ import { Queue, UnrecoverableError } from 'bullmq';
 import { Redis } from 'ioredis';
 import { expect, test, vi } from 'vitest';
 import { baseQueueOptions } from '../../src/platform/job-queue/connection.js';
-import { createDeliverQueue, startDeliverWorker } from '../../src/platform/job-queue/deliver.js';
-import { createPollEndedQueue, startPollEndedWorker } from '../../src/platform/job-queue/ended-poll-notification.js';
-import { createUserWebhookQueue, startUserWebhookWorker } from '../../src/platform/job-queue/user-webhook.js';
+import { openBusinessJobProducers, openDeliverWorker, openPollEndedWorker, openUserWebhookWorker } from '../helpers/business-jobs.js';
 import { openQueueAdministration } from '../../src/platform/job-queue/administration.js';
 import { testConfig } from '../helpers/database.js';
 import type { Job } from 'bullmq';
@@ -34,9 +32,7 @@ async function openFixture(name: Connected) {
 	const connection = { redis, connectTimeoutMs: 5000, logger };
 	const onLost = () => failures.push(new Error('producer connection lost'));
 	const reportFailure = (error: Error) => failures.push(error);
-	const producer = name === 'deliver' ? createDeliverQueue({ ...connection, onLost })
-		: name === 'endedPollNotification' ? createPollEndedQueue({ ...connection, onLost })
-			: createUserWebhookQueue({ ...connection, onLost });
+	const producer = openBusinessJobProducers({ ...connection, onLost });
 	await producer.ready();
 	const queue = new Queue(name, baseQueueOptions(redis, name, 5000));
 	const fixtureRedis = new Redis({ host: redis.host, port: redis.port, db: redis.db });
@@ -45,12 +41,12 @@ async function openFixture(name: Connected) {
 	return {
 		queue, redis, fixtureRedis,
 		async enqueue(marker: string) {
-			if ('deliverOne' in producer) {
+			if (name === 'deliver') {
 				await producer.deliverOne({ user: { id: 'retention-user' }, activity: { type: 'Create', id: marker }, to: `https://${marker}.example/inbox`, isSharedInbox: false });
-			} else if ('schedule' in producer) {
-				await producer.schedule({ noteId: marker, delayMs: 0 });
+			} else if (name === 'endedPollNotification') {
+				await producer.schedulePollEnded({ noteId: marker, delayMs: 0 });
 			} else {
-				await producer.enqueue({ id: marker, userId: 'retention-user', url: 'https://hook.example', secret: 'test-only' }, 'note', { id: marker });
+				await producer.enqueueWebhook({ id: marker, userId: 'retention-user', url: 'https://hook.example', secret: 'test-only' }, 'note', { id: marker });
 			}
 			const id = await (await queue.getBackend().client).get(queue.toKey('id'));
 			return (await queue.getJob(id!))!;
@@ -61,14 +57,14 @@ async function openFixture(name: Connected) {
 			}
 		}) {
 			if (name === 'deliver') {
-				stop = await startDeliverWorker({ ...connection, config: { deliverJobConcurrency: 4 }, reportFailure, process: async job => {
+				stop = await openDeliverWorker({ ...connection, config: { deliverJobConcurrency: 4 }, reportFailure, process: async job => {
 					await handle(new URL(job.to).hostname.replace(/\.example$/, ''));
 					return { kind: 'done', result: 'controlled success' };
 				} });
 			} else if (name === 'endedPollNotification') {
-				stop = await startPollEndedWorker({ ...connection, reportFailure, handle: job => handle(job.noteId) });
+				stop = await openPollEndedWorker({ ...connection, reportFailure, handle: job => handle(job.noteId) });
 			} else {
-				stop = await startUserWebhookWorker({ ...connection, reportFailure, process: async job => {
+				stop = await openUserWebhookWorker({ ...connection, reportFailure, process: async job => {
 					await handle(job.webhookId);
 					return 'controlled success';
 				} });

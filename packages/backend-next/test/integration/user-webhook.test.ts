@@ -12,10 +12,11 @@ import { createOutboundHttpClient } from '../../src/composition/outbound-http.js
 import { createDataSource } from '../../src/platform/database/data-source.js';
 import { migrateDatabase } from '../../src/platform/database/migrate.js';
 import { createLogger } from '../../src/platform/logger.js';
-import { createUserWebhookProcessor, createUserWebhookQueue, startUserWebhookWorker, USER_WEBHOOK_DELIVER } from '../../src/platform/job-queue/user-webhook.js';
+import { createUserWebhookProcessor, USER_WEBHOOK_DELIVER } from '../../src/platform/job-queue/user-webhook.js';
 import { baseQueueOptions } from '../../src/platform/job-queue/connection.js';
 import { openUserWebhooks } from '../../src/platform/user-webhooks.js';
 import { createTestDatabase } from '../helpers/database.js';
+import { openBusinessJobProducers, openUserWebhookWorker } from '../helpers/business-jobs.js';
 
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 let source: ReturnType<typeof createDataSource>;
@@ -49,9 +50,9 @@ test('real queue retains a captured hook through disable/delete and retries tran
 	await source.getRepository(MiWebhook).insert({ id: 'hook', userId: 'owner', name: 'hook', active: true, on: ['note'], url, secret: 'secret' });
 	const logger = createLogger('webhook-test', () => {});
 	const connection = { redis: database.config.redisForJobQueue, connectTimeoutMs: 10000, logger };
-	const queue = createUserWebhookQueue({ ...connection, onLost: () => {} });
+	const queue = openBusinessJobProducers({ ...connection, onLost: () => {} });
 	await queue.ready();
-	const hooks = await openUserWebhooks({ manager: source.manager, redis: database.config.redisForPubsub, url: database.config.url, timeoutMs: 10000, enqueue: queue.enqueue });
+	const hooks = await openUserWebhooks({ manager: source.manager, redis: database.config.redisForPubsub, url: database.config.url, timeoutMs: 10000, enqueue: queue.enqueueWebhook });
 	const inspect = new Queue(USER_WEBHOOK_DELIVER, baseQueueOptions(connection.redis, USER_WEBHOOK_DELIVER, 10000));
 	const processor = createUserWebhookProcessor({
 		send: createOutboundHttpClient(database.config).send, url: database.config.url,
@@ -64,7 +65,7 @@ test('real queue retains a captured hook through disable/delete and retries tran
 		await hooks.enqueue('owner', 'note', { id: 'saved' });
 		await source.getRepository(MiWebhook).delete({ id: 'hook' });
 		responseStatus = 429;
-		stop = await startUserWebhookWorker({ ...connection, process: processor.process, reportFailure: error => {
+		stop = await openUserWebhookWorker({ ...connection, process: processor.process, reportFailure: error => {
 			throw error;
 		} });
 		await vi.waitFor(async () => expect(await inspect.getDelayedCount()).toBe(1));

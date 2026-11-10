@@ -804,6 +804,12 @@ importers:
       '@hono/node-server':
         specifier: 2.1.4
         version: 2.1.4(hono@4.13.13)
+      '@mokurokujs/bullmq-adapter':
+        specifier: 0.2.0
+        version: 0.2.0(bullmq@6.3.11(ioredis@5.11.1(supports-color@10.2.2))(pg@8.23.1))(ioredis@5.11.1(supports-color@10.2.2))
+      '@mokurokujs/core':
+        specifier: 0.2.0
+        version: 0.2.0
       accepts:
         specifier: 1.3.8
         version: 1.3.8
@@ -2682,6 +2688,18 @@ packages:
 
   '@misskey-dev/tagcanvas-es@0.1.2':
     resolution: {integrity: sha512-SGqyu30/CCQyIC95Zcmj3k1vYXwfX66/arsxpl1UUulUqvlRpTpuhB7kEAAps1lqXin0rQzXknb31EeveNKsaw==}
+
+  '@mokurokujs/bullmq-adapter@0.2.0':
+    resolution: {integrity: sha512-F6UpUG7N0XRtyt/iixNhlp0rlDfgpripkYjlJJ++gdZlj2weae9c64AiQoATKpvsDSMOcNYsFSf2sYi4iLRB+w==}
+    peerDependencies:
+      bullmq: ^5.16.0 || ^6.3.11
+      ioredis: ^5.0.0
+    peerDependenciesMeta:
+      ioredis:
+        optional: true
+
+  '@mokurokujs/core@0.2.0':
+    resolution: {integrity: sha512-sEAM3XQDa+DbMo0rLdSHFANBk7UxcQbUC0FJjNMIGFeg9HP3l33DoOfX5Jxw3z91ZDatcVgImqxfADZL0pl0vw==}
 
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.4':
     resolution: {integrity: sha512-LCkGo6JDfaBhgST7UpPWgNgLINpcpabaHfyz5OBx75nUYxBsaEPxjnyNjWpeb/xBup/682QnBfRBy2/LvPutZQ==}
@@ -9511,6 +9529,9 @@ packages:
     resolution: {integrity: sha512-dSvYKdvLsAHCDqPOhIwk/q5CvuWtTB3Dgpoe0uVEFjTzIOAmsQpprX25InCvrvJsirEbu1OHyy67n/kAj1Sw/w==}
     engines: {node: '>=18'}
 
+  zod@4.6.7:
+    resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
+
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
@@ -10609,6 +10630,16 @@ snapshots:
       fastify: 5.12.3
 
   '@misskey-dev/tagcanvas-es@0.1.2': {}
+
+  '@mokurokujs/bullmq-adapter@0.2.0(bullmq@6.3.11(ioredis@5.11.1(supports-color@10.2.2))(pg@8.23.1))(ioredis@5.11.1(supports-color@10.2.2))':
+    dependencies:
+      '@mokurokujs/core': 0.2.0
+      bullmq: 6.3.11(ioredis@5.11.1(supports-color@10.2.2))(pg@8.23.1)
+      zod: 4.6.7
+    optionalDependencies:
+      ioredis: 5.11.1(supports-color@10.2.2)
+
+  '@mokurokujs/core@0.2.0': {}
 
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.4':
     optional: true
@@ -18469,5 +18500,7 @@ snapshots:
       compress-commons: 7.0.1
       normalize-path: 3.0.0
       readable-stream: 4.7.0
+
+  zod@4.6.7: {}
 
   zwitch@2.0.4: {}

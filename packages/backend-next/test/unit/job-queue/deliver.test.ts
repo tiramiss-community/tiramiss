@@ -11,8 +11,10 @@ import { afterAll, expect, test, vi } from 'vitest';
 import { loadConfig } from '../../../src/config/load-config.js';
 import { baseQueueOptions } from '../../../src/platform/job-queue/connection.js';
 import {
-	createDeliverQueue, createDeliverProcessor, DELIVER, deliverJobs, deliverWorkerOptions, httpRelatedBackoff, parseDeliverJob, settleDeliverJob,
+	createDeliverProcessor, DELIVER, deliverJobs, deliverWorkerOptions, httpRelatedBackoff, parseDeliverJob, settleDeliverJob,
 } from '../../../src/platform/job-queue/deliver.js';
+import { createBusinessJobDefinitions, createBusinessJobProducers } from '../../../src/platform/job-queue/business-jobs.js';
+import { createBusinessJobRuntime } from '../../../src/platform/job-queue/runtime.js';
 import { createLogger } from '../../../src/platform/logger.js';
 import { loadApDeliverCases } from '../../helpers/ap-deliver-cases.js';
 import type { RedisConfig, RuntimeConfig } from '../../../src/config/types.js';
@@ -152,9 +154,9 @@ test('a failed attempt is logged with the inbox and the stop reason, and the err
 	];
 	const process = createDeliverProcessor(async () => outcomes.shift()!, logger);
 
-	await expect(process({ id: '1', name: 'remote.example', data: job, attemptsMade: 0 })).rejects.toBeInstanceOf(UnrecoverableError);
-	await expect(process({ id: '2', name: 'remote.example', data: job, attemptsMade: 3 })).rejects.toBe(network);
-	await expect(process({ id: '3', name: 'x', data: {}, attemptsMade: 0 })).rejects.toMatchObject({ code: 'INVALID_JOB_PAYLOAD' });
+	await expect(process(job, { jobId: '1', jobName: 'remote.example', attempt: 1, timestamp: new Date() })).rejects.toBeInstanceOf(UnrecoverableError);
+	await expect(process(job, { jobId: '2', jobName: 'remote.example', attempt: 4, timestamp: new Date() })).rejects.toBe(network);
+	await expect(process({} as never, { jobId: '3', jobName: 'x', attempt: 1, timestamp: new Date() })).rejects.toMatchObject({ code: 'INVALID_JOB_PAYLOAD' });
 
 	expect(logs.filter(line => line.event === 'job.failed')).toEqual([
 		expect.objectContaining({ queue: DELIVER, jobId: '1', to: job.to, reason: '404 Not Found', error: { name: 'UnrecoverableError' } }),
@@ -172,7 +174,9 @@ test.for(inputs.configs.map((input, index) => [input.id, input, cases.enqueue[in
 		calls.push(['add', ...args]);
 		return {} as never;
 	});
-	const producer = createDeliverQueue({ redis: inputs.redisForJobQueue[0].options, connectTimeoutMs: 5000, logger: createLogger('test', () => {}), onLost: () => {}, ...config.deliverJob });
+	const connection = { redis: inputs.redisForJobQueue[0].options, connectTimeoutMs: 5000 };
+	const owner = createBusinessJobRuntime({ ...connection, onError: () => {} });
+	const producer = createBusinessJobProducers(owner, createBusinessJobDefinitions(connection), config.deliverJob);
 	try {
 		for (const [index, c] of inputs.deliver.entries()) {
 			calls.length = 0;
@@ -181,6 +185,6 @@ test.for(inputs.configs.map((input, index) => [input.id, input, cases.enqueue[in
 		}
 	} finally {
 		add.mockRestore();
-		await producer.close();
+		await owner.stop();
 	}
 });
