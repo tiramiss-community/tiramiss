@@ -107,7 +107,8 @@ test('fails startup on connection loss after producer readiness while later init
 		lossObserved ||= event.reason === 'connection-ended';
 	};
 	runtimeHooks.afterReady = async () => {
-		// 投入口の Queue は接続に名前を付けないため connectionName で見分ける。先に開いた投票終了の投入口が最小の ID を持つ。
+		// 3 queue 共通の connectionName で投入口の接続を選び、1本を切断する。
+		// client ID の順序と queue の対応は前提にしない。
 		const ids = String(await control.client('LIST')).split('\n')
 			.filter(line => line.includes(`name=${connectionName} `))
 			.map(line => Number(line.match(/^id=(\d+)/)![1]));
@@ -121,7 +122,10 @@ test('fails startup on connection loss after producer readiness while later init
 				await resources.close();
 				return 'started';
 			}, (error: unknown) => error);
-		expect(outcome).toMatchObject({ code: 'JOB_QUEUE_REDIS_ENDED', details: { queue: 'endedPollNotification' } });
+		expect(outcome).toMatchObject({
+			code: 'JOB_QUEUE_REDIS_ENDED',
+			details: { queue: expect.stringMatching(/^(endedPollNotification|deliver|userWebhookDeliver)$/) },
+		});
 	} finally {
 		runtimeHooks.afterReady = undefined;
 		runtimeHooks.onError = undefined;
