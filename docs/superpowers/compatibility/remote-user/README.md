@@ -195,3 +195,17 @@ real transport/DB and native posting-to-delivery slice. Their actor-effect table
 implemented paths, existing concrete ownership and unresolved initial compatibility scope.
 All 95 unit cases are consumed; they are not 95 real HTTP cases. Hashes, titles and
 source bindings detect drift, not semantic parity. #195/#176/#127 remain incomplete.
+
+## Public actor user hashtags follow-up (2026-11-10)
+
+The bounded public remote-mention caller now starts attached user hashtag work on actor create commit, canonical duplicate fallback and refresh Profile success. [Design](../../specs/2026-11-10-remote-user-hashtags-design.md), [plan](../../plans/2026-11-10-remote-user-hashtags-195.md) and [current measured results](runtime-results.md#public-actor-user-hashtags-2026-11-10) define this scope.
+
+`user-hashtags-source-probe.mjs` / `user-hashtags-observations.json` are a **separate 10-case source-method corpus**, not edits to the historical 95 cases. It records actor-normalized duplicates, canonical old tags, URI-entry snapshot, deleted/failed writes and settlement while hashtag work is held. Reproduce it with:
+
+```sh
+UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream UPSTREAM_SOURCE_MODE=verified-files node docs/superpowers/compatibility/remote-user/user-hashtags-source-probe.mjs --check
+```
+
+The existing five `profile` cases in `../note/hashtag/source-observations.json` remain unchanged. `packages/backend-next/test/unit/federation/user-hashtags.test.ts` consumes their operations; `packages/backend-next/test/integration/note-hashtags.test.ts` consumes their real attached rows and shared Redis outputs using the fixture's explicit clock. Actor boundary consumers are `packages/backend-next/test/unit/federation/remote-actor.test.ts` and `packages/backend-next/test/unit/note/create-note.test.ts`. Real public caller/failure coverage is in `packages/backend-next/test/integration/remote-user.test.ts`; native pending-hashtag DB shutdown coverage is in `packages/backend-next/test/processes/remote-mentions.test.ts`.
+
+`user-hashtags-runtime-evidence.json` adds actual current measurements and renewed consumer identities. The original `runtime-evidence.json`, its source95 bindings/receipts and N7 six-gap capture remain historical evidence. This additive result supersedes **user-hashtags alone for the public caller**; the other five actor gaps and local profile API remain outside this slice. `notes/create` stays partial, `postingComplete:false`, and #195/#176/#127 stay incomplete. Source doubles are not full upstream HTTP evidence.

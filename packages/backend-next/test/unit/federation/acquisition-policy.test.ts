@@ -43,7 +43,9 @@ function ports(meta: Partial<MiMeta> = {}, selfUrl = 'http://local.test') {
 	})]);
 	const outboundHttp = createOutboundHttpClient(config);
 	clients.push(outboundHttp);
-	return createRemoteUsers({ dataSource, outboundHttp, federationKeys: undefined as never }, config);
+	return createRemoteUsers({ userHashtags: { start: () => {
+		throw Error('unexpected actor mutation');
+	} }, dataSource, outboundHttp, federationKeys: undefined as never }, config);
 }
 
 test.each([
@@ -172,7 +174,7 @@ test.each([false, true])('denied follower collection remains a visibility fallba
 	peer.respond(async req => req.path === '/followers'
 		? { status: 302, headers: { Location: 'http://www.remote.test/followers' } }
 		: { body: plainActor('http://remote.test', 'alice', { followers: 'http://remote.test/followers' }) });
-	const existing = refresh ? { id: 'existing', username: 'alice', host: 'remote.test', uri: 'http://remote.test/users/alice', lastFetchedAtMs: null, isDeleted: false } : null;
+	const existing = refresh ? { id: 'existing', username: 'alice', host: 'remote.test', uri: 'http://remote.test/users/alice', lastFetchedAtMs: null, isDeleted: false, tags: [] } : null;
 	const plan = await ports({ blockedHosts: ['www.remote.test'] }).acquireActor('http://remote.test/users/alice', existing, Date.now, () => 'new-actor');
 	expect(plan.profile.followersVisibility).toBe(refresh ? undefined : 'private');
 	expect(plan.uri).toBe('http://remote.test/users/alice');

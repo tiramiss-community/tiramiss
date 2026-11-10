@@ -2,18 +2,18 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { createActorRefresher } from '../../modules/federation/public.js';
 import { IsNull } from 'typeorm';
 import { MiUser, MiUserProfile, MiUserPublickey, MiFollowing } from 'backend-upstream/entities';
+import { createActorRefresher } from '../../modules/federation/public.js';
 import { createTransactionRunner } from './transaction-runner.js';
 import type { DataSource, EntityManager } from 'typeorm';
-import type { Account, RemoteUserFacts, RemoteActorCreateScope, RemoteActorPlan } from '../../modules/federation/public.js';
+import type { Account, StartUserHashtags, RemoteUserFacts, RemoteActorCreateScope, RemoteActorPlan } from '../../modules/federation/public.js';
 
 function facts(user: MiUser | null): RemoteUserFacts | null {
-	return user && { id: user.id, username: user.username, host: user.host, uri: user.uri, lastFetchedAtMs: user.lastFetchedAt?.getTime() ?? null, isDeleted: user.isDeleted, movedToUri: user.movedToUri };
+	return user && { id: user.id, username: user.username, host: user.host, uri: user.uri, lastFetchedAtMs: user.lastFetchedAt?.getTime() ?? null, isDeleted: user.isDeleted, tags: [...user.tags], movedToUri: user.movedToUri };
 }
 
-export function createRemoteUserRepository(manager: EntityManager) {
+export function createRemoteUserRepository(manager: EntityManager, startUserHashtags: StartUserHashtags) {
 	const users = manager.getRepository(MiUser);
 	return {
 		readByAccount: async (account: Account) => facts(await users.findOneBy({ usernameLower: account.username, host: account.host ?? IsNull() })),
@@ -36,7 +36,7 @@ export function createRemoteUserRepository(manager: EntityManager) {
 			async updateFollowing(id, sharedInbox) {
 				await manager.getRepository(MiFollowing).update({ followerId: id }, { followerSharedInbox: sharedInbox });
 			},
-		}),
+		}, startUserHashtags),
 	};
 }
 export function createRemoteActorTransactions(source: DataSource) {
@@ -70,6 +70,6 @@ export function createRemoteActorTransactions(source: DataSource) {
 					active = false;
 				}
 			});
-		}
+		},
 	};
 }

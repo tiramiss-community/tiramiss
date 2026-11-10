@@ -10,10 +10,11 @@ import { renderLocalActor } from '../modules/federation/public.js';
 import type { DataSource } from 'typeorm';
 import type { FederationKeys } from './federation-keys.js';
 import type { OutboundHttp, OutboundSend } from '../application/outbound-http.js';
-import type { RemoteUserPorts } from '../modules/federation/public.js';
+import type { RemoteUserPorts, StartUserHashtags } from '../modules/federation/public.js';
 import type { RuntimeConfig } from '../config/types.js';
 export function createRemoteUsers(parts: {
 	dataSource: DataSource;
+	userHashtags: { start: StartUserHashtags };
 	federationKeys: FederationKeys;
 	outboundHttp: OutboundHttp;
 }, config: RuntimeConfig): RemoteUserPorts {
@@ -50,7 +51,8 @@ export function createRemoteUsers(parts: {
 		return type === 'users' ? id ?? null : null;
 	};
 	return {
-		...createRemoteUserRepository(parts.dataSource.manager), selfHost: new URL(config.url).host, localId, insertActor,
+		...createRemoteUserRepository(parts.dataSource.manager, parts.userHashtags.start), selfHost: new URL(config.url).host, localId, insertActor,
+		startUserHashtags: parts.userHashtags.start,
 		actorTransactions: createRemoteActorTransactions(parts.dataSource),
 		async webfinger(account) {
 			const acct = `${account.username}@${account.host}`;

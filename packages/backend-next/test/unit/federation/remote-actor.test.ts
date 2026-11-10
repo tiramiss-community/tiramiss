@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { readFileSync } from 'node:fs';
 import { expect, test } from 'vitest';
 import { validateActor, prepareActor, insertActor, collectionVisibility, truncate } from '../../../src/modules/federation/public.js';
 import { OutboundStatusError } from '../../../src/application/outbound-http.js';
@@ -9,7 +10,7 @@ import { htmlToMfm } from '../../../src/modules/federation/html-to-mfm.js';
 import { remoteSource, encode, decode, sourceNow } from '../../helpers/remote-source.js';
 import type { RemoteUserFacts } from '../../../src/modules/federation/public.js';
 
-const existing: RemoteUserFacts = { id: 'remote', username: 'Original', host: 'remote.test', uri: 'https://remote.test/users/a', lastFetchedAtMs: null, isDeleted: false, movedToUri: null };
+const existing: RemoteUserFacts = { id: 'remote', username: 'Original', host: 'remote.test', uri: 'https://remote.test/users/a', lastFetchedAtMs: null, isDeleted: false, tags: [], movedToUri: null };
 test.each([
 	{ following: { type: 'Collection', items: [] } },
 	{ followers: 7 },
@@ -67,7 +68,7 @@ test.each(cases.filter((c: { id: string; input: { operation?: string; fail?: str
 				writes.push(encode(v));
 			}, insertPublickey: async v => {
 				writes.push(encode(v));
-			}
+			},
 		}, plan);
 		expect(writes).toEqual(fixture.expected.events.filter((e: { op: string; }) => e.op.endsWith('.save')).map((e: { args: unknown; }) => e.args));
 	}
@@ -109,7 +110,7 @@ for (const fixture of cases.filter((c: { input: { operation?: string; }; }) => c
 			updatePublickey: (id, key) => update('Key', { userId: id }, key),
 			updateProfile: (id, profile) => update('Profile', { userId: id }, profile),
 			updateFollowing: (id, sharedInbox) => update('Following', { followerId: id }, { followerSharedInbox: sharedInbox }),
-		});
+		}, () => {});
 		try {
 			const plan = await prepareActor(material, existing, sourceNow, 'unused');
 			await refresh(existing.id, plan);
@@ -137,7 +138,7 @@ test('actor-create-profile-failure: actual insertion attempts User then Profile,
 				events.push({ op: 'Profile.save', args: profile }); throw new Error('Profile write failed');
 			}, insertPublickey: async () => {
 				throw new Error('unexpected Key write');
-			}
+			},
 		}, plan);
 	} catch (error) {
 		events.push({ op: 'transaction.rollback' }); expect((error as Error).message).toBe(fixture.expected.error.message);
@@ -158,7 +159,9 @@ test('description failure is delayed until after the User/Key commits on refresh
 			events.push('Profile');
 		}, updateFollowing: async () => {
 			events.push('Following');
-		}
+		},
+	}, () => {
+		throw Error('unexpected hashtags after failed Profile');
 	});
 	await expect(refresher('remote', await prepareActor(material, existing, sourceNow, 'unused'))).rejects.toThrow('Invalid URL');
 	expect(events).toEqual(['User', 'Key']);
@@ -170,7 +173,7 @@ test('description failure is delayed until after the User/Key commits on refresh
 			events.push('Profile');
 		}, insertPublickey: async () => {
 			events.push('Key');
-		}
+		},
 	}, await prepareActor(material, null, sourceNow, 'new-user'))).rejects.toThrow('Invalid URL');
 	expect(events).toEqual(['User']);
 });
@@ -193,7 +196,9 @@ test.each(['create', 'refresh'])('malformed followed-message fails at the %s Pro
 		return operation === 'refresh'
 			? createActorRefresher({ updateUser: userWrite, updatePublickey: keyWrite, updateProfile: profileWrite, updateFollowing: async () => {
 				events.push('Following');
-			} })(existing.id, plan)
+			} }, () => {
+				throw Error('unexpected hashtags after failed Profile');
+			})(existing.id, plan)
 			: insertActor({ insertUser: async () => {
 				await userWrite();
 			}, insertProfile: profileWrite, insertPublickey: keyWrite }, plan);
@@ -206,4 +211,94 @@ test.each([undefined, null, [], { url: null }, {}].map(icon => ({ icon })))('exp
 	const material = validateActor({ type: 'Person', id: 'https://remote.test/users/a', preferredUsername: 'Alice', inbox: 'https://remote.test/inbox', icon, image: icon }, 'https://remote.test/users/a');
 	const plan = await prepareActor(material, existing, sourceNow, 'unused');
 	expect(plan.user).toMatchObject({ avatarId: null, avatarUrl: null, avatarBlurhash: null, bannerId: null, bannerUrl: null, bannerBlurhash: null });
+});
+
+test('Profile success launches hashtags before Following without awaiting the hashtag gate', async () => {
+	const { createActorRefresher } = await import('../../../src/modules/federation/public.js');
+	const events: string[] = [];
+	let release!: () => void;
+	const gate = new Promise<void>(resolve => {
+		release = resolve;
+	});
+	const material = validateActor({ type: 'Person', id: existing.uri, preferredUsername: 'Alice', inbox: 'https://remote.test/inbox', publicKey: { id: `${existing.uri}#key`, publicKeyPem: 'key' } }, existing.uri!);
+	const plan = await prepareActor(material, existing, sourceNow, 'unused');
+	const refresh = createActorRefresher({
+		updateUser: async () => {
+			events.push('User');
+			return true;
+		},
+		updatePublickey: async () => {
+			events.push('Key');
+		},
+		updateProfile: async () => {
+			events.push('Profile');
+		},
+		updateFollowing: async () => {
+			events.push('Following');
+		},
+	}, () => {
+		events.push('hashtags');
+		void gate;
+	});
+	try {
+		await expect(refresh(existing.id, plan)).resolves.toBe('updated');
+		expect(events).toEqual(['User', 'Key', 'Profile', 'hashtags', 'Following']);
+	} finally {
+		release();
+	}
+});
+const hashtagBoundaries: {
+	id: string;
+	input: {
+		operation: string;
+		fail?: string;
+		deleted?: boolean;
+	};
+	expected: {
+		events: {
+			op: string;
+			args?: unknown;
+		}[];
+	};
+}[] = JSON.parse(readFileSync(new URL('../../../../../docs/superpowers/compatibility/remote-user/user-hashtags-observations.json', import.meta.url), 'utf8')).cases;
+test.each(hashtagBoundaries.filter(c => c.input.operation === 'refresh'))('$id preserves pinned launch, failure and nonwaiting boundaries', async (fixture) => {
+	const { createActorRefresher } = await import('../../../src/modules/federation/public.js');
+	const events: {
+		op: string;
+		args?: unknown;
+	}[] = [];
+	const update = async (name: string) => {
+		events.push({ op: name });
+		if (fixture.input.fail === name) {
+			throw Error(`${name} write failed`);
+		}
+	};
+	const old = { ...existing, tags: ['uri-entry-old'] };
+	const material = validateActor({ type: 'Person', id: old.uri, preferredUsername: 'Alice', inbox: 'https://remote.test/inbox', tag: [{ type: 'Hashtag', name: '#Ａ' }, { type: 'Hashtag', name: '#a' }], publicKey: { id: 'https://remote.test/key', publicKeyPem: 'test-key' } }, old.uri!);
+	const plan = await prepareActor(material, old, sourceNow, 'unused');
+	let started = false;
+	let release!: () => void;
+	const gate = new Promise<void>(resolve => {
+		release = resolve;
+	});
+	const refresh = createActorRefresher({ updateUser: async () => {
+			await update('User');
+			return !fixture.input.deleted;
+		}, updatePublickey: () => update('Key'), updateProfile: () => update('Profile'), updateFollowing: () => update('Following') }, (user, tags) => {
+		started = true;
+		events.push({ op: 'hashtags', args: { id: user.id, host: user.host, oldTags: [...user.tags], tags: [...tags] } });
+		void gate;
+	});
+	try {
+		let error: string | undefined;
+		try {
+			await refresh(old.id, plan);
+		} catch (e) {
+			error = (e as Error).message;
+		}
+		events.push({ op: 'actor.settled', args: { hashtagStarted: started, hashtagPending: started, ...(error ? { error } : {}) } });
+		expect(events).toEqual(fixture.expected.events.filter(e => !['entry.snapshot', 'actor.resolve'].includes(e.op)));
+	} finally {
+		release();
+	}
 });

@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { normalizeHashtag } from '../hashtag/public.js';
 import { matchesWords } from './keywords.js';
 import type { NotePostSaveInput } from './create-contract.js';
 
@@ -16,10 +17,10 @@ export function planNoteHashtags(input: NotePostSaveInput): HashtagMention[] {
 	if (note.visibility !== 'public' && note.visibility !== 'home') {
 		return [];
 	}
-	return note.tags.map(tag => ({ tag: tag.normalize('NFKC').toLowerCase(), userId: note.userId, userHost: note.userHost }));
+	return note.tags.map(tag => ({ tag: normalizeHashtag(tag), userId: note.userId, userHost: note.userHost }));
 }
 
 export function canRankHashtag(tag: string, settings: HashtagRankingSettings): boolean {
-	const normalized = tag.normalize('NFKC').toLowerCase();
-	return !settings.hiddenTags.some(hidden => hidden.normalize('NFKC').toLowerCase() === normalized) && !matchesWords(normalized, settings.sensitiveWords);
+	const normalized = normalizeHashtag(tag);
+	return !settings.hiddenTags.some(hidden => normalizeHashtag(hidden) === normalized) && !matchesWords(normalized, settings.sensitiveWords);
 }

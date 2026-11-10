@@ -172,3 +172,43 @@ test('ordinary shutdown deadline terminates a blocked accepted resolution withou
 		release.resolve(); gated = null; await http.close(); await config.close();
 	}
 });
+
+test('SIGTERM drains pending hashtag DB work after actor HTTP and posting have already settled', async () => {
+	const { MiHashtag } = await import('backend-upstream/entities');
+	const port = await freePort(); database.config.http.port = port; peer.route('local.test', port);
+	const config = await configuration(database.config);
+	const http = launch('built/entrypoints/http.js', config.path, { MISSKEY_WEBFINGER_USE_HTTP: 'true' });
+	const lock = source.createQueryRunner();
+	let transaction = false;
+	register('hashtagdrain', { tag: [{ type: 'Hashtag', name: '#drainattached' }] });
+	await source.getRepository(MiHashtag).insert({ id: codec.newId(Date.now()), name: 'drainattached' });
+	try {
+		await http.ready;
+		await lock.connect(); await lock.startTransaction(); transaction = true;
+		await lock.query('SELECT id FROM hashtag WHERE name = $1 FOR UPDATE', ['drainattached']);
+		const note = await post(port, { text: '@hashtagdrain@remote.test', localOnly: true });
+		const actor = await source.getRepository(MiUser).findOneByOrFail({ usernameLower: 'hashtagdrain', host: 'remote.test' });
+		expect(peer.requests.some(req => req.path === '/users/hashtagdrain')).toBe(true);
+		expect((await source.getRepository(MiNote).findOneByOrFail({ id: note.id })).mentions).toEqual([actor.id]);
+		// Prove the held operation is the attached writer, not a still-pending actor request.
+		await vi.waitFor(async () => {
+			const blocked = await source.query('SELECT query FROM pg_stat_activity WHERE datname = current_database() AND wait_event_type = \'Lock\' AND query LIKE \'%INSERT INTO "hashtag"%\'');
+			expect(blocked.length).toBeGreaterThan(0);
+		});
+		http.child.kill('SIGTERM');
+		let exited = false; void http.exit.then(() => {
+			exited = true;
+		});
+		await new Promise(resolve => setTimeout(resolve, 200)); expect(exited).toBe(false);
+		expect(await source.getRepository(MiHashtag).findOneBy({ name: 'drainattached' })).toMatchObject({ attachedUserIds: [], attachedUsersCount: 0 });
+		await lock.commitTransaction(); transaction = false;
+		expect((await http.exit).code, http.output()).toBe(0);
+		expect(await source.getRepository(MiHashtag).findOneBy({ name: 'drainattached' })).toMatchObject({ attachedUserIds: [actor.id], attachedUsersCount: 1, attachedRemoteUserIds: [actor.id], attachedRemoteUsersCount: 1 });
+		expect(http.output()).not.toContain('user-hashtags.failed');
+	} finally {
+		if (transaction) {
+			await lock.rollbackTransaction();
+		}
+		await lock.release(); await http.close(); await config.close();
+	}
+});

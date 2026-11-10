@@ -5,6 +5,7 @@
 import { randomBytes } from 'node:crypto';
 import { MiInstance } from 'backend-upstream/entities';
 import { Redis } from 'ioredis';
+import { createUserHashtags } from '../composition/user-hashtags.js';
 import { createOutboundHttpClient } from '../composition/outbound-http.js';
 import { createPostingAntennas } from '../composition/posting-antennas.js';
 import { createHostRules } from '../modules/federation/public.js';
@@ -16,6 +17,7 @@ import { createPostingRoleTimelines } from '../composition/posting-role-timeline
 import { createPostingNotifications } from '../composition/posting-notifications.js';
 import { createFederationKeys } from '../composition/federation-keys.js';
 import { createDeliverCreatedNote, createDeliverToRelays, createDeliverDeletedNote } from '../modules/federation/public.js';
+import { createUserHashtagWriter } from './database/user-hashtags.js';
 import { createRoleTimelineReader } from './database/role-timelines.js';
 import { createFeaturedRanking } from './featured-ranking.js';
 import { createNoteHashtagWriter, readHashtagRankingSettings } from './database/note-hashtags.js';
@@ -306,6 +308,12 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			onError: (error, details) => logger.error('note-instance-counts.failed', { error, ...details }),
 		});
 		scope.defer(noteInstanceCounts.close);
+		const userHashtags = createUserHashtags({
+			change: createUserHashtagWriter(dataSource.manager, () => createIdCodec(config.id).newId(Date.now())).change,
+			ranking: createHashtagRanking(redis, Date.now),
+			readSettings: () => readHashtagRankingSettings(dataSource.manager),
+		}, logger);
+		scope.defer(userHashtags.close);
 		const notePostSave = createNotePostSave(createNotePostSaveWork({
 			instances: input => noteInstanceCounts.created(input.createdSnapshot?.author?.host ?? null),
 			counts: createNotePostSaveCounts(dataSource.manager),
@@ -362,7 +370,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw new DiagnosticError('TIMELINES_REDIS_ENDED', {});
 		}
 		active = true;
-		return { dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
+		return { dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
 	};
 
 	try {
