@@ -38,6 +38,7 @@ export type OutboundGetJson = (url: string, accept?: string, headers?: Record<st
 export interface OutboundHttp {
 	send: OutboundSend;
 	getJson: OutboundGetJson;
+	getHtml(url: string, accept?: string, headers?: Record<string, string>, allowLocalAddress?: boolean): Promise<string>;
 }
 
 export class OutboundStatusError extends Error {

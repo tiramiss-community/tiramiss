@@ -40,3 +40,6 @@ export { htmlToMfm } from './html-to-mfm.js';
 
 export { planUserHashtags } from './user-hashtags.js';
 export type { UserHashtagSnapshot, UserHashtagChange, StartUserHashtags } from './user-hashtags.js';
+
+export { selectNodeInfoUrl, metadataName, metadataDescription, metadataColor, metadataIcon, metadataFavicon, metadataPatch } from './instance-metadata.js';
+export type { InstanceMetadataTarget, HtmlMetadata } from './instance-metadata.js';

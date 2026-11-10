@@ -577,6 +577,8 @@ async function instanceCount() {
 test('real public actor/profile/key commit increments instance once; fresh and stale-refresh lookups do not increment; raw increment leaves registration cache stale', async () => {
 	await resources.actorInstanceRegistration.idle();
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: true });
+	// Isolate raw increment cache behavior: concurrent metadata legitimately refreshes the whole row.
+	await resources.redis.set('fetchInstanceMetadata:mutex:v2:remote.test', '1', 'EX', 30);
 	const before = await instanceCount();
 	register('instancecount', { publicKey: { id: `${peer.origin}/users/instancecount#key`, publicKeyPem: 'instance-key' } });
 	const result = await post({ text: '@instancecount@remote.test', localOnly: true });
@@ -594,6 +596,7 @@ test('real public actor/profile/key commit increments instance once; fresh and s
 	await stale(row.id); await post({ text: '@instancecount@remote.test refresh', localOnly: true });
 	expect(await instanceCount()).toBe(before + 1);
 	expect(await resources.redis.get(key)).toBe(cached);
+	await resources.redis.del('fetchInstanceMetadata:mutex:v2:remote.test');
 });
 
 test.each([true, false])('two public unknown aliases force canonical duplicate recovery and stats=%s counts each committed/recovered acquisition', async enabled => {
@@ -674,6 +677,7 @@ test('two real HTTP actors concurrently first-register one host, and parallel di
 	await resources.actorInstanceRegistration.idle();
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: true });
 	const host = 'instance-first.test'; peer.route(host);
+	await resources.redis.set(`fetchInstanceMetadata:mutex:v2:${host}`, '1', 'EX', 30);
 	for (const name of ['instance_first_a', 'instance_first_b']) {
 		register(name, { id: `http://${host}/users/${name}`, inbox: `http://${host}/inbox/${name}`, endpoints: { sharedInbox: `http://${host}/inbox/shared` }, publicKey: { id: `http://${host}/users/${name}#key`, publicKeyPem: 'key' } });
 		links.set(name, [{ rel: 'self', href: `http://${host}/users/${name}` }]);
@@ -696,5 +700,6 @@ test('two real HTTP actors concurrently first-register one host, and parallel di
 		expect(await resources.redis.get(cacheKey)).toBe(cached);
 	} finally {
 		barrier.release.resolve(); actorBarrier = null;
+		await resources.redis.del(`fetchInstanceMetadata:mutex:v2:${host}`);
 	}
 });

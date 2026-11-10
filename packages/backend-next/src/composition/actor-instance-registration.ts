@@ -2,14 +2,24 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import type { InstanceMetadataTarget } from '../modules/federation/public.js';
 import type { Logger } from '../platform/logger.js';
 
 export function createActorInstanceRegistration(ports: {
 	enabled(): Promise<boolean>;
-	fetchOrRegister(host: string): Promise<{ id: string }>;
+	fetchOrRegister(host: string): Promise<InstanceMetadataTarget>;
 	increment(id: string): Promise<void>;
+	fetchMetadata(instance: InstanceMetadataTarget): Promise<void>;
 }, logger: Logger) {
 	const pending = new Set<Promise<void>>();
+
+	function track(host: string, stage: string, work: () => Promise<void>): void {
+		const running = (async () => work())().catch(error => {
+			logger.error('actor-instance-registration.failed', { host, stage, error });
+		});
+		pending.add(running);
+		void running.then(() => pending.delete(running));
+	}
 
 	async function run(host: string): Promise<void> {
 		let stage = 'settings';
@@ -20,8 +30,8 @@ export function createActorInstanceRegistration(ports: {
 			}
 			stage = 'register';
 			const instance = await ports.fetchOrRegister(host);
-			stage = 'increment';
-			await ports.increment(instance.id);
+			track(host, 'increment', () => ports.increment(instance.id));
+			track(host, 'metadata', () => ports.fetchMetadata(instance));
 		} catch (error) {
 			logger.error('actor-instance-registration.failed', { host, stage, error });
 		}

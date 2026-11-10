@@ -67,6 +67,10 @@ export function createOutboundHttp(agents: OutboundAgents, userAgent: string): O
 
 	return {
 		send,
+		async getHtml(url, accept = 'text/html, */*', headers, allowLocalAddress = false) {
+			const response = await send(url, { method: 'GET', headers: Object.assign({ Accept: accept }, headers ?? {}), timeoutMs: 5000, allowLocalAddress });
+			return await response.text();
+		},
 		async getJson(url, accept = 'application/json, */*', headers) {
 			const response = await send(url, {
 				method: 'GET',

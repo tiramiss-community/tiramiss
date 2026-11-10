@@ -1,0 +1,1877 @@
+{
+	"upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+	"scope": "actual pinned methods with explicit HTTP/Redis/ledger/logger/clock doubles; real source parser/tinycolor dependencies; not full upstream server",
+	"guards": {
+		"core/FetchInstanceMetadataService.ts": {
+			"file": "5b6fe1894bfff41c16a17a56713ed0ecdd830db0d44dab03eb92ea20d95386a6",
+			"methods": {
+				"tryLock": "ba51396b65964e41b353301aa1f24636b8cb0a52797b07ccc1674296a24e3f71",
+				"unlock": "d613060c1bfeb66f29bea62b5676960210f968a723af719802edab8f53ce2e4c",
+				"fetchInstanceMetadata": "6dbf830af4d7959f6c7c943ddedfc6992230e3ba54512232702365f98b0f9f89",
+				"fetchNodeinfo": "52c7379d3a6f8e43629e1d982025daa02bd51c7faac5edbb7c0b2b2a374b0e95",
+				"fetchDom": "cf5b66f6fade9da65adb99a703d2880f2217f1023dcc8a66c22716387b4d7ac9",
+				"fetchManifest": "cb2df44516bd4b2d4596e0284e3a465bb2810d0a5ce8ae7928bede2ac999c88f",
+				"fetchFaviconUrl": "1751ad53e7de40f1d76696673f2646e7a698662d480f4dd835bcc38e25d12e33",
+				"fetchIconUrl": "a2fa79a8d4e368bb53766f6e18aceb7a08658ea83a5764262105b6eb679e6549",
+				"getThemeColor": "6a1c2b93b3b86830204034e661c37646391b11493e6eae318b22049cfdc5a600",
+				"getSiteName": "c3ef64e08d8d205062c8d37fb9f48dd507d2c238f7da3c8f72508f07d0a3b06c",
+				"getDescription": "2d8fc24a82fcf48b28dcd253c9858f2240712ec117553fd954458cda9e3d097a"
+			}
+		},
+		"core/HttpRequestService.ts": {
+			"file": "3b91d82af54f5988b7a5f12f3467a35e161fb015c53f441451afcf7d4e730af2",
+			"methods": {
+				"getHtml": "bb147571755d78f6124f0d3e3b815426e25dd2e7474d21458a50daf51f3182f7"
+			}
+		},
+		"queue/processors/DeliverProcessorService.ts": {
+			"file": "1837a7bcc1871c88e25d7a90035730c2c7ddd17b238a56415c33f3e7301ffd85",
+			"methods": {
+				"process": "31ff95370a57f8090db84d8fc333780d85aab0c4b239fa9b8ea81d23e9dada9d"
+			}
+		}
+	},
+	"methods": {
+		"FetchInstanceMetadataService.tryLock": "ba51396b65964e41b353301aa1f24636b8cb0a52797b07ccc1674296a24e3f71",
+		"FetchInstanceMetadataService.unlock": "d613060c1bfeb66f29bea62b5676960210f968a723af719802edab8f53ce2e4c",
+		"FetchInstanceMetadataService.fetchInstanceMetadata": "6dbf830af4d7959f6c7c943ddedfc6992230e3ba54512232702365f98b0f9f89",
+		"FetchInstanceMetadataService.fetchNodeinfo": "52c7379d3a6f8e43629e1d982025daa02bd51c7faac5edbb7c0b2b2a374b0e95",
+		"FetchInstanceMetadataService.fetchDom": "cf5b66f6fade9da65adb99a703d2880f2217f1023dcc8a66c22716387b4d7ac9",
+		"FetchInstanceMetadataService.fetchManifest": "cb2df44516bd4b2d4596e0284e3a465bb2810d0a5ce8ae7928bede2ac999c88f",
+		"FetchInstanceMetadataService.fetchFaviconUrl": "1751ad53e7de40f1d76696673f2646e7a698662d480f4dd835bcc38e25d12e33",
+		"FetchInstanceMetadataService.fetchIconUrl": "a2fa79a8d4e368bb53766f6e18aceb7a08658ea83a5764262105b6eb679e6549",
+		"FetchInstanceMetadataService.getThemeColor": "6a1c2b93b3b86830204034e661c37646391b11493e6eae318b22049cfdc5a600",
+		"FetchInstanceMetadataService.getSiteName": "c3ef64e08d8d205062c8d37fb9f48dd507d2c238f7da3c8f72508f07d0a3b06c",
+		"FetchInstanceMetadataService.getDescription": "2d8fc24a82fcf48b28dcd253c9858f2240712ec117553fd954458cda9e3d097a",
+		"HttpRequestService.getHtml": "bb147571755d78f6124f0d3e3b815426e25dd2e7474d21458a50daf51f3182f7",
+		"DeliverProcessorService.process": "31ff95370a57f8090db84d8fc333780d85aab0c4b239fa9b8ea81d23e9dada9d"
+	},
+	"htmlCalls": [
+		[
+			"https://remote.test",
+			{
+				"method": "GET",
+				"headers": {
+					"Accept": "override",
+					"X-Test": "yes"
+				},
+				"timeout": 5000,
+				"isLocalAddressAllowed": true
+			}
+		]
+	],
+	"callerCases": [
+		{
+			"input": {
+				"stats": true,
+				"finalStats": true,
+				"instance": true,
+				"update": "pending"
+			},
+			"expected": {
+				"result": "Success",
+				"events": [
+					"post",
+					"result.returned",
+					"responding.start",
+					"metadata.start"
+				]
+			}
+		},
+		{
+			"input": {
+				"stats": true,
+				"finalStats": true,
+				"instance": true,
+				"update": "rejected"
+			},
+			"expected": {
+				"result": "Success",
+				"events": [
+					"post",
+					"result.returned",
+					"responding.start",
+					"metadata.start"
+				]
+			}
+		},
+		{
+			"input": {
+				"stats": true,
+				"finalStats": false,
+				"instance": true
+			},
+			"expected": {
+				"result": "Success",
+				"events": [
+					"post",
+					"result.returned",
+					"responding.start"
+				]
+			}
+		},
+		{
+			"input": {
+				"stats": false,
+				"finalStats": true,
+				"instance": true
+			},
+			"expected": {
+				"result": "Success",
+				"events": [
+					"post",
+					"result.returned",
+					"responding.start",
+					"metadata.start"
+				]
+			}
+		},
+		{
+			"input": {
+				"stats": false,
+				"finalStats": true,
+				"instance": false
+			},
+			"expected": {
+				"result": "Success",
+				"events": [
+					"post",
+					"result.returned"
+				]
+			}
+		}
+	],
+	"cases": [
+		{
+			"id": "all-sources",
+			"input": {
+				"id": "all-sources",
+				"info": {
+					"software": {
+						"name": "MiSsKeY",
+						"version": "2026"
+					},
+					"openRegistrations": true,
+					"metadata": {
+						"nodeName": "Node",
+						"nodeDescription": "About",
+						"themeColor": "red",
+						"maintainer": {
+							"name": "Maintainer",
+							"email": "m@example.test"
+						}
+					}
+				},
+				"html": "<link rel=\"icon\" href=\"/first.ico\"><link rel=\"icon\" href=\"/last.ico\"><link rel=\"apple-touch-icon\" href=\"/apple.png\"><meta property=\"og:title\" content=\"HTML\"><meta name=\"description\" content=\"HTML about\"><meta name=\"theme-color\" content=\"blue\">",
+				"manifest": {
+					"name": "Manifest",
+					"theme_color": "green",
+					"icons": [
+						{
+							"src": "/manifest.png"
+						}
+					]
+				}
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z",
+					"softwareName": "misskey",
+					"softwareVersion": "2026",
+					"openRegistrations": true,
+					"maintainerName": "Maintainer",
+					"maintainerEmail": "m@example.test",
+					"name": "Node",
+					"description": "About",
+					"iconUrl": "https://remote.test/manifest.png",
+					"faviconUrl": "https://remote.test/last.ico",
+					"themeColor": "#ff0000"
+				},
+				"errors": 0,
+				"rejection": null
+			}
+		},
+		{
+			"id": "html-precedence",
+			"input": {
+				"id": "html-precedence",
+				"html": "<link rel=\"icon\" href=\"/first.ico\"><link rel=\"icon shortcut\" href=\"/multi.ico\"><link rel=\"icon\" href=\"/last.ico\"><link rel=\"apple-touch-icon\" href=\"/apple.png\"><link rel=\"apple-touch-icon-precomposed other\" href=\"/pre.png\"><meta property=\"og:title\" content=\"HTML\"><meta name=\"description\" content=\"HTML description\"><meta property=\"og:description\" content=\"OG\"><meta name=\"theme-color\" content=\"rgb(1, 2, 3)\">"
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z",
+					"name": "HTML",
+					"description": "HTML description",
+					"iconUrl": "https://remote.test/pre.png",
+					"faviconUrl": "https://remote.test/last.ico",
+					"themeColor": "#010203"
+				},
+				"errors": 1,
+				"rejection": null
+			}
+		},
+		{
+			"id": "manifest-fallback",
+			"input": {
+				"id": "manifest-fallback",
+				"manifest": {
+					"name": "Manifest",
+					"description": "ignored",
+					"theme_color": "rebeccapurple",
+					"icons": [
+						{
+							"src": "/icon.png"
+						}
+					]
+				}
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z",
+					"name": "Manifest",
+					"description": "Manifest",
+					"iconUrl": "https://remote.test/icon.png",
+					"themeColor": "#663399"
+				},
+				"errors": 1,
+				"rejection": null
+			}
+		},
+		{
+			"id": "manifest-short",
+			"input": {
+				"id": "manifest-short",
+				"manifest": {
+					"short_name": "Short"
+				}
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z",
+					"name": "Short",
+					"description": "Short"
+				},
+				"errors": 1,
+				"rejection": null
+			}
+		},
+		{
+			"id": "node-alternate",
+			"input": {
+				"id": "node-alternate",
+				"info": {
+					"metadata": {
+						"name": "Name",
+						"description": "Description"
+					}
+				}
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z",
+					"softwareName": "?",
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"name": "Name",
+					"description": "Description"
+				},
+				"errors": 0,
+				"rejection": null
+			}
+		},
+		{
+			"id": "empty-node-blocks-fallback",
+			"input": {
+				"id": "empty-node-blocks-fallback",
+				"info": {
+					"metadata": {
+						"nodeName": "",
+						"nodeDescription": "",
+						"themeColor": ""
+					}
+				},
+				"html": "<meta property=\"og:title\" content=\"HTML\"><meta name=\"description\" content=\"HTML\"><meta name=\"theme-color\" content=\"red\">",
+				"manifest": {
+					"name": "Manifest"
+				}
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z",
+					"softwareName": "?",
+					"maintainerName": null,
+					"maintainerEmail": null
+				},
+				"errors": 0,
+				"rejection": null
+			}
+		},
+		{
+			"id": "invalid-color-no-fallback",
+			"input": {
+				"id": "invalid-color-no-fallback",
+				"info": {
+					"metadata": {
+						"themeColor": "invalid!"
+					}
+				},
+				"html": "<meta name=\"theme-color\" content=\"red\">",
+				"manifest": {
+					"theme_color": "blue"
+				}
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z",
+					"softwareName": "?",
+					"maintainerName": null,
+					"maintainerEmail": null
+				},
+				"errors": 0,
+				"rejection": null
+			}
+		},
+		{
+			"id": "og-description",
+			"input": {
+				"id": "og-description",
+				"html": "<meta property=\"og:description\" content=\"OG\">"
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z",
+					"description": "OG"
+				},
+				"errors": 1,
+				"rejection": null
+			}
+		},
+		{
+			"id": "data-png-icon",
+			"input": {
+				"id": "data-png-icon",
+				"manifest": {
+					"icons": [
+						{
+							"src": "data:image/png;base64,AA=="
+						}
+					]
+				},
+				"faviconStatus": 200
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z",
+					"iconUrl": "https://remote.test/favicon.ico",
+					"faviconUrl": "https://remote.test/favicon.ico"
+				},
+				"errors": 1,
+				"rejection": null
+			}
+		},
+		{
+			"id": "invalid-icon-independent-fields",
+			"input": {
+				"id": "invalid-icon-independent-fields",
+				"info": {
+					"metadata": {
+						"nodeName": "Retained"
+					}
+				},
+				"manifest": {
+					"icons": [
+						{
+							"src": "https://["
+						}
+					]
+				},
+				"faviconStatus": 404
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z",
+					"softwareName": "?",
+					"maintainerName": null,
+					"maintainerEmail": null,
+					"name": "Retained"
+				},
+				"errors": 0,
+				"rejection": null
+			}
+		},
+		{
+			"id": "all-fetches-fail",
+			"input": {
+				"id": "all-fetches-fail",
+				"faviconStatus": 404
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z"
+				},
+				"errors": 1,
+				"rejection": null
+			}
+		},
+		{
+			"id": "raw-values",
+			"input": {
+				"id": "raw-values",
+				"info": {
+					"software": {
+						"name": 42,
+						"version": 123
+					},
+					"openRegistrations": "invalid",
+					"metadata": {
+						"maintainer": {
+							"name": false
+						},
+						"nodeName": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+					}
+				}
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z",
+					"softwareName": "?",
+					"softwareVersion": 123,
+					"openRegistrations": "invalid",
+					"maintainerName": false,
+					"maintainerEmail": null,
+					"name": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+				},
+				"errors": 0,
+				"rejection": null
+			}
+		},
+		{
+			"id": "version-2.0",
+			"input": {
+				"id": "version-2.0",
+				"versions": [
+					"1.0",
+					"2.0"
+				],
+				"info": {
+					"software": {
+						"name": "Two"
+					}
+				}
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.0"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z",
+					"softwareName": "two",
+					"maintainerName": null,
+					"maintainerEmail": null
+				},
+				"errors": 0,
+				"rejection": null
+			}
+		},
+		{
+			"id": "version-1.0",
+			"input": {
+				"id": "version-1.0",
+				"versions": [
+					"1.0"
+				],
+				"info": {
+					"software": {
+						"name": "One"
+					}
+				}
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/1.0"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z",
+					"softwareName": "one",
+					"maintainerName": null,
+					"maintainerEmail": null
+				},
+				"errors": 0,
+				"rejection": null
+			}
+		},
+		{
+			"id": "preferred-fetch-fails",
+			"input": {
+				"id": "preferred-fetch-fails",
+				"info": {
+					"software": {
+						"name": "Must not use"
+					}
+				},
+				"failSelected": true
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z"
+				},
+				"errors": 1,
+				"rejection": null
+			}
+		},
+		{
+			"id": "malformed-links",
+			"input": {
+				"id": "malformed-links",
+				"links": [
+					null
+				]
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z"
+				},
+				"errors": 1,
+				"rejection": null
+			}
+		},
+		{
+			"id": "fresh-minus-one",
+			"input": {
+				"id": "fresh-minus-one",
+				"age": 86399999
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": null,
+				"errors": 0,
+				"rejection": null
+			}
+		},
+		{
+			"id": "exact-24h",
+			"input": {
+				"id": "exact-24h",
+				"age": 86400000
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z"
+				},
+				"errors": 1,
+				"rejection": null
+			}
+		},
+		{
+			"id": "future-fresh",
+			"input": {
+				"id": "future-fresh",
+				"age": -1
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": null,
+				"errors": 0,
+				"rejection": null
+			}
+		},
+		{
+			"id": "locked-contender",
+			"input": {
+				"id": "locked-contender",
+				"lock": "1"
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					]
+				],
+				"patch": null,
+				"errors": 0,
+				"rejection": null
+			}
+		},
+		{
+			"id": "other-lock-value",
+			"input": {
+				"id": "other-lock-value",
+				"lock": "other"
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z"
+				},
+				"errors": 1,
+				"rejection": null
+			}
+		},
+		{
+			"id": "force-existing-lock",
+			"input": {
+				"id": "force-existing-lock",
+				"force": true,
+				"lock": "1",
+				"age": 0
+			},
+			"expected": {
+				"events": [
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z"
+				},
+				"errors": 1,
+				"rejection": null
+			}
+		},
+		{
+			"id": "lock-error",
+			"input": {
+				"id": "lock-error",
+				"lockError": true
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					]
+				],
+				"patch": null,
+				"errors": 0,
+				"rejection": "lock"
+			}
+		},
+		{
+			"id": "read-error",
+			"input": {
+				"id": "read-error",
+				"readError": true
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": null,
+				"errors": 1,
+				"rejection": null
+			}
+		},
+		{
+			"id": "update-error",
+			"input": {
+				"id": "update-error",
+				"updateError": true
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z"
+				},
+				"errors": 2,
+				"rejection": null
+			}
+		},
+		{
+			"id": "unlock-error",
+			"input": {
+				"id": "unlock-error",
+				"unlockError": true
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:00.000Z"
+				},
+				"errors": 1,
+				"rejection": "unlock"
+			}
+		},
+		{
+			"id": "completion-clock",
+			"input": {
+				"id": "completion-clock",
+				"advance": 3456
+			},
+			"expected": {
+				"events": [
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:remote.test"
+					],
+					[
+						"set",
+						"fetchInstanceMetadata:mutex:v2:remote.test",
+						"1",
+						"EX",
+						30,
+						"GET"
+					],
+					[
+						"read",
+						"remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/.well-known/nodeinfo"
+					],
+					[
+						"html",
+						"https://remote.test"
+					],
+					[
+						"json",
+						"https://remote.test/manifest.json"
+					],
+					[
+						"json",
+						"https://remote.test/nodeinfo/2.1"
+					],
+					[
+						"head",
+						"https://remote.test/favicon.ico",
+						{
+							"method": "HEAD"
+						},
+						{
+							"throwErrorWhenResponseNotOk": false
+						}
+					],
+					[
+						"update",
+						"i"
+					],
+					[
+						"del",
+						"fetchInstanceMetadata:mutex:v2:remote.test"
+					]
+				],
+				"patch": {
+					"infoUpdatedAt": "2027-01-15T08:00:03.456Z"
+				},
+				"errors": 1,
+				"rejection": null
+			}
+		}
+	]
+}

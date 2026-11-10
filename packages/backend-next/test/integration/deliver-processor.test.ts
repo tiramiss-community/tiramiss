@@ -144,6 +144,8 @@ test.for(inputs.cases)('$id processes deliveries like the pinned upstream Delive
 	let failure: Error | null = null;
 	const signedPosts: unknown[][] = [];
 	const processor = createDeliverJobProcessor({
+			// Historical source comparison doubles acquisition; new metadata acceptance uses real HTTPS separately.
+			fetchMetadata: async () => {},
 		readSettings: () => readDeliverJobSettings(source.manager),
 		hostRules: createHostRules(inputs.selfHost),
 		ledger: recording,
@@ -254,7 +256,7 @@ test('a cached instance written by upstream is read back with its dates', async 
 		const ledger = createInstanceLedger({ manager: source.manager, redis, newId: createIdCodec('aidx').newId });
 
 		expect(await ledger.fetchInstance('cached.example')).toEqual({
-			id: 'cached', host: 'cached.example', isNotResponding: true, notRespondingSinceMs: Date.parse('2026-10-01T00:00:00.000Z'),
+			id: 'cached', host: 'cached.example', infoUpdatedAtMs: null, isNotResponding: true, notRespondingSinceMs: Date.parse('2026-10-01T00:00:00.000Z'),
 			suspensionState: 'none', softwareName: 'misskey', softwareVersion: '2025.1.0',
 		});
 		// null のキャッシュは fetch では返し、fetchOrRegister では DB を確かめて登録する。

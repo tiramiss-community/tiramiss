@@ -137,3 +137,7 @@ misc-utils:30 のうち StatusError の型は #216 が定義する。同じ行�
   - 差異の台帳は [compatibility/outbound-http/intentional-differences.json](../superpowers/compatibility/outbound-http/intentional-differences.json) の H1。最初の実装 PR で記録し、検証した。
 
 これ以外は提案しない。ライブラリの置き換えや、private 判定を本番以外でも常に有効にすることは行わない。
+
+## metadataからのgetHtml利用（2026-11-10）
+
+段階5の現在caller接続で、`OutboundHttp.getHtml(url, accept?, headers?, allowLocalAddress?)` を既存sendへ追加する。既定Acceptは`text/html, */*`、GET、5000msと本文読取、既定10MiBを使い、content-type検査は加えない。HTTP/Redis/DBの実取得とbuilt子の待機範囲は[metadata比較資料](../superpowers/compatibility/instance-metadata/README.md)に分離する。downloadと未接続の取得経路は既存担当へ残る。

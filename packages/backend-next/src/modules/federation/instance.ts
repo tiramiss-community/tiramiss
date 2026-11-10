@@ -14,10 +14,22 @@ export interface InstanceFacts {
 	suspensionState: InstanceSuspensionState;
 	softwareName: string | null;
 	softwareVersion: string | null;
+	infoUpdatedAtMs: number | null;
 }
 
 /** instance 表へ書く列。指定した列だけを更新する。 */
 export interface InstancePatch {
+	infoUpdatedAtMs?: number;
+	softwareName?: unknown;
+	softwareVersion?: unknown;
+	openRegistrations?: unknown;
+	maintainerName?: unknown;
+	maintainerEmail?: unknown;
+	name?: unknown;
+	description?: unknown;
+	iconUrl?: unknown;
+	faviconUrl?: unknown;
+	themeColor?: unknown;
 	isNotResponding?: boolean;
 	notRespondingSinceMs?: number | null;
 	suspensionState?: InstanceSuspensionState;

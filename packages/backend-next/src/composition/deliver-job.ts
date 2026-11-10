@@ -5,6 +5,7 @@
 import { createDeliverJobProcessor, createHostRules } from '../modules/federation/public.js';
 import { readDeliverJobSettings } from '../platform/database/meta.js';
 import { createIdCodec } from '../platform/id-codec.js';
+import { createInstanceMetadata } from '../platform/instance-metadata.js';
 import { createInstanceLedger } from '../platform/instance-ledger.js';
 import { createApRequest } from './ap-request.js';
 import type { RuntimeResources } from './create-runtime.js';
@@ -19,10 +20,13 @@ export function createDeliverJobHandler(resources: RuntimeResources, config: Run
 	const codec = createIdCodec(config.id);
 	const { signedPost } = createApRequest({ keys: resources.federationKeys, http: resources.outboundHttp }, config);
 
+	const ledger = createInstanceLedger({ manager, redis: resources.redis, newId: codec.newId });
+	const fetchMetadata = createInstanceMetadata({ ledger, redis: resources.redis, http: resources.outboundHttp, clock: Date.now, reportFailure: (error, context) => resources.logger.error('instance-metadata.failed', { ...context, error }) });
 	return createDeliverJobProcessor({
+		fetchMetadata,
 		readSettings: () => readDeliverJobSettings(manager),
 		hostRules: createHostRules(new URL(config.url).host),
-		ledger: createInstanceLedger({ manager, redis: resources.redis, newId: codec.newId }),
+		ledger,
 		signedPost,
 		currentTime: Date.now,
 		reportLedgerFailure: (error, { to }) => {

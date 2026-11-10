@@ -961,11 +961,12 @@ test.each(instanceCases)('$id consumes new source eligibility/host/increment pro
 	const gate = deferred<void>();
 	const effects: { op: string; args: unknown }[] = [];
 	const controller = createActorInstanceRegistration({
+		fetchMetadata: async () => {},
 		enabled: async () => input.stats,
 		fetchOrRegister: async host => {
 			effects.push({ op: 'register.start', args: { host } }); if (input.gate === 'register') {
 				await gate.promise;
-			} return { id: 'instance' };
+			} return { id: 'instance', host };
 		},
 		increment: async id => {
 			effects.push({ op: 'increment.start', args: { criteria: { id }, field: 'usersCount', amount: 1 } }); if (input.gate === 'increment') {

@@ -60,3 +60,16 @@ test('runs validators only for 2xx responses, before the body is read', async ()
 	expect(notFound.status).toBe(404);
 	expect(seen).toEqual([200]);
 });
+
+test('getHtml uses source accept overrides, rejects non-2xx and enforces inherited 10MiB on decoded body', async () => {
+	const http = createOutboundHttpClient({ userAgent: 'Misskey/test', outboundHttp: { allowedPrivateNetworks: publicStandIn } }, { checkPrivateAddress: true });
+	try {
+		expect(await http.getHtml(servers.expand('{public}/echo'))).toBe('{"ok":true}');
+		await expect(http.getHtml(servers.expand('{public}/status/404'))).rejects.toMatchObject({ statusCode: 404 });
+		expect((await http.getHtml(servers.expand('{public}/bytes/10485760'))).length).toBe(10485760);
+		await expect(http.getHtml(servers.expand('{public}/bytes/10485761'))).rejects.toThrow();
+		await expect(http.getHtml(servers.expand('{public}/stall-body'))).rejects.toMatchObject({ name: 'AbortError' });
+	} finally {
+		http.close();
+	}
+});
