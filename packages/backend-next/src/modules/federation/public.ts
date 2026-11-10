@@ -30,7 +30,7 @@ export type { AttachLdSignature } from './relay-delivery.js';
 export { renderDeletedNoteActivity, createDeliverDeletedNote } from './note-deletion.js';
 export { normalizeAccount, classifyRemoteUser, webfingerUrl, selectWebfingerSelf } from './remote-user.js';
 export type { Account, ResolvedUser, RemoteUserFacts, RemoteUserPorts } from './remote-user.js';
-export { validateActor, prepareActor, collectionVisibility, insertActor, createActorRefresher, apType, truncate } from './remote-actor.js';
+export { validateActor, prepareActor, collectionVisibility, validateActorProfileUrl, insertActor, createActorRefresher, apType, truncate } from './remote-actor.js';
 export type { RemoteActorMaterial, RemoteActorPlan, RemoteActorCreateScope, RemoteActorUser, RemoteActorProfile, RemoteActorPublickey } from './remote-actor.js';
 export { createActivitySession, assertActivityIdentity } from './activity-fetch.js';
 export type { ActivitySession } from './activity-fetch.js';
@@ -43,3 +43,6 @@ export type { UserHashtagSnapshot, UserHashtagChange, StartUserHashtags } from '
 
 export { selectNodeInfoUrl, metadataName, metadataDescription, metadataColor, metadataIcon, metadataFavicon, metadataPatch } from './instance-metadata.js';
 export type { InstanceMetadataTarget, HtmlMetadata } from './instance-metadata.js';
+
+export { extractRemoteEmojis } from './remote-emojis.js';
+export type { RemoteEmoji, RemoteEmojiPatch, RemoteEmojiInsert, RemoteEmojiRepository, RemoteEmojiPorts } from './remote-emojis.js';

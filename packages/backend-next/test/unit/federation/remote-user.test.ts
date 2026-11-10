@@ -27,9 +27,13 @@ test.each([
 ])('local user URI $path resolves the source user ID without treating rest as another object family', ({ path, id }) => {
 	const config = testConfig();
 	config.url = 'http://local.test';
-	const ports = createRemoteUsers({ dataSource: createDataSource(config.database), actorInstanceRegistration: { start: () => {} }, userHashtags: { start: () => {
-		throw Error('unexpected actor mutation');
-	} }, federationKeys: undefined as never, outboundHttp: undefined as never }, config);
+	const ports = createRemoteUsers({
+		logger: { info() { }, error() { } }, remoteEmojis: { extract: async () => [] }, dataSource: createDataSource(config.database), actorInstanceRegistration: { start: () => { } }, userHashtags: {
+			start: () => {
+				throw Error('unexpected actor mutation');
+			}
+		}, federationKeys: undefined as never, outboundHttp: undefined as never
+	}, config);
 	expect(ports.localId(path)).toBe(id);
 });
 

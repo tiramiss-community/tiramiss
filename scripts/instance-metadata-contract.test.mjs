@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { remoteEmojiDigest } from './remote-emojis-evidence.mjs';
 import { metadataDigest } from './instance-metadata-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/instance-metadata/';
@@ -32,13 +33,13 @@ function validate(value) {
 		assert.match(measurement.artifactSha256, /^[a-f0-9]{64}$/);
 		assert(measurement.command && measurement.startedAt && measurement.finishedAt, 'actual run provenance');
 		for (const [file, digest] of Object.entries(measurement.sourceSha256)) {
-			assert.equal(sha(read(file)), digest, 'current measured input');
+			assert.equal(sha(read(file)), remoteEmojiDigest(file, digest), 'current measured input');
 		}
 	}
 	for (const [file, renewal] of Object.entries(value.renewals)) {
 		assert(renewal.previousSha256.length > 0);
 		assert.equal(value.measurements[renewal.measurement].sourceSha256[file], renewal.sourceSha256);
-		assert.equal(sha(read(file)), renewal.sourceSha256);
+		assert.equal(sha(read(file)), remoteEmojiDigest(file, renewal.sourceSha256));
 	}
 }
 

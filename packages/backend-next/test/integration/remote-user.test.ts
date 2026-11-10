@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
-import { MiInstance, MiFollowing, MiMeta, MiNote, MiPoll, MiUser, MiUserProfile, MiUserPublickey, MiUserKeypair } from 'backend-upstream/entities';
+import { MiEmoji, MiInstance, MiFollowing, MiMeta, MiNote, MiPoll, MiUser, MiUserProfile, MiUserPublickey, MiUserKeypair } from 'backend-upstream/entities';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createBackendHttpApp } from '../../src/composition/note-http.js';
 import { listenHttp, closeHttp } from '../../src/processes/http.js';
@@ -69,8 +69,8 @@ beforeAll(async () => {
 		}
 		if (actorBarrier?.paths.has(url.pathname)) {
 			actorBarrier.count++; if (actorBarrier.count === 2) {
-actorBarrier.entered.resolve();
-}
+				actorBarrier.entered.resolve();
+			}
 			await actorBarrier.release.promise;
 		}
 		const actor = actors.get(url.pathname);
@@ -702,4 +702,170 @@ test('two real HTTP actors concurrently first-register one host, and parallel di
 		barrier.release.resolve(); actorBarrier = null;
 		await resources.redis.del(`fetchInstanceMetadata:mutex:v2:${host}`);
 	}
+});
+
+function emojiTag(name: string, url = `https://remote.test/${name}.png`, patch: Record<string, unknown> = {}) {
+	return { type: 'Emoji', name: `:${name}:`, id: `https://remote.test/emoji/${name}`, updated: '2026-01-01', icon: { url }, ...patch };
+}
+
+test('public actor emoji create/fresh/stale writes reach packed remote author URLs without image acquisition', async () => {
+	const tag = emojiTag('emojiflow');
+	register('emojiflow', { tag: [tag] });
+	expect((await post({ text: '@emojiflow@remote.test', localOnly: true })).status).toBe(200);
+	const actor = await remote('emojiflow');
+	expect(actor.emojis).toEqual(['emojiflow']);
+	const repository = resources.dataSource.getRepository(MiEmoji);
+	const row = await repository.findOneByOrFail({ host: 'remote.test', name: 'emojiflow' });
+	expect(row).toMatchObject({ uri: tag.id, originalUrl: tag.icon.url, publicUrl: tag.icon.url, aliases: [], license: null, category: null, type: null, localOnly: false, isSensitive: false });
+	const fetched = peer.requests.filter(r => r.path === '/users/emojiflow').length;
+	register('emojiflow', { tag: [emojiTag('emojiflow', 'https://remote.test/new.png')] });
+	await post({ text: '@emojiflow@remote.test fresh', localOnly: true });
+	expect(peer.requests.filter(r => r.path === '/users/emojiflow')).toHaveLength(fetched);
+	expect((await repository.findOneByOrFail({ id: row.id })).publicUrl).toBe(tag.icon.url);
+	await stale(actor.id);
+	await post({ text: '@emojiflow@remote.test stale', localOnly: true });
+	expect((await repository.findOneByOrFail({ id: row.id })).publicUrl).toBe('https://remote.test/new.png');
+	const noteId = codec.newId(Date.now());
+	// A fixture remote-author Note checks existing packing; no remote Note reception is claimed.
+	await resources.dataSource.getRepository(MiNote).insert({ id: noteId, userId: actor.id, userHost: actor.host, text: ':emojiflow:', visibility: 'public' });
+	const shown = await app.request('/api/notes/show', { method: 'POST', body: JSON.stringify({ i: token, noteId }) });
+	expect(shown.status).toBe(200);
+	expect((await shown.json()).user.emojis).toEqual({ emojiflow: 'https://remote.test/new.png' });
+	expect(peer.requests.some(r => r.path.endsWith('.png'))).toBe(false);
+});
+
+test('canonical duplicate retains stored User names while independently storing newly fetched emoji', async () => {
+	register('emojicanon', { tag: [emojiTag('canon_old')] });
+	await post({ text: '@emojicanon@remote.test', localOnly: true });
+	const canonical = await remote('emojicanon');
+	aliases.set('emojialias', 'emojicanon');
+	register('emojicanon', { tag: [emojiTag('canon_new')] });
+	const result = await post({ text: '@emojialias@remote.test', localOnly: true });
+	expect((await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).mentions).toEqual([canonical.id]);
+	expect((await remote('emojicanon')).emojis).toEqual(['canon_old']);
+	expect(await resources.dataSource.getRepository(MiEmoji).findOneBy({ host: 'remote.test', name: 'canon_new' })).not.toBeNull();
+});
+
+test.each(['actor', 'note'])('emoji writes survive later %s rollback through public posting', async stage => {
+	const name = `emojirollback_${stage}`;
+	register(name, { tag: [emojiTag(name)] });
+	const restore = await failWrites(stage === 'actor' ? 'user_profile' : 'note');
+	try {
+		expect((await post({ text: `@${name}@remote.test`, localOnly: true })).status).toBe(stage === 'actor' ? 200 : 500);
+	} finally {
+		await restore();
+	}
+	expect(await resources.dataSource.getRepository(MiEmoji).countBy({ host: 'remote.test', name })).toBe(1);
+	expect(await resources.dataSource.getRepository(MiUser).countBy({ usernameLower: name, host: 'remote.test' })).toBe(stage === 'actor' ? 0 : 1);
+});
+
+test.each([false, true])('URL failure preserves source emoji side-effect boundary (refresh=%s)', async refresh => {
+	const name = `emojiurl_${refresh}`;
+	if (refresh) {
+		register(name); await post({ text: `@${name}@remote.test`, localOnly: true }); await stale((await remote(name)).id);
+	}
+	register(name, { url: 'ftp://remote.test/invalid', tag: [emojiTag(name)] });
+	const result = await post({ text: `@${name}@remote.test rejected`, localOnly: true });
+	expect((await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).mentions).toEqual([]);
+	expect(await resources.dataSource.getRepository(MiEmoji).countBy({ host: 'remote.test', name })).toBe(refresh ? 1 : 0);
+});
+
+test('duplicate new tags use one snapshot, fail unique constraint, retain one emoji and save empty User names', async () => {
+	register('emojidupe', { tag: [emojiTag('dupe_new'), emojiTag('dupe_new')] });
+	expect((await post({ text: '@emojidupe@remote.test', localOnly: true })).status).toBe(200);
+	await resources.remoteEmojis.idle();
+	expect((await remote('emojidupe')).emojis).toEqual([]);
+	expect(await resources.dataSource.getRepository(MiEmoji).countBy({ host: 'remote.test', name: 'dupe_new' })).toBe(1);
+	// A later actor sees the persisted snapshot and retains duplicate names, without another insert.
+	register('emojidupe_existing', { tag: [emojiTag('dupe_new'), emojiTag('dupe_new')] });
+	await post({ text: '@emojidupe_existing@remote.test', localOnly: true });
+	expect((await remote('emojidupe_existing')).emojis).toEqual(['dupe_new', 'dupe_new']);
+});
+
+test('per-tag DB failure leaves independent successful writes and clears refresh names', async () => {
+	register('emojipartial', { tag: [emojiTag('partial_old')] }); await post({ text: '@emojipartial@remote.test', localOnly: true });
+	await stale((await remote('emojipartial')).id);
+	register('emojipartial', { tag: [emojiTag('partial_good'), emojiTag('partial_bad', 'https://remote.test/' + 'x'.repeat(600))] });
+	expect((await post({ text: '@emojipartial@remote.test', localOnly: true })).status).toBe(200);
+	await resources.remoteEmojis.idle();
+	expect((await remote('emojipartial')).emojis).toEqual([]);
+	expect(await resources.dataSource.getRepository(MiEmoji).countBy({ host: 'remote.test', name: 'partial_good' })).toBe(1);
+	expect(await resources.dataSource.getRepository(MiEmoji).countBy({ host: 'remote.test', name: 'partial_bad' })).toBe(0);
+});
+
+test('inserted emoji survives insert-refetch failure while actor proceeds with empty names', async () => {
+	register('emojirefetch', { tag: [emojiTag('insert_refetch')] });
+	const refetch = vi.spyOn(resources.dataSource.getRepository(MiEmoji), 'findOneOrFail').mockRejectedValueOnce(Error('injected insert refetch failure'));
+	try {
+		expect((await post({ text: '@emojirefetch@remote.test', localOnly: true })).status).toBe(200);
+	} finally {
+		refetch.mockRestore();
+	}
+	expect((await remote('emojirefetch')).emojis).toEqual([]);
+	expect(await resources.dataSource.getRepository(MiEmoji).countBy({ host: 'remote.test', name: 'insert_refetch' })).toBe(1);
+});
+
+test('emoji query failure is caught independently from actor transaction errors', async () => {
+	register('emojiqueryfail', { tag: [emojiTag('query_failure')] });
+	const query = vi.spyOn(resources.dataSource.getRepository(MiEmoji), 'findBy').mockRejectedValueOnce(Error('injected emoji query failure'));
+	try {
+		expect((await post({ text: '@emojiqueryfail@remote.test', localOnly: true })).status).toBe(200);
+	} finally {
+		query.mockRestore();
+	}
+	expect((await remote('emojiqueryfail')).emojis).toEqual([]);
+	expect(await resources.dataSource.getRepository(MiEmoji).countBy({ host: 'remote.test', name: 'query_failure' })).toBe(0);
+});
+
+test.each([undefined, null])('updating a remote emoji preserves undefined URI and clears explicit null (%s)', async uri => {
+	const name = uri === null ? 'emojiurinull' : 'emojiuriabsent';
+	register(name, { tag: [emojiTag(name)] }); await post({ text: `@${name}@remote.test`, localOnly: true });
+	await stale((await remote(name)).id);
+	register(name, { tag: [emojiTag(name, 'https://remote.test/changed.png', { id: uri })] });
+	await post({ text: `@${name}@remote.test`, localOnly: true });
+	expect((await resources.dataSource.getRepository(MiEmoji).findOneByOrFail({ host: 'remote.test', name })).uri).toBe(uri === null ? null : `https://remote.test/emoji/${name}`);
+});
+
+test('concurrent public actor acquisitions share an empty emoji snapshot and preserve the actual unique-conflict result', async () => {
+	const repository = resources.dataSource.getRepository(MiEmoji);
+	const find = repository.findBy.bind(repository);
+	const snapshots = deferred<void>(); let readers = 0;
+	const query = vi.spyOn(repository, 'findBy').mockImplementation(async criteria => {
+		const rows = await find(criteria);
+		if (!Array.isArray(criteria) && criteria.host === 'remote.test') {
+			readers++;
+			if (readers === 2) {
+				snapshots.resolve();
+			}
+			await snapshots.promise;
+		}
+		return rows;
+	});
+	for (const name of ['emojicompetitor_a', 'emojicompetitor_b']) {
+		register(name, { tag: [emojiTag('competing_shared')] });
+	}
+	try {
+		const results = await Promise.all(['emojicompetitor_a', 'emojicompetitor_b'].map(name => post({ text: `@${name}@remote.test`, localOnly: true })));
+		expect(results.map(result => result.status)).toEqual([200, 200]);
+	} finally {
+		query.mockRestore();
+	}
+	await resources.remoteEmojis.idle();
+	expect(readers).toBe(2);
+	expect(await repository.countBy({ host: 'remote.test', name: 'competing_shared' })).toBe(1);
+	const names = await Promise.all(['emojicompetitor_a', 'emojicompetitor_b'].map(async name => (await remote(name)).emojis));
+	expect(names.filter(value => value.length === 0)).toHaveLength(1);
+	expect(names.filter(value => value[0] === 'competing_shared')).toHaveLength(1);
+});
+
+test('deleted refresh guard skips User changes after independent emoji extraction has committed', async () => {
+	register('emojideleted', { tag: [emojiTag('deleted_old')] });
+	await post({ text: '@emojideleted@remote.test', localOnly: true });
+	const actor = await remote('emojideleted');
+	await resources.dataSource.getRepository(MiUser).update(actor.id, { isDeleted: true });
+	await stale(actor.id);
+	register('emojideleted', { name: 'must not replace', tag: [emojiTag('deleted_new')] });
+	expect((await post({ text: '@emojideleted@remote.test after deletion', localOnly: true })).status).toBe(200);
+	expect(await resources.dataSource.getRepository(MiEmoji).countBy({ host: 'remote.test', name: 'deleted_new' })).toBe(1);
+	expect(await resources.dataSource.getRepository(MiUser).findOneBy({ id: actor.id })).toMatchObject({ isDeleted: true, name: actor.name, emojis: ['deleted_old'] });
 });
