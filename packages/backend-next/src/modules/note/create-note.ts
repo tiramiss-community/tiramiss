@@ -239,8 +239,12 @@ export function createCreateNote(dependencies: {
 				}
 				await ports.repairUri(user.id, uri);
 			}
-			const plan = await ports.acquireActor(uri, user, dependencies.currentTime, dependencies.newId);
-			await ports.refreshActor(user.id, plan);
+			// updatePerson takes its own URI snapshot after WebFinger, before actor acquisition.
+			const entry = await ports.readByUri(uri);
+			if (entry) {
+				const plan = await ports.acquireActor(uri, entry, dependencies.currentTime, dependencies.newId);
+				await ports.refreshActor(entry.id, plan);
+			}
 			const refreshed = await ports.readByUri(uri);
 			if (!refreshed) {
 				throw new Error('user not found');
@@ -256,17 +260,21 @@ export function createCreateNote(dependencies: {
 			return local;
 		}
 		const plan = await ports.acquireActor(uri, null, dependencies.currentTime, dependencies.newId);
+		let created: ResolvedUser;
 		try {
-			return await ports.actorTransactions.run(scope => ports.insertActor(scope, plan));
+			created = await ports.actorTransactions.run(scope => ports.insertActor(scope, plan));
 		} catch (error) {
 			if (error && typeof error === 'object' && 'code' in error && error.code === '23505') {
 				const canonical = await ports.readByUri(plan.uri);
 				if (canonical) {
+					ports.startUserHashtags(canonical, plan.user.tags);
 					return canonical;
 				}
 			}
 			throw error;
 		}
+		ports.startUserHashtags(plan.hashtagUser, plan.user.tags);
+		return created;
 	}
 
 	async function resolveMentions(author: NoteCreateAuthor, mentions: MentionToken[]): Promise<string[]> {
@@ -382,7 +390,7 @@ export function createCreateNote(dependencies: {
 					pollExpiresAtMs: poll?.expiresAtMs ?? null,
 					createdSnapshot: {
 						note, reply: related.reply, renote: related.renote, author: { id: author.id, username: author.username, host: author.host, isBot: author.isBot }, channel: related.channel,
-						rawNote: rawNote ? { ...rawNote, reply: related.reply?.rawNote ?? null, renote: related.renote?.rawNote ?? null } : undefined
+						rawNote: rawNote ? { ...rawNote, reply: related.reply?.rawNote ?? null, renote: related.renote?.rawNote ?? null } : undefined,
 					},
 				});
 			}

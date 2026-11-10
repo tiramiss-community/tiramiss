@@ -19,6 +19,7 @@ const unavailable = async (): Promise<never> => {
 };
 const actorScope: RemoteActorCreateScope = { insertUser: unavailable, insertProfile: unavailable, insertPublickey: unavailable };
 const remotePorts: RemoteUserPorts = {
+	startUserHashtags: () => {},
 	selfHost: 'example.com', localId: () => null, readByAccount: async () => null, readByUri: async () => null, readLocal: async () => null,
 	markAttempt: unavailable, repairUri: unavailable, webfinger: unavailable, acquireActor: unavailable, insertActor: unavailable, refreshActor: unavailable,
 	actorTransactions: { run: work => work(actorScope) },
@@ -104,7 +105,7 @@ function setup(facts: NoteCreateAuthor | null = author, options: { files?: NoteA
 			...remotePorts, readByAccount: async account => {
 				accountReads.push([{ usernameLower: account.username, host: account.host }]);
 				const user = world.users?.find(user => user.username.toLowerCase() === account.username && user.host === account.host);
-				return user ? { ...user, uri: null, lastFetchedAtMs: now, isDeleted: false } : null;
+				return user ? { ...user, uri: null, lastFetchedAtMs: now, isDeleted: false, tags: [] } : null;
 			}, ...options.ports,
 		},
 		writes: writes('root'),
@@ -636,7 +637,7 @@ test('mentions-independent-duplicates: each occurrence can fail before successfu
 				if (outcome === 'failure') {
 					throw new Error('first occurrence fails');
 				}
-				return { id: outcome, username: account.username, host: account.host, uri: `https://remote.test/${outcome}`, lastFetchedAtMs: now, isDeleted: false };
+				return { id: outcome, username: account.username, host: account.host, uri: `https://remote.test/${outcome}`, lastFetchedAtMs: now, isDeleted: false, tags: [] };
 			},
 		},
 	});
@@ -648,7 +649,7 @@ test.each(['text', 'cw', 'poll'])('unknown remote success in %s is saved before 
 	const world = setup(author, {
 		world: relationWorld, ports: {
 			webfinger: async () => 'https://remote.test/new',
-			acquireActor: async () => ({ kind: 'create', id: 'remoteNew', uri: 'https://remote.test/new' } as never),
+			acquireActor: async () => ({ kind: 'create', id: 'remoteNew', uri: 'https://remote.test/new', user: { tags: [] }, hashtagUser: { id: 'remoteNew', host: 'remote.test', tags: [] } } as never),
 			insertActor: async () => ({ id: 'remoteNew', username: 'canonical', host: 'remote.test', uri: 'https://remote.test/new' }),
 		},
 	});
@@ -701,7 +702,7 @@ for (const id of ['actor-create-duplicate-uri', 'actor-create-duplicate-missing'
 					},
 				},
 				readByUri: async uri => {
-					events.push({ op: 'User.find', args: { uri } }); return fixture.input.duplicateMissing ? null : { id: 'remote', username: 'Original', host: 'remote.test', uri, lastFetchedAtMs: now, isDeleted: false };
+					events.push({ op: 'User.find', args: { uri } }); return fixture.input.duplicateMissing ? null : { id: 'remote', username: 'Original', host: 'remote.test', uri, lastFetchedAtMs: now, isDeleted: false, tags: [] };
 				},
 			},
 		});
@@ -742,3 +743,137 @@ function deferred<T>() {
 	});
 	return { promise, resolve, reject };
 }
+
+test('canonical duplicate uses fetched tags without replacing canonical User.tags', async () => {
+	const { validateActor, prepareActor } = await import('../../../src/modules/federation/public.js');
+	const plan = await prepareActor(validateActor({ type: 'Person', id: 'https://remote.test/u', preferredUsername: 'Alice', inbox: 'https://remote.test/inbox', tag: [{ type: 'Hashtag', name: '#New' }] }, 'https://remote.test/u'), null, now, 'new');
+	const canonical = { id: 'canonical', username: 'Alice', host: 'remote.test', uri: plan.uri, lastFetchedAtMs: now, isDeleted: false, tags: ['old'] };
+	const starts: unknown[] = [];
+	const world = setup(author, {
+		ports: {
+			webfinger: async () => plan.uri, acquireActor: async () => plan,
+			actorTransactions: { run: async () => {
+					throw Object.assign(Error('duplicate'), { code: '23505' });
+				} }, readByUri: async () => canonical,
+			startUserHashtags: (u, tags) => {
+				starts.push({ id: u.id, old: u.tags, tags });
+			},
+		},
+	});
+	await world.createNote({ text: '@alice@remote.test' });
+	expect(starts).toEqual([{ id: 'canonical', old: ['old'], tags: ['new'] }]);
+	expect(canonical.tags).toEqual(['old']);
+	expect(world.notes[0].mentions).toEqual(['canonical']);
+});
+test('refresh uses the canonical URI snapshot after WebFinger and before actor acquisition', async () => {
+	const { validateActor, prepareActor, createActorRefresher } = await import('../../../src/modules/federation/public.js');
+	const row = { id: 'remote', username: 'Alice', host: 'remote.test', uri: 'https://remote.test/u', lastFetchedAtMs: null, isDeleted: false, tags: ['account-old'] };
+	const starts: unknown[] = [];
+	const order: string[] = [];
+	const start = (u: {
+		tags: readonly string[];
+	}, tags: readonly string[]) => {
+		starts.push({ old: u.tags, tags });
+	};
+	const refresher = createActorRefresher({ updateUser: async () => true, updatePublickey: async () => { }, updateProfile: async () => { }, updateFollowing: async () => { } }, start);
+	const world = setup(author, {
+		ports: {
+			readByAccount: async () => ({ ...row }), markAttempt: async () => { },
+			webfinger: async () => {
+				row.tags = ['uri-entry-old'];
+				order.push('webfinger');
+				return row.uri;
+			},
+			readByUri: async () => {
+				order.push('uri');
+				return { ...row, tags: [...row.tags] };
+			},
+			acquireActor: async (uri, existing) => {
+				order.push('acquire');
+				row.tags[0] = 'after-entry';
+				return prepareActor(validateActor({ type: 'Person', id: uri, preferredUsername: 'Alice', inbox: 'https://remote.test/inbox', tag: [{ type: 'Hashtag', name: '#New' }] }, uri), existing, now, 'unused');
+			}, refreshActor: refresher,
+		},
+	});
+	await world.createNote({ text: '@alice@remote.test' });
+	expect(order).toEqual(['webfinger', 'uri', 'acquire', 'uri']);
+	expect(starts).toEqual([{ old: ['uri-entry-old'], tags: ['new'] }]);
+});
+const hashtagCreateCases: {
+	id: string;
+	input: {
+		operation: string;
+		fail?: string;
+		duplicate?: boolean;
+	};
+	expected: {
+		events: {
+			op: string;
+			args?: unknown;
+		}[];
+		result: {
+			storedCanonicalTags: string[];
+		};
+	};
+}[] = JSON.parse(readFileSync(new URL('../../../../../docs/superpowers/compatibility/remote-user/user-hashtags-observations.json', import.meta.url), 'utf8')).cases;
+test.each(hashtagCreateCases.filter(c => c.input.operation === 'create'))('$id preserves pinned post-commit and duplicate launch while hashtag work is held', async (fixture) => {
+	const { prepareActor, validateActor, insertActor } = await import('../../../src/modules/federation/public.js');
+	const plan = await prepareActor(validateActor({ type: 'Person', id: 'https://remote.test/users/a', preferredUsername: 'Alice', inbox: 'https://remote.test/inbox', tag: [{ type: 'Hashtag', name: '#Ａ' }, { type: 'Hashtag', name: '#a' }], publicKey: { id: 'https://remote.test/key', publicKeyPem: 'test-key' } }, 'https://remote.test/users/a'), null, now, 'new-user');
+	const events: {
+		op: string;
+		args?: unknown;
+	}[] = [];
+	const canonical = { id: 'remote', host: 'remote.test', username: 'Original', uri: plan.uri, tags: ['uri-entry-old'], lastFetchedAtMs: now, isDeleted: false };
+	let started = false;
+	let release!: () => void;
+	const gate = new Promise<void>(resolve => {
+		release = resolve;
+	});
+	const save = async (name: string) => {
+		events.push({ op: name });
+		if (fixture.input.fail === name) {
+			throw Error(`${name} write failed`);
+		}
+		if (name === 'User' && fixture.input.duplicate) {
+			throw Object.assign(Error('duplicate'), { code: '23505' });
+		}
+	};
+	const world = setup(author, {
+		ports: {
+			webfinger: async () => plan.uri, acquireActor: async () => {
+				events.push({ op: 'actor.resolve' });
+				return plan;
+			}, insertActor,
+			actorTransactions: { run: async (work) => {
+					events.push({ op: 'begin' });
+					try {
+						const result = await work({ insertUser: () => save('User'), insertProfile: () => save('Profile'), insertPublickey: () => save('Key') });
+						events.push({ op: 'commit' });
+						return result;
+					} catch (e) {
+						events.push({ op: 'rollback' });
+						throw e;
+					}
+				} },
+			readByUri: async () => {
+				events.push({ op: 'canonical' });
+				return canonical;
+			},
+			startUserHashtags: (user, tags) => {
+				started = true;
+				events.push({ op: 'hashtags', args: { id: user.id, host: user.host, oldTags: [...user.tags], tags: [...tags] } });
+				void gate;
+			},
+		},
+	});
+	try {
+		await world.createNote({ text: '@alice@remote.test' });
+		// Posting omits a failed actor occurrence; compare source actor failure at that boundary.
+		events.push({ op: 'actor.settled', args: { hashtagStarted: started, hashtagPending: started, ...(fixture.input.fail ? { error: `${fixture.input.fail} write failed` } : {}) } });
+		// Source's empty post-create media update is outside this hashtag boundary.
+		expect(events).toEqual(fixture.expected.events.filter(e => e.op !== 'media.stub.update'));
+		expect(canonical.tags).toEqual(fixture.expected.result.storedCanonicalTags);
+	} finally {
+		release();
+	}
+});

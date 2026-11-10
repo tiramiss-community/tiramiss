@@ -65,6 +65,22 @@ const root = new URL('../', import.meta.url);
 const read = file => readFileSync(new URL(file, root), 'utf8');
 const sha = value => createHash('sha256').update(value).digest('hex');
 const runtime = () => JSON.parse(readFileSync(new URL('runtime-evidence.json', directory), 'utf8'));
+const currentHashtags = () => JSON.parse(readFileSync(new URL('user-hashtags-runtime-evidence.json', directory), 'utf8'));
+
+// Historical receipts stay byte-for-byte intact. Only files actually remeasured in the
+// additive actor-hashtag receipt can supersede their previous consumer identity.
+function currentConsumerDigest(file, historicalDigest, label) {
+	const current = currentHashtags();
+	const renewal = current.renewedConsumers[file];
+	if (!renewal) {
+		return historicalDigest;
+	}
+	assert.equal(renewal.historicalSha256, historicalDigest, label);
+	const measured = current.measurements[renewal.measurement];
+	assert.equal(measured?.outcome, 'PASS', 'renewed consumer successful measurement');
+	assert.equal(measured.consumerSha256[file], renewal.sourceSha256, label);
+	return renewal.sourceSha256;
+}
 const implementationCommit = '33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45';
 const selections = {
 	resolve: c => c.id.startsWith('resolve-'),
@@ -122,7 +138,7 @@ function validateRuntime(value, data = dataset(), sourceRead = read) {
 		assert(source.includes(consumer.declaration), 'current consumer declaration');
 		assert(source.includes(consumer.selection), 'current dataset selection');
 		assert(consumer.assertions.length > 0 && consumer.assertions.every(a => source.includes(a)), 'actual expected-value assertions');
-		assert.equal(sha(source), consumer.sourceSha256, 'current consumer source drift');
+		assert.equal(sha(source), currentConsumerDigest(consumer.file, consumer.sourceSha256, 'current consumer source drift'), 'current consumer source drift');
 		const selected = data.cases.filter(selections[consumer.id]).map(c => c.id);
 		assert(selected.length > 0, 'nonempty current dataset');
 		assert.equal(new Set(consumer.passedCaseIds).size, consumer.passedCaseIds.length, 'duplicate runtime case');
@@ -135,14 +151,14 @@ function validateRuntime(value, data = dataset(), sourceRead = read) {
 		assert(value.measurements[consumer.measurement]?.outcome === 'PASS', 'consumer successful measurement');
 	}
 	for (const [file, digest] of Object.entries(value.measurements['closest-units-foundation-253'].consumerSha256)) {
-		assert.equal(sha(sourceRead(file)), digest, 'renewed unit source identity');
+		assert.equal(sha(sourceRead(file)), currentConsumerDigest(file, digest, 'renewed unit source identity'), 'renewed unit source identity');
 	}
 	same([...consumed], data.cases.map(c => c.id), 'all 95 cases consumed');
 	for (const check of value.runtimeChecks) {
 		assert(check.passed > 0 && value.measurements[check.measurement]?.outcome === 'PASS', 'runtime check measured');
 		const source = sourceRead(check.file);
 		assert(check.declarations.length && check.declarations.every(title => source.includes(`test('${title}',`)), 'actual runtime declarations');
-		assert.equal(sha(source), check.sourceSha256, 'runtime check source drift');
+		assert.equal(sha(source), currentConsumerDigest(check.file, check.sourceSha256, 'runtime check source drift'), 'runtime check source drift');
 	}
 	for (const files of Object.values(data.bindings)) {
 		for (const file of files) {
@@ -224,3 +240,68 @@ function assertRateLimited(data) {
 }
 test('foreign shared inbox keeps its original saved input and own undefined outputs', () => assertForeignShared(dataset()));
 test('429 collection failure is private on creation and retained on refresh', () => assertRateLimited(dataset()));
+
+
+function validateUserHashtags(value) {
+	assert.equal(value.schemaVersion, 1);
+	assert.equal(value.baseCommit, 'cb1feb3e713c00c992f0d5ad2705edc24b439d33');
+	assert.equal(value.upstreamCommit, dataset().upstreamCommit);
+	assert.equal(value.upstreamHttpMeasured, false, 'actor source doubles are not full HTTP');
+	assert.equal(value.postingComplete, false, 'posting remains incomplete');
+	assert.equal(value.notesCreateStatus, 'partial', 'posting remains partial');
+	same(value.fulfilledGapIds, ['user-hashtags'], 'bounded hashtag supersession only');
+	same(value.remainingGapIds, ['media-emoji', 'instance-metadata', 'charts', 'rich-actor', 'remote-cache'], 'other five actor gaps remain');
+	assert.equal(value.source.observationsSha256, sha(read('docs/superpowers/compatibility/remote-user/user-hashtags-observations.json')), 'actor corpus identity');
+	assert.equal(value.source.probeSha256, sha(read('docs/superpowers/compatibility/remote-user/user-hashtags-source-probe.mjs')), 'actor probe identity');
+	assert.equal(value.source.profileSha256, sha(read('docs/superpowers/compatibility/note/hashtag/source-observations.json')), 'original profile oracle preserved');
+	const boundary = JSON.parse(read('docs/superpowers/compatibility/remote-user/user-hashtags-observations.json'));
+	assert.equal(boundary.upstreamCommit, value.upstreamCommit);
+	assert.equal(boundary.upstreamHttpMeasured, false);
+	assert.equal(boundary.cases.length, 10, 'ten actor source boundaries');
+	assert.equal(new Set(boundary.cases.map(c => c.id)).size, 10);
+	same(value.source.caseIds, boundary.cases.map(c => c.id), 'all actor cases consumed');
+	assert.equal(value.source.profileCaseIds.length, 5, 'five profile cases consumed');
+	const profiles = JSON.parse(read('docs/superpowers/compatibility/note/hashtag/source-observations.json')).observations.filter(c => c.kind === 'profile');
+	same(value.source.profileCaseIds, profiles.map(c => c.id), 'unchanged profile cases');
+	for (const [id, counts] of Object.entries({ 'current-remote-units': [310, 7], 'current-integration': [101, 4], 'current-process': [4, 1], 'full-units': [2855, 87] })) {
+		const measured = value.measurements[id];
+		assert.equal(measured?.outcome, 'PASS', 'successful current measurement');
+		assert.equal(measured.failed, 0, 'no failed current tests');
+		assert.equal(measured.skipped, 0, 'no skipped current tests');
+		assert.equal(measured.passed, counts[0], 'current measured test count');
+		assert.equal(measured.files, counts[1], 'current measured file count');
+		assert.match(measured.artifactSha256, /^[a-f0-9]{64}$/);
+		assert(measured.command.includes('--reporter=json'), 'actual current command');
+		for (const [file, digest] of Object.entries(measured.consumerSha256)) {
+			assert.equal(sha(read(file)), digest, 'current measured consumer identity');
+		}
+	}
+	for (const [file, renewal] of Object.entries(value.renewedConsumers)) {
+		assert.equal(value.measurements[renewal.measurement].consumerSha256[file], renewal.sourceSha256, 'renewal comes from actual run');
+		assert.equal(sha(read(file)), renewal.sourceSha256, 'renewed current source');
+	}
+	for (const file of ['packages/backend-next/src/modules/note/hashtag-plan.ts', 'packages/backend-next/src/modules/note/public.ts', 'packages/backend-next/src/modules/hashtag/public.ts']) {
+		assert.match(value.productSha256[file] ?? '', /^[a-f0-9]{64}$/, 'shared normalization source included');
+	}
+	for (const [file, digest] of Object.entries(value.productSha256)) {
+		assert.equal(sha(read(file)), digest, 'measured product source identity');
+	}
+	assert.equal(sha(read('docs/superpowers/compatibility/remote-user/runtime-evidence.json')), value.historicalRuntimeSha256, 'historical receipt preserved');
+}
+
+test('user hashtags have separate source boundaries and actual adapter/runtime/process measurements', () => validateUserHashtags(currentHashtags()));
+for (const [name, mutate, expected] of [
+	['failed current run', v => { v.measurements['current-process'].outcome = 'FAIL'; }, /successful current measurement/],
+	['missing process receipt', v => { delete v.measurements['current-process']; }, /successful current measurement/],
+	['untested consumer hash', v => { v.measurements['current-integration'].consumerSha256['packages/backend-next/test/integration/remote-user.test.ts'] = '0'.repeat(64); }, /current measured consumer identity/],
+	['untested product source', v => { v.productSha256['packages/backend-next/src/composition/user-hashtags.ts'] = '0'.repeat(64); }, /measured product source identity/],
+	['dropped actor source case', v => { v.source.caseIds.pop(); }, /all actor cases consumed/],
+	['dropped profile case', v => { v.source.profileCaseIds.pop(); }, /five profile cases consumed/],
+	['premature posting completion', v => { v.postingComplete = true; }, /posting remains incomplete/],
+	['remaining actor feature dropped', v => { v.remainingGapIds.pop(); }, /other five actor gaps remain/],
+]) {
+	test(`user hashtag reconciliation rejects ${name}`, () => {
+		const value = currentHashtags(); mutate(value);
+		assert.throws(() => validateUserHashtags(value), expected);
+	});
+}

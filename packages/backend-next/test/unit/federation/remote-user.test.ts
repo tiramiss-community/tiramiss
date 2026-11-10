@@ -27,7 +27,9 @@ test.each([
 ])('local user URI $path resolves the source user ID without treating rest as another object family', ({ path, id }) => {
 	const config = testConfig();
 	config.url = 'http://local.test';
-	const ports = createRemoteUsers({ dataSource: createDataSource(config.database), federationKeys: undefined as never, outboundHttp: undefined as never }, config);
+	const ports = createRemoteUsers({ dataSource: createDataSource(config.database), userHashtags: { start: () => {
+		throw Error('unexpected actor mutation');
+	} }, federationKeys: undefined as never, outboundHttp: undefined as never }, config);
 	expect(ports.localId(path)).toBe(id);
 });
 
@@ -37,7 +39,7 @@ for (const fixture of cases) {
 		const input = fixture.input;
 		const host = input.host === undefined ? 'REMOTE.TEST' : input.host;
 		const account = normalizeAccount({ username: 'ALICE', host }, 'local.test');
-		const row: RemoteUserFacts | null = input.age === undefined ? null : { id: 'remote', username: 'Alice', host: 'remote.test', uri: 'https://remote.test/old', lastFetchedAtMs: input.age === null ? null : sourceNow - input.age, isDeleted: false };
+		const row: RemoteUserFacts | null = input.age === undefined ? null : { id: 'remote', username: 'Alice', host: 'remote.test', uri: 'https://remote.test/old', lastFetchedAtMs: input.age === null ? null : sourceNow - input.age, isDeleted: false, tags: [] };
 		const events: { op: string; args?: unknown; }[] = [];
 		const notes: NewNote[] = [];
 		const write: NoteWrites = {
@@ -45,18 +47,24 @@ for (const fixture of cases) {
 				notes.push(n);
 			}, insertPoll: async () => {
 				throw Error('unexpected poll');
-			}
+			},
 		};
+		let entryRead = row !== null;
 		const ports: RemoteUserPorts = {
+			startUserHashtags: () => {},
 			selfHost: 'local.test', localId: uri => uri.startsWith('https://local.test/users/') ? 'local' : null,
 			readByAccount: async value => {
 				events.push({ op: 'User.find', args: { usernameLower: value.username, host: value.host } });
-				return value.host === null ? { id: 'local', username: 'alice', host: null, uri: null, lastFetchedAtMs: null, isDeleted: false } : row && { ...row };
+				return value.host === null ? { id: 'local', username: 'alice', host: null, uri: null, lastFetchedAtMs: null, isDeleted: false, tags: [] } : row && { ...row };
 			},
 			readByUri: async uri => {
+				// Historical resolve oracle doubles updatePerson; its internal entry read is outside that projection.
+				if (entryRead) {
+					entryRead = false; return row && { ...row, tags: [...row.tags] };
+				}
 				events.push({ op: 'User.find', args: { uri } }); return row;
 			},
-			readLocal: async () => ({ id: 'local', username: 'alice', host: null, uri: null, lastFetchedAtMs: null, isDeleted: false }),
+			readLocal: async () => ({ id: 'local', username: 'alice', host: null, uri: null, lastFetchedAtMs: null, isDeleted: false, tags: [] }),
 			markAttempt: async (id, now) => {
 				events.push({ op: 'User.update', args: { query: id, patch: { lastFetchedAt: new Date(now) } } });
 				if (input.writeFail === 'timestamp') {
@@ -88,7 +96,7 @@ for (const fixture of cases) {
 				if (input.refreshFail) {
 					throw Error('refresh failed');
 				}
-				return { uri } as RemoteActorPlan;
+				return { uri, user: { tags: [] }, hashtagUser: { id: 'created', host: 'remote.test', tags: [] } } as unknown as RemoteActorPlan;
 			},
 			refreshActor: async () => 'updated',
 			insertActor: async (_scope, plan) => ({ id: 'created', username: 'alice', host: 'remote.test', uri: plan.uri }),
@@ -100,8 +108,8 @@ for (const fixture of cases) {
 						throw Error('unexpected insert');
 					}, insertPublickey: async () => {
 						throw Error('unexpected insert');
-					}
-				})
+					},
+				}),
 			},
 		};
 		const useCase = createCreateNote({
@@ -129,7 +137,7 @@ for (const fixture of cases) {
 }
 test('normalization and exact 24h boundary do not widen source freshness', () => {
 	expect(normalizeAccount({ username: 'ALICE', host: '例え.test' }, 'local.test')).toEqual({ username: 'alice', host: 'xn--r8jz45g.test' });
-	const row: RemoteUserFacts = { id: 'a', username: 'a', host: 'remote.test', uri: null, lastFetchedAtMs: sourceNow - 86400000, isDeleted: false };
+	const row: RemoteUserFacts = { id: 'a', username: 'a', host: 'remote.test', uri: null, lastFetchedAtMs: sourceNow - 86400000, isDeleted: false, tags: [] };
 	expect(classifyRemoteUser(row, sourceNow)).toBe('fresh');
 	expect(classifyRemoteUser(row, sourceNow + 1)).toBe('stale');
 });

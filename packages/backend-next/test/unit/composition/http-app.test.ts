@@ -18,6 +18,9 @@ function fixture() {
 		roleMaterials: { get changes() {
 			events.push('role'); return {};
 		} },
+		userHashtags: { start: () => {
+			throw new Error('unexpected actor mutation');
+		} },
 		notePostSave: { start: vi.fn() },
 		notePostDelete: { get start() {
 			events.push('note'); return vi.fn();

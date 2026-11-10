@@ -31,6 +31,7 @@ const aliases = new Map<string, string>();
 const links = new Map<string, { rel: string; href: string; type?: string; }[]>();
 const statuses = new Map<string, number>();
 let port: number;
+const hashtagLogs: string[] = [];
 
 beforeAll(async () => {
 	vi.stubEnv('MISSKEY_WEBFINGER_USE_HTTP', 'true');
@@ -39,7 +40,7 @@ beforeAll(async () => {
 	peer = await startRemotePeer();
 	database.config.url = 'http://local.test';
 	database.config.outboundHttp.proxy = peer.proxy;
-	resources = await connectResources(database.config, createLogger('remote-test', () => { }));
+	resources = await connectResources(database.config, createLogger('remote-test', line => hashtagLogs.push(line)));
 	authorId = codec.newId(Date.now() - 100000);
 	const pair = await generateRsaKeyPair();
 	await resources.dataSource.getRepository(MiUser).insert({ id: authorId, username: 'author', usernameLower: 'author', token });
@@ -481,5 +482,82 @@ test('Meta.signToActivityPubGet=false uses the real unsigned acquisition path wi
 		expect(peer.discoveries.length).toBe(discoveries);
 	} finally {
 		await resources.dataSource.getRepository(MiMeta).update('singleton', { signToActivityPubGet: true });
+	}
+});
+
+test('actor creation and refresh attach and detach tags even when the later Note fails', async () => {
+	const { MiHashtag } = await import('backend-upstream/entities');
+	register('hashtag_later_note', { tag: [{ type: 'Hashtag', name: '#actorfirst' }] });
+	const restore = await failWrites('note');
+	try {
+		expect((await post({ text: '@hashtag_later_note@remote.test' })).status).toBe(500);
+	} finally {
+		await restore();
+	}
+	const actor = await remote('hashtag_later_note');
+	await resources.userHashtags.idle();
+	expect(await resources.dataSource.getRepository(MiHashtag).findOneBy({ name: 'actorfirst' })).toMatchObject({ attachedUserIds: [actor.id], attachedUsersCount: 1, attachedRemoteUserIds: [actor.id], attachedRemoteUsersCount: 1, mentionedUserIds: [] });
+	await stale(actor.id);
+	register('hashtag_later_note', { tag: [{ type: 'Hashtag', name: '#Ａ' }, { type: 'Hashtag', name: '#a' }] });
+	expect((await post({ text: '@hashtag_later_note@remote.test' })).status).toBe(200);
+	await resources.userHashtags.idle();
+	expect((await remote('hashtag_later_note')).tags).toEqual(['a', 'a']);
+	expect(await resources.dataSource.getRepository(MiHashtag).findOneBy({ name: 'a' })).toMatchObject({ attachedUserIds: [actor.id], attachedUsersCount: 1, attachedRemoteUsersCount: 1 });
+	expect(await resources.dataSource.getRepository(MiHashtag).findOneBy({ name: 'actorfirst' })).toMatchObject({ attachedUserIds: [], attachedUsersCount: 0, attachedRemoteUserIds: [], attachedRemoteUsersCount: 0 });
+});
+
+test('duplicate canonical actor preserves stored tags while new actor tags replace attached membership', async () => {
+	const { MiHashtag } = await import('backend-upstream/entities');
+	register('hashtag_canonical', { tag: [{ type: 'Hashtag', name: '#canonicalold' }] });
+	expect((await post({ text: '@hashtag_canonical@remote.test' })).status).toBe(200);
+	await resources.userHashtags.idle();
+	const canonical = await remote('hashtag_canonical');
+	aliases.set('hashtag_alias', 'hashtag_canonical');
+	register('hashtag_canonical', { tag: [{ type: 'Hashtag', name: '#canonicalnew' }] });
+	const response = await post({ text: '@hashtag_alias@remote.test' });
+	expect(response.status).toBe(200);
+	await resources.userHashtags.idle();
+	expect((await remote('hashtag_canonical')).tags).toEqual(['canonicalold']);
+	expect(await resources.dataSource.getRepository(MiHashtag).findOneBy({ name: 'canonicalold' })).toMatchObject({ attachedUserIds: [], attachedUsersCount: 0 });
+	expect(await resources.dataSource.getRepository(MiHashtag).findOneBy({ name: 'canonicalnew' })).toMatchObject({ attachedUserIds: [canonical.id], attachedUsersCount: 1 });
+	expect((await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: response.body.createdNote.id })).mentions).toEqual([canonical.id]);
+});
+
+test('hashtag DB failure preserves already started Redis ranking and stops later tags', async () => {
+	const { MiHashtag } = await import('backend-upstream/entities');
+	const db = resources.dataSource;
+	await db.query('CREATE FUNCTION usertag_fail() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.name = \'failattached\' THEN RAISE EXCEPTION \'attached failure\'; END IF; RETURN NEW; END $$');
+	await db.query('CREATE TRIGGER usertag_fail BEFORE INSERT ON hashtag FOR EACH ROW EXECUTE FUNCTION usertag_fail()');
+	try {
+		register('hashtag_dbfail', { tag: [{ type: 'Hashtag', name: '#failattached' }, { type: 'Hashtag', name: '#afterfailattached' }] });
+		expect((await post({ text: '@hashtag_dbfail@remote.test' })).status).toBe(200);
+		await resources.userHashtags.idle();
+		const actor = await remote('hashtag_dbfail');
+		expect(await resources.redis.smembers('hashtagUsers:failattached')).toEqual([actor.id]);
+		expect(await db.getRepository(MiHashtag).findOneBy({ name: 'failattached' })).toBeNull();
+		expect(await db.getRepository(MiHashtag).findOneBy({ name: 'afterfailattached' })).toBeNull();
+		expect(await resources.redis.exists('hashtagUsers:afterfailattached')).toBe(0);
+	} finally {
+		await db.query('DROP TRIGGER usertag_fail ON hashtag'); await db.query('DROP FUNCTION usertag_fail()');
+	}
+});
+
+test('Redis command failure is diagnosed while the actor DB sequence completes', async () => {
+	const logStart = hashtagLogs.length;
+	const { MiHashtag } = await import('backend-upstream/entities');
+	const original = resources.redis.sismember.bind(resources.redis);
+	const failure = vi.spyOn(resources.redis, 'sismember').mockImplementation((...args) => args[0] === 'hashtagUsers:redisattachedfail' ? Promise.reject(Error('injected Redis command failure')) : original(...args));
+	try {
+		register('hashtag_redisfail', { tag: [{ type: 'Hashtag', name: '#redisattachedfail' }, { type: 'Hashtag', name: '#afterredisattached' }] });
+		expect((await post({ text: '@hashtag_redisfail@remote.test' })).status).toBe(200);
+		await resources.userHashtags.idle();
+		const actor = await remote('hashtag_redisfail');
+		for (const name of ['redisattachedfail', 'afterredisattached']) {
+			expect(await resources.dataSource.getRepository(MiHashtag).findOneBy({ name })).toMatchObject({ attachedUserIds: [actor.id], attachedUsersCount: 1 });
+		}
+		expect(await resources.redis.smembers('hashtagUsers:afterredisattached')).toEqual([actor.id]);
+		expect(hashtagLogs.slice(logStart).some(line => line.includes('user-hashtags.failed') && line.includes(actor.id))).toBe(true);
+	} finally {
+		failure.mockRestore();
 	}
 });

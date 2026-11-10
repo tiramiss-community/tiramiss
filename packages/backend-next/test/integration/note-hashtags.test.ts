@@ -9,6 +9,8 @@ import { MiChannel, MiHashtag, MiMeta, MiNote, MiUser, MiUserProfile } from 'bac
 import { createBackendHttpApp } from '../../src/composition/note-http.js';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { migrateDatabase } from '../../src/platform/database/migrate.js';
+import { createUserHashtags } from '../../src/composition/user-hashtags.js';
+import { createUserHashtagWriter } from '../../src/platform/database/user-hashtags.js';
 import { createNoteHashtagWriter } from '../../src/platform/database/note-hashtags.js';
 import { createHashtagRanking } from '../../src/platform/hashtag-ranking.js';
 import { createIdCodec } from '../../src/platform/id-codec.js';
@@ -57,6 +59,7 @@ beforeAll(async () => {
 });
 beforeEach(async () => {
 	await resources.notePostSave.idle();
+	await resources.userHashtags.idle();
 	await resources.dataSource.getRepository(MiHashtag).clear();
 	// Remove only this test database's namespace on the shared test Redis.
 	const prefix = database.config.redis.keyPrefix!;
@@ -191,7 +194,7 @@ test('forced concurrent same-author membership misses retain source double ranki
 	}
 });
 test('SQL trigger rejection stops later tags but started Redis, HTTP save and counts survive', async () => {
-	await resources.dataSource.query(`CREATE FUNCTION reject_hashtag() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.name = 'reject' THEN RAISE EXCEPTION 'hashtag test'; END IF; RETURN NEW; END $$`);
+	await resources.dataSource.query('CREATE FUNCTION reject_hashtag() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.name = \'reject\' THEN RAISE EXCEPTION \'hashtag test\'; END IF; RETURN NEW; END $$');
 	await resources.dataSource.query('CREATE TRIGGER reject_hashtag BEFORE INSERT ON hashtag FOR EACH ROW EXECUTE FUNCTION reject_hashtag()');
 	try {
 		const note = await create({ text: '#reject #later' });
@@ -305,4 +308,75 @@ test('settings SELECT rejection leaves all DB mentions and independent counts, s
 	} finally {
 		settingsRead.mockRestore();
 	}
+});
+
+const profileSource: { id: string; input: { nowMs: number; initial: object | null; user: { id: string; host: string | null; tags: string[] }; tags: string[] }; state: { dbRows: Record<string, object>; sets: Record<string, string[]>; scores: Record<string, Record<string, number>> } }[] = JSON.parse(readFileSync(new URL('../../../../docs/superpowers/compatibility/note/hashtag/source-observations.json', import.meta.url), 'utf8')).observations.filter((c: { kind: string }) => c.kind === 'profile');
+test.each(profileSource)('$id measures the unchanged five profile oracles with real attached DB and shared Redis ranking', async fixture => {
+	// The runtime captures Date.now at construction; supply the oracle's clock explicitly.
+	const work = createUserHashtags({
+		change: createUserHashtagWriter(resources.dataSource.manager, id).change,
+		ranking: createHashtagRanking(resources.redis, () => fixture.input.nowMs),
+		readSettings: async () => ({ hiddenTags: [], sensitiveWords: [] }),
+	}, createLogger('profile-test', line => logs.push(line)));
+	try {
+		if (fixture.input.initial) {
+			await resources.dataSource.getRepository(MiHashtag).insert({ id: id(), ...fixture.input.initial });
+		}
+		work.start(fixture.input.user, fixture.input.tags);
+		await work.idle();
+		const rows = await resources.dataSource.getRepository(MiHashtag).find();
+		expect(rows).toHaveLength(Object.keys(fixture.state.dbRows).length);
+		for (const [tag, expected] of Object.entries(fixture.state.dbRows)) {
+			const actual = rows.find(value => value.name === tag)!;
+			const { id: _id, ...projection } = actual;
+			expect(projection).toEqual(expected);
+		}
+		for (const [key, expected] of Object.entries(fixture.state.sets)) {
+			expect((await resources.redis.smembers(key)).sort()).toEqual([...expected].sort());
+		}
+		for (const [key, scores] of Object.entries(fixture.state.scores)) {
+			for (const [tag, expected] of Object.entries(scores)) {
+				expect(Number(await resources.redis.zscore(key, tag))).toBe(expected);
+			}
+		}
+	} finally {
+		await work.close();
+	}
+});
+
+test('attached atomics preserve independent membership/counts, mentioned columns and empty rows under concurrency', async () => {
+	const { createUserHashtagWriter } = await import('../../src/platform/database/user-hashtags.js');
+	const writer = createUserHashtagWriter(resources.dataSource.manager, id);
+	await resources.dataSource.getRepository(MiHashtag).insert({ id: id(), name: 'atomic', mentionedUserIds: ['mentioned'], mentionedUsersCount: 7, attachedUserIds: ['local'], attachedUsersCount: 8, attachedLocalUserIds: [], attachedLocalUsersCount: 3 });
+	const local = { tag: 'atomic', userId: 'local', userHost: null, attached: true };
+	const remote = { tag: 'atomic', userId: 'remote', userHost: 'remote.test', attached: true };
+	await Promise.all(Array.from({ length: 8 }, () => writer.change(local)));
+	await Promise.all(Array.from({ length: 8 }, () => writer.change(remote)));
+	expect(await row('atomic')).toMatchObject({ attachedUserIds: ['local', 'remote'], attachedUsersCount: 9, attachedLocalUserIds: ['local'], attachedLocalUsersCount: 4, attachedRemoteUserIds: ['remote'], attachedRemoteUsersCount: 1, mentionedUserIds: ['mentioned'], mentionedUsersCount: 7 });
+	await Promise.all(Array.from({ length: 8 }, () => writer.change({ ...local, attached: false })));
+	await Promise.all(Array.from({ length: 8 }, () => writer.change({ ...remote, attached: false })));
+	expect(await row('atomic')).toMatchObject({ attachedUserIds: [], attachedUsersCount: 7, attachedLocalUserIds: [], attachedLocalUsersCount: 3, attachedRemoteUserIds: [], attachedRemoteUsersCount: 0, mentionedUserIds: ['mentioned'], mentionedUsersCount: 7 });
+	await writer.change({ ...local, tag: 'missing-atomic', attached: false });
+	expect(await row('missing-atomic')).toBeNull();
+});
+
+test('user hidden/sensitive DB changes survive Redis exclusion and note/user ranking share one membership set', async () => {
+	await resources.dataSource.getRepository(MiMeta).update('singleton', { hiddenTags: ['Ｈｉｄｄｅｎ'], sensitiveWords: ['sensitive'] });
+	const actor = { id: users.alice.id, host: null, tags: [] };
+	resources.userHashtags.start(actor, ['hidden', 'sensitive', 'shared']);
+	await resources.userHashtags.idle();
+	for (const tag of ['hidden', 'sensitive']) {
+		expect(await row(tag)).toMatchObject({ attachedUserIds: [actor.id], attachedUsersCount: 1 });
+		expect(await resources.redis.exists(`hashtagUsers:${tag}`)).toBe(0);
+	}
+	const before = await resources.redis.zscore(rankingKey(), 'shared');
+	await create({ text: '#shared' });
+	expect(await resources.redis.zscore(rankingKey(), 'shared')).toBe(before);
+	expect(await row('shared')).toMatchObject({ attachedUserIds: [actor.id], mentionedUserIds: [actor.id] });
+	resources.userHashtags.start({ ...actor, tags: ['hidden', 'sensitive', 'shared'] }, []);
+	await resources.userHashtags.idle();
+	for (const tag of ['hidden', 'sensitive', 'shared']) {
+		expect(await row(tag)).toMatchObject({ attachedUserIds: [], attachedUsersCount: 0 });
+	}
+	expect(await resources.redis.zscore(rankingKey(), 'shared')).toBe(before);
 });

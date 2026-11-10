@@ -37,3 +37,6 @@ export type { ActivitySession } from './activity-fetch.js';
 export { renderLocalActor } from './local-actor.js';
 export type { LocalActorFacts } from './local-actor.js';
 export { htmlToMfm } from './html-to-mfm.js';
+
+export { planUserHashtags } from './user-hashtags.js';
+export type { UserHashtagSnapshot, UserHashtagChange, StartUserHashtags } from './user-hashtags.js';

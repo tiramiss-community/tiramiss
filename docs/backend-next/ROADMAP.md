@@ -249,3 +249,5 @@ media/emoji #188/#195、user hashtag関係 #195、actor由来instance usersCount
 親のbuild/typecheck、単体2,828件/86 files、queue結合185件/10 files（processと分けたserial再実行）、C2/C10の88件/3 filesはPASS。初回processは57成功・4失敗/8 filesで、新queue-runtimeの4ケースが失敗した。最終process gateはPASS。既存7 filesの43件と、fixture/test修正後の新規1 fileの18件を別実行で確認した。 CodeRabbitは提出33 filesをレビューし指摘0件、結果のローカルcache保存だけがEROFSだった（後続の文書/修正はこのレビュー範囲外）。
 
 残る7 handler・system9 schedulerは既存の#182/#183/#188/#195/#198/#199/#200等が所有する。通知#177、他webhook#197、platform→composition依存、六つのactor gapと投稿partialを維持し、#251全体・#176/#127/#139の完了や正式な対応順/blocked-by変更とはしない。
+
+2026-11-10: public remote mention からの actor 作成・canonical duplicate・refresh に user hashtag の attached 更新、独立 ranking、停止時 drain を接続した。[設計](../superpowers/specs/2026-11-10-remote-user-hashtags-design.md)と[追加実測](../superpowers/compatibility/remote-user/runtime-results.md#public-actor-user-hashtags-2026-11-10)に source 境界10件・既存 profile5件、単体310件、結合101件、process4件、全単体2,855件を記録する。歴史的 corpus/receipt は保持し、public caller の user-hashtag gap だけを満たす。他の五つの actor gap、`notes/create:partial` / `postingComplete:false`、#176/#127/#195 未完了と既存の対応順を維持する。

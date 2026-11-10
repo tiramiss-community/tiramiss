@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { toPuny } from './host.js';
+import type { StartUserHashtags } from './user-hashtags.js';
 import type { TransactionRunner } from '../../application/transaction.js';
 import type { RemoteActorCreateScope, RemoteActorPlan } from './remote-actor.js';
 
@@ -15,6 +16,7 @@ export interface ResolvedUser extends Account {
 	uri: string | null;
 }
 export interface RemoteUserFacts extends ResolvedUser {
+	tags: readonly string[];
 	lastFetchedAtMs: number | null;
 	isDeleted: boolean;
 	movedToUri?: string | null;
@@ -31,6 +33,7 @@ export function classifyRemoteUser(facts: RemoteUserFacts | null, now: number): 
 }
 export interface RemoteUserPorts {
 	selfHost: string;
+	startUserHashtags: StartUserHashtags;
 	localId(uri: string): string | null;
 	readByAccount(account: Account): Promise<RemoteUserFacts | null>;
 	readByUri(uri: string): Promise<RemoteUserFacts | null>;

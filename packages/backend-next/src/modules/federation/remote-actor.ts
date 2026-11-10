@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { substring } from 'stringz';
-import { punyHost } from './host.js';
 import { OutboundStatusError } from '../../application/outbound-http.js';
+import { punyHost } from './host.js';
+import type { UserHashtagSnapshot, StartUserHashtags } from './user-hashtags.js';
 import type { RemoteUserFacts, ResolvedUser } from './remote-user.js';
 
 export type Visibility = 'public' | 'private';
@@ -113,6 +114,7 @@ export interface RemoteActorPublickey {
 }
 export interface RemoteActorPlan {
 	kind: 'create' | 'refresh';
+	hashtagUser: UserHashtagSnapshot;
 	id: string;
 	uri: string;
 	user: RemoteActorUser;
@@ -310,6 +312,7 @@ export async function prepareActor(material: RemoteActorMaterial, existing: Remo
 	};
 	return {
 		kind: refresh ? 'refresh' : 'create', id, uri: p.id, user, profile,
+		hashtagUser: { id, host: existing?.host ?? host, tags: [...(existing?.tags ?? tags)] },
 		...(profileError ? { profileError } : {}),
 		...(p.publicKey ? { publickey: { ...(refresh ? {} : { userId: id }), keyId: p.publicKey.id, keyPem: p.publicKey.publicKeyPem } } : {}),
 	};
@@ -332,7 +335,7 @@ export interface RemoteActorUpdates {
 	updateProfile(id: string, profile: RemoteActorProfile): Promise<void>;
 	updateFollowing(id: string, sharedInbox: string | null): Promise<void>;
 }
-export function createActorRefresher(writes: RemoteActorUpdates) {
+export function createActorRefresher(writes: RemoteActorUpdates, startUserHashtags: StartUserHashtags) {
 	return async (id: string, plan: RemoteActorPlan): Promise<'updated' | 'skip'> => {
 		if (!await writes.updateUser(id, plan.user)) {
 			return 'skip';
@@ -344,6 +347,7 @@ export function createActorRefresher(writes: RemoteActorUpdates) {
 			throw Object.assign(new Error(plan.profileError.message), { name: plan.profileError.name });
 		}
 		await writes.updateProfile(id, plan.profile);
+		startUserHashtags(plan.hashtagUser, plan.user.tags);
 		await writes.updateFollowing(id, plan.user.sharedInbox);
 		return 'updated';
 	};
