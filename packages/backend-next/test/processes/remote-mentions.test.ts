@@ -4,6 +4,7 @@
  */
 import { request } from 'node:http';
 import { connect } from 'node:net';
+import { resolve } from 'node:path';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { MiFollowing, MiMeta, MiNote, MiUser, MiUserProfile, MiUserKeypair } from 'backend-upstream/entities';
 import { createDataSource } from '../../src/platform/database/data-source.js';
@@ -302,7 +303,14 @@ test.each([false, true])('built public emoji extraction owns locked work through
 	}
 	register(name, { tag: tags });
 	const config = await configuration(database.config);
-	const http = launch('built/entrypoints/http.js', config.path, { MISSKEY_WEBFINGER_USE_HTTP: 'true' });
+	const preload = resolve('test/fixtures/emoji-refetch.mjs');
+	const http = launch('built/entrypoints/http.js', config.path, {
+		MISSKEY_WEBFINGER_USE_HTTP: 'true',
+		...(earlyFailure ? {
+			NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ''} --import=${preload}`,
+			BACKEND_NEXT_TEST_EMOJI_REFETCH: emojiName,
+		} : {}),
+	});
 	const lock = source.createQueryRunner(); let transaction = false;
 	try {
 		await http.ready; await lock.connect(); await lock.startTransaction(); transaction = true;
@@ -336,6 +344,13 @@ test.each([false, true])('built public emoji extraction owns locked work through
 		});
 		expect(http.child.exitCode).toBeNull();
 		await lock.commitTransaction(); transaction = false;
+		if (earlyFailure) {
+			await vi.waitFor(() => {
+				expect(http.messages, http.output()).toContainEqual({ type: 'emoji-refetch-result', publicUrl: 'https://remote.test/drained.png' });
+			}, { timeout: 3000 });
+			expect(http.child.exitCode).toBeNull();
+			http.child.send({ type: 'release-emoji-refetch' });
+		}
 		note ??= await response;
 		expect((await http.exit).code, http.output()).toBe(0);
 		expect(await source.getRepository(MiEmoji).findOneBy({ host: 'remote.test', name: emojiName })).toMatchObject({ originalUrl: 'https://remote.test/drained.png', publicUrl: 'https://remote.test/drained.png' });

@@ -322,8 +322,10 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			onError: (error, details) => logger.error('note-instance-counts.failed', { error, ...details }),
 		});
 		scope.defer(noteInstanceCounts.close);
+		const emojiIdCodec = createIdCodec(config.id);
 		const remoteEmojis = createRemoteEmojis(createRemoteEmojiRepository(dataSource.manager), {
-			now: Date.now, newId: () => createIdCodec(config.id).newId(Date.now()),
+			now: Date.now,
+			newId: () => emojiIdCodec.newId(Date.now()),
 		});
 		scope.defer(remoteEmojis.close);
 		const userHashtags = createUserHashtags({

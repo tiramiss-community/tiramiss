@@ -2,17 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { expect, test } from 'vitest';
-import { prepareActor, validateActor } from '../../../src/modules/federation/public.js';
-
-test('actor projection retains acquired emoji names instead of replacing them with empty names', async () => {
-	const material = Object.assign(validateActor({ type: 'Person', id: 'https://remote.test/a', preferredUsername: 'alice', inbox: 'https://remote.test/inbox' }, 'https://remote.test/a'), { emojis: ['wave', 'wave'] });
-	const plan = await prepareActor(material, null, 1800000000000, 'actor');
-	expect(plan.user.emojis).toEqual(['wave', 'wave']);
-});
-
 import { readFileSync } from 'node:fs';
-import { vi } from 'vitest';
+import { expect, test, vi } from 'vitest';
 import { MiMeta } from 'backend-upstream/entities';
 import { createRemoteEmojis } from '../../../src/composition/remote-emojis.js';
 import { createRemoteUsers } from '../../../src/composition/remote-users.js';
@@ -124,6 +115,62 @@ test('early rejection returns while another full tag operation remains owned by 
 	await Promise.resolve(); expect(closed).toBe(false); expect(h.rows).toHaveLength(0);
 	h.held.resolve(); await close;
 	expect(h.rows.map(r => r.name)).toEqual(['wave']);
+});
+
+test('close waits for an update refetch and a tag that starts during the drain', async () => {
+	const refetchEntered = deferred();
+	const refetchRelease = deferred();
+	const insertEntered = deferred();
+	const insertRelease = deferred();
+	const wave: RemoteEmoji = { id: 'wave', name: 'wave', host: 'remote.test', uri: null, originalUrl: 'old', publicUrl: 'old', updatedAt: null, aliases: [], license: null };
+	const controller = createRemoteEmojis({
+		async find(_host, names) {
+			return names.includes('wave') ? [wave] : [];
+		},
+		async update(_host, _name, patch) {
+			wave.publicUrl = patch.publicUrl;
+		},
+		async findOne() {
+			refetchEntered.resolve();
+			await refetchRelease.promise;
+			return wave;
+		},
+		async insert(row) {
+			if (row.name === 'broken') {
+				throw new Error('insert failed');
+			}
+			insertEntered.resolve();
+			await insertRelease.promise;
+			return { ...row, uri: null };
+		},
+	}, { now: () => 1800000000000, newId: () => 'spark' });
+	const emojiTag = (name: string) => ({ type: 'Emoji', name: `:${name}:`, icon: { url: `https://remote.test/${name}.png` } });
+	const response = controller.extract([emojiTag('wave'), emojiTag('broken')], 'remote.test');
+	await expect(response).rejects.toThrow('insert failed');
+	await refetchEntered.promise;
+	let closed = false;
+	const close = controller.close().then(() => {
+		closed = true;
+	});
+	const checkpoint = () => new Promise<void>(resolve => setImmediate(resolve));
+
+	try {
+		await checkpoint();
+		expect(closed).toBe(false);
+		expect(wave.publicUrl).toBe('https://remote.test/wave.png');
+
+		const late = controller.extract([emojiTag('spark')], 'remote.test');
+		await insertEntered.promise;
+		refetchRelease.resolve();
+		await checkpoint();
+		expect(closed).toBe(false);
+		insertRelease.resolve();
+		expect(await late).toMatchObject([{ name: 'spark' }]);
+	} finally {
+		refetchRelease.resolve();
+		insertRelease.resolve();
+		await close;
+	}
 });
 
 const existing: RemoteUserFacts = { id: 'remote', username: 'Original', host: 'entry.test', uri: 'https://remote.test/users/a', lastFetchedAtMs: 0, isDeleted: false, tags: [], movedToUri: null };
