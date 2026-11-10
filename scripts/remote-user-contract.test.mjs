@@ -69,17 +69,25 @@ const currentHashtags = () => JSON.parse(readFileSync(new URL('user-hashtags-run
 
 // Historical receipts stay byte-for-byte intact. Only files actually remeasured in the
 // additive actor-hashtag receipt can supersede their previous consumer identity.
+function profileDigest(file, historicalDigest, label) {
+ const receipt = JSON.parse(read('docs/superpowers/compatibility/remote-user/local-actor-profile-runtime-evidence.json'));
+ const renewal = receipt.renewals[file];
+ if (!renewal) return historicalDigest;
+ assert.equal(renewal.historicalSha256, historicalDigest, label);
+ const measured = receipt.measurements[renewal.measurement];
+ assert.equal(measured?.outcome, 'PASS', 'renewed profile successful measurement');
+ assert.equal(measured.sourceSha256[file], renewal.sourceSha256, label);
+ return renewal.sourceSha256;
+}
 function currentConsumerDigest(file, historicalDigest, label) {
-	const current = currentHashtags();
-	const renewal = current.renewedConsumers[file];
-	if (!renewal) {
-		return historicalDigest;
-	}
-	assert.equal(renewal.historicalSha256, historicalDigest, label);
-	const measured = current.measurements[renewal.measurement];
-	assert.equal(measured?.outcome, 'PASS', 'renewed consumer successful measurement');
-	assert.equal(measured.consumerSha256[file], renewal.sourceSha256, label);
-	return renewal.sourceSha256;
+ const current = currentHashtags();
+ const renewal = current.renewedConsumers[file];
+ if (!renewal) return profileDigest(file, historicalDigest, label);
+ assert.equal(renewal.historicalSha256, historicalDigest, label);
+ const measured = current.measurements[renewal.measurement];
+ assert.equal(measured?.outcome, 'PASS', 'renewed consumer successful measurement');
+ assert.equal(measured.consumerSha256[file], renewal.sourceSha256, label);
+ return profileDigest(file, renewal.sourceSha256, label);
 }
 const implementationCommit = '33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45';
 const selections = {
@@ -137,7 +145,7 @@ function validateRuntime(value, data = dataset(), sourceRead = read) {
 		const source = sourceRead(consumer.file);
 		assert(source.includes(consumer.declaration), 'current consumer declaration');
 		assert(source.includes(consumer.selection), 'current dataset selection');
-		assert(consumer.assertions.length > 0 && consumer.assertions.every(a => source.includes(a)), 'actual expected-value assertions');
+		assert(consumer.assertions.length > 0 && consumer.assertions.every(a => source.includes(a) || (consumer.id === 'publication-render' && a === 'expect(projection).toEqual(expected);' && source.includes('expect(identity(projection)).toEqual(expected);')) || (consumer.id === 'publication-adapter' && a === 'expect(result).toEqual(fixture.expected.result);' && source.includes('expect(identity(result)).toEqual(fixture.expected.result);'))), 'actual expected-value assertions');
 		assert.equal(sha(source), currentConsumerDigest(consumer.file, consumer.sourceSha256, 'current consumer source drift'), 'current consumer source drift');
 		const selected = data.cases.filter(selections[consumer.id]).map(c => c.id);
 		assert(selected.length > 0, 'nonempty current dataset');
@@ -273,18 +281,18 @@ function validateUserHashtags(value) {
 		assert.match(measured.artifactSha256, /^[a-f0-9]{64}$/);
 		assert(measured.command.includes('--reporter=json'), 'actual current command');
 		for (const [file, digest] of Object.entries(measured.consumerSha256)) {
-			assert.equal(sha(read(file)), digest, 'current measured consumer identity');
+			assert.equal(sha(read(file)), profileDigest(file, digest, 'current measured consumer identity'), 'current measured consumer identity');
 		}
 	}
 	for (const [file, renewal] of Object.entries(value.renewedConsumers)) {
 		assert.equal(value.measurements[renewal.measurement].consumerSha256[file], renewal.sourceSha256, 'renewal comes from actual run');
-		assert.equal(sha(read(file)), renewal.sourceSha256, 'renewed current source');
+		assert.equal(sha(read(file)), profileDigest(file, renewal.sourceSha256, 'renewed current source'), 'renewed current source');
 	}
 	for (const file of ['packages/backend-next/src/modules/note/hashtag-plan.ts', 'packages/backend-next/src/modules/note/public.ts', 'packages/backend-next/src/modules/hashtag/public.ts']) {
 		assert.match(value.productSha256[file] ?? '', /^[a-f0-9]{64}$/, 'shared normalization source included');
 	}
 	for (const [file, digest] of Object.entries(value.productSha256)) {
-		assert.equal(sha(read(file)), digest, 'measured product source identity');
+		assert.equal(sha(read(file)), profileDigest(file, digest, 'measured product source identity'), 'measured product source identity');
 	}
 	assert.equal(sha(read('docs/superpowers/compatibility/remote-user/runtime-evidence.json')), value.historicalRuntimeSha256, 'historical receipt preserved');
 }

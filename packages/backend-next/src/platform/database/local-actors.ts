@@ -2,7 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { MiUser } from 'backend-upstream/entities';
+import { MiUser, MiUserProfile } from 'backend-upstream/entities';
+import type { LocalActorProfileFacts } from '../../modules/federation/public.js';
 import type { EntityManager } from 'typeorm';
 export function createActorReader(manager: EntityManager, options: {
 	includeSuspended?: boolean;
@@ -14,5 +15,14 @@ export function createActorReader(manager: EntityManager, options: {
 		}
 		const { username, name, isBot, isLocked, isExplorable, host, uri } = row;
 		return { id, username, name, isBot, isLocked, isExplorable, host, uri };
+	};
+}
+
+export function createActorProfileReader(manager: EntityManager): (id: string) => Promise<LocalActorProfileFacts> {
+	return async id => {
+		const { description, followedMessage, fields, birthday, location } = await manager.getRepository(MiUserProfile).findOneOrFail({
+			where: { userId: id }, select: { description: true, followedMessage: true, fields: true, birthday: true, location: true },
+		});
+		return { description, followedMessage, fields, birthday, location };
 	};
 }

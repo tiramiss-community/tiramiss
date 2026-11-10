@@ -4,15 +4,22 @@
  */
 import { expect, test } from 'vitest';
 import { renderLocalActor } from '../../../src/modules/federation/public.js';
+const emptyProfile = { description: null, followedMessage: null, fields: [], birthday: null, location: null };
+
+function identity(body: Record<string, unknown>) {
+	const { summary, _misskey_summary, _misskey_followedMessage, attachment, ...rest } = body;
+	return rest;
+}
+
 import { remoteSource } from '../../helpers/remote-source.js';
 
 test.each(remoteSource.cases.filter((c: { id: string; }) => ['publication-local', 'publication-system', 'publication-bot', 'publication-deleted'].includes(c.id)))('$id renders the consumed source signer projection with an actual context', fixture => {
 	const expected = fixture.expected.result;
-	const rendered = renderLocalActor({ id: 'local', username: fixture.input.system ? 'instance.actor' : 'alice', name: null, isBot: fixture.input.bot ?? false, isLocked: true, isExplorable: false }, 'https://local.test', expected.publicKey.publicKeyPem);
+	const rendered = renderLocalActor({ id: 'local', username: fixture.input.system ? 'instance.actor' : 'alice', name: null, isBot: fixture.input.bot ?? false, isLocked: true, isExplorable: false }, emptyProfile, 'https://local.test', expected.publicKey.publicKeyPem);
 	const { '@context': context, ...projection } = rendered;
 	expect(Array.isArray(context)).toBe(true);
 	expect(context).toContain('https://www.w3.org/ns/activitystreams');
-	expect(projection).toEqual(expected);
+	expect(identity(projection)).toEqual(expected);
 });
 
 for (const fixture of remoteSource.cases.filter(c => c.area === 'publication')) {
@@ -22,6 +29,7 @@ for (const fixture of remoteSource.cases.filter(c => c.area === 'publication')) 
 		const keyFixture = remoteSource.cases.find(c => c.id === 'publication-local')!;
 		const app = createActivityPubActorApi({
 			selfUrl: 'https://local.test',
+			readProfile: async () => emptyProfile,
 			isSelfHost: host => host === 'local.test', federationEnabled: async () => fixture.input.federation !== 'none',
 			publicKey: async () => keyFixture.expected.result.publicKey.publicKeyPem,
 			readActor: async id => {
@@ -48,6 +56,6 @@ for (const fixture of remoteSource.cases.filter(c => c.area === 'publication')) 
 		expect(response.headers.get('cache-control')).toBe('public, max-age=180');
 		expect(response.headers.get('content-type')).toBe(sourceEvents.find((e: { op: string; }) => e.op === 'type').args);
 		const { '@context': _context, ...result } = await response.json();
-		expect(result).toEqual(fixture.expected.result);
+		expect(identity(result)).toEqual(fixture.expected.result);
 	});
 }

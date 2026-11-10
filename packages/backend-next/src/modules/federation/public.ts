@@ -35,7 +35,7 @@ export type { RemoteActorMaterial, RemoteActorPlan, RemoteActorCreateScope, Remo
 export { createActivitySession, assertActivityIdentity } from './activity-fetch.js';
 export type { ActivitySession } from './activity-fetch.js';
 export { renderLocalActor } from './local-actor.js';
-export type { LocalActorFacts } from './local-actor.js';
+export type { LocalActorFacts, LocalActorProfileFacts } from './local-actor.js';
 export { htmlToMfm } from './html-to-mfm.js';
 
 export { planUserHashtags } from './user-hashtags.js';

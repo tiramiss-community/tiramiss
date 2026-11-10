@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
-import { MiMeta, MiUser, MiUserKeypair } from 'backend-upstream/entities';
+import { MiMeta, MiUser, MiUserKeypair, MiUserProfile } from 'backend-upstream/entities';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createBackendHttpApp } from '../../src/composition/note-http.js';
 import { createOutboundHttpClient } from '../../src/composition/outbound-http.js';
@@ -40,6 +40,7 @@ beforeAll(async () => {
 		const id = codec.newId(Date.now()); ids.set(fixture.id, id);
 		const pair = await generateRsaKeyPair();
 		await resources.dataSource.getRepository(MiUser).insert({ id, username: fixture.input.system ? 'instance.actor' : 'alice', usernameLower: `${fixture.id}`, name: null, isBot: fixture.input.bot ?? false, isLocked: true, isExplorable: false, ...fixture.input.user });
+		await resources.dataSource.getRepository(MiUserProfile).insert({ userId: id });
 		await resources.dataSource.getRepository(MiUserKeypair).insert({ userId: id, publicKey: pair.publicKeyPem, privateKey: pair.privateKeyPem });
 		if (fixture.id === 'publication-local') {
 			signerId = id; privateKeyPem = pair.privateKeyPem;
@@ -132,4 +133,32 @@ test('real 5000ms acquisition timeout cancels the response and normal direct SSR
 	} finally {
 		await direct.close();
 	}
+});
+
+// Omitting either composition's required reader breaks the real PG-backed consumer below.
+test('real Profile row reaches HTTP and actual createRemoteUsers local acquireActor', async () => {
+	const { createRemoteUsers } = await import('../../src/composition/remote-users.js');
+	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+	const profile = { description: '**profile**', followedMessage: 'hello', fields: [{ name: 'site', value: 'https://example.com tail' }], birthday: '2000-01-02', location: 'Tokyo' };
+	await resources.dataSource.getRepository(MiUserProfile).update(signerId, profile);
+	await resources.dataSource.getRepository(MiUser).update(signerId, { name: 'Alice' });
+	const response = await fetch(`http://127.0.0.1:${port}/users/${signerId}`, { headers: { Accept: 'application/activity+json' } });
+	expect(response.status).toBe(200);
+	expect(await response.json()).toMatchObject({ name: 'Alice', summary: '<b>profile</b>', _misskey_summary: '**profile**', _misskey_followedMessage: 'hello', attachment: [{ type: 'PropertyValue', name: 'site', value: '<a href="https://example.com/" rel="me nofollow noopener" target="_blank">https://example.com</a> tail' }], 'vcard:bday': '2000-01-02', 'vcard:Address': 'Tokyo' });
+	const remote = createRemoteUsers(resources, database.config);
+	const plan = await remote.acquireActor(`http://local.test/users/${signerId}`, null, () => Date.now(), () => 'unused');
+	expect(plan.user.name).toBe('Alice');
+	expect(plan.profile).toMatchObject({ description: '**profile**', followedMessage: 'hello', birthday: '2000-01-02', location: 'Tokyo', fields: [{ name: 'site', value: '[https://example.com](https://example.com/) tail' }] });
+	const repository = resources.dataSource.getRepository(MiUserProfile);
+	const fault = vi.spyOn(repository, 'findOneOrFail').mockRejectedValue(new Error('database unavailable'));
+	try {
+		expect((await fetch(`http://127.0.0.1:${port}/users/${signerId}`, { headers: { Accept: 'application/activity+json' } })).status).toBe(500);
+		await expect(remote.acquireActor(`http://local.test/users/${signerId}`, null, () => Date.now(), () => 'unused')).rejects.toThrow('database unavailable');
+	} finally {
+		fault.mockRestore();
+	}
+	await resources.dataSource.getRepository(MiUserProfile).delete(signerId);
+	expect((await fetch(`http://127.0.0.1:${port}/users/${signerId}`, { headers: { Accept: 'application/activity+json' } })).status).toBe(500);
+	await expect(remote.acquireActor(`http://local.test/users/${signerId}`, null, () => Date.now(), () => 'unused')).rejects.toThrow();
+	await resources.dataSource.getRepository(MiUserProfile).insert({ userId: signerId });
 });
