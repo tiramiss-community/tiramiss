@@ -212,3 +212,20 @@ test('SIGTERM drains pending hashtag DB work after actor HTTP and posting have a
 		await lock.release(); await http.close(); await config.close();
 	}
 });
+
+// A unit-only renderer connection cannot satisfy the normal built HTTP child.
+test('normal HTTP child publishes required local Profile facts', async () => {
+	const port = await freePort(); database.config.http.port = port;
+	await source.getRepository(MiUserProfile).update(authorId, { description: '**child**', followedMessage: '', location: 'Tokyo', fields: [{ name: 'site', value: 'https://example.com' }] });
+	const config = await configuration(database.config);
+	const http = launch('built/entrypoints/http.js', config.path);
+	try {
+		await http.ready;
+		const response = await fetch(`http://127.0.0.1:${port}/users/${authorId}`, { headers: { Accept: 'application/activity+json' } });
+		expect(response.status).toBe(200);
+		expect(await response.json()).toMatchObject({ summary: '<b>child</b>', _misskey_summary: '**child**', _misskey_followedMessage: '', 'vcard:Address': 'Tokyo', attachment: [{ type: 'PropertyValue', name: 'site', value: '<a href="https://example.com/" rel="me nofollow noopener" target="_blank">https://example.com</a>' }] });
+		http.child.kill('SIGTERM'); expect((await http.exit).code, http.output()).toBe(0);
+	} finally {
+		await http.close(); await config.close();
+	}
+});

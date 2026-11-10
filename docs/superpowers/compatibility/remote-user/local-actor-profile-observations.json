@@ -1,0 +1,460 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "upstreamHttpMeasured": false,
+  "sourceSha256": {
+    "core/activitypub/ApRendererService.ts": "8e4bcdcb5d062ffb707b0e038e5e1f62f0afca2ac4ddaa44c10e1b21bcbf1098",
+    "core/MfmService.ts": "494918ebbe07f3e1850f923df5f57fffdb3241c35a08066efe417e542496b6c0",
+    "misc/escape-html.ts": "35236da6de026b969f0af3f27d873d1d81d8678fb60ab3cdfdf8c0d04cca67df",
+    "misc/prelude/array.ts": "8319bf6a858b2afb934e50595798c2d914388c077d6bf49a2338a5f0520bcdc4"
+  },
+  "methods": {
+    "escapeHtml": {
+      "path": "misc/escape-html.ts",
+      "sha256": "8bebe6c087a00497532a5b385ced9b50a3fbce7398134618cb734399a5a10a84"
+    },
+    "concat": {
+      "path": "misc/prelude/array.ts",
+      "sha256": "ce0295d9d5a56bcc6309cbe5d660b17535e8e8f7f1e89e7ea59a92363613f1ae"
+    },
+    "intersperse": {
+      "path": "misc/prelude/array.ts",
+      "sha256": "3213315ff901561083346b81b4bef88c5384c501f6007269e4e8b666960debb2"
+    },
+    "ApRendererService.renderPerson": {
+      "path": "core/activitypub/ApRendererService.ts",
+      "sha256": "409ee63404fdfbc27bc4c199b34166e30cef4ce137b26cd053ab92eb84a6ec97"
+    },
+    "MfmService.toHtml": {
+      "path": "core/MfmService.ts",
+      "sha256": "88f0cb8d9bac0063cf043c6a4442c7daae967e9078cdbd6873b9a0aeadb2466c"
+    }
+  },
+  "doubles": {
+    "profileRepository": "in-memory required read; missing/DB failure injected",
+    "media": "no avatar/banner; renderIdenticon null",
+    "emoji": "empty emojis/tags",
+    "key": "getUserKeypair/renderKey fixed dummy; excluded from projection",
+    "userUri": "literal https://local.test/users/<id>"
+  },
+  "bindings": [
+    "ApRendererService.renderPerson",
+    "MfmService.toHtml",
+    "escapeHtml",
+    "concat",
+    "intersperse"
+  ],
+  "cases": [
+    {
+      "id": "description-0",
+      "profile": {
+        "description": null,
+        "followedMessage": null,
+        "fields": [],
+        "birthday": null,
+        "location": null
+      },
+      "expected": {
+        "raw": {
+          "name": null,
+          "summary": null,
+          "_misskey_summary": null,
+          "_misskey_followedMessage": null,
+          "attachment": {
+            "$undefined": true
+          }
+        },
+        "json": {
+          "name": null,
+          "summary": null,
+          "_misskey_summary": null,
+          "_misskey_followedMessage": null
+        }
+      }
+    },
+    {
+      "id": "description-1",
+      "profile": {
+        "description": "",
+        "followedMessage": null,
+        "fields": [],
+        "birthday": null,
+        "location": null
+      },
+      "expected": {
+        "raw": {
+          "name": null,
+          "summary": null,
+          "_misskey_summary": "",
+          "_misskey_followedMessage": null,
+          "attachment": {
+            "$undefined": true
+          }
+        },
+        "json": {
+          "name": null,
+          "summary": null,
+          "_misskey_summary": "",
+          "_misskey_followedMessage": null
+        }
+      }
+    },
+    {
+      "id": "description-2",
+      "profile": {
+        "description": "line1\nline2",
+        "followedMessage": null,
+        "fields": [],
+        "birthday": null,
+        "location": null
+      },
+      "expected": {
+        "raw": {
+          "name": null,
+          "summary": "line1<br />line2",
+          "_misskey_summary": "line1\nline2",
+          "_misskey_followedMessage": null,
+          "attachment": {
+            "$undefined": true
+          }
+        },
+        "json": {
+          "name": null,
+          "summary": "line1<br />line2",
+          "_misskey_summary": "line1\nline2",
+          "_misskey_followedMessage": null
+        }
+      }
+    },
+    {
+      "id": "description-3",
+      "profile": {
+        "description": "[label](https://example.com/a?b=1&c=2)",
+        "followedMessage": null,
+        "fields": [],
+        "birthday": null,
+        "location": null
+      },
+      "expected": {
+        "raw": {
+          "name": null,
+          "summary": "<a href=\"https://example.com/a?b=1&amp;c=2\">label</a>",
+          "_misskey_summary": "[label](https://example.com/a?b=1&c=2)",
+          "_misskey_followedMessage": null,
+          "attachment": {
+            "$undefined": true
+          }
+        },
+        "json": {
+          "name": null,
+          "summary": "<a href=\"https://example.com/a?b=1&amp;c=2\">label</a>",
+          "_misskey_summary": "[label](https://example.com/a?b=1&c=2)",
+          "_misskey_followedMessage": null
+        }
+      }
+    },
+    {
+      "id": "description-4",
+      "profile": {
+        "description": "@alice @bob@remote.test",
+        "followedMessage": null,
+        "fields": [],
+        "birthday": null,
+        "location": null
+      },
+      "expected": {
+        "raw": {
+          "name": null,
+          "summary": "<a href=\"https://local.test/@alice\" class=\"u-url mention\">@alice</a> <a href=\"https://local.test/@bob@remote.test\" class=\"u-url mention\">@bob@remote.test</a>",
+          "_misskey_summary": "@alice @bob@remote.test",
+          "_misskey_followedMessage": null,
+          "attachment": {
+            "$undefined": true
+          }
+        },
+        "json": {
+          "name": null,
+          "summary": "<a href=\"https://local.test/@alice\" class=\"u-url mention\">@alice</a> <a href=\"https://local.test/@bob@remote.test\" class=\"u-url mention\">@bob@remote.test</a>",
+          "_misskey_summary": "@alice @bob@remote.test",
+          "_misskey_followedMessage": null
+        }
+      }
+    },
+    {
+      "id": "description-5",
+      "profile": {
+        "description": "#プロフィール",
+        "followedMessage": null,
+        "fields": [],
+        "birthday": null,
+        "location": null
+      },
+      "expected": {
+        "raw": {
+          "name": null,
+          "summary": "<a href=\"https://local.test/tags/%E3%83%97%E3%83%AD%E3%83%95%E3%82%A3%E3%83%BC%E3%83%AB\" rel=\"tag\">#プロフィール</a>",
+          "_misskey_summary": "#プロフィール",
+          "_misskey_followedMessage": null,
+          "attachment": {
+            "$undefined": true
+          }
+        },
+        "json": {
+          "name": null,
+          "summary": "<a href=\"https://local.test/tags/%E3%83%97%E3%83%AD%E3%83%95%E3%82%A3%E3%83%BC%E3%83%AB\" rel=\"tag\">#プロフィール</a>",
+          "_misskey_summary": "#プロフィール",
+          "_misskey_followedMessage": null
+        }
+      }
+    },
+    {
+      "id": "description-6",
+      "profile": {
+        "description": "**bold**",
+        "followedMessage": null,
+        "fields": [],
+        "birthday": null,
+        "location": null
+      },
+      "expected": {
+        "raw": {
+          "name": null,
+          "summary": "<b>bold</b>",
+          "_misskey_summary": "**bold**",
+          "_misskey_followedMessage": null,
+          "attachment": {
+            "$undefined": true
+          }
+        },
+        "json": {
+          "name": null,
+          "summary": "<b>bold</b>",
+          "_misskey_summary": "**bold**",
+          "_misskey_followedMessage": null
+        }
+      }
+    },
+    {
+      "id": "description-7",
+      "profile": {
+        "description": "$[ruby single]",
+        "followedMessage": null,
+        "fields": [],
+        "birthday": null,
+        "location": null
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of undefined (reading 'replace')"
+        }
+      }
+    },
+    {
+      "id": "fields",
+      "profile": {
+        "description": null,
+        "followedMessage": null,
+        "fields": [
+          {
+            "name": "field0",
+            "value": "http://example.com"
+          },
+          {
+            "name": "field1",
+            "value": "https://example.com/path?x=1&y=2 trailing <b>x</b>"
+          },
+          {
+            "name": "field2",
+            "value": "HTTPS://example.com"
+          },
+          {
+            "name": "field3",
+            "value": "https://[invalid"
+          },
+          {
+            "name": "field4",
+            "value": "https://localhost"
+          },
+          {
+            "name": "field5",
+            "value": "www.example.com"
+          },
+          {
+            "name": "field6",
+            "value": "<b>raw</b>"
+          }
+        ],
+        "birthday": null,
+        "location": null
+      },
+      "expected": {
+        "raw": {
+          "name": null,
+          "summary": null,
+          "_misskey_summary": null,
+          "_misskey_followedMessage": null,
+          "attachment": [
+            {
+              "type": "PropertyValue",
+              "name": "field0",
+              "value": "<a href=\"http://example.com/\" rel=\"me nofollow noopener\" target=\"_blank\">http://example.com</a>"
+            },
+            {
+              "type": "PropertyValue",
+              "name": "field1",
+              "value": "<a href=\"https://example.com/path?x=1&y=2\" rel=\"me nofollow noopener\" target=\"_blank\">https://example.com/path?x=1&y=2</a> trailing <b>x</b>"
+            },
+            {
+              "type": "PropertyValue",
+              "name": "field2",
+              "value": "HTTPS://example.com"
+            },
+            {
+              "type": "PropertyValue",
+              "name": "field3",
+              "value": "https://[invalid"
+            },
+            {
+              "type": "PropertyValue",
+              "name": "field4",
+              "value": "https://localhost"
+            },
+            {
+              "type": "PropertyValue",
+              "name": "field5",
+              "value": "www.example.com"
+            },
+            {
+              "type": "PropertyValue",
+              "name": "field6",
+              "value": "<b>raw</b>"
+            }
+          ]
+        },
+        "json": {
+          "name": null,
+          "summary": null,
+          "_misskey_summary": null,
+          "_misskey_followedMessage": null,
+          "attachment": [
+            {
+              "type": "PropertyValue",
+              "name": "field0",
+              "value": "<a href=\"http://example.com/\" rel=\"me nofollow noopener\" target=\"_blank\">http://example.com</a>"
+            },
+            {
+              "type": "PropertyValue",
+              "name": "field1",
+              "value": "<a href=\"https://example.com/path?x=1&y=2\" rel=\"me nofollow noopener\" target=\"_blank\">https://example.com/path?x=1&y=2</a> trailing <b>x</b>"
+            },
+            {
+              "type": "PropertyValue",
+              "name": "field2",
+              "value": "HTTPS://example.com"
+            },
+            {
+              "type": "PropertyValue",
+              "name": "field3",
+              "value": "https://[invalid"
+            },
+            {
+              "type": "PropertyValue",
+              "name": "field4",
+              "value": "https://localhost"
+            },
+            {
+              "type": "PropertyValue",
+              "name": "field5",
+              "value": "www.example.com"
+            },
+            {
+              "type": "PropertyValue",
+              "name": "field6",
+              "value": "<b>raw</b>"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "values",
+      "name": "Alice <name>",
+      "profile": {
+        "description": null,
+        "followedMessage": "hello **raw**",
+        "fields": [],
+        "birthday": "2000-01-02",
+        "location": "Tokyo"
+      },
+      "expected": {
+        "raw": {
+          "name": "Alice <name>",
+          "summary": null,
+          "_misskey_summary": null,
+          "_misskey_followedMessage": "hello **raw**",
+          "attachment": {
+            "$undefined": true
+          },
+          "vcard:bday": "2000-01-02",
+          "vcard:Address": "Tokyo"
+        },
+        "json": {
+          "name": "Alice <name>",
+          "summary": null,
+          "_misskey_summary": null,
+          "_misskey_followedMessage": "hello **raw**",
+          "vcard:bday": "2000-01-02",
+          "vcard:Address": "Tokyo"
+        }
+      }
+    },
+    {
+      "id": "empty-values",
+      "profile": {
+        "description": "",
+        "followedMessage": "",
+        "fields": [],
+        "birthday": "",
+        "location": ""
+      },
+      "expected": {
+        "raw": {
+          "name": null,
+          "summary": null,
+          "_misskey_summary": "",
+          "_misskey_followedMessage": "",
+          "attachment": {
+            "$undefined": true
+          }
+        },
+        "json": {
+          "name": null,
+          "summary": null,
+          "_misskey_summary": "",
+          "_misskey_followedMessage": ""
+        }
+      }
+    },
+    {
+      "id": "missing-profile",
+      "fail": "missing",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "profile missing"
+        }
+      }
+    },
+    {
+      "id": "database-error",
+      "fail": "database",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "database unavailable"
+        }
+      }
+    }
+  ]
+}

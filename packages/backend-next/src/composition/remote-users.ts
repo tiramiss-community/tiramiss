@@ -4,7 +4,7 @@
  */
 import { htmlToMfm, apType, webfingerUrl, selectWebfingerSelf, createActivitySession, createHostRules, isFederationAllowedHost, toPuny, punyHost, validateActor, prepareActor, collectionVisibility, insertActor, truncate } from '../modules/federation/public.js';
 import { createRemoteUserRepository, createRemoteActorTransactions } from '../platform/database/remote-users.js';
-import { createActorReader } from '../platform/database/local-actors.js';
+import { createActorReader, createActorProfileReader } from '../platform/database/local-actors.js';
 import { readMeta, readFederationPolicy } from '../platform/database/meta.js';
 import { renderLocalActor } from '../modules/federation/public.js';
 import type { DataSource } from 'typeorm';
@@ -22,6 +22,7 @@ export function createRemoteUsers(parts: {
 	// Transport policy uses DNS hostnames: a nondefault port must not collapse either side to an empty host.
 	const withoutRootDot = (host: string) => host.replace(/\.$/, '');
 	const requestRules = createHostRules(withoutRootDot(new URL(config.url).hostname));
+	const readProfile = createActorProfileReader(parts.dataSource.manager);
 	const readActor = createActorReader(parts.dataSource.manager, { includeSuspended: true });
 	const readRequestPolicy = async () => {
 		const current = await readFederationPolicy(parts.dataSource.manager);
@@ -85,7 +86,8 @@ export function createRemoteUsers(parts: {
 					if (!user || user.host !== null) {
 						throw new Error('local user not found');
 					}
-					return renderLocalActor(user, config.url, parts.federationKeys.toSpkiPublicKeyPem((await parts.federationKeys.readUserKeypair(user.id)).publicKeyPem));
+					const profile = await readProfile(user.id);
+					return renderLocalActor(user, profile, config.url, parts.federationKeys.toSpkiPublicKeyPem((await parts.federationKeys.readUserKeypair(user.id)).publicKeyPem));
 				},
 			});
 			const material = validateActor(await session.resolve(uri), uri);
