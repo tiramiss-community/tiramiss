@@ -167,3 +167,9 @@ media/emoji #188/#195、attached user hashtag関係 #195、actor由来instance u
 ## Public actor instance usersCount の限定接続（2026-11-10）
 
 公開notes/createの新規actor保存・canonical duplicate復帰から、入力URI由来hostで既存instance台帳登録と直接usersCount増算を非待機開始する。[設計](../superpowers/specs/2026-11-10-actor-instance-registration-design.md)・[新規source観測と検証](../superpowers/compatibility/remote-user/actor-instance-registration-results.md)。増算で台帳cacheを書き換えず、既存orIgnore差異を維持する。同期Metaを読む本家に対し、現行の非同期Meta読取には追加のタイミング・失敗境界があり、設定競合の厳密な同等性は未証明で、新たな承認済み差異とは扱わない。metadata・chart等の未実装は未完了のまま残す。
+
+## 現在callerのmetadata接続（2026-11-10、#215段階5）
+
+上記の「成功時metadataは段階5まで呼ばない」は過去の一時状態。今回の限定sliceではpublic actor作成/canonical復帰と配送成功へ、同じledgerを使う取得処理を接続する。NodeInfo/HTML/manifest/favicon、Redis EX30 GET・cache経由24h判定・force時無条件unlockと独立失敗を維持し、現在callerの開始済み処理は停止時にdrainする。increment/responding更新の停滞・失敗をmetadata開始条件にしない。取得の統計gateはcallerが所有し、共有操作内には置かない。
+
+ロック取得とfinallyのunlock例外は伝播し、try内の取得/更新例外は診断して握る。async Meta読取とsource同期snapshotの時点差は未証明のまま。[追加のsource境界・実測・残責任](../superpowers/compatibility/instance-metadata/README.md)。inbox/admin取得、chart、他の初期gap、#176/#127/#195/#215全体の完成を意味しない。

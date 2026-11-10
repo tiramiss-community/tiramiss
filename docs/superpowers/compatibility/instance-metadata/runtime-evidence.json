@@ -1,0 +1,539 @@
+{
+  "schemaVersion": 1,
+  "status": "VALIDATED",
+  "scope": "current-public-actor-and-delivery-callers",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "base": "a57e1e456ea448335a8a3a3c37e333302ff4bebe",
+  "notesCreateStatus": "partial",
+  "postingComplete": false,
+  "remainingGapIds": [
+    "media-emoji",
+    "instance-metadata",
+    "charts",
+    "rich-actor",
+    "remote-cache"
+  ],
+  "frozenRevision": 4,
+  "runtime": "Node24.20.0 / pnpm12.9.1",
+  "inputCount": 935,
+  "fullFrozenInputMapSha256": "08f2e53b7a1c194d137d8db8ea011425e54c8c38547194cda754684ed85034e3",
+  "parentReceiptSha256": "7fd8643980d20898150d90b85ed0426cdd5f10ea5db076336d395ffad853df69",
+  "parentReceiptPath": "/tmp/tiramiss-s1-r4-fix1-validation-receipt-r4.json",
+  "observationsSha256": "270ae0add242ce6f0402a8bb2d5ea9838d0206d96f6b7baf4e0d37f3fd175593",
+  "probeSha256": "4867d72254d0b3425adda6f19ed53bf44782ece8cce9ec6394f2a86c40a82556",
+  "historicalSha256": {
+    "docs/superpowers/compatibility/remote-user/local-actor-profile-source-probe.mjs": "183dd5e261a16e8b089dde12bf561dc82bf190e6c9fae63a6045f64cb5034d00",
+    "docs/superpowers/compatibility/remote-user/local-actor-profile-runtime-evidence.json": "8beec85496036c9e78c8fafb5328d367fd8590883b5b9d7c3767652a916d774e",
+    "docs/superpowers/compatibility/remote-user/actor-instance-registration-observations.json": "588675d9c9ba68585fb153a7d365a931351d613ddd6b30b8d8c6594b2b514d1f",
+    "docs/superpowers/compatibility/remote-user/source-probe.mjs": "cfa37395cb59828426abd638738b2b6d92f556b6f9af57b7223a5fa8f5740976",
+    "docs/superpowers/compatibility/remote-user/actor-instance-registration-source-probe.mjs": "ecb025cc7130273bad238e8de0d3a745a69a84ff48a707b85fdb61876de4ff78",
+    "docs/superpowers/compatibility/remote-user/user-hashtags-source-probe.mjs": "f617a1db513b8d1169589e52791e07a3e3e2c5c0e80fadf18a76f770c08c3234",
+    "docs/superpowers/compatibility/remote-user/user-hashtags-runtime-evidence.json": "263425c5e952a06370c638765f2207463e852c610e2153ff47abfdf594221fe4",
+    "docs/superpowers/compatibility/remote-user/actor-instance-registration-runtime-evidence.json": "d36d75bb0a90670c37ffbe0275562fe2d74f5e98e6c5fffe3069b36401919828",
+    "docs/superpowers/compatibility/remote-user/local-actor-profile-observations.json": "10c782ee3ba9d174cdc8fb3ff34554497dd2e5b0ec169a95ff69054fdbad628a",
+    "docs/superpowers/compatibility/remote-user/observations.json": "7427c62abb63c7a7414d9ad571450eb66bce15856ad0be9a5f4b02e1d554b8eb",
+    "docs/superpowers/compatibility/remote-user/runtime-evidence.json": "f4516c9bae05d19a5ea15d6addf3c2246c0264501445b47d68a49aa6cc367f49",
+    "docs/superpowers/compatibility/remote-user/user-hashtags-observations.json": "76f5e492fcb9439c4041774de505002ecd487df888e346a4010a86f47239ad86",
+    "docs/superpowers/compatibility/instance-metadata/runtime-evidence-r1.json": "66706e328effd2df866124a286847ac45bbdf91d09f961bd7429af0278644d70"
+  },
+  "measurements": {
+    "source": {
+      "command": "node docs/superpowers/compatibility/instance-metadata/source-probe.mjs --check",
+      "artifact": "/tmp/tiramiss-s1-r4-source-r2.log",
+      "log": "/tmp/tiramiss-s1-r4-source-r2.log",
+      "startedAt": "2026-11-10T11:45:38.445255+00:00",
+      "finishedAt": "2026-11-10T11:45:38.777436+00:00",
+      "artifactSha256": "3fea7953cec65f2ce6286e01477d7f18aa70e0ac11fb96a0828d5935efbb68a0",
+      "files": null,
+      "outcome": "PASS",
+      "passed": null,
+      "failed": null,
+      "skipped": null,
+      "sourceSha256": {
+        "docs/superpowers/compatibility/instance-metadata/source-probe.mjs": "4867d72254d0b3425adda6f19ed53bf44782ece8cce9ec6394f2a86c40a82556",
+        "docs/superpowers/compatibility/instance-metadata/observations.json": "270ae0add242ce6f0402a8bb2d5ea9838d0206d96f6b7baf4e0d37f3fd175593"
+      },
+      "exitCode": 0
+    },
+    "build": {
+      "command": "pnpm --filter backend-next... build",
+      "artifact": "/tmp/tiramiss-s1-r4-build-r2.log",
+      "log": "/tmp/tiramiss-s1-r4-build-r2.log",
+      "startedAt": "2026-11-10T11:45:38.794617+00:00",
+      "finishedAt": "2026-11-10T11:45:39.729797+00:00",
+      "artifactSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
+      "files": null,
+      "outcome": "PASS",
+      "passed": null,
+      "failed": null,
+      "skipped": null,
+      "sourceSha256": {},
+      "exitCode": 0
+    },
+    "typecheck": {
+      "command": "pnpm --filter backend-next... typecheck",
+      "artifact": "/tmp/tiramiss-s1-r4-typecheck-r3.log",
+      "log": "/tmp/tiramiss-s1-r4-typecheck-r3.log",
+      "startedAt": "2026-11-10T12:09:15.790479+00:00",
+      "finishedAt": "2026-11-10T12:09:17.021893+00:00",
+      "artifactSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+      "files": null,
+      "outcome": "PASS",
+      "passed": null,
+      "failed": null,
+      "skipped": null,
+      "sourceSha256": {},
+      "exitCode": 0
+    },
+    "integration": {
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55506 BACKEND_NEXT_TEST_REDIS_PORT=56406 BACKEND_NEXT_TEST_MEILI_PORT=57806 pnpm --filter backend-next test:integration test/integration/instance-metadata.test.ts test/integration/remote-user.test.ts test/integration/deliver-processor.test.ts test/integration/note-application.test.ts test/integration/activitypub-actor.test.ts --reporter=json --outputFile=/tmp/tiramiss-s1-r4-integration-r4.json",
+      "artifact": "/tmp/tiramiss-s1-r4-integration-r4.json",
+      "log": "/tmp/tiramiss-s1-r4-integration-r4.log",
+      "startedAt": "2026-11-10T12:19:57.818298+00:00",
+      "finishedAt": "2026-11-10T12:20:22.779687+00:00",
+      "artifactSha256": "5237752a88819a433a70b4b71ce0d8275fbc4f77f9afa47581834c44257c2625",
+      "files": 5,
+      "passed": 144,
+      "failed": 0,
+      "exitCode": 0,
+      "outcome": "PASS",
+      "skipped": 0,
+      "sourceSha256": {
+        "packages/backend-next/package.json": "47f4ce1dee2f7bce9d4406354905f4f211b55a4714039f621d406ef516a5b191",
+        "packages/backend-next/src/application/outbound-http.ts": "d73b3ce370e2edc467c469d19a19378a8c0d70b2eb72d99b6cc44355fad47809",
+        "packages/backend-next/src/composition/actor-instance-registration.ts": "6981f218587a2b8d5ac9cba9f5dd44f84589ae6ff8b3d46fca9f1ac95ed720e0",
+        "packages/backend-next/src/composition/deliver-job.ts": "72243a30015991f54d28b3027beeedca5f4b1d7370a252013b3e242807d87bbb",
+        "packages/backend-next/src/modules/federation/deliver-job.ts": "24ca1ed4dba6ab4d859403b91d29f77348925c319475766d3df5621e4b4673a6",
+        "packages/backend-next/src/modules/federation/instance-metadata.ts": "9ff071c56aed465d881dcd4950f8196fc4926e45bd73b056e96d1878af49ddf9",
+        "packages/backend-next/src/modules/federation/instance.ts": "aea0477d2aaed83b7e7b5f4dac7707a0266be9b0a2b065c6d6ca9d7605fcd94f",
+        "packages/backend-next/src/modules/federation/public.ts": "835155530e60fa6c0f13065e87ee3180cad8768b79f0e2304f4487c94c977310",
+        "packages/backend-next/src/platform/connect-resources.ts": "50a3ee9fec27f437e79733ce36454927128b3c8561abf70e7eee7b8c4e3e45c2",
+        "packages/backend-next/src/platform/instance-ledger.ts": "60bf2f4a7262131813321a29b07cf63e9f2aad864dbc30515ab48db5eb6e1e42",
+        "packages/backend-next/src/platform/instance-metadata.ts": "67e28e4393f6a4d7a1f6f74facdcaa540ba4a830f7b8f44a73de6a4861d20d09",
+        "packages/backend-next/src/platform/outbound-http/client.ts": "98c89517ebf6a9b3e83d119b1383cdb4f8a0e9aa35b7321b778df4035726ee8f",
+        "packages/backend-next/test/helpers/instance-metadata-peer.ts": "97ecf7a2553d8817d26b3a41e03b3f77fe1898e0946e06810b3867cbcba9d709",
+        "packages/backend-next/test/integration/deliver-processor.test.ts": "558973c5df49b6406719a0e5f37f5e7a4749fecfb360698a99e1bc5ac31ed8a9",
+        "packages/backend-next/test/integration/instance-metadata.test.ts": "8639ce77d530e3b0df704f2a16495be3e35fa8e6777d7ff3ada39b353157ebd5",
+        "packages/backend-next/test/integration/remote-user.test.ts": "81f9c96e0b4f39840d2dea0f8a2d78742530b355a8dca0f1d6f4ddedc7f04ce8",
+        "packages/backend-next/test/processes/instance-metadata.test.ts": "27803c98e3ab09de2a6bf310f07f2da2526e1337f30a364394e44b1103fbb2cc",
+        "packages/backend-next/test/unit/federation/actor-instance-registration.test.ts": "06a94133af8131e8bfdfbec6e06b3d98b2c0f1ae6b7ebdd0e6a51bdcc4e34e92",
+        "packages/backend-next/test/unit/federation/deliver-job.test.ts": "2d8382d609ffb7296d389e3f012ca8e7844b1ff37f3a2262a3feed0ed62479ac",
+        "packages/backend-next/test/unit/federation/instance-metadata.test.ts": "70863cadb9687bb9748f5888ee643fe942be593a6913d9f8f3441af0d0cb8906",
+        "packages/backend-next/test/unit/note/create-note.test.ts": "eb153517e1267e835b2b98fa7b06f3dbda7df719f7ae54640f496cec551d9d88",
+        "packages/backend-next/test/unit/outbound-http/fake-servers.test.ts": "248db4f4ec96c74ecdfa1724e50774eea78993f24e983b382b25f6f1d3c5aeae",
+        "pnpm-lock.yaml": "5d52a8f56ba2d206d69586d0515d3b7bd03ad5a127368a531acb7796fc4ad395"
+      }
+    },
+    "process": {
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55506 BACKEND_NEXT_TEST_REDIS_PORT=56406 BACKEND_NEXT_TEST_MEILI_PORT=57806 pnpm --filter backend-next test:process test/processes/instance-metadata.test.ts test/processes/remote-mentions.test.ts test/processes/note-deliver.test.ts --reporter=json --outputFile=/tmp/tiramiss-s1-r4-process-r4.json",
+      "artifact": "/tmp/tiramiss-s1-r4-process-r4.json",
+      "log": "/tmp/tiramiss-s1-r4-process-r4.log",
+      "startedAt": "2026-11-10T12:20:22.790806+00:00",
+      "finishedAt": "2026-11-10T12:20:45.992789+00:00",
+      "artifactSha256": "7a11875dc078d457a58519f7f8ba0fe9d0ab6bdcc8c0b9dc5dc69f5877ddb35c",
+      "files": 3,
+      "passed": 14,
+      "failed": 0,
+      "exitCode": 0,
+      "outcome": "PASS",
+      "skipped": 0,
+      "sourceSha256": {
+        "packages/backend-next/package.json": "47f4ce1dee2f7bce9d4406354905f4f211b55a4714039f621d406ef516a5b191",
+        "packages/backend-next/src/application/outbound-http.ts": "d73b3ce370e2edc467c469d19a19378a8c0d70b2eb72d99b6cc44355fad47809",
+        "packages/backend-next/src/composition/actor-instance-registration.ts": "6981f218587a2b8d5ac9cba9f5dd44f84589ae6ff8b3d46fca9f1ac95ed720e0",
+        "packages/backend-next/src/composition/deliver-job.ts": "72243a30015991f54d28b3027beeedca5f4b1d7370a252013b3e242807d87bbb",
+        "packages/backend-next/src/modules/federation/deliver-job.ts": "24ca1ed4dba6ab4d859403b91d29f77348925c319475766d3df5621e4b4673a6",
+        "packages/backend-next/src/modules/federation/instance-metadata.ts": "9ff071c56aed465d881dcd4950f8196fc4926e45bd73b056e96d1878af49ddf9",
+        "packages/backend-next/src/modules/federation/instance.ts": "aea0477d2aaed83b7e7b5f4dac7707a0266be9b0a2b065c6d6ca9d7605fcd94f",
+        "packages/backend-next/src/modules/federation/public.ts": "835155530e60fa6c0f13065e87ee3180cad8768b79f0e2304f4487c94c977310",
+        "packages/backend-next/src/platform/connect-resources.ts": "50a3ee9fec27f437e79733ce36454927128b3c8561abf70e7eee7b8c4e3e45c2",
+        "packages/backend-next/src/platform/instance-ledger.ts": "60bf2f4a7262131813321a29b07cf63e9f2aad864dbc30515ab48db5eb6e1e42",
+        "packages/backend-next/src/platform/instance-metadata.ts": "67e28e4393f6a4d7a1f6f74facdcaa540ba4a830f7b8f44a73de6a4861d20d09",
+        "packages/backend-next/src/platform/outbound-http/client.ts": "98c89517ebf6a9b3e83d119b1383cdb4f8a0e9aa35b7321b778df4035726ee8f",
+        "packages/backend-next/test/helpers/instance-metadata-peer.ts": "97ecf7a2553d8817d26b3a41e03b3f77fe1898e0946e06810b3867cbcba9d709",
+        "packages/backend-next/test/integration/deliver-processor.test.ts": "558973c5df49b6406719a0e5f37f5e7a4749fecfb360698a99e1bc5ac31ed8a9",
+        "packages/backend-next/test/integration/instance-metadata.test.ts": "8639ce77d530e3b0df704f2a16495be3e35fa8e6777d7ff3ada39b353157ebd5",
+        "packages/backend-next/test/integration/remote-user.test.ts": "81f9c96e0b4f39840d2dea0f8a2d78742530b355a8dca0f1d6f4ddedc7f04ce8",
+        "packages/backend-next/test/processes/instance-metadata.test.ts": "27803c98e3ab09de2a6bf310f07f2da2526e1337f30a364394e44b1103fbb2cc",
+        "packages/backend-next/test/unit/federation/actor-instance-registration.test.ts": "06a94133af8131e8bfdfbec6e06b3d98b2c0f1ae6b7ebdd0e6a51bdcc4e34e92",
+        "packages/backend-next/test/unit/federation/deliver-job.test.ts": "2d8382d609ffb7296d389e3f012ca8e7844b1ff37f3a2262a3feed0ed62479ac",
+        "packages/backend-next/test/unit/federation/instance-metadata.test.ts": "70863cadb9687bb9748f5888ee643fe942be593a6913d9f8f3441af0d0cb8906",
+        "packages/backend-next/test/unit/note/create-note.test.ts": "eb153517e1267e835b2b98fa7b06f3dbda7df719f7ae54640f496cec551d9d88",
+        "packages/backend-next/test/unit/outbound-http/fake-servers.test.ts": "248db4f4ec96c74ecdfa1724e50774eea78993f24e983b382b25f6f1d3c5aeae",
+        "pnpm-lock.yaml": "5d52a8f56ba2d206d69586d0515d3b7bd03ad5a127368a531acb7796fc4ad395"
+      }
+    },
+    "full-unit": {
+      "command": "pnpm --filter backend-next test --reporter=json --outputFile=/tmp/tiramiss-s1-r4-full-unit-r3.json",
+      "artifact": "/tmp/tiramiss-s1-r4-full-unit-r3.json",
+      "log": "/tmp/tiramiss-s1-r4-full-unit-r3.log",
+      "startedAt": "2026-11-10T12:09:17.034250+00:00",
+      "finishedAt": "2026-11-10T12:09:47.961741+00:00",
+      "artifactSha256": "fb0cf5e7e0d27e4c46be90a562912b441b691a1dcf91434f4bf1c0134c22d827",
+      "files": 90,
+      "passed": 2939,
+      "failed": 0,
+      "exitCode": 0,
+      "outcome": "PASS",
+      "skipped": 0,
+      "sourceSha256": {
+        "packages/backend-next/package.json": "47f4ce1dee2f7bce9d4406354905f4f211b55a4714039f621d406ef516a5b191",
+        "packages/backend-next/src/application/outbound-http.ts": "d73b3ce370e2edc467c469d19a19378a8c0d70b2eb72d99b6cc44355fad47809",
+        "packages/backend-next/src/composition/actor-instance-registration.ts": "6981f218587a2b8d5ac9cba9f5dd44f84589ae6ff8b3d46fca9f1ac95ed720e0",
+        "packages/backend-next/src/composition/deliver-job.ts": "72243a30015991f54d28b3027beeedca5f4b1d7370a252013b3e242807d87bbb",
+        "packages/backend-next/src/modules/federation/deliver-job.ts": "24ca1ed4dba6ab4d859403b91d29f77348925c319475766d3df5621e4b4673a6",
+        "packages/backend-next/src/modules/federation/instance-metadata.ts": "9ff071c56aed465d881dcd4950f8196fc4926e45bd73b056e96d1878af49ddf9",
+        "packages/backend-next/src/modules/federation/instance.ts": "aea0477d2aaed83b7e7b5f4dac7707a0266be9b0a2b065c6d6ca9d7605fcd94f",
+        "packages/backend-next/src/modules/federation/public.ts": "835155530e60fa6c0f13065e87ee3180cad8768b79f0e2304f4487c94c977310",
+        "packages/backend-next/src/platform/connect-resources.ts": "50a3ee9fec27f437e79733ce36454927128b3c8561abf70e7eee7b8c4e3e45c2",
+        "packages/backend-next/src/platform/instance-ledger.ts": "60bf2f4a7262131813321a29b07cf63e9f2aad864dbc30515ab48db5eb6e1e42",
+        "packages/backend-next/src/platform/instance-metadata.ts": "67e28e4393f6a4d7a1f6f74facdcaa540ba4a830f7b8f44a73de6a4861d20d09",
+        "packages/backend-next/src/platform/outbound-http/client.ts": "98c89517ebf6a9b3e83d119b1383cdb4f8a0e9aa35b7321b778df4035726ee8f",
+        "packages/backend-next/test/helpers/instance-metadata-peer.ts": "97ecf7a2553d8817d26b3a41e03b3f77fe1898e0946e06810b3867cbcba9d709",
+        "packages/backend-next/test/integration/deliver-processor.test.ts": "558973c5df49b6406719a0e5f37f5e7a4749fecfb360698a99e1bc5ac31ed8a9",
+        "packages/backend-next/test/integration/instance-metadata.test.ts": "8639ce77d530e3b0df704f2a16495be3e35fa8e6777d7ff3ada39b353157ebd5",
+        "packages/backend-next/test/integration/remote-user.test.ts": "81f9c96e0b4f39840d2dea0f8a2d78742530b355a8dca0f1d6f4ddedc7f04ce8",
+        "packages/backend-next/test/processes/instance-metadata.test.ts": "27803c98e3ab09de2a6bf310f07f2da2526e1337f30a364394e44b1103fbb2cc",
+        "packages/backend-next/test/unit/federation/actor-instance-registration.test.ts": "06a94133af8131e8bfdfbec6e06b3d98b2c0f1ae6b7ebdd0e6a51bdcc4e34e92",
+        "packages/backend-next/test/unit/federation/deliver-job.test.ts": "2d8382d609ffb7296d389e3f012ca8e7844b1ff37f3a2262a3feed0ed62479ac",
+        "packages/backend-next/test/unit/federation/instance-metadata.test.ts": "70863cadb9687bb9748f5888ee643fe942be593a6913d9f8f3441af0d0cb8906",
+        "packages/backend-next/test/unit/note/create-note.test.ts": "eb153517e1267e835b2b98fa7b06f3dbda7df719f7ae54640f496cec551d9d88",
+        "packages/backend-next/test/unit/outbound-http/fake-servers.test.ts": "248db4f4ec96c74ecdfa1724e50774eea78993f24e983b382b25f6f1d3c5aeae",
+        "pnpm-lock.yaml": "5d52a8f56ba2d206d69586d0515d3b7bd03ad5a127368a531acb7796fc4ad395"
+      }
+    }
+  },
+  "renewals": {
+    "packages/backend-next/src/application/outbound-http.ts": {
+      "previousSha256": [
+        "b348d42a600939feb3ed7f93153b512fa943b7e094adab07598895f7d2e62050"
+      ],
+      "sourceSha256": "d73b3ce370e2edc467c469d19a19378a8c0d70b2eb72d99b6cc44355fad47809",
+      "measurement": "full-unit"
+    },
+    "packages/backend-next/src/composition/actor-instance-registration.ts": {
+      "previousSha256": [
+        "fda1981a103152ade9902e55c4b01865481ce4ae7f713088889e7fc112d1bde6"
+      ],
+      "sourceSha256": "6981f218587a2b8d5ac9cba9f5dd44f84589ae6ff8b3d46fca9f1ac95ed720e0",
+      "measurement": "full-unit"
+    },
+    "packages/backend-next/src/composition/deliver-job.ts": {
+      "previousSha256": [
+        "3e0eca1466f4225f98f156124683f57889f4052e0f22a95c4c4fb1a096d149fb"
+      ],
+      "sourceSha256": "72243a30015991f54d28b3027beeedca5f4b1d7370a252013b3e242807d87bbb",
+      "measurement": "full-unit"
+    },
+    "packages/backend-next/src/modules/federation/deliver-job.ts": {
+      "previousSha256": [
+        "90febde566a69bebe22c03275c796d66329c433f1b29dc2773135b4ef5a1523b"
+      ],
+      "sourceSha256": "24ca1ed4dba6ab4d859403b91d29f77348925c319475766d3df5621e4b4673a6",
+      "measurement": "full-unit"
+    },
+    "packages/backend-next/src/modules/federation/instance.ts": {
+      "previousSha256": [
+        "c6f90d952dcd967bfffa2d974af2d111b0a2d732ac7b28cabe3583dec9fa1e81"
+      ],
+      "sourceSha256": "aea0477d2aaed83b7e7b5f4dac7707a0266be9b0a2b065c6d6ca9d7605fcd94f",
+      "measurement": "full-unit"
+    },
+    "packages/backend-next/src/modules/federation/public.ts": {
+      "previousSha256": [
+        "af84286e9871243bb0df4787ebcaf993516b17f73302f6894214fa9e02d8e851"
+      ],
+      "sourceSha256": "835155530e60fa6c0f13065e87ee3180cad8768b79f0e2304f4487c94c977310",
+      "measurement": "full-unit"
+    },
+    "packages/backend-next/src/platform/connect-resources.ts": {
+      "previousSha256": [
+        "976e4af688469dfd257bafb130a130219ca9dfc90795fece865b37d7d949dc34"
+      ],
+      "sourceSha256": "50a3ee9fec27f437e79733ce36454927128b3c8561abf70e7eee7b8c4e3e45c2",
+      "measurement": "full-unit"
+    },
+    "packages/backend-next/src/platform/instance-ledger.ts": {
+      "previousSha256": [
+        "479347e519379e5478a8117e114053416bda0437afce94448a2f477ead387f95"
+      ],
+      "sourceSha256": "60bf2f4a7262131813321a29b07cf63e9f2aad864dbc30515ab48db5eb6e1e42",
+      "measurement": "full-unit"
+    },
+    "packages/backend-next/src/platform/outbound-http/client.ts": {
+      "previousSha256": [
+        "a7f7e5606d8697e42ce5cecc84b3aee88c7a3da4f13915309cb59342a4b97a6d"
+      ],
+      "sourceSha256": "98c89517ebf6a9b3e83d119b1383cdb4f8a0e9aa35b7321b778df4035726ee8f",
+      "measurement": "full-unit"
+    },
+    "packages/backend-next/test/integration/deliver-processor.test.ts": {
+      "previousSha256": [
+        "687bcfb018f66f90cc9e75e2498912d82cfd69f6bdf6947ca3246d4847f4eadc"
+      ],
+      "sourceSha256": "558973c5df49b6406719a0e5f37f5e7a4749fecfb360698a99e1bc5ac31ed8a9",
+      "measurement": "integration"
+    },
+    "packages/backend-next/test/integration/remote-user.test.ts": {
+      "previousSha256": [
+        "f39db88dd74be077df089c7520ffcfe6b3af0366c7c4b8de30d40c4c7f63407b"
+      ],
+      "sourceSha256": "81f9c96e0b4f39840d2dea0f8a2d78742530b355a8dca0f1d6f4ddedc7f04ce8",
+      "measurement": "integration"
+    },
+    "packages/backend-next/test/unit/federation/actor-instance-registration.test.ts": {
+      "previousSha256": [
+        "1f6520ffc2d6ba3d7a1c6eccf5a8a0d1c6d285a554e2bb88313edf53cb5c0c6c",
+        "e7919ca2174c8de668e79a0675683512ee0413a59a0965574dfab5a06ffaed43"
+      ],
+      "sourceSha256": "06a94133af8131e8bfdfbec6e06b3d98b2c0f1ae6b7ebdd0e6a51bdcc4e34e92",
+      "measurement": "full-unit"
+    },
+    "packages/backend-next/test/unit/federation/deliver-job.test.ts": {
+      "previousSha256": [
+        "e2f237f381b6f8638464672f88ed8691bfb097fa9462eb94bc1b296eb1bb6e7e"
+      ],
+      "sourceSha256": "2d8382d609ffb7296d389e3f012ca8e7844b1ff37f3a2262a3feed0ed62479ac",
+      "measurement": "full-unit"
+    },
+    "packages/backend-next/test/unit/note/create-note.test.ts": {
+      "previousSha256": [
+        "0fa7f53270ccc087d68a2c4ed1f9448d3991d9abacc743b35abdb249ce48f1b7"
+      ],
+      "sourceSha256": "eb153517e1267e835b2b98fa7b06f3dbda7df719f7ae54640f496cec551d9d88",
+      "measurement": "full-unit"
+    },
+    "packages/backend-next/test/unit/outbound-http/fake-servers.test.ts": {
+      "previousSha256": [
+        "1376dce6d4b6ec5e3257e8118292088b40bc7e437641c76a9752e67fcf3274e4"
+      ],
+      "sourceSha256": "248db4f4ec96c74ecdfa1724e50774eea78993f24e983b382b25f6f1d3c5aeae",
+      "measurement": "full-unit"
+    }
+  },
+  "productSha256": {
+    "packages/backend-next/package.json": "47f4ce1dee2f7bce9d4406354905f4f211b55a4714039f621d406ef516a5b191",
+    "packages/backend-next/src/application/outbound-http.ts": "d73b3ce370e2edc467c469d19a19378a8c0d70b2eb72d99b6cc44355fad47809",
+    "packages/backend-next/src/composition/actor-instance-registration.ts": "6981f218587a2b8d5ac9cba9f5dd44f84589ae6ff8b3d46fca9f1ac95ed720e0",
+    "packages/backend-next/src/composition/deliver-job.ts": "72243a30015991f54d28b3027beeedca5f4b1d7370a252013b3e242807d87bbb",
+    "packages/backend-next/src/modules/federation/deliver-job.ts": "24ca1ed4dba6ab4d859403b91d29f77348925c319475766d3df5621e4b4673a6",
+    "packages/backend-next/src/modules/federation/instance-metadata.ts": "9ff071c56aed465d881dcd4950f8196fc4926e45bd73b056e96d1878af49ddf9",
+    "packages/backend-next/src/modules/federation/instance.ts": "aea0477d2aaed83b7e7b5f4dac7707a0266be9b0a2b065c6d6ca9d7605fcd94f",
+    "packages/backend-next/src/modules/federation/public.ts": "835155530e60fa6c0f13065e87ee3180cad8768b79f0e2304f4487c94c977310",
+    "packages/backend-next/src/platform/connect-resources.ts": "50a3ee9fec27f437e79733ce36454927128b3c8561abf70e7eee7b8c4e3e45c2",
+    "packages/backend-next/src/platform/instance-ledger.ts": "60bf2f4a7262131813321a29b07cf63e9f2aad864dbc30515ab48db5eb6e1e42",
+    "packages/backend-next/src/platform/instance-metadata.ts": "67e28e4393f6a4d7a1f6f74facdcaa540ba4a830f7b8f44a73de6a4861d20d09",
+    "packages/backend-next/src/platform/outbound-http/client.ts": "98c89517ebf6a9b3e83d119b1383cdb4f8a0e9aa35b7321b778df4035726ee8f",
+    "pnpm-lock.yaml": "5d52a8f56ba2d206d69586d0515d3b7bd03ad5a127368a531acb7796fc4ad395"
+  },
+  "unproven": [
+    "Full upstream server/DB/HTTP equivalence: source methods use explicit helper doubles.",
+    "Actor source synchronous Meta snapshot vs asynchronous DB read, including concurrent settings changes and start relative to hashtags.",
+    "Delivery source synchronous live Meta in nextTick vs asynchronous callback DB read.",
+    "Other metadata acquisition callers (inbox/admin) and all five broader gap groups."
+  ],
+  "warnings": [
+    "Existing baseline pg concurrent query deprecation appears in real integration/process logs; not a test failure."
+  ],
+  "preservedAttempts": [
+    {
+      "kind": "RED",
+      "log": "/tmp/tiramiss-s1-r4-red-both.log",
+      "passed": 21,
+      "failed": 4,
+      "reason": "Both caller metadata-start assertions fail before production."
+    },
+    {
+      "kind": "sandbox",
+      "log": "/tmp/tiramiss-s1-r4-integration-dev.log",
+      "reason": "connect EPERM beforeAll, six skipped; parent broker used, not accepted as validation."
+    },
+    {
+      "kind": "dev1",
+      "log": "/tmp/tiramiss-s1-r4-integration-broker-dev.log",
+      "failed": 6,
+      "reason": "Fixture token exceeds char16; cleanup tried absent server. Corrected fixture/cleanup, not product."
+    },
+    {
+      "kind": "dev2",
+      "log": "/tmp/tiramiss-s1-r4-integration-broker-dev2.log",
+      "passed": 107,
+      "failed": 4,
+      "reason": "Missing HTTP WebFinger env; new freshness fact expected null; old raw increment cache isolation omitted concurrent metadata rewrite."
+    },
+    {
+      "kind": "source-check",
+      "reason": "Initial deepStrictEqual rejected equal VM-realm structures. Fixed JSON serialization comparison, no expected values changed; final log is successful rerun, original failure described in implementation report.",
+      "logUnavailable": "Intermediate failure log overwritten by successful rerun; original error remains in tool transcript, no immutable failure artifact retained."
+    },
+    {
+      "kind": "dev3",
+      "logs": [
+        "/tmp/tiramiss-s1-r4-integration-broker-dev3.log",
+        "/tmp/tiramiss-s1-r4-process-broker-dev3.log"
+      ],
+      "passedSeparately": [
+        111,
+        2
+      ],
+      "reason": "Pre-freeze development runs, not reused as revision1 results."
+    },
+    {
+      "kind": "diagnostic-parity-red",
+      "command": "pnpm --filter backend-next test test/unit/federation/instance-metadata.test.ts",
+      "log": "/tmp/tiramiss-s1-r4-diagnostics-red.log",
+      "passed": 13,
+      "failed": 14,
+      "greenCommand": "pnpm --filter backend-next test test/unit/federation/instance-metadata.test.ts test/unit/federation/actor-instance-registration.test.ts test/unit/federation/deliver-job.test.ts test/unit/note/create-note.test.ts",
+      "greenLog": "/tmp/tiramiss-s1-r4-diagnostics-green.log",
+      "greenPassed": 211,
+      "reason": "Restore source NodeInfo diagnostic; expected error counts now directly consumed from unchanged source observations."
+    }
+  ],
+  "priorRuntimeReceipt": {
+    "file": "docs/superpowers/compatibility/instance-metadata/runtime-evidence-r1.json",
+    "sha256": "66706e328effd2df866124a286847ac45bbdf91d09f961bd7429af0278644d70",
+    "note": "Byte-preserved parent9d57128c revision1 receipt; not a revision2 execution."
+  },
+  "rootGate": {
+    "status": "PENDING",
+    "runtime": "parent Node26.4.0",
+    "note": "Runtime measurements above are actual. Root contracts and immutable inventory generation remain separate parent gates."
+  },
+  "measuredWorkingTree": {
+    "head": "9d57128c25144da429d74afc8939360e5858b5f9",
+    "state": "dirty",
+    "identity": "935 frozen input SHA256 verified before/after each actual revision2 command"
+  },
+  "fixRound1": {
+    "revision": 4,
+    "receipt": "/tmp/tiramiss-s1-r4-fix1-validation-receipt-r4.json",
+    "receiptSha256": "7fd8643980d20898150d90b85ed0426cdd5f10ea5db076336d395ffad853df69",
+    "reusedRevision2": [
+      "source",
+      "build"
+    ],
+    "typecheck": "revision3",
+    "onlyChangedRuntimeInput": "packages/backend-next/test/unit/federation/actor-instance-registration.test.ts",
+    "integration": "actual revision4",
+    "process": "actual revision4",
+    "fullUnit": "actual revision3"
+  },
+  "historicalFullUnitRevision2": {
+    "command": "pnpm --filter backend-next test --reporter=json --outputFile=/tmp/tiramiss-s1-r4-full-unit-r2.json",
+    "artifact": "/tmp/tiramiss-s1-r4-full-unit-r2.json",
+    "log": "/tmp/tiramiss-s1-r4-full-unit-r2.log",
+    "startedAt": "2026-11-10T11:46:30.501743+00:00",
+    "finishedAt": "2026-11-10T11:47:02.493220+00:00",
+    "artifactSha256": "4178fab8157f8ae966af28a3333a207d76f620014009795f15b3df3535f8d22f",
+    "files": 90,
+    "outcome": "PASS",
+    "passed": 2939,
+    "failed": 0,
+    "skipped": 0,
+    "sourceSha256": {
+      "packages/backend-next/package.json": "47f4ce1dee2f7bce9d4406354905f4f211b55a4714039f621d406ef516a5b191",
+      "packages/backend-next/src/application/outbound-http.ts": "d73b3ce370e2edc467c469d19a19378a8c0d70b2eb72d99b6cc44355fad47809",
+      "packages/backend-next/src/composition/actor-instance-registration.ts": "6981f218587a2b8d5ac9cba9f5dd44f84589ae6ff8b3d46fca9f1ac95ed720e0",
+      "packages/backend-next/src/composition/deliver-job.ts": "72243a30015991f54d28b3027beeedca5f4b1d7370a252013b3e242807d87bbb",
+      "packages/backend-next/src/modules/federation/deliver-job.ts": "24ca1ed4dba6ab4d859403b91d29f77348925c319475766d3df5621e4b4673a6",
+      "packages/backend-next/src/modules/federation/instance-metadata.ts": "9ff071c56aed465d881dcd4950f8196fc4926e45bd73b056e96d1878af49ddf9",
+      "packages/backend-next/src/modules/federation/instance.ts": "aea0477d2aaed83b7e7b5f4dac7707a0266be9b0a2b065c6d6ca9d7605fcd94f",
+      "packages/backend-next/src/modules/federation/public.ts": "835155530e60fa6c0f13065e87ee3180cad8768b79f0e2304f4487c94c977310",
+      "packages/backend-next/src/platform/connect-resources.ts": "50a3ee9fec27f437e79733ce36454927128b3c8561abf70e7eee7b8c4e3e45c2",
+      "packages/backend-next/src/platform/instance-ledger.ts": "60bf2f4a7262131813321a29b07cf63e9f2aad864dbc30515ab48db5eb6e1e42",
+      "packages/backend-next/src/platform/instance-metadata.ts": "67e28e4393f6a4d7a1f6f74facdcaa540ba4a830f7b8f44a73de6a4861d20d09",
+      "packages/backend-next/src/platform/outbound-http/client.ts": "98c89517ebf6a9b3e83d119b1383cdb4f8a0e9aa35b7321b778df4035726ee8f",
+      "packages/backend-next/test/helpers/instance-metadata-peer.ts": "97ecf7a2553d8817d26b3a41e03b3f77fe1898e0946e06810b3867cbcba9d709",
+      "packages/backend-next/test/integration/deliver-processor.test.ts": "558973c5df49b6406719a0e5f37f5e7a4749fecfb360698a99e1bc5ac31ed8a9",
+      "packages/backend-next/test/integration/instance-metadata.test.ts": "8639ce77d530e3b0df704f2a16495be3e35fa8e6777d7ff3ada39b353157ebd5",
+      "packages/backend-next/test/integration/remote-user.test.ts": "81f9c96e0b4f39840d2dea0f8a2d78742530b355a8dca0f1d6f4ddedc7f04ce8",
+      "packages/backend-next/test/processes/instance-metadata.test.ts": "27803c98e3ab09de2a6bf310f07f2da2526e1337f30a364394e44b1103fbb2cc",
+      "packages/backend-next/test/unit/federation/actor-instance-registration.test.ts": "e7919ca2174c8de668e79a0675683512ee0413a59a0965574dfab5a06ffaed43",
+      "packages/backend-next/test/unit/federation/deliver-job.test.ts": "2d8382d609ffb7296d389e3f012ca8e7844b1ff37f3a2262a3feed0ed62479ac",
+      "packages/backend-next/test/unit/federation/instance-metadata.test.ts": "70863cadb9687bb9748f5888ee643fe942be593a6913d9f8f3441af0d0cb8906",
+      "packages/backend-next/test/unit/note/create-note.test.ts": "eb153517e1267e835b2b98fa7b06f3dbda7df719f7ae54640f496cec551d9d88",
+      "packages/backend-next/test/unit/outbound-http/fake-servers.test.ts": "248db4f4ec96c74ecdfa1724e50774eea78993f24e983b382b25f6f1d3c5aeae",
+      "pnpm-lock.yaml": "5d52a8f56ba2d206d69586d0515d3b7bd03ad5a127368a531acb7796fc4ad395"
+    },
+    "exitCode": 0
+  },
+  "historicalIntegrationRevision2": {
+    "command": "BACKEND_NEXT_TEST_DB_PORT=55506 BACKEND_NEXT_TEST_REDIS_PORT=56406 BACKEND_NEXT_TEST_MEILI_PORT=57806 pnpm --filter backend-next test:integration test/integration/instance-metadata.test.ts test/integration/remote-user.test.ts test/integration/deliver-processor.test.ts test/integration/note-application.test.ts test/integration/activitypub-actor.test.ts --reporter=json --outputFile=/tmp/tiramiss-s1-r4-integration-r2.json",
+    "artifact": "/tmp/tiramiss-s1-r4-integration-r2.json",
+    "log": "/tmp/tiramiss-s1-r4-integration-r2.log",
+    "startedAt": "2026-11-10T11:45:41.108792+00:00",
+    "finishedAt": "2026-11-10T11:46:05.751567+00:00",
+    "artifactSha256": "6d34b4f363a51e66b51c7f00d9db32a3c36fb28029a22605d3a41f5ea8b23c61",
+    "files": 5,
+    "outcome": "PASS",
+    "passed": 144,
+    "failed": 0,
+    "skipped": 0,
+    "sourceSha256": {
+      "packages/backend-next/package.json": "47f4ce1dee2f7bce9d4406354905f4f211b55a4714039f621d406ef516a5b191",
+      "packages/backend-next/src/application/outbound-http.ts": "d73b3ce370e2edc467c469d19a19378a8c0d70b2eb72d99b6cc44355fad47809",
+      "packages/backend-next/src/composition/actor-instance-registration.ts": "6981f218587a2b8d5ac9cba9f5dd44f84589ae6ff8b3d46fca9f1ac95ed720e0",
+      "packages/backend-next/src/composition/deliver-job.ts": "72243a30015991f54d28b3027beeedca5f4b1d7370a252013b3e242807d87bbb",
+      "packages/backend-next/src/modules/federation/deliver-job.ts": "24ca1ed4dba6ab4d859403b91d29f77348925c319475766d3df5621e4b4673a6",
+      "packages/backend-next/src/modules/federation/instance-metadata.ts": "9ff071c56aed465d881dcd4950f8196fc4926e45bd73b056e96d1878af49ddf9",
+      "packages/backend-next/src/modules/federation/instance.ts": "aea0477d2aaed83b7e7b5f4dac7707a0266be9b0a2b065c6d6ca9d7605fcd94f",
+      "packages/backend-next/src/modules/federation/public.ts": "835155530e60fa6c0f13065e87ee3180cad8768b79f0e2304f4487c94c977310",
+      "packages/backend-next/src/platform/connect-resources.ts": "50a3ee9fec27f437e79733ce36454927128b3c8561abf70e7eee7b8c4e3e45c2",
+      "packages/backend-next/src/platform/instance-ledger.ts": "60bf2f4a7262131813321a29b07cf63e9f2aad864dbc30515ab48db5eb6e1e42",
+      "packages/backend-next/src/platform/instance-metadata.ts": "67e28e4393f6a4d7a1f6f74facdcaa540ba4a830f7b8f44a73de6a4861d20d09",
+      "packages/backend-next/src/platform/outbound-http/client.ts": "98c89517ebf6a9b3e83d119b1383cdb4f8a0e9aa35b7321b778df4035726ee8f",
+      "packages/backend-next/test/helpers/instance-metadata-peer.ts": "97ecf7a2553d8817d26b3a41e03b3f77fe1898e0946e06810b3867cbcba9d709",
+      "packages/backend-next/test/integration/deliver-processor.test.ts": "558973c5df49b6406719a0e5f37f5e7a4749fecfb360698a99e1bc5ac31ed8a9",
+      "packages/backend-next/test/integration/instance-metadata.test.ts": "8639ce77d530e3b0df704f2a16495be3e35fa8e6777d7ff3ada39b353157ebd5",
+      "packages/backend-next/test/integration/remote-user.test.ts": "81f9c96e0b4f39840d2dea0f8a2d78742530b355a8dca0f1d6f4ddedc7f04ce8",
+      "packages/backend-next/test/processes/instance-metadata.test.ts": "27803c98e3ab09de2a6bf310f07f2da2526e1337f30a364394e44b1103fbb2cc",
+      "packages/backend-next/test/unit/federation/actor-instance-registration.test.ts": "e7919ca2174c8de668e79a0675683512ee0413a59a0965574dfab5a06ffaed43",
+      "packages/backend-next/test/unit/federation/deliver-job.test.ts": "2d8382d609ffb7296d389e3f012ca8e7844b1ff37f3a2262a3feed0ed62479ac",
+      "packages/backend-next/test/unit/federation/instance-metadata.test.ts": "70863cadb9687bb9748f5888ee643fe942be593a6913d9f8f3441af0d0cb8906",
+      "packages/backend-next/test/unit/note/create-note.test.ts": "eb153517e1267e835b2b98fa7b06f3dbda7df719f7ae54640f496cec551d9d88",
+      "packages/backend-next/test/unit/outbound-http/fake-servers.test.ts": "248db4f4ec96c74ecdfa1724e50774eea78993f24e983b382b25f6f1d3c5aeae",
+      "pnpm-lock.yaml": "5d52a8f56ba2d206d69586d0515d3b7bd03ad5a127368a531acb7796fc4ad395"
+    },
+    "exitCode": 0
+  },
+  "historicalProcessRevision2": {
+    "command": "BACKEND_NEXT_TEST_DB_PORT=55506 BACKEND_NEXT_TEST_REDIS_PORT=56406 BACKEND_NEXT_TEST_MEILI_PORT=57806 pnpm --filter backend-next test:process test/processes/instance-metadata.test.ts test/processes/remote-mentions.test.ts test/processes/note-deliver.test.ts --reporter=json --outputFile=/tmp/tiramiss-s1-r4-process-r2.json",
+    "artifact": "/tmp/tiramiss-s1-r4-process-r2.json",
+    "log": "/tmp/tiramiss-s1-r4-process-r2.log",
+    "startedAt": "2026-11-10T11:46:05.770855+00:00",
+    "finishedAt": "2026-11-10T11:46:30.482074+00:00",
+    "artifactSha256": "1ce20a307e3df8511c353bb5cdbf2e68853305698107be07313c2bf81b25577a",
+    "files": 3,
+    "outcome": "PASS",
+    "passed": 14,
+    "failed": 0,
+    "skipped": 0,
+    "sourceSha256": {
+      "packages/backend-next/package.json": "47f4ce1dee2f7bce9d4406354905f4f211b55a4714039f621d406ef516a5b191",
+      "packages/backend-next/src/application/outbound-http.ts": "d73b3ce370e2edc467c469d19a19378a8c0d70b2eb72d99b6cc44355fad47809",
+      "packages/backend-next/src/composition/actor-instance-registration.ts": "6981f218587a2b8d5ac9cba9f5dd44f84589ae6ff8b3d46fca9f1ac95ed720e0",
+      "packages/backend-next/src/composition/deliver-job.ts": "72243a30015991f54d28b3027beeedca5f4b1d7370a252013b3e242807d87bbb",
+      "packages/backend-next/src/modules/federation/deliver-job.ts": "24ca1ed4dba6ab4d859403b91d29f77348925c319475766d3df5621e4b4673a6",
+      "packages/backend-next/src/modules/federation/instance-metadata.ts": "9ff071c56aed465d881dcd4950f8196fc4926e45bd73b056e96d1878af49ddf9",
+      "packages/backend-next/src/modules/federation/instance.ts": "aea0477d2aaed83b7e7b5f4dac7707a0266be9b0a2b065c6d6ca9d7605fcd94f",
+      "packages/backend-next/src/modules/federation/public.ts": "835155530e60fa6c0f13065e87ee3180cad8768b79f0e2304f4487c94c977310",
+      "packages/backend-next/src/platform/connect-resources.ts": "50a3ee9fec27f437e79733ce36454927128b3c8561abf70e7eee7b8c4e3e45c2",
+      "packages/backend-next/src/platform/instance-ledger.ts": "60bf2f4a7262131813321a29b07cf63e9f2aad864dbc30515ab48db5eb6e1e42",
+      "packages/backend-next/src/platform/instance-metadata.ts": "67e28e4393f6a4d7a1f6f74facdcaa540ba4a830f7b8f44a73de6a4861d20d09",
+      "packages/backend-next/src/platform/outbound-http/client.ts": "98c89517ebf6a9b3e83d119b1383cdb4f8a0e9aa35b7321b778df4035726ee8f",
+      "packages/backend-next/test/helpers/instance-metadata-peer.ts": "97ecf7a2553d8817d26b3a41e03b3f77fe1898e0946e06810b3867cbcba9d709",
+      "packages/backend-next/test/integration/deliver-processor.test.ts": "558973c5df49b6406719a0e5f37f5e7a4749fecfb360698a99e1bc5ac31ed8a9",
+      "packages/backend-next/test/integration/instance-metadata.test.ts": "8639ce77d530e3b0df704f2a16495be3e35fa8e6777d7ff3ada39b353157ebd5",
+      "packages/backend-next/test/integration/remote-user.test.ts": "81f9c96e0b4f39840d2dea0f8a2d78742530b355a8dca0f1d6f4ddedc7f04ce8",
+      "packages/backend-next/test/processes/instance-metadata.test.ts": "27803c98e3ab09de2a6bf310f07f2da2526e1337f30a364394e44b1103fbb2cc",
+      "packages/backend-next/test/unit/federation/actor-instance-registration.test.ts": "e7919ca2174c8de668e79a0675683512ee0413a59a0965574dfab5a06ffaed43",
+      "packages/backend-next/test/unit/federation/deliver-job.test.ts": "2d8382d609ffb7296d389e3f012ca8e7844b1ff37f3a2262a3feed0ed62479ac",
+      "packages/backend-next/test/unit/federation/instance-metadata.test.ts": "70863cadb9687bb9748f5888ee643fe942be593a6913d9f8f3441af0d0cb8906",
+      "packages/backend-next/test/unit/note/create-note.test.ts": "eb153517e1267e835b2b98fa7b06f3dbda7df719f7ae54640f496cec551d9d88",
+      "packages/backend-next/test/unit/outbound-http/fake-servers.test.ts": "248db4f4ec96c74ecdfa1724e50774eea78993f24e983b382b25f6f1d3c5aeae",
+      "pnpm-lock.yaml": "5d52a8f56ba2d206d69586d0515d3b7bd03ad5a127368a531acb7796fc4ad395"
+    },
+    "exitCode": 0
+  }
+}

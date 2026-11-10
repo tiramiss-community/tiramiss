@@ -20,6 +20,7 @@ test.each(['settings', 'register', 'increment'])('start returns immediately whil
 	const entered = deferred<void>();
 	const effects: string[] = [];
 	const controller = createActorInstanceRegistration({
+		fetchMetadata: async () => {},
 		enabled: async () => {
 			effects.push('settings'); if (stage === 'settings') {
 				entered.resolve(); await gate.promise;
@@ -28,7 +29,7 @@ test.each(['settings', 'register', 'increment'])('start returns immediately whil
 		fetchOrRegister: async host => {
 			effects.push(`register:${host}`); if (stage === 'register') {
 				entered.resolve(); await gate.promise;
-			} return { id: 'instance' };
+			} return { id: 'instance', host: 'origin.test' };
 		},
 		increment: async id => {
 			if (stage === 'increment') {
@@ -49,11 +50,14 @@ test.each(['settings', 'register', 'increment'])('start returns immediately whil
 	expect(effects).toEqual(['settings', 'register:origin.test', 'increment:instance']);
 });
 
-test('disabled stats skip both instance registration and increment', async () => {
+test('disabled stats skip registration, increment, and metadata', async () => {
 	const effects: string[] = [];
 	const controller = createActorInstanceRegistration({
+		fetchMetadata: async () => {
+			effects.push('metadata');
+		},
 		enabled: async () => false, fetchOrRegister: async () => {
-			effects.push('register'); return { id: 'i' };
+			effects.push('register'); return { id: 'i', host: 'origin.test' };
 		}, increment: async () => {
 			effects.push('increment');
 		}
@@ -68,6 +72,7 @@ test.each(['settings', 'register', 'increment'])('%s rejection is diagnosed and 
 		throw Error('injected failure');
 	};
 	const controller = createActorInstanceRegistration({
+		fetchMetadata: async () => {},
 		enabled: async () => {
 			effects.push('settings'); if (stage === 'settings') {
 				fail();
@@ -76,7 +81,7 @@ test.each(['settings', 'register', 'increment'])('%s rejection is diagnosed and 
 		fetchOrRegister: async () => {
 			effects.push('register'); if (stage === 'register') {
 				fail();
-			} return { id: 'instance' };
+			} return { id: 'instance', host: 'origin.test' };
 		},
 		increment: async () => {
 			effects.push('increment'); if (stage === 'increment') {
@@ -93,9 +98,58 @@ test.each(['settings', 'register', 'increment'])('%s rejection is diagnosed and 
 test('synchronously throwing settings reader is also diagnosed without escaping start', async () => {
 	const logs: string[] = [];
 	const controller = createActorInstanceRegistration({
+		fetchMetadata: async () => {},
 		enabled() {
 			throw Error('sync');
-		}, fetchOrRegister: async () => ({ id: 'i' }), increment: async () => { }
+		}, fetchOrRegister: async () => ({ id: 'i', host: 'origin.test' }), increment: async () => { }
 	}, createLogger('test', line => logs.push(line)));
 	controller.start('origin.test'); await controller.close(); expect(logs).toHaveLength(1);
+});
+
+test.each(['pending', 'rejected'])('metadata starts independently of %s increment and close drains it', async state => {
+	const increment = deferred<void>();
+	const metadata = deferred<void>();
+	let started = false;
+	const controller = createActorInstanceRegistration({
+		enabled: async () => true,
+		fetchOrRegister: async host => ({ id: 'instance', host }),
+		increment: () => state === 'pending' ? increment.promise : Promise.reject(Error('increment failed')),
+		fetchMetadata: async instance => {
+			expect(instance).toEqual({ id: 'instance', host: 'origin.test' });
+			started = true;
+			await metadata.promise;
+		},
+	}, createLogger('test', () => { }));
+	controller.start('origin.test');
+	for (let i = 0; i < 10; i++) {
+		await Promise.resolve();
+	}
+	let drained = false;
+	const close = controller.close().then(() => {
+		drained = true;
+	});
+	try {
+		expect(started).toBe(true);
+		expect(drained).toBe(false);
+	} finally {
+		increment.resolve(); metadata.resolve(); await close;
+	}
+});
+
+test('synchronous increment failure does not suppress metadata and metadata rejection has its own diagnostic', async () => {
+	const logs: string[] = [];
+	let started = false;
+	const controller = createActorInstanceRegistration({
+		enabled: async () => true,
+		fetchOrRegister: async host => ({ id: 'i', host }),
+		increment() {
+			throw Error('sync increment');
+		},
+		fetchMetadata: async () => {
+			started = true; throw Error('metadata rejected');
+		},
+	}, createLogger('test', line => logs.push(line)));
+	controller.start('origin.test'); await controller.close();
+	expect(started).toBe(true);
+	expect(logs.map(line => JSON.parse(line).stage).sort()).toEqual(['increment', 'metadata']);
 });

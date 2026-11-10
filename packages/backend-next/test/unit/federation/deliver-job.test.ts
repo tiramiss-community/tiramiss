@@ -12,7 +12,7 @@ import type { DeliverJobSettings, FederationPolicy, InstanceFacts, InstancePatch
 const now = Date.parse('2026-11-03T00:00:00.000Z');
 const day = 1000 * 60 * 60 * 24;
 const known: InstanceFacts = {
-	id: 'instance', host: 'remote.example', isNotResponding: false, notRespondingSinceMs: null, suspensionState: 'none', softwareName: null, softwareVersion: null,
+	id: 'instance', host: 'remote.example', infoUpdatedAtMs: null, isNotResponding: false, notRespondingSinceMs: null, suspensionState: 'none', softwareName: null, softwareVersion: null,
 };
 
 test.for<[string, Partial<InstanceFacts>, InstancePatch | null]>([
@@ -41,6 +41,7 @@ function processor(options: {
 	suspended?: string[];
 	post?: () => Promise<void>;
 	update?: (id: string, patch: InstancePatch) => Promise<void>;
+	metadata?: () => Promise<void>;
 } = {}) {
 	const calls: unknown[][] = [];
 	const ledgerFailures: unknown[] = [];
@@ -70,6 +71,9 @@ function processor(options: {
 			await options.post?.();
 		},
 		currentTime: () => now,
+		fetchMetadata: async () => {
+ await options.metadata?.();
+},
 		reportLedgerFailure: error => {
 			ledgerFailures.push(error);
 		},
@@ -143,4 +147,75 @@ test('a failing instance update is reported and does not change the delivery res
 
 	expect(outcome).toMatchObject({ kind: 'retry', error: { message: '503 Service Unavailable' } });
 	expect(ledgerFailures).toEqual([failure]);
+});
+
+test.each(['pending', 'rejected'])('successful delivery starts metadata independently of %s responding update and drains', async state => {
+	let releaseUpdate!: () => void;
+	let releaseMetadata!: () => void;
+	const update = new Promise<void>(resolve => {
+		releaseUpdate = resolve;
+	});
+	const metadata = new Promise<void>(resolve => {
+		releaseMetadata = resolve;
+	});
+	let started = false;
+	const { deliver } = processor({
+		instances: [{ ...known, isNotResponding: true }],
+		update: () => state === 'pending' ? update : Promise.reject(Error('responding update')),
+		metadata: async () => {
+			started = true; await metadata;
+		},
+	});
+	expect(await deliver.process(job)).toEqual({ kind: 'done', result: 'Success' });
+	await new Promise<void>(resolve => process.nextTick(resolve));
+	let drained = false;
+	const idle = deliver.idle().then(() => {
+		drained = true;
+	});
+	try {
+		expect(started).toBe(true); expect(drained).toBe(false);
+	} finally {
+		releaseUpdate(); releaseMetadata(); await idle;
+	}
+});
+
+// New actual-source success scheduling observations; historical delivery corpus remains unchanged.
+test.each((JSON.parse((await import('node:fs')).readFileSync(new URL('../../../../../docs/superpowers/compatibility/instance-metadata/observations.json', import.meta.url), 'utf8')).callerCases) as { input: { stats: boolean; finalStats: boolean; instance: boolean; update?: string }; expected: { result: string; events: string[] } }[])('source success callback uses live statistics and independent work: $input', async fixture => {
+	const events: string[] = [];
+	let stats = fixture.input.stats;
+	let release!: () => void;
+	const held = new Promise<void>(resolve => {
+		release = resolve;
+	});
+	const instance = fixture.input.instance ? { ...known, isNotResponding: true } : null;
+	const deliver = createDeliverJobProcessor({
+		readSettings: async () => ({ policy, enableStatsForFederatedInstances: stats }),
+		hostRules: createHostRules('local.example'),
+		ledger: {
+			fetchInstance: async () => instance,
+			fetchOrRegisterInstance: async () => instance!,
+			listSuspendedHosts: async () => [],
+			updateInstance: async () => {
+				events.push('responding.start'); if (fixture.input.update === 'rejected') {
+					throw Error('update');
+				} await held;
+			},
+		},
+		signedPost: async () => {
+			events.push('post'); stats = fixture.input.finalStats;
+		},
+		fetchMetadata: async () => {
+			events.push('metadata.start'); await held;
+		},
+		currentTime: () => now,
+		reportLedgerFailure: () => { },
+	});
+	try {
+		const result = await deliver.process(job); events.push('result.returned');
+		await new Promise<void>(resolve => process.nextTick(resolve));
+		expect(result).toEqual({ kind: 'done', result: fixture.expected.result });
+		expect(events).toEqual(fixture.expected.events);
+	} finally {
+		release(); await deliver.idle();
+	}
 });

@@ -25,6 +25,7 @@ import { createNoteHashtagWriter, readHashtagRankingSettings } from './database/
 import { createHashtagRanking } from './hashtag-ranking.js';
 import { createNoteAntennaReader } from './database/note-antennas.js';
 import { readMeta } from './database/meta.js';
+import { createInstanceMetadata } from './instance-metadata.js';
 import { createInstanceLedger } from './instance-ledger.js';
 import { createNoteInstanceCounts } from './note-instance-counts.js';
 import { openNoteAntennas } from './note-antennas.js';
@@ -296,7 +297,9 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 		const instanceLedger = createInstanceLedger({ manager: dataSource.manager, redis, newId: createIdCodec(config.id).newId });
+		const fetchMetadata = createInstanceMetadata({ ledger: instanceLedger, redis, http: outboundHttp, clock: Date.now, reportFailure: (error, context) => logger.error('instance-metadata.failed', { ...context, error }) });
 		const actorInstanceRegistration = createActorInstanceRegistration({
+			fetchMetadata,
 			enabled: async () => (await readMeta(dataSource.manager)).enableStatsForFederatedInstances,
 			fetchOrRegister: instanceLedger.fetchOrRegisterInstance,
 			increment: async id => {

@@ -879,6 +879,9 @@ importers:
       stringz:
         specifier: 2.1.0
         version: 2.1.0
+      tinycolor2:
+        specifier: 1.6.0
+        version: 1.6.0
       typeorm:
         specifier: 1.1.1
         version: 1.1.1(ioredis@5.11.1(supports-color@10.2.2))(pg@8.23.1)(supports-color@10.2.2)
@@ -907,6 +910,9 @@ importers:
       '@types/semver':
         specifier: 7.8.0
         version: 7.8.0
+      '@types/tinycolor2':
+        specifier: 1.4.6
+        version: 1.4.6
       '@types/ws':
         specifier: 8.18.2
         version: 8.18.2

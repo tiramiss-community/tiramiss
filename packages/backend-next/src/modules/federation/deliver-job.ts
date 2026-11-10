@@ -2,12 +2,14 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { nextTick } from 'node:process';
 import { classifyDeliveryFailure, deliverySucceeded } from './delivery-result.js';
 import { extractDbHost } from './host.js';
 import { deliverFailurePatch, deliverSuccessPatch } from './instance.js';
 import { isDeliverSuspendedSoftware, isFederationAllowedUri } from './policy.js';
 import type { DeliveryFailure } from './delivery-result.js';
 import type { HostRules } from './host.js';
+import type { InstanceMetadataTarget } from './instance-metadata.js';
 import type { InstanceFacts, InstancePatch } from './instance.js';
 import type { FederationPolicy } from './policy.js';
 import type { SignedPost } from './signed-post.js';
@@ -53,7 +55,7 @@ export interface InstanceLedger {
 }
 
 /**
- * 本家 DeliverProcessorService.process。チャートと成功時の fetchInstanceMetadata はまだ移植しない。
+ * 本家 DeliverProcessorService.process。チャートはまだ移植しない。
  * instance の更新は本家と同じくジョブの結果を待たせない。idle() で開始済みの更新の完了を待てる。
  */
 export function createDeliverJobProcessor(ports: {
@@ -62,6 +64,7 @@ export function createDeliverJobProcessor(ports: {
 	ledger: InstanceLedger;
 	signedPost: SignedPost;
 	currentTime(): number;
+	fetchMetadata(instance: InstanceMetadataTarget): Promise<void>;
 	/** 待たない instance の更新が失敗したときに呼ぶ。 */
 	reportLedgerFailure(error: unknown, context: { to: string }): void;
 }) {
@@ -69,7 +72,7 @@ export function createDeliverJobProcessor(ports: {
 	const pending = new Set<Promise<void>>();
 
 	const inBackground = (to: string, work: () => Promise<void>) => {
-		const running = work().catch((error: unknown) => {
+		const running = (async () => work())().catch((error: unknown) => {
 			ports.reportLedgerFailure(error, { to });
 		});
 		pending.add(running);
@@ -113,12 +116,24 @@ export function createDeliverJobProcessor(ports: {
 			return failure;
 		}
 
-		if (instance !== null) {
-			const patch = deliverSuccessPatch(instance);
-			if (patch !== null) {
-				inBackground(job.to, () => ledger.updateInstance(instance.id, patch));
-			}
-		}
+		inBackground(job.to, () => new Promise<void>(resolve => {
+			nextTick(() => {
+				if (instance !== null) {
+					const patch = deliverSuccessPatch(instance);
+					if (patch !== null) {
+						inBackground(job.to, () => ledger.updateInstance(instance.id, patch));
+					}
+					inBackground(job.to, async () => {
+						// Source reads its live Meta in nextTick; this DB read retains an explicit async snapshot limit.
+						if ((await ports.readSettings()).enableStatsForFederatedInstances) {
+							await ports.fetchMetadata(instance);
+						}
+					});
+				}
+				resolve();
+			});
+		}));
+
 		return { kind: 'done', result: deliverySucceeded };
 	}
 

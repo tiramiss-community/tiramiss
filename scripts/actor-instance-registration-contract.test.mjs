@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { metadataDigest } from './instance-metadata-evidence.mjs';
 import { actorInstanceDigest } from './actor-instance-registration-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
@@ -45,7 +46,7 @@ function validate(value) {
 		assert.equal(measured.outcome, 'PASS'); assert.equal(measured.failed, 0); assert.equal(measured.skipped, 0); assert(measured.passed > 0);
 		assert.match(measured.artifactSha256, /^[a-f0-9]{64}$/);
 		for (const [file, digest] of Object.entries(measured.sourceSha256)) {
-			assert.equal(sha(read(file)), digest);
+			assert.equal(sha(read(file)), metadataDigest(file, digest));
 		}
 	}
 	for (const [file, renewal] of Object.entries(value.renewals)) {

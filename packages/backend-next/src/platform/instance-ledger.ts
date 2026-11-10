@@ -23,6 +23,7 @@ type CachedRow = Record<string, unknown> & {
 	suspensionState: InstanceFacts['suspensionState'];
 	softwareName: string | null;
 	softwareVersion: string | null;
+	infoUpdatedAt: string | Date | null;
 };
 
 function toFacts(row: CachedRow): InstanceFacts {
@@ -34,15 +35,17 @@ function toFacts(row: CachedRow): InstanceFacts {
 		suspensionState: row.suspensionState,
 		softwareName: row.softwareName,
 		softwareVersion: row.softwareVersion,
+		infoUpdatedAtMs: row.infoUpdatedAt == null ? null : new Date(row.infoUpdatedAt).getTime(),
 	};
 }
 
 function toColumns(patch: InstancePatch): Partial<MiInstance> {
-	const { notRespondingSinceMs, ...rest } = patch;
+	const { notRespondingSinceMs, infoUpdatedAtMs, ...rest } = patch;
 	return {
 		...rest,
+		...(infoUpdatedAtMs === undefined ? {} : { infoUpdatedAt: new Date(infoUpdatedAtMs) }),
 		...(notRespondingSinceMs === undefined ? {} : { notRespondingSince: notRespondingSinceMs === null ? null : new Date(notRespondingSinceMs) }),
-	};
+	} as Partial<MiInstance>;
 }
 
 /**
