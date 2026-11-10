@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { createActorInstanceRegistration } from '../composition/actor-instance-registration.js';
 import { randomBytes } from 'node:crypto';
 import { MiInstance } from 'backend-upstream/entities';
 import { Redis } from 'ioredis';
@@ -295,6 +296,14 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 		const instanceLedger = createInstanceLedger({ manager: dataSource.manager, redis, newId: createIdCodec(config.id).newId });
+		const actorInstanceRegistration = createActorInstanceRegistration({
+			enabled: async () => (await readMeta(dataSource.manager)).enableStatsForFederatedInstances,
+			fetchOrRegister: instanceLedger.fetchOrRegisterInstance,
+			increment: async id => {
+				await dataSource.getRepository(MiInstance).increment({ id }, 'usersCount', 1);
+			},
+		}, logger);
+		scope.defer(actorInstanceRegistration.close);
 		const noteInstanceCounts = createNoteInstanceCounts({
 			enabled: async () => (await readMeta(dataSource.manager)).enableStatsForFederatedInstances,
 			fetchOrRegister: instanceLedger.fetchOrRegisterInstance,
@@ -370,7 +379,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw new DiagnosticError('TIMELINES_REDIS_ENDED', {});
 		}
 		active = true;
-		return { dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
+		return { dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
 	};
 
 	try {

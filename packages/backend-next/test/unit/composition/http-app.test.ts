@@ -18,6 +18,9 @@ function fixture() {
 		roleMaterials: { get changes() {
 			events.push('role'); return {};
 		} },
+		actorInstanceRegistration: { start: () => {
+			throw new Error('unexpected actor instance mutation');
+		} },
 		userHashtags: { start: () => {
 			throw new Error('unexpected actor mutation');
 		} },

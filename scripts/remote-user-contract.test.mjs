@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync, existsSync } from 'node:fs';
 import test from 'node:test';
+import { actorInstanceDigest } from './actor-instance-registration-evidence.mjs';
 
 const directory = new URL('../docs/superpowers/compatibility/remote-user/', import.meta.url);
 const anchors = ['resolve-local', 'resolve-stale-refresh-failure', 'mentions-independent-duplicates',
@@ -72,12 +73,12 @@ const currentHashtags = () => JSON.parse(readFileSync(new URL('user-hashtags-run
 function profileDigest(file, historicalDigest, label) {
  const receipt = JSON.parse(read('docs/superpowers/compatibility/remote-user/local-actor-profile-runtime-evidence.json'));
  const renewal = receipt.renewals[file];
- if (!renewal) return historicalDigest;
+ if (!renewal) return actorInstanceDigest(file, historicalDigest, label);
  assert.equal(renewal.historicalSha256, historicalDigest, label);
  const measured = receipt.measurements[renewal.measurement];
  assert.equal(measured?.outcome, 'PASS', 'renewed profile successful measurement');
  assert.equal(measured.sourceSha256[file], renewal.sourceSha256, label);
- return renewal.sourceSha256;
+ return actorInstanceDigest(file, renewal.sourceSha256, label);
 }
 function currentConsumerDigest(file, historicalDigest, label) {
  const current = currentHashtags();

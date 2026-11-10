@@ -15,6 +15,7 @@ import type { RuntimeConfig } from '../config/types.js';
 export function createRemoteUsers(parts: {
 	dataSource: DataSource;
 	userHashtags: { start: StartUserHashtags };
+	actorInstanceRegistration: { start(host: string): void };
 	federationKeys: FederationKeys;
 	outboundHttp: OutboundHttp;
 }, config: RuntimeConfig): RemoteUserPorts {
@@ -54,6 +55,7 @@ export function createRemoteUsers(parts: {
 	return {
 		...createRemoteUserRepository(parts.dataSource.manager, parts.userHashtags.start), selfHost: new URL(config.url).host, localId, insertActor,
 		startUserHashtags: parts.userHashtags.start,
+		startActorInstanceRegistration: parts.actorInstanceRegistration.start,
 		actorTransactions: createRemoteActorTransactions(parts.dataSource),
 		async webfinger(account) {
 			const acct = `${account.username}@${account.host}`;

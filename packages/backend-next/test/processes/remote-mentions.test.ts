@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { request } from 'node:http';
+import { connect } from 'node:net';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { MiFollowing, MiMeta, MiNote, MiUser, MiUserProfile, MiUserKeypair } from 'backend-upstream/entities';
 import { createDataSource } from '../../src/platform/database/data-source.js';
@@ -227,5 +228,64 @@ test('normal HTTP child publishes required local Profile facts', async () => {
 		http.child.kill('SIGTERM'); expect((await http.exit).code, http.output()).toBe(0);
 	} finally {
 		await http.close(); await config.close();
+	}
+});
+
+// Both gates use real DB locks. HTTP response, pg_stat_activity and shutdown log events
+// establish ordering; no elapsed sleep is used to infer that shutdown is waiting.
+test.each(['register', 'increment'])('ordinary built HTTP responds with instance %s pending; SIGTERM drains before releasing connections', async stage => {
+	const { MiInstance } = await import('backend-upstream/entities');
+	await source.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: true });
+	const port = await freePort(); database.config.http.port = port; peer.route('local.test', port);
+	const config = await configuration(database.config);
+	const name = `instancedrain_${stage}`;
+	register(name, { publicKey: { id: `${peer.origin}/users/${name}#key`, publicKeyPem: 'drain-key' } });
+	// The previous child may have left a cache entry; this child must reach the intended gate.
+	const { Redis } = await import('ioredis');
+	const cache = new Redis(database.config.redis);
+	await cache.del('kvcache:federatedInstance:remote.test'); await cache.quit();
+	await source.getRepository(MiInstance).createQueryBuilder().insert().values({ id: codec.newId(Date.now()), host: 'remote.test', firstRetrievedAt: new Date() }).orIgnore().execute();
+	const before = (await source.getRepository(MiInstance).findOneByOrFail({ host: 'remote.test' })).usersCount;
+	const http = launch('built/entrypoints/http.js', config.path, { MISSKEY_WEBFINGER_USE_HTTP: 'true' });
+	const lock = source.createQueryRunner(); let transaction = false;
+	try {
+		await http.ready; await lock.connect(); await lock.startTransaction(); transaction = true;
+		if (stage === 'register') {
+			await lock.query('LOCK TABLE instance IN ACCESS EXCLUSIVE MODE');
+		} else {
+			await lock.query('SELECT id FROM instance WHERE host = $1 FOR UPDATE', ['remote.test']);
+		}
+		const note = await post(port, { text: `@${name}@remote.test`, localOnly: true });
+		const actor = await source.getRepository(MiUser).findOneByOrFail({ usernameLower: name, host: 'remote.test' });
+		expect((await source.getRepository(MiNote).findOneByOrFail({ id: note.id })).mentions).toEqual([actor.id]);
+		expect(await source.getRepository(MiUserProfile).countBy({ userId: actor.id })).toBe(1);
+		await vi.waitFor(async () => {
+			// pg_stat_activity truncates long SELECT projections before their FROM clause.
+			// Identify our actual lock owner rather than matching that truncated suffix.
+			const [{ pid }] = await lock.query('SELECT pg_backend_pid() AS pid');
+			const rows: { query: string }[] = await source.query('SELECT query FROM pg_stat_activity WHERE datname = current_database() AND $1::int = ANY(pg_blocking_pids(pid))', [pid]);
+			expect(rows.length, http.output()).toBeGreaterThan(0);
+			expect(rows.some(row => stage === 'register' ? row.query.startsWith('SELECT') && row.query.includes('MiInstance') : row.query.startsWith('UPDATE') && row.query.includes('usersCount'))).toBe(true);
+		});
+		http.child.kill('SIGTERM');
+		await vi.waitFor(async () => {
+			await expect(new Promise<void>((resolve, reject) => {
+				const socket = connect(port, '127.0.0.1');
+				socket.once('connect', () => {
+					socket.destroy(); resolve();
+				}); socket.once('error', reject);
+			})).rejects.toMatchObject({ code: 'ECONNREFUSED' });
+		});
+		expect(http.child.exitCode).toBeNull();
+		// The lock is still held after the HTTP listener closes, so a successful exit cannot precede drain.
+		await lock.commitTransaction(); transaction = false;
+		expect((await http.exit).code, http.output()).toBe(0);
+		expect((await source.getRepository(MiInstance).findOneByOrFail({ host: 'remote.test' })).usersCount).toBe(before + 1);
+		expect(http.output()).not.toContain('actor-instance-registration.failed');
+	} finally {
+		if (transaction) {
+			await lock.rollbackTransaction();
+		}
+		await lock.release(); await http.close(); await config.close();
 	}
 });
