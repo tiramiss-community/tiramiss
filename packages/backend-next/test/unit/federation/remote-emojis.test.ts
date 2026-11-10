@@ -117,6 +117,45 @@ test('early rejection returns while another full tag operation remains owned by 
 	expect(h.rows.map(r => r.name)).toEqual(['wave']);
 });
 
+test('reports later tag failures after extraction has already rejected', async () => {
+	const release = deferred();
+	const first = new Error('insert failed');
+	const later = new Error('refetch failed');
+	const reported: { error: unknown; host: string }[] = [];
+	const controller = createRemoteEmojis({
+		async find() {
+			return [];
+		},
+		async update() { },
+		async findOne() {
+			return null;
+		},
+		async insert(row) {
+			if (row.name === 'first') {
+				throw first;
+			}
+			await release.promise;
+			throw later;
+		},
+	}, { now: () => 1800000000000, newId: () => 'emoji' }, (error, host) => {
+		reported.push({ error, host });
+		if (error === later) {
+			throw new Error('diagnostic sink failed');
+		}
+	});
+	const tags = ['first', 'later'].map(name => ({ type: 'Emoji', name: `:${name}:`, icon: { url: `https://remote.test/${name}.png` } }));
+
+	try {
+		await expect(controller.extract(tags, 'remote.test')).rejects.toBe(first);
+		expect(reported).toEqual([{ error: first, host: 'remote.test' }]);
+	} finally {
+		release.resolve();
+		await controller.close();
+	}
+
+	expect(reported).toEqual([{ error: first, host: 'remote.test' }, { error: later, host: 'remote.test' }]);
+});
+
 test('close waits for an update refetch and a tag that starts during the drain', async () => {
 	const refetchEntered = deferred();
 	const refetchRelease = deferred();

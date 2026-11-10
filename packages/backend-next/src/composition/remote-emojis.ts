@@ -5,7 +5,11 @@
 import { extractRemoteEmojis } from '../modules/federation/public.js';
 import type { RemoteEmojiRepository } from '../modules/federation/public.js';
 
-export function createRemoteEmojis(repository: RemoteEmojiRepository, clock: { now(): number; newId(): string }) {
+export function createRemoteEmojis(
+	repository: RemoteEmojiRepository,
+	clock: { now(): number; newId(): string },
+	reportTagFailure?: (error: unknown, host: string) => void,
+) {
 	const pending = new Set<Promise<void>>();
 
 	async function idle(): Promise<void> {
@@ -19,7 +23,13 @@ export function createRemoteEmojis(repository: RemoteEmojiRepository, clock: { n
 			...repository, ...clock,
 			track(work) {
 				// Keep the complete tag operation alive after Promise.all has already rejected its caller.
-				const settled = work.then(() => { }, () => { });
+				const settled = work.then(() => { }, error => {
+					try {
+						reportTagFailure?.(error, host);
+					} catch {
+						// A failed diagnostic must not interrupt draining other tag operations.
+					}
+				});
 				pending.add(settled);
 				void settled.then(() => pending.delete(settled));
 			},

@@ -16,9 +16,9 @@
     "node": "24.20.0",
     "pnpm": "12.9.1"
   },
-  "revision": 4,
-  "brokerReceiptSha256": "0b6023c85692497d0ec4ea91f862a508eb5854a8aeb626fe3d193c591f020855",
-  "frozenInputMapSha256": "2090c59104d137e3535c0e0f0ec2468c60cde2356a6387fd3cc5a4a62a2553da",
+  "revision": 6,
+  "brokerReceiptSha256": "1009fdca7badb38ffcf0dcd6cdff5ceb80f5ee6d737eae3da79830b0961c12af",
+  "frozenInputMapSha256": "eaa55915bf3760ba105437a5aa8a63d2991247add58209bfb30539f261468f2a",
   "frozenInputCount": 859,
   "observationsSha256": "1e7d639b9656c456503b7d88c8dd13ccb57f18822fdda8944fbe19e73d72e391",
   "probeSha256": "a1bf26d791bfcfdc804b3b910bf090ba6ba4cc6cd59083e7b3087236ef31210b",
@@ -39,10 +39,10 @@
   "measurements": {
     "build": {
       "command": "pnpm --filter backend-next... build",
-      "artifact": "/tmp/tiramiss-s1-r5-r4-build.log",
-      "log": "/tmp/tiramiss-s1-r5-r4-build.log",
-      "startedAt": "2026-11-10T22:40:28.950942+00:00",
-      "finishedAt": "2026-11-10T22:40:30.017889+00:00",
+      "artifact": "/tmp/tiramiss-pr262-5850865970-r6-build.log",
+      "log": "/tmp/tiramiss-pr262-5850865970-r6-build.log",
+      "startedAt": "2026-11-10T23:18:38.295149+00:00",
+      "finishedAt": "2026-11-10T23:18:39.227828+00:00",
       "exitCode": 0,
       "artifactSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
       "files": null,
@@ -53,10 +53,10 @@
     },
     "typecheck": {
       "command": "pnpm --filter backend-next... typecheck",
-      "artifact": "/tmp/tiramiss-s1-r5-r4-broker-typecheck.log",
-      "log": "/tmp/tiramiss-s1-r5-r4-broker-typecheck.log",
-      "startedAt": "2026-11-10T22:40:30.035455+00:00",
-      "finishedAt": "2026-11-10T22:40:31.419672+00:00",
+      "artifact": "/tmp/tiramiss-pr262-5850865970-r6-broker-typecheck.log",
+      "log": "/tmp/tiramiss-pr262-5850865970-r6-broker-typecheck.log",
+      "startedAt": "2026-11-10T23:18:39.246005+00:00",
+      "finishedAt": "2026-11-10T23:18:40.535959+00:00",
       "exitCode": 0,
       "artifactSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
       "files": null,
@@ -66,13 +66,13 @@
       "skipped": null
     },
     "integration": {
-      "command": "BACKEND_NEXT_TEST_DB_PORT=55507 BACKEND_NEXT_TEST_REDIS_PORT=56407 BACKEND_NEXT_TEST_MEILI_PORT=57807 pnpm --filter backend-next test:integration test/integration/remote-user.test.ts --reporter=json --outputFile=/tmp/tiramiss-s1-r5-r4-integration.json",
-      "artifact": "/tmp/tiramiss-s1-r5-r4-integration.json",
-      "log": "/tmp/tiramiss-s1-r5-r4-integration.log",
-      "startedAt": "2026-11-10T22:40:31.436042+00:00",
-      "finishedAt": "2026-11-10T22:40:40.037728+00:00",
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55508 BACKEND_NEXT_TEST_REDIS_PORT=56408 BACKEND_NEXT_TEST_MEILI_PORT=57808 pnpm --filter backend-next test:integration test/integration/remote-user.test.ts --reporter=json --outputFile=/tmp/tiramiss-pr262-5850865970-r6-integration.json",
+      "artifact": "/tmp/tiramiss-pr262-5850865970-r6-integration.json",
+      "log": "/tmp/tiramiss-pr262-5850865970-r6-integration.log",
+      "startedAt": "2026-11-10T23:18:40.553000+00:00",
+      "finishedAt": "2026-11-10T23:18:49.607990+00:00",
       "exitCode": 0,
-      "artifactSha256": "4b9cfec85e05d1d25b892a7a9423b5e44a571293f7a66164be765657e3f8b09a",
+      "artifactSha256": "6cde9850adac76849fdbd7d505f3323298bb08610a8a226fe9ce0f98fc6eb6d0",
       "files": 1,
       "outcome": "PASS",
       "passed": 63,
@@ -80,13 +80,13 @@
       "skipped": 0
     },
     "process": {
-      "command": "BACKEND_NEXT_TEST_DB_PORT=55507 BACKEND_NEXT_TEST_REDIS_PORT=56407 BACKEND_NEXT_TEST_MEILI_PORT=57807 pnpm --filter backend-next test:process test/processes/remote-mentions.test.ts --reporter=json --outputFile=/tmp/tiramiss-s1-r5-r4-process.json",
-      "artifact": "/tmp/tiramiss-s1-r5-r4-process.json",
-      "log": "/tmp/tiramiss-s1-r5-r4-process.log",
-      "startedAt": "2026-11-10T22:40:40.053861+00:00",
-      "finishedAt": "2026-11-10T22:40:53.464781+00:00",
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55508 BACKEND_NEXT_TEST_REDIS_PORT=56408 BACKEND_NEXT_TEST_MEILI_PORT=57808 pnpm --filter backend-next test:process test/processes/remote-mentions.test.ts --reporter=json --outputFile=/tmp/tiramiss-pr262-5850865970-r6-process.json",
+      "artifact": "/tmp/tiramiss-pr262-5850865970-r6-process.json",
+      "log": "/tmp/tiramiss-pr262-5850865970-r6-process.log",
+      "startedAt": "2026-11-10T23:18:49.621939+00:00",
+      "finishedAt": "2026-11-10T23:19:03.181955+00:00",
       "exitCode": 0,
-      "artifactSha256": "d73001adcf86f935795b3198d473634e1acdc5f37b3d2f7d194b94235cb2734d",
+      "artifactSha256": "00b7842aa5be35256c3da252a9978c54ea6ececfde1f55a12e3fbb00d2986328",
       "files": 1,
       "outcome": "PASS",
       "passed": 9,
@@ -94,25 +94,25 @@
       "skipped": 0
     },
     "full-unit": {
-      "command": "BACKEND_NEXT_TEST_DB_PORT=55507 BACKEND_NEXT_TEST_REDIS_PORT=56407 BACKEND_NEXT_TEST_MEILI_PORT=57807 pnpm --filter backend-next test --reporter=json --outputFile=/tmp/tiramiss-s1-r5-r4-full-unit.json",
-      "artifact": "/tmp/tiramiss-s1-r5-r4-full-unit.json",
-      "log": "/tmp/tiramiss-s1-r5-r4-full-unit.log",
-      "startedAt": "2026-11-10T22:40:53.481064+00:00",
-      "finishedAt": "2026-11-10T22:41:24.832262+00:00",
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55508 BACKEND_NEXT_TEST_REDIS_PORT=56408 BACKEND_NEXT_TEST_MEILI_PORT=57808 pnpm --filter backend-next test --reporter=json --outputFile=/tmp/tiramiss-pr262-5850865970-r6-full-unit.json",
+      "artifact": "/tmp/tiramiss-pr262-5850865970-r6-full-unit.json",
+      "log": "/tmp/tiramiss-pr262-5850865970-r6-full-unit.log",
+      "startedAt": "2026-11-10T23:19:03.197411+00:00",
+      "finishedAt": "2026-11-10T23:19:34.245013+00:00",
       "exitCode": 0,
-      "artifactSha256": "63fe3a3aeaf441703ec9472ad516071bde728dacd61f606ccf65bedf66fed838",
+      "artifactSha256": "aac0342c7d26116497d0c69afda6c5db41b1a20ae1368e04929aba6a69343b8e",
       "files": 92,
       "outcome": "PASS",
-      "passed": 3000,
+      "passed": 3001,
       "failed": 0,
       "skipped": 0
     },
     "source": {
       "command": "UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream UPSTREAM_SOURCE_MODE=verified-files node docs/superpowers/compatibility/remote-user/remote-emojis-source-probe.mjs --check",
-      "artifact": "/tmp/tiramiss-s1-r5-r4-source-broker.log",
-      "log": "/tmp/tiramiss-s1-r5-r4-source-broker.log",
-      "startedAt": "2026-11-10T22:41:24.848575+00:00",
-      "finishedAt": "2026-11-10T22:41:25.229930+00:00",
+      "artifact": "/tmp/tiramiss-pr262-5850865970-r6-source-broker.log",
+      "log": "/tmp/tiramiss-pr262-5850865970-r6-source-broker.log",
+      "startedAt": "2026-11-10T23:19:34.261178+00:00",
+      "finishedAt": "2026-11-10T23:19:34.592028+00:00",
       "exitCode": 0,
       "artifactSha256": "3c2a02bd9537c4eb72633243640090567a127a82ce539713ed7de2d700c43269",
       "files": null,
@@ -161,12 +161,13 @@
       ]
     },
     "packages/backend-next/src/platform/connect-resources.ts": {
-      "sha256": "e3d33381c0647422d659a51b7528072fac4ab6bf2fcf19af32f90d94ea789754",
+      "sha256": "57d9087e17c64e04c28c5286f86e2de703d28108acf0bab930835589cdfd2ee8",
       "previousSha256": [
         "50a3ee9fec27f437e79733ce36454927128b3c8561abf70e7eee7b8c4e3e45c2",
         "6d7accec5038c46adce75cc998ce1ba040cb971790f2a257b2e475dc4bd308c7",
         "976e4af688469dfd257bafb130a130219ca9dfc90795fece865b37d7d949dc34",
-        "24b251b825529f974c41656a9fc78cb723362ad263457cf400f41a259ff91e23"
+        "24b251b825529f974c41656a9fc78cb723362ad263457cf400f41a259ff91e23",
+        "e3d33381c0647422d659a51b7528072fac4ab6bf2fcf19af32f90d94ea789754"
       ],
       "validatedBy": [
         "full-unit",
@@ -222,8 +223,10 @@
       ]
     },
     "packages/backend-next/src/composition/remote-emojis.ts": {
-      "sha256": "964400bfc7944944bf03f387508cb92b159f3f99b350c3de9af6271c5925a527",
-      "previousSha256": [],
+      "sha256": "23ae2646c333f52a908193a0dc18e99ec7c344099afde4e7e46e782b975b63ea",
+      "previousSha256": [
+        "964400bfc7944944bf03f387508cb92b159f3f99b350c3de9af6271c5925a527"
+      ],
       "validatedBy": [
         "full-unit",
         "integration",
@@ -249,9 +252,10 @@
       ]
     },
     "packages/backend-next/test/unit/federation/remote-emojis.test.ts": {
-      "sha256": "7822dee485bce4f54cc6f0de047881c74ceada76820df3ba19ef64a755a733f6",
+      "sha256": "968953ae4f640983d539aabd2568c29f0c9b2d692a71759d2fe7f64b2a73cad7",
       "previousSha256": [
-        "97a98c9dd7d859f6c5881c297cad70cecbc28f47c751930318916087cf7591af"
+        "97a98c9dd7d859f6c5881c297cad70cecbc28f47c751930318916087cf7591af",
+        "7822dee485bce4f54cc6f0de047881c74ceada76820df3ba19ef64a755a733f6"
       ],
       "validatedBy": [
         "full-unit"
@@ -299,7 +303,7 @@
     "Source-method doubles, no upstream full server/real upstream DB measured.",
     "DB-direct URL read does not establish source 12-hour emoji cache parity.",
     "pg concurrent-query deprecation warning was present in baseline.",
-    "Root Node26 contracts/inventory/shipping are separate parent validation; immutable implementation pin awaits normal commit."
+    "Root Node26 contracts, inventory and shipping are validated separately from runtime measurements."
   ],
   "previousValidation": [
     {
@@ -328,6 +332,16 @@
       "processPassed": 9,
       "fullUnitPassed": 2998,
       "note": "Actual revision 3 receipt and artifacts retained. Revision 4 measures the ID and shutdown regression fixes."
+    },
+    {
+      "revision": 4,
+      "status": "PASS",
+      "receiptSha256": "0b6023c85692497d0ec4ea91f862a508eb5854a8aeb626fe3d193c591f020855",
+      "frozenInputCount": 859,
+      "integrationPassed": 63,
+      "processPassed": 9,
+      "fullUnitPassed": 3000,
+      "note": "Initial PR head b7f8706289fb422804b2c40f27d72cbc95870b8d. The review follow-up adds per-tag diagnostics and a regression test."
     }
   ]
 }

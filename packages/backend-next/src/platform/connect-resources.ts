@@ -326,7 +326,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		const remoteEmojis = createRemoteEmojis(createRemoteEmojiRepository(dataSource.manager), {
 			now: Date.now,
 			newId: () => emojiIdCodec.newId(Date.now()),
-		});
+		}, (error, host) => logger.error('remote-emoji.tag-failed', { error, host }));
 		scope.defer(remoteEmojis.close);
 		const userHashtags = createUserHashtags({
 			change: createUserHashtagWriter(dataSource.manager, () => createIdCodec(config.id).newId(Date.now())).change,
