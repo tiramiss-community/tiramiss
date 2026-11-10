@@ -7,8 +7,8 @@ import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 import { Queue } from 'bullmq';
 import { Redis } from 'ioredis';
 import { MiNote, MiPoll, MiPollVote, MiUser, MiUserProfile } from 'backend-upstream/entities';
-import type { DataSource } from 'typeorm';
 import { createTestDatabase } from '../helpers/database.js';
+import { openBusinessJobProducers, openPollEndedWorker } from '../helpers/business-jobs.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
 import { migrateDatabase } from '../../src/platform/database/migrate.js';
 import { migrationSources } from '../../src/platform/database/migration-sources.js';
@@ -18,9 +18,10 @@ import { PostNotificationPersistence } from '../../src/platform/database/notific
 import { createPollEndedReader } from '../../src/platform/database/poll-ended.js';
 import { createPollEndedHandler } from '../../src/composition/poll-ended-job.js';
 import { baseQueueOptions } from '../../src/platform/job-queue/connection.js';
-import { createPollEndedQueue, ENDED_POLL_NOTIFICATION, startPollEndedWorker } from '../../src/platform/job-queue/ended-poll-notification.js';
+import { ENDED_POLL_NOTIFICATION } from '../../src/platform/job-queue/ended-poll-notification.js';
 import { createIdCodec } from '../../src/platform/id-codec.js';
 import { createLogger } from '../../src/platform/logger.js';
+import type { DataSource } from 'typeorm';
 import type { RedisConfig } from '../../src/config/types.js';
 import type { PostNotification } from '../../src/modules/notification/public.js';
 
@@ -102,8 +103,8 @@ test('migration down removes pollEnded rows and restores the previous constraint
 				VALUES ('kept','r','mention','author','note',now()),('dropped','r','pollEnded',NULL,'note',now())`);
 			await internal.undoLastMigration();
 			expect(await db.query('SELECT notification_id FROM backend_internal.notification')).toEqual([{ notification_id: 'kept' }]);
-			await expect(db.query("INSERT INTO backend_internal.notification(notification_id,recipient_id,notification_type,notifier_id,note_id,created_at) VALUES ('x','r','pollEnded','a','note',now())")).rejects.toThrow();
-			await expect(db.query("INSERT INTO backend_internal.notification(notification_id,recipient_id,notification_type,notifier_id,note_id,created_at) VALUES ('y','r','mention',NULL,'note',now())")).rejects.toThrow();
+			await expect(db.query('INSERT INTO backend_internal.notification(notification_id,recipient_id,notification_type,notifier_id,note_id,created_at) VALUES (\'x\',\'r\',\'pollEnded\',\'a\',\'note\',now())')).rejects.toThrow();
+			await expect(db.query('INSERT INTO backend_internal.notification(notification_id,recipient_id,notification_type,notifier_id,note_id,created_at) VALUES (\'y\',\'r\',\'mention\',NULL,\'note\',now())')).rejects.toThrow();
 
 			await internal.runMigrations();
 			await assertMigrationsApplied(other.config.database);
@@ -132,16 +133,16 @@ test('reads local voters once per vote row, excluding remote voters', async () =
 test('a delayed job enqueued by the producer runs in the worker and notifies the author and local voters', async () => {
 	const redis = jobRedis();
 	const noteId = await seedPoll(users.author, [users.voterA, users.voterA, users.remote, users.muted, users.voterB]);
-	const producer = createPollEndedQueue({ redis, connectTimeoutMs: 5000, logger, onLost: () => {} });
+	const producer = openBusinessJobProducers({ redis, connectTimeoutMs: 5000, logger, onLost: () => {} });
 	await producer.ready();
-	const stop = await startPollEndedWorker({
+	const stop = await openPollEndedWorker({
 		redis, connectTimeoutMs: 5000, logger, reportFailure: () => {},
 		handle: createPollEndedHandler({ dataSource: source, logger }, { id: 'aidx' }),
 	});
 	const inspect = new Queue(ENDED_POLL_NOTIFICATION, baseQueueOptions(redis, ENDED_POLL_NOTIFICATION, 5000));
 	try {
 		const enqueuedAt = Date.now();
-		await producer.schedule({ noteId, delayMs: 700 });
+		await producer.schedulePollEnded({ noteId, delayMs: 700 });
 		expect(await inspect.getJobCounts('delayed')).toEqual({ delayed: 1 });
 		expect(await notifications()).toEqual([]);
 
@@ -167,14 +168,14 @@ test('a delayed job enqueued by the producer runs in the worker and notifies the
 test('a job whose deadline already passed runs immediately', async () => {
 	const redis = jobRedis();
 	const noteId = await seedPoll(users.author, []);
-	const producer = createPollEndedQueue({ redis, connectTimeoutMs: 5000, logger, onLost: () => {} });
+	const producer = openBusinessJobProducers({ redis, connectTimeoutMs: 5000, logger, onLost: () => {} });
 	await producer.ready();
-	const stop = await startPollEndedWorker({
+	const stop = await openPollEndedWorker({
 		redis, connectTimeoutMs: 5000, logger, reportFailure: () => {},
 		handle: createPollEndedHandler({ dataSource: source, logger }, { id: 'aidx' }),
 	});
 	try {
-		await producer.schedule({ noteId, delayMs: -1000 });
+		await producer.schedulePollEnded({ noteId, delayMs: -1000 });
 		await vi.waitFor(async () => {
 			expect(await notifications()).toHaveLength(1);
 		}, { timeout: 5000, interval: 50 });
@@ -186,10 +187,10 @@ test('a job whose deadline already passed runs immediately', async () => {
 
 test('a failing job is attempted once, logged, and kept as failed', async () => {
 	const redis = jobRedis();
-	const producer = createPollEndedQueue({ redis, connectTimeoutMs: 5000, logger, onLost: () => {} });
+	const producer = openBusinessJobProducers({ redis, connectTimeoutMs: 5000, logger, onLost: () => {} });
 	await producer.ready();
 	let attempts = 0;
-	const stop = await startPollEndedWorker({
+	const stop = await openPollEndedWorker({
 		redis, connectTimeoutMs: 5000, logger, reportFailure: () => {},
 		handle: async () => {
 			attempts++;
@@ -198,7 +199,7 @@ test('a failing job is attempted once, logged, and kept as failed', async () => 
 	});
 	const inspect = new Queue(ENDED_POLL_NOTIFICATION, baseQueueOptions(redis, ENDED_POLL_NOTIFICATION, 5000));
 	try {
-		await producer.schedule({ noteId: 'note', delayMs: 0 });
+		await producer.schedulePollEnded({ noteId: 'note', delayMs: 0 });
 		await vi.waitFor(async () => {
 			expect(await inspect.getJobCounts('failed')).toEqual({ failed: 1 });
 		}, { timeout: 5000, interval: 50 });
@@ -220,7 +221,7 @@ test('a failing job is attempted once, logged, and kept as failed', async () => 
 test('a malformed payload fails the job instead of completing it', async () => {
 	const redis = jobRedis();
 	let handled = false;
-	const stop = await startPollEndedWorker({
+	const stop = await openPollEndedWorker({
 		redis, connectTimeoutMs: 5000, logger, reportFailure: () => {},
 		handle: async () => {
 			handled = true;
@@ -270,7 +271,7 @@ test.each([
 	const redis = { ...jobRedis(), connectionName: `worker-${randomUUID()}` };
 	const control = new Redis(database.config.redis);
 	const failures: Error[] = [];
-	const stop = await startPollEndedWorker({
+	const stop = await openPollEndedWorker({
 		redis, connectTimeoutMs: 5000, logger, reportFailure: error => failures.push(error),
 		handle: async () => {},
 	});
@@ -301,7 +302,7 @@ test('losing the producer connection is reported, and a normal close is not', as
 	const redis = { ...jobRedis(), connectionName: `producer-${randomUUID()}` };
 	const control = new Redis(database.config.redis);
 	let lost = 0;
-	const producer = createPollEndedQueue({ redis, connectTimeoutMs: 5000, logger, onLost: () => lost++ });
+	const producer = openBusinessJobProducers({ redis, connectTimeoutMs: 5000, logger, onLost: () => lost++ });
 	try {
 		await producer.ready();
 		const line = String(await control.client('LIST')).split('\n').find(entry => entry.includes(`name=${redis.connectionName} `));
@@ -315,7 +316,7 @@ test('losing the producer connection is reported, and a normal close is not', as
 		control.disconnect();
 	}
 
-	const healthy = createPollEndedQueue({ redis: jobRedis(), connectTimeoutMs: 5000, logger, onLost: () => lost++ });
+	const healthy = openBusinessJobProducers({ redis: jobRedis(), connectTimeoutMs: 5000, logger, onLost: () => lost++ });
 	await healthy.ready();
 	await healthy.close();
 	expect(lost).toBe(1);

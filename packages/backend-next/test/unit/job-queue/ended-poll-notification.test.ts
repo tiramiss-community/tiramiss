@@ -88,8 +88,8 @@ test('a failed attempt is logged with job ids and the original error is returned
 		throw failure;
 	}, logger);
 
-	await expect(process({ id: '7', name: 'note', data: { noteId: 'note' }, attemptsMade: 0 })).rejects.toBe(failure);
-	await expect(process({ id: '8', name: 'note', data: { note: 'missing' }, attemptsMade: 0 })).rejects.toMatchObject({ code: 'INVALID_JOB_PAYLOAD' });
+	await expect(process({ noteId: 'note' }, { jobId: '7', jobName: 'note', attempt: 1, timestamp: new Date() })).rejects.toBe(failure);
+	await expect(process({ note: 'missing' } as never, { jobId: '8', jobName: 'note', attempt: 1, timestamp: new Date() })).rejects.toMatchObject({ code: 'INVALID_JOB_PAYLOAD' });
 
 	expect(handled).toEqual([{ noteId: 'note' }]);
 	expect(logs.filter(line => line.event === 'job.failed')).toEqual([

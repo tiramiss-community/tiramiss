@@ -130,3 +130,11 @@ BACKEND_NEXT_TEST_DB_PORT=55487 BACKEND_NEXT_TEST_REDIS_PORT=56387 BACKEND_NEXT_
 retry用の旧BullMQ Workerは業務handlerのdoubleで状態を生成し、sourceのcustom backoffのjitterだけを0に固定した。実際の60,000ms遅延・attemptsMade=1を保存し、停止/読取検査後に新built workerが自然な期限到来で同IDをattemptsMade=2へ進め、外部HTTP成功は1回だった。source job optsは変更せず、promote/retry/再投入で待機を代用しない。同時に残したterminal failedは同ID/attemptsMade=1のまま保持する。これは旧本家の業務handlerやfull serverを実行した証拠ではない。
 
 processには既存の同時`client.query()`に関するpg deprecation warningが出た。exit0と保存/外部効果の一致を確認した結果として記録し、warningのない実行とは扱わない。実測とsource比較の成功は、現在7未対応handlerやsystem schedulerを切替可能にしない。[停止専用コマンド](../../../../packages/backend-next/README.md#停止下のqueue引継ぎ確認165)、[queueごとの判断・#139のbackup/rollback](../../../backend-next/posting-contract.md#停止下の既存queuepayload引継ぎ165)を参照する。#165の4条件に対応する検査・比較の完了候補と、#124/#176/#139全体の完成を区別する。
+
+## #255 runtime consumer validation (2026-11-10)
+
+Raw read-only inspection and fixed generator/bindings are unchanged. Original saved jobs, seven webhook envelopes, results and natural old-Worker retry are exercised by the retained handoff process cases; their success does not complete the broader process gate.
+
+The parent's separate serial queue integration run passed **185 tests / 10 files, 0 failed/pending** (Node v26.4.0, pnpm 12.9.1; isolated `backend-next-255`, PostgreSQL `55455`, Redis `56395`). The earlier overlapping run had 184 passes / 1 globalSubscriber interference failure; it is not recorded as PASS. [Current runtime paths, exact commands and artifact receipt](../queue-runtime/README.md) distinguish these new consumers from the unchanged frozen source observations. No new pinned-source run is claimed.
+
+Initial process validation has **57 passed / 4 failed / 8 files**; only the new queue-runtime cases fail. Final process gate PASS: the unchanged seven process files passed 43 cases; the corrected new file passed all 18 cases in a separate execution. Remaining seven handlers, nine schedulers, #139 cutover and existing feature owners are unchanged.

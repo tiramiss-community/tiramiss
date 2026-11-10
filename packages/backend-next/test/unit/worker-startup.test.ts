@@ -9,7 +9,7 @@ import { testConfig } from '../helpers/database.js';
 import type { Job } from 'bullmq';
 
 const state = vi.hoisted(() => ({
-	workers: [] as { name: string; ready: () => Promise<void>; close: () => Promise<void>; process: (job: Job) => Promise<unknown>; emit: (event: string) => boolean }[],
+	workers: [] as { name: string; ready: () => Promise<void>; close: () => Promise<void>; process: (job: Job) => Promise<unknown>; emit: (event: string, ...args: unknown[]) => boolean }[],
 	ready: new Map<string, () => Promise<void>>(),
 	close: new Map<string, () => Promise<void>>(),
 	events: [] as string[],
@@ -20,7 +20,9 @@ const state = vi.hoisted(() => ({
 vi.mock('../../src/composition/create-runtime.js', () => ({ createRuntime: async () => ({
 	federationKeys: { readUserKeypair: async () => {
 		throw new Error('key unavailable');
-	} }, outboundHttp: { send: vi.fn() },
+	} }, outboundHttp: { send: vi.fn(async () => {
+		throw new Error('network unavailable');
+	}) },
 	redis: { get: async () => null, set: async () => {} },
 	dataSource: { manager: { getRepository: (entity: { name: string }) => ({
 		find: async () => entity.name === 'MiMeta' ? [{ federation: 'all', federationHosts: [], blockedHosts: [], silencedHosts: [], mediaSilencedHosts: [], deliverSuspendedSoftware: [], enableStatsForFederatedInstances: true }] : [],
@@ -43,33 +45,67 @@ vi.mock('node-fetch', () => ({ default: async () => {
 vi.mock('cacheable-lookup', () => ({ default: class {
 	lookup = vi.fn();
 } }));
-vi.mock('bullmq', async importOriginal => ({
-	...await importOriginal<typeof import('bullmq')>(),
-	Worker: class extends EventEmitter {
-		client = new EventEmitter();
-		constructor(readonly name: string, readonly process: (job: Job) => Promise<unknown>) {
-			super();
-			state.events.push(`construct:${name}`);
-			state.workers.push(this);
-		}
-		getBackend() {
-			return { client: Promise.resolve(this.client) };
-		}
-		async ready() {
-			await state.ready.get(this.name)?.();
-		}
-		async waitUntilReady() {
-			await this.ready();
-		}
-		async run() {
-			await new Promise(() => {});
-		}
-		async close() {
-			state.events.push(`close:${this.name}`);
-			await state.close.get(this.name)?.();
-		}
-	},
-}));
+vi.mock('../../src/platform/job-queue/runtime.js', () => ({ createBusinessJobRuntime: (options: { onError(event: unknown): void }) => {
+	const closed = new Set<string>();
+	const diagnostics: unknown[] = [];
+	const registrations: { name: string; handler: (payload: unknown, context: unknown) => Promise<unknown> }[] = [];
+	return {
+		runtime: {
+			handle: (definition: { options: { queue: { name: string } } }, handler: (payload: unknown, context: unknown) => Promise<unknown>) => {
+				registrations.push({ name: definition.options.queue.name, handler });
+			},
+			async start() {
+				for (const { name, handler } of registrations) {
+					const client = new EventEmitter();
+					const worker = {
+						name, client, emit: (event: string, ...args: unknown[]) => {
+							if (event === 'error') {
+								diagnostics.push(args[0]);
+								options.onError({ queue: name, resource: 'worker', reason: 'cleanup', error: args[0] });
+							}
+							return true;
+						},
+						ready: async () => {
+							await state.ready.get(name)?.();
+						},
+						close: async () => {
+							state.events.push(`close:${name}`);
+							await state.close.get(name)?.();
+							closed.add(name);
+						},
+						process: async (job: Job) => await handler(job.data, { jobId: job.id, jobName: job.name, attempt: job.attemptsMade + 1, timestamp: new Date() }),
+					};
+					client.on('end', () => options.onError({ queue: name, resource: 'worker', reason: 'connection-ended', error: new Error('ended') }));
+					state.events.push(`construct:${name}`);
+					state.workers.push(worker);
+				}
+				await Promise.all(state.workers.map(worker => worker.ready()));
+			},
+		},
+		async stop() {
+			const errors: unknown[] = [];
+			const results = await Promise.allSettled(state.workers.map(worker => worker.close()));
+			for (const result of results) {
+				if (result.status === 'rejected') {
+					errors.push(result.reason);
+				}
+			}
+			// Model manager cleanup diagnostics independently from the close result.
+			errors.push(...diagnostics);
+			for (const { name } of registrations) {
+				try {
+					await state.close.get(`queue:${name}`)?.();
+				} catch (error) {
+					errors.push(error);
+				}
+			}
+			if (errors.length) {
+				throw new AggregateError(errors, 'cleanup');
+			}
+		},
+		closedWorkerQueues: async () => closed,
+	};
+} }));
 
 beforeEach(() => {
 	state.workers.length = 0;
@@ -87,11 +123,11 @@ function gate() {
 	return { promise, resolve };
 }
 
-test('starts sequentially and waits for every parallel stop before releasing resources', async () => {
+test('waits for readiness and every parallel stop before releasing resources', async () => {
 	const ready = gate();
 	state.ready.set('endedPollNotification', () => ready.promise);
 	const pending = startWorker(testConfig());
-	await vi.waitFor(() => expect(state.workers).toHaveLength(1));
+	await vi.waitFor(() => expect(state.workers).toHaveLength(3));
 	ready.resolve();
 	const running = await pending;
 	expect(state.workers.map(w => w.name)).toEqual(['endedPollNotification', 'userWebhookDeliver', 'deliver']);
@@ -131,7 +167,7 @@ test.each(['userWebhookDeliver', 'deliver'])('retains %s startup error after wai
 	closing.resolve();
 	expect(await result).toBe(failure);
 	expect(state.logger.error).toHaveBeenCalledWith('cleanup.failed', { error: expect.any(AggregateError) });
-	expect(state.events.filter(e => e.startsWith('close:'))).toHaveLength(name === 'deliver' ? 3 : 2);
+	expect(state.events.filter(e => e.startsWith('close:'))).toHaveLength(3);
 	expect(state.releaseResources).toHaveBeenCalledOnce();
 });
 
@@ -158,8 +194,9 @@ test('a close rejection still waits for the other workers and reports the aggreg
 
 test('connection loss propagates to the process failure promise', async () => {
 	const running = await startWorker(testConfig());
-	// The fake backend client models the network event; the real runWorker reports it.
+	// The owned-runtime double supplies the network event; composition translates it.
 	const worker = state.workers[1] as unknown as { client: EventEmitter };
+	Object.assign(worker.client, { status: 'end' });
 	worker.client.emit('end');
 	await expect(running.failure).resolves.toHaveProperty('code', 'JOB_QUEUE_REDIS_ENDED');
 	await running.stop();
@@ -208,4 +245,30 @@ test.each(['userWebhookDeliver', 'deliver'])('%s close failure does not wait for
 	} finally {
 		update.resolve();
 	}
+});
+
+test.each(['userWebhookDeliver', 'deliver'])('%s drains after emitted cleanup error when close fulfills', async name => {
+	const running = await startWorker(testConfig());
+	const update = gate();
+	state.update.mockImplementationOnce(() => update.promise);
+	const worker = state.workers.find(value => value.name === name)!;
+	const data = name === 'deliver'
+		? { user: { id: 'author' }, content: '{}', digest: 'digest', to: 'https://remote.test/inbox', isSharedInbox: false }
+		: { webhookId: 'hook', userId: 'author', to: 'https://remote.test/hook', secret: '', type: 'note', content: { note: {} }, createdAt: 0, eventId: 'event' };
+	await worker.process({ data, name: 'job', attemptsMade: 0 } as Job).catch(() => {});
+	await vi.waitFor(() => expect(state.update).toHaveBeenCalled());
+	state.close.set(name, async () => {
+		worker.emit('error', new Error('emitted while closing'));
+	});
+	let settled = false;
+	const stop = running.stop().catch(error => {
+		settled = true; return error;
+	});
+	await vi.waitFor(() => expect(state.events).toContain(`close:${name}`));
+	await new Promise(resolve => setImmediate(resolve));
+	expect(settled).toBe(false);
+	expect(state.releaseResources).not.toHaveBeenCalled();
+	update.resolve();
+	expect(await stop).toBeInstanceOf(AggregateError);
+	expect(state.releaseResources).toHaveBeenCalledOnce();
 });

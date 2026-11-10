@@ -22,7 +22,7 @@
 - Preserve no-reconnect behavior, readiness, failure propagation, follow-up drain, and existing process deadlines.
 - Add no schema migration, outbox, durable job state, scheduler abstraction, automatic discovery, or stronger delivery guarantee.
 - Seven other handlers and nine system schedulers retain their existing owners. This PR does not complete #139, #176, or #127.
-- Source references under `/tmp/mokuroku-release-pr33` or `/home/osamu/develop/mokuroku-js` are read-only.
+- Published package/source reference checkouts are read-only; never edit them to manufacture consumer evidence.
 - Routine implementation choices need no further design approval; the user has requested implementation, CodeRabbit review, and PR creation. No merge or npm publication is authorized.
 
 These boundaries follow [GOALS](../../backend-next/GOALS.md), the [foundation exclusions](../specs/2026-11-09-backend-next-application-foundation-design.md), and the [queue inventory](../../backend-next/application-foundation-inventory.md).
@@ -648,3 +648,30 @@ Sources: [poll options](../../../packages/backend-next/src/platform/job-queue/en
 ## Integration notes (2026-11-10)
 
 The investigation receipt above is historical. The coordinator subsequently verified npm tarball integrities and packed adapter core dependency `^0.2.0`; see the adoption receipt added after validation. Dedicated Compose project: `backend-next-255`, DB `55455`, Redis `56395`, Meili `57795`; Node `26.4.0`, pnpm `12.9.1`. Parent baseline build, 144 unit tests, and 62 integration tests passed before production edits.
+
+## Integrated implementation and evidence status (2026-11-10)
+
+The investigation and preparation records above remain historical. Runtime and verification patches are integrated on adoption HEAD `2046dfe8041ba925998fa75c34e51e4a5a515910` with uncommitted implementation; do not describe this measurement as clean or committed. [Runtime handoff and package receipt](../compatibility/queue-runtime/README.md) are the current adoption record.
+
+| Task / gate | Current evidence |
+| --- | --- |
+| Tasks 1–2: definitions, ownership, normal composition, wrapper removal | Implemented; published exact core/adapter 0.2.0, BullMQ 6.3.11, ioredis 5.11.1; frozen strict-peer install, build/typecheck PASS |
+| Task 3: retained queue consumer suites | PASS: separate serial integration 185 / 0 failures / 10 files; first overlapping run 184 / 1 globalSubscriber interference failure retained as history |
+| Unit coverage | PASS: 2,828 / 0 failures / 86 files |
+| Task 4: process contracts | PASS: unchanged seven files / 43 cases in the initial run plus corrected new file / 18 cases on rerun; separate executions. Initial 57/4 history is retained |
+| Task 5: N7 consumers | PASS: actual three-file run 88 / 0 failures / 0 pending / 3 files; 10.23122955695726s wall time. New receipt `c2-c10-mokuroku-255-2026-11-10` binds actual dirty-tree identity and unchanged before/after sources |
+| Task 5: documentation | Current queue rows, adoption paths/ownership, package receipt and #163–165 consumer appendices updated; historical fixtures/measurements/seals and remote-user bindings preserved |
+| Task 6: final process gate / closure | Process gate PASS in the separate executions above; parent root contracts126, typecheck, changed-file lint, SPDX and locale safety PASS. Independent review found no production regression; its two documentation findings are corrected against the authoritative inventory and measured process receipt. |
+
+C2/C10 remeasurement finished `2026-11-10T01:23:32.217948+00:00` on Node v26.4.0 / pnpm 12.9.1; isolated project and ports are recorded above. Full command and raw artifact/provenance hashes are in the N7 receipt. Only the changed Note-notifications digest is renewed; all four current bindings and their negative receipt mutations target the new receipt. Only the comparisonMeasurements seal is recomputed with JavaScript `JSON.stringify` order.
+
+CodeRabbit completed the submitted 33-file review with zero findings. Local cache persistence failed EROFS after completion; that failure does not invalidate the review, and the review does not cover these later docs/process fixes. Existing pg query-concurrency warnings remain distinct from outcomes. Remaining seven handlers/nine schedulers and their owners, posting partial and six actor gaps remain; #251/#176/#127/#139 are not completed. CHANGELOG is unchanged; the candidate line in Task 6 remains applicable.
+
+Documentation-lane checks: PASS current N7 bindings/negative mutations (28 checks), unchanged remote-user contract (33 checks), source/provenance hashes, historical ledger preservation, syntax, whitespace, SPDX and locale safety. Historical N7 replay is BLOCKED here by `spawnSync git EPERM`; the parent must rerun the full root contract suite. Shipping wrapper is BLOCKED by missing local `execa`; owned docs/root-contract paths have no configured package ESLint target (lint SKIPPED), and SPDX/locale were checked directly. No package implementation or consumer file was edited by this lane.
+
+
+## Final parent verification and review disposition
+
+The parent resolved the documentation lane environment limits: root contract checks **126 PASS**, final source/test typecheck PASS, changed-file quiet lint **29 files PASS**, SPDX **3,261 files OK**, locale safety PASS, upstream sync and contract inventory PASS. Full unit **2,828**, real queue integration **185**, C2/C10 **88**, and current process **43 + 18 in separate executions** pass. The two incremental process fixture/test fixes change no production source. Deadline exit establishes bounded abnormal termination, without claiming PG query cancellation or rollback.
+
+Independent full-branch review inspected all44changedpaths and found no actionable production regression. Its P2 scheduler-owner finding is corrected: `bakeBufferedReactions` handler/scheduler belongs to **#184**, as recorded in the authoritative backend inventory; `system` spans #184/#199/#200. Its P3 stale process-status finding is corrected in the N7 current summary and this plan. Historical measurements and the initial failed runs remain unchanged. CodeRabbit reviewed the earlier33-file submission with zero findings; later documentation/process corrections are covered by the independent review and parent verification. No remaining product correction is requested. Issues remain open until the resolving PR merges; no merge/publication operation is part of this work.

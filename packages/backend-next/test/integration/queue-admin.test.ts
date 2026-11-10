@@ -2,18 +2,18 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
+import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 import { Queue, UnrecoverableError, Worker } from 'bullmq';
 import { MiAccessToken, MiApp, MiModerationLog, MiRole, MiRoleAssignment } from 'backend-upstream/entities';
 import { baseQueueOptions, baseWorkerOptions } from '../../src/platform/job-queue/connection.js';
-import { createDeliverQueue, startDeliverWorker } from '../../src/platform/job-queue/deliver.js';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createBackendHttpApp } from '../../src/composition/note-http.js';
 import { migrateDatabase } from '../../src/platform/database/migrate.js';
 import { listenHttp, closeHttp } from '../../src/processes/http.js';
 import { createTestDatabase } from '../helpers/database.js';
+import { openBusinessJobProducers, openDeliverWorker } from '../helpers/business-jobs.js';
 import { seedRoleHttp } from '../helpers/role-http.js';
 import { openQueueHttp } from '../../src/composition/queue-http.js';
 import type { QueueName } from '../../src/modules/queue/public.js';
@@ -31,7 +31,7 @@ const tokens: Record<string, string> = {};
 const logger = {
 	info() { }, error(event: string, fields?: Record<string, unknown>) {
 		errors.push({ event, fields });
-	}
+	},
 };
 
 function queue(name: QueueName) {
@@ -318,13 +318,13 @@ test('real deliver producer/worker retries an administratively retried failed pa
 	});
 	target.listen(0, '127.0.0.1'); await once(target, 'listening');
 	const to = `http://127.0.0.1:${(target.address() as { port: number }).port}/inbox`;
-	const producer = createDeliverQueue({ redis: database.config.redisForJobQueue, connectTimeoutMs: 5000, logger, onLost() { }, deliverJobMaxAttempts: 1 });
+	const producer = openBusinessJobProducers({ redis: database.config.redisForJobQueue, connectTimeoutMs: 5000, logger, onLost() { }, deliverJobMaxAttempts: 1 });
 	await producer.ready();
-	const stop = await startDeliverWorker({
+	const stop = await openDeliverWorker({
 		redis: database.config.redisForJobQueue, connectTimeoutMs: 5000, logger, config: { deliverJobConcurrency: 1 }, reportFailure() { }, process: async job => {
 			const response = await fetch(job.to, { method: 'POST', body: job.content });
 			return response.ok ? { kind: 'done', result: 'Success' } : { kind: 'retry', error: new Error('fake target rejected') };
-		}
+		},
 	});
 	try {
 		await producer.deliverOne({ user: { id: seeded.actors.root.id }, activity: { type: 'Create', id: 'queue-retry-payload' }, to, isSharedInbox: false });
@@ -370,7 +370,7 @@ test('audit uses only source event and actor, and audit failure leaves successfu
 		expect(new Set(records.map(row => row.type))).toEqual(new Set(['pauseQueue', 'resumeQueue', 'promoteQueue', 'clearQueue']));
 		expect(records.map(row => row.info)).toEqual([{}, {}, {}, {}]);
 	});
-	await resources.dataSource.query(`CREATE FUNCTION reject_queue_audit() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.type = 'pauseQueue' THEN RAISE EXCEPTION 'test queue audit failure'; END IF; RETURN NEW; END $$`);
+	await resources.dataSource.query('CREATE FUNCTION reject_queue_audit() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.type = \'pauseQueue\' THEN RAISE EXCEPTION \'test queue audit failure\'; END IF; RETURN NEW; END $$');
 	await resources.dataSource.query('CREATE TRIGGER reject_queue_audit BEFORE INSERT ON moderation_log FOR EACH ROW EXECUTE FUNCTION reject_queue_audit()');
 	try {
 		expect((await request('pause', { queue: 'system' })).status).toBe(204);

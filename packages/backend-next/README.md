@@ -66,10 +66,10 @@ SupervisorはHTTP×1、worker×指定数を起動し、全子のreadyを待つ�
 プロセスを外部管理する場合は`start:http`、`start:worker`を使う。
 各子は独自のDB・Redis接続を持つ。Redisなしの縮退運転はしない。
 
-ジョブは本家と同じく`redisForJobQueue`（未指定なら`redis`）へBullMQの通常のQueue/Workerで接続する。
-queueごとのprefixは本家と同じ`<prefix>:queue:<queue名>`。各子は投入用のQueueを持ち、workerは実ジョブのあるqueueだけを取得する。
-本家と違い再接続せず、稼働中の切断は子の異常終了とする。workerの停止は取得の停止→実行中のジョブの完了→接続の解放で、
-停止期限を超えると異常終了する（止めたジョブはBullMQのstalled検査で戻る）。
+既存3業務queue（`endedPollNotification` / `deliver` / `userWebhookDeliver`）は mokuroku-js core/adapter `0.2.0` を通して BullMQ `6.3.11` / ioredis `5.11.1` を使う。`redisForJobQueue`（未指定なら`redis`）と `<prefix>:queue:<queue名>` を維持する。
+定義・投入能力は `src/platform/job-queue/business-jobs.ts`、runtime所有は `runtime.ts`、worker登録は `src/composition/queue-workers.ts:startQueueWorkers` にある。各子が投入専用runtimeを持ち、worker子だけが別runtimeへ3 handlerを登録する。HTTPは業務workerを開始しない。
+本家と違い再接続せず、稼働中の切断・予期しない取得ループ終了は子の異常終了とする。停止時はworker runtimeの停止→正常にcloseしたdelivery/webhookの開始済み後続処理の待機→共有接続の解放を行う。既存の全体停止期限を超えると異常終了する（止めたジョブはBullMQのstalled検査で戻る）。投入runtimeは先行するfeatureの終了待機後に解放する。
+[採用receipt・旧/新経路・未対応7 handlerと9 schedulerの所有者](../../docs/superpowers/compatibility/queue-runtime/README.md)を参照。単体2,828件・queue結合185件・C2/C10結合88件が成功。processは既存7ファイル43件と、fixture/観測を修正した新規1ファイル18件を別実行で確認した。初回4失敗の履歴と再実行のreceiptは採用資料に保持する。
 ログはstdoutへのJSON行で、設定全体や認証情報を出力しない。
 
 `POST /api/admin/queue/*` の本家14 APIを通常HTTPへ接続する。現在moderator（administrator/rootを含む）と`read:admin:queue`または`write:admin:queue`で認可し、全10 queue名の照会・pause/resume/retry/promote/remove/cleanを扱う。管理handleはHTTPだけが所有し、未接続の業務Workerを起動しない。`show-job`/`jobs`は2 webhook queueのtop-level secretだけを秘匿し、本文・URL・userId・logsは保持する。

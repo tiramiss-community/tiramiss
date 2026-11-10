@@ -3,10 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { MetricsTime } from 'bullmq';
-import { DiagnosticError } from '../diagnostic-error.js';
-import type { RedisOptions, RedisQueueBackend, Worker } from 'bullmq';
+import type { RedisOptions, RedisQueueBackend } from 'bullmq';
 import type { RedisConfig } from '../../config/types.js';
-import type { Logger } from '../logger.js';
 
 /**
  * 本家 queue/const.ts の baseQueueOptions。既存のジョブを読めるよう、キューごとの prefix は本家と同じ式で作る。
@@ -46,45 +44,4 @@ export async function onConnectionEnd(target: { getBackend(): RedisQueueBackend 
 			listener();
 		}
 	}
-}
-
-/**
- * 作成済みの Worker（autorun: false）の取得を始め、停止関数を返す。停止は取得の停止→実行中のジョブの完了→接続の解放の順に進む。
- * 接続の喪失と取得ループの異常終了は reportFailure へ渡す。
- */
-export async function runWorker(worker: Worker, options: { queue: string; logger: Logger; reportFailure(error: Error): void }): Promise<() => Promise<void>> {
-	const { queue, logger } = options;
-	let closing = false;
-	const fail = (error: Error) => {
-		if (!closing) {
-			options.reportFailure(error);
-		}
-	};
-
-	// 'error' の受け手がないと EventEmitter が例外を投げ、取得ループの外でプロセスが落ちる。
-	worker.on('error', error => {
-		logger.error('job-queue.error', { queue, error });
-	});
-	const stop = async () => {
-		closing = true;
-		await worker.close();
-	};
-
-	try {
-		await worker.waitUntilReady();
-		await onConnectionEnd(worker, () => {
-			fail(new DiagnosticError('JOB_QUEUE_REDIS_ENDED', { queue }));
-		});
-	} catch (error) {
-		await stop();
-		throw error;
-	}
-
-	// run() は close() まで解決しない。待つと起動が終わらないため、結果だけを見張る。
-	void worker.run().then(() => {
-		fail(new DiagnosticError('JOB_WORKER_STOPPED', { queue }));
-	}, (error: unknown) => {
-		fail(new DiagnosticError('JOB_WORKER_FAILED', { queue, error }));
-	});
-	return stop;
 }

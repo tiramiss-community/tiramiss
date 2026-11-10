@@ -241,3 +241,11 @@ media/emoji #188/#195、user hashtag関係 #195、actor由来instance usersCount
 ## #253 stage 2 の限定実装（2026-11-09）
 
 上の #251 stage 1 記録は当時の状態。承認済みの #253 では Note/Poll writer の共通 lifetime 接続と作成専用 `composition/note.ts` factory を実装し、通常 HTTP の作成 assembly を委譲した。投票なしの直接 insert、投票の両行 atomic write、remote 解決・応答描画・後続の transaction 外境界と開始順を維持する。[実装計画](../superpowers/plans/2026-11-09-backend-next-note-foundation-253.md)、[運用 inventory の実測と検証](application-foundation-inventory.md)。統合先で build/typecheck・単体2,811件・実 DB217件・process17件と後続待機1件・upstream sync は PASS。worker の sandbox EPERM は検証履歴として台帳に残す。作成用 constructor は3→factory1、Note 固有 runner2→1・lifetime owner1→0、対象3ファイルは179→200行。stage 3 #254/#255、通知/remote-user/system-account の残責任と `connect-resources.ts` の投稿系組み立ては残る。#251 全体完了や全 platform→composition 依存の解消を意味せず、既存対応順・blocked-by を変更しない。
+
+## #255 stage 3 の実装と検証待ち（2026-11-10）
+
+#251/#253の上記stage 1/2記録は履歴として保持する。#255では公開core/adapter `0.2.0` を固定し、既存3業務queueの投入・workerをmokurokuへ接続した。旧wrapper・静的registry・重複starterを撤去し、管理10名と実行3 handlerを分離する。[採用経路・実測・残る所有者](../superpowers/compatibility/queue-runtime/README.md)、[現在のinventory](application-foundation-inventory.md)。
+
+親のbuild/typecheck、単体2,828件/86 files、queue結合185件/10 files（processと分けたserial再実行）、C2/C10の88件/3 filesはPASS。初回processは57成功・4失敗/8 filesで、新queue-runtimeの4ケースが失敗した。最終process gateはPASS。既存7 filesの43件と、fixture/test修正後の新規1 fileの18件を別実行で確認した。 CodeRabbitは提出33 filesをレビューし指摘0件、結果のローカルcache保存だけがEROFSだった（後続の文書/修正はこのレビュー範囲外）。
+
+残る7 handler・system9 schedulerは既存の#182/#183/#188/#195/#198/#199/#200等が所有する。通知#177、他webhook#197、platform→composition依存、六つのactor gapと投稿partialを維持し、#251全体・#176/#127/#139の完了や正式な対応順/blocked-by変更とはしない。

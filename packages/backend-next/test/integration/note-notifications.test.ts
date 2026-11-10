@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { readFileSync } from 'node:fs';
-import { createPollEndedQueue, startPollEndedWorker } from '../../src/platform/job-queue/ended-poll-notification.js';
 import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 import { Redis } from 'ioredis';
 import { MiFollowing, MiMeta, MiMuting, MiNote, MiNoteThreadMuting, MiPoll, MiPollVote, MiRenoteMuting, MiUser, MiUserList, MiUserListMembership, MiUserProfile } from 'backend-upstream/entities';
@@ -14,9 +13,10 @@ import { assertSchemaMatches } from '../../src/platform/database/check-schema.js
 import { createIdCodec } from '../../src/platform/id-codec.js';
 import { createLogger } from '../../src/platform/logger.js';
 import { createTestDatabase } from '../helpers/database.js';
-import type { NotePostSaveInput } from '../../src/modules/note/public.js';
+import { openBusinessJobProducers, openPollEndedWorker } from '../helpers/business-jobs.js';
 import { createNoteNotificationReader } from '../../src/platform/database/note-notifications.js';
 import { createPollEndedHandler } from '../../src/composition/poll-ended-job.js';
+import type { NotePostSaveInput } from '../../src/modules/note/public.js';
 
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 let resources: Awaited<ReturnType<typeof connectResources>>;
@@ -155,7 +155,7 @@ test('successful author deletion matches the complete upstream deleted stream', 
 });
 test('deletion publishes exact deleted payload even when later DB delete fails', async () => {
 	const note = await create({ text: 'delete' });
-	await resources.dataSource.query(`CREATE FUNCTION refuse_delete() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'injected'; END $$`);
+	await resources.dataSource.query('CREATE FUNCTION refuse_delete() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION \'injected\'; END $$');
 	await resources.dataSource.query('CREATE TRIGGER refuse_delete BEFORE DELETE ON note FOR EACH ROW EXECUTE FUNCTION refuse_delete()');
 	try {
 		const response = await app.request('/api/notes/delete', { method: 'POST', body: JSON.stringify({ i: users.alice.token, noteId: note.id }) });
@@ -181,15 +181,15 @@ test('orphaned reply remains a reply and never becomes a subscribed note', async
 test('poll-ended emits notification without user fields after PG save and schema matches synced entities', async () => {
 	const note = await create({ text: 'poll', poll: { choices: ['a', 'b'] } });
 	const logger = createLogger('notification-poll-worker', line => logs.push(line));
-	const producer = createPollEndedQueue({ redis: database.config.redisForJobQueue, connectTimeoutMs: 5000, logger, onLost: () => { } });
+	const producer = openBusinessJobProducers({ redis: database.config.redisForJobQueue, connectTimeoutMs: 5000, logger, onLost: () => { } });
 	await producer.ready();
-	const stop = await startPollEndedWorker({
+	const stop = await openPollEndedWorker({
 		redis: database.config.redisForJobQueue, connectTimeoutMs: 5000, logger, reportFailure: error => {
 			throw error;
-		}, handle: createPollEndedHandler(resources, database.config)
+		}, handle: createPollEndedHandler(resources, database.config),
 	});
 	try {
-		await producer.schedule({ noteId: note.id, delayMs: 50 });
+		await producer.schedulePollEnded({ noteId: note.id, delayMs: 50 });
 		await vi.waitFor(() => expect(main('alice', 'notification').some(n => n.type === 'pollEnded')).toBe(true), { timeout: 5000 });
 	} finally {
 		await stop(); await producer.close();

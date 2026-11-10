@@ -114,3 +114,17 @@ BACKEND_NEXT_TEST_DB_PORT=55442 BACKEND_NEXT_TEST_REDIS_PORT=56389 pnpm --filter
 Observed result: **88 passed, 0 failed, 0 pending in 3 files**; command elapsed 13.054 seconds, finished `2026-11-09T06:48:07.840619+00:00`. The additional two cases compared with the original 86-test run are #253's rollback-expiry parameter and HTTP render-failure regression. All four current observation bindings point to this receipt, and only the Note-create consumer digest changes. The validator retains strict assertion, source, receipt, and provenance checks; its negative mutations now target the current receipt. Production code, consumer tests, fixture observations, historical seals, remaining ownership, `postingComplete: false` and `notes/create: partial` are unchanged by this review fix. Existing pg query-concurrency deprecation warnings also occurred before this change.
 
 The complete root contract suite passed **126 checks** after also renewing the changed Note unit consumer in the [remote-user measurements](../../remote-user/runtime-results.md#253-consumer-remeasurement-2026-11-09). No production or package test files changed during this follow-up.
+
+## #255 queue-runtime consumer remeasurement (2026-11-10)
+
+The queue migration changes the whole-file identity of `note-notifications.test.ts`; its successful deletion assertion and separate DELETE-failure case remain intact. All four current comparisons now use `c2-c10-mokuroku-255-2026-11-10`. Only that consumer digest changes (to `e62f43605d5cab15f67d23548a9a40e7cb769508b8bd08ccc3f92e815e66c36e`); Note-create and Note-delete keep their prior hashes. Historical receipts, fixtures, seals and remote-user bindings are preserved.
+
+Parent execution HEAD: `2046dfe8041ba925998fa75c34e51e4a5a515910`, **dirty**, including uncommitted runtime/test implementation. HEAD alone does not identify the measured source. The receipt in [coverage.json](coverage.json) records tracked diff SHA-256 `280f523b734760ba5695d2334e87a7bfb4e2a75b7387c98348dda2b9467c7dde`, the actual untracked input map and all three before/after consumer hashes; those consumer bytes were identical throughout the run. Node v26.4.0 / pnpm 12.9.1, dedicated Compose `backend-next-255`, PostgreSQL `55455`, Redis `56395`, Meili `57795` (exported in the parent environment).
+
+```sh
+pnpm --filter backend-next test:integration test/integration/note-create.test.ts test/integration/note-delete.test.ts test/integration/note-notifications.test.ts --reporter=json --outputFile=/tmp/tiramiss-255-artifacts/c2-c10-integration.json
+```
+
+Observed: **88 passed, 0 failed, 0 pending/skipped, 3 files**; command wall time `10.23122955695726` seconds, finished `2026-11-10T01:23:32.217948+00:00`. Raw report SHA-256: `2a1a16a31296336ca7e5c4425ef695000d411089082dec6168b6b9a801e28a90`. The receipt also hashes the separate provenance artifact. These local artifact paths identify measured evidence, not permanent repository storage.
+
+This remeasurement establishes current C2/C10 consumer execution only. The [queue-runtime final process gate](../../queue-runtime/README.md) now passes: the corrected new file passed 18 cases on rerun, supplementing 43 passing cases in seven unchanged files from the initial run. These are separate executions; the initial four failures remain recorded. No native-process or upstream full-server comparison follows from these 88 tests. `postingComplete: false`, `notes/create: partial`, six unresolved actor gaps and #176/#127/#139 ownership remain unchanged.
