@@ -50,10 +50,12 @@ test.each(['settings', 'register', 'increment'])('start returns immediately whil
 	expect(effects).toEqual(['settings', 'register:origin.test', 'increment:instance']);
 });
 
-test('disabled stats skip both instance registration and increment', async () => {
+test('disabled stats skip registration, increment, and metadata', async () => {
 	const effects: string[] = [];
 	const controller = createActorInstanceRegistration({
-		fetchMetadata: async () => {},
+		fetchMetadata: async () => {
+			effects.push('metadata');
+		},
 		enabled: async () => false, fetchOrRegister: async () => {
 			effects.push('register'); return { id: 'i', host: 'origin.test' };
 		}, increment: async () => {

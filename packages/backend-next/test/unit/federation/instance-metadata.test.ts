@@ -11,7 +11,7 @@ import type { InstanceLedger, InstancePatch } from '../../../src/modules/federat
 
 const source = JSON.parse(readFileSync(new URL('../../../../../docs/superpowers/compatibility/instance-metadata/observations.json', import.meta.url), 'utf8'));
 
-test.each(source.cases as { id: string; input: Record<string, any>; expected: { events: unknown[][]; patch: unknown; rejection: string | null } }[])('$id matches independent pinned-source operation events, patch and failure boundary', async fixture => {
+test.each(source.cases as { id: string; input: Record<string, any>; expected: { events: unknown[][]; patch: unknown; rejection: string | null; errors: number } }[])('$id matches independent pinned-source operation events, patch and failure boundary', async fixture => {
 	const input = fixture.input;
 	let time = 1800000000000;
 	const events: unknown[][] = [];
@@ -81,8 +81,6 @@ test.each(source.cases as { id: string; input: Record<string, any>; expected: { 
 	if (normalized && 'infoUpdatedAtMs' in normalized) {
 		normalized.infoUpdatedAt = new Date(normalized.infoUpdatedAtMs as number).toISOString(); delete normalized.infoUpdatedAtMs;
 	}
-	// Source helper diagnostics are separate from its operation catch; only the latter is our reporting port.
-	const sourceOperationErrors = Number(input.readError || input.updateError || false);
 	expect({ events, patch: normalized, rejection }).toEqual({ events: fixture.expected.events, patch: fixture.expected.patch, rejection: fixture.expected.rejection });
-	expect(errors).toBe(sourceOperationErrors);
+	expect(errors).toBe(fixture.expected.errors);
 });

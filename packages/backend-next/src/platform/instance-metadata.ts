@@ -46,7 +46,10 @@ export function createInstanceMetadata(ports: {
 				}
 			}
 			const [info, html, manifest] = await Promise.all([
-				(async () => http.getJson(selectNodeInfoUrl(await http.getJson(`https://${host}/.well-known/nodeinfo`))))().catch(() => null),
+				(async () => http.getJson(selectNodeInfoUrl(await http.getJson(`https://${host}/.well-known/nodeinfo`))))().catch(error => {
+					ports.reportFailure(error, { host });
+					return null;
+				}),
 				http.getHtml(`https://${host}`).then(projectHtml).catch(() => null),
 				http.getJson(`https://${host}/manifest.json`).catch(() => null),
 			]);

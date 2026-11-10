@@ -166,9 +166,10 @@ test('warm process caches preserve freshness independently; exact 24h and comple
 test('all real remote fetch failures still persist timestamp while oversized source values reject atomically', async () => {
 	const { ledger, fetch, failures } = acquisition(() => 1800000000000); const instance = await ledger.fetchOrRegisterInstance('remote.test');
 	peer.respond(async () => ({ status: 503 })); await fetch(instance);
+	expect(failures).toHaveLength(1);
 	expect(await resources.dataSource.getRepository(MiInstance).findOneByOrFail({ id: instance.id })).toMatchObject({ name: null, infoUpdatedAt: new Date(1800000000000) });
 	peer.respond(async path => path === '/nodeinfo/2.1' ? { body: { metadata: { nodeName: 'X'.repeat(257) } } } : metadataReply(path));
-	await fetch(instance, true); expect(failures).toHaveLength(1);
+	await fetch(instance, true); expect(failures).toHaveLength(2);
 	expect((await resources.dataSource.getRepository(MiInstance).findOneByOrFail({ id: instance.id })).name).toBeNull(); expect(await resources.redis.exists(lockKey)).toBe(0);
 });
 
