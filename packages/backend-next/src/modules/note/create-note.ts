@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { normalizeAccount, classifyRemoteUser } from '../federation/public.js';
+import { normalizeAccount, punyHost, classifyRemoteUser } from '../federation/public.js';
 import { NoteCreateError } from './create-contract.js';
 import { parseNoteInput } from './create-input.js';
 import { extractNoteContents } from './extract-contents.js';
@@ -267,12 +267,14 @@ export function createCreateNote(dependencies: {
 			if (error && typeof error === 'object' && 'code' in error && error.code === '23505') {
 				const canonical = await ports.readByUri(plan.uri);
 				if (canonical) {
+					ports.startActorInstanceRegistration(punyHost(uri));
 					ports.startUserHashtags(canonical, plan.user.tags);
 					return canonical;
 				}
 			}
 			throw error;
 		}
+		ports.startActorInstanceRegistration(punyHost(uri));
 		ports.startUserHashtags(plan.hashtagUser, plan.user.tags);
 		return created;
 	}

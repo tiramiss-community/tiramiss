@@ -24,7 +24,7 @@ const unavailable = async (): Promise<never> => {
 	throw new Error('unexpected remote access');
 };
 const remoteUsers: RemoteUserPorts = {
-	startUserHashtags: () => {
+	startActorInstanceRegistration: () => {}, startUserHashtags: () => {
 		throw Error('unexpected actor mutation');
 	},
 	selfHost: 'example.test', localId: () => null,

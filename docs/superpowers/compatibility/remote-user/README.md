@@ -209,3 +209,7 @@ UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream UPSTREAM_SOURCE_MODE=verified-file
 The existing five `profile` cases in `../note/hashtag/source-observations.json` remain unchanged. `packages/backend-next/test/unit/federation/user-hashtags.test.ts` consumes their operations; `packages/backend-next/test/integration/note-hashtags.test.ts` consumes their real attached rows and shared Redis outputs using the fixture's explicit clock. Actor boundary consumers are `packages/backend-next/test/unit/federation/remote-actor.test.ts` and `packages/backend-next/test/unit/note/create-note.test.ts`. Real public caller/failure coverage is in `packages/backend-next/test/integration/remote-user.test.ts`; native pending-hashtag DB shutdown coverage is in `packages/backend-next/test/processes/remote-mentions.test.ts`.
 
 `user-hashtags-runtime-evidence.json` adds actual current measurements and renewed consumer identities. The original `runtime-evidence.json`, its source95 bindings/receipts and N7 six-gap capture remain historical evidence. This additive result supersedes **user-hashtags alone for the public caller**; the other five actor gaps and local profile API remain outside this slice. `notes/create` stays partial, `postingComplete:false`, and #195/#176/#127 stay incomplete. Source doubles are not full upstream HTTP evidence.
+
+### Actor instance usersCount（2026-11-10）
+
+[新しい独立source観測・実測と残責任](actor-instance-registration-results.md)を参照。元の95ケース・hashtag/profile corpusと過去の測定件数は保持し、現在のファイルidentityは新しい加算専用receiptへ投影する。五つのactor gapと投稿partialは維持する。

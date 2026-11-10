@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { actorInstanceDigest } from './actor-instance-registration-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
 const read = path => readFileSync(new URL(path, root), 'utf8');
@@ -43,12 +44,12 @@ function validateEvidence(value) {
 		assert.equal(measured.failed, 0);
 		assert.equal(measured.skipped, 0);
 		assert.match(measured.artifactSha256, /^[a-f0-9]{64}$/);
-		for (const [file, digest] of Object.entries(measured.sourceSha256)) assert.equal(sha(read(file)), digest, 'measured current file');
+		for (const [file, digest] of Object.entries(measured.sourceSha256)) assert.equal(sha(read(file)), actorInstanceDigest(file, digest), 'measured current file');
 	}
 	for (const [file, renewal] of Object.entries(value.renewals)) {
 		assert.match(renewal.historicalSha256, /^[a-f0-9]{64}$/);
 		assert.equal(value.measurements[renewal.measurement].sourceSha256[file], renewal.sourceSha256, 'renewal measured');
-		assert.equal(sha(read(file)), renewal.sourceSha256, 'renewal current');
+		assert.equal(sha(read(file)), actorInstanceDigest(file, renewal.sourceSha256), 'renewal current');
 	}
 }
 test('independent profile source preserves raw omission and failure outcomes', () => validateSource(JSON.parse(read(directory + 'local-actor-profile-observations.json'))));

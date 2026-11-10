@@ -27,7 +27,7 @@ test.each([
 ])('local user URI $path resolves the source user ID without treating rest as another object family', ({ path, id }) => {
 	const config = testConfig();
 	config.url = 'http://local.test';
-	const ports = createRemoteUsers({ dataSource: createDataSource(config.database), userHashtags: { start: () => {
+	const ports = createRemoteUsers({ dataSource: createDataSource(config.database), actorInstanceRegistration: { start: () => {} }, userHashtags: { start: () => {
 		throw Error('unexpected actor mutation');
 	} }, federationKeys: undefined as never, outboundHttp: undefined as never }, config);
 	expect(ports.localId(path)).toBe(id);
@@ -51,7 +51,7 @@ for (const fixture of cases) {
 		};
 		let entryRead = row !== null;
 		const ports: RemoteUserPorts = {
-			startUserHashtags: () => {},
+			startActorInstanceRegistration: () => {}, startUserHashtags: () => {},
 			selfHost: 'local.test', localId: uri => uri.startsWith('https://local.test/users/') ? 'local' : null,
 			readByAccount: async value => {
 				events.push({ op: 'User.find', args: { usernameLower: value.username, host: value.host } });

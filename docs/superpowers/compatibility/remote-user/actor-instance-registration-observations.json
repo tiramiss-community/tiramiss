@@ -1,0 +1,757 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "fullFileSha256": {
+    "core/UtilityService.ts": "99f8779e002fc2c0aa2cd203613d31fcc87e7eaeb797ef65aae6c5175b62e331",
+    "core/activitypub/models/ApPersonService.ts": "471168b426b6ec19294b345bd0f66ac1c46fd554475c7c396bdbd9d859624921"
+  },
+  "upstreamHttpMeasured": false,
+  "boundary": "Pinned real createPerson and Utility methods plus actual validation/tag/truncate helpers. Repositories/transaction/transport/media/cache/charts/metadata are explicit doubles; no full HTTP/DB claim. Register and increment gates are separate.",
+  "methods": {
+    "misc/status-error.ts": {
+      "path": "packages/backend/src/misc/status-error.ts",
+      "sha256": "6fb2644dd29ffa37bbf57207b471af65d5b1ad5864febe9af3fa75fd01a65348"
+    },
+    "core/activitypub/type.ts": {
+      "path": "packages/backend/src/core/activitypub/type.ts",
+      "sha256": "1604b3f151853a6be8d7dd61ed349b126ac1cf1ad0da0177b8e8c61456ce08af"
+    },
+    "core/activitypub/misc/check-against-url.ts": {
+      "path": "packages/backend/src/core/activitypub/misc/check-against-url.ts",
+      "sha256": "5595d89352b54ae14badee7f53a3e393e371461bf473992f0cdfe196388bfc70"
+    },
+    "core/activitypub/misc/validator.ts": {
+      "path": "packages/backend/src/core/activitypub/misc/validator.ts",
+      "sha256": "a3f5e632358f5ec430a5b9d04c7594519b434a4870065b9d3d942de2d1bfa009"
+    },
+    "misc/check-https.ts": {
+      "path": "packages/backend/src/misc/check-https.ts",
+      "sha256": "a91f3a4780b08d3c1a58a571b191982ad2573a000677e4e0ae6d14de8547eee3"
+    },
+    "misc/normalize-for-search.ts": {
+      "path": "packages/backend/src/misc/normalize-for-search.ts",
+      "sha256": "e8c1884928722770c8d44debe367e8508dfbf931097614379617056879f7b575"
+    },
+    "misc/truncate.ts": {
+      "path": "packages/backend/src/misc/truncate.ts",
+      "sha256": "361e03302bd79753cf6699f8c622c8946f2d218f6db5cca4970c72f37911333f"
+    },
+    "misc/prelude/array.ts": {
+      "path": "packages/backend/src/misc/prelude/array.ts",
+      "sha256": "025c366827680f51683aef07edf2efe16edae11b6b7e14457321c10fe1fc6a88"
+    },
+    "core/activitypub/models/tag.ts": {
+      "path": "packages/backend/src/core/activitypub/models/tag.ts",
+      "sha256": "0e49828ade4a32374c3301a02de184faaac98c2981dd4ec0b070812a16a5ffcd"
+    },
+    "ApPersonService.validateActor": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "da3ed624a237652d14ec90ecd267c6d6a905318e79b1f37dcc13965b79c80367"
+    },
+    "ApPersonService.createPerson": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "c2e3b8e9efd102fefcae50e7c51a17ba67741f1c9410148ee33a87b33838e7af"
+    },
+    "ApPersonService.analyzeAttachments": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "9c2bb9f0d0765fe963458fb7cc3432e91626a5b62bf9f367a5b516667a040658"
+    },
+    "ApPersonService.isPublicCollection": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "04640fbd0ef0f2a9cc68a133f7e2cf7c6dd5b2b68d94bedc87c1dd55d64f1973"
+    },
+    "UtilityService.toPuny": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "fcb70ffa3b4a1ad01eda9b2c97d696dd2b26fc5be8fad9f56ddb6a75e256e4d2"
+    },
+    "UtilityService.punyHost": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "5280ceda6a0817c4fc16ac3e3aada3538a1d268ccac1aaea6127cd3bd4450e71"
+    },
+    "UtilityService.extractDbHost": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "672fb1106e47f858fbd31fd15afb99fbe1303337a5bb4895665fd392b1a88609"
+    },
+    "UtilityService.isUriLocal": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "5829f403d08e17fa4891bb7392c939160ece5409c48f261893357346a7ab87a5"
+    },
+    "UtilityService.isSelfHost": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "a027a92bcc38e2b1b4b5384df22bfb1df8bad9e4eaac1d2ea15ea418c990cbb7"
+    },
+    "UtilityService.isBlockedHost": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "afaaf213f5f8358cb6ea4f29ce47cefc1b727e2e28f787504c842d1869872d36"
+    },
+    "UtilityService.isFederationAllowedHost": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "5cc884819669df334b78fb68226950e08a762ed70d1a2fc94ea5b228222293d1"
+    }
+  },
+  "cases": [
+    {
+      "id": "instance-1",
+      "provenance": "literal-source-method",
+      "input": {
+        "duplicate": false,
+        "stats": false
+      },
+      "expected": {
+        "result": {
+          "id": "new-user",
+          "error": null
+        },
+        "events": [
+          {
+            "op": "begin"
+          },
+          {
+            "op": "User"
+          },
+          {
+            "op": "Profile"
+          },
+          {
+            "op": "Key"
+          },
+          {
+            "op": "commit"
+          },
+          {
+            "op": "cache"
+          },
+          {
+            "op": "usersChart.double"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "cache"
+          },
+          {
+            "op": "actor.settled",
+            "args": {
+              "registerPending": false,
+              "incrementPending": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "instance-2",
+      "provenance": "literal-source-method",
+      "input": {
+        "duplicate": false,
+        "stats": true
+      },
+      "expected": {
+        "result": {
+          "id": "new-user",
+          "error": null
+        },
+        "events": [
+          {
+            "op": "begin"
+          },
+          {
+            "op": "User"
+          },
+          {
+            "op": "Profile"
+          },
+          {
+            "op": "Key"
+          },
+          {
+            "op": "commit"
+          },
+          {
+            "op": "cache"
+          },
+          {
+            "op": "register.start",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "usersChart.double"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "register.resolved"
+          },
+          {
+            "op": "increment.start",
+            "args": {
+              "criteria": {
+                "id": "instance"
+              },
+              "field": "usersCount",
+              "amount": 1
+            }
+          },
+          {
+            "op": "instanceChart.double",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "metadata.double",
+            "args": {
+              "id": "instance",
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "increment.resolved"
+          },
+          {
+            "op": "cache"
+          },
+          {
+            "op": "actor.settled",
+            "args": {
+              "registerPending": false,
+              "incrementPending": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "instance-3",
+      "provenance": "literal-source-method",
+      "input": {
+        "duplicate": true,
+        "stats": false
+      },
+      "expected": {
+        "result": {
+          "id": "canonical",
+          "error": null
+        },
+        "events": [
+          {
+            "op": "begin"
+          },
+          {
+            "op": "User"
+          },
+          {
+            "op": "rollback"
+          },
+          {
+            "op": "canonical"
+          },
+          {
+            "op": "cache"
+          },
+          {
+            "op": "usersChart.double"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "cache"
+          },
+          {
+            "op": "actor.settled",
+            "args": {
+              "registerPending": false,
+              "incrementPending": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "instance-4",
+      "provenance": "literal-source-method",
+      "input": {
+        "duplicate": true,
+        "stats": true
+      },
+      "expected": {
+        "result": {
+          "id": "canonical",
+          "error": null
+        },
+        "events": [
+          {
+            "op": "begin"
+          },
+          {
+            "op": "User"
+          },
+          {
+            "op": "rollback"
+          },
+          {
+            "op": "canonical"
+          },
+          {
+            "op": "cache"
+          },
+          {
+            "op": "register.start",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "usersChart.double"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "register.resolved"
+          },
+          {
+            "op": "increment.start",
+            "args": {
+              "criteria": {
+                "id": "instance"
+              },
+              "field": "usersCount",
+              "amount": 1
+            }
+          },
+          {
+            "op": "instanceChart.double",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "metadata.double",
+            "args": {
+              "id": "instance",
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "increment.resolved"
+          },
+          {
+            "op": "cache"
+          },
+          {
+            "op": "actor.settled",
+            "args": {
+              "registerPending": false,
+              "incrementPending": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "instance-5",
+      "provenance": "literal-source-method",
+      "input": {
+        "stats": true,
+        "gate": "register"
+      },
+      "expected": {
+        "result": {
+          "id": "new-user",
+          "error": null
+        },
+        "events": [
+          {
+            "op": "begin"
+          },
+          {
+            "op": "User"
+          },
+          {
+            "op": "Profile"
+          },
+          {
+            "op": "Key"
+          },
+          {
+            "op": "commit"
+          },
+          {
+            "op": "cache"
+          },
+          {
+            "op": "register.start",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "usersChart.double"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "cache"
+          },
+          {
+            "op": "actor.settled",
+            "args": {
+              "registerPending": true,
+              "incrementPending": false
+            }
+          },
+          {
+            "op": "register.resolved"
+          },
+          {
+            "op": "increment.start",
+            "args": {
+              "criteria": {
+                "id": "instance"
+              },
+              "field": "usersCount",
+              "amount": 1
+            }
+          },
+          {
+            "op": "instanceChart.double",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "metadata.double",
+            "args": {
+              "id": "instance",
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "increment.resolved"
+          }
+        ]
+      }
+    },
+    {
+      "id": "instance-6",
+      "provenance": "literal-source-method",
+      "input": {
+        "stats": true,
+        "gate": "increment"
+      },
+      "expected": {
+        "result": {
+          "id": "new-user",
+          "error": null
+        },
+        "events": [
+          {
+            "op": "begin"
+          },
+          {
+            "op": "User"
+          },
+          {
+            "op": "Profile"
+          },
+          {
+            "op": "Key"
+          },
+          {
+            "op": "commit"
+          },
+          {
+            "op": "cache"
+          },
+          {
+            "op": "register.start",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "usersChart.double"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "register.resolved"
+          },
+          {
+            "op": "increment.start",
+            "args": {
+              "criteria": {
+                "id": "instance"
+              },
+              "field": "usersCount",
+              "amount": 1
+            }
+          },
+          {
+            "op": "instanceChart.double",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "metadata.double",
+            "args": {
+              "id": "instance",
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "cache"
+          },
+          {
+            "op": "actor.settled",
+            "args": {
+              "registerPending": false,
+              "incrementPending": true
+            }
+          },
+          {
+            "op": "increment.resolved"
+          }
+        ]
+      }
+    },
+    {
+      "id": "instance-7",
+      "provenance": "literal-source-method",
+      "input": {
+        "stats": true,
+        "duplicate": true,
+        "origin": "https://ORIGIN.test/alias",
+        "canonicalHost": "canonical.test"
+      },
+      "expected": {
+        "result": {
+          "id": "canonical",
+          "error": null
+        },
+        "events": [
+          {
+            "op": "begin"
+          },
+          {
+            "op": "User"
+          },
+          {
+            "op": "rollback"
+          },
+          {
+            "op": "canonical"
+          },
+          {
+            "op": "cache"
+          },
+          {
+            "op": "register.start",
+            "args": {
+              "host": "origin.test"
+            }
+          },
+          {
+            "op": "usersChart.double"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "register.resolved"
+          },
+          {
+            "op": "increment.start",
+            "args": {
+              "criteria": {
+                "id": "instance"
+              },
+              "field": "usersCount",
+              "amount": 1
+            }
+          },
+          {
+            "op": "instanceChart.double",
+            "args": {
+              "host": "origin.test"
+            }
+          },
+          {
+            "op": "metadata.double",
+            "args": {
+              "id": "instance",
+              "host": "origin.test"
+            }
+          },
+          {
+            "op": "increment.resolved"
+          },
+          {
+            "op": "cache"
+          },
+          {
+            "op": "actor.settled",
+            "args": {
+              "registerPending": false,
+              "incrementPending": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "instance-8",
+      "provenance": "literal-source-method",
+      "input": {
+        "stats": true,
+        "fail": "User"
+      },
+      "expected": {
+        "result": {
+          "id": null,
+          "error": "User failed"
+        },
+        "events": [
+          {
+            "op": "begin"
+          },
+          {
+            "op": "User"
+          },
+          {
+            "op": "rollback"
+          },
+          {
+            "op": "actor.settled",
+            "args": {
+              "registerPending": false,
+              "incrementPending": false,
+              "error": "User failed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "instance-9",
+      "provenance": "literal-source-method",
+      "input": {
+        "stats": true,
+        "fail": "Profile"
+      },
+      "expected": {
+        "result": {
+          "id": null,
+          "error": "Profile failed"
+        },
+        "events": [
+          {
+            "op": "begin"
+          },
+          {
+            "op": "User"
+          },
+          {
+            "op": "Profile"
+          },
+          {
+            "op": "rollback"
+          },
+          {
+            "op": "actor.settled",
+            "args": {
+              "registerPending": false,
+              "incrementPending": false,
+              "error": "Profile failed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "instance-10",
+      "provenance": "literal-source-method",
+      "input": {
+        "stats": true,
+        "fail": "Key"
+      },
+      "expected": {
+        "result": {
+          "id": null,
+          "error": "Key failed"
+        },
+        "events": [
+          {
+            "op": "begin"
+          },
+          {
+            "op": "User"
+          },
+          {
+            "op": "Profile"
+          },
+          {
+            "op": "Key"
+          },
+          {
+            "op": "rollback"
+          },
+          {
+            "op": "actor.settled",
+            "args": {
+              "registerPending": false,
+              "incrementPending": false,
+              "error": "Key failed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "instance-11",
+      "provenance": "literal-source-method",
+      "input": {
+        "stats": true,
+        "duplicate": true,
+        "missing": true
+      },
+      "expected": {
+        "result": {
+          "id": null,
+          "error": "already registered"
+        },
+        "events": [
+          {
+            "op": "begin"
+          },
+          {
+            "op": "User"
+          },
+          {
+            "op": "rollback"
+          },
+          {
+            "op": "canonical"
+          },
+          {
+            "op": "actor.settled",
+            "args": {
+              "registerPending": false,
+              "incrementPending": false,
+              "error": "already registered"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

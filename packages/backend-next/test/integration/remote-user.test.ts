@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
-import { MiFollowing, MiMeta, MiNote, MiPoll, MiUser, MiUserProfile, MiUserPublickey, MiUserKeypair } from 'backend-upstream/entities';
+import { MiInstance, MiFollowing, MiMeta, MiNote, MiPoll, MiUser, MiUserProfile, MiUserPublickey, MiUserKeypair } from 'backend-upstream/entities';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createBackendHttpApp } from '../../src/composition/note-http.js';
 import { listenHttp, closeHttp } from '../../src/processes/http.js';
@@ -11,7 +11,7 @@ import { migrateDatabase } from '../../src/platform/database/migrate.js';
 import { createLogger } from '../../src/platform/logger.js';
 import { createIdCodec } from '../../src/platform/id-codec.js';
 import { generateRsaKeyPair } from '../../src/platform/key-pair.js';
-import { startRemotePeer, plainActor } from '../helpers/remote-peer.js';
+import { startRemotePeer, plainActor, deferred } from '../helpers/remote-peer.js';
 import { remoteSource, decode } from '../helpers/remote-source.js';
 import { createTestDatabase } from '../helpers/database.js';
 import type { Server } from 'node:http';
@@ -32,6 +32,7 @@ const links = new Map<string, { rel: string; href: string; type?: string; }[]>()
 const statuses = new Map<string, number>();
 let port: number;
 const hashtagLogs: string[] = [];
+let actorBarrier: { paths: Set<string>; count: number; entered: ReturnType<typeof deferred<void>>; release: ReturnType<typeof deferred<void>> } | null = null;
 
 beforeAll(async () => {
 	vi.stubEnv('MISSKEY_WEBFINGER_USE_HTTP', 'true');
@@ -65,6 +66,12 @@ beforeAll(async () => {
 		}
 		if (statuses.has(url.pathname)) {
 			return { status: statuses.get(url.pathname), body: {} };
+		}
+		if (actorBarrier?.paths.has(url.pathname)) {
+			actorBarrier.count++; if (actorBarrier.count === 2) {
+actorBarrier.entered.resolve();
+}
+			await actorBarrier.release.promise;
 		}
 		const actor = actors.get(url.pathname);
 		return actor ? { body: actor } : { status: 404, body: {} };
@@ -559,5 +566,135 @@ test('Redis command failure is diagnosed while the actor DB sequence completes',
 		expect(hashtagLogs.slice(logStart).some(line => line.includes('user-hashtags.failed') && line.includes(actor.id))).toBe(true);
 	} finally {
 		failure.mockRestore();
+	}
+});
+
+async function instanceCount() {
+	await resources.actorInstanceRegistration.idle();
+	return (await resources.dataSource.getRepository(MiInstance).findOneBy({ host: 'remote.test' }))?.usersCount ?? 0;
+}
+
+test('real public actor/profile/key commit increments instance once; fresh and stale-refresh lookups do not increment; raw increment leaves registration cache stale', async () => {
+	await resources.actorInstanceRegistration.idle();
+	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: true });
+	const before = await instanceCount();
+	register('instancecount', { publicKey: { id: `${peer.origin}/users/instancecount#key`, publicKeyPem: 'instance-key' } });
+	const result = await post({ text: '@instancecount@remote.test', localOnly: true });
+	expect(result.status).toBe(200);
+	const row = await remote('instancecount');
+	expect((await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).mentions).toEqual([row.id]);
+	expect(await resources.dataSource.getRepository(MiUserProfile).findOneByOrFail({ userId: row.id })).toMatchObject({ userHost: 'remote.test', description: 'Remote profile' });
+	expect(await resources.dataSource.getRepository(MiUserPublickey).findOneByOrFail({ userId: row.id })).toMatchObject({ keyPem: 'instance-key' });
+	expect(await instanceCount()).toBe(before + 1);
+	const key = 'kvcache:federatedInstance:remote.test';
+	const cached = await resources.redis.get(key);
+	expect(cached).not.toBeNull();
+	expect(JSON.parse(cached!).usersCount).toBeLessThan(before + 1);
+	await post({ text: '@instancecount@remote.test fresh', localOnly: true });
+	await stale(row.id); await post({ text: '@instancecount@remote.test refresh', localOnly: true });
+	expect(await instanceCount()).toBe(before + 1);
+	expect(await resources.redis.get(key)).toBe(cached);
+});
+
+test.each([true, false])('two public unknown aliases force canonical duplicate recovery and stats=%s counts each committed/recovered acquisition', async enabled => {
+	await resources.actorInstanceRegistration.idle();
+	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: enabled });
+	const before = await instanceCount();
+	const name = enabled ? 'instance_race_on' : 'instance_race_off';
+	register(name, { publicKey: { id: `${peer.origin}/users/${name}#key`, publicKeyPem: 'race-key' } }); aliases.set(name + '_alias', name);
+	actorBarrier = { paths: new Set([`/users/${name}`]), count: 0, entered: deferred(), release: deferred() };
+	const barrier = actorBarrier;
+	try {
+		const pending = Promise.all([post({ text: `@${name}@remote.test`, localOnly: true }), post({ text: `@${name}_alias@remote.test`, localOnly: true })]);
+		await barrier.entered.promise; barrier.release.resolve();
+		const results = await pending;
+		expect(results.map(result => result.status)).toEqual([200, 200]);
+		const row = await remote(name);
+		for (const result of results) {
+			expect((await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).mentions).toEqual([row.id]);
+		}
+		expect(await resources.dataSource.getRepository(MiUser).countBy({ uri: row.uri! })).toBe(1);
+		expect(await resources.dataSource.getRepository(MiUserProfile).countBy({ userId: row.id })).toBe(1);
+		expect(await resources.dataSource.getRepository(MiUserPublickey).countBy({ userId: row.id })).toBe(1);
+		expect(await instanceCount()).toBe(before + (enabled ? 2 : 0));
+	} finally {
+		barrier.release.resolve(); actorBarrier = null;
+	}
+});
+
+test('disabled normal creation and rolled-back Profile/Key never change usersCount', async () => {
+	await resources.actorInstanceRegistration.idle();
+	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: false });
+	const before = await instanceCount();
+	register('instance_disabled'); expect((await post({ text: '@instance_disabled@remote.test', localOnly: true })).status).toBe(200);
+	expect(await instanceCount()).toBe(before);
+	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: true });
+	for (const table of ['user_profile', 'user_publickey']) {
+		const name = `instance_rollback_${table}`; register(name, { publicKey: { id: `${peer.origin}/users/${name}#key`, publicKeyPem: 'key' } });
+		const restore = await failWrites(table);
+		try {
+			const result = await post({ text: `@${name}@remote.test`, localOnly: true }); expect(result.status).toBe(200); expect((await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).mentions).toEqual([]);
+		} finally {
+			await restore();
+		}
+		expect(await resources.dataSource.getRepository(MiUser).countBy({ usernameLower: name, host: 'remote.test' })).toBe(0);
+		expect(await instanceCount()).toBe(before);
+	}
+});
+
+test('increment failure is diagnostic and does not undo real HTTP actor/key or posting; later Note failure leaves actor and increment committed', async () => {
+	await resources.actorInstanceRegistration.idle();
+	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: true });
+	const before = await instanceCount(); const logBefore = hashtagLogs.length;
+	register('instance_increment_failure', { publicKey: { id: `${peer.origin}/users/instance_increment_failure#key`, publicKeyPem: 'key' } });
+	const restore = await failWrites('instance');
+	try {
+		const result = await post({ text: '@instance_increment_failure@remote.test', localOnly: true }); expect(result.status).toBe(200);
+		const row = await remote('instance_increment_failure');
+		expect((await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).mentions).toEqual([row.id]);
+		expect(await resources.dataSource.getRepository(MiUserPublickey).countBy({ userId: row.id })).toBe(1);
+		await resources.actorInstanceRegistration.idle();
+		expect(hashtagLogs.slice(logBefore).map(line => JSON.parse(line))).toContainEqual(expect.objectContaining({ event: 'actor-instance-registration.failed', stage: 'increment', host: 'remote.test' }));
+	} finally {
+		await restore();
+	}
+	expect(await instanceCount()).toBe(before);
+	register('instance_note_failure'); const restoreNote = await failWrites('note');
+	try {
+		expect((await post({ text: '@instance_note_failure@remote.test', localOnly: true })).status).toBe(500);
+	} finally {
+		await restoreNote();
+	}
+	expect(await remote('instance_note_failure')).toMatchObject({ host: 'remote.test' });
+	expect(await instanceCount()).toBe(before + 1);
+	expect(await resources.dataSource.getRepository(MiNote).countBy({ text: '@instance_note_failure@remote.test' })).toBe(0);
+});
+
+test('two real HTTP actors concurrently first-register one host, and parallel direct increments preserve cache without lost updates', async () => {
+	await resources.actorInstanceRegistration.idle();
+	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: true });
+	const host = 'instance-first.test'; peer.route(host);
+	for (const name of ['instance_first_a', 'instance_first_b']) {
+		register(name, { id: `http://${host}/users/${name}`, inbox: `http://${host}/inbox/${name}`, endpoints: { sharedInbox: `http://${host}/inbox/shared` }, publicKey: { id: `http://${host}/users/${name}#key`, publicKeyPem: 'key' } });
+		links.set(name, [{ rel: 'self', href: `http://${host}/users/${name}` }]);
+	}
+	const barrier = { paths: new Set(['/users/instance_first_a', '/users/instance_first_b']), count: 0, entered: deferred(), release: deferred() }; actorBarrier = barrier;
+	try {
+		const pending = Promise.all(['instance_first_a', 'instance_first_b'].map(name => post({ text: `@${name}@${host}`, localOnly: true })));
+		await barrier.entered.promise; barrier.release.resolve(); expect((await pending).map(r => r.status)).toEqual([200, 200]);
+		await resources.actorInstanceRegistration.idle();
+		const repository = resources.dataSource.getRepository(MiInstance);
+		expect(await repository.countBy({ host })).toBe(1);
+		expect(await repository.findOneByOrFail({ host })).toMatchObject({ usersCount: 2 });
+		const cacheKey = `kvcache:federatedInstance:${host}`;
+		const cached = await resources.redis.get(cacheKey); expect(cached).not.toBeNull(); expect(JSON.parse(cached!).usersCount).toBeLessThan(2);
+		for (let i = 0; i < 16; i++) {
+			resources.actorInstanceRegistration.start(host);
+		}
+		await resources.actorInstanceRegistration.idle();
+		expect(await repository.findOneByOrFail({ host })).toMatchObject({ usersCount: 18 });
+		expect(await resources.redis.get(cacheKey)).toBe(cached);
+	} finally {
+		barrier.release.resolve(); actorBarrier = null;
 	}
 });

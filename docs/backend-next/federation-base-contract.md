@@ -163,3 +163,7 @@ backend-next の note-authors は、UserLite.instance を作るために instanc
 実装 `33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45` でWebFinger→signed/unsigned AP取得、core User/Profile/Publickey保存/refresh、最小 `/users/:id` 公開とsystem/author PEM発見を通常起動へ接続した。[実測と固定95ケースの消費](../superpowers/compatibility/remote-user/runtime-results.md)はsource-method・新runtime・未実行の本家full HTTPを分ける。署名GET組立だけだった過去段階の記述は、その時点の分担である。
 
 media/emoji #188/#195、attached user hashtag関係 #195、actor由来instance usersCount/metadata #215、chart #200、featured/Move/full actor公開/inbox/remote Notes #195、cache/remoteUserUpdated #217は未完了。既存instance台帳・notesCountやscalarタグ/URI更新の存在でこれらを完了にしない。HTML/MFMは測定したsubset、公開actorは鍵発見に必要な最小投影に限定する。すべてGOALSの初期範囲に残り、承認済みの一括差異ではない。
+
+## Public actor instance usersCount の限定接続（2026-11-10）
+
+公開notes/createの新規actor保存・canonical duplicate復帰から、入力URI由来hostで既存instance台帳登録と直接usersCount増算を非待機開始する。[設計](../superpowers/specs/2026-11-10-actor-instance-registration-design.md)・[新規source観測と検証](../superpowers/compatibility/remote-user/actor-instance-registration-results.md)。増算で台帳cacheを書き換えず、既存orIgnore差異を維持する。同期Metaを読む本家に対し、現行の非同期Meta読取には追加のタイミング・失敗境界があり、設定競合の厳密な同等性は未証明で、新たな承認済み差異とは扱わない。metadata・chart等の未実装は未完了のまま残す。

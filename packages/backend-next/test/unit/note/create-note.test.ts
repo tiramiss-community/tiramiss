@@ -19,6 +19,7 @@ const unavailable = async (): Promise<never> => {
 };
 const actorScope: RemoteActorCreateScope = { insertUser: unavailable, insertProfile: unavailable, insertPublickey: unavailable };
 const remotePorts: RemoteUserPorts = {
+	startActorInstanceRegistration: () => {},
 	startUserHashtags: () => {},
 	selfHost: 'example.com', localId: () => null, readByAccount: async () => null, readByUri: async () => null, readLocal: async () => null,
 	markAttempt: unavailable, repairUri: unavailable, webfinger: unavailable, acquireActor: unavailable, insertActor: unavailable, refreshActor: unavailable,
@@ -876,4 +877,128 @@ test.each(hashtagCreateCases.filter(c => c.input.operation === 'create'))('$id p
 	} finally {
 		release();
 	}
+});
+
+// Original URI authority is independent from both account and canonical user hosts.
+test.each([false, true])('actor instance launch follows commit/canonical and precedes hashtags (duplicate=%s)', async duplicate => {
+	const { prepareActor, validateActor, insertActor } = await import('../../../src/modules/federation/public.js');
+	const uri = 'https://ORIGIN.test/alias';
+	const plan = await prepareActor(validateActor({ type: 'Person', id: uri, preferredUsername: 'alice', inbox: 'https://origin.test/inbox' }, uri), null, now, 'new');
+	const order: string[] = [];
+	const canonical = { id: 'canonical', username: 'alice', host: 'canonical.test', uri, tags: [], lastFetchedAtMs: now, isDeleted: false };
+	const world = setup(author, {
+		ports: {
+			webfinger: async () => uri, acquireActor: async () => plan, insertActor,
+			actorTransactions: {
+				run: async work => {
+					if (duplicate) {
+						throw Object.assign(Error('duplicate'), { code: '23505' });
+					}
+					const result = await work({ insertUser: async () => { }, insertProfile: async () => { }, insertPublickey: async () => { } });
+					order.push('commit'); return result;
+				}
+			},
+			readByUri: async () => {
+				order.push('canonical'); return canonical;
+			},
+			startActorInstanceRegistration: (host: string) => {
+				order.push(`register:${host}`);
+			},
+			startUserHashtags: () => {
+				order.push('hashtags');
+			},
+		} as Partial<RemoteUserPorts>
+	});
+	await world.createNote({ text: '@alice@account.test' });
+	expect(world.notes[0].mentions).toEqual([duplicate ? 'canonical' : 'new']);
+	expect(order).toEqual([duplicate ? 'canonical' : 'commit', 'register:origin.test', 'hashtags']);
+});
+
+test.each(['local', 'fresh', 'refresh', 'User', 'Profile', 'Key', 'missing-canonical'])('actor instance registration excludes %s', async scenario => {
+	const { prepareActor, validateActor, insertActor } = await import('../../../src/modules/federation/public.js');
+	const uri = 'https://remote.test/users/excluded';
+	const plan = await prepareActor(validateActor({ type: 'Person', id: uri, preferredUsername: 'excluded', inbox: 'https://remote.test/inbox', publicKey: { id: uri + '#key', publicKeyPem: 'key' } }, uri), null, now, 'new');
+	const row = { id: 'existing', username: 'excluded', host: scenario === 'local' ? null : 'remote.test', uri, tags: [], lastFetchedAtMs: scenario === 'refresh' ? null : now, isDeleted: false };
+	const starts: string[] = [];
+	const world = setup(author, {
+		ports: {
+			readByAccount: async () => ['fresh', 'refresh', 'local'].includes(scenario) ? row : null,
+			webfinger: async () => uri, acquireActor: async () => plan, insertActor, markAttempt: async () => { }, refreshActor: async () => 'updated',
+			readByUri: async () => scenario === 'missing-canonical' ? null : row,
+			actorTransactions: {
+				run: async work => {
+					if (scenario === 'missing-canonical') {
+						throw Object.assign(Error('duplicate'), { code: '23505' });
+					}
+					const save = async (table: string) => {
+						if (scenario === table) {
+							throw Error('rollback');
+						}
+					};
+					return work({ insertUser: () => save('User'), insertProfile: () => save('Profile'), insertPublickey: () => save('Key') });
+				}
+			}, startActorInstanceRegistration: host => {
+				starts.push(host);
+			},
+		}
+	});
+	await world.createNote({ text: scenario === 'local' ? '@excluded' : '@excluded@remote.test' });
+	expect(starts).toEqual([]);
+	expect(world.notes[0].mentions).toEqual(['local', 'fresh', 'refresh'].includes(scenario) ? ['existing'] : []);
+});
+
+const instanceCases: {
+	id: string;
+	input: { stats: boolean; duplicate?: boolean; missing?: boolean; fail?: string; gate?: string; origin?: string; canonicalHost?: string };
+	expected: { result: { id: string | null }; events: { op: string; args?: { host?: string; criteria?: { id: string }; field?: string; amount?: number } }[] };
+}[] = JSON.parse(readFileSync(new URL('../../../../../docs/superpowers/compatibility/remote-user/actor-instance-registration-observations.json', import.meta.url), 'utf8')).cases;
+test.each(instanceCases)('$id consumes new source eligibility/host/increment projection through real caller and controller', async fixture => {
+	const { prepareActor, validateActor, insertActor } = await import('../../../src/modules/federation/public.js');
+	const { createActorInstanceRegistration } = await import('../../../src/composition/actor-instance-registration.js');
+	const { createLogger } = await import('../../../src/platform/logger.js');
+	const input = fixture.input; const uri = input.origin ?? 'https://remote.test/users/a';
+	const plan = await prepareActor(validateActor({ type: 'Person', id: uri, preferredUsername: 'Alice', inbox: new URL('/inbox', uri).href, publicKey: { id: uri + '#key', publicKeyPem: 'key' } }, uri), null, now, 'new-user');
+	const gate = deferred<void>();
+	const effects: { op: string; args: unknown }[] = [];
+	const controller = createActorInstanceRegistration({
+		enabled: async () => input.stats,
+		fetchOrRegister: async host => {
+			effects.push({ op: 'register.start', args: { host } }); if (input.gate === 'register') {
+				await gate.promise;
+			} return { id: 'instance' };
+		},
+		increment: async id => {
+			effects.push({ op: 'increment.start', args: { criteria: { id }, field: 'usersCount', amount: 1 } }); if (input.gate === 'increment') {
+				await gate.promise;
+			}
+		},
+	}, createLogger('test', () => { }));
+	const canonical = { id: 'canonical', username: 'Alice', host: input.canonicalHost ?? 'remote.test', uri, tags: [], lastFetchedAtMs: now, isDeleted: false };
+	const world = setup(author, {
+		ports: {
+			webfinger: async () => uri, acquireActor: async () => plan, insertActor, startActorInstanceRegistration: controller.start,
+			readByUri: async () => input.missing ? null : canonical,
+			actorTransactions: {
+				run: async work => {
+					const save = async (name: string) => {
+						if (input.fail === name) {
+							throw Error(name + ' failed');
+						} if (input.duplicate && name === 'User') {
+							throw Object.assign(Error('duplicate'), { code: '23505' });
+						}
+					};
+					return work({ insertUser: () => save('User'), insertProfile: () => save('Profile'), insertPublickey: () => save('Key') });
+				}
+			},
+		}
+	});
+	try {
+		await world.createNote({ text: '@alice@account.test' });
+		expect(world.notes[0].mentions).toEqual(fixture.expected.result.id === null ? [] : [fixture.expected.result.id]);
+		// Source and runtime have different Meta scheduling. Compare effects after drain,
+		// preserving host/arguments and register-before-increment within this projection.
+	} finally {
+		gate.resolve(); await controller.idle();
+	}
+	expect(effects).toEqual(fixture.expected.events.filter(event => ['register.start', 'increment.start'].includes(event.op)));
 });

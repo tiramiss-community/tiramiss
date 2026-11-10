@@ -43,7 +43,7 @@ function ports(meta: Partial<MiMeta> = {}, selfUrl = 'http://local.test') {
 	})]);
 	const outboundHttp = createOutboundHttpClient(config);
 	clients.push(outboundHttp);
-	return createRemoteUsers({ userHashtags: { start: () => {
+	return createRemoteUsers({ actorInstanceRegistration: { start: () => {} }, userHashtags: { start: () => {
 		throw Error('unexpected actor mutation');
 	} }, dataSource, outboundHttp, federationKeys: undefined as never }, config);
 }
