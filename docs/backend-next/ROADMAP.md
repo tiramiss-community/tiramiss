@@ -12,7 +12,7 @@
 
 ## 現在地と既存成果
 
-基準: develop `6a4cc93bde543a7456467414611518c29f549ee6`（PR #265マージ後）と、remote actor画像削除修正 `fa618bfd6f621fb3a461cec910804da8bbe2fde4`（今回の実装）。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
+基準: develop `62cdeb54289bdcf46ad57e7f8a28db8a4c5f2ee7`（PR #266マージ後）と、local actor画像公開 `ac37daa75d55b24cc811a7c4082ffd0da924fc3c`（今回の実装）。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
 
 [画像削除の限定結果](../superpowers/compatibility/remote-user/actor-image-removal-results.md): public remote mentionの作成・canonical復旧後、両画像が不在なら6フィールドを消去し、更新失敗は報告してmentionを継続する。
 
@@ -23,12 +23,12 @@
 | 共有root | PR #249でHTTP・既存worker・CIの整理がマージ済み | 追加handlerを実装した意味ではない |
 | 投稿N0–N6 | #167–#175はCLOSED。#238で削除連携も確認済み | 全通知・閲覧・全WS等は各領域に残る |
 | 投稿N7 #176 | #242で基本縦断・停止再開・通常retry、#250でC2/C10の比較不足を補完。#243のremote解決もマージ済み | 残るactor関連の初期機能の実装・比較待ち。#176/#127はOPEN |
-| 連合 #195 | #243のremote user解決に加え、user hashtag #258、localプロフィール #259、remote絵文字取込 #262、local actor tag公開 #263 | inbox中核・署名検証・受信activity、画像・featured等の残範囲あり |
+| 連合 #195 | #243のremote user解決に加え、user hashtag #258、localプロフィール #259、remote絵文字取込 #262、local actor tag公開 #263、#266のremote actor画像削除、今回の保存済Driveによるlocal actor画像URL公開 | inbox中核・署名検証・受信activity、画像バイト配信・Drive取得・remote media・featured等の残範囲あり |
 | 連合土台 #215 / 外向きHTTP #216 | actor作成後usersCount #260、現在のactor取得/配送成功後のmetadata/getHtml #261 | inbox用の#215段階4、他のinstance取得経路、Drive等のHTTP利用側は未完了 |
 
 2026-11-09のユーザー回答に従い、残る初期機能を実装・比較するまで#176を未完了に保つ。担当Issueを付けるだけでは閉じない。#195全体を一括のblocked-byにはせず、#176に必要な機能単位で照合する。画像/Driveは#188/#195（S5と連携）、他のinstance経路は#215、chartは#200（S3）、rich actor/featured/Move等は#195/#199、cache/remoteUserUpdated等は#217（S3）に残る。`notes/create:partial`・`postingComplete:false`を維持する。
 
-[現在のactor関連の実装・比較資料](../superpowers/compatibility/remote-user/README.md)、[N7の実測と完了条件](../superpowers/compatibility/note/n7/README.md)、[instance metadataの限定範囲](../superpowers/compatibility/instance-metadata/README.md)、[local actor tag公開の限定範囲](../superpowers/compatibility/remote-user/local-actor-tags-results.md)を参照する。source-method観測と実DB/HTTP/process検証は別の証跡であり、本家full serverの全経路比較ではない。local actor tag公開だけでremote mentionの残機能やcache差が解消したとは扱わない。
+[現在のactor関連の実装・比較資料](../superpowers/compatibility/remote-user/README.md)、[N7の実測と完了条件](../superpowers/compatibility/note/n7/README.md)、[instance metadataの限定範囲](../superpowers/compatibility/instance-metadata/README.md)、[local actor tag公開の限定範囲](../superpowers/compatibility/remote-user/local-actor-tags-results.md)、[local actor画像公開の限定結果](../superpowers/compatibility/remote-user/local-actor-images-results.md)を参照する。source-method観測と実DB/HTTP/process検証は別の証跡であり、本家full serverの全経路比較ではない。local actor tag公開だけでremote mentionの残機能やcache差が解消したとは扱わない。
 
 | 成果 | 初期実装での扱い |
 | --- | --- |
@@ -290,3 +290,5 @@ media/emoji #188/#195、user hashtag関係 #195、actor由来instance usersCount
 2026-11-11: #195の限定sliceで、public notes/createのremote mention作成・canonical復帰・stale refreshへactor絵文字の抽出・emoji表保存・User.emojisを接続した。[独立source55観測・実測・残責任](../superpowers/compatibility/remote-user/remote-emojis-results.md)。抽出失敗時の空配列と部分書込み、create/refreshで異なる実行位置、canonical既存名を維持し、応答後も残るtag処理は終了時に待機する。Drive画像、local actor絵文字公開、他caller・remote Note・cache鮮度等は未完了。#176/#127/#195未完了、notes/create partial・postingComplete:falseと正式な対応順を維持する。
 
 2026-11-11: #195のlocal actor tag公開で、既存GET `/users/:id`と内部local解決へ絵文字・hashtagを接続した。[固定source12観測と実測](../superpowers/compatibility/remote-user/local-actor-tags-results.md)。入力順・重複・localOnly除外、各絵文字の時刻と鍵取得前の失敗境界を維持し、共有したNote描画・DB読取も検証した。単体3,021件・結合145件が成功。DB直読と本家cacheの鮮度差は#217に残る。これは#176のremote mention残機能の完了ではなく、#176/#127/#195未完了、notes/create partial・postingComplete:falseと正式な対応順を維持する。
+
+2026-11-11: #195の限定sliceで、既存GET `/users/:id`と内部local解決へ保存済Driveのicon/image、identicon・system Meta fallbackを接続した（基準PR #266 `62cdeb54289bdcf46ad57e7f8a28db8a4c5f2ee7`、実装 `ac37daa75d55b24cc811a7c4082ffd0da924fc3c`）。[固定本家33件のsource-method doublesとR2実測](../superpowers/compatibility/remote-user/local-actor-images-results.md): build/typecheck、近傍単体317件、実HTTP/PG actor53件・remote-user108件が成功。全単体/processや本家full HTTP/PGを測定した意味ではない。Meta DB直読の鮮度・失敗差、既存内部remote-row guard差を保持する。画像バイト配信（identicon/files/proxy）、Drive取得・remote media・他rich actor等は未完了。#176/#127/#195はOPEN、`notes/create:partial` / `postingComplete:false`、正式な対応順と過去の画像削除証跡を維持する。

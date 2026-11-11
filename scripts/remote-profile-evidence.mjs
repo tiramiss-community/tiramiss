@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { actorImageRemovalDigest } from './actor-image-removal-evidence.mjs';
+import { localActorImagesDigest } from './local-actor-images-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
 const read = file => readFileSync(new URL(file, root));
@@ -61,10 +62,10 @@ function measuredFile(value, file) {
 // Add one measured identity hop after local actor tags; historical receipts stay intact.
 export function remoteProfileDigest(file, previousDigest, label = 'remote profile previous identity') {
 	const value = JSON.parse(read(directory + 'remote-profile-runtime-evidence.json'));
-	if (!value.files[file]) return actorImageRemovalDigest(file, previousDigest, label);
+	if (!value.files[file]) return localActorImagesDigest(file, actorImageRemovalDigest(file, previousDigest, label), label);
 	const binding = measuredFile(value, file);
 	assert(binding.previousSha256.includes(previousDigest) || binding.sha256 === previousDigest, label);
-	return actorImageRemovalDigest(file, binding.sha256, label);
+	return localActorImagesDigest(file, actorImageRemovalDigest(file, binding.sha256, label), label);
 }
 
 export function validateRemoteProfileEvidence(value, readFile = read) {
@@ -83,7 +84,7 @@ export function validateRemoteProfileEvidence(value, readFile = read) {
 	for (const [file, binding] of Object.entries(value.files)) {
 		measuredFile(value, file);
 		assert.equal(value.frozenInputSha256[file], binding.sha256, 'profile binding was frozen');
-		assert.equal(remoteProfileSha(readFile(file)), actorImageRemovalDigest(file, binding.sha256), 'actual frozen profile input drift');
+		assert.equal(remoteProfileSha(readFile(file)), localActorImagesDigest(file, actorImageRemovalDigest(file, binding.sha256)), 'actual frozen profile input drift');
 	}
 	assert.equal(remoteProfileSha(JSON.stringify(value.frozenInputSha256)), value.frozenInputMapSha256);
 	assert.match(value.brokerReceiptSha256, /^[a-f0-9]{64}$/);
