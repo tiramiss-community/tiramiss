@@ -4,6 +4,7 @@
  */
 import { request } from 'node:http';
 import { connect } from 'node:net';
+import { resolve } from 'node:path';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { MiFollowing, MiMeta, MiNote, MiUser, MiUserProfile, MiUserKeypair } from 'backend-upstream/entities';
 import { createDataSource } from '../../src/platform/database/data-source.js';
@@ -282,6 +283,80 @@ test.each(['register', 'increment'])('ordinary built HTTP responds with instance
 		expect((await http.exit).code, http.output()).toBe(0);
 		expect((await source.getRepository(MiInstance).findOneByOrFail({ host: 'remote.test' })).usersCount).toBe(before + 1);
 		expect(http.output()).not.toContain('actor-instance-registration.failed');
+	} finally {
+		if (transaction) {
+			await lock.rollbackTransaction();
+		}
+		await lock.release(); await http.close(); await config.close();
+	}
+});
+
+test.each([false, true])('built public emoji extraction owns locked work through SIGTERM after early rejection=%s', async earlyFailure => {
+	const { MiEmoji } = await import('backend-upstream/entities');
+	const port = await freePort(); database.config.http.port = port; peer.route('local.test', port);
+	const name = earlyFailure ? 'emojiearlydrain' : 'emojiawaitdrain';
+	const emojiName = earlyFailure ? 'drain_early' : 'drain_await';
+	await source.getRepository(MiEmoji).insert({ id: codec.newId(Date.now()), host: 'remote.test', name: emojiName, originalUrl: 'https://remote.test/old.png', publicUrl: 'https://remote.test/old.png', updatedAt: null });
+	const tags = [{ type: 'Emoji', name: `:${emojiName}:`, icon: { url: 'https://remote.test/drained.png' } }];
+	if (earlyFailure) {
+		tags.push({ type: 'Emoji', name: ':drain_bad:', icon: { url: 'https://remote.test/' + 'x'.repeat(600) } });
+	}
+	register(name, { tag: tags });
+	const config = await configuration(database.config);
+	const preload = resolve('test/fixtures/emoji-refetch.mjs');
+	const http = launch('built/entrypoints/http.js', config.path, {
+		MISSKEY_WEBFINGER_USE_HTTP: 'true',
+		...(earlyFailure ? {
+			NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ''} --import=${preload}`,
+			BACKEND_NEXT_TEST_EMOJI_REFETCH: emojiName,
+		} : {}),
+	});
+	const lock = source.createQueryRunner(); let transaction = false;
+	try {
+		await http.ready; await lock.connect(); await lock.startTransaction(); transaction = true;
+		await lock.query('SELECT id FROM emoji WHERE name = $1 AND host = $2 FOR UPDATE', [emojiName, 'remote.test']);
+		const [{ pid }] = await lock.query('SELECT pg_backend_pid() AS pid');
+		let responded = false;
+		const response = post(port, { text: `@${name}@remote.test`, localOnly: true }).then(note => {
+			responded = true; return note;
+		});
+		await vi.waitFor(async () => {
+			const blocked: { query: string }[] = await source.query('SELECT query FROM pg_stat_activity WHERE datname = current_database() AND $1::int = ANY(pg_blocking_pids(pid))', [pid]);
+			expect(blocked.some(row => row.query.startsWith('UPDATE "emoji"')), http.output()).toBe(true);
+		});
+		let note: { id: string } | undefined;
+		if (earlyFailure) {
+			note = await response;
+			const actor = await source.getRepository(MiUser).findOneByOrFail({ usernameLower: name, host: 'remote.test' });
+			expect(actor.emojis).toEqual([]);
+			expect((await source.getRepository(MiNote).findOneByOrFail({ id: note.id })).mentions).toEqual([actor.id]);
+		} else {
+			expect(responded).toBe(false);
+		}
+		http.child.kill('SIGTERM');
+		await vi.waitFor(async () => {
+			await expect(new Promise<void>((resolve, reject) => {
+				const socket = connect(port, '127.0.0.1');
+				socket.once('connect', () => {
+					socket.destroy(); resolve();
+				}); socket.once('error', reject);
+			})).rejects.toMatchObject({ code: 'ECONNREFUSED' });
+		});
+		expect(http.child.exitCode).toBeNull();
+		await lock.commitTransaction(); transaction = false;
+		if (earlyFailure) {
+			await vi.waitFor(() => {
+				expect(http.messages, http.output()).toContainEqual({ type: 'emoji-refetch-result', publicUrl: 'https://remote.test/drained.png' });
+			}, { timeout: 3000 });
+			expect(http.child.exitCode).toBeNull();
+			http.child.send({ type: 'release-emoji-refetch' });
+		}
+		note ??= await response;
+		expect((await http.exit).code, http.output()).toBe(0);
+		expect(await source.getRepository(MiEmoji).findOneBy({ host: 'remote.test', name: emojiName })).toMatchObject({ originalUrl: 'https://remote.test/drained.png', publicUrl: 'https://remote.test/drained.png' });
+		const actor = await source.getRepository(MiUser).findOneByOrFail({ usernameLower: name, host: 'remote.test' });
+		expect(actor.emojis).toEqual(earlyFailure ? [] : [emojiName]);
+		expect((await source.getRepository(MiNote).findOneByOrFail({ id: note.id })).mentions).toEqual([actor.id]);
 	} finally {
 		if (transaction) {
 			await lock.rollbackTransaction();

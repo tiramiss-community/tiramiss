@@ -11,6 +11,15 @@ import { remoteSource, encode, decode, sourceNow } from '../../helpers/remote-so
 import type { RemoteUserFacts } from '../../../src/modules/federation/public.js';
 
 const existing: RemoteUserFacts = { id: 'remote', username: 'Original', host: 'remote.test', uri: 'https://remote.test/users/a', lastFetchedAtMs: null, isDeleted: false, tags: [], movedToUri: null };
+
+test('actor projection preserves acquired emoji names including duplicates', async () => {
+	const material = validateActor({ type: 'Person', id: existing.uri, preferredUsername: 'Alice', inbox: 'https://remote.test/inbox' }, existing.uri!);
+	material.emojis = ['wave', 'wave'];
+
+	const plan = await prepareActor(material, null, 1800000000000, 'actor');
+	expect(plan.user.emojis).toEqual(['wave', 'wave']);
+});
+
 test.each([
 	{ following: { type: 'Collection', items: [] } },
 	{ followers: 7 },

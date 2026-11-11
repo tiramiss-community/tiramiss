@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { remoteEmojiDigest } from './remote-emojis-evidence.mjs';
 import { readFileSync } from 'node:fs';
 
 // Finite additive identity chain; the original observations and run receipts remain historical.
@@ -10,7 +11,7 @@ export function metadataDigest(file, historicalDigest, label = 'instance metadat
 	const receipt = JSON.parse(readFileSync(new URL('../docs/superpowers/compatibility/instance-metadata/runtime-evidence.json', import.meta.url), 'utf8'));
 	const renewal = receipt.renewals[file];
 	if (!renewal) {
-		return historicalDigest;
+		return remoteEmojiDigest(file, historicalDigest, label);
 	}
 	assert(renewal.previousSha256.includes(historicalDigest) || renewal.sourceSha256 === historicalDigest, label);
 	const measurement = receipt.measurements[renewal.measurement];
@@ -19,5 +20,5 @@ export function metadataDigest(file, historicalDigest, label = 'instance metadat
 	assert.equal(measurement.skipped, 0);
 	assert(measurement.passed > 0);
 	assert.equal(measurement.sourceSha256[file], renewal.sourceSha256, 'metadata measured current source');
-	return renewal.sourceSha256;
+	return remoteEmojiDigest(file, renewal.sourceSha256, label);
 }

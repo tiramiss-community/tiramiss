@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { htmlToMfm, apType, webfingerUrl, selectWebfingerSelf, createActivitySession, createHostRules, isFederationAllowedHost, toPuny, punyHost, validateActor, prepareActor, collectionVisibility, insertActor, truncate } from '../modules/federation/public.js';
+import { htmlToMfm, apType, webfingerUrl, selectWebfingerSelf, createActivitySession, createHostRules, isFederationAllowedHost, toPuny, punyHost, validateActor, validateActorProfileUrl, prepareActor, collectionVisibility, insertActor, truncate } from '../modules/federation/public.js';
 import { createRemoteUserRepository, createRemoteActorTransactions } from '../platform/database/remote-users.js';
 import { createActorReader, createActorProfileReader } from '../platform/database/local-actors.js';
 import { readMeta, readFederationPolicy } from '../platform/database/meta.js';
@@ -10,10 +10,13 @@ import { renderLocalActor } from '../modules/federation/public.js';
 import type { DataSource } from 'typeorm';
 import type { FederationKeys } from './federation-keys.js';
 import type { OutboundHttp, OutboundSend } from '../application/outbound-http.js';
-import type { RemoteUserPorts, StartUserHashtags } from '../modules/federation/public.js';
+import type { RemoteEmoji, RemoteUserPorts, StartUserHashtags } from '../modules/federation/public.js';
+import type { Logger } from '../platform/logger.js';
 import type { RuntimeConfig } from '../config/types.js';
 export function createRemoteUsers(parts: {
 	dataSource: DataSource;
+	logger: Logger;
+	remoteEmojis: { extract(tags: unknown, host: string): Promise<RemoteEmoji[]> };
 	userHashtags: { start: StartUserHashtags };
 	actorInstanceRegistration: { start(host: string): void };
 	federationKeys: FederationKeys;
@@ -94,15 +97,31 @@ export function createRemoteUsers(parts: {
 			});
 			const material = validateActor(await session.resolve(uri), uri);
 			const p = material.actor;
-			material.fields = Array.isArray(p.attachment) ? p.attachment.flatMap(field => apType(field) === 'PropertyValue' && typeof field.name === 'string' && typeof field.value === 'string' ? [{ name: field.name, value: htmlToMfm(field.value) }] : []) : [];
+			const acquireEmojis = async (host: string) => {
+				try {
+					return (await parts.remoteEmojis.extract(p.tag ?? [], host)).map(emoji => emoji.name);
+				} catch (error) {
+					parts.logger.error('remote-emoji.extraction-failed', { error, host, refresh: existing !== null });
+					return [];
+				}
+			};
+			if (existing !== null) {
+				material.emojis = await acquireEmojis(existing.host!);
+			}
+			material.fields = Array.isArray(p.attachment) ? p.attachment.flatMap(field => apType({ type: field.type }) === 'PropertyValue' && typeof field.name === 'string' && typeof field.value === 'string' ? [{ name: field.name, value: htmlToMfm(field.value) }] : []) : [];
+			const hashtagNames = (Array.isArray(p.tag) ? p.tag : p.tag ? [p.tag] : []).flatMap(tag => apType({ type: tag.type }) === 'Hashtag' && typeof tag.name === 'string' ? [tag.name] : []);
 			[material.followingVisibility, material.followersVisibility] = await Promise.all([p.following, p.followers].map(value => collectionVisibility(value, session.resolve, existing !== null)));
-			const hashtagNames = (Array.isArray(p.tag) ? p.tag : p.tag ? [p.tag] : []).flatMap(tag => apType(tag) === 'Hashtag' && typeof tag.name === 'string' ? [tag.name] : []);
 			try {
 				material.description = p._misskey_summary ? truncate(p._misskey_summary, 2048) : p.summary ? htmlToMfm(truncate(p.summary, 2048)!, hashtagNames) : null;
 			} catch (error) {
 				// Source converts the description after User (and refresh Key) writes. Preserve those failure boundaries.
 				material.profileError = { name: error instanceof Error ? error.name : 'Error', message: error instanceof Error ? error.message : String(error) };
 			}
+			if (existing === null) {
+				validateActorProfileUrl(material, false);
+				material.emojis = await acquireEmojis(material.host);
+			}
+			validateActorProfileUrl(material, existing !== null);
 			const completedAt = currentTime();
 			return prepareActor(material, existing, completedAt, existing?.id ?? newId(completedAt));
 		},

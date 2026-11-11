@@ -48,6 +48,7 @@ export interface Actor {
 }
 export interface RemoteActorMaterial {
 	actor: Actor;
+	emojis?: string[];
 	host: string;
 	followingVisibility?: Visibility;
 	followersVisibility?: Visibility;
@@ -251,10 +252,10 @@ function isMissingImage(value: unknown): boolean {
 	return value == null || (typeof value === 'object' && (!('url' in value) || value.url == null));
 }
 
-export async function prepareActor(material: RemoteActorMaterial, existing: RemoteUserFacts | null, now: number, newId: string): Promise<RemoteActorPlan> {
-	const { actor: p, host } = material;
-	const refresh = existing !== null;
-	const id = existing?.id ?? newId;
+export function validateActorProfileUrl(material: RemoteActorMaterial, refresh: boolean): void {
+	const p = material.actor;
+	// Birthday conversion precedes URL checks and emoji acquisition during source creation.
+	p['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
 	const url = href(p.url);
 	if ((refresh ? url != null : !!url) && !(url!.startsWith('https://') || (url!.startsWith('http://') && process.env.NODE_ENV !== 'production'))) {
 		throw new Error('unexpected schema of person url: ' + url);
@@ -262,6 +263,14 @@ export async function prepareActor(material: RemoteActorMaterial, existing: Remo
 	if (refresh && url != null && punyHost(url) !== punyHost(p.id)) {
 		throw new Error(`person url <> uri host mismatch: ${url} <> ${p.id}`);
 	}
+}
+
+export async function prepareActor(material: RemoteActorMaterial, existing: RemoteUserFacts | null, now: number, newId: string): Promise<RemoteActorPlan> {
+	const { actor: p, host } = material;
+	const refresh = existing !== null;
+	const id = existing?.id ?? newId;
+	validateActorProfileUrl(material, refresh);
+	const url = href(p.url);
 	const tags = (Array.isArray(p.tag) ? p.tag : p.tag ? [p.tag] : []).flatMap(tag => {
 		if (apType(tag) !== 'Hashtag' || typeof tag.name !== 'string') {
 			return [];
@@ -272,7 +281,7 @@ export async function prepareActor(material: RemoteActorMaterial, existing: Remo
 	const user: RemoteActorUser = {
 		lastFetchedAt: new Date(now), inbox: p.inbox, sharedInbox: p.sharedInbox ?? p.endpoints?.sharedInbox ?? null,
 		followersUri: p.followers ? apId(p.followers) : undefined, featured: p.featured ? apId(p.featured) : undefined,
-		emojis: [], name: truncate(p.name, 128), tags, isBot: apType(p) === 'Service' || apType(p) === 'Application', isCat: p.isCat === true,
+		emojis: material.emojis ?? [], name: truncate(p.name, 128), tags, isBot: apType(p) === 'Service' || apType(p) === 'Application', isCat: p.isCat === true,
 		isLocked: p.manuallyApprovesFollowers, movedToUri: refresh ? p.movedTo ?? null : p.movedTo,
 		alsoKnownAs: refresh && !p.alsoKnownAs ? null : p.alsoKnownAs == null ? [] : Array.isArray(p.alsoKnownAs) ? p.alsoKnownAs : [p.alsoKnownAs], isExplorable: p.discoverable,
 	};

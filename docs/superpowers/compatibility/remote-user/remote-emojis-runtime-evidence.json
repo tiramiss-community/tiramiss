@@ -1,0 +1,347 @@
+{
+  "schemaVersion": 1,
+  "scope": "public-remote-mention-actor-emojis",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "base": "65a4506d14c2bb74931ae131fdbce9ecf8eff205",
+  "notesCreateStatus": "partial",
+  "postingComplete": false,
+  "remainingGapIds": [
+    "media-emoji",
+    "instance-metadata",
+    "charts",
+    "rich-actor",
+    "remote-cache"
+  ],
+  "runtime": {
+    "node": "24.20.0",
+    "pnpm": "12.9.1"
+  },
+  "revision": 6,
+  "brokerReceiptSha256": "1009fdca7badb38ffcf0dcd6cdff5ceb80f5ee6d737eae3da79830b0961c12af",
+  "frozenInputMapSha256": "eaa55915bf3760ba105437a5aa8a63d2991247add58209bfb30539f261468f2a",
+  "frozenInputCount": 859,
+  "observationsSha256": "1e7d639b9656c456503b7d88c8dd13ccb57f18822fdda8944fbe19e73d72e391",
+  "probeSha256": "a1bf26d791bfcfdc804b3b910bf090ba6ba4cc6cd59083e7b3087236ef31210b",
+  "historicalSha256": {
+    "docs/superpowers/compatibility/instance-metadata/observations.json": "270ae0add242ce6f0402a8bb2d5ea9838d0206d96f6b7baf4e0d37f3fd175593",
+    "docs/superpowers/compatibility/instance-metadata/root-validation.json": "a582ceaf0aae9ff11b7f0001086114192d2efd6d09805c402142a8c69af78b67",
+    "docs/superpowers/compatibility/instance-metadata/runtime-evidence-r1.json": "66706e328effd2df866124a286847ac45bbdf91d09f961bd7429af0278644d70",
+    "docs/superpowers/compatibility/instance-metadata/runtime-evidence.json": "fcedd182f8338d0bb4cae8f53bcf56188a7ac718708bf0d538842b0db2882017",
+    "docs/superpowers/compatibility/remote-user/actor-instance-registration-observations.json": "588675d9c9ba68585fb153a7d365a931351d613ddd6b30b8d8c6594b2b514d1f",
+    "docs/superpowers/compatibility/remote-user/actor-instance-registration-runtime-evidence.json": "d36d75bb0a90670c37ffbe0275562fe2d74f5e98e6c5fffe3069b36401919828",
+    "docs/superpowers/compatibility/remote-user/local-actor-profile-observations.json": "10c782ee3ba9d174cdc8fb3ff34554497dd2e5b0ec169a95ff69054fdbad628a",
+    "docs/superpowers/compatibility/remote-user/local-actor-profile-runtime-evidence.json": "8beec85496036c9e78c8fafb5328d367fd8590883b5b9d7c3767652a916d774e",
+    "docs/superpowers/compatibility/remote-user/observations.json": "7427c62abb63c7a7414d9ad571450eb66bce15856ad0be9a5f4b02e1d554b8eb",
+    "docs/superpowers/compatibility/remote-user/runtime-evidence.json": "f4516c9bae05d19a5ea15d6addf3c2246c0264501445b47d68a49aa6cc367f49",
+    "docs/superpowers/compatibility/remote-user/user-hashtags-observations.json": "76f5e492fcb9439c4041774de505002ecd487df888e346a4010a86f47239ad86",
+    "docs/superpowers/compatibility/remote-user/user-hashtags-runtime-evidence.json": "263425c5e952a06370c638765f2207463e852c610e2153ff47abfdf594221fe4"
+  },
+  "measurements": {
+    "build": {
+      "command": "pnpm --filter backend-next... build",
+      "artifact": "/tmp/tiramiss-pr262-5850865970-r6-build.log",
+      "log": "/tmp/tiramiss-pr262-5850865970-r6-build.log",
+      "startedAt": "2026-11-10T23:18:38.295149+00:00",
+      "finishedAt": "2026-11-10T23:18:39.227828+00:00",
+      "exitCode": 0,
+      "artifactSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
+      "files": null,
+      "outcome": "PASS",
+      "passed": null,
+      "failed": null,
+      "skipped": null
+    },
+    "typecheck": {
+      "command": "pnpm --filter backend-next... typecheck",
+      "artifact": "/tmp/tiramiss-pr262-5850865970-r6-broker-typecheck.log",
+      "log": "/tmp/tiramiss-pr262-5850865970-r6-broker-typecheck.log",
+      "startedAt": "2026-11-10T23:18:39.246005+00:00",
+      "finishedAt": "2026-11-10T23:18:40.535959+00:00",
+      "exitCode": 0,
+      "artifactSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+      "files": null,
+      "outcome": "PASS",
+      "passed": null,
+      "failed": null,
+      "skipped": null
+    },
+    "integration": {
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55508 BACKEND_NEXT_TEST_REDIS_PORT=56408 BACKEND_NEXT_TEST_MEILI_PORT=57808 pnpm --filter backend-next test:integration test/integration/remote-user.test.ts --reporter=json --outputFile=/tmp/tiramiss-pr262-5850865970-r6-integration.json",
+      "artifact": "/tmp/tiramiss-pr262-5850865970-r6-integration.json",
+      "log": "/tmp/tiramiss-pr262-5850865970-r6-integration.log",
+      "startedAt": "2026-11-10T23:18:40.553000+00:00",
+      "finishedAt": "2026-11-10T23:18:49.607990+00:00",
+      "exitCode": 0,
+      "artifactSha256": "6cde9850adac76849fdbd7d505f3323298bb08610a8a226fe9ce0f98fc6eb6d0",
+      "files": 1,
+      "outcome": "PASS",
+      "passed": 63,
+      "failed": 0,
+      "skipped": 0
+    },
+    "process": {
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55508 BACKEND_NEXT_TEST_REDIS_PORT=56408 BACKEND_NEXT_TEST_MEILI_PORT=57808 pnpm --filter backend-next test:process test/processes/remote-mentions.test.ts --reporter=json --outputFile=/tmp/tiramiss-pr262-5850865970-r6-process.json",
+      "artifact": "/tmp/tiramiss-pr262-5850865970-r6-process.json",
+      "log": "/tmp/tiramiss-pr262-5850865970-r6-process.log",
+      "startedAt": "2026-11-10T23:18:49.621939+00:00",
+      "finishedAt": "2026-11-10T23:19:03.181955+00:00",
+      "exitCode": 0,
+      "artifactSha256": "00b7842aa5be35256c3da252a9978c54ea6ececfde1f55a12e3fbb00d2986328",
+      "files": 1,
+      "outcome": "PASS",
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0
+    },
+    "full-unit": {
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55508 BACKEND_NEXT_TEST_REDIS_PORT=56408 BACKEND_NEXT_TEST_MEILI_PORT=57808 pnpm --filter backend-next test --reporter=json --outputFile=/tmp/tiramiss-pr262-5850865970-r6-full-unit.json",
+      "artifact": "/tmp/tiramiss-pr262-5850865970-r6-full-unit.json",
+      "log": "/tmp/tiramiss-pr262-5850865970-r6-full-unit.log",
+      "startedAt": "2026-11-10T23:19:03.197411+00:00",
+      "finishedAt": "2026-11-10T23:19:34.245013+00:00",
+      "exitCode": 0,
+      "artifactSha256": "aac0342c7d26116497d0c69afda6c5db41b1a20ae1368e04929aba6a69343b8e",
+      "files": 92,
+      "outcome": "PASS",
+      "passed": 3001,
+      "failed": 0,
+      "skipped": 0
+    },
+    "source": {
+      "command": "UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream UPSTREAM_SOURCE_MODE=verified-files node docs/superpowers/compatibility/remote-user/remote-emojis-source-probe.mjs --check",
+      "artifact": "/tmp/tiramiss-pr262-5850865970-r6-source-broker.log",
+      "log": "/tmp/tiramiss-pr262-5850865970-r6-source-broker.log",
+      "startedAt": "2026-11-10T23:19:34.261178+00:00",
+      "finishedAt": "2026-11-10T23:19:34.592028+00:00",
+      "exitCode": 0,
+      "artifactSha256": "3c2a02bd9537c4eb72633243640090567a127a82ce539713ed7de2d700c43269",
+      "files": null,
+      "outcome": "PASS",
+      "passed": 55,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "files": {
+    "packages/backend-next/src/composition/remote-users.ts": {
+      "sha256": "5be4ed2c851dcc8f459c07861c166dc6a492dc861d208c07a5cc3518bb4ec33f",
+      "previousSha256": [
+        "55095f10dbe7ea140410f49ec8b8548c5d5ecff33a3ed02ce66b8152a1e56312",
+        "d2d03ba75cb06a3d984a3f267770eda4a72c4191952e1900e9bcd8875baa3a3c",
+        "ebff550d3696f446a69563194ff7ebb7653c70cc6f58332f22fb4cbd3c2f10ee"
+      ],
+      "validatedBy": [
+        "full-unit",
+        "integration",
+        "process"
+      ]
+    },
+    "packages/backend-next/src/modules/federation/public.ts": {
+      "sha256": "aac074ea502f4d2f04f7a3b015dfb7dc60b34b15bf23b509d6ec048d0b710abf",
+      "previousSha256": [
+        "38da97aef2fd4ad6690dca404890532dcc1b65c1c733585718eae961aa5a4dda",
+        "835155530e60fa6c0f13065e87ee3180cad8768b79f0e2304f4487c94c977310",
+        "af84286e9871243bb0df4787ebcaf993516b17f73302f6894214fa9e02d8e851"
+      ],
+      "validatedBy": [
+        "full-unit",
+        "integration",
+        "process"
+      ]
+    },
+    "packages/backend-next/src/modules/federation/remote-actor.ts": {
+      "sha256": "7acf4a653aca1a50197038e9836af3ddce29a9c2fa6b5cc929f5454ba1418268",
+      "previousSha256": [
+        "b2cc5eb5b254c92a8fad2661ec50481e1101ac95bf091e5074ba6bd583ce9093"
+      ],
+      "validatedBy": [
+        "full-unit",
+        "integration",
+        "process"
+      ]
+    },
+    "packages/backend-next/src/platform/connect-resources.ts": {
+      "sha256": "57d9087e17c64e04c28c5286f86e2de703d28108acf0bab930835589cdfd2ee8",
+      "previousSha256": [
+        "50a3ee9fec27f437e79733ce36454927128b3c8561abf70e7eee7b8c4e3e45c2",
+        "6d7accec5038c46adce75cc998ce1ba040cb971790f2a257b2e475dc4bd308c7",
+        "976e4af688469dfd257bafb130a130219ca9dfc90795fece865b37d7d949dc34",
+        "24b251b825529f974c41656a9fc78cb723362ad263457cf400f41a259ff91e23",
+        "e3d33381c0647422d659a51b7528072fac4ab6bf2fcf19af32f90d94ea789754"
+      ],
+      "validatedBy": [
+        "full-unit",
+        "integration",
+        "process"
+      ]
+    },
+    "packages/backend-next/test/integration/remote-user.test.ts": {
+      "sha256": "d63ee6b9851121075d39fbb69d284cb97fda70bd376d84d63ebd75f737d80817",
+      "previousSha256": [
+        "3e7996dc4cebec0b7c75b4662ec11b38846ee0eb18af795e5d95aa618f360e57",
+        "6bf7b3d886547d94b4f43f31b58ce223517fc53f081012d5a156701d9e324a32",
+        "81f9c96e0b4f39840d2dea0f8a2d78742530b355a8dca0f1d6f4ddedc7f04ce8",
+        "f39db88dd74be077df089c7520ffcfe6b3af0366c7c4b8de30d40c4c7f63407b"
+      ],
+      "validatedBy": [
+        "integration"
+      ]
+    },
+    "packages/backend-next/test/processes/remote-mentions.test.ts": {
+      "sha256": "659d20cc8bbd93ebec3e1f295479fe010b997ec6090ae59acf1e9de636cc5647",
+      "previousSha256": [
+        "65b976a11fffef3379f68305d04cc7f044cdcb774a7093efbbbff989b6777624",
+        "bf2024f42aeecbedabe89dc110daf056a726991f84fedc9f4f16bbe8f316401d",
+        "c2869c69386b0182b44d8992bf290b763104b91d681aa760e8e0b3b4d140fe15",
+        "c320c6ccb9c30fd119b39f97e00f7411cf59a3b569a642400f0948ef1d27f91c",
+        "f9efc725aaa9aec64deed686954c4396e6a537935d9617aca7f8b85538666ece",
+        "c3aaa0a0f654e3d68974cbe4ba7f8b9196ffabe2c99dbec01ba9206d5338ba89"
+      ],
+      "validatedBy": [
+        "process"
+      ]
+    },
+    "packages/backend-next/test/unit/federation/acquisition-policy.test.ts": {
+      "sha256": "42034a685e7d931a63b7500a4d737cb459150195e2aaf50da9818627e9658833",
+      "previousSha256": [
+        "38c5dbee7b61f9a6e148add10ae0a1c092eb166c62afb717a82544fae73a00cb",
+        "78341040325bb3463869148ab056b54cbfaff1feaac37f580f02661db1b2e8b1"
+      ],
+      "validatedBy": [
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/test/unit/federation/remote-user.test.ts": {
+      "sha256": "c026b45c89c0b753dd2a2ee3e162d88c3ca9621dc2849585abc8766c06313d0c",
+      "previousSha256": [
+        "e0b42aa80b882154d3c78a7d6f3570c5e1105e1d33c83fae22cf74f7461f3274",
+        "ebaad9e80f6d8ebea1de014d260a5cde9b98b3d8705919d180edd6b73f03569c",
+        "eee0c87a22a6460799ada687cc3b924567f1edd2f44dd3ed8d7f37a6fc4473b1"
+      ],
+      "validatedBy": [
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/src/composition/remote-emojis.ts": {
+      "sha256": "23ae2646c333f52a908193a0dc18e99ec7c344099afde4e7e46e782b975b63ea",
+      "previousSha256": [
+        "964400bfc7944944bf03f387508cb92b159f3f99b350c3de9af6271c5925a527"
+      ],
+      "validatedBy": [
+        "full-unit",
+        "integration",
+        "process"
+      ]
+    },
+    "packages/backend-next/src/modules/federation/remote-emojis.ts": {
+      "sha256": "5bb6e9ade3ed62ccb9b3818c75b2d1a9adf29658ab977a6ab7843b403319a39d",
+      "previousSha256": [],
+      "validatedBy": [
+        "full-unit",
+        "integration",
+        "process"
+      ]
+    },
+    "packages/backend-next/src/platform/database/remote-emojis.ts": {
+      "sha256": "0ee1516fb817fc1ce13550247b7b8c12c30f1b7174fb1224985f8592b3ef6135",
+      "previousSha256": [],
+      "validatedBy": [
+        "full-unit",
+        "integration",
+        "process"
+      ]
+    },
+    "packages/backend-next/test/unit/federation/remote-emojis.test.ts": {
+      "sha256": "968953ae4f640983d539aabd2568c29f0c9b2d692a71759d2fe7f64b2a73cad7",
+      "previousSha256": [
+        "97a98c9dd7d859f6c5881c297cad70cecbc28f47c751930318916087cf7591af",
+        "7822dee485bce4f54cc6f0de047881c74ceada76820df3ba19ef64a755a733f6"
+      ],
+      "validatedBy": [
+        "full-unit"
+      ]
+    },
+    "docs/superpowers/compatibility/remote-user/remote-emojis-source-probe.mjs": {
+      "sha256": "a1bf26d791bfcfdc804b3b910bf090ba6ba4cc6cd59083e7b3087236ef31210b",
+      "previousSha256": [],
+      "validatedBy": [
+        "source"
+      ]
+    },
+    "docs/superpowers/compatibility/remote-user/remote-emojis-observations.json": {
+      "sha256": "1e7d639b9656c456503b7d88c8dd13ccb57f18822fdda8944fbe19e73d72e391",
+      "previousSha256": [],
+      "validatedBy": [
+        "source"
+      ]
+    },
+    "packages/backend-next/test/fixtures/emoji-refetch.mjs": {
+      "sha256": "c5ce224489da360e35194a8c5c1f6b23d79ad8d1704aa6edf919de5ede200b4b",
+      "previousSha256": [],
+      "validatedBy": [
+        "process"
+      ]
+    },
+    "packages/backend-next/test/unit/federation/remote-actor.test.ts": {
+      "sha256": "6b000dadca2701ca6f718554657cb6d58d1df3dbbd2fc10300c8d0512790a59a",
+      "previousSha256": [
+        "e844f7a487357e72fbff1a04f5ff2820c8d3c228f2a1535c4419fb266c91243d"
+      ],
+      "validatedBy": [
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/test/unit/remote-emoji-resources.test.ts": {
+      "sha256": "0e91899d797f7a9e94930966ce4e909f24d6054872ffbfe5ecd176146efd5f78",
+      "previousSha256": [],
+      "validatedBy": [
+        "full-unit"
+      ]
+    }
+  },
+  "limitations": [
+    "Source-method doubles, no upstream full server/real upstream DB measured.",
+    "DB-direct URL read does not establish source 12-hour emoji cache parity.",
+    "pg concurrent-query deprecation warning was present in baseline.",
+    "Root Node26 contracts, inventory and shipping are validated separately from runtime measurements."
+  ],
+  "previousValidation": [
+    {
+      "revision": 1,
+      "status": "PASS",
+      "receiptSha256": "edf90b7abee08f4a2db3fa2e7a0cc5a6f6e92e1c59da1731d5147cdc26f461f9",
+      "integrationPassed": 62,
+      "processPassed": 9,
+      "fullUnitPassed": 2998,
+      "note": "Actual original executions and artifacts retained; explicit deleted-refresh acceptance added later."
+    },
+    {
+      "revision": 2,
+      "status": "FAIL",
+      "phase": "preflight",
+      "commandsExecuted": 0,
+      "receiptSha256": "b66866d6762d6a7e4501d2df44699d1fbf48995b99265a78b140ecc8d08539b3",
+      "reason": "Writer mistakenly included mutable inventory JSON in broad runtime fixture closure; inventory docs changed before any command. Revision3 excludes mutable inventory and recomputes actual source closure."
+    },
+    {
+      "revision": 3,
+      "status": "PASS",
+      "receiptSha256": "1012908c3422c3de5ff955102381b1935232a66eb3acd180bbe5485fafb5533f",
+      "frozenInputCount": 857,
+      "integrationPassed": 63,
+      "processPassed": 9,
+      "fullUnitPassed": 2998,
+      "note": "Actual revision 3 receipt and artifacts retained. Revision 4 measures the ID and shutdown regression fixes."
+    },
+    {
+      "revision": 4,
+      "status": "PASS",
+      "receiptSha256": "0b6023c85692497d0ec4ea91f862a508eb5854a8aeb626fe3d193c591f020855",
+      "frozenInputCount": 859,
+      "integrationPassed": 63,
+      "processPassed": 9,
+      "fullUnitPassed": 3000,
+      "note": "Initial PR head b7f8706289fb422804b2c40f27d72cbc95870b8d. The review follow-up adds per-tag diagnostics and a regression test."
+    }
+  ]
+}

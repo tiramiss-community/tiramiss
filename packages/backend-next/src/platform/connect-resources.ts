@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { createRemoteEmojis } from '../composition/remote-emojis.js';
+import { createRemoteEmojiRepository } from './database/remote-emojis.js';
 import { createActorInstanceRegistration } from '../composition/actor-instance-registration.js';
 import { randomBytes } from 'node:crypto';
 import { MiInstance } from 'backend-upstream/entities';
@@ -320,6 +322,12 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			onError: (error, details) => logger.error('note-instance-counts.failed', { error, ...details }),
 		});
 		scope.defer(noteInstanceCounts.close);
+		const emojiIdCodec = createIdCodec(config.id);
+		const remoteEmojis = createRemoteEmojis(createRemoteEmojiRepository(dataSource.manager), {
+			now: Date.now,
+			newId: () => emojiIdCodec.newId(Date.now()),
+		}, (error, host) => logger.error('remote-emoji.tag-failed', { error, host }));
+		scope.defer(remoteEmojis.close);
 		const userHashtags = createUserHashtags({
 			change: createUserHashtagWriter(dataSource.manager, () => createIdCodec(config.id).newId(Date.now())).change,
 			ranking: createHashtagRanking(redis, Date.now),
@@ -382,7 +390,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw new DiagnosticError('TIMELINES_REDIS_ENDED', {});
 		}
 		active = true;
-		return { dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
+		return { dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, remoteEmojis, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
 	};
 
 	try {

@@ -213,3 +213,7 @@ The existing five `profile` cases in `../note/hashtag/source-observations.json` 
 ### Actor instance usersCount（2026-11-10）
 
 [新しい独立source観測・実測と残責任](actor-instance-registration-results.md)を参照。元の95ケース・hashtag/profile corpusと過去の測定件数は保持し、現在のファイルidentityは新しい加算専用receiptへ投影する。五つのactor gapと投稿partialは維持する。
+
+## Public actor emoji ingestion (#195)
+
+[Independent source observations, actual runtime proof and remaining scope](remote-emojis-results.md) cover extraction/persistence on the existing public remote-mention create/canonical/refresh caller. Historical corpora/receipts remain unchanged; current identities are additive. Drive/local emoji publication/other callers/cache parity and the five broader actor groups remain incomplete. `notes/create` stays partial with `postingComplete:false`.

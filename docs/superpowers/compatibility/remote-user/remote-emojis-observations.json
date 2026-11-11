@@ -1,0 +1,3796 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "fullFileSha256": {
+    "core/UtilityService.ts": "99f8779e002fc2c0aa2cd203613d31fcc87e7eaeb797ef65aae6c5175b62e331",
+    "core/activitypub/misc/check-against-url.ts": "5d97319a42d8628455c1a0e041682ad99d62967f6a2cdbefda24e7ec885a117f",
+    "core/activitypub/misc/validator.ts": "97bdbeb67557dfadb0135126fff1eb408756f039ebf7057fd87ff67a89f6da21",
+    "core/activitypub/models/ApPersonService.ts": "471168b426b6ec19294b345bd0f66ac1c46fd554475c7c396bdbd9d859624921",
+    "core/activitypub/models/ApNoteService.ts": "ae6d5ceaf20d13e167cba82b7a418e51c5e30b51f66f553d72c3f39c4257d12f",
+    "core/activitypub/models/tag.ts": "33aa8fa4002cdfe1d8333bc15a4cfa7a0bf6761ba6690f5becb25b9726afc874",
+    "core/activitypub/type.ts": "ac649470214b7c03e8f72c599f091c3f765eafcefca933c0f85112fd2d69a8ef",
+    "misc/check-https.ts": "2b631d396e4094749cc1513f652ba5681530a4038d8ea38cc4445fbd0c4666ef",
+    "misc/normalize-for-search.ts": "cf40aaf03e5a13d69abd4966256c2cb44ee29c7b7bd038b04271e35ffb150ca6",
+    "misc/prelude/array.ts": "8319bf6a858b2afb934e50595798c2d914388c077d6bf49a2338a5f0520bcdc4",
+    "misc/status-error.ts": "81df1c128374e740d337e4b8167d1eca5cf62083a23005be68c5277aceacb49a",
+    "misc/truncate.ts": "4922b83959680d550af043fd0f2ee37c9ed911393c2367f70bc835a0ffd95ebc",
+    "models/_.ts": "03554499d5eb569d3267040967d67959d1b1072abed11cd016094f6510032b26"
+  },
+  "methods": {
+    "misc/status-error.ts": {
+      "path": "packages/backend/src/misc/status-error.ts",
+      "sha256": "6fb2644dd29ffa37bbf57207b471af65d5b1ad5864febe9af3fa75fd01a65348"
+    },
+    "core/activitypub/type.ts": {
+      "path": "packages/backend/src/core/activitypub/type.ts",
+      "sha256": "1604b3f151853a6be8d7dd61ed349b126ac1cf1ad0da0177b8e8c61456ce08af"
+    },
+    "core/activitypub/misc/check-against-url.ts": {
+      "path": "packages/backend/src/core/activitypub/misc/check-against-url.ts",
+      "sha256": "5595d89352b54ae14badee7f53a3e393e371461bf473992f0cdfe196388bfc70"
+    },
+    "core/activitypub/misc/validator.ts": {
+      "path": "packages/backend/src/core/activitypub/misc/validator.ts",
+      "sha256": "a3f5e632358f5ec430a5b9d04c7594519b434a4870065b9d3d942de2d1bfa009"
+    },
+    "misc/check-https.ts": {
+      "path": "packages/backend/src/misc/check-https.ts",
+      "sha256": "a91f3a4780b08d3c1a58a571b191982ad2573a000677e4e0ae6d14de8547eee3"
+    },
+    "misc/normalize-for-search.ts": {
+      "path": "packages/backend/src/misc/normalize-for-search.ts",
+      "sha256": "e8c1884928722770c8d44debe367e8508dfbf931097614379617056879f7b575"
+    },
+    "misc/truncate.ts": {
+      "path": "packages/backend/src/misc/truncate.ts",
+      "sha256": "361e03302bd79753cf6699f8c622c8946f2d218f6db5cca4970c72f37911333f"
+    },
+    "misc/prelude/array.ts": {
+      "path": "packages/backend/src/misc/prelude/array.ts",
+      "sha256": "025c366827680f51683aef07edf2efe16edae11b6b7e14457321c10fe1fc6a88"
+    },
+    "core/activitypub/models/tag.ts": {
+      "path": "packages/backend/src/core/activitypub/models/tag.ts",
+      "sha256": "0e49828ade4a32374c3301a02de184faaac98c2981dd4ec0b070812a16a5ffcd"
+    },
+    "ApPersonService.validateActor": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "da3ed624a237652d14ec90ecd267c6d6a905318e79b1f37dcc13965b79c80367"
+    },
+    "ApPersonService.createPerson": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "c2e3b8e9efd102fefcae50e7c51a17ba67741f1c9410148ee33a87b33838e7af"
+    },
+    "ApPersonService.updatePerson": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "7a4865aa70d7ce75bb8ad762b35ebf52cedd8570ecbb09c7b63b74a1bed1ee7c"
+    },
+    "ApPersonService.analyzeAttachments": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "9c2bb9f0d0765fe963458fb7cc3432e91626a5b62bf9f367a5b516667a040658"
+    },
+    "ApPersonService.isPublicCollection": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "04640fbd0ef0f2a9cc68a133f7e2cf7c6dd5b2b68d94bedc87c1dd55d64f1973"
+    },
+    "UtilityService.toPuny": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "fcb70ffa3b4a1ad01eda9b2c97d696dd2b26fc5be8fad9f56ddb6a75e256e4d2"
+    },
+    "UtilityService.punyHost": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "5280ceda6a0817c4fc16ac3e3aada3538a1d268ccac1aaea6127cd3bd4450e71"
+    },
+    "UtilityService.extractDbHost": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "672fb1106e47f858fbd31fd15afb99fbe1303337a5bb4895665fd392b1a88609"
+    },
+    "UtilityService.isUriLocal": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "5829f403d08e17fa4891bb7392c939160ece5409c48f261893357346a7ab87a5"
+    },
+    "UtilityService.isSelfHost": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "a027a92bcc38e2b1b4b5384df22bfb1df8bad9e4eaac1d2ea15ea418c990cbb7"
+    },
+    "UtilityService.isBlockedHost": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "afaaf213f5f8358cb6ea4f29ce47cefc1b727e2e28f787504c842d1869872d36"
+    },
+    "UtilityService.isFederationAllowedHost": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "5cc884819669df334b78fb68226950e08a762ed70d1a2fc94ea5b228222293d1"
+    },
+    "ApNoteService.extractEmojis": {
+      "path": "packages/backend/src/core/activitypub/models/ApNoteService.ts",
+      "sha256": "f49064cf735191cb5f77bba3f8c17f58b944876e6525703d64650d86182c2d64"
+    },
+    "miRepository.insertOne": {
+      "path": "packages/backend/src/models/_.ts",
+      "sha256": "d43e5881e1ef3229c20e51a4570b9a956babba72a219c43e3dfa13f0b9d2b7a8"
+    }
+  },
+  "upstreamHttpMeasured": false,
+  "boundary": "Real pinned extractEmojis, insertOne, predicates/helpers and createPerson/updatePerson. Repository/clock/ID/transport/transaction/media/cache/charts/featured doubles; source transaction is not real DB proof.",
+  "cases": [
+    {
+      "id": "new",
+      "area": "extract",
+      "input": {
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "empty",
+      "area": "extract",
+      "input": {
+        "tags": []
+      },
+      "expected": {
+        "result": [],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": []
+            }
+          }
+        ],
+        "rows": []
+      }
+    },
+    {
+      "id": "absent",
+      "area": "extract",
+      "input": {},
+      "expected": {
+        "result": [],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": []
+            }
+          }
+        ],
+        "rows": []
+      }
+    },
+    {
+      "id": "punycode",
+      "area": "extract",
+      "input": {
+        "host": "例え.テスト",
+        "tags": {
+          "type": "Emoji",
+          "name": ":w:a:ve:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "xn--r8jz45g.xn--zckzah",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "xn--r8jz45g.xn--zckzah",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "xn--r8jz45g.xn--zckzah",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "xn--r8jz45g.xn--zckzah",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "port",
+      "area": "extract",
+      "input": {
+        "host": "REMOTE.test:8080",
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "unchanged",
+      "area": "extract",
+      "input": {
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          }
+        ],
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ]
+      }
+    },
+    {
+      "id": "updated-null",
+      "area": "extract",
+      "input": {
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": null,
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": null
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "update",
+            "args": {
+              "host": "remote.test",
+              "name": "wave",
+              "patch": {
+                "uri": "https://remote.test/emoji/wave",
+                "originalUrl": "https://remote.test/wave.png",
+                "publicUrl": "https://remote.test/wave.png",
+                "updatedAt": "2027-01-15T08:00:00.000Z",
+                "license": null
+              }
+            }
+          },
+          {
+            "op": "refetch",
+            "args": {
+              "host": "remote.test",
+              "name": "wave"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "uri-null",
+      "area": "extract",
+      "input": {
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": null,
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": null
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "update",
+            "args": {
+              "host": "remote.test",
+              "name": "wave",
+              "patch": {
+                "uri": "https://remote.test/emoji/wave",
+                "originalUrl": "https://remote.test/wave.png",
+                "publicUrl": "https://remote.test/wave.png",
+                "updatedAt": "2027-01-15T08:00:00.000Z",
+                "license": null
+              }
+            }
+          },
+          {
+            "op": "refetch",
+            "args": {
+              "host": "remote.test",
+              "name": "wave"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "newer",
+      "area": "extract",
+      "input": {
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-03-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": null
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "update",
+            "args": {
+              "host": "remote.test",
+              "name": "wave",
+              "patch": {
+                "uri": "https://remote.test/emoji/wave",
+                "originalUrl": "https://remote.test/wave.png",
+                "publicUrl": "https://remote.test/wave.png",
+                "updatedAt": "2027-01-15T08:00:00.000Z",
+                "license": null
+              }
+            }
+          },
+          {
+            "op": "refetch",
+            "args": {
+              "host": "remote.test",
+              "name": "wave"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "url",
+      "area": "extract",
+      "input": {
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/next.png"
+          }
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/next.png",
+            "publicUrl": "https://remote.test/next.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": null
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "update",
+            "args": {
+              "host": "remote.test",
+              "name": "wave",
+              "patch": {
+                "uri": "https://remote.test/emoji/wave",
+                "originalUrl": "https://remote.test/next.png",
+                "publicUrl": "https://remote.test/next.png",
+                "updatedAt": "2027-01-15T08:00:00.000Z",
+                "license": null
+              }
+            }
+          },
+          {
+            "op": "refetch",
+            "args": {
+              "host": "remote.test",
+              "name": "wave"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/next.png",
+            "publicUrl": "https://remote.test/next.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "license-only",
+      "area": "extract",
+      "input": {
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          },
+          "_misskey_license": {
+            "freeText": "new"
+          }
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          }
+        ],
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ]
+      }
+    },
+    {
+      "id": "id-only",
+      "area": "extract",
+      "input": {
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/other",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          }
+        ],
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ]
+      }
+    },
+    {
+      "id": "public-url-only",
+      "area": "extract",
+      "input": {
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://other.test/public",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://other.test/public",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          }
+        ],
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://other.test/public",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ]
+      }
+    },
+    {
+      "id": "undefined-uri",
+      "area": "extract",
+      "input": {
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": null,
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": {
+            "$undefined": true
+          },
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": null
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "update",
+            "args": {
+              "host": "remote.test",
+              "name": "wave",
+              "patch": {
+                "uri": {
+                  "$undefined": true
+                },
+                "originalUrl": "https://remote.test/wave.png",
+                "publicUrl": "https://remote.test/wave.png",
+                "updatedAt": "2027-01-15T08:00:00.000Z",
+                "license": null
+              }
+            }
+          },
+          {
+            "op": "refetch",
+            "args": {
+              "host": "remote.test",
+              "name": "wave"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "null-uri",
+      "area": "extract",
+      "input": {
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": null,
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": null,
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": null,
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": null
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "update",
+            "args": {
+              "host": "remote.test",
+              "name": "wave",
+              "patch": {
+                "uri": null,
+                "originalUrl": "https://remote.test/wave.png",
+                "publicUrl": "https://remote.test/wave.png",
+                "updatedAt": "2027-01-15T08:00:00.000Z",
+                "license": null
+              }
+            }
+          },
+          {
+            "op": "refetch",
+            "args": {
+              "host": "remote.test",
+              "name": "wave"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": null,
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "license-null",
+      "area": "extract",
+      "input": {
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          },
+          "_misskey_license": {
+            "freeText": null
+          }
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "license-malformed",
+      "area": "extract",
+      "input": {
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          },
+          "_misskey_license": "text"
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "license-empty",
+      "area": "extract",
+      "input": {
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          },
+          "_misskey_license": {
+            "freeText": ""
+          }
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": ""
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": ""
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "type-first",
+      "area": "extract",
+      "input": {
+        "tags": {
+          "type": [
+            "Emoji",
+            "Other"
+          ],
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        }
+      },
+      "expected": {
+        "result": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "type-second",
+      "area": "extract",
+      "input": {
+        "tags": {
+          "type": [
+            "Other",
+            "Emoji"
+          ],
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        }
+      },
+      "expected": {
+        "result": [],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": []
+            }
+          }
+        ],
+        "rows": []
+      }
+    },
+    {
+      "id": "icon-array",
+      "area": "extract",
+      "input": {
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": [
+            {
+              "url": "https://remote.test/a"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "result": [],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": []
+            }
+          }
+        ],
+        "rows": []
+      }
+    },
+    {
+      "id": "icon-missing",
+      "area": "extract",
+      "input": {
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "$undefined": true
+          }
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of undefined (reading 'url')"
+        },
+        "events": [],
+        "rows": []
+      }
+    },
+    {
+      "id": "icon-null",
+      "area": "extract",
+      "input": {
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": null
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of null (reading 'url')"
+        },
+        "events": [],
+        "rows": []
+      }
+    },
+    {
+      "id": "icon-url-null",
+      "area": "extract",
+      "input": {
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": null
+          }
+        }
+      },
+      "expected": {
+        "result": [],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": []
+            }
+          }
+        ],
+        "rows": []
+      }
+    },
+    {
+      "id": "name-missing",
+      "area": "extract",
+      "input": {
+        "tags": {
+          "type": "Emoji",
+          "name": {
+            "$undefined": true
+          },
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of undefined (reading 'replaceAll')"
+        },
+        "events": [],
+        "rows": []
+      }
+    },
+    {
+      "id": "name-number",
+      "area": "extract",
+      "input": {
+        "tags": {
+          "type": "Emoji",
+          "name": 1,
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "tag.name.replaceAll is not a function"
+        },
+        "events": [],
+        "rows": []
+      }
+    },
+    {
+      "id": "null-tag",
+      "area": "extract",
+      "input": {
+        "tags": [
+          null
+        ]
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of null (reading 'type')"
+        },
+        "events": [],
+        "rows": []
+      }
+    },
+    {
+      "id": "string-tag",
+      "area": "extract",
+      "input": {
+        "tags": [
+          "Emoji"
+        ]
+      },
+      "expected": {
+        "result": [],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": []
+            }
+          }
+        ],
+        "rows": []
+      }
+    },
+    {
+      "id": "duplicate-existing",
+      "area": "extract",
+      "input": {
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "tags": [
+          {
+            "type": "Emoji",
+            "name": ":wave:",
+            "id": "https://remote.test/emoji/wave",
+            "updated": "2026-01-01",
+            "icon": {
+              "url": "https://remote.test/wave.png"
+            }
+          },
+          {
+            "type": "Emoji",
+            "name": ":wave:",
+            "id": "https://remote.test/emoji/wave",
+            "updated": "2026-01-01",
+            "icon": {
+              "url": "https://remote.test/wave.png"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "result": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          },
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave",
+                "wave"
+              ]
+            }
+          }
+        ],
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": "2026-02-01T00:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ]
+      }
+    },
+    {
+      "id": "duplicate-new",
+      "area": "extract",
+      "input": {
+        "tags": [
+          {
+            "type": "Emoji",
+            "name": ":wave:",
+            "id": "https://remote.test/emoji/wave",
+            "updated": "2026-01-01",
+            "icon": {
+              "url": "https://remote.test/wave.png"
+            }
+          },
+          {
+            "type": "Emoji",
+            "name": ":wave:",
+            "id": "https://remote.test/emoji/wave",
+            "updated": "2026-01-01",
+            "icon": {
+              "url": "https://remote.test/wave.png"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "duplicate emoji"
+        },
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave",
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-2"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-2",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "query-fail",
+      "area": "extract",
+      "input": {
+        "tags": [
+          {
+            "type": "Emoji",
+            "name": ":wave:",
+            "id": "https://remote.test/emoji/wave",
+            "updated": "2026-01-01",
+            "icon": {
+              "url": "https://remote.test/wave.png"
+            }
+          }
+        ],
+        "fail": "query"
+      },
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "query failed"
+        },
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          }
+        ],
+        "rows": []
+      }
+    },
+    {
+      "id": "update-fail",
+      "area": "extract",
+      "input": {
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": null,
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        },
+        "fail": "update"
+      },
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "update failed"
+        },
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "update",
+            "args": {
+              "host": "remote.test",
+              "name": "wave",
+              "patch": {
+                "uri": "https://remote.test/emoji/wave",
+                "originalUrl": "https://remote.test/wave.png",
+                "publicUrl": "https://remote.test/wave.png",
+                "updatedAt": "2027-01-15T08:00:00.000Z",
+                "license": null
+              }
+            }
+          }
+        ],
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": null,
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ]
+      }
+    },
+    {
+      "id": "update-refetch-fail",
+      "area": "extract",
+      "input": {
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://cache.test/wave",
+            "updatedAt": null,
+            "aliases": [
+              "alias"
+            ],
+            "license": "old"
+          }
+        ],
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        },
+        "fail": "update-refetch"
+      },
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "emoji update failed"
+        },
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "update",
+            "args": {
+              "host": "remote.test",
+              "name": "wave",
+              "patch": {
+                "uri": "https://remote.test/emoji/wave",
+                "originalUrl": "https://remote.test/wave.png",
+                "publicUrl": "https://remote.test/wave.png",
+                "updatedAt": "2027-01-15T08:00:00.000Z",
+                "license": null
+              }
+            }
+          },
+          {
+            "op": "refetch",
+            "args": {
+              "host": "remote.test",
+              "name": "wave"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "id": "stored",
+            "host": "remote.test",
+            "name": "wave",
+            "uri": "https://remote.test/emoji/wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [
+              "alias"
+            ],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "insert-fail",
+      "area": "extract",
+      "input": {
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        },
+        "fail": "insert"
+      },
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "insert failed"
+        },
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          }
+        ],
+        "rows": []
+      }
+    },
+    {
+      "id": "insert-refetch-fail",
+      "area": "extract",
+      "input": {
+        "tags": {
+          "type": "Emoji",
+          "name": ":wave:",
+          "id": "https://remote.test/emoji/wave",
+          "updated": "2026-01-01",
+          "icon": {
+            "url": "https://remote.test/wave.png"
+          }
+        },
+        "fail": "insert-refetch"
+      },
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "insert refetch failed"
+        },
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "parallel-order",
+      "area": "extract",
+      "input": {
+        "tags": [
+          {
+            "type": "Emoji",
+            "name": ":wave:",
+            "id": "https://remote.test/emoji/wave",
+            "updated": "2026-01-01",
+            "icon": {
+              "url": "https://remote.test/wave.png"
+            }
+          },
+          {
+            "type": "Emoji",
+            "name": ":other:",
+            "id": "https://remote.test/emoji/wave",
+            "updated": "2026-01-01",
+            "icon": {
+              "url": "https://remote.test/wave.png"
+            }
+          }
+        ],
+        "gate": "wave"
+      },
+      "expected": {
+        "result": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          },
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-2",
+            "host": "remote.test",
+            "name": "other",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ],
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave",
+                "other"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-2"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-2",
+              "host": "remote.test",
+              "name": "other",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "other"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-2"
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-2",
+            "host": "remote.test",
+            "name": "other",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          },
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "early-rejection",
+      "area": "extract",
+      "input": {
+        "tags": [
+          {
+            "type": "Emoji",
+            "name": ":wave:",
+            "id": "https://remote.test/emoji/wave",
+            "updated": "2026-01-01",
+            "icon": {
+              "url": "https://remote.test/wave.png"
+            }
+          },
+          {
+            "type": "Emoji",
+            "name": ":other:",
+            "id": "https://remote.test/emoji/wave",
+            "updated": "2026-01-01",
+            "icon": {
+              "url": "https://remote.test/wave.png"
+            }
+          }
+        ],
+        "failName": "other",
+        "gate": "wave"
+      },
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "insert failed"
+        },
+        "events": [
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave",
+                "other"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-2"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-2",
+              "host": "remote.test",
+              "name": "other",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "response",
+            "args": {
+              "rows": []
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-success",
+      "area": "create",
+      "input": {},
+      "expected": {
+        "result": {
+          "id": "new-user",
+          "emojis": [
+            "wave"
+          ]
+        },
+        "events": [
+          {
+            "op": "extract",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "actor.id"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "emojis": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "Profile.save"
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "emojis": {
+                "$undefined": true
+              }
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-query-fail",
+      "area": "create",
+      "input": {
+        "fail": "query"
+      },
+      "expected": {
+        "result": {
+          "id": "new-user",
+          "emojis": []
+        },
+        "events": [
+          {
+            "op": "extract",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "actor.id"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save"
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "emojis": {
+                "$undefined": true
+              }
+            }
+          }
+        ],
+        "rows": []
+      }
+    },
+    {
+      "id": "create-bad-url",
+      "area": "create",
+      "input": {
+        "patch": {
+          "url": "ftp://remote.test/a"
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "unexpected schema of person url: ftp://remote.test/a"
+        },
+        "events": [],
+        "rows": []
+      }
+    },
+    {
+      "id": "create-bad-birthday",
+      "area": "create",
+      "input": {
+        "patch": {
+          "vcard:bday": 17
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "person.vcard:bday?.match is not a function"
+        },
+        "events": [],
+        "rows": []
+      }
+    },
+    {
+      "id": "create-bad-attachment",
+      "area": "create",
+      "input": {
+        "patch": {
+          "attachment": [
+            null
+          ]
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of null (reading 'type')"
+        },
+        "events": [],
+        "rows": []
+      }
+    },
+    {
+      "id": "create-bad-tag",
+      "area": "create",
+      "input": {
+        "patch": {
+          "tag": [
+            null
+          ]
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of null (reading 'type')"
+        },
+        "events": [],
+        "rows": []
+      }
+    },
+    {
+      "id": "create-collection",
+      "area": "create",
+      "input": {
+        "patch": {
+          "following": {
+            "type": "Collection",
+            "id": "https://remote.test/following",
+            "items": []
+          }
+        }
+      },
+      "expected": {
+        "result": {
+          "id": "new-user",
+          "emojis": [
+            "wave"
+          ]
+        },
+        "events": [
+          {
+            "op": "collection"
+          },
+          {
+            "op": "extract",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "actor.id"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "emojis": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "Profile.save"
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "emojis": {
+                "$undefined": true
+              }
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-success",
+      "area": "refresh",
+      "input": {},
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "extract",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "emojis": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "Profile.update"
+          },
+          {
+            "op": "Following.update"
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-query-fail",
+      "area": "refresh",
+      "input": {
+        "fail": "query"
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "extract",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.update"
+          },
+          {
+            "op": "Following.update"
+          }
+        ],
+        "rows": []
+      }
+    },
+    {
+      "id": "refresh-bad-url",
+      "area": "refresh",
+      "input": {
+        "patch": {
+          "url": "ftp://remote.test/a"
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "unexpected schema of person url: ftp://remote.test/a"
+        },
+        "events": [
+          {
+            "op": "extract",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-bad-birthday",
+      "area": "refresh",
+      "input": {
+        "patch": {
+          "vcard:bday": 17
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "person.vcard:bday?.match is not a function"
+        },
+        "events": [
+          {
+            "op": "extract",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-bad-attachment",
+      "area": "refresh",
+      "input": {
+        "patch": {
+          "attachment": [
+            null
+          ]
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of null (reading 'type')"
+        },
+        "events": [
+          {
+            "op": "extract",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-bad-tag",
+      "area": "refresh",
+      "input": {
+        "patch": {
+          "tag": [
+            null
+          ]
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of null (reading 'type')"
+        },
+        "events": [
+          {
+            "op": "extract",
+            "args": {
+              "host": "remote.test"
+            }
+          }
+        ],
+        "rows": []
+      }
+    },
+    {
+      "id": "refresh-collection",
+      "area": "refresh",
+      "input": {
+        "patch": {
+          "following": {
+            "type": "Collection",
+            "id": "https://remote.test/following",
+            "items": []
+          }
+        }
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "extract",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          },
+          {
+            "op": "collection"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "emojis": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "Profile.update"
+          },
+          {
+            "op": "Following.update"
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-rollback",
+      "area": "create",
+      "input": {
+        "actorFail": "Profile"
+      },
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "Profile failed"
+        },
+        "events": [
+          {
+            "op": "extract",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "actor.id"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "emojis": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "Profile.save"
+          },
+          {
+            "op": "transaction.rollback"
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-canonical",
+      "area": "create",
+      "input": {
+        "duplicate": true
+      },
+      "expected": {
+        "result": {
+          "id": "remote",
+          "emojis": [
+            "retained"
+          ]
+        },
+        "events": [
+          {
+            "op": "extract",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "actor.id"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "emojis": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "transaction.rollback"
+          },
+          {
+            "op": "canonical"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "emojis": {
+                "$undefined": true
+              }
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-deleted",
+      "area": "refresh",
+      "input": {
+        "deleted": true
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "extract",
+            "args": {
+              "host": "remote.test"
+            }
+          },
+          {
+            "op": "find",
+            "args": {
+              "host": "remote.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "remote.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "emojis": [
+                "wave"
+              ]
+            }
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "remote.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-entry-host",
+      "area": "refresh",
+      "input": {
+        "entryHost": "ENTRY.test"
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "extract",
+            "args": {
+              "host": "ENTRY.test"
+            }
+          },
+          {
+            "op": "find",
+            "args": {
+              "host": "entry.test",
+              "names": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "id",
+            "args": "emoji-1"
+          },
+          {
+            "op": "insert.start",
+            "args": {
+              "id": "emoji-1",
+              "host": "entry.test",
+              "name": "wave",
+              "uri": "https://remote.test/emoji/wave",
+              "originalUrl": "https://remote.test/wave.png",
+              "publicUrl": "https://remote.test/wave.png",
+              "updatedAt": "2027-01-15T08:00:00.000Z",
+              "aliases": [],
+              "license": null
+            }
+          },
+          {
+            "op": "insert.done",
+            "args": {
+              "name": "wave"
+            }
+          },
+          {
+            "op": "insert.refetch",
+            "args": {
+              "id": "emoji-1"
+            }
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "emojis": [
+                "wave"
+              ]
+            }
+          },
+          {
+            "op": "Profile.update"
+          },
+          {
+            "op": "Following.update"
+          }
+        ],
+        "rows": [
+          {
+            "uri": "https://remote.test/emoji/wave",
+            "id": "emoji-1",
+            "host": "entry.test",
+            "name": "wave",
+            "originalUrl": "https://remote.test/wave.png",
+            "publicUrl": "https://remote.test/wave.png",
+            "updatedAt": "2027-01-15T08:00:00.000Z",
+            "aliases": [],
+            "license": null
+          }
+        ]
+      }
+    }
+  ]
+}
