@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { readFileSync } from 'node:fs';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { MiEmoji, MiInstance, MiFollowing, MiMeta, MiNote, MiPoll, MiUser, MiUserProfile, MiUserPublickey, MiUserKeypair } from 'backend-upstream/entities';
 import { connectResources } from '../../src/platform/connect-resources.js';
@@ -204,6 +205,8 @@ test('canonical URI duplicate creation races recover one real actor with atomic 
 });
 
 test('actor-create-profile-failure rolls back User and optional Key but permits posting omission', async () => {
+	const sourceFailure = profileSource.cases.find(c => c.id === 'create-profile-write')!;
+	expect(sourceFailure.expected.events.map((e: any) => e.op)).toContain('transaction.rollback');
 	register('rollback', { publicKey: { id: `${peer.origin}/users/rollback#key`, publicKeyPem: 'key' } });
 	const restore = await failWrites('user_profile');
 	try {
@@ -216,6 +219,10 @@ test('actor-create-profile-failure rolls back User and optional Key but permits 
 
 test.each(['user_publickey', 'user_profile', 'following'])('refresh partial failure at %s retains earlier commits and prevents later writes', async table => {
 	const name = `partial_${table}`;
+	if (table === 'user_profile') {
+		const sourceFailure = profileSource.cases.find(c => c.id === 'refresh-profile-write')!;
+		expect(sourceFailure.expected.events.filter((e: any) => /^(User|Key|Profile)\.update$/.test(e.op)).map((e: any) => e.op)).toEqual(['User.update', 'Key.update', 'Profile.update']);
+	}
 	register(name, { publicKey: { id: `${peer.origin}/users/${name}#key`, publicKeyPem: 'old' } }); await post({ text: `@${name}@remote.test` });
 	const row = await remote(name);
 	await resources.dataSource.getRepository(MiFollowing).insert({ id: codec.newId(Date.now()), followerId: row.id, followeeId: authorId, followerHost: 'remote.test', followerInbox: row.inbox, followerSharedInbox: row.sharedInbox });
@@ -868,4 +875,101 @@ test('deleted refresh guard skips User changes after independent emoji extractio
 	expect((await post({ text: '@emojideleted@remote.test after deletion', localOnly: true })).status).toBe(200);
 	expect(await resources.dataSource.getRepository(MiEmoji).countBy({ host: 'remote.test', name: 'deleted_new' })).toBe(1);
 	expect(await resources.dataSource.getRepository(MiUser).findOneBy({ id: actor.id })).toMatchObject({ isDeleted: true, name: actor.name, emojis: ['deleted_old'] });
+});
+
+const profileSource = JSON.parse(readFileSync(new URL('../../../../docs/superpowers/compatibility/remote-user/remote-profile-observations.json', import.meta.url), 'utf8')) as { sourceStorage: { descriptionMaxCharacters: number }; cases: { id: string; area: string; input: any; expected: any }[] };
+
+// Each successful source profile is persisted through real token HTTP, remote HTTP,
+// and PostgreSQL, on both initial creation and the existing stale-refresh caller.
+test.each(profileSource.cases.filter(c => ['create', 'refresh'].includes(c.area) && !c.expected.error && c.id !== 'create-canonical'))('$id source conversion meets actual public HTTP/PG storage boundary', async fixture => {
+	const name = 'profile_' + fixture.id.replaceAll('-', '_');
+	const refresh = fixture.area === 'refresh';
+	if (refresh) {
+		register(name);
+		expect((await post({ text: `@${name}@remote.test` })).status).toBe(200);
+		await stale((await remote(name)).id);
+	}
+	const before = refresh ? await remote(name) : null;
+	const beforeProfile = before ? await resources.dataSource.getRepository(MiUserProfile).findOneByOrFail({ userId: before.id }) : null;
+	register(name, { _misskey_summary: undefined, ...(decode(fixture.input) as { patch?: Record<string, unknown> }).patch });
+	const result = await post({ text: `retain @${name}@remote.test` });
+	expect(result.status, JSON.stringify(result.body)).toBe(200);
+	const expected = fixture.expected.events.find((e: any) => e.op === (refresh ? 'Profile.update' : 'Profile.save')).args;
+	// Real PG varchar enforces source schema length. The source trace's repository
+	// double records a successful conversion even when this actual write must fail.
+	const oversized = Array.from(expected.description ?? '').length > profileSource.sourceStorage.descriptionMaxCharacters;
+	const note = await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id });
+	if (oversized) {
+		expect(note.mentions).toEqual([]);
+		if (before) {
+			expect(await resources.dataSource.getRepository(MiUserProfile).findOneByOrFail({ userId: before.id })).toEqual(beforeProfile);
+		} else {
+			expect(await resources.dataSource.getRepository(MiUser).countBy({ usernameLower: name, host: 'remote.test' })).toBe(0);
+		}
+	} else {
+		const row = await remote(name);
+		expect(note.mentions).toEqual([row.id]);
+		expect(await resources.dataSource.getRepository(MiUserProfile).findOneByOrFail({ userId: row.id })).toMatchObject({ description: expected.description, fields: expected.fields });
+	}
+});
+
+test.each(profileSource.cases.filter(c => /^(create|refresh)-(attachment-priority|attachment-conversion|bad-summary)$/.test(c.id)))('$id source failure preserves actual HTTP/PG write boundary', async fixture => {
+	const name = 'profile_' + fixture.id.replaceAll('-', '_');
+	const refresh = fixture.area === 'refresh';
+	let beforeUser: MiUser | undefined;
+	let beforeProfile: MiUserProfile | undefined;
+	let beforeKey: MiUserPublickey | undefined;
+	let beforeFollowing: MiFollowing | undefined;
+	if (refresh) {
+		register(name, { publicKey: { id: `${peer.origin}/users/${name}#old`, publicKeyPem: 'old' } });
+		expect((await post({ text: `@${name}@remote.test` })).status).toBe(200);
+		const row = await remote(name);
+		beforeProfile = await resources.dataSource.getRepository(MiUserProfile).findOneByOrFail({ userId: row.id });
+		beforeKey = await resources.dataSource.getRepository(MiUserPublickey).findOneByOrFail({ userId: row.id });
+		await resources.dataSource.getRepository(MiFollowing).insert({ id: codec.newId(Date.now()), followerId: row.id, followeeId: authorId, followerHost: row.host, followerInbox: row.inbox, followerSharedInbox: row.sharedInbox });
+		beforeFollowing = await resources.dataSource.getRepository(MiFollowing).findOneByOrFail({ followerId: row.id });
+		await stale(row.id); beforeUser = await remote(name);
+	}
+	const profiles = await resources.dataSource.getRepository(MiUserProfile).count();
+	const keys = await resources.dataSource.getRepository(MiUserPublickey).count();
+	register(name, { _misskey_summary: undefined, ...(decode(fixture.input) as { patch?: Record<string, unknown> }).patch, name: 'new source profile', publicKey: { id: `${peer.origin}/users/${name}#new`, publicKeyPem: 'new' } });
+	const text = `retain @${name}@remote.test`;
+	const attemptedAt = Date.now();
+	const result = await post({ text });
+	expect(result.status).toBe(200);
+	expect(await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).toMatchObject({ text, mentions: [] });
+	if (!refresh) {
+		expect(await resources.dataSource.getRepository(MiUser).countBy({ usernameLower: name, host: 'remote.test' })).toBe(0);
+		expect(await resources.dataSource.getRepository(MiUserProfile).count()).toBe(profiles);
+		expect(await resources.dataSource.getRepository(MiUserPublickey).count()).toBe(keys);
+	} else {
+		const saved = await remote(name);
+		expect(saved.lastFetchedAt!.getTime()).toBeGreaterThanOrEqual(attemptedAt);
+		expect(await resources.dataSource.getRepository(MiUserProfile).findOneByOrFail({ userId: saved.id })).toEqual(beforeProfile);
+		expect(await resources.dataSource.getRepository(MiFollowing).findOneByOrFail({ followerId: saved.id })).toEqual(beforeFollowing);
+		const sourceWrites = fixture.expected.events.map((e: any) => e.op);
+		if (sourceWrites.includes('User.update')) {
+			expect(saved.name).toBe('new source profile');
+			expect((await resources.dataSource.getRepository(MiUserPublickey).findOneByOrFail({ userId: saved.id })).keyPem).toBe('new');
+		} else {
+			expect(saved).toEqual({ ...beforeUser, lastFetchedAt: saved.lastFetchedAt });
+			expect(await resources.dataSource.getRepository(MiUserPublickey).findOneByOrFail({ userId: saved.id })).toEqual(beforeKey);
+		}
+	}
+});
+
+test('create-canonical source fallback preserves the already persisted Profile on public alias acquisition', async () => {
+	const fixture = profileSource.cases.find(c => c.id === 'create-canonical')!;
+	const name = 'profile_canonical';
+	register(name, { _misskey_summary: 'retained canonical profile' });
+	expect((await post({ text: `@${name}@remote.test` })).status).toBe(200);
+	const row = await remote(name);
+	const profile = await resources.dataSource.getRepository(MiUserProfile).findOneByOrFail({ userId: row.id });
+	aliases.set('profile_alias', name);
+	register(name, { _misskey_summary: undefined, ...(decode(fixture.input) as { patch?: Record<string, unknown> }).patch });
+	const result = await post({ text: '@profile_alias@remote.test' });
+	expect(result.status).toBe(200);
+	expect((await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).mentions).toEqual([row.id]);
+	expect(fixture.expected.events.filter((e: any) => e.op === 'Profile.save')).toEqual([]);
+	expect(await resources.dataSource.getRepository(MiUserProfile).findOneByOrFail({ userId: row.id })).toEqual(profile);
 });

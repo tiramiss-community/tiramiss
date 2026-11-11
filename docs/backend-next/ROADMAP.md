@@ -12,7 +12,7 @@
 
 ## 現在地と既存成果
 
-基準: develop `dd5069f847b9ea3ff654ff338d74a440986876d1`（PR #263マージ後）。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
+基準: develop `91d60a82106e46a692d48ff620a38c80a8542c2e`（PR #264マージ後）と、remote profile attachment error-priority修正 `ae4765d917efd2e0f4186478ed1192a0d3fdaa5b`。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
 
 現在のS1進捗は次のとおり。各PRの限定した実装・比較範囲と、Issue全体の完了を区別する。
 
@@ -143,7 +143,7 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 
 | セッション | 順序 |
 | --- | --- |
-| S1 連合 | #243・共有root #249はマージ済み → #176（基本比較済み・残初期機能待ち）→ #195 inbox中核（署名検証・#215段階4、未実装）。限定補完は#258–#263までマージ済み |
+| S1 連合 | #243・共有root #249はマージ済み → #176（基本比較済み・残初期機能待ち）→ #195 inbox中核（署名検証・#215段階4、未実装）。限定補完は#258–#263までマージ済み。remote profileのHTML→MFM/fields有限比較と添付選択失敗優先順位修正を確認（[結果](../superpowers/compatibility/remote-user/remote-profile-results.md)）。#176/#127/#195は未完了 |
 | S2 API・ユーザー | #178の初期gate #245 → appender #246 → FollowRequest Entity #248はマージ済み。続く順序は#191 Page pack → #180 → #182の残り → #181 → #179。#178の残範囲は同Issueで追跡 |
 | S3 イベント・通知 | #177 → #197 → #217 → #198 → #189 registry → #200 chart core → #189の残り（接続操作と別名、他の担当が追加しないchannel、全channelの比較） |
 | S4 閲覧系 | #185 → LTL/GTL → TL系WebSocket channel（#189 registryの後）→ #186 → #187 |

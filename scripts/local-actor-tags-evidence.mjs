@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { remoteProfileDigest } from './remote-profile-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 const root = new URL('../', import.meta.url);
@@ -30,10 +31,10 @@ function measuredFile(value, file) {
 // Extend the existing identity chain; never replace a historical receipt or its run counts.
 export function localActorTagDigest(file, previousDigest, label = 'local actor tags previous identity') {
 	const value = receipt();
-	if (!value.files[file]) return previousDigest;
+	if (!value.files[file]) return remoteProfileDigest(file, previousDigest, label);
 	const binding = measuredFile(value, file);
 	assert(binding.previousSha256.includes(previousDigest) || binding.sha256 === previousDigest, label);
-	return binding.sha256;
+	return remoteProfileDigest(file, binding.sha256, label);
 }
 
 export function validateLocalActorTagEvidence(value, readFile = read) {
@@ -58,7 +59,7 @@ export function validateLocalActorTagEvidence(value, readFile = read) {
 	}
 	for (const [file, binding] of Object.entries(value.files)) {
 		measuredFile(value, file);
-		assert.equal(sha(readFile(file)), binding.sha256, 'actual frozen tag input drift');
+		assert.equal(sha(readFile(file)), remoteProfileDigest(file, binding.sha256), 'actual frozen tag input drift');
 	}
 	assert.match(value.brokerReceiptSha256, /^[a-f0-9]{64}$/);
 	assert.match(value.frozenInputMapSha256, /^[a-f0-9]{64}$/);

@@ -1,0 +1,4592 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "fullFileSha256": {
+    "models/UserProfile.ts": "afd7f32c99016cdd613a90b066570079db140d88a62f096267daea20ef2126ba",
+    "core/MfmService.ts": "494918ebbe07f3e1850f923df5f57fffdb3241c35a08066efe417e542496b6c0",
+    "core/activitypub/ApMfmService.ts": "d9efe129fff0ceffc711b4aed2f46ea34e2bd42ff45558b6c813211aac53acc4",
+    "core/UtilityService.ts": "99f8779e002fc2c0aa2cd203613d31fcc87e7eaeb797ef65aae6c5175b62e331",
+    "core/activitypub/misc/check-against-url.ts": "5d97319a42d8628455c1a0e041682ad99d62967f6a2cdbefda24e7ec885a117f",
+    "core/activitypub/misc/validator.ts": "97bdbeb67557dfadb0135126fff1eb408756f039ebf7057fd87ff67a89f6da21",
+    "core/activitypub/models/ApPersonService.ts": "471168b426b6ec19294b345bd0f66ac1c46fd554475c7c396bdbd9d859624921",
+    "core/activitypub/models/tag.ts": "33aa8fa4002cdfe1d8333bc15a4cfa7a0bf6761ba6690f5becb25b9726afc874",
+    "core/activitypub/type.ts": "ac649470214b7c03e8f72c599f091c3f765eafcefca933c0f85112fd2d69a8ef",
+    "misc/check-https.ts": "2b631d396e4094749cc1513f652ba5681530a4038d8ea38cc4445fbd0c4666ef",
+    "misc/normalize-for-search.ts": "cf40aaf03e5a13d69abd4966256c2cb44ee29c7b7bd038b04271e35ffb150ca6",
+    "misc/prelude/array.ts": "8319bf6a858b2afb934e50595798c2d914388c077d6bf49a2338a5f0520bcdc4",
+    "misc/status-error.ts": "81df1c128374e740d337e4b8167d1eca5cf62083a23005be68c5277aceacb49a",
+    "misc/truncate.ts": "4922b83959680d550af043fd0f2ee37c9ed911393c2367f70bc835a0ffd95ebc"
+  },
+  "methods": {
+    "misc/status-error.ts": {
+      "path": "packages/backend/src/misc/status-error.ts",
+      "sha256": "6fb2644dd29ffa37bbf57207b471af65d5b1ad5864febe9af3fa75fd01a65348"
+    },
+    "core/activitypub/type.ts": {
+      "path": "packages/backend/src/core/activitypub/type.ts",
+      "sha256": "1604b3f151853a6be8d7dd61ed349b126ac1cf1ad0da0177b8e8c61456ce08af"
+    },
+    "core/activitypub/misc/check-against-url.ts": {
+      "path": "packages/backend/src/core/activitypub/misc/check-against-url.ts",
+      "sha256": "5595d89352b54ae14badee7f53a3e393e371461bf473992f0cdfe196388bfc70"
+    },
+    "core/activitypub/misc/validator.ts": {
+      "path": "packages/backend/src/core/activitypub/misc/validator.ts",
+      "sha256": "a3f5e632358f5ec430a5b9d04c7594519b434a4870065b9d3d942de2d1bfa009"
+    },
+    "misc/check-https.ts": {
+      "path": "packages/backend/src/misc/check-https.ts",
+      "sha256": "a91f3a4780b08d3c1a58a571b191982ad2573a000677e4e0ae6d14de8547eee3"
+    },
+    "misc/normalize-for-search.ts": {
+      "path": "packages/backend/src/misc/normalize-for-search.ts",
+      "sha256": "e8c1884928722770c8d44debe367e8508dfbf931097614379617056879f7b575"
+    },
+    "misc/truncate.ts": {
+      "path": "packages/backend/src/misc/truncate.ts",
+      "sha256": "361e03302bd79753cf6699f8c622c8946f2d218f6db5cca4970c72f37911333f"
+    },
+    "misc/prelude/array.ts": {
+      "path": "packages/backend/src/misc/prelude/array.ts",
+      "sha256": "025c366827680f51683aef07edf2efe16edae11b6b7e14457321c10fe1fc6a88"
+    },
+    "core/activitypub/models/tag.ts": {
+      "path": "packages/backend/src/core/activitypub/models/tag.ts",
+      "sha256": "0e49828ade4a32374c3301a02de184faaac98c2981dd4ec0b070812a16a5ffcd"
+    },
+    "ApPersonService.validateActor": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "da3ed624a237652d14ec90ecd267c6d6a905318e79b1f37dcc13965b79c80367"
+    },
+    "ApPersonService.createPerson": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "c2e3b8e9efd102fefcae50e7c51a17ba67741f1c9410148ee33a87b33838e7af"
+    },
+    "ApPersonService.updatePerson": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "7a4865aa70d7ce75bb8ad762b35ebf52cedd8570ecbb09c7b63b74a1bed1ee7c"
+    },
+    "ApPersonService.analyzeAttachments": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "9c2bb9f0d0765fe963458fb7cc3432e91626a5b62bf9f367a5b516667a040658"
+    },
+    "ApPersonService.isPublicCollection": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "04640fbd0ef0f2a9cc68a133f7e2cf7c6dd5b2b68d94bedc87c1dd55d64f1973"
+    },
+    "UtilityService.toPuny": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "fcb70ffa3b4a1ad01eda9b2c97d696dd2b26fc5be8fad9f56ddb6a75e256e4d2"
+    },
+    "UtilityService.punyHost": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "5280ceda6a0817c4fc16ac3e3aada3538a1d268ccac1aaea6127cd3bd4450e71"
+    },
+    "UtilityService.extractDbHost": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "672fb1106e47f858fbd31fd15afb99fbe1303337a5bb4895665fd392b1a88609"
+    },
+    "UtilityService.isUriLocal": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "5829f403d08e17fa4891bb7392c939160ece5409c48f261893357346a7ab87a5"
+    },
+    "UtilityService.isSelfHost": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "a027a92bcc38e2b1b4b5384df22bfb1df8bad9e4eaac1d2ea15ea418c990cbb7"
+    },
+    "UtilityService.isBlockedHost": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "afaaf213f5f8358cb6ea4f29ce47cefc1b727e2e28f787504c842d1869872d36"
+    },
+    "UtilityService.isFederationAllowedHost": {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "5cc884819669df334b78fb68226950e08a762ed70d1a2fc94ea5b228222293d1"
+    },
+    "urlRegex": {
+      "path": "packages/backend/src/core/MfmService.ts",
+      "sha256": "2b3f77c4f518d0898d91b2173856a160d95db6246f9f8ca8dd8d75b48166172b"
+    },
+    "urlRegexFull": {
+      "path": "packages/backend/src/core/MfmService.ts",
+      "sha256": "f364a924f198dba18ab79cd153b5fe87989bbb65ab6288cc44eee2ea782182b1"
+    },
+    "MfmService.fromHtml": {
+      "path": "packages/backend/src/core/MfmService.ts",
+      "sha256": "eea505834b784c8551962734d4a9698eaffda52cc21ca6177a3470ca8952154c"
+    },
+    "ApMfmService.htmlToMfm": {
+      "path": "packages/backend/src/core/activitypub/ApMfmService.ts",
+      "sha256": "0b6eea8d8075987ccef088e6e783f7e4b449cee77ac980b35c56b3230bc0123c"
+    },
+    "MiUserProfile.description": {
+      "path": "packages/backend/src/models/UserProfile.ts",
+      "sha256": "a18c4de32cf8c9aba6beeebf8d49cf017f43e3905b113376a190af0fe89cd986"
+    }
+  },
+  "upstreamHttpMeasured": false,
+  "sourceStorage": {
+    "descriptionMaxCharacters": 2048,
+    "method": "MiUserProfile.description",
+    "boundary": "Pinned column declaration only; source repository double does not enforce PostgreSQL length."
+  },
+  "boundary": "Literal fromHtml/htmlToMfm/analyzeAttachments/validateActor/createPerson/updatePerson and real type/tag/normalize/truncate helpers. Upstream-installed real node-html-parser 9.0.4 and stringz. No transformer doubles. Finite source methods, not full upstream HTTP.",
+  "doubles": [
+    "repositories record attempts (no real DB defaults/constraints)",
+    "transaction callback trace (not rollback proof)",
+    "transport/resolver supplies actor",
+    "fixed clock/IDs",
+    "emoji returns empty",
+    "images/featured/cache/charts/events no-op",
+    "instance meta disabled"
+  ],
+  "cases": [
+    {
+      "id": "html-formatting",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<h1>Title</h1><p><b>bold</b> <strong>strong</strong> <i>italic</i> <em>em</em> <s>strike</s> <small>small</small></p>"
+      },
+      "expected": {
+        "result": "【Title】\n\n\n**bold** **strong** <i>italic</i> <i>em</i> ~~strike~~ <small>small</small>",
+        "events": []
+      }
+    },
+    {
+      "id": "html-breaks",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "a<br>\nb<br />\r\nc<br>d"
+      },
+      "expected": {
+        "result": "a\nb\nc\nd",
+        "events": []
+      }
+    },
+    {
+      "id": "html-ruby",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<ruby>漢<rp>(</rp><rt>かん</rt><rp>)</rp>字<rt>じ</rt></ruby>"
+      },
+      "expected": {
+        "result": "$[ruby 漢 かん]$[ruby 字 じ]",
+        "events": []
+      }
+    },
+    {
+      "id": "html-ruby-space-fallback",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<ruby>漢<rt>two words</rt></ruby>"
+      },
+      "expected": {
+        "result": "漢two words",
+        "events": []
+      }
+    },
+    {
+      "id": "html-ruby-element-fallback",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<ruby><b>漢</b><rt>かん</rt></ruby>"
+      },
+      "expected": {
+        "result": "**漢**かん",
+        "events": []
+      }
+    },
+    {
+      "id": "html-code",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<p><code>a &lt; b</code></p><pre><code>x\ny</code></pre>"
+      },
+      "expected": {
+        "result": "`a < b`\n```\nx\ny\n```",
+        "events": []
+      }
+    },
+    {
+      "id": "html-pre-plain",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<pre>plain\ntext</pre>"
+      },
+      "expected": {
+        "result": "plain\ntext",
+        "events": []
+      }
+    },
+    {
+      "id": "html-blockquote",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<blockquote>one<br>two</blockquote><p>end</p>"
+      },
+      "expected": {
+        "result": "> one\n> two\n\nend",
+        "events": []
+      }
+    },
+    {
+      "id": "html-entities",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "&amp; &lt; &gt; &quot; &apos; &#x1F600; &nbsp;"
+      },
+      "expected": {
+        "result": "& < > \" ' 😀",
+        "events": []
+      }
+    },
+    {
+      "id": "html-blocks",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<div>a</div><ul><li>b</li><li>c</li></ul><h2>d</h2>"
+      },
+      "expected": {
+        "result": "a\nb\nc\n\nd",
+        "events": []
+      }
+    },
+    {
+      "id": "html-comments",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<!--comment--><!doctype html><span>text</span>"
+      },
+      "expected": {
+        "result": "<!doctype html>text",
+        "events": []
+      }
+    },
+    {
+      "id": "html-malformed",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<p>first<b>open<p>second &amp;"
+      },
+      "expected": {
+        "result": "first**open\n\nsecond &**",
+        "events": []
+      }
+    },
+    {
+      "id": "html-mention",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<a href=\"https://remote.test/@alice\">@alice</a>"
+      },
+      "expected": {
+        "result": "@alice@remote.test",
+        "events": []
+      }
+    },
+    {
+      "id": "html-mention-full",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<a href=\"https://remote.test/@alice\">@alice@else.test</a>"
+      },
+      "expected": {
+        "result": "@alice@else.test",
+        "events": []
+      }
+    },
+    {
+      "id": "html-mention-me",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<a rel=\"me \" href=\"https://remote.test/@alice\">@alice</a>"
+      },
+      "expected": {
+        "result": "[@alice](https://remote.test/@alice)",
+        "events": []
+      }
+    },
+    {
+      "id": "html-mention-me-exact",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<a rel=\"me\" href=\"https://remote.test/@alice\">@alice</a>"
+      },
+      "expected": {
+        "result": "@alice@remote.test",
+        "events": []
+      }
+    },
+    {
+      "id": "html-mention-no-href",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<a>@alice</a>"
+      },
+      "expected": {
+        "result": "",
+        "events": []
+      }
+    },
+    {
+      "id": "html-empty-links",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<a></a><a href=\"https://remote.test/a\"></a><a>text</a>"
+      },
+      "expected": {
+        "result": "https://remote.test/atext",
+        "events": []
+      }
+    },
+    {
+      "id": "html-links",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<a href=\"https://remote.test/a\">https://remote.test/a</a> <a href=\"https://remote.test/日本\">日本</a>"
+      },
+      "expected": {
+        "result": "https://remote.test/a [日本](<https://remote.test/日本>)",
+        "events": []
+      }
+    },
+    {
+      "id": "html-invalid-url",
+      "area": "html",
+      "provenance": "literal-source-method",
+      "methods": [
+        "MfmService.fromHtml",
+        "misc/normalize-for-search.ts",
+        "urlRegex",
+        "urlRegexFull"
+      ],
+      "doubles": [],
+      "input": {
+        "html": "<a href=\"not-a-url\">@a</a>"
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Invalid URL"
+        },
+        "events": []
+      }
+    },
+    {
+      "id": "create-empty",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {},
+      "expected": {
+        "result": {
+          "id": "new-user"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": null,
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "User.update",
+            "args": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-empty",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {},
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "description": null,
+              "followedMessage": null,
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null
+            }
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "Following.update",
+            "args": {
+              "followerSharedInbox": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-plain",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<p>Hello <b>peer</b></p>"
+        }
+      },
+      "expected": {
+        "result": {
+          "id": "new-user"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": "Hello **peer**",
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "User.update",
+            "args": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-plain",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<p>Hello <b>peer</b></p>"
+        }
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "description": "Hello **peer**",
+              "followedMessage": null,
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null
+            }
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "Following.update",
+            "args": {
+              "followerSharedInbox": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-override",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<b>ignored</b>",
+          "_misskey_summary": "**native**"
+        }
+      },
+      "expected": {
+        "result": {
+          "id": "new-user"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": "**native**",
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "User.update",
+            "args": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-override",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<b>ignored</b>",
+          "_misskey_summary": "**native**"
+        }
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "description": "**native**",
+              "followedMessage": null,
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null
+            }
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "Following.update",
+            "args": {
+              "followerSharedInbox": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-empty-override",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<b>fallback</b>",
+          "_misskey_summary": ""
+        }
+      },
+      "expected": {
+        "result": {
+          "id": "new-user"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": "**fallback**",
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "User.update",
+            "args": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-empty-override",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<b>fallback</b>",
+          "_misskey_summary": ""
+        }
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "description": "**fallback**",
+              "followedMessage": null,
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null
+            }
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "Following.update",
+            "args": {
+              "followerSharedInbox": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-empty-summary",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": ""
+        }
+      },
+      "expected": {
+        "result": {
+          "id": "new-user"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": null,
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "User.update",
+            "args": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-empty-summary",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": ""
+        }
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "description": null,
+              "followedMessage": null,
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null
+            }
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "Following.update",
+            "args": {
+              "followerSharedInbox": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-limit-2048",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "expected": {
+        "result": {
+          "id": "new-user"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "User.update",
+            "args": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-limit-2048",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "description": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "followedMessage": null,
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null
+            }
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "Following.update",
+            "args": {
+              "followerSharedInbox": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-limit-2049",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaX"
+        }
+      },
+      "expected": {
+        "result": {
+          "id": "new-user"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "User.update",
+            "args": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-limit-2049",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaX"
+        }
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "description": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "followedMessage": null,
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null
+            }
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "Following.update",
+            "args": {
+              "followerSharedInbox": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-unicode",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀X"
+        }
+      },
+      "expected": {
+        "result": {
+          "id": "new-user"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "User.update",
+            "args": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-unicode",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀X"
+        }
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "description": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+              "followedMessage": null,
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null
+            }
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "Following.update",
+            "args": {
+              "followerSharedInbox": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-truncated-html",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa<b>tail</b>"
+        }
+      },
+      "expected": {
+        "result": {
+          "id": "new-user"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa****",
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "User.update",
+            "args": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-truncated-html",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa<b>tail</b>"
+        }
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "description": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa****",
+              "followedMessage": null,
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null
+            }
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "Following.update",
+            "args": {
+              "followerSharedInbox": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-expanded-html",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b>x"
+        }
+      },
+      "expected": {
+        "result": {
+          "id": "new-user"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": "************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************x************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************",
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "User.update",
+            "args": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-expanded-html",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b><b>x"
+        }
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "description": "************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************x************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************",
+              "followedMessage": null,
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null
+            }
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "Following.update",
+            "args": {
+              "followerSharedInbox": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-override-limit",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "_misskey_summary": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀X"
+        }
+      },
+      "expected": {
+        "result": {
+          "id": "new-user"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "User.update",
+            "args": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-override-limit",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "_misskey_summary": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀X"
+        }
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "description": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+              "followedMessage": null,
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null
+            }
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "Following.update",
+            "args": {
+              "followerSharedInbox": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-tag-single",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<a href=\"https://remote.test/tags/foo\">#foo</a>",
+          "tag": {
+            "type": "Hashtag",
+            "name": "#ＦＯＯ"
+          }
+        }
+      },
+      "expected": {
+        "result": {
+          "id": "new-user"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [
+                "foo"
+              ],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": "#foo",
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "User.update",
+            "args": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-tag-single",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<a href=\"https://remote.test/tags/foo\">#foo</a>",
+          "tag": {
+            "type": "Hashtag",
+            "name": "#ＦＯＯ"
+          }
+        }
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [
+                "foo"
+              ],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "description": "#foo",
+              "followedMessage": null,
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null
+            }
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "Following.update",
+            "args": {
+              "followerSharedInbox": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-tag-array",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<a href=\"https://remote.test/tags/foo\">#foo</a>",
+          "tag": [
+            {
+              "type": [
+                "Hashtag",
+                "Other"
+              ],
+              "name": "#FOO"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "result": {
+          "id": "new-user"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [
+                "foo"
+              ],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": "#foo",
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "User.update",
+            "args": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-tag-array",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<a href=\"https://remote.test/tags/foo\">#foo</a>",
+          "tag": [
+            {
+              "type": [
+                "Hashtag",
+                "Other"
+              ],
+              "name": "#FOO"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [
+                "foo"
+              ],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "description": "#foo",
+              "followedMessage": null,
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null
+            }
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "Following.update",
+            "args": {
+              "followerSharedInbox": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-tag-unknown",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<a href=\"https://remote.test/tags/foo\">#foo</a>",
+          "tag": {
+            "type": "Hashtag",
+            "name": "#bar"
+          }
+        }
+      },
+      "expected": {
+        "result": {
+          "id": "new-user"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [
+                "bar"
+              ],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": "[#foo](https://remote.test/tags/foo)",
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "User.update",
+            "args": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-tag-unknown",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<a href=\"https://remote.test/tags/foo\">#foo</a>",
+          "tag": {
+            "type": "Hashtag",
+            "name": "#bar"
+          }
+        }
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [
+                "bar"
+              ],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "description": "[#foo](https://remote.test/tags/foo)",
+              "followedMessage": null,
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null
+            }
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "Following.update",
+            "args": {
+              "followerSharedInbox": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-fields",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<a href=\"https://remote.test/tags/foo\">#foo</a>",
+          "tag": {
+            "type": "Hashtag",
+            "name": "#ＦＯＯ"
+          },
+          "attachment": [
+            {
+              "type": "PropertyValue",
+              "name": "tag",
+              "value": "<a href=\"https://remote.test/tags/foo\">#foo</a>"
+            },
+            {
+              "type": [
+                "PropertyValue",
+                "Other"
+              ],
+              "name": "ruby",
+              "value": "<ruby>漢<rp>(</rp><rt>かん</rt><rp>)</rp>字<rt>じ</rt></ruby>"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "result": {
+          "id": "new-user"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [
+                "foo"
+              ],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": "#foo",
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [
+                {
+                  "name": "tag",
+                  "value": "[#foo](https://remote.test/tags/foo)"
+                },
+                {
+                  "name": "ruby",
+                  "value": "$[ruby 漢 かん]$[ruby 字 じ]"
+                }
+              ],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.commit"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "User.update",
+            "args": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-fields",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<a href=\"https://remote.test/tags/foo\">#foo</a>",
+          "tag": {
+            "type": "Hashtag",
+            "name": "#ＦＯＯ"
+          },
+          "attachment": [
+            {
+              "type": "PropertyValue",
+              "name": "tag",
+              "value": "<a href=\"https://remote.test/tags/foo\">#foo</a>"
+            },
+            {
+              "type": [
+                "PropertyValue",
+                "Other"
+              ],
+              "name": "ruby",
+              "value": "<ruby>漢<rp>(</rp><rt>かん</rt><rp>)</rp>字<rt>じ</rt></ruby>"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "result": "skip",
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [
+                "foo"
+              ],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "url": {
+                "$undefined": true
+              },
+              "fields": [
+                {
+                  "name": "tag",
+                  "value": "[#foo](https://remote.test/tags/foo)"
+                },
+                {
+                  "name": "ruby",
+                  "value": "$[ruby 漢 かん]$[ruby 字 じ]"
+                }
+              ],
+              "description": "#foo",
+              "followedMessage": null,
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null
+            }
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "Following.update",
+            "args": {
+              "followerSharedInbox": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-bad-summary",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<a href=\"not-a-url\">@a</a>",
+          "publicKey": {
+            "id": "https://remote.test/users/a#key",
+            "publicKeyPem": "new"
+          }
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Invalid URL"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "transaction.rollback"
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-bad-summary",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<a href=\"not-a-url\">@a</a>",
+          "publicKey": {
+            "id": "https://remote.test/users/a#key",
+            "publicKeyPem": "new"
+          }
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Invalid URL"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Key.update",
+            "args": {
+              "keyId": "https://remote.test/users/a#key",
+              "keyPem": "new"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-bad-summary-type",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": 17
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "invalid Actor: wrong summary"
+        },
+        "events": []
+      }
+    },
+    {
+      "id": "refresh-bad-summary-type",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": 17
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "invalid Actor: wrong summary"
+        },
+        "events": []
+      }
+    },
+    {
+      "id": "create-bad-tag",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<a href=\"https://remote.test/tags/foo\">#foo</a>",
+          "tag": [
+            null
+          ]
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of null (reading 'type')"
+        },
+        "events": []
+      }
+    },
+    {
+      "id": "refresh-bad-tag",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "summary": "<a href=\"https://remote.test/tags/foo\">#foo</a>",
+          "tag": [
+            null
+          ]
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of null (reading 'type')"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-attachment-priority",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "attachment": [
+            {
+              "type": "PropertyValue",
+              "name": "site",
+              "value": "<a href=\"not-a-url\">@a</a>"
+            },
+            null
+          ]
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of null (reading 'type')"
+        },
+        "events": []
+      }
+    },
+    {
+      "id": "refresh-attachment-priority",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "attachment": [
+            {
+              "type": "PropertyValue",
+              "name": "site",
+              "value": "<a href=\"not-a-url\">@a</a>"
+            },
+            null
+          ]
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of null (reading 'type')"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-attachment-conversion",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "attachment": [
+            {
+              "type": "PropertyValue",
+              "name": "site",
+              "value": "<a href=\"not-a-url\">@a</a>"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Invalid URL"
+        },
+        "events": []
+      }
+    },
+    {
+      "id": "refresh-attachment-conversion",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "patch": {
+          "attachment": [
+            {
+              "type": "PropertyValue",
+              "name": "site",
+              "value": "<a href=\"not-a-url\">@a</a>"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Invalid URL"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-profile-write",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "fail": "Profile",
+        "patch": {
+          "summary": "<b>new</b>",
+          "publicKey": {
+            "id": "https://remote.test/users/a#key",
+            "publicKeyPem": "new"
+          }
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "Profile failed"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "Profile.save",
+            "args": {
+              "userId": "new-user",
+              "description": "**new**",
+              "followedMessage": null,
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null,
+              "userHost": "remote.test"
+            }
+          },
+          {
+            "op": "transaction.rollback"
+          }
+        ]
+      }
+    },
+    {
+      "id": "refresh-profile-write",
+      "area": "refresh",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.updatePerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "fail": "Profile",
+        "patch": {
+          "summary": "<b>new</b>",
+          "publicKey": {
+            "id": "https://remote.test/users/a#key",
+            "publicKeyPem": "new"
+          }
+        }
+      },
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "Profile failed"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "User.update",
+            "args": {
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "emojis": [],
+              "name": {
+                "$undefined": true
+              },
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": null,
+              "alsoKnownAs": null,
+              "isExplorable": {
+                "$undefined": true
+              }
+            }
+          },
+          {
+            "op": "Key.update",
+            "args": {
+              "keyId": "https://remote.test/users/a#key",
+              "keyPem": "new"
+            }
+          },
+          {
+            "op": "Profile.update",
+            "args": {
+              "url": {
+                "$undefined": true
+              },
+              "fields": [],
+              "description": "**new**",
+              "followedMessage": null,
+              "followingVisibility": "private",
+              "followersVisibility": "private",
+              "birthday": null,
+              "location": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "attachment-singleton",
+      "area": "attachment",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.analyzeAttachments",
+        "core/activitypub/type.ts",
+        "MfmService.fromHtml"
+      ],
+      "doubles": [],
+      "input": {
+        "attachment": {
+          "type": "PropertyValue",
+          "name": "ignored",
+          "value": "<b>x</b>"
+        }
+      },
+      "expected": {
+        "result": [],
+        "events": []
+      }
+    },
+    {
+      "id": "attachment-absent",
+      "area": "attachment",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.analyzeAttachments",
+        "core/activitypub/type.ts",
+        "MfmService.fromHtml"
+      ],
+      "doubles": [],
+      "input": {
+        "attachment": {
+          "$undefined": true
+        }
+      },
+      "expected": {
+        "result": [],
+        "events": []
+      }
+    },
+    {
+      "id": "attachment-empty",
+      "area": "attachment",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.analyzeAttachments",
+        "core/activitypub/type.ts",
+        "MfmService.fromHtml"
+      ],
+      "doubles": [],
+      "input": {
+        "attachment": []
+      },
+      "expected": {
+        "result": [],
+        "events": []
+      }
+    },
+    {
+      "id": "attachment-guards",
+      "area": "attachment",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.analyzeAttachments",
+        "core/activitypub/type.ts",
+        "MfmService.fromHtml"
+      ],
+      "doubles": [],
+      "input": {
+        "attachment": [
+          {
+            "type": "Other",
+            "name": "ignored",
+            "value": "<b>x</b>"
+          },
+          {
+            "type": "PropertyValue",
+            "name": 1,
+            "value": "ignored"
+          },
+          {
+            "type": "PropertyValue",
+            "name": "ignored",
+            "value": 1
+          },
+          {
+            "type": "PropertyValue",
+            "name": "",
+            "value": ""
+          },
+          {
+            "type": "PropertyValue",
+            "name": "first",
+            "value": "<b>x</b>"
+          }
+        ]
+      },
+      "expected": {
+        "result": [
+          {
+            "name": "",
+            "value": ""
+          },
+          {
+            "name": "first",
+            "value": "**x**"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "attachment-type-second",
+      "area": "attachment",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.analyzeAttachments",
+        "core/activitypub/type.ts",
+        "MfmService.fromHtml"
+      ],
+      "doubles": [],
+      "input": {
+        "attachment": [
+          {
+            "type": [
+              "Other",
+              "PropertyValue"
+            ],
+            "name": "ignored",
+            "value": "<b>x</b>"
+          }
+        ]
+      },
+      "expected": {
+        "result": [],
+        "events": []
+      }
+    },
+    {
+      "id": "create-canonical",
+      "area": "create",
+      "provenance": "literal-source-method",
+      "methods": [
+        "ApPersonService.createPerson",
+        "ApPersonService.validateActor",
+        "ApPersonService.analyzeAttachments",
+        "ApMfmService.htmlToMfm",
+        "MfmService.fromHtml",
+        "core/activitypub/models/tag.ts",
+        "core/activitypub/type.ts",
+        "misc/normalize-for-search.ts",
+        "misc/truncate.ts"
+      ],
+      "doubles": [
+        "repositories",
+        "transaction",
+        "transport",
+        "clock",
+        "emoji",
+        "external-effects"
+      ],
+      "input": {
+        "duplicate": true,
+        "patch": {
+          "summary": "<b>discarded</b>"
+        }
+      },
+      "expected": {
+        "result": {
+          "id": "remote"
+        },
+        "events": [
+          {
+            "op": "emoji"
+          },
+          {
+            "op": "transaction.begin"
+          },
+          {
+            "op": "User.save",
+            "args": {
+              "id": "new-user",
+              "avatarId": null,
+              "bannerId": null,
+              "lastFetchedAt": "2027-01-15T08:00:00.000Z",
+              "name": {
+                "$undefined": true
+              },
+              "isLocked": {
+                "$undefined": true
+              },
+              "movedToUri": {
+                "$undefined": true
+              },
+              "movedAt": null,
+              "alsoKnownAs": [],
+              "isExplorable": {
+                "$undefined": true
+              },
+              "username": "Alice",
+              "usernameLower": "alice",
+              "host": "remote.test",
+              "inbox": "https://remote.test/inbox",
+              "sharedInbox": null,
+              "followersUri": {
+                "$undefined": true
+              },
+              "featured": {
+                "$undefined": true
+              },
+              "uri": "https://remote.test/users/a",
+              "tags": [],
+              "isBot": false,
+              "isCat": false,
+              "requireSigninToViewContents": false,
+              "makeNotesFollowersOnlyBefore": null,
+              "makeNotesHiddenBefore": null,
+              "emojis": []
+            }
+          },
+          {
+            "op": "transaction.rollback"
+          },
+          {
+            "op": "canonical"
+          },
+          {
+            "op": "hashtags"
+          },
+          {
+            "op": "User.update",
+            "args": {}
+          }
+        ]
+      }
+    }
+  ]
+}

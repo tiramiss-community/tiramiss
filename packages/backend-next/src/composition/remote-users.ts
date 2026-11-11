@@ -111,7 +111,7 @@ export function createRemoteUsers(parts: {
 			if (existing !== null) {
 				material.emojis = await acquireEmojis(existing.host!);
 			}
-			material.fields = Array.isArray(p.attachment) ? p.attachment.flatMap(field => apType({ type: field.type }) === 'PropertyValue' && typeof field.name === 'string' && typeof field.value === 'string' ? [{ name: field.name, value: htmlToMfm(field.value) }] : []) : [];
+			material.fields = Array.isArray(p.attachment) ? p.attachment.filter(field => apType({ type: field.type }) === 'PropertyValue' && typeof field.name === 'string' && typeof field.value === 'string').map(field => ({ name: field.name, value: htmlToMfm(field.value) })) : [];
 			const hashtagNames = (Array.isArray(p.tag) ? p.tag : p.tag ? [p.tag] : []).flatMap(tag => apType({ type: tag.type }) === 'Hashtag' && typeof tag.name === 'string' ? [tag.name] : []);
 			[material.followingVisibility, material.followersVisibility] = await Promise.all([p.following, p.followers].map(value => collectionVisibility(value, session.resolve, existing !== null)));
 			try {
