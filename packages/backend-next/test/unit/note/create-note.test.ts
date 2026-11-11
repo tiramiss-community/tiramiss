@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { readFileSync } from 'node:fs';
-import { expect, test } from 'vitest';
+import { expect, test, vi } from 'vitest';
 import { createHostRules } from '../../../src/modules/federation/public.js';
 import { createCreateNote } from '../../../src/modules/note/create-note.js';
 import { concatNoteContentsForKeywordCheck, matchesWords } from '../../../src/modules/note/keywords.js';
@@ -19,6 +19,8 @@ const unavailable = async (): Promise<never> => {
 };
 const actorScope: RemoteActorCreateScope = { insertUser: unavailable, insertProfile: unavailable, insertPublickey: unavailable };
 const remotePorts: RemoteUserPorts = {
+	clearActorImages: async () => {},
+	reportActorImageFailure: () => {},
 	startActorInstanceRegistration: () => {},
 	startUserHashtags: () => {},
 	selfHost: 'example.com', localId: () => null, readByAccount: async () => null, readByUri: async () => null, readLocal: async () => null,
@@ -1002,4 +1004,104 @@ test.each(instanceCases)('$id consumes new source eligibility/host/increment pro
 		gate.resolve(); await controller.idle();
 	}
 	expect(effects).toEqual(fixture.expected.events.filter(event => ['register.start', 'increment.start'].includes(event.op)));
+});
+
+// Catches an early return after canonical recovery, wrong target ID, or a detached image write.
+test.each([false, true])('both-absent creation (canonical recovery=%s) waits for images after nonwaiting hashtags', async duplicate => {
+	const { prepareActor, validateActor } = await import('../../../src/modules/federation/public.js');
+	const plan = await prepareActor(validateActor({ type: 'Person', id: 'https://remote.test/canonical', preferredUsername: 'a', inbox: 'https://remote.test/inbox', tag: [{ type: 'Hashtag', name: '#new' }] }, 'https://remote.test/canonical'), null, now, 'attempted');
+	const canonical = { id: 'canonical', username: 'a', host: 'remote.test', uri: plan.uri, tags: ['current'], lastFetchedAtMs: now, isDeleted: true };
+	const events: unknown[] = [];
+	let release!: () => void;
+	const gate = new Promise<void>(resolve => {
+		release = resolve;
+	});
+	const hashtags = new Promise<void>(() => {});
+	const world = setup(author, { ports: {
+		webfinger: async () => plan.uri, acquireActor: async () => plan,
+		insertActor: async () => {
+			if (duplicate) {
+				throw Object.assign(Error('duplicate'), { code: '23505' });
+			}
+			return { ...canonical, id: 'attempted' };
+		},
+		readByUri: async () => canonical,
+		startActorInstanceRegistration: host => {
+			events.push(['instance', host]);
+		},
+		startUserHashtags: (user, tags) => {
+			events.push(['hashtags', user.id, [...user.tags], [...tags]]);
+			return hashtags;
+		},
+		clearActorImages: async id => {
+			events.push(['images', id]);
+			await gate;
+		},
+	} });
+	let settled = false;
+	const pending = world.createNote({ text: '@alias@remote.test' }).then(() => {
+		settled = true;
+	});
+	try {
+		await vi.waitFor(() => expect(events).toHaveLength(3));
+		expect(settled).toBe(false);
+		expect(world.notes).toEqual([]);
+		expect(events).toEqual([['instance', 'remote.test'], ['hashtags', duplicate ? 'canonical' : 'attempted', duplicate ? ['current'] : ['new'], ['new']], ['images', duplicate ? 'canonical' : 'attempted']]);
+	} finally {
+		release();
+		await pending;
+	}
+	expect(world.notes[0].mentions).toEqual([duplicate ? 'canonical' : 'attempted']);
+});
+
+test.each([false, true])('image write failure is caught and diagnosed, mention survives (duplicate=%s)', async duplicate => {
+	const { prepareActor, validateActor } = await import('../../../src/modules/federation/public.js');
+	const plan = await prepareActor(validateActor({ type: 'Person', id: 'https://remote.test/a', preferredUsername: 'a', inbox: 'https://remote.test/inbox' }, 'https://remote.test/a'), null, now, 'attempted');
+	const canonical = { id: 'canonical', username: 'a', host: 'remote.test', uri: plan.uri, tags: [], lastFetchedAtMs: now, isDeleted: false };
+	const failure = Error('image write failed');
+	const diagnostics: unknown[] = [];
+	const world = setup(author, { ports: {
+		webfinger: async () => plan.uri, acquireActor: async () => plan,
+		insertActor: async () => {
+			if (duplicate) {
+				throw Object.assign(Error('duplicate'), { code: '23505' });
+			}
+			return { ...canonical, id: plan.id };
+		},
+		readByUri: async () => canonical,
+		clearActorImages: async () => {
+			throw failure;
+		},
+		reportActorImageFailure: (id, error) => {
+			diagnostics.push([id, error]);
+		},
+	} });
+	await world.createNote({ text: '@alias@remote.test' });
+	expect(world.notes[0].mentions).toEqual([duplicate ? 'canonical' : 'attempted']);
+	expect(diagnostics).toEqual([[duplicate ? 'canonical' : 'attempted', failure]]);
+});
+
+test.each(['present', 'failed-create', 'fresh', 'local', 'refresh'])('%s does not run post-create image clearing', async mode => {
+	const { prepareActor, validateActor } = await import('../../../src/modules/federation/public.js');
+	const facts = { id: 'stored', username: 'a', host: 'remote.test', uri: 'https://remote.test/a', tags: [], lastFetchedAtMs: mode === 'refresh' ? null : now, isDeleted: false };
+	const plan = await prepareActor(validateActor({ type: 'Person', id: facts.uri, preferredUsername: 'a', inbox: 'https://remote.test/inbox', ...(mode === 'present' ? { icon: { url: 'https://remote.test/icon' } } : {}) }, facts.uri), null, now, 'attempted');
+	let clears = 0;
+	const world = setup(author, { ports: {
+		readByAccount: async () => ['fresh', 'refresh'].includes(mode) ? facts : null,
+		webfinger: async () => facts.uri, acquireActor: async () => plan,
+		localId: () => mode === 'local' ? facts.id : null, readLocal: async () => facts,
+		readByUri: async () => facts, markAttempt: async () => {}, refreshActor: async () => 'updated',
+		insertActor: async () => {
+			if (mode === 'failed-create') {
+				throw Error('transaction failed');
+			}
+			return facts;
+		},
+		clearActorImages: async () => {
+			clears++;
+		},
+	} });
+	await world.createNote({ text: '@alias@remote.test' });
+	expect(clears).toBe(0);
+	expect(world.notes[0].mentions).toEqual(mode === 'failed-create' ? [] : [facts.id]);
 });

@@ -33,6 +33,8 @@ export function classifyRemoteUser(facts: RemoteUserFacts | null, now: number): 
 }
 export interface RemoteUserPorts {
 	selfHost: string;
+	clearActorImages(id: string): Promise<void>;
+	reportActorImageFailure(id: string, error: unknown): void;
 	startActorInstanceRegistration(host: string): void;
 	startUserHashtags: StartUserHashtags;
 	localId(uri: string): string | null;

@@ -114,6 +114,7 @@ export interface RemoteActorPublickey {
 	keyPem: string;
 }
 export interface RemoteActorPlan {
+	bothImagesAbsent: boolean;
 	kind: 'create' | 'refresh';
 	hashtagUser: UserHashtagSnapshot;
 	id: string;
@@ -321,6 +322,7 @@ export async function prepareActor(material: RemoteActorMaterial, existing: Remo
 	};
 	return {
 		kind: refresh ? 'refresh' : 'create', id, uri: p.id, user, profile,
+		bothImagesAbsent: isMissingImage(p.icon) && isMissingImage(p.image),
 		hashtagUser: { id, host: existing?.host ?? host, tags: [...(existing?.tags ?? tags)] },
 		...(profileError ? { profileError } : {}),
 		...(p.publicKey ? { publickey: { ...(refresh ? {} : { userId: id }), keyId: p.publicKey.id, keyPem: p.publicKey.publicKeyPem } } : {}),

@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "base": "6a4cc93bde543a7456467414611518c29f549ee6",
+  "postingComplete": false,
+  "status": "bounded-slice-validated",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "receipt": {
+    "path": "/tmp/tiramiss-s1-r8-validation-receipt-r3.json",
+    "sha256": "c6cce414c5b5dd7c695fd38548cef2cdfd13df577ac2c86a6081dbb5dbb663e8",
+    "requestSha256": "0eb7749937604b71120bf21a85153d7dac2bbe7abca01abe341f4c604a2f8aa0"
+  },
+  "runtime": {
+    "node": "v26.4.0",
+    "pnpm": "12.9.1"
+  },
+  "frozenInputs": 517,
+  "commands": [
+    {
+      "id": "build",
+      "command": "pnpm --filter backend-next... build",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r8-validation-r3-build.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "id": "typecheck",
+      "command": "pnpm --filter backend-next... typecheck",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r8-validation-r3-typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "id": "unit",
+      "command": "pnpm --filter backend-next test test/unit/federation/remote-actor.test.ts test/unit/federation/remote-user.test.ts test/unit/note/create-note.test.ts --reporter=default --reporter=json --outputFile=/tmp/tiramiss-s1-r8-validation-r3-unit.json",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r8-validation-r3-unit.log",
+      "logSha256": "01321bb3d1b1fa1ac45b501db66c7ddecf6e894eddb4425a8c2d270af5b458be",
+      "artifact": "/tmp/tiramiss-s1-r8-validation-r3-unit.json",
+      "artifactSha256": "bfd6b14491afb44a6039838517db38f77d605ca380e8a69bef75b9a71cd9a742",
+      "tests": {
+        "numTotalTests": 268,
+        "numPassedTests": 268,
+        "numFailedTests": 0,
+        "numPendingTests": 0,
+        "success": true
+      }
+    },
+    {
+      "id": "integration",
+      "command": "pnpm --filter backend-next test:integration test/integration/remote-user.test.ts test/integration/note-application.test.ts --reporter=default --reporter=json --outputFile=/tmp/tiramiss-s1-r8-validation-r3-integration.json",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r8-validation-r3-integration.log",
+      "logSha256": "7a584bc2aa3b5a8030c53ab5dbb48ab33ca61ec2bee24e5f23ce2138e97ea4fd",
+      "artifact": "/tmp/tiramiss-s1-r8-validation-r3-integration.json",
+      "artifactSha256": "a5fe3fb04db7888389a3e136a84b4850281e2b56ee8a9fda67f6fdceeaf27fed",
+      "tests": {
+        "numTotalTests": 116,
+        "numPassedTests": 116,
+        "numFailedTests": 0,
+        "numPendingTests": 0,
+        "success": true
+      }
+    },
+    {
+      "id": "source",
+      "command": "UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/remote-user/actor-image-removal-source-probe.mjs --check",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r8-validation-r3-source.log",
+      "logSha256": "6dba698e536fb5ba6060546a2029d4d2af84776134abefaa652c94c8e716f653"
+    }
+  ],
+  "limits": "Actual new-backend native-token HTTP/PG regression; source uses explicit external doubles, no full upstream HTTP/PG or Drive/media-policy parity. No process lifetime changes."
+}
