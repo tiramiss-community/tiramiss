@@ -1,0 +1,290 @@
+{
+  "schemaVersion": 1,
+  "scope": "local-actor-image-publication",
+  "baseCommit": "62cdeb54289bdcf46ad57e7f8a28db8a4c5f2ee7",
+  "workingTreeAtMeasurement": "dirty; no implementation commit invented",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "upstreamHttpMeasured": false,
+  "notesCreateStatus": "partial",
+  "postingComplete": false,
+  "validationRevision": 2,
+  "runtime": {
+    "node": "v26.4.0",
+    "pnpm": "12.9.1"
+  },
+  "environment": {
+    "dbPort": 55512,
+    "redisPort": 56412,
+    "meiliPort": 57812
+  },
+  "measurementWindow": {
+    "startedAt": "2026-11-11T09:56:01.464832+00:00",
+    "completedAt": "2026-11-11T09:56:29.559534+00:00",
+    "meaning": "These frozen request hashes were checked before and after every command during this specific broker window. Later descriptive evidence/Markdown and parent metadata/root-helper work are outside the input set; no future whole-checkout immutability is claimed."
+  },
+  "brokerReceiptPath": "/tmp/tiramiss-s1-r9-validation-receipt-r2.json",
+  "brokerReceiptSha256": "89f9c88c2b9a17155ab2a4cd4857152c4ec2df05bd77a9b4d4b1cf9e1174cf7c",
+  "brokerRequestPath": "/tmp/tiramiss-s1-r9-validation-request-r2.json",
+  "brokerRequestSha256": "067fa0a74a6931662870c1554eb0a6b7898625f8129ad755fad1afd44e58bc7c",
+  "frozenInputCount": 835,
+  "frozenInputMapSha256": "b3b062380571961fa35051163df19579fa05ed4a6f20884572ba77a138611d45",
+  "frozenInputMapEncoding": "UTF-8 JSON sorted keys, separators comma/colon, no trailing newline",
+  "measurements": [
+    {
+      "id": "build",
+      "command": "pnpm --filter backend-next... build",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r9-validation-r2-build.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "id": "typecheck",
+      "command": "pnpm --filter backend-next... typecheck",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r9-validation-r2-typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "id": "units",
+      "command": "pnpm --filter backend-next test test/unit/federation/local-actor-images.test.ts test/unit/federation/local-actor.test.ts test/unit/federation/local-actor-profile.test.ts test/unit/federation/local-actor-tags.test.ts test/unit/federation/actor-api.test.ts test/unit/federation/remote-actor.test.ts test/unit/federation/remote-user.test.ts test/unit/federation/activity-fetch.test.ts test/unit/note/files.test.ts test/unit/config.test.ts --reporter=default --reporter=json --outputFile=/tmp/tiramiss-s1-r9-validation-r2-units.json",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r9-validation-r2-units.log",
+      "logSha256": "b72202a9e1cc8e2fab08a7aa434a425316b0e53864e33aa8fb091034c3189f50",
+      "artifact": "/tmp/tiramiss-s1-r9-validation-r2-units.json",
+      "artifactSha256": "418bbd72294b4bf3d8b3d4349ec5687e4f8026412d01d1f7db8c94fa847eb2c4",
+      "tests": {
+        "numTotalTests": 317,
+        "numPassedTests": 317,
+        "numFailedTests": 0,
+        "numPendingTests": 0,
+        "success": true
+      }
+    },
+    {
+      "id": "activitypub-actor-integration",
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55512 BACKEND_NEXT_TEST_REDIS_PORT=56412 BACKEND_NEXT_TEST_MEILI_PORT=57812 pnpm --filter backend-next test:integration test/integration/activitypub-actor.test.ts --reporter=default --reporter=json --outputFile=/tmp/tiramiss-s1-r9-validation-r2-activitypub-actor-integration.json",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r9-validation-r2-activitypub-actor-integration.log",
+      "logSha256": "de4f93164b0e4751af254721f23a370c7004b2d5901608d69971727c3f34163e",
+      "artifact": "/tmp/tiramiss-s1-r9-validation-r2-activitypub-actor-integration.json",
+      "artifactSha256": "c36cf8a68bd32c3fde8ca0d526700010f9a42f2f728f9884fb2b6c00cefa317b",
+      "tests": {
+        "numTotalTests": 53,
+        "numPassedTests": 53,
+        "numFailedTests": 0,
+        "numPendingTests": 0,
+        "success": true
+      }
+    },
+    {
+      "id": "remote-user-integration",
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55512 BACKEND_NEXT_TEST_REDIS_PORT=56412 BACKEND_NEXT_TEST_MEILI_PORT=57812 pnpm --filter backend-next test:integration test/integration/remote-user.test.ts --reporter=default --reporter=json --outputFile=/tmp/tiramiss-s1-r9-validation-r2-remote-user-integration.json",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r9-validation-r2-remote-user-integration.log",
+      "logSha256": "7894e9f157023d6d96bbb1fb02d44b01648ac0e2c2f3e15e42f3da013f2845f0",
+      "artifact": "/tmp/tiramiss-s1-r9-validation-r2-remote-user-integration.json",
+      "artifactSha256": "f0e8efc52f515191818883a58a4c10d3763ca1057a39061f3fc915019dec01f1",
+      "tests": {
+        "numTotalTests": 108,
+        "numPassedTests": 108,
+        "numFailedTests": 0,
+        "numPendingTests": 0,
+        "success": true
+      }
+    },
+    {
+      "id": "source-check",
+      "command": "UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/remote-user/local-actor-images-source-probe.mjs --check",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r9-validation-r2-source-check.log",
+      "logSha256": "7c3c5fb40883d9eef424fa9cdb3e4c19311f7d54ed4c343c2350675abdccc3aa"
+    }
+  ],
+  "files": {
+    "packages/backend-next/src/composition/actor-http.ts": {
+      "sha256": "e92117aa760f8965304fee921c88c2c461acebda9c0f30e6c872970acc3b9550"
+    },
+    "packages/backend-next/src/composition/local-actor-materials.ts": {
+      "sha256": "299e084c05cbe34ce5e137a4e71c642312d1854db36676b5461a55927e73f6ba"
+    },
+    "packages/backend-next/src/composition/remote-users.ts": {
+      "sha256": "cb16a2f6d25015d44874418813daa59403ed811c781b5c8f3ae07b6ccb5e01aa"
+    },
+    "packages/backend-next/src/http/activitypub-actor-api.ts": {
+      "sha256": "5fa892c9eee15c022fa4e47ad91d87494a27df52aa99b45da5cb336928a2f1c1"
+    },
+    "packages/backend-next/src/modules/drive/public-file-url.ts": {
+      "sha256": "ab8bf7f671461bebe886a49525cbab38feb493a40cfd8c106e9830a3d2005765"
+    },
+    "packages/backend-next/src/modules/drive/public.ts": {
+      "sha256": "f2ddfa69471e9658ae58a0b05535795c30de355f404442939bdb62ea97c4d096"
+    },
+    "packages/backend-next/src/modules/federation/local-actor.ts": {
+      "sha256": "9ea18129a650c908929dfce71d349fba256e095b869c974adeb73454bc1c045e"
+    },
+    "packages/backend-next/src/modules/federation/public.ts": {
+      "sha256": "d2d971b30cf383c5e273337f9dbf131fb5f7c4a773ffa07e3434011ffa1ae5ac"
+    },
+    "packages/backend-next/src/platform/database/local-actors.ts": {
+      "sha256": "b592295ee192864bfaa6af4068670983758edad9d655cbddbb583e0cfd689bea"
+    },
+    "packages/backend-next/src/platform/database/note-files.ts": {
+      "sha256": "62c8dbe2231329a517c04e881737755fbd1c8493dff3ff95db2e60ff658ef7c7"
+    },
+    "packages/backend-next/test/helpers/local-actor.ts": {
+      "sha256": "24b63006e8b062b219a8a1da517244bba16d223e78a740d1e4e1bd42c34783e4"
+    },
+    "packages/backend-next/test/integration/activitypub-actor.test.ts": {
+      "sha256": "3f979c87e8dac172ad57b2a489c2cfb8442da750953bba61ee7a1988f0a15636"
+    },
+    "packages/backend-next/test/unit/config.test.ts": {
+      "sha256": "9aa7a600d0fecf66f7743eb97916414d50c9d0973b45797a4124a8d722078a9d"
+    },
+    "packages/backend-next/test/unit/federation/actor-api.test.ts": {
+      "sha256": "77406a2b358f1bb64926c8e5cec915c1ef5a9bfd66561a60e74e96a6b8295ba4"
+    },
+    "packages/backend-next/test/unit/federation/local-actor-images.test.ts": {
+      "sha256": "e2a0720c22f3fa194cba67b13112f731077b66f4a45e31d2cfd7c1c3f06af569"
+    },
+    "packages/backend-next/test/unit/federation/local-actor-profile.test.ts": {
+      "sha256": "a54254bfc74f1848f5c632c9687efd2d0dba36362c459bcf92132a8908a27265"
+    },
+    "packages/backend-next/test/unit/federation/local-actor-tags.test.ts": {
+      "sha256": "8f0e0cda3ab64a11738961e7345f41735f334af7748f3f98054fa25d2e1915df"
+    },
+    "packages/backend-next/test/unit/federation/local-actor.test.ts": {
+      "sha256": "43969c179d95e551896308cd850cba55e5601da66e9d96086491bc8342104217"
+    },
+    "docs/superpowers/compatibility/remote-user/local-actor-images-corpus.json": {
+      "sha256": "48b1e78757270fbb70f59580e910e5c03613a5fbe38eee43b82a7fc98f7c9705"
+    },
+    "docs/superpowers/compatibility/remote-user/local-actor-images-observations.json": {
+      "sha256": "a5bf8e4ebba8fc976ee7d495e929619c4c94902ae8620d0dcf874805eff76d8f"
+    },
+    "docs/superpowers/compatibility/remote-user/local-actor-images-source-probe.mjs": {
+      "sha256": "748f3c5d622ea589de84a81fba996d96c9235d3e57c1e8f93d156f8c9417a948"
+    }
+  },
+  "sourceOracle": {
+    "cases": 33,
+    "manifest": [
+      {
+        "path": "packages/backend/src/core/activitypub/ApRendererService.ts",
+        "klass": "ApRendererService",
+        "sha256": "8e4bcdcb5d062ffb707b0e038e5e1f62f0afca2ac4ddaa44c10e1b21bcbf1098",
+        "gitBlob": "601edcebe931a2c98e1bf967debdbe8c91e508ad",
+        "methods": {
+          "renderPerson": "409ee63404fdfbc27bc4c199b34166e30cef4ce137b26cd053ab92eb84a6ec97",
+          "renderImage": "94b2ff87b6c429deb94a26232cbcbace546147d3cbc5697bd696f926aaab2c7d",
+          "renderIdenticon": "5802cb350b6b5a377fdde5366f7288a4fa9a0deac85a2b51ae5ab8c792366f4e",
+          "renderSystemAvatar": "bdaa8399d001085dc5191c65440c9374b4ad9809de288e838a5fe75ef8535180",
+          "renderSystemBanner": "f3de587e501641b5b0785a4f615ad2db1513932630b4ad4bf58baa338abac3e9"
+        }
+      },
+      {
+        "path": "packages/backend/src/core/entities/DriveFileEntityService.ts",
+        "klass": "DriveFileEntityService",
+        "sha256": "a48a07792b784a3ded4364594d346e2cd2d9a7e0a506b56b082325a8f41ca738",
+        "gitBlob": "1865d494c4ba39d84daa62501469895e7224a3fb",
+        "methods": {
+          "getPublicUrl": "09996dc02d88f72f98206a35ca2f41396057e133ec4365ea1206429f6f226c24",
+          "getProxiedUrl": "5da80d298150002f856c758001957886560ad956f7dc4e2abb3949bd3fe54c97"
+        }
+      },
+      {
+        "path": "packages/backend/src/core/entities/UserEntityService.ts",
+        "klass": "UserEntityService",
+        "sha256": "c986907bacb822863fe19214b7ec1443c02ebb028820f33932e7cde7f47f6464",
+        "gitBlob": "7b932e3230699f4266ff4860d0c850c41038047a",
+        "methods": {
+          "getIdenticonUrl": "6059f11d806e180dd0cbb1432977d80ac233ee1040effd48cf5f240142f653a5"
+        }
+      },
+      {
+        "path": "packages/backend/src/misc/prelude/url.ts",
+        "klass": null,
+        "sha256": "23157930e879afe70598a81c2e2671e2ceaee6a71023afc2f7b4a15fecb58e9d",
+        "gitBlob": "270a0750754eac81c651b7090bd0a7c2d7b3c798",
+        "methods": {
+          "query": "e31749d7aa1ba1b6f021364e477bd7d39d5d6f63de1d850c0c89cd85236cd816",
+          "appendQuery": "566f5d75d99a226d39684a01742794b6d180d3a8837afc058bef330119da992f"
+        }
+      }
+    ],
+    "corpusSha256": "48b1e78757270fbb70f59580e910e5c03613a5fbe38eee43b82a7fc98f7c9705",
+    "doubles": {
+      "files": "independent findOneBy({id}); plain rows/missing/rejection",
+      "profile": "required empty profile or rejection",
+      "meta": "explicit iconUrl/bannerUrl/proxyRemoteFiles",
+      "config": "explicit effective normalized URL/host/proxy settings; production normalization tested separately",
+      "tags": "getEmojis returns [] or rejects; user tags empty",
+      "key": "getUserKeypair returns {} or rejects; renderKey null",
+      "mfm": "null description; no parser/html execution"
+    },
+    "evidence": "literal pinned source methods with doubles; not upstream full-server HTTP/PG"
+  },
+  "historicalSha256": {
+    "docs/superpowers/compatibility/remote-user/actor-image-removal-corpus.json": "8d080e91cbb8419652b7f5cb67f3964a53a70e55d4fc489311c1d65adee5b5cb",
+    "docs/superpowers/compatibility/remote-user/actor-image-removal-current-evidence.json": "bdb86b57bf6675bbf7c4ca1ca5e3ab533f616b03afb018973a7614fd0a03dbbc",
+    "docs/superpowers/compatibility/remote-user/actor-image-removal-observations.json": "384ddddf7fe8e639f777bdb5c028b79a7766c8290677c38d95bf000ad7f66748",
+    "docs/superpowers/compatibility/remote-user/actor-image-removal-runtime-evidence.json": "4fb0b8ea8e35907bb7b17bed3f40da99392509d6d397bc32668144f4496b9302",
+    "docs/superpowers/compatibility/remote-user/actor-image-removal-source-probe.mjs": "daefca85c70f93b4570dfd1681dbe37093461a82f97274fe86de83a0a1cb827b",
+    "docs/superpowers/compatibility/remote-user/actor-instance-registration-observations.json": "588675d9c9ba68585fb153a7d365a931351d613ddd6b30b8d8c6594b2b514d1f",
+    "docs/superpowers/compatibility/remote-user/actor-instance-registration-runtime-evidence.json": "d36d75bb0a90670c37ffbe0275562fe2d74f5e98e6c5fffe3069b36401919828",
+    "docs/superpowers/compatibility/remote-user/actor-instance-registration-source-probe.mjs": "ecb025cc7130273bad238e8de0d3a745a69a84ff48a707b85fdb61876de4ff78",
+    "docs/superpowers/compatibility/remote-user/local-actor-profile-observations.json": "10c782ee3ba9d174cdc8fb3ff34554497dd2e5b0ec169a95ff69054fdbad628a",
+    "docs/superpowers/compatibility/remote-user/local-actor-profile-runtime-evidence.json": "8beec85496036c9e78c8fafb5328d367fd8590883b5b9d7c3767652a916d774e",
+    "docs/superpowers/compatibility/remote-user/local-actor-profile-source-probe.mjs": "183dd5e261a16e8b089dde12bf561dc82bf190e6c9fae63a6045f64cb5034d00",
+    "docs/superpowers/compatibility/remote-user/local-actor-tags-observations.json": "e6414ae6784d6398539a7e86d2bb197e84695ff49891d96aab117b34edc4297e",
+    "docs/superpowers/compatibility/remote-user/local-actor-tags-runtime-evidence.json": "22e04a9d23b675208c549e9f29dff871faa0718f0a566e89055a6836fb3df497",
+    "docs/superpowers/compatibility/remote-user/local-actor-tags-source-probe.mjs": "a13fd10119931347af8660751ca4b5f2e0f3499dc8d51235754f64120c80d7f3",
+    "docs/superpowers/compatibility/remote-user/observations.json": "7427c62abb63c7a7414d9ad571450eb66bce15856ad0be9a5f4b02e1d554b8eb",
+    "docs/superpowers/compatibility/remote-user/remote-emojis-observations.json": "1e7d639b9656c456503b7d88c8dd13ccb57f18822fdda8944fbe19e73d72e391",
+    "docs/superpowers/compatibility/remote-user/remote-emojis-runtime-evidence.json": "e39b9baf86a82218de961f0613ced1065f812602d381991eb5c038580cc16a1c",
+    "docs/superpowers/compatibility/remote-user/remote-emojis-source-probe.mjs": "a1bf26d791bfcfdc804b3b910bf090ba6ba4cc6cd59083e7b3087236ef31210b",
+    "docs/superpowers/compatibility/remote-user/remote-profile-observations.json": "f70c760b005e0c4747dfd7a1eed9748537bae1328fb9e21fa1ef2cfbb7cdbe37",
+    "docs/superpowers/compatibility/remote-user/remote-profile-runtime-evidence.json": "cba6e9b708e8f07e374e76442f47aba8fe6af54d0835d747ba7c26b72e21bda8",
+    "docs/superpowers/compatibility/remote-user/remote-profile-source-probe.mjs": "e7225db7217dc3b1f65f5aa431186449ce7eb97e7f81aabc3a4333fab302c847",
+    "docs/superpowers/compatibility/remote-user/runtime-evidence.json": "f4516c9bae05d19a5ea15d6addf3c2246c0264501445b47d68a49aa6cc367f49",
+    "docs/superpowers/compatibility/remote-user/user-hashtags-observations.json": "76f5e492fcb9439c4041774de505002ecd487df888e346a4010a86f47239ad86",
+    "docs/superpowers/compatibility/remote-user/user-hashtags-runtime-evidence.json": "263425c5e952a06370c638765f2207463e852c610e2153ff47abfdf594221fe4",
+    "docs/superpowers/compatibility/remote-user/user-hashtags-source-probe.mjs": "f617a1db513b8d1169589e52791e07a3e3e2c5c0e80fadf18a76f770c08c3234"
+  },
+  "behavioralRed": {
+    "status": "EXPECTED_FAIL",
+    "log": "/tmp/tiramiss-s1-r9-red-images.log",
+    "logSha256": "7e1811adf4c9b036aae099fe40b728d570b317acc692ca6aa87871e00c17d1c6",
+    "failed": 24,
+    "passed": 0,
+    "meaning": "Before any product edit, the initial 24 successful source image cases failed because rendered icon/image were missing. The final additive corpus later grew to 33 cases (26 success, 7 errors)."
+  },
+  "localEnvironmentFailure": {
+    "status": "ENVIRONMENT_FAIL",
+    "log": "/tmp/tiramiss-s1-r9-local-integration-attempt.log",
+    "logSha256": "49783eb9c742a098bedbdbf131018133146b634f14961ddc178d3e4f00798d68",
+    "reason": "connect EPERM 127.0.0.1:55512; 50 skipped at this earlier test revision; not PASS"
+  },
+  "earlierMeasurement": {
+    "revision": 1,
+    "status": "PASS",
+    "receiptPath": "/tmp/tiramiss-s1-r9-validation-receipt-r1.json",
+    "receiptSha256": "f6130426074dea04f901c9ce180ac504e820b073c3ea2b05b76a05f739d35813",
+    "meaning": "Earlier frozen measurement retained. Its repository-level injected Drive rejection was strengthened after receipt into actual SQL against a failed PG transaction; revision 2 remeasured all six commands."
+  },
+  "localSafetyChecks": {
+    "scopedLint": "PASS; /tmp/tiramiss-s1-r9-lint-final-local.log plus last test revision /tmp/tiramiss-s1-r9-lint-r2.log",
+    "spdx": "PASS; /tmp/tiramiss-s1-r9-spdx.log",
+    "locale": "No locale files changed in this lane",
+    "diffCheck": "PASS"
+  },
+  "limitations": [
+    "Upstream literal methods run with explicit repository/profile/Meta/config/tags/key doubles; no upstream full HTTP/PG server comparison.",
+    "The new-server actual HTTP/PG tests observe the internal document at passthrough validateActor; acquisition plans retain image-absence classification and do not acquire images.",
+    "Meta is read directly from DB rather than upstream injected memory: freshness and added DB-failure behavior differ.",
+    "The pre-existing internal remote-row guard remains; upstream instead casts the fetched row.",
+    "Identicon/proxy/files serving routes and image-byte delivery remain unimplemented; source-compatible URL publication alone does not serve images.",
+    "No Drive acquisition/media policy, remote-mention-media completion, schema/entity/lifecycle, SDK/API-meta, locales or CHANGELOG work.",
+    "Full unit/process suites were not needed for this plain-material renderer/composition change; parent owns shipping/root contracts/CodeRabbit/reviews/Git/PR.",
+    "PG concurrent-query deprecation warnings remain in integration logs; no runtime test failures or skips in the adopted receipt."
+  ]
+}

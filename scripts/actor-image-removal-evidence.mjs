@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { localActorImagesDigest } from './local-actor-images-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const evidencePath = 'docs/superpowers/compatibility/remote-user/actor-image-removal-current-evidence.json';
 const read = file => readFileSync(new URL(file, root));
@@ -49,7 +50,7 @@ export function validateActorImageRemovalEvidence(value, readFile = read, option
 	for (const [file, binding] of Object.entries(value.files)) {
 		assert.deepEqual(binding.validatedBy, requiredRuns, 'relevant renewal runs');
 		assert.equal(binding.sha256, value.frozenInputSha256[file], 'renewal binding was frozen');
-		assert.equal(sha(readFile(file)), binding.sha256, 'renewal measured input drift');
+		assert.equal(sha(readFile(file)), localActorImagesDigest(file, binding.sha256, 'renewal previous identity', readFile, optional), 'renewal measured input drift');
 	}
 	for (const binding of [value.historicalEvidence, value.predecessorEvidence]) {
 		assert.equal(sha(readFile(binding.path)), binding.sha256, 'renewal historical evidence drift');

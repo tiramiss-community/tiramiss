@@ -178,3 +178,14 @@ test.each([undefined, 'sqlLike', 'sqlPgroonga', 'unknownFutureProvider'])('inact
 	expect(value.fulltextSearch?.provider).toBe(provider);
 	expect(value.meilisearch).toBeUndefined();
 });
+
+// Treating the normal local proxy as external changes published actor URLs.
+test.each([
+	{ setting: '', proxy: 'https://local.test:8443/proxy', enabled: false },
+	{ setting: 'mediaProxy: https://local.test:8443/proxy/', proxy: 'https://local.test:8443/proxy', enabled: false },
+	{ setting: 'mediaProxy: https://media.test/', proxy: 'https://media.test', enabled: true },
+])('normalizes effective actor proxy configuration: $setting', async ({ setting, proxy, enabled }) => {
+	const value = await loadConfig({ configFile: await config(`url: https://local.test:8443/path\n${setting}`), env: { DATABASE_DB: 'test', DATABASE_USER: 'tester' } });
+	expect(value.url).toBe('https://local.test:8443');
+	expect(value.noteMedia).toMatchObject({ mediaProxy: proxy, externalMediaProxyEnabled: enabled });
+});

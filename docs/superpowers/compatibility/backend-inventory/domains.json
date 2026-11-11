@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "fa618bfd6f621fb3a461cec910804da8bbe2fde4",
+  "implementationCommit": "ac37daa75d55b24cc811a7c4082ffd0da924fc3c",
   "domains": [
     {
       "id": "api-common",
@@ -713,7 +713,8 @@
       "verification": [],
       "differences": [
         "#195のposting core取得/保存/refreshと最小actor/key公開は33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45で実測。一般inbox/remote Notes/collections/WebFinger公開/relayとrich actor effectsは未完了。個別のpartial行が示す限定scopeであり、全領域の検証済みを意味しない。",
-        "public notes/createの両画像不在時の作成・canonical復旧後の限定修復は docs/superpowers/compatibility/remote-user/actor-image-removal-results.md を参照。画像取得、refresh、rich actorとinboxは未完了。"
+        "public notes/createの両画像不在時の作成・canonical復旧後の限定修復は docs/superpowers/compatibility/remote-user/actor-image-removal-results.md を参照。画像取得、refresh、rich actorとinboxは未完了。",
+        "local actor画像URL公開の限定実装とR2実測は docs/superpowers/compatibility/remote-user/local-actor-images-results.md を参照。画像バイト配信・Drive取得・remote media等の残責任と#176/#127/#195未完了を維持する。"
       ]
     },
     {
@@ -2522,14 +2523,29 @@
         "packages/backend-next/src/composition/remote-users.ts",
         "packages/backend-next/src/modules/federation/ap-tags.ts",
         "packages/backend-next/src/platform/database/local-emojis.ts",
-        "packages/backend-next/src/composition/local-actor-tags.ts"
+        "packages/backend-next/src/composition/local-actor-tags.ts",
+        "packages/backend-next/src/composition/local-actor-materials.ts",
+        "packages/backend-next/src/modules/drive/public-file-url.ts",
+        "packages/backend-next/src/modules/drive/public.ts",
+        "packages/backend-next/src/modules/federation/public.ts",
+        "packages/backend-next/src/platform/database/note-files.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/federation/local-actor-tags.test.ts",
         "packages/backend-next/test/integration/activitypub-actor.test.ts",
-        "docs/superpowers/compatibility/remote-user/local-actor-tags-results.md"
+        "docs/superpowers/compatibility/remote-user/local-actor-tags-results.md",
+        "packages/backend-next/test/helpers/local-actor.ts",
+        "packages/backend-next/test/unit/config.test.ts",
+        "packages/backend-next/test/unit/federation/actor-api.test.ts",
+        "packages/backend-next/test/unit/federation/local-actor-images.test.ts",
+        "packages/backend-next/test/unit/federation/local-actor-profile.test.ts",
+        "packages/backend-next/test/unit/federation/local-actor.test.ts",
+        "docs/superpowers/compatibility/remote-user/local-actor-images-source-probe.mjs",
+        "docs/superpowers/compatibility/remote-user/local-actor-images-observations.json",
+        "docs/superpowers/compatibility/remote-user/local-actor-images-runtime-evidence.json",
+        "docs/superpowers/compatibility/remote-user/local-actor-images-results.md"
       ],
-      "note": "#195: 既存GET /users/:userとacquireActorのlocal解決にemoji→hashtag tag公開を接続。順序・重複・localOnly・日時・URL/MIME fallback・失敗境界を固定本家12観測と実HTTP/PGで確認。Profile/鍵の既存公開を含むpartial。画像/他rich actor/featured/Move/inbox/remote Notesとcache鮮度#217は未完了。#176/#127/#195、notes/create partialを維持。"
+      "note": "#195: 既存GET /users/:userとacquireActorのlocal解決にemoji→hashtag tag公開を接続。順序・重複・localOnly・日時・URL/MIME fallback・失敗境界を固定本家12観測と実HTTP/PGで確認。Profile/鍵の既存公開を含むpartial。画像/他rich actor/featured/Move/inbox/remote Notesとcache鮮度#217は未完了。#176/#127/#195、notes/create partialを維持。 #195 local actor画像公開: 既存GET /users/:idと内部local解決へ保存済Driveのicon/image、identiconとsystem Meta fallbackを接続。proxy優先順位、null/空値、取得と鍵の失敗順を固定本家33件のsource-method doublesで観測し、新サーバー実HTTP/PG 53件とremote-user 108件・近傍単体317件をR2で検証。本家full HTTP/PGの比較ではない。Meta DB直読の鮮度/失敗差と既存内部remote-row guard差を保持。画像バイト配信(/identicon・/files・/proxy)、Drive取得・remote media、他rich actor/featured/Move/inbox/remote Notesとcache #217は未完了。#176/#127/#195はOPEN、notes/create:partial・postingComplete:false。"
     }
   }
 }

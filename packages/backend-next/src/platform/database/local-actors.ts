@@ -2,8 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { MiUser, MiUserProfile } from 'backend-upstream/entities';
-import type { LocalActorProfileFacts } from '../../modules/federation/public.js';
+import { MiDriveFile, MiUser, MiUserProfile } from 'backend-upstream/entities';
+import type { ActorFileFacts, LocalActorProfileFacts } from '../../modules/federation/public.js';
 import type { EntityManager } from 'typeorm';
 export function createActorReader(manager: EntityManager, options: {
 	includeSuspended?: boolean;
@@ -13,8 +13,8 @@ export function createActorReader(manager: EntityManager, options: {
 		if (!row) {
 			return null;
 		}
-		const { username, name, isBot, isLocked, isExplorable, emojis, tags, host, uri } = row;
-		return { id, username, name, isBot, isLocked, isExplorable, emojis, tags, host, uri };
+		const { avatarId, bannerId, username, name, isBot, isLocked, isExplorable, emojis, tags, host, uri } = row;
+		return { id, avatarId, bannerId, username, name, isBot, isLocked, isExplorable, emojis, tags, host, uri };
 	};
 }
 
@@ -24,5 +24,18 @@ export function createActorProfileReader(manager: EntityManager): (id: string) =
 			where: { userId: id }, select: { description: true, followedMessage: true, fields: true, birthday: true, location: true },
 		});
 		return { description, followedMessage, fields, birthday, location };
+	};
+}
+
+export function createActorFileReader(manager: EntityManager): (id: string) => Promise<ActorFileFacts | null> {
+	return async id => {
+		const file = await manager.getRepository(MiDriveFile).findOne({
+			where: { id }, select: { uri: true, userHost: true, isLink: true, webpublicAccessKey: true, webpublicUrl: true, url: true, isSensitive: true, comment: true },
+		});
+		if (!file) {
+			return null;
+		}
+		const { uri, userHost, isLink, webpublicAccessKey, webpublicUrl, url, isSensitive, comment } = file;
+		return { uri, userHost, isLink, webpublicAccessKey, webpublicUrl, url, isSensitive, comment };
 	};
 }

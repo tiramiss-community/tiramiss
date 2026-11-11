@@ -2,8 +2,15 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { readFileSync } from 'node:fs';
+import { mkdtemp, writeFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
-import { MiEmoji, MiMeta, MiUser, MiUserKeypair, MiUserProfile } from 'backend-upstream/entities';
+import { MiDriveFile, MiEmoji, MiMeta, MiUser, MiUserKeypair, MiUserProfile } from 'backend-upstream/entities';
+import * as federation from '../../src/modules/federation/public.js';
+import { loadConfig } from '../../src/config/load-config.js';
+import { createRemoteUsers } from '../../src/composition/remote-users.js';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createBackendHttpApp } from '../../src/composition/note-http.js';
 import { createOutboundHttpClient } from '../../src/composition/outbound-http.js';
@@ -206,5 +213,213 @@ test('stored local actor tags reach actual HTTP and acquireActor without remote-
 		expect(key).not.toHaveBeenCalled();
 	} finally {
 		fault.mockRestore(); key.mockRestore();
+	}
+});
+
+const imageSourceRoot = new URL('../../../../docs/superpowers/compatibility/remote-user/', import.meta.url);
+const imageCorpus = JSON.parse(readFileSync(new URL('local-actor-images-corpus.json', imageSourceRoot), 'utf8'));
+const imageSource = JSON.parse(readFileSync(new URL('local-actor-images-observations.json', imageSourceRoot), 'utf8'));
+
+async function normalizedActorConfig(mediaProxy?: string) {
+	const dir = await mkdtemp(join(tmpdir(), 'actor-images-config-'));
+	try {
+		const path = join(dir, 'test.yml');
+		await writeFile(path, JSON.stringify({ url: imageCorpus.defaults.config.url, port: 3000, mediaProxy,
+			db: { host: database.config.database.host, port: database.config.database.port, db: database.config.database.database, user: database.config.database.username, pass: database.config.database.password },
+			redis: { host: database.config.redis.host, port: database.config.redis.port },
+		}));
+		return await loadConfig({ configFile: path, env: {} });
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+}
+
+async function seedImageActor(c: ReturnType<typeof JSON.parse>) {
+	const id = codec.newId(Date.now());
+	const fileIds = new Map<string, string>();
+	for (const name of new Set([c.user?.avatarId, c.user?.bannerId].filter(Boolean) as string[])) {
+		fileIds.set(name, codec.newId(Date.now()));
+	}
+	for (const [name, patch] of Object.entries(c.files ?? {})) {
+		await resources.dataSource.getRepository(MiDriveFile).insert({
+			...imageCorpus.defaults.file, ...patch as object, id: fileIds.get(name)!, userId: signerId,
+			name: 'stored-media', type: 'image/png', md5: '0'.repeat(32), size: 123, storedInternal: false,
+		});
+	}
+	const user = { ...imageCorpus.defaults.user, ...c.user, id, emojis: [], tags: [], usernameLower: `images-${id}`,
+		avatarId: c.user?.avatarId ? fileIds.get(c.user.avatarId)! : null, bannerId: c.user?.bannerId ? fileIds.get(c.user.bannerId)! : null };
+	await resources.dataSource.getRepository(MiUser).insert({ ...user, avatarId: null, bannerId: null });
+	await resources.dataSource.manager.transaction(async manager => {
+		if ([c.user?.avatarId, c.user?.bannerId].some(name => name && !c.files?.[name])) {
+			// Model a damaged historical row in this isolated test DB; restore trigger behavior at transaction end.
+			await manager.query('SET LOCAL session_replication_role = replica');
+		}
+		await manager.getRepository(MiUser).update(id, { avatarId: user.avatarId, bannerId: user.bannerId });
+	});
+	await resources.dataSource.getRepository(MiUserProfile).insert({ userId: id });
+	const key = await resources.dataSource.getRepository(MiUserKeypair).findOneByOrFail({ userId: signerId });
+	await resources.dataSource.getRepository(MiUserKeypair).insert({ userId: id, publicKey: key.publicKey, privateKey: key.privateKey });
+	return { id, fileIds };
+}
+
+async function removeImageActor(id: string, fileIds: Map<string, string>) {
+	await resources.dataSource.getRepository(MiUser).delete(id);
+	for (const fileId of fileIds.values()) {
+		await resources.dataSource.getRepository(MiDriveFile).delete(fileId);
+	}
+}
+
+async function imageActorState(id: string, fileIds: Map<string, string>) {
+	return {
+		user: await resources.dataSource.getRepository(MiUser).findOneByOrFail({ id }),
+		profile: await resources.dataSource.getRepository(MiUserProfile).findOneByOrFail({ userId: id }),
+		key: await resources.dataSource.getRepository(MiUserKeypair).findOneByOrFail({ userId: id }),
+		files: await Promise.all([...fileIds.values()].map(fileId => resources.dataSource.getRepository(MiDriveFile).findOneBy({ id: fileId }))),
+		meta: await resources.dataSource.getRepository(MiMeta).findOneByOrFail({ id: 'singleton' }),
+	};
+}
+
+// Both real callers must publish the independent source JSON, without acquiring or rewriting media rows.
+for (const c of imageCorpus.cases.filter((row: { fail?: unknown; id: string }) => !row.fail && row.id !== 'proxy-encoding-error')) {
+	test(`stored actor images ${c.id}: actual HTTP/PG and local acquireActor`, async () => {
+		const config = await normalizedActorConfig(c.config?.externalMediaProxyEnabled ? c.config.mediaProxy ?? 'https://proxy.test' : undefined);
+		expect(config.noteMedia).toMatchObject(c.config?.externalMediaProxyEnabled
+			? { mediaProxy: c.config.mediaProxy ?? 'https://proxy.test', externalMediaProxyEnabled: true }
+			: { mediaProxy: 'https://local.test:8443/proxy', externalMediaProxyEnabled: false });
+		const { id, fileIds } = await seedImageActor(c);
+		await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all', ...imageCorpus.defaults.meta, ...c.meta });
+		const retained = await imageActorState(id, fileIds);
+		const expected = imageSource.cases.find((row: { id: string }) => row.id === c.id).expected.json;
+		const imageServer = await listenHttp(createBackendHttpApp(resources, config), { port: 0 });
+		let document: unknown;
+		const originalValidate = federation.validateActor;
+		const observe = vi.spyOn(federation, 'validateActor').mockImplementation((value, uri) => {
+			document = structuredClone(value);
+			return originalValidate(value, uri);
+		});
+		try {
+			const actualPort = (imageServer.address() as { port: number }).port;
+			const response = await fetch(`http://127.0.0.1:${actualPort}/users/${id}`, { headers: { Accept: 'application/activity+json' } });
+			expect(response.status).toBe(200);
+			const body = await response.json() as Record<string, unknown>;
+			expect({ icon: body.icon, image: body.image }).toEqual(expected);
+			expect(response.headers.get('cache-control')).toBe('public, max-age=180');
+			const plan = await createRemoteUsers(resources, config).acquireActor(`${config.url}/users/${id}`, null, Date.now, () => 'unused');
+			expect(document).toMatchObject(expected);
+			expect(plan).toMatchObject({ kind: 'create', bothImagesAbsent: false, user: { avatarId: null, bannerId: null } });
+			expect(plan.user).not.toHaveProperty('avatarUrl');
+			expect(plan.user).not.toHaveProperty('bannerUrl');
+			expect(await imageActorState(id, fileIds)).toEqual(retained);
+		} finally {
+			observe.mockRestore();
+			await closeHttp(imageServer);
+			await removeImageActor(id, fileIds);
+		}
+	});
+}
+
+test('actor image eligibility preserves suspended public/internal distinction and all early HTTP branches', async () => {
+	const c = imageCorpus.cases.find((row: { id: string }) => row.id === 'avatar-sensitive-null');
+	const { id, fileIds } = await seedImageActor(c);
+	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all', iconUrl: null, bannerUrl: null });
+	await resources.dataSource.getRepository(MiUser).update(id, { isSuspended: true });
+	const retained = await imageActorState(id, fileIds);
+	const originalValidate = federation.validateActor;
+	let document: unknown;
+	const observe = vi.spyOn(federation, 'validateActor').mockImplementation((value, uri) => {
+		document = structuredClone(value); return originalValidate(value, uri);
+	});
+	const get = (userId = id, accept = 'application/activity+json') => fetch(`http://127.0.0.1:${port}/users/${userId}`, { headers: { Accept: accept }, redirect: 'manual' });
+	try {
+		expect((await get()).status).toBe(404);
+		const plan = await createRemoteUsers(resources, database.config).acquireActor(`http://local.test/users/${id}`, null, Date.now, () => 'unused');
+		expect(document).toMatchObject({ icon: { type: 'Image', url: 'https://files.test/original', sensitive: true, name: null }, image: null });
+		expect(plan.bothImagesAbsent).toBe(false);
+		expect(await imageActorState(id, fileIds)).toEqual(retained);
+	} finally {
+		observe.mockRestore();
+	}
+	await resources.dataSource.getRepository(MiUser).update(id, { isSuspended: false });
+	const repository = resources.dataSource.getRepository(MiDriveFile);
+	const mediaFault = vi.spyOn(repository, 'findOne').mockRejectedValue(new Error('must not acquire media'));
+	try {
+		expect((await get(id, 'text/html')).status).toBe(404);
+		expect((await get(id, 'image/png')).status).toBe(404);
+		await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'none' });
+		expect((await get()).status).toBe(403);
+		await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+		expect((await get('missing')).status).toBe(404);
+		await resources.dataSource.getRepository(MiUser).update(id, { host: 'remote.test', uri: 'https://remote.test/actor' });
+		const redirect = await get();
+		expect(redirect.status).toBe(301);
+		expect(redirect.headers.get('location')).toBe('https://remote.test/actor');
+		await expect(createRemoteUsers(resources, database.config).acquireActor(`http://local.test/users/${id}`, null, Date.now, () => 'unused')).rejects.toThrow('local user not found');
+		await resources.dataSource.getRepository(MiUser).update(id, { uri: null });
+		expect((await get()).status).toBe(500);
+		await resources.dataSource.getRepository(MiUser).update(id, { host: 'local.test', uri: 'https://local.test/actor' });
+		expect((await get()).status).toBe(500);
+		expect(mediaFault).not.toHaveBeenCalled();
+	} finally {
+		mediaFault.mockRestore();
+		await resources.dataSource.getRepository(MiUser).update(id, { host: null, uri: null });
+	}
+});
+
+test('Drive DB rejection precedes tags/key in both callers and leaves User/Drive/Meta unchanged', async () => {
+	const c = imageCorpus.cases.find((row: { id: string }) => row.id === 'both-files');
+	const { id, fileIds } = await seedImageActor(c);
+	await resources.dataSource.getRepository(MiUser).update(id, { emojis: ['tag_alpha'] });
+	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+	const retained = await imageActorState(id, fileIds);
+	const failedConnection = resources.dataSource.createQueryRunner();
+	await failedConnection.connect();
+	await failedConnection.startTransaction();
+	// Exercise a real PostgreSQL failure without changing schema or stored rows.
+	await expect(failedConnection.query('SELECT 1 / 0')).rejects.toMatchObject({ driverError: { code: '22012' } });
+	const failedFiles = failedConnection.manager.getRepository(MiDriveFile);
+	const fault = vi.spyOn(resources.dataSource.getRepository(MiDriveFile), 'findOne').mockImplementation(options => failedFiles.findOne(options));
+	const tags = vi.spyOn(resources.dataSource.getRepository(MiEmoji), 'findBy');
+	const key = vi.spyOn(resources.federationKeys, 'readUserKeypair');
+	try {
+		const response = await fetch(`http://127.0.0.1:${port}/users/${id}`, { headers: { Accept: 'application/activity+json' } });
+		expect(response.status).toBe(500);
+		expect(response.headers.get('cache-control')).toBeNull();
+		await expect(createRemoteUsers(resources, database.config).acquireActor(`http://local.test/users/${id}`, null, Date.now, () => 'unused')).rejects.toMatchObject({ driverError: { code: '25P02' } });
+		expect(tags).not.toHaveBeenCalled();
+		expect(key).not.toHaveBeenCalled();
+	} finally {
+		fault.mockRestore(); tags.mockRestore(); key.mockRestore();
+		await failedConnection.rollbackTransaction();
+		await failedConnection.release();
+	}
+	expect(await imageActorState(id, fileIds)).toEqual(retained);
+});
+
+test('absent optional noteMedia uses local effective defaults for both stored-file callers', async () => {
+	const c = imageCorpus.cases.find((row: { id: string }) => row.id === 'external-off-stored');
+	const { id, fileIds } = await seedImageActor(c);
+	const config = { ...database.config, url: imageCorpus.defaults.config.url, noteMedia: undefined };
+	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all', ...imageCorpus.defaults.meta });
+	const retained = await imageActorState(id, fileIds);
+	const imageServer = await listenHttp(createBackendHttpApp(resources, config), { port: 0 });
+	const originalValidate = federation.validateActor;
+	let document: unknown;
+	const observe = vi.spyOn(federation, 'validateActor').mockImplementation((value, uri) => {
+		document = structuredClone(value); return originalValidate(value, uri);
+	});
+	try {
+		const actualPort = (imageServer.address() as { port: number }).port;
+		const response = await fetch(`http://127.0.0.1:${actualPort}/users/${id}`, { headers: { Accept: 'application/activity+json' } });
+		expect(response.status).toBe(200);
+		const expected = imageSource.cases.find((row: { id: string }) => row.id === c.id).expected.json;
+		expect(await response.json()).toMatchObject(expected);
+		const plan = await createRemoteUsers(resources, config).acquireActor(`${config.url}/users/${id}`, null, Date.now, () => 'unused');
+		expect(document).toMatchObject(expected);
+		expect(plan.bothImagesAbsent).toBe(false);
+		expect(await imageActorState(id, fileIds)).toEqual(retained);
+	} finally {
+		observe.mockRestore();
+		await closeHttp(imageServer);
+		await removeImageActor(id, fileIds);
 	}
 });

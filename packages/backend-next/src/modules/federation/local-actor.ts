@@ -3,11 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import * as mfm from 'mfm-js';
+import { publicFileUrl } from '../drive/public.js';
+import type { PublicFileFacts } from '../drive/public.js';
 import { toHtml } from '../mfm/public.js';
 import { apContext } from './ap-context.js';
 import type { LocalActorTag } from './ap-tags.js';
 export interface LocalActorFacts {
 	id: string;
+	avatarId: string | null;
+	bannerId: string | null;
 	username: string;
 	name: string | null;
 	isBot: boolean;
@@ -22,6 +26,24 @@ export interface LocalActorProfileFacts {
 	fields: readonly { name: string; value: string; }[];
 	birthday: string | null;
 	location: string | null;
+}
+
+export interface ActorFileFacts extends PublicFileFacts {
+	isSensitive: boolean;
+	comment: string | null;
+}
+export interface LocalActorMediaFacts {
+	avatar: ActorFileFacts | null;
+	banner: ActorFileFacts | null;
+	iconUrl: string | null;
+	bannerUrl: string | null;
+	proxyRemoteFiles: boolean;
+	mediaProxy: string;
+	externalMediaProxyEnabled: boolean;
+}
+export interface LocalActorMaterials {
+	profile: LocalActorProfileFacts;
+	media: LocalActorMediaFacts;
 }
 
 // Preserve the fixed source's leading URL match, raw label and suffix serialization.
@@ -39,16 +61,23 @@ function rewriteFieldUrl(value: string): string {
 	}
 }
 
-export function renderLocalActor(facts: LocalActorFacts, profile: LocalActorProfileFacts, selfUrl: string, publicKeyPem: string, tag: readonly LocalActorTag[]): Record<string, unknown> {
+export function renderLocalActor(facts: LocalActorFacts, profile: LocalActorProfileFacts, selfUrl: string, publicKeyPem: string, tag: readonly LocalActorTag[], media: LocalActorMediaFacts): Record<string, unknown> {
 	const id = `${selfUrl}/users/${facts.id}`;
+	const isSystem = facts.username.includes('.');
+	const fallback = (url: string) => ({ type: 'Image', url, sensitive: false, name: null });
+	const image = (file: ActorFileFacts) => ({ type: 'Image',
+		url: publicFileUrl(file, media.proxyRemoteFiles, { url: selfUrl, mediaProxy: media.mediaProxy, externalMediaProxyEnabled: media.externalMediaProxyEnabled }),
+		sensitive: file.isSensitive, name: file.comment });
 	const attachment = profile.fields.map(field => ({ type: 'PropertyValue', name: field.name,
 		value: field.value.startsWith('http://') || field.value.startsWith('https://') ? rewriteFieldUrl(field.value) : field.value }));
 	return {
-		'@context': apContext, type: facts.username.includes('.') ? 'Application' : facts.isBot ? 'Service' : 'Person',
+		'@context': apContext, type: isSystem ? 'Application' : facts.isBot ? 'Service' : 'Person',
 		id, inbox: `${id}/inbox`, outbox: `${id}/outbox`, followers: `${id}/followers`, following: `${id}/following`,
 		sharedInbox: `${selfUrl}/inbox`, endpoints: { sharedInbox: `${selfUrl}/inbox` }, url: `${selfUrl}/@${facts.username}`,
 		preferredUsername: facts.username, name: facts.name, manuallyApprovesFollowers: facts.isLocked, discoverable: facts.isExplorable,
 		summary: profile.description ? toHtml(mfm.parse(profile.description), { selfUrl, mentionedRemoteUsers: [] }) : null,
+		icon: media.avatar ? image(media.avatar) : fallback(isSystem && media.iconUrl != null ? media.iconUrl : `${selfUrl}/identicon/${facts.username.toLowerCase()}@${new URL(selfUrl).host}`),
+		image: media.banner ? image(media.banner) : isSystem && media.bannerUrl != null ? fallback(media.bannerUrl) : null,
 		tag,
 		_misskey_summary: profile.description, _misskey_followedMessage: profile.followedMessage,
 		attachment: attachment.length ? attachment : undefined,

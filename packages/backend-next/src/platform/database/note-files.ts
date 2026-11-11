@@ -2,8 +2,11 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { publicFileUrl } from '../../modules/drive/public.js';
 import type { MiDriveFile } from 'backend-upstream/entities';
 import type { JsonObject } from '../../modules/note/public.js';
+
+export { publicFileUrl } from '../../modules/drive/public.js';
 
 export interface NoteMediaOptions {
 	url: string;
@@ -15,17 +18,6 @@ export interface NoteMediaOptions {
 
 function query(params: Record<string, string>): string {
 	return Object.entries(params).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
-}
-
-/** 本家 DriveFileEntityService.getPublicUrl（mode なし）。 */
-export function publicFileUrl(file: MiDriveFile, proxyRemoteFiles: boolean, options: Pick<NoteMediaOptions, 'url' | 'mediaProxy' | 'externalMediaProxyEnabled'>): string {
-	if (file.uri !== null && file.userHost !== null && options.externalMediaProxyEnabled) {
-		return `${options.mediaProxy}/image.webp?${query({ url: file.uri })}`;
-	}
-	if (file.uri !== null && file.isLink && proxyRemoteFiles && file.webpublicAccessKey && !file.webpublicAccessKey.includes('/')) {
-		return `${options.url}/files/${file.webpublicAccessKey}`;
-	}
-	return file.webpublicUrl ?? file.url;
 }
 
 export function noteFileView(file: MiDriveFile, proxyRemoteFiles: boolean, options: NoteMediaOptions): JsonObject {
