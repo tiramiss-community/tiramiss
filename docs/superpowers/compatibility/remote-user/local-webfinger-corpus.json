@@ -1,0 +1,604 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "defaults": {
+    "selfUrl": "https://local.test:8443",
+    "row": {
+      "id": "id",
+      "username": "Alice",
+      "host": null,
+      "isSuspended": false
+    },
+    "jrd": {
+      "subject": "acct:Alice@local.test:8443",
+      "links": [
+        {
+          "rel": "self",
+          "type": "application/activity+json",
+          "href": "https://local.test:8443/users/id"
+        },
+        {
+          "rel": "http://webfinger.net/rel/profile-page",
+          "type": "text/html",
+          "href": "https://local.test:8443/@Alice"
+        },
+        {
+          "rel": "http://ostatus.org/schema/1.0/subscribe",
+          "template": "https://local.test:8443/authorize-follow?acct={uri}"
+        }
+      ]
+    },
+    "xrd": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\"><Subject>acct:Alice@local.test:8443</Subject><Link rel=\"self\" type=\"application/activity+json\" href=\"https://local.test:8443/users/id\"/><Link rel=\"http://webfinger.net/rel/profile-page\" type=\"text/html\" href=\"https://local.test:8443/@Alice\"/><Link rel=\"http://ostatus.org/schema/1.0/subscribe\" template=\"https://local.test:8443/authorize-follow?acct={uri}\"/></XRD>"
+  },
+  "cases": [
+    {
+      "id": "acct",
+      "resource": "acct:alice@local.test:8443",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "bare",
+      "resource": "alice",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "leading-at",
+      "resource": "@alice",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "hosted-bare",
+      "resource": "alice@local.test:8443",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "upper-all",
+      "resource": "ACCT:ALICE@LOCAL.TEST:8443",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "profile-url",
+      "resource": "https://local.test:8443/@Alice",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "upper-profile",
+      "resource": "HTTPS://LOCAL.TEST:8443/@ALICE",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "profile-last",
+      "resource": "https://local.test:8443/@ignored/Alice",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "extra-host",
+      "resource": "alice@local.test:8443@foreign.test",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "empty-host",
+      "resource": "alice@",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "acct-leading-at",
+      "resource": "acct:@alice@local.test:8443",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "actor-url",
+      "resource": "https://local.test:8443/users/id",
+      "expected": {
+        "status": 200,
+        "query": {
+          "id": "id"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "actor-upper",
+      "resource": "HTTPS://LOCAL.TEST:8443/USERS/ID",
+      "expected": {
+        "status": 200,
+        "query": {
+          "id": "id"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "actor-last",
+      "resource": "https://local.test:8443/users/ignored/id",
+      "expected": {
+        "status": 200,
+        "query": {
+          "id": "id"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "actor-empty-last",
+      "resource": "https://local.test:8443/users/id/",
+      "expected": {
+        "status": 404,
+        "query": {
+          "id": ""
+        },
+        "format": null
+      }
+    },
+    {
+      "id": "foreign-account",
+      "resource": "alice@foreign.test",
+      "expected": {
+        "status": 422,
+        "query": null,
+        "format": null
+      }
+    },
+    {
+      "id": "missing-port",
+      "resource": "alice@local.test",
+      "expected": {
+        "status": 422,
+        "query": null,
+        "format": null
+      }
+    },
+    {
+      "id": "wrong-port",
+      "resource": "alice@local.test:443",
+      "expected": {
+        "status": 422,
+        "query": null,
+        "format": null
+      }
+    },
+    {
+      "id": "foreign-profile",
+      "resource": "https://foreign.test/@alice",
+      "expected": {
+        "status": 422,
+        "query": null,
+        "format": null
+      }
+    },
+    {
+      "id": "foreign-actor",
+      "resource": "https://foreign.test/users/id",
+      "expected": {
+        "status": 404,
+        "query": {
+          "usernameLower": "https://foreign.test/users/id"
+        },
+        "format": null
+      }
+    },
+    {
+      "id": "extra-host-foreign-first",
+      "resource": "alice@foreign.test@local.test:8443",
+      "expected": {
+        "status": 422,
+        "query": null,
+        "format": null
+      }
+    },
+    {
+      "id": "empty",
+      "resource": "",
+      "expected": {
+        "status": 404,
+        "query": {
+          "usernameLower": ""
+        },
+        "format": null
+      }
+    },
+    {
+      "id": "empty-acct",
+      "resource": "acct:",
+      "expected": {
+        "status": 404,
+        "query": {
+          "usernameLower": ""
+        },
+        "format": null
+      }
+    },
+    {
+      "id": "absent",
+      "resource": null,
+      "expected": {
+        "status": 400,
+        "query": null,
+        "format": null
+      }
+    },
+    {
+      "id": "duplicate",
+      "resource": "acct:alice@local.test:8443",
+      "queryString": "resource=alice&resource=alice",
+      "expected": {
+        "status": 400,
+        "query": null,
+        "format": null
+      }
+    },
+    {
+      "id": "bracket-non-string",
+      "resource": null,
+      "queryString": "resource%5Bx%5D=alice",
+      "expected": {
+        "status": 400,
+        "query": null,
+        "format": null
+      }
+    },
+    {
+      "id": "missing-user",
+      "resource": "nobody",
+      "expected": {
+        "status": 404,
+        "query": {
+          "usernameLower": "nobody"
+        },
+        "format": null
+      }
+    },
+    {
+      "id": "suspended",
+      "resource": "acct:alice@local.test:8443",
+      "row": {
+        "id": "id",
+        "username": "Alice",
+        "host": null,
+        "isSuspended": true
+      },
+      "expected": {
+        "status": 404,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": null
+      }
+    },
+    {
+      "id": "remote-row",
+      "resource": "acct:alice@local.test:8443",
+      "row": {
+        "id": "id",
+        "username": "Alice",
+        "host": "remote.test",
+        "isSuspended": false
+      },
+      "expected": {
+        "status": 404,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": null
+      }
+    },
+    {
+      "id": "deleted-row",
+      "resource": "acct:alice@local.test:8443",
+      "row": {
+        "id": "id",
+        "username": "Alice",
+        "host": null,
+        "isSuspended": false,
+        "isDeleted": true
+      },
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "none-missing",
+      "resource": null,
+      "federation": "none",
+      "expected": {
+        "status": 403,
+        "query": null,
+        "format": null
+      }
+    },
+    {
+      "id": "none-empty",
+      "resource": "",
+      "federation": "none",
+      "expected": {
+        "status": 403,
+        "query": null,
+        "format": null
+      }
+    },
+    {
+      "id": "none-foreign",
+      "resource": "alice@foreign.test",
+      "federation": "none",
+      "expected": {
+        "status": 403,
+        "query": null,
+        "format": null
+      }
+    },
+    {
+      "id": "none-options",
+      "resource": "acct:alice@local.test:8443",
+      "federation": "none",
+      "method": "OPTIONS",
+      "expected": {
+        "status": 204,
+        "query": null,
+        "format": null
+      }
+    },
+    {
+      "id": "none-head",
+      "resource": "acct:alice@local.test:8443",
+      "federation": "none",
+      "method": "HEAD",
+      "expected": {
+        "status": 403,
+        "query": null,
+        "format": null
+      }
+    },
+    {
+      "id": "head",
+      "resource": "acct:alice@local.test:8443",
+      "method": "HEAD",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "jrd",
+      "resource": "acct:alice@local.test:8443",
+      "accept": "application/jrd+json",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "xrd",
+      "resource": "acct:alice@local.test:8443",
+      "accept": "application/xrd+xml",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "xrd"
+      }
+    },
+    {
+      "id": "weighted-xrd",
+      "resource": "acct:alice@local.test:8443",
+      "accept": "application/jrd+json;q=0.2, application/xrd+xml;q=0.8",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "xrd"
+      }
+    },
+    {
+      "id": "weighted-jrd",
+      "resource": "acct:alice@local.test:8443",
+      "accept": "application/jrd+json;q=0.8, application/xrd+xml;q=0.2",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "unsupported",
+      "resource": "acct:alice@local.test:8443",
+      "accept": "text/html",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "both-zero",
+      "resource": "acct:alice@local.test:8443",
+      "accept": "application/jrd+json;q=0, application/xrd+xml;q=0",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "equal-xrd-first",
+      "resource": "acct:alice@local.test:8443",
+      "accept": "application/xrd+xml, application/jrd+json",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "xrd"
+      }
+    },
+    {
+      "id": "wildcard",
+      "resource": "acct:alice@local.test:8443",
+      "accept": "*/*",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "jrd"
+      }
+    },
+    {
+      "id": "database-fault",
+      "resource": "acct:alice@local.test:8443",
+      "fail": true,
+      "expected": {
+        "status": 500,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": null
+      }
+    },
+    {
+      "id": "xml-special",
+      "resource": "acct:alice@local.test:8443",
+      "accept": "application/xrd+xml",
+      "row": {
+        "id": "id",
+        "username": "A&&<<>>\"\"''",
+        "host": null,
+        "isSuspended": false
+      },
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "xrd",
+        "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\"><Subject>acct:A&amp;&amp;&lt;&lt;&gt;&gt;&quot;&quot;&apos;&apos;@local.test:8443</Subject><Link rel=\"self\" type=\"application/activity+json\" href=\"https://local.test:8443/users/id\"/><Link rel=\"http://webfinger.net/rel/profile-page\" type=\"text/html\" href=\"https://local.test:8443/@A&amp;&&lt;<&gt;>&quot;\"&apos;'\"/><Link rel=\"http://ostatus.org/schema/1.0/subscribe\" template=\"https://local.test:8443/authorize-follow?acct={uri}\"/></XRD>"
+      }
+    },
+    {
+      "id": "xml-end-cdata",
+      "resource": "acct:alice@local.test:8443",
+      "accept": "application/xrd+xml",
+      "row": {
+        "id": "id",
+        "username": "A]]>B",
+        "host": null,
+        "isSuspended": false
+      },
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "xrd",
+        "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\"><Subject>acct:AB@local.test:8443</Subject><Link rel=\"self\" type=\"application/activity+json\" href=\"https://local.test:8443/users/id\"/><Link rel=\"http://webfinger.net/rel/profile-page\" type=\"text/html\" href=\"https://local.test:8443/@A]]&gt;B\"/><Link rel=\"http://ostatus.org/schema/1.0/subscribe\" template=\"https://local.test:8443/authorize-follow?acct={uri}\"/></XRD>"
+      }
+    },
+    {
+      "id": "head-xrd",
+      "resource": "acct:alice@local.test:8443",
+      "method": "HEAD",
+      "accept": "application/xrd+xml",
+      "expected": {
+        "status": 200,
+        "query": {
+          "usernameLower": "alice"
+        },
+        "format": "xrd"
+      }
+    },
+    {
+      "id": "options-with-meta-fault",
+      "resource": "acct:alice@local.test:8443",
+      "method": "OPTIONS",
+      "metaFail": true,
+      "expected": {
+        "status": 204,
+        "query": null,
+        "format": null
+      }
+    }
+  ]
+}

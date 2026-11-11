@@ -1,0 +1,229 @@
+{
+  "schemaVersion": 1,
+  "scope": "local-webfinger-discovery-to-existing-actor-get",
+  "baseCommit": "5699e5ce92595e7065665fa964d0854c3194cca4",
+  "workingTreeAtMeasurement": "dirty; no implementation commit invented",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "upstreamFullServerMeasured": false,
+  "upstreamSourceFastifyInject": true,
+  "notesCreateStatus": "partial",
+  "postingComplete": false,
+  "incompleteIssues": [
+    176,
+    127,
+    195
+  ],
+  "validationRevision": 1,
+  "status": "PASS",
+  "runtime": {
+    "node": "v26.4.0",
+    "pnpm": "12.9.1"
+  },
+  "environment": {
+    "postgres": 55513,
+    "redis": 56413,
+    "meilisearch": 57813
+  },
+  "measurementWindow": {
+    "startedAt": "2026-11-11T12:42:37.420488+00:00",
+    "completedAt": "2026-11-11T12:43:05.265096+00:00",
+    "meaning": "Frozen executable inputs were verified before and after each broker command in this window. Post-receipt descriptive docs/evidence and parent-owned scripts/inventory/root-proof work are excluded; no future whole-checkout immutability is claimed."
+  },
+  "brokerReceiptPath": "/tmp/tiramiss-s1-r10-validation-receipt-r1.json",
+  "brokerReceiptSha256": "3fc49b573d5815c9085828b2e4c0ad29e27094c0b1907ecb181bd61452c565b7",
+  "brokerRequestPath": "/tmp/tiramiss-s1-r10-validation-request-r1.json",
+  "brokerRequestSha256": "4b485aaed3eac93173178ce826b2ceabeb13516e90607a4aa04eb94669982db4",
+  "frozenInputCount": 846,
+  "frozenInputMapSha256": "5e33c991b016c3f4b78daf17dcf50b979c8234497b1128483b887413e57246f9",
+  "frozenInputMapEncoding": "UTF-8 JSON sorted keys, separators comma/colon, no trailing newline",
+  "measurements": [
+    {
+      "id": "build",
+      "command": "pnpm --filter backend-next... build",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r10-validation-r1-build.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "id": "typecheck",
+      "command": "pnpm --filter backend-next... typecheck",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r10-validation-r1-typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "id": "units",
+      "command": "pnpm --filter backend-next test test/unit/federation/local-webfinger.test.ts test/unit/federation/webfinger-api.test.ts test/unit/composition/http-app.test.ts test/unit/federation/actor-api.test.ts test/unit/federation/local-actor.test.ts test/unit/federation/local-actor-profile.test.ts test/unit/federation/local-actor-tags.test.ts test/unit/federation/local-actor-images.test.ts test/package-imports.test.ts --reporter=default --reporter=json --outputFile=/tmp/tiramiss-s1-r10-validation-r1-units.json",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r10-validation-r1-units.log",
+      "logSha256": "767b3a4f46782c11b4f67ce860502fcbe57400192f5bc60ea115cde147f3464b",
+      "artifact": "/tmp/tiramiss-s1-r10-validation-r1-units.json",
+      "artifactSha256": "02f927edd2604f5de1e721bd01f3a3ad7e3f060cf3470ab78cd67a9517125999",
+      "tests": {
+        "numTotalTests": 227,
+        "numPassedTests": 227,
+        "numFailedTests": 0,
+        "numPendingTests": 0,
+        "success": true
+      }
+    },
+    {
+      "id": "webfinger-integration",
+      "command": "pnpm --filter backend-next test:integration test/integration/webfinger.test.ts --reporter=default --reporter=json --outputFile=/tmp/tiramiss-s1-r10-validation-r1-webfinger-integration.json",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r10-validation-r1-webfinger-integration.log",
+      "logSha256": "2e1c663de872c3e009600968518f06dfb1c7d22f1ae6309047daabfb6dbe60f3",
+      "artifact": "/tmp/tiramiss-s1-r10-validation-r1-webfinger-integration.json",
+      "artifactSha256": "fdb4c51114cfeaf1de99f004d760616f8507659d3361d65bdbefc7c361c341c7",
+      "tests": {
+        "numTotalTests": 46,
+        "numPassedTests": 46,
+        "numFailedTests": 0,
+        "numPendingTests": 0,
+        "success": true
+      }
+    },
+    {
+      "id": "existing-http-actor-integration",
+      "command": "pnpm --filter backend-next test:integration test/integration/http-app.test.ts test/integration/activitypub-actor.test.ts --reporter=default --reporter=json --outputFile=/tmp/tiramiss-s1-r10-validation-r1-existing-http-actor-integration.json",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r10-validation-r1-existing-http-actor-integration.log",
+      "logSha256": "26baa5fe425b728066f06fc44a51ca054db9262f12309f132084bb170ee1985b",
+      "artifact": "/tmp/tiramiss-s1-r10-validation-r1-existing-http-actor-integration.json",
+      "artifactSha256": "09321ddb8bf8b023f8a0617278c9b7080475952b3b6deae88c5fde691b960560",
+      "tests": {
+        "numTotalTests": 55,
+        "numPassedTests": 55,
+        "numFailedTests": 0,
+        "numPendingTests": 0,
+        "success": true
+      }
+    },
+    {
+      "id": "source-check",
+      "command": "UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/remote-user/local-webfinger-source-probe.mjs --check",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r10-validation-r1-source-check.log",
+      "logSha256": "198a2bfbbf2ad6bc8f13485542a0cdaa79d9be318824a3f59dff8802c392c562"
+    },
+    {
+      "id": "shipping",
+      "command": "node scripts/check-shipping.mjs --base 5699e5ce92595e7065665fa964d0854c3194cca4",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-r10-validation-r1-shipping.log",
+      "logSha256": "28214f103840e40845e47baf7c4b36e0c9e84e35a099d77679431c92988e51dd"
+    }
+  ],
+  "source": {
+    "caseCount": 49,
+    "allCasesDirectlyAssertedBy": "packages/backend-next/test/unit/federation/webfinger-api.test.ts",
+    "sourceManifest": [
+      {
+        "path": "packages/backend/src/server/WellKnownServerService.ts",
+        "klass": "WellKnownServerService",
+        "sha256": "a95eae39e0a03afa7ace1c9902394923f753ee4ba578783b15bc2ddc40a38d02",
+        "methods": {
+          "createServer": "3625e950ebfe8d55bdd65546488d009286b42f7d734af41baa90e70389663cea"
+        },
+        "gitBlob": "5531bfdc0dff75c7107831d9cc1cc5729fe49cbc"
+      },
+      {
+        "path": "packages/backend/src/misc/acct.ts",
+        "sha256": "c1ceb56ab1f159d2a8261ac57c0c5f8b20330505a16dc08e572f30a15140e49d",
+        "methods": {
+          "parse": "26d9ba7a3eb16ee5f663857a05b77d5f8c3b4f63ddd2552acc05a6e2600e6d7f"
+        },
+        "gitBlob": "3d729b115109c0e0cb00e214411a5cc5e4f5d4dc"
+      },
+      {
+        "path": "packages/backend/src/misc/prelude/xml.ts",
+        "sha256": "43e37baa00eb7c9d3a84d1484c0b5be84a33a5fe70bbdeaada27bb868e45eb9c",
+        "methods": {
+          "escapeValue": "9cb4114e3ae0a2ccf19b1436a019a0ccf1614744b831c612191163e8aaa3a804",
+          "escapeAttribute": "80ed0208690e32882f95397776db1fbf6a49edf3c538f817466a618edcaacb19"
+        },
+        "gitBlob": "61c166cee544ac655a863f026bb65fc93a82928f"
+      }
+    ],
+    "doubles": {
+      "meta": "fixed injected federation; notification/cache behavior not tested",
+      "repository": "where predicates asserted; explicit plain row/missing/throw; no PG",
+      "uriService": "genLocalUserUri(id) maps explicit config URL + /users/id",
+      "nodeinfoAndOAuth": "throw if unexpectedly invoked"
+    },
+    "errorBodyScope": "non-200 bodies normalized to null; Fastify diagnostic error JSON is not the public compatibility contract"
+  },
+  "measuredChangedInputs": {
+    "packages/backend-next/src/modules/federation/local-webfinger.ts": "1be64a606998ab6ffa88a07d76a645852eef0dc6d567419850f96c3c73036695",
+    "packages/backend-next/src/modules/federation/public.ts": "1385d32f828400d712271410e9841c3316f9ab951c90cec57425ed68391b8170",
+    "packages/backend-next/src/platform/database/local-webfinger.ts": "a7684888ea4815f351fbd23e81a67511a30e282c0ed6c50e1c015a1132b49ccb",
+    "packages/backend-next/src/http/webfinger-api.ts": "48566e3a64cd92e4f28683dfef6cd7cf7ad8e41742427d103c52857b44c34cf3",
+    "packages/backend-next/src/composition/webfinger-http.ts": "aabe3e0c6fc7a83b77e97e9ef555ecd96934d211fb8353cd4eccc70f331c8cbd",
+    "packages/backend-next/src/composition/http-app.ts": "252c69dbf21d84d0ffcfb6663ceb2dbd5c7acca7841c33cedc926ead30f03048",
+    "packages/backend-next/test/helpers/webfinger-source.ts": "690975f39e04ec4495ee309f3396255993ebb129dcfcdb8f0a0d7ac290a9ed6f",
+    "packages/backend-next/test/unit/federation/local-webfinger.test.ts": "c2e63c279d75244cefc798de308de37f88c71c76fd2d8e7dac92654191ddb4fb",
+    "packages/backend-next/test/unit/federation/webfinger-api.test.ts": "07003474caad9a82a9ac50858b91d67de7bf92f73c395ae6ff2731ac6eb1e48a",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "3ca0a52b891762bfc9296cd763d2ddccc75e95ea250ffee2bf02e4bab710b23e",
+    "packages/backend-next/test/integration/webfinger.test.ts": "0df1737d134141dd60e82e6adfc16ebcb79d02a1735c058e2df29a6829503369",
+    "docs/superpowers/compatibility/remote-user/local-webfinger-corpus.json": "19feceff52545ab5e04c96e9f712cc197bc43cf55affe51545ad5b0ebc73e672",
+    "docs/superpowers/compatibility/remote-user/local-webfinger-observations.json": "4c09e1c310e897a7a05af1868ecc3c5d0fe9bf02f249598bef74cd11e087ca99",
+    "docs/superpowers/compatibility/remote-user/local-webfinger-source-probe.mjs": "758b3e79c87329ffabe33e0ba1976506885f16f3739bffa84b7585b82289947b"
+  },
+  "history": [
+    {
+      "kind": "behavioralRed",
+      "path": "/tmp/tiramiss-s1-r10-red-http-app.log",
+      "sha256": "f4041f79795536f1f07858c7eddad32308d7fe2609519756d7cda19b4168870f"
+    },
+    {
+      "kind": "sourceInitialCharacterizationFailure",
+      "path": "/tmp/tiramiss-s1-r10-source-initial.log",
+      "sha256": "ee787fccb2b7c3b559e87c19d2a85c13538ed782fdb60caeffce8413d3840af1"
+    },
+    {
+      "kind": "sourceCharacterizationPass",
+      "path": "/tmp/tiramiss-s1-r10-source-characterization-r2.log",
+      "sha256": "feea564cb0c9eafd9b0f7b5886816e22ed4053fd48eabc8e7f4799d01fc160e8"
+    },
+    {
+      "kind": "sandboxRuntimeEPERM",
+      "path": "/tmp/tiramiss-s1-r10-runtime-attempt-r1.log",
+      "sha256": "30d1c3b32b5017cb5df33439df9722bfeb06ff02535a7900aed8fb2fcc2cb30e"
+    },
+    {
+      "kind": "sandboxPackageImportEPERM",
+      "path": "/tmp/tiramiss-s1-r10-focused-unit-r2.log",
+      "sha256": "f9e2cc782939eac5f3a74f74408ef0e66d112d38bd5a71db773340adc24ecc1b"
+    },
+    {
+      "kind": "initialTypecheckFailure",
+      "path": "/tmp/tiramiss-s1-r10-typecheck-initial.log",
+      "sha256": "ef2c46a6f4513d0fdf25c06288efbfc3bf690604521e7687dbc6b2220a5434d2"
+    },
+    {
+      "kind": "typecheckPass",
+      "path": "/tmp/tiramiss-s1-r10-typecheck-r2.log",
+      "sha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "kind": "initialLintFailure",
+      "path": "/tmp/tiramiss-s1-r10-shipping-initial.log",
+      "sha256": "3167bdfa1d829f16be3ce3f48679968ddd4607ea39d6d07011b834d519e5abde"
+    },
+    {
+      "kind": "shippingPass",
+      "path": "/tmp/tiramiss-s1-r10-shipping-r2.log",
+      "sha256": "28214f103840e40845e47baf7c4b36e0c9e84e35a099d77679431c92988e51dd"
+    }
+  ],
+  "limits": [
+    "Source createServer runs under actual Fastify inject with explicit repository/URI/Meta/NodeInfo/OAuth doubles; not upstream full-server/PG.",
+    "Current integration uses actual listening ordinary composition and test-owned PG User/Profile/Key/Meta, including table-fault injection restored in finally.",
+    "Existing readMeta reads DB per request; upstream receives notification-refreshed injected Meta. Stable Meta only; notification/cache equivalence is unproven and belongs to #217.",
+    "Error diagnostic bodies are not compared; status/CORS/cache/Vary are.",
+    "No host-meta, NodeInfo, authorize-follow handler, collections, inbox, signature verification, cache or lifecycle additions."
+  ],
+  "nonFailingDiagnostics": [
+    "pg client.query concurrent-query DeprecationWarning emitted in actual integration logs; all assertions passed; no unrelated lifecycle/connection refactor."
+  ]
+}
