@@ -59,10 +59,17 @@ const cors = {
 const observations = [];
 for (const c of corpus.cases) {
  const lookups = [];
+ let metaReads = 0;
  const row = { ...corpus.defaults.row, ...c.row };
  const receiver = {
   config: { url: corpus.defaults.selfUrl, host: new URL(corpus.defaults.selfUrl).host },
-  meta: { federation: c.federation ?? 'all' },
+  get meta() {
+   metaReads += 1;
+   if (c.metaFail) {
+    throw Error('meta unavailable');
+   }
+   return { federation: c.federation ?? 'all' };
+  },
   usersRepository: { async findOneBy(where) {
    assert.equal(where.host._type, 'isNull'); assert.equal(where.isSuspended, false);
    assert.deepEqual(Object.keys(where).sort(), ['host', 'isSuspended', 'id' in where ? 'id' : 'usernameLower'].sort(), 'no deleted predicate or other lookup');
@@ -93,6 +100,13 @@ for (const c of corpus.cases) {
   if (success) assert.deepEqual(body, expectedBody, `${c.id} body`);
   if (c.method === 'HEAD' || c.expected.status === 204) assert.equal(response.body, '', `${c.id} empty body`);
   observations.push({ id: c.id, status: response.statusCode, lookups, headers: Object.fromEntries([...Object.keys(cors), 'vary', 'cache-control', 'content-type'].map(key => [key, response.headers[key] ?? null])), body });
+  if (c.metaFail) {
+   assert.equal(metaReads, 0, `${c.id} OPTIONS skips Meta`);
+   const control = await app.inject({ method: 'GET', url: `/.well-known/webfinger?${query}` });
+   assert.equal(control.statusCode, 500, `${c.id} GET activates the Meta fault`);
+   assert.equal(metaReads, 1, `${c.id} Meta fault is reached once`);
+   assert.deepEqual(lookups, [], `${c.id} Meta fault precedes User lookup`);
+  }
  } finally { await app.close(); }
 }
 const result = { schemaVersion: 1, upstreamCommit: pin, corpusSha256: sha(corpusBytes), manifest,

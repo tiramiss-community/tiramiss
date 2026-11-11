@@ -31,8 +31,10 @@ const r2CurrentPath = directory + 'local-webfinger-r2-current-evidence.json';
 const r2CurrentSha256 = 'af63941a3bf606be9c7fb2b075a1d6da32fa06ffd41b5c4550cacb23db34b925';
 const r2CurrentCanonicalSha256 = '7ec74324ed0b9c0fa49159238463acbe7e097ce322a23d64985e20c5ca4ebb32';
 const r3Prefix = '/tmp/tiramiss-s1-r10-validation-r3-';
-// Pins the current R3 record and its exact R2 archive; host files remain optional in CI.
-const reviewedRecordSha256 = '782d1c4bcde6a4b5dd381554ada76141ccb87004c3faf16894acc6b087aa85a0';
+const sourceProbePath = directory + 'local-webfinger-source-probe.mjs';
+const sourceProbePreviousSha256 = '758b3e79c87329ffabe33e0ba1976506885f16f3739bffa84b7585b82289947b';
+// Pins R3 provenance, its R2 archive and the separate probe correction; host files are optional in CI.
+const reviewedRecordSha256 = '5cfc3683614178b90531901018bca75e0c67e3e3faca8421becbc11cc5c7e175';
 
 export function validateLocalWebfingerEvidence(value, readFile = read, optional = optionalRead) {
 	assert.equal(value.schemaVersion, 1);
@@ -102,8 +104,27 @@ export function validateLocalWebfingerEvidence(value, readFile = read, optional 
 	assert.equal(receipt.frozenInputs, 846, 'WebFinger frozen count');
 	assert.equal(value.request.frozenInputs, 846, 'WebFinger frozen count');
 	assert(Number.isFinite(Date.parse(receipt.startedAt)) && Date.parse(receipt.completedAt) >= Date.parse(receipt.startedAt), 'WebFinger measurement window');
+	// Only the source probe changed after R3; its separate replay does not renew product measurements.
+	const correction = value.sourceProbeCorrection;
+	assert.equal(correction.scope, 'webfinger-meta-fault-probe-only', 'WebFinger source probe correction scope');
+	assert.equal(correction.path, sourceProbePath, 'WebFinger source probe correction scope');
+	assert.equal(correction.previousSha256, sourceProbePreviousSha256, 'WebFinger source probe predecessor');
+	assert.equal(value.frozenInputSha256[sourceProbePath], sourceProbePreviousSha256, 'WebFinger source probe predecessor');
+	assert.match(correction.sha256, /^[a-f0-9]{64}$/);
+	assert.equal(correction.run.exitCode, 0, 'WebFinger successful source probe replay');
+	assert.equal(correction.run.caseCount, 49, 'WebFinger source probe case count');
+	assert.equal(correction.run.command, `UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node ${sourceProbePath} --check`, 'WebFinger source probe replay command');
+	assert.deepEqual(correction.run.metaFaultControl, { optionsStatus: 204, optionsMetaReads: 0, getStatus: 500, getMetaReads: 1, userLookups: 0 }, 'WebFinger source probe fault controls');
+	assert.equal(sha(readFile(directory + 'local-webfinger-observations.json')), correction.observationsSha256, 'WebFinger source probe observations drift');
+	assert.equal(sha(readFile(directory + 'local-webfinger-corpus.json')), correction.corpusSha256, 'WebFinger source probe corpus drift');
+	assert(Number.isFinite(Date.parse(correction.startedAt)) && Date.parse(correction.completedAt) >= Date.parse(correction.startedAt), 'WebFinger source probe replay window');
+	assert.match(correction.run.logSha256, /^[a-f0-9]{64}$/);
+	const correctionLog = optional(correction.run.log);
+	if (correctionLog !== null) {
+		assert.equal(sha(correctionLog), correction.run.logSha256, 'WebFinger actual source probe log bytes');
+	}
 	for (const [path, digest] of Object.entries(value.frozenInputSha256)) {
-		assert.equal(sha(readFile(path)), digest, 'WebFinger measured input drift');
+		assert.equal(sha(readFile(path)), path === sourceProbePath ? correction.sha256 : digest, 'WebFinger measured input drift');
 	}
 	for (const binding of [value.runtimeEvidence, value.sourceEvidence]) {
 		assert.equal(sha(readFile(binding.path)), binding.sha256, 'WebFinger historical evidence drift');

@@ -88,3 +88,18 @@ test('current image projection preserves old image assertions and follows only b
 	assert.throws(() => currentLocalActorImagesDigest(v.consumerRenewal.file, '0'.repeat(64)), /previous identity/);
 	assert.throws(() => currentLocalActorImagesDigest(v.file, v.previousSha256, undefined, p => p === v.file ? Buffer.from('drift') : read(p), () => null), /WebFinger .* drift/);
 });
+
+for (const [name, mutate, error] of [
+	['unrelated renewal target', v => { v.sourceProbeCorrection.path = v.file; }, /WebFinger source probe correction scope/],
+	['unknown probe predecessor', v => { v.sourceProbeCorrection.previousSha256 = '0'.repeat(64); }, /WebFinger source probe predecessor/],
+	['failed replay', v => { v.sourceProbeCorrection.run.exitCode = 1; }, /WebFinger successful source probe replay/],
+	['missing fault injection', v => { v.sourceProbeCorrection.run.metaFaultControl.getStatus = 200; }, /WebFinger source probe fault controls/],
+	['changed observations', v => { v.sourceProbeCorrection.observationsSha256 = '0'.repeat(64); }, /WebFinger source probe observations drift/],
+]) test(`WebFinger rejects source-only correction with ${name}`, () => {
+	const v = record(); mutate(v);
+	assert.throws(() => validateLocalWebfingerEvidence(v, read, () => null), error);
+});
+test('WebFinger checks available source-only replay log bytes', () => {
+	const v = record();
+	assert.throws(() => validateLocalWebfingerEvidence(v, read, p => p === v.sourceProbeCorrection.run.log ? Buffer.from('changed log') : null), /WebFinger actual source probe log bytes/);
+});

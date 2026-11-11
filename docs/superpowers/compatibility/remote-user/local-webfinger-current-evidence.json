@@ -200,5 +200,29 @@
     "sha256": "af63941a3bf606be9c7fb2b075a1d6da32fa06ffd41b5c4550cacb23db34b925",
     "canonicalSha256": "7ec74324ed0b9c0fa49159238463acbe7e097ce322a23d64985e20c5ca4ebb32",
     "scope": "Exact R2 current-record bytes archived before R3 renewal; original14-input R2 subset and raw request/receipt identities are pinned history, not current source claims."
+  },
+  "sourceProbeCorrection": {
+    "scope": "webfinger-meta-fault-probe-only",
+    "path": "docs/superpowers/compatibility/remote-user/local-webfinger-source-probe.mjs",
+    "previousSha256": "758b3e79c87329ffabe33e0ba1976506885f16f3739bffa84b7585b82289947b",
+    "sha256": "a4ef13324b37c8c1a73bbfb719dc5061cff92c59f09a09a437d3b77af42148f5",
+    "observationsSha256": "4c09e1c310e897a7a05af1868ecc3c5d0fe9bf02f249598bef74cd11e087ca99",
+    "corpusSha256": "19feceff52545ab5e04c96e9f712cc197bc43cf55affe51545ad5b0ebc73e672",
+    "startedAt": "2026-11-11T18:49:55.448036+00:00",
+    "completedAt": "2026-11-11T18:49:55.915380+00:00",
+    "run": {
+      "command": "UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/remote-user/local-webfinger-source-probe.mjs --check",
+      "exitCode": 0,
+      "caseCount": 49,
+      "metaFaultControl": {
+        "optionsStatus": 204,
+        "optionsMetaReads": 0,
+        "getStatus": 500,
+        "getMetaReads": 1,
+        "userLookups": 0
+      },
+      "log": "/tmp/tiramiss-pr268-review5859952148-source-check.log",
+      "logSha256": "198a2bfbbf2ad6bc8f13485542a0cdaa79d9be318824a3f59dff8802c392c562"
+    }
   }
 }
