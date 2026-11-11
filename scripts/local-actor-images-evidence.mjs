@@ -17,7 +17,7 @@ const optionalRead = path => {
 };
 const requiredRuns = ['build', 'typecheck', 'units', 'activitypub-actor-integration', 'remote-user-integration', 'source-check'];
 // Pins the finite changed-input subset, measured provenance and real base identities.
-const reviewedRecordSha256 = '1de3462bbe45708c1b66712b6683b93c3ea3432a916d9a28287cb33bdfb55adb';
+const reviewedRecordSha256 = '1e3ddeef85c441ed5ba0f4f9ad953414eb9559f7525a430f3bcddba5124fc326';
 
 export function validateLocalActorImagesEvidence(value, readFile = read, optional = optionalRead) {
 	assert.equal(value.schemaVersion, 1);

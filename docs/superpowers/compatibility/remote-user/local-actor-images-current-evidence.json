@@ -267,8 +267,7 @@
       "sha256": "24b63006e8b062b219a8a1da517244bba16d223e78a740d1e4e1bd42c34783e4",
       "previousSha256": null,
       "validatedBy": [
-        "units",
-        "activitypub-actor-integration"
+        "units"
       ]
     },
     "packages/backend-next/test/integration/activitypub-actor.test.ts": {
