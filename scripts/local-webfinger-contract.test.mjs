@@ -40,7 +40,7 @@ for (const [name, mutate, error] of [
 });
 test('WebFinger rejects current source and immutable history tampering', () => {
 	const v = record();
-	for (const path of [v.file, v.predecessor.path, v.runtimeEvidence.path, ...Object.keys(v.frozenInputSha256)]) {
+	for (const path of [v.file, v.predecessor.path, v.runtimeEvidence.path, v.previousCurrentRecord.path, ...Object.keys(v.frozenInputSha256)]) {
 		assert.throws(() => validateLocalWebfingerEvidence(v, p => p === path ? Buffer.from('drift') : read(p), () => null), /WebFinger .* drift/);
 	}
 });

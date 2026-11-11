@@ -27,8 +27,12 @@ const consumerPreviousSha256 = 'a1b3612237d5de33cf8f20d7df16bc5ddb69db97b1b399c7
 const consumerPredecessor = { path: directory + 'actor-instance-registration-runtime-evidence.json', sha256: 'd36d75bb0a90670c37ffbe0275562fe2d74f5e98e6c5fffe3069b36401919828' };
 const requiredRuns = ['build', 'typecheck', 'units', 'webfinger-integration', 'source-check', 'shipping'];
 const applicableRuns = ['build', 'typecheck', 'units', 'webfinger-integration'];
-// A single reviewed binding pins the measured R2 record; no ephemeral host file is required in CI.
-const reviewedRecordSha256 = '7ec74324ed0b9c0fa49159238463acbe7e097ce322a23d64985e20c5ca4ebb32';
+const r2CurrentPath = directory + 'local-webfinger-r2-current-evidence.json';
+const r2CurrentSha256 = 'af63941a3bf606be9c7fb2b075a1d6da32fa06ffd41b5c4550cacb23db34b925';
+const r2CurrentCanonicalSha256 = '7ec74324ed0b9c0fa49159238463acbe7e097ce322a23d64985e20c5ca4ebb32';
+const r3Prefix = '/tmp/tiramiss-s1-r10-validation-r3-';
+// Pins the current R3 record and its exact R2 archive; host files remain optional in CI.
+const reviewedRecordSha256 = '782d1c4bcde6a4b5dd381554ada76141ccb87004c3faf16894acc6b087aa85a0';
 
 export function validateLocalWebfingerEvidence(value, readFile = read, optional = optionalRead) {
 	assert.equal(value.schemaVersion, 1);
@@ -56,19 +60,42 @@ export function validateLocalWebfingerEvidence(value, readFile = read, optional 
 	assert.equal(JSON.parse(consumerHistoryBytes).measurements['full-unit'].sourceSha256[consumerFile], consumer.previousSha256, 'WebFinger consumer predecessor identity');
 	assert.equal(value.frozenInputSha256[consumer.file], consumer.sha256, 'WebFinger consumer frozen identity');
 	assert.deepEqual(consumer.validatedBy, ['units'], 'WebFinger consumer applicable runs');
+	const history = value.previousCurrentRecord;
+	assert.equal(history.path, r2CurrentPath, 'WebFinger R2 archive identity');
+	assert.equal(history.sha256, r2CurrentSha256, 'WebFinger R2 archive identity');
+	assert.equal(history.canonicalSha256, r2CurrentCanonicalSha256, 'WebFinger R2 archive identity');
+	const r2Bytes = readFile(r2CurrentPath);
+	assert.equal(sha(r2Bytes), r2CurrentSha256, 'WebFinger R2 archive drift');
+	const r2 = JSON.parse(r2Bytes);
+	assert.equal(sha(JSON.stringify(r2)), r2CurrentCanonicalSha256, 'WebFinger R2 archive drift');
+	assert.equal(r2.file, value.file, 'WebFinger R2 archive identity');
+	assert.equal(r2.previousSha256, value.previousSha256, 'WebFinger R2 archive identity');
+	assert.equal(r2.sha256, value.sha256, 'WebFinger R2 export identity');
+	assert.equal(r2.consumerRenewal.file, consumer.file, 'WebFinger R2 archive identity');
+	assert.equal(r2.consumerRenewal.previousSha256, consumer.previousSha256, 'WebFinger R2 archive identity');
+	assert.equal(r2.runtimeEvidence.path, directory + 'local-webfinger-logging-runtime-evidence.json', 'WebFinger R2 archive identity');
+	assert.equal(sha(readFile(r2.runtimeEvidence.path)), r2.runtimeEvidence.sha256, 'WebFinger R2 runtime drift');
+	assert.equal(r2.sourceEvidence.sha256, value.sourceEvidence.sha256, 'WebFinger R2 source identity');
+	assert.deepEqual(Object.keys(value.frozenInputSha256).sort(), Object.keys(r2.frozenInputSha256).sort(), 'WebFinger relevant subset');
+	assert.equal(Object.keys(value.frozenInputSha256).length, 14, 'WebFinger relevant subset');
 	const receipt = value.receipt.record;
 	assert.equal(receipt.status, 'PASS', 'WebFinger successful run');
 	assert.deepEqual(receipt.commands.map(c => c.id), requiredRuns, 'WebFinger required runs');
 	for (const run of receipt.commands) {
 		assert(run.exitCode === 0 && run.command && run.log, 'WebFinger successful run');
 		assert.match(run.logSha256, /^[a-f0-9]{64}$/);
+		assert.equal(run.log, `${r3Prefix}${run.id}.log`, 'WebFinger R3 run path');
 		if (['units', 'webfinger-integration'].includes(run.id)) {
 			const tests = run.tests;
 			assert(tests?.success && tests.numTotalTests === tests.numPassedTests && tests.numPassedTests > 0 && tests.numFailedTests === 0 && tests.numPendingTests === 0, 'WebFinger successful tests');
+			assert.equal(tests.numTotalTests, run.id === 'units' ? 235 : 46, 'WebFinger successful tests');
 			assert(run.artifact && /^[a-f0-9]{64}$/.test(run.artifactSha256), 'WebFinger test artifact');
+			assert.equal(run.artifact, `${r3Prefix}${run.id}.json`, 'WebFinger test artifact');
 		}
 	}
 	assert.equal(value.request.status, 'FROZEN_READY', 'WebFinger frozen request');
+	assert.equal(value.request.path, '/tmp/tiramiss-s1-r10-validation-request-r3.json', 'WebFinger R3 request path');
+	assert.equal(value.receipt.path, '/tmp/tiramiss-s1-r10-validation-receipt-r3.json', 'WebFinger R3 receipt path');
 	assert.equal(receipt.requestPath, value.request.path, 'WebFinger request binding');
 	assert.equal(receipt.requestSha256, value.request.sha256, 'WebFinger request binding');
 	assert.equal(receipt.base, value.request.base, 'WebFinger request binding');
@@ -81,19 +108,26 @@ export function validateLocalWebfingerEvidence(value, readFile = read, optional 
 	for (const binding of [value.runtimeEvidence, value.sourceEvidence]) {
 		assert.equal(sha(readFile(binding.path)), binding.sha256, 'WebFinger historical evidence drift');
 	}
+	assert.equal(value.runtimeEvidence.path, directory + 'local-webfinger-structured-logging-runtime-evidence.json', 'WebFinger R3 runtime path');
 	const runtime = JSON.parse(readFile(value.runtimeEvidence.path));
+	assert.equal(runtime.scope, 'local-webfinger-structured-logging', 'WebFinger R3 runtime scope');
+	assert.equal(runtime.brokerRequestPath, value.request.path, 'WebFinger request binding');
+	assert.equal(runtime.brokerReceiptPath, value.receipt.path, 'WebFinger receipt binding');
 	assert.equal(runtime.brokerReceiptSha256, value.receipt.sha256, 'WebFinger receipt binding');
 	assert.equal(runtime.brokerRequestSha256, value.request.sha256, 'WebFinger request binding');
 	assert.deepEqual(runtime.measurements, receipt.commands, 'WebFinger measured runs');
 	assert.deepEqual(runtime.runtime, receipt.runtime, 'WebFinger runtime binding');
 	assert.deepEqual(runtime.measurementWindow, { startedAt: receipt.startedAt, completedAt: receipt.completedAt });
 	assert.equal(runtime.frozenInputCount, 846);
-	assert.equal(Object.keys(runtime.frozenInputSha256).length, 846);
-	assert.equal(sha(canonicalMap(runtime.frozenInputSha256)), value.request.frozenInputMapSha256, 'WebFinger frozen map');
+	assert.equal(Object.keys(runtime.frozenInputSha256).length, 14, 'WebFinger relevant subset');
+	assert.deepEqual(runtime.frozenInputSha256, value.frozenInputSha256, 'WebFinger frozen identity');
+	assert.match(value.request.frozenInputMapSha256, /^[a-f0-9]{64}$/, 'WebFinger frozen map');
 	assert.equal(runtime.frozenInputMapSha256, value.request.frozenInputMapSha256, 'WebFinger frozen map');
 	for (const [path, digest] of Object.entries(value.frozenInputSha256)) {
 		assert.equal(runtime.frozenInputSha256[path], digest, 'WebFinger frozen identity');
 	}
+	assert.deepEqual(runtime.historicalR2CurrentRecord, { path: r2CurrentPath, sha256: r2CurrentSha256, canonicalSha256: r2CurrentCanonicalSha256 }, 'WebFinger R2 archive identity');
+	assert.deepEqual(runtime.source, value.sourceOracle, 'WebFinger source binding');
 	const observations = JSON.parse(readFile(directory + 'local-webfinger-observations.json'));
 	assert.equal(observations.cases.length, value.sourceOracle.caseCount, 'WebFinger source binding');
 	assert.equal(value.sourceOracle.caseCount, 49, 'WebFinger source binding');
@@ -113,7 +147,11 @@ export function validateLocalWebfingerEvidence(value, readFile = read, optional 
 		} else {
 			assert.equal(actual.status, value.request.status);
 			assert.equal(actual.base, receipt.base);
-			assert.deepEqual(actual.sha256, runtime.frozenInputSha256, 'WebFinger actual frozen map');
+			assert.equal(Object.keys(actual.sha256).length, 846, 'WebFinger actual frozen map');
+			assert.equal(sha(canonicalMap(actual.sha256)), value.request.frozenInputMapSha256, 'WebFinger actual frozen map');
+			for (const [path, digest] of Object.entries(value.frozenInputSha256)) {
+				assert.equal(actual.sha256[path], digest, 'WebFinger actual frozen identity');
+			}
 			assert.deepEqual(actual.commands.map(c => [c.id, c.command, c.log, c.artifact ?? null]), receipt.commands.map(c => [c.id, c.command, c.log, c.artifact ?? null]));
 		}
 	}
