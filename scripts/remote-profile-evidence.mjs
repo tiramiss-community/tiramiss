@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { actorImageRemovalDigest } from './actor-image-removal-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
 const read = file => readFileSync(new URL(file, root));
@@ -60,10 +61,10 @@ function measuredFile(value, file) {
 // Add one measured identity hop after local actor tags; historical receipts stay intact.
 export function remoteProfileDigest(file, previousDigest, label = 'remote profile previous identity') {
 	const value = JSON.parse(read(directory + 'remote-profile-runtime-evidence.json'));
-	if (!value.files[file]) return previousDigest;
+	if (!value.files[file]) return actorImageRemovalDigest(file, previousDigest, label);
 	const binding = measuredFile(value, file);
 	assert(binding.previousSha256.includes(previousDigest) || binding.sha256 === previousDigest, label);
-	return binding.sha256;
+	return actorImageRemovalDigest(file, binding.sha256, label);
 }
 
 export function validateRemoteProfileEvidence(value, readFile = read) {
@@ -81,8 +82,8 @@ export function validateRemoteProfileEvidence(value, readFile = read) {
 	assert.equal(remoteProfileSha(readFile(directory + 'remote-profile-source-probe.mjs')), value.probeSha256);
 	for (const [file, binding] of Object.entries(value.files)) {
 		measuredFile(value, file);
-		assert.equal(remoteProfileSha(readFile(file)), binding.sha256, 'actual frozen profile input drift');
 		assert.equal(value.frozenInputSha256[file], binding.sha256, 'profile binding was frozen');
+		assert.equal(remoteProfileSha(readFile(file)), actorImageRemovalDigest(file, binding.sha256), 'actual frozen profile input drift');
 	}
 	assert.equal(remoteProfileSha(JSON.stringify(value.frozenInputSha256)), value.frozenInputMapSha256);
 	assert.match(value.brokerReceiptSha256, /^[a-f0-9]{64}$/);
