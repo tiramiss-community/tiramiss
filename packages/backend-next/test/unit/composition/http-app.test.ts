@@ -40,7 +40,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 	expect(events).toEqual(['note', 'role']);
 	expect(legacy).toBe(createBackendHttpApp);
 	expect([...new Set(app.routes.map(route => route.path))]).toEqual([
-		'/api/admin/roles/show', '/api/admin/roles/update', '/users/:id',
+		'/api/admin/roles/show', '/api/admin/roles/update', '/users/:id', '/.well-known/webfinger',
 		'/api/notes/delete', '/api/notes/show', '/api/notes/create', '/api/test-queue',
 	]);
 	for (const path of ['admin/roles/show', 'admin/roles/update', 'notes/delete', 'notes/create']) {
@@ -85,4 +85,25 @@ test('Role authentication infrastructure failure retains the base app error resp
 	expect(response.status).toBe(500);
 	expect(await response.json()).toHaveProperty('error.code', 'INTERNAL_ERROR');
 	expect(response.headers.get('cache-control')).toBe('private, max-age=0, must-revalidate');
+});
+
+test('ordinary composition exposes discovery CORS for an unknown local account', async () => {
+	const { resources } = fixture();
+	const response = await createBackendHttpApp(resources, testConfig()).request('/.well-known/webfinger?resource=acct:alice@example.test');
+	expect(response.status).toBe(404);
+	expect(response.headers.get('access-control-allow-headers')).toBe('Accept');
+});
+
+test.each(['GET', 'HEAD'])('ordinary composition passes its resource logger to discovery failures for %s', async method => {
+	const { resources, repository } = fixture();
+	repository.find.mockRejectedValueOnce(new Error('private Meta database diagnostic'));
+	const response = await createBackendHttpApp(resources, testConfig()).request('/.well-known/webfinger?resource=alice', { method });
+	expect(response.status).toBe(500);
+	expect(await response.text()).toBe('');
+	expect(response.headers.get('cache-control')).toBeNull();
+	expect(response.headers.get('vary')).toBeNull();
+	expect(response.headers.get('access-control-allow-origin')).toBe('*');
+	expect(resources.logger.error).toHaveBeenCalledExactlyOnceWith('webfinger.failed', {
+		classification: 'unexpected-failure', stage: 'meta-read',
+	});
 });

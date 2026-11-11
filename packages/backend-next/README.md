@@ -344,3 +344,9 @@ node scripts/check-shipping.mjs
 ```
 
 Supervisor自然retry試験は通常の60–72秒backoffを待つ（test timeout180秒）。新WS接続へのlive通知でありreplayを証明しない。通常CIは記録済みfixtureを利用し、固定本家checkoutでの任意確認時だけ`BACKEND_NEXT_UPSTREAM_PATH=/path/to/pinned-upstream`を指定する。N7旧証跡の501/stale制限は履歴として固定し、#195の現行core取得/refresh実測で証明した部分だけをsupersedeする。rich actor効果・C2/C10比較ギャップ・投稿全体・本番切替は未完了。#242はマージ済みで#124はCLOSED、N7の監査時OPENは過去の事実として保持する。
+
+## Local WebFinger discovery（#195 の限定範囲）
+
+通常HTTP compositionの `GET` / `HEAD /.well-known/webfinger` がローカルアカウント・actor/profile URLからJRD/XRDを返し、self linkを既存actor GETへ接続する。OPTIONSは204。固定本家のparser/XML/Accept/CORS/cacheの挙動と、専用PGの実User/Profile/Keyからの発見→actor取得・DB障害を検証する。[実測・証跡・比較限界](../../docs/superpowers/compatibility/remote-user/local-webfinger-results.md)。
+
+専用検証環境で `pnpm --filter backend-next test:integration test/integration/webfinger.test.ts test/integration/http-app.test.ts test/integration/activitypub-actor.test.ts` を実行する。並行時は既存の `BACKEND_NEXT_TEST_DB_PORT` / `BACKEND_NEXT_TEST_REDIS_PORT` / `BACKEND_NEXT_TEST_MEILI_PORT` を設定する。Metaは既存DB readerを使い、通知/cache鮮度の同等性は#217へ残す。host-meta・NodeInfo・authorize-follow本体・collections・inbox、#176/#127/#195全体の完成は含めない。

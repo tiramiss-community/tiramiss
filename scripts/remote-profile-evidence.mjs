@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { actorImageRemovalDigest } from './actor-image-removal-evidence.mjs';
-import { localActorImagesDigest } from './local-actor-images-evidence.mjs';
+import { currentLocalActorImagesDigest as localActorImagesDigest } from './local-actor-images-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
 const read = file => readFileSync(new URL(file, root));

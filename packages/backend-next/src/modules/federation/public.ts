@@ -49,3 +49,6 @@ export type { RemoteEmoji, RemoteEmojiPatch, RemoteEmojiInsert, RemoteEmojiRepos
 
 export { renderApEmoji, renderApHashtag } from './ap-tags.js';
 export type { ApEmojiFacts, LocalActorTag } from './ap-tags.js';
+
+export { localWebfingerQuery, renderLocalWebfinger, renderWebfingerXrd } from './local-webfinger.js';
+export type { LocalWebfingerQuery, LocalWebfingerFacts, LocalWebfingerDocument } from './local-webfinger.js';

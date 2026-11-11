@@ -12,7 +12,7 @@
 
 ## 現在地と既存成果
 
-基準: develop `62cdeb54289bdcf46ad57e7f8a28db8a4c5f2ee7`（PR #266マージ後）と、local actor画像公開 `ac37daa75d55b24cc811a7c4082ffd0da924fc3c`（今回の実装）。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
+基準: develop `5699e5ce92595e7065665fa964d0854c3194cca4`（PR #267マージ後）。local actor画像公開 `ac37daa75d55b24cc811a7c4082ffd0da924fc3c` は#267でマージ済み。今回の限定WebFinger公開は元実装 `770750d88b4d27820616d7f264b186017e52b9c9`、R2診断 `e9d8ebd07bc3d8e51c0a36c08ebbc97137504be4` とstdout JSON修正後 `1716e0f14207ddfe5b51730e256347ebe7579c5e`。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
 
 [画像削除の限定結果](../superpowers/compatibility/remote-user/actor-image-removal-results.md): public remote mentionの作成・canonical復旧後、両画像が不在なら6フィールドを消去し、更新失敗は報告してmentionを継続する。
 
@@ -20,6 +20,7 @@
 
 | 対象 | 実装済み | 残作業・完了判定 |
 | --- | --- | --- |
+| local WebFinger #195 | 通常GET/HEAD/OPTIONS `/.well-known/webfinger`、resource解決・JRD/XRD・path限定CORSを既存actor GETへ接続。[source49とR3単体235・実HTTP/PG46の結果](../superpowers/compatibility/remote-user/local-webfinger-results.md)。既存HTTP/actor55は別R1実行 | wildcard OPTIONS・他well-known/host-meta/NodeInfo/authorize-follow・collections/inbox/remote Notesは未完了。sourceはFastify inject＋doubles、error body診断文字列とMeta DB対injected cache/通知同等性は未比較。#176/#127/#195 OPEN、notes/create partial・postingComplete:false |
 | 共有root | PR #249でHTTP・既存worker・CIの整理がマージ済み | 追加handlerを実装した意味ではない |
 | 投稿N0–N6 | #167–#175はCLOSED。#238で削除連携も確認済み | 全通知・閲覧・全WS等は各領域に残る |
 | 投稿N7 #176 | #242で基本縦断・停止再開・通常retry、#250でC2/C10の比較不足を補完。#243のremote解決もマージ済み | 残るactor関連の初期機能の実装・比較待ち。#176/#127はOPEN |
@@ -292,3 +293,8 @@ media/emoji #188/#195、user hashtag関係 #195、actor由来instance usersCount
 2026-11-11: #195のlocal actor tag公開で、既存GET `/users/:id`と内部local解決へ絵文字・hashtagを接続した。[固定source12観測と実測](../superpowers/compatibility/remote-user/local-actor-tags-results.md)。入力順・重複・localOnly除外、各絵文字の時刻と鍵取得前の失敗境界を維持し、共有したNote描画・DB読取も検証した。単体3,021件・結合145件が成功。DB直読と本家cacheの鮮度差は#217に残る。これは#176のremote mention残機能の完了ではなく、#176/#127/#195未完了、notes/create partial・postingComplete:falseと正式な対応順を維持する。
 
 2026-11-11: #195の限定sliceで、既存GET `/users/:id`と内部local解決へ保存済Driveのicon/image、identicon・system Meta fallbackを接続した（基準PR #266 `62cdeb54289bdcf46ad57e7f8a28db8a4c5f2ee7`、実装 `ac37daa75d55b24cc811a7c4082ffd0da924fc3c`）。[固定本家33件のsource-method doublesとR2実測](../superpowers/compatibility/remote-user/local-actor-images-results.md): build/typecheck、近傍単体317件、実HTTP/PG actor53件・remote-user108件が成功。全単体/processや本家full HTTP/PGを測定した意味ではない。Meta DB直読の鮮度・失敗差、既存内部remote-row guard差を保持する。画像バイト配信（identicon/files/proxy）、Drive取得・remote media・他rich actor等は未完了。#176/#127/#195はOPEN、`notes/create:partial` / `postingComplete:false`、正式な対応順と過去の画像削除証跡を維持する。
+
+2026-11-11: #195の限定WebFinger公開（元実装 `770750d88b4d27820616d7f264b186017e52b9c9`、診断修正後 `e9d8ebd07bc3d8e51c0a36c08ebbc97137504be4`）を通常HTTPへ接続した。[固定source49と実測](../superpowers/compatibility/remote-user/local-webfinger-results.md): R2 build/typecheck、近傍単体231件、実HTTP/PG WebFinger46件。既存HTTP/actor55件は別のR1実行として保持する。検証はWebFingerとstable Metaに限定し、wildcard OPTIONS/他well-known、本家full server/PG、error body診断文字列、Meta通知/cache #217は未検証。#176/#127/#195 OPEN、notes/create:partial・postingComplete:false、正式な対応順と過去記録を維持する。
+
+
+2026-11-11（診断形式の追加修正）: local WebFingerの既存Logger stdout JSON契約を `1716e0f14207ddfe5b51730e256347ebe7579c5e` で反映した。[R3の実測結果](../superpowers/compatibility/remote-user/local-webfinger-results.md#final-diagnostic-format-fix-r3-2026-11-11): build/typecheck、単体235件、通常listening HTTP/PG46件、変更のないsource49件がPASS。R2 current recordは完全なバイト複製をarchiveして保持し、current proofをR3へ更新する。既存HTTP/actor55は別R1の記録であり再測定していない。上記のR2履歴と正式な対応順、stable Meta/source-methodの検証範囲、#217および#176/#127/#195 OPEN・notes/create partial・postingComplete:falseを維持する。

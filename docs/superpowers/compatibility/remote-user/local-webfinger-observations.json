@@ -1,0 +1,1278 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "corpusSha256": "19feceff52545ab5e04c96e9f712cc197bc43cf55affe51545ad5b0ebc73e672",
+  "manifest": [
+    {
+      "path": "packages/backend/src/server/WellKnownServerService.ts",
+      "klass": "WellKnownServerService",
+      "sha256": "a95eae39e0a03afa7ace1c9902394923f753ee4ba578783b15bc2ddc40a38d02",
+      "methods": {
+        "createServer": "3625e950ebfe8d55bdd65546488d009286b42f7d734af41baa90e70389663cea"
+      },
+      "gitBlob": "5531bfdc0dff75c7107831d9cc1cc5729fe49cbc"
+    },
+    {
+      "path": "packages/backend/src/misc/acct.ts",
+      "sha256": "c1ceb56ab1f159d2a8261ac57c0c5f8b20330505a16dc08e572f30a15140e49d",
+      "methods": {
+        "parse": "26d9ba7a3eb16ee5f663857a05b77d5f8c3b4f63ddd2552acc05a6e2600e6d7f"
+      },
+      "gitBlob": "3d729b115109c0e0cb00e214411a5cc5e4f5d4dc"
+    },
+    {
+      "path": "packages/backend/src/misc/prelude/xml.ts",
+      "sha256": "43e37baa00eb7c9d3a84d1484c0b5be84a33a5fe70bbdeaada27bb868e45eb9c",
+      "methods": {
+        "escapeValue": "9cb4114e3ae0a2ccf19b1436a019a0ccf1614744b831c612191163e8aaa3a804",
+        "escapeAttribute": "80ed0208690e32882f95397776db1fbf6a49edf3c538f817466a618edcaacb19"
+      },
+      "gitBlob": "61c166cee544ac655a863f026bb65fc93a82928f"
+    }
+  ],
+  "evidence": "literal pinned createServer with actual Fastify inject and installed accepts; literal Acct/XML modules; not upstream full-server/PG",
+  "doubles": {
+    "meta": "fixed injected federation; notification/cache behavior not tested",
+    "repository": "where predicates asserted; explicit plain row/missing/throw; no PG",
+    "uriService": "genLocalUserUri(id) maps explicit config URL + /users/id",
+    "nodeinfoAndOAuth": "throw if unexpectedly invoked"
+  },
+  "errorBodyScope": "non-200 bodies normalized to null; Fastify diagnostic error JSON is not the public compatibility contract",
+  "cases": [
+    {
+      "id": "acct",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bare",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "leading-at",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hosted-bare",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "upper-all",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile-url",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "upper-profile",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile-last",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "extra-host",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "empty-host",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "acct-leading-at",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "actor-url",
+      "status": 200,
+      "lookups": [
+        {
+          "id": "id"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "actor-upper",
+      "status": 200,
+      "lookups": [
+        {
+          "id": "id"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "actor-last",
+      "status": 200,
+      "lookups": [
+        {
+          "id": "id"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "actor-empty-last",
+      "status": 404,
+      "lookups": [
+        {
+          "id": ""
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "foreign-account",
+      "status": 422,
+      "lookups": [],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "missing-port",
+      "status": 422,
+      "lookups": [],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "wrong-port",
+      "status": 422,
+      "lookups": [],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "foreign-profile",
+      "status": 422,
+      "lookups": [],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "foreign-actor",
+      "status": 404,
+      "lookups": [
+        {
+          "usernameLower": "https://foreign.test/users/id"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "extra-host-foreign-first",
+      "status": 422,
+      "lookups": [],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "empty",
+      "status": 404,
+      "lookups": [
+        {
+          "usernameLower": ""
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "empty-acct",
+      "status": 404,
+      "lookups": [
+        {
+          "usernameLower": ""
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "absent",
+      "status": 400,
+      "lookups": [],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "duplicate",
+      "status": 400,
+      "lookups": [],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "bracket-non-string",
+      "status": 400,
+      "lookups": [],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "missing-user",
+      "status": 404,
+      "lookups": [
+        {
+          "usernameLower": "nobody"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "suspended",
+      "status": 404,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "remote-row",
+      "status": 404,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "deleted-row",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "none-missing",
+      "status": 403,
+      "lookups": [],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "none-empty",
+      "status": 403,
+      "lookups": [],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "none-foreign",
+      "status": 403,
+      "lookups": [],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "none-options",
+      "status": 204,
+      "lookups": [],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "none-head",
+      "status": 403,
+      "lookups": [],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    },
+    {
+      "id": "head",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": ""
+    },
+    {
+      "id": "jrd",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "xrd",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/xrd+xml"
+      },
+      "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\"><Subject>acct:Alice@local.test:8443</Subject><Link rel=\"self\" type=\"application/activity+json\" href=\"https://local.test:8443/users/id\"/><Link rel=\"http://webfinger.net/rel/profile-page\" type=\"text/html\" href=\"https://local.test:8443/@Alice\"/><Link rel=\"http://ostatus.org/schema/1.0/subscribe\" template=\"https://local.test:8443/authorize-follow?acct={uri}\"/></XRD>"
+    },
+    {
+      "id": "weighted-xrd",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/xrd+xml"
+      },
+      "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\"><Subject>acct:Alice@local.test:8443</Subject><Link rel=\"self\" type=\"application/activity+json\" href=\"https://local.test:8443/users/id\"/><Link rel=\"http://webfinger.net/rel/profile-page\" type=\"text/html\" href=\"https://local.test:8443/@Alice\"/><Link rel=\"http://ostatus.org/schema/1.0/subscribe\" template=\"https://local.test:8443/authorize-follow?acct={uri}\"/></XRD>"
+    },
+    {
+      "id": "weighted-jrd",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "unsupported",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "both-zero",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "equal-xrd-first",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/xrd+xml"
+      },
+      "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\"><Subject>acct:Alice@local.test:8443</Subject><Link rel=\"self\" type=\"application/activity+json\" href=\"https://local.test:8443/users/id\"/><Link rel=\"http://webfinger.net/rel/profile-page\" type=\"text/html\" href=\"https://local.test:8443/@Alice\"/><Link rel=\"http://ostatus.org/schema/1.0/subscribe\" template=\"https://local.test:8443/authorize-follow?acct={uri}\"/></XRD>"
+    },
+    {
+      "id": "wildcard",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/jrd+json; charset=utf-8"
+      },
+      "body": {
+        "subject": "acct:Alice@local.test:8443",
+        "links": [
+          {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://local.test:8443/users/id"
+          },
+          {
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html",
+            "href": "https://local.test:8443/@Alice"
+          },
+          {
+            "rel": "http://ostatus.org/schema/1.0/subscribe",
+            "template": "https://local.test:8443/authorize-follow?acct={uri}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "database-fault",
+      "status": 500,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body": null
+    },
+    {
+      "id": "xml-special",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/xrd+xml"
+      },
+      "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\"><Subject>acct:A&amp;&amp;&lt;&lt;&gt;&gt;&quot;&quot;&apos;&apos;@local.test:8443</Subject><Link rel=\"self\" type=\"application/activity+json\" href=\"https://local.test:8443/users/id\"/><Link rel=\"http://webfinger.net/rel/profile-page\" type=\"text/html\" href=\"https://local.test:8443/@A&amp;&&lt;<&gt;>&quot;\"&apos;'\"/><Link rel=\"http://ostatus.org/schema/1.0/subscribe\" template=\"https://local.test:8443/authorize-follow?acct={uri}\"/></XRD>"
+    },
+    {
+      "id": "xml-end-cdata",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/xrd+xml"
+      },
+      "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\"><Subject>acct:AB@local.test:8443</Subject><Link rel=\"self\" type=\"application/activity+json\" href=\"https://local.test:8443/users/id\"/><Link rel=\"http://webfinger.net/rel/profile-page\" type=\"text/html\" href=\"https://local.test:8443/@A]]&gt;B\"/><Link rel=\"http://ostatus.org/schema/1.0/subscribe\" template=\"https://local.test:8443/authorize-follow?acct={uri}\"/></XRD>"
+    },
+    {
+      "id": "head-xrd",
+      "status": 200,
+      "lookups": [
+        {
+          "usernameLower": "alice"
+        }
+      ],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": "Accept",
+        "cache-control": "public, max-age=180",
+        "content-type": "application/xrd+xml"
+      },
+      "body": ""
+    },
+    {
+      "id": "options-with-meta-fault",
+      "status": 204,
+      "lookups": [],
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "vary": null,
+        "cache-control": null,
+        "content-type": null
+      },
+      "body": null
+    }
+  ]
+}
