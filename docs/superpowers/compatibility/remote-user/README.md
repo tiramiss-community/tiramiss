@@ -221,3 +221,7 @@ The existing five `profile` cases in `../note/hashtag/source-observations.json` 
 ## Local actor emoji/hashtag publication (#195, 2026-11-11)
 
 [Additive tag source and runtime results](local-actor-tags-results.md) cover existing actor GET and local acquireActor, with 12 new pinned-source method observations, a real PG/HTTP consumer and shared Note regressions. Earlier corpora/receipts remain immutable; the new [current bindings](local-actor-tags-runtime-evidence.json) extend their identity chain and do not turn historical process runs into current tag measurements. Direct DB reads retain the cache-freshness/cache-hit failure gap (#217). Full actor/media/inbox and #176/#127/#195 remain incomplete; notes/create stays partial.
+
+## Public remote profile real HTML conversion (#195, 2026-11-11)
+
+[Additive source/runtime results](remote-profile-results.md) compare 68 finite pinned-source observations using real HTML transformers with actual acquisition and public notes/create create/stale-refresh persistence. The confirmed product fix selects all attachments before mapping HTML, preserving source error priority. The converter itself is unchanged. Conversion can exceed the source Profile column limit; source trace and actual PG failure are explicitly distinguished. Earlier corpora and receipts remain unchanged; the new current identity hop follows local actor tags. This bounded comparison does not finish rich actor/featured/media/cache/inbox, #176/#127/#195, or posting; notes/create stays partial and postingComplete:false.
