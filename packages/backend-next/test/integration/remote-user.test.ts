@@ -4,7 +4,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
-import { MiEmoji, MiInstance, MiFollowing, MiMeta, MiNote, MiPoll, MiUser, MiUserProfile, MiUserPublickey, MiUserKeypair } from 'backend-upstream/entities';
+import { MiDriveFile, MiEmoji, MiInstance, MiFollowing, MiMeta, MiNote, MiPoll, MiUser, MiUserProfile, MiUserPublickey, MiUserKeypair } from 'backend-upstream/entities';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createBackendHttpApp } from '../../src/composition/note-http.js';
 import { listenHttp, closeHttp } from '../../src/processes/http.js';
@@ -972,4 +972,119 @@ test('create-canonical source fallback preserves the already persisted Profile o
 	expect((await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).mentions).toEqual([row.id]);
 	expect(fixture.expected.events.filter((e: any) => e.op === 'Profile.save')).toEqual([]);
 	expect(await resources.dataSource.getRepository(MiUserProfile).findOneByOrFail({ userId: row.id })).toEqual(profile);
+});
+
+async function seedActorImages(name: string) {
+	register(name, { tag: [{ type: 'Hashtag', name: '#imageold' }], publicKey: { id: `${peer.origin}/users/${name}#key`, publicKeyPem: 'retained-image-key' } });
+	expect((await post({ text: `@${name}@remote.test` })).status).toBe(200);
+	await resources.userHashtags.idle();
+	const db = resources.dataSource;
+	const user = await remote(name);
+	const avatarId = codec.newId(Date.now());
+	const bannerId = codec.newId(Date.now());
+	for (const id of [avatarId, bannerId]) {
+		await db.getRepository(MiDriveFile).insert({ id, userId: user.id, md5: '0'.repeat(32), name: 'retained.png', type: 'image/png', size: 1, storedInternal: false, url: `https://media.test/${id}`, properties: {} });
+	}
+	const images = { avatarId, avatarUrl: 'https://media.test/old-avatar', avatarBlurhash: 'old-avatar-hash', bannerId, bannerUrl: 'https://media.test/old-banner', bannerBlurhash: 'old-banner-hash' };
+	await db.getRepository(MiUser).update(user.id, images);
+	const profile = await db.getRepository(MiUserProfile).findOneByOrFail({ userId: user.id });
+	const key = await db.getRepository(MiUserPublickey).findOneByOrFail({ userId: user.id });
+	const files = await db.getRepository(MiDriveFile).findBy({ userId: user.id });
+	return { user, images, profile, key, files };
+}
+
+const clearedActorImages = { avatarId: null, avatarUrl: null, avatarBlurhash: null, bannerId: null, bannerUrl: null, bannerBlurhash: null };
+
+// Catches the consequential canonical repair and the public consumer of old avatar fields.
+test('canonical alias recovery clears all six images, repacks existing author and retains relations', async () => {
+	const name = 'image_canonical';
+	const seeded = await seedActorImages(name);
+	const db = resources.dataSource;
+	const noteId = codec.newId(Date.now());
+	await db.getRepository(MiNote).insert({ id: noteId, userId: seeded.user.id, userHost: 'remote.test', text: 'existing remote author', visibility: 'public' });
+	const show = async () => {
+		const response = await fetch(`http://127.0.0.1:${port}/api/notes/show`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ i: token, noteId }) });
+		expect(response.status).toBe(200);
+		return response.json();
+	};
+	expect((await show()).user).toMatchObject({ avatarUrl: seeded.images.avatarUrl, avatarBlurhash: seeded.images.avatarBlurhash });
+	aliases.set('image_alias', name);
+	register(name, { icon: [null, { url: '' }], image: {}, tag: [{ type: 'Hashtag', name: '#imagenew' }], summary: 'must not overwrite canonical Profile', publicKey: { id: `${peer.origin}/new-key`, publicKeyPem: 'must not overwrite' } });
+	const result = await post({ text: '@image_alias@remote.test' });
+	expect(result.status).toBe(200);
+	await resources.userHashtags.idle();
+	expect(await db.getRepository(MiUser).findOneByOrFail({ id: seeded.user.id })).toMatchObject({ ...clearedActorImages, tags: ['imageold'] });
+	expect((await db.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).mentions).toEqual([seeded.user.id]);
+	expect(await db.getRepository(MiUserProfile).findOneByOrFail({ userId: seeded.user.id })).toEqual(seeded.profile);
+	expect(await db.getRepository(MiUserPublickey).findOneByOrFail({ userId: seeded.user.id })).toEqual(seeded.key);
+	expect(await db.getRepository(MiDriveFile).findBy({ userId: seeded.user.id })).toEqual(seeded.files);
+	const shown = await show();
+	expect(shown.user.avatarUrl).not.toBe(seeded.images.avatarUrl);
+	expect(shown.user.avatarBlurhash).toBeNull();
+});
+
+test('isolated BEFORE UPDATE image failure retains old fields and canonical mention while INSERT and other actor updates work', async () => {
+	const name = 'image_failure';
+	const seeded = await seedActorImages(name);
+	const db = resources.dataSource;
+	await db.query(`CREATE FUNCTION image_clear_fail() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF OLD.id = '${seeded.user.id}' AND NEW."avatarId" IS NULL AND NEW."avatarUrl" IS NULL AND NEW."avatarBlurhash" IS NULL AND NEW."bannerId" IS NULL AND NEW."bannerUrl" IS NULL AND NEW."bannerBlurhash" IS NULL THEN RAISE EXCEPTION 'isolated image clear failure'; END IF; RETURN NEW; END $$`);
+	await db.query('CREATE TRIGGER image_clear_fail BEFORE UPDATE ON "user" FOR EACH ROW EXECUTE FUNCTION image_clear_fail()');
+	const logStart = hashtagLogs.length;
+	try {
+		register('image_other');
+		expect((await post({ text: '@image_other@remote.test' })).status).toBe(200);
+		const other = await remote('image_other');
+		await db.getRepository(MiUser).update(other.id, { name: 'other write works' });
+		expect((await remote('image_other')).name).toBe('other write works');
+		aliases.set('image_failure_alias', name);
+		register(name, { icon: null, image: null });
+		const result = await post({ text: '@image_failure_alias@remote.test' });
+		expect(result.status).toBe(200);
+		expect((await db.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).mentions).toEqual([seeded.user.id]);
+		expect(await remote(name)).toMatchObject({ ...seeded.images, tags: seeded.user.tags });
+		expect(await db.getRepository(MiUserProfile).findOneByOrFail({ userId: seeded.user.id })).toEqual(seeded.profile);
+		expect(await db.getRepository(MiUserPublickey).findOneByOrFail({ userId: seeded.user.id })).toEqual(seeded.key);
+		expect(await db.getRepository(MiDriveFile).findBy({ userId: seeded.user.id })).toEqual(seeded.files);
+		expect(hashtagLogs.slice(logStart).filter(line => line.includes('remote-actor.image-update-failed') && line.includes(seeded.user.id))).toHaveLength(1);
+	} finally {
+		await db.query('DROP TRIGGER image_clear_fail ON "user"');
+		await db.query('DROP FUNCTION image_clear_fail()');
+	}
+});
+
+test.each([
+	{ icon: { url: 'https://media.test/present' }, image: null },
+	{ icon: null, image: { url: 'https://media.test/present' } },
+	{ icon: { url: '' }, image: null },
+	{ icon: 'https://media.test/string', image: null },
+])('canonical mixed-image exclusion preserves six fields for %j', async patch => {
+	const name = `image_mixed_${codec.newId(Date.now()).toLowerCase()}`;
+	const seeded = await seedActorImages(name);
+	const alias = `${name}_alias`;
+	aliases.set(alias, name);
+	register(name, patch);
+	const result = await post({ text: `@${alias}@remote.test` });
+	expect(result.status).toBe(200);
+	expect((await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).mentions).toEqual([seeded.user.id]);
+	expect(await remote(name)).toMatchObject(seeded.images);
+});
+
+test('normal both-absent creation persists six null fields and canonical mention', async () => {
+	register('image_new', { icon: [], image: { url: null } });
+	const result = await post({ text: '@image_new@remote.test' });
+	expect(result.status).toBe(200);
+	const user = await remote('image_new');
+	expect(user).toMatchObject(clearedActorImages);
+	expect((await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).mentions).toEqual([user.id]);
+});
+
+test('canonical recovery clears images by ID even for a deleted canonical actor', async () => {
+	const seeded = await seedActorImages('image_deleted');
+	await resources.dataSource.getRepository(MiUser).update(seeded.user.id, { isDeleted: true });
+	aliases.set('image_deleted_alias', 'image_deleted');
+	register('image_deleted', { icon: null, image: null });
+	const result = await post({ text: '@image_deleted_alias@remote.test' });
+	expect(result.status).toBe(200);
+	expect(await remote('image_deleted')).toMatchObject({ ...clearedActorImages, isDeleted: true });
+	expect((await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).mentions).toEqual([seeded.user.id]);
 });

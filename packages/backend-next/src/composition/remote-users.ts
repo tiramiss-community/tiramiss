@@ -59,6 +59,9 @@ export function createRemoteUsers(parts: {
 	};
 	return {
 		...createRemoteUserRepository(parts.dataSource.manager, parts.userHashtags.start), selfHost: new URL(config.url).host, localId, insertActor,
+		reportActorImageFailure(id, error) {
+			parts.logger.error('remote-actor.image-update-failed', { id, error });
+		},
 		startUserHashtags: parts.userHashtags.start,
 		startActorInstanceRegistration: parts.actorInstanceRegistration.start,
 		actorTransactions: createRemoteActorTransactions(parts.dataSource),

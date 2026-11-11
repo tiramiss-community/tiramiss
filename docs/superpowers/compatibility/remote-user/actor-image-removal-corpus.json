@@ -1,0 +1,353 @@
+{
+  "cases": [
+    {
+      "id": "absent-0-new",
+      "patch": {},
+      "duplicate": false,
+      "fail": false,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-0-new-failure",
+      "patch": {},
+      "duplicate": false,
+      "fail": true,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-0-canonical",
+      "patch": {},
+      "duplicate": true,
+      "fail": false,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-0-canonical-failure",
+      "patch": {},
+      "duplicate": true,
+      "fail": true,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-1-new",
+      "patch": {
+        "icon": null,
+        "image": null
+      },
+      "duplicate": false,
+      "fail": false,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-1-new-failure",
+      "patch": {
+        "icon": null,
+        "image": null
+      },
+      "duplicate": false,
+      "fail": true,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-1-canonical",
+      "patch": {
+        "icon": null,
+        "image": null
+      },
+      "duplicate": true,
+      "fail": false,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-1-canonical-failure",
+      "patch": {
+        "icon": null,
+        "image": null
+      },
+      "duplicate": true,
+      "fail": true,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-2-new",
+      "patch": {
+        "icon": {},
+        "image": {}
+      },
+      "duplicate": false,
+      "fail": false,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-2-new-failure",
+      "patch": {
+        "icon": {},
+        "image": {}
+      },
+      "duplicate": false,
+      "fail": true,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-2-canonical",
+      "patch": {
+        "icon": {},
+        "image": {}
+      },
+      "duplicate": true,
+      "fail": false,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-2-canonical-failure",
+      "patch": {
+        "icon": {},
+        "image": {}
+      },
+      "duplicate": true,
+      "fail": true,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-3-new",
+      "patch": {
+        "icon": [],
+        "image": []
+      },
+      "duplicate": false,
+      "fail": false,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-3-new-failure",
+      "patch": {
+        "icon": [],
+        "image": []
+      },
+      "duplicate": false,
+      "fail": true,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-3-canonical",
+      "patch": {
+        "icon": [],
+        "image": []
+      },
+      "duplicate": true,
+      "fail": false,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-3-canonical-failure",
+      "patch": {
+        "icon": [],
+        "image": []
+      },
+      "duplicate": true,
+      "fail": true,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-4-new",
+      "patch": {
+        "icon": [
+          null,
+          {
+            "url": ""
+          }
+        ],
+        "image": {
+          "url": null
+        }
+      },
+      "duplicate": false,
+      "fail": false,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-4-new-failure",
+      "patch": {
+        "icon": [
+          null,
+          {
+            "url": ""
+          }
+        ],
+        "image": {
+          "url": null
+        }
+      },
+      "duplicate": false,
+      "fail": true,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-4-canonical",
+      "patch": {
+        "icon": [
+          null,
+          {
+            "url": ""
+          }
+        ],
+        "image": {
+          "url": null
+        }
+      },
+      "duplicate": true,
+      "fail": false,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-4-canonical-failure",
+      "patch": {
+        "icon": [
+          null,
+          {
+            "url": ""
+          }
+        ],
+        "image": {
+          "url": null
+        }
+      },
+      "duplicate": true,
+      "fail": true,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-5-new",
+      "patch": {
+        "icon": {
+          "url": null
+        },
+        "image": [
+          {},
+          null
+        ]
+      },
+      "duplicate": false,
+      "fail": false,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-5-new-failure",
+      "patch": {
+        "icon": {
+          "url": null
+        },
+        "image": [
+          {},
+          null
+        ]
+      },
+      "duplicate": false,
+      "fail": true,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-5-canonical",
+      "patch": {
+        "icon": {
+          "url": null
+        },
+        "image": [
+          {},
+          null
+        ]
+      },
+      "duplicate": true,
+      "fail": false,
+      "bothAbsent": true
+    },
+    {
+      "id": "absent-5-canonical-failure",
+      "patch": {
+        "icon": {
+          "url": null
+        },
+        "image": [
+          {},
+          null
+        ]
+      },
+      "duplicate": true,
+      "fail": true,
+      "bothAbsent": true
+    },
+    {
+      "id": "mixed-0",
+      "patch": {
+        "icon": {
+          "url": "https://media.test/icon"
+        },
+        "image": null
+      },
+      "duplicate": true,
+      "fail": false,
+      "bothAbsent": false,
+      "allowMedia": false,
+      "acquisitionFails": false
+    },
+    {
+      "id": "mixed-1",
+      "patch": {
+        "icon": null,
+        "image": {
+          "url": "https://media.test/banner"
+        }
+      },
+      "duplicate": true,
+      "fail": false,
+      "bothAbsent": false,
+      "allowMedia": false,
+      "acquisitionFails": false
+    },
+    {
+      "id": "mixed-2",
+      "patch": {
+        "icon": {
+          "url": ""
+        },
+        "image": null
+      },
+      "duplicate": true,
+      "fail": false,
+      "bothAbsent": false,
+      "allowMedia": true,
+      "acquisitionFails": false
+    },
+    {
+      "id": "mixed-3",
+      "patch": {
+        "icon": "https://media.test/icon",
+        "image": null
+      },
+      "duplicate": true,
+      "fail": false,
+      "bothAbsent": false,
+      "allowMedia": true,
+      "acquisitionFails": true
+    },
+    {
+      "id": "mixed-4",
+      "patch": {
+        "icon": [
+          {
+            "url": ""
+          },
+          {
+            "url": "https://media.test/icon"
+          }
+        ],
+        "image": null
+      },
+      "duplicate": true,
+      "fail": false,
+      "bothAbsent": false,
+      "allowMedia": true,
+      "acquisitionFails": false
+    }
+  ]
+}

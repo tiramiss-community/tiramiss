@@ -16,6 +16,9 @@ function facts(user: MiUser | null): RemoteUserFacts | null {
 export function createRemoteUserRepository(manager: EntityManager, startUserHashtags: StartUserHashtags) {
 	const users = manager.getRepository(MiUser);
 	return {
+		async clearActorImages(id: string): Promise<void> {
+			await users.update(id, { avatarId: null, avatarUrl: null, avatarBlurhash: null, bannerId: null, bannerUrl: null, bannerBlurhash: null });
+		},
 		readByAccount: async (account: Account) => facts(await users.findOneBy({ usernameLower: account.username, host: account.host ?? IsNull() })),
 		readByUri: async (uri: string) => facts(await users.findOneBy({ uri })),
 		readLocal: async (id: string) => facts(await users.findOneBy({ id, host: IsNull(), isDeleted: false })),

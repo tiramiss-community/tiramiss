@@ -311,3 +311,18 @@ test.each(hashtagBoundaries.filter(c => c.input.operation === 'refresh'))('$id p
 		release();
 	}
 });
+
+// Missing classification must match the pinned helper, including its asymmetric empty URL rules.
+test.each([
+	{ icon: undefined, image: null, absent: true },
+	{ icon: {}, image: { url: undefined }, absent: true },
+	{ icon: [], image: [null, { url: '' }], absent: true },
+	{ icon: [{ url: null }], image: { url: null }, absent: true },
+	{ icon: { url: '' }, image: null, absent: false },
+	{ icon: 'https://remote.test/icon', image: null, absent: false },
+	{ icon: null, image: { url: 'https://remote.test/banner' }, absent: false },
+	{ icon: [{ url: '' }, { url: 'https://remote.test/icon' }], image: null, absent: false },
+])('post-create both-absent classification $icon / $image is $absent', async ({ icon, image, absent }) => {
+	const material = validateActor({ type: 'Person', id: existing.uri, preferredUsername: 'Alice', inbox: 'https://remote.test/inbox', icon, image }, existing.uri!);
+	expect((await prepareActor(material, null, sourceNow, 'new-user')).bothImagesAbsent).toBe(absent);
+});

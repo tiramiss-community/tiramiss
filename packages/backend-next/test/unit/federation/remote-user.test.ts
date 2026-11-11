@@ -55,6 +55,7 @@ for (const fixture of cases) {
 		};
 		let entryRead = row !== null;
 		const ports: RemoteUserPorts = {
+			clearActorImages: async () => {}, reportActorImageFailure: () => {},
 			startActorInstanceRegistration: () => {}, startUserHashtags: () => {},
 			selfHost: 'local.test', localId: uri => uri.startsWith('https://local.test/users/') ? 'local' : null,
 			readByAccount: async value => {

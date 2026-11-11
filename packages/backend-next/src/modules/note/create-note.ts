@@ -261,21 +261,32 @@ export function createCreateNote(dependencies: {
 		}
 		const plan = await ports.acquireActor(uri, null, dependencies.currentTime, dependencies.newId);
 		let created: ResolvedUser;
+		let hashtagUser = plan.hashtagUser;
 		try {
 			created = await ports.actorTransactions.run(scope => ports.insertActor(scope, plan));
 		} catch (error) {
 			if (error && typeof error === 'object' && 'code' in error && error.code === '23505') {
 				const canonical = await ports.readByUri(plan.uri);
 				if (canonical) {
-					ports.startActorInstanceRegistration(punyHost(uri));
-					ports.startUserHashtags(canonical, plan.user.tags);
-					return canonical;
+					created = canonical;
+					hashtagUser = canonical;
+				} else {
+					throw error;
 				}
+			} else {
+				throw error;
 			}
-			throw error;
 		}
 		ports.startActorInstanceRegistration(punyHost(uri));
-		ports.startUserHashtags(plan.hashtagUser, plan.user.tags);
+		ports.startUserHashtags(hashtagUser, plan.user.tags);
+		// A present image can suppress both updates under upstream media policy.
+		if (plan.bothImagesAbsent) {
+			try {
+				await ports.clearActorImages(created.id);
+			} catch (error) {
+				ports.reportActorImageFailure(created.id, error);
+			}
+		}
 		return created;
 	}
 

@@ -1,0 +1,2393 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "upstreamHttpMeasured": false,
+  "boundary": "Literal pinned createPerson and resolveAvatarAndBanner. Explicit repository/transaction/transport/Drive/policy/instance/hashtag/cache/chart/featured doubles. Image gate proves awaited write; pending hashtags prove nonwaiting. Mixed cases characterize source policy only; no Drive parity claim.",
+  "methods": {
+    "misc/status-error.ts": {
+      "path": "packages/backend/src/misc/status-error.ts",
+      "sha256": "6fb2644dd29ffa37bbf57207b471af65d5b1ad5864febe9af3fa75fd01a65348"
+    },
+    "core/activitypub/type.ts": {
+      "path": "packages/backend/src/core/activitypub/type.ts",
+      "sha256": "1604b3f151853a6be8d7dd61ed349b126ac1cf1ad0da0177b8e8c61456ce08af"
+    },
+    "core/activitypub/misc/check-against-url.ts": {
+      "path": "packages/backend/src/core/activitypub/misc/check-against-url.ts",
+      "sha256": "5595d89352b54ae14badee7f53a3e393e371461bf473992f0cdfe196388bfc70"
+    },
+    "core/activitypub/misc/validator.ts": {
+      "path": "packages/backend/src/core/activitypub/misc/validator.ts",
+      "sha256": "a3f5e632358f5ec430a5b9d04c7594519b434a4870065b9d3d942de2d1bfa009"
+    },
+    "misc/check-https.ts": {
+      "path": "packages/backend/src/misc/check-https.ts",
+      "sha256": "a91f3a4780b08d3c1a58a571b191982ad2573a000677e4e0ae6d14de8547eee3"
+    },
+    "misc/normalize-for-search.ts": {
+      "path": "packages/backend/src/misc/normalize-for-search.ts",
+      "sha256": "e8c1884928722770c8d44debe367e8508dfbf931097614379617056879f7b575"
+    },
+    "misc/truncate.ts": {
+      "path": "packages/backend/src/misc/truncate.ts",
+      "sha256": "361e03302bd79753cf6699f8c622c8946f2d218f6db5cca4970c72f37911333f"
+    },
+    "misc/prelude/array.ts": {
+      "path": "packages/backend/src/misc/prelude/array.ts",
+      "sha256": "025c366827680f51683aef07edf2efe16edae11b6b7e14457321c10fe1fc6a88"
+    },
+    "core/activitypub/models/tag.ts": {
+      "path": "packages/backend/src/core/activitypub/models/tag.ts",
+      "sha256": "0e49828ade4a32374c3301a02de184faaac98c2981dd4ec0b070812a16a5ffcd"
+    },
+    "ApPersonService.validateActor": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "da3ed624a237652d14ec90ecd267c6d6a905318e79b1f37dcc13965b79c80367"
+    },
+    "ApPersonService.createPerson": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "c2e3b8e9efd102fefcae50e7c51a17ba67741f1c9410148ee33a87b33838e7af"
+    },
+    "ApPersonService.resolveAvatarAndBanner": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "96601375e76cbce0a9d6485fa2060fe39d7140dd28cceb7280fe99a83de08e2c"
+    },
+    "ApPersonService.analyzeAttachments": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "9c2bb9f0d0765fe963458fb7cc3432e91626a5b62bf9f367a5b516667a040658"
+    },
+    "ApPersonService.isPublicCollection": {
+      "path": "packages/backend/src/core/activitypub/models/ApPersonService.ts",
+      "sha256": "04640fbd0ef0f2a9cc68a133f7e2cf7c6dd5b2b68d94bedc87c1dd55d64f1973"
+    }
+  },
+  "cases": [
+    {
+      "id": "absent-0-new",
+      "input": {
+        "id": "absent-0-new",
+        "patch": {},
+        "duplicate": false,
+        "fail": false,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "Profile"
+        },
+        {
+          "op": "commit"
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "attempted",
+            "oldTags": [
+              "new"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "attempted",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "attempted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-0-new-failure",
+      "input": {
+        "id": "absent-0-new-failure",
+        "patch": {},
+        "duplicate": false,
+        "fail": true,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "Profile"
+        },
+        {
+          "op": "commit"
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "attempted",
+            "oldTags": [
+              "new"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "attempted",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "diagnostic",
+          "args": [
+            "error occurred while fetching user avatar/banner",
+            {
+              "stack": {}
+            }
+          ]
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "attempted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-0-canonical",
+      "input": {
+        "id": "absent-0-canonical",
+        "patch": {},
+        "duplicate": true,
+        "fail": false,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-0-canonical-failure",
+      "input": {
+        "id": "absent-0-canonical-failure",
+        "patch": {},
+        "duplicate": true,
+        "fail": true,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "diagnostic",
+          "args": [
+            "error occurred while fetching user avatar/banner",
+            {
+              "stack": {}
+            }
+          ]
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-1-new",
+      "input": {
+        "id": "absent-1-new",
+        "patch": {
+          "icon": null,
+          "image": null
+        },
+        "duplicate": false,
+        "fail": false,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "Profile"
+        },
+        {
+          "op": "commit"
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "attempted",
+            "oldTags": [
+              "new"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "attempted",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "attempted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-1-new-failure",
+      "input": {
+        "id": "absent-1-new-failure",
+        "patch": {
+          "icon": null,
+          "image": null
+        },
+        "duplicate": false,
+        "fail": true,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "Profile"
+        },
+        {
+          "op": "commit"
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "attempted",
+            "oldTags": [
+              "new"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "attempted",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "diagnostic",
+          "args": [
+            "error occurred while fetching user avatar/banner",
+            {
+              "stack": {}
+            }
+          ]
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "attempted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-1-canonical",
+      "input": {
+        "id": "absent-1-canonical",
+        "patch": {
+          "icon": null,
+          "image": null
+        },
+        "duplicate": true,
+        "fail": false,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-1-canonical-failure",
+      "input": {
+        "id": "absent-1-canonical-failure",
+        "patch": {
+          "icon": null,
+          "image": null
+        },
+        "duplicate": true,
+        "fail": true,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "diagnostic",
+          "args": [
+            "error occurred while fetching user avatar/banner",
+            {
+              "stack": {}
+            }
+          ]
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-2-new",
+      "input": {
+        "id": "absent-2-new",
+        "patch": {
+          "icon": {},
+          "image": {}
+        },
+        "duplicate": false,
+        "fail": false,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "Profile"
+        },
+        {
+          "op": "commit"
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "attempted",
+            "oldTags": [
+              "new"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "attempted",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "attempted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-2-new-failure",
+      "input": {
+        "id": "absent-2-new-failure",
+        "patch": {
+          "icon": {},
+          "image": {}
+        },
+        "duplicate": false,
+        "fail": true,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "Profile"
+        },
+        {
+          "op": "commit"
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "attempted",
+            "oldTags": [
+              "new"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "attempted",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "diagnostic",
+          "args": [
+            "error occurred while fetching user avatar/banner",
+            {
+              "stack": {}
+            }
+          ]
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "attempted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-2-canonical",
+      "input": {
+        "id": "absent-2-canonical",
+        "patch": {
+          "icon": {},
+          "image": {}
+        },
+        "duplicate": true,
+        "fail": false,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-2-canonical-failure",
+      "input": {
+        "id": "absent-2-canonical-failure",
+        "patch": {
+          "icon": {},
+          "image": {}
+        },
+        "duplicate": true,
+        "fail": true,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "diagnostic",
+          "args": [
+            "error occurred while fetching user avatar/banner",
+            {
+              "stack": {}
+            }
+          ]
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-3-new",
+      "input": {
+        "id": "absent-3-new",
+        "patch": {
+          "icon": [],
+          "image": []
+        },
+        "duplicate": false,
+        "fail": false,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "Profile"
+        },
+        {
+          "op": "commit"
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "attempted",
+            "oldTags": [
+              "new"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "attempted",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "attempted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-3-new-failure",
+      "input": {
+        "id": "absent-3-new-failure",
+        "patch": {
+          "icon": [],
+          "image": []
+        },
+        "duplicate": false,
+        "fail": true,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "Profile"
+        },
+        {
+          "op": "commit"
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "attempted",
+            "oldTags": [
+              "new"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "attempted",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "diagnostic",
+          "args": [
+            "error occurred while fetching user avatar/banner",
+            {
+              "stack": {}
+            }
+          ]
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "attempted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-3-canonical",
+      "input": {
+        "id": "absent-3-canonical",
+        "patch": {
+          "icon": [],
+          "image": []
+        },
+        "duplicate": true,
+        "fail": false,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-3-canonical-failure",
+      "input": {
+        "id": "absent-3-canonical-failure",
+        "patch": {
+          "icon": [],
+          "image": []
+        },
+        "duplicate": true,
+        "fail": true,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "diagnostic",
+          "args": [
+            "error occurred while fetching user avatar/banner",
+            {
+              "stack": {}
+            }
+          ]
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-4-new",
+      "input": {
+        "id": "absent-4-new",
+        "patch": {
+          "icon": [
+            null,
+            {
+              "url": ""
+            }
+          ],
+          "image": {
+            "url": null
+          }
+        },
+        "duplicate": false,
+        "fail": false,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "Profile"
+        },
+        {
+          "op": "commit"
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "attempted",
+            "oldTags": [
+              "new"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "attempted",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "attempted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-4-new-failure",
+      "input": {
+        "id": "absent-4-new-failure",
+        "patch": {
+          "icon": [
+            null,
+            {
+              "url": ""
+            }
+          ],
+          "image": {
+            "url": null
+          }
+        },
+        "duplicate": false,
+        "fail": true,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "Profile"
+        },
+        {
+          "op": "commit"
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "attempted",
+            "oldTags": [
+              "new"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "attempted",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "diagnostic",
+          "args": [
+            "error occurred while fetching user avatar/banner",
+            {
+              "stack": {}
+            }
+          ]
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "attempted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-4-canonical",
+      "input": {
+        "id": "absent-4-canonical",
+        "patch": {
+          "icon": [
+            null,
+            {
+              "url": ""
+            }
+          ],
+          "image": {
+            "url": null
+          }
+        },
+        "duplicate": true,
+        "fail": false,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-4-canonical-failure",
+      "input": {
+        "id": "absent-4-canonical-failure",
+        "patch": {
+          "icon": [
+            null,
+            {
+              "url": ""
+            }
+          ],
+          "image": {
+            "url": null
+          }
+        },
+        "duplicate": true,
+        "fail": true,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "diagnostic",
+          "args": [
+            "error occurred while fetching user avatar/banner",
+            {
+              "stack": {}
+            }
+          ]
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-5-new",
+      "input": {
+        "id": "absent-5-new",
+        "patch": {
+          "icon": {
+            "url": null
+          },
+          "image": [
+            {},
+            null
+          ]
+        },
+        "duplicate": false,
+        "fail": false,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "Profile"
+        },
+        {
+          "op": "commit"
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "attempted",
+            "oldTags": [
+              "new"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "attempted",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "attempted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-5-new-failure",
+      "input": {
+        "id": "absent-5-new-failure",
+        "patch": {
+          "icon": {
+            "url": null
+          },
+          "image": [
+            {},
+            null
+          ]
+        },
+        "duplicate": false,
+        "fail": true,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "Profile"
+        },
+        {
+          "op": "commit"
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "attempted",
+            "oldTags": [
+              "new"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "attempted",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "diagnostic",
+          "args": [
+            "error occurred while fetching user avatar/banner",
+            {
+              "stack": {}
+            }
+          ]
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "attempted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-5-canonical",
+      "input": {
+        "id": "absent-5-canonical",
+        "patch": {
+          "icon": {
+            "url": null
+          },
+          "image": [
+            {},
+            null
+          ]
+        },
+        "duplicate": true,
+        "fail": false,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    },
+    {
+      "id": "absent-5-canonical-failure",
+      "input": {
+        "id": "absent-5-canonical-failure",
+        "patch": {
+          "icon": {
+            "url": null
+          },
+          "image": [
+            {},
+            null
+          ]
+        },
+        "duplicate": true,
+        "fail": true,
+        "bothAbsent": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {
+              "avatarId": null,
+              "avatarUrl": null,
+              "avatarBlurhash": null,
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "diagnostic",
+          "args": [
+            "error occurred while fetching user avatar/banner",
+            {
+              "stack": {}
+            }
+          ]
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    },
+    {
+      "id": "mixed-0",
+      "input": {
+        "id": "mixed-0",
+        "patch": {
+          "icon": {
+            "url": "https://media.test/icon"
+          },
+          "image": null
+        },
+        "duplicate": true,
+        "fail": false,
+        "bothAbsent": false,
+        "allowMedia": false,
+        "acquisitionFails": false
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "acquire",
+          "args": {
+            "id": "canonical",
+            "image": {
+              "url": "https://media.test/icon"
+            }
+          }
+        },
+        {
+          "op": "policy",
+          "args": {
+            "id": "canonical"
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {}
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    },
+    {
+      "id": "mixed-1",
+      "input": {
+        "id": "mixed-1",
+        "patch": {
+          "icon": null,
+          "image": {
+            "url": "https://media.test/banner"
+          }
+        },
+        "duplicate": true,
+        "fail": false,
+        "bothAbsent": false,
+        "allowMedia": false,
+        "acquisitionFails": false
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "acquire",
+          "args": {
+            "id": "canonical",
+            "image": {
+              "url": "https://media.test/banner"
+            }
+          }
+        },
+        {
+          "op": "policy",
+          "args": {
+            "id": "canonical"
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {}
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    },
+    {
+      "id": "mixed-2",
+      "input": {
+        "id": "mixed-2",
+        "patch": {
+          "icon": {
+            "url": ""
+          },
+          "image": null
+        },
+        "duplicate": true,
+        "fail": false,
+        "bothAbsent": false,
+        "allowMedia": true,
+        "acquisitionFails": false
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "acquire",
+          "args": {
+            "id": "canonical",
+            "image": {
+              "url": ""
+            }
+          }
+        },
+        {
+          "op": "policy",
+          "args": {
+            "id": "canonical"
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {
+              "avatarId": "acquired",
+              "avatarUrl": "public:avatar",
+              "avatarBlurhash": "acquired-hash",
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    },
+    {
+      "id": "mixed-3",
+      "input": {
+        "id": "mixed-3",
+        "patch": {
+          "icon": "https://media.test/icon",
+          "image": null
+        },
+        "duplicate": true,
+        "fail": false,
+        "bothAbsent": false,
+        "allowMedia": true,
+        "acquisitionFails": true
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "acquire",
+          "args": {
+            "id": "canonical",
+            "image": "https://media.test/icon"
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    },
+    {
+      "id": "mixed-4",
+      "input": {
+        "id": "mixed-4",
+        "patch": {
+          "icon": [
+            {
+              "url": ""
+            },
+            {
+              "url": "https://media.test/icon"
+            }
+          ],
+          "image": null
+        },
+        "duplicate": true,
+        "fail": false,
+        "bothAbsent": false,
+        "allowMedia": true,
+        "acquisitionFails": false
+      },
+      "events": [
+        {
+          "op": "begin"
+        },
+        {
+          "op": "User"
+        },
+        {
+          "op": "rollback"
+        },
+        {
+          "op": "canonical",
+          "args": {
+            "uri": "https://remote.test/users/a"
+          }
+        },
+        {
+          "op": "instance",
+          "args": {
+            "host": "remote.test"
+          }
+        },
+        {
+          "op": "hashtags",
+          "args": {
+            "id": "canonical",
+            "oldTags": [
+              "current"
+            ],
+            "tags": [
+              "new"
+            ]
+          }
+        },
+        {
+          "op": "acquire",
+          "args": {
+            "id": "canonical",
+            "image": {
+              "url": "https://media.test/icon"
+            }
+          }
+        },
+        {
+          "op": "policy",
+          "args": {
+            "id": "canonical"
+          }
+        },
+        {
+          "op": "images",
+          "args": {
+            "id": "canonical",
+            "patch": {
+              "avatarId": "acquired",
+              "avatarUrl": "public:avatar",
+              "avatarBlurhash": "acquired-hash",
+              "bannerId": null,
+              "bannerUrl": null,
+              "bannerBlurhash": null
+            }
+          }
+        },
+        {
+          "op": "image-pending",
+          "args": {
+            "settled": false
+          }
+        },
+        {
+          "op": "settled",
+          "args": {
+            "id": "canonical"
+          }
+        }
+      ]
+    }
+  ]
+}

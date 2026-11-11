@@ -24,6 +24,7 @@ const unavailable = async (): Promise<never> => {
 	throw new Error('unexpected remote access');
 };
 const remoteUsers: RemoteUserPorts = {
+	clearActorImages: async () => {}, reportActorImageFailure: () => {},
 	startActorInstanceRegistration: () => {}, startUserHashtags: () => {
 		throw Error('unexpected actor mutation');
 	},
