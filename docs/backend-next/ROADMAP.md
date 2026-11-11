@@ -1,6 +1,6 @@
 # 新バックエンドの全体計画
 
-更新: 2026-11-08。判断基準は [GOALS](GOALS.md)。全体Issueは [#114](https://github.com/tiramiss-community/tiramiss/issues/114)。本書は工程と現在地、Issueは個別作業と依存、各PRは実装・検証結果を持つ。
+更新: 2026-11-11。判断基準は [GOALS](GOALS.md)。全体Issueは [#114](https://github.com/tiramiss-community/tiramiss/issues/114)。本書は工程と現在地、Issueは個別作業と依存、各PRは実装・検証結果を持つ。
 
 ## 今回の方針整理
 
@@ -12,7 +12,21 @@
 
 ## 現在地と既存成果
 
-基準: develop `cc97140d3a4bfa639e8feb0446914d1cb22fa5c2`（PR #238マージ後）。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
+基準: develop `dd5069f847b9ea3ff654ff338d74a440986876d1`（PR #263マージ後）。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
+
+現在のS1進捗は次のとおり。各PRの限定した実装・比較範囲と、Issue全体の完了を区別する。
+
+| 対象 | 実装済み | 残作業・完了判定 |
+| --- | --- | --- |
+| 共有root | PR #249でHTTP・既存worker・CIの整理がマージ済み | 追加handlerを実装した意味ではない |
+| 投稿N0–N6 | #167–#175はCLOSED。#238で削除連携も確認済み | 全通知・閲覧・全WS等は各領域に残る |
+| 投稿N7 #176 | #242で基本縦断・停止再開・通常retry、#250でC2/C10の比較不足を補完。#243のremote解決もマージ済み | 残るactor関連の初期機能の実装・比較待ち。#176/#127はOPEN |
+| 連合 #195 | #243のremote user解決に加え、user hashtag #258、localプロフィール #259、remote絵文字取込 #262、local actor tag公開 #263 | inbox中核・署名検証・受信activity、画像・featured等の残範囲あり |
+| 連合土台 #215 / 外向きHTTP #216 | actor作成後usersCount #260、現在のactor取得/配送成功後のmetadata/getHtml #261 | inbox用の#215段階4、他のinstance取得経路、Drive等のHTTP利用側は未完了 |
+
+2026-11-09のユーザー回答に従い、残る初期機能を実装・比較するまで#176を未完了に保つ。担当Issueを付けるだけでは閉じない。#195全体を一括のblocked-byにはせず、#176に必要な機能単位で照合する。画像/Driveは#188/#195（S5と連携）、他のinstance経路は#215、chartは#200（S3）、rich actor/featured/Move等は#195/#199、cache/remoteUserUpdated等は#217（S3）に残る。`notes/create:partial`・`postingComplete:false`を維持する。
+
+[現在のactor関連の実装・比較資料](../superpowers/compatibility/remote-user/README.md)、[N7の実測と完了条件](../superpowers/compatibility/note/n7/README.md)、[instance metadataの限定範囲](../superpowers/compatibility/instance-metadata/README.md)、[local actor tag公開の限定範囲](../superpowers/compatibility/remote-user/local-actor-tags-results.md)を参照する。source-method観測と実DB/HTTP/process検証は別の証跡であり、本家full serverの全経路比較ではない。local actor tag公開だけでremote mentionの残機能やcache差が解消したとは扱わない。
 
 | 成果 | 初期実装での扱い |
 | --- | --- |
@@ -27,7 +41,7 @@
 
 投稿の現在地（2026-11-07）: #170/#171、投稿に必要な通知・WebSocket受信 #173、投稿webhook #175 と通常TL/検索/集計producer #174 は実装・比較済み。#174 は PR #237 で完了した。#172の削除連携sliceでは、作成後続と削除の連携を、同じ投稿を使う実HTTP/worker・PG/Redis/Meili・WebSocket・fake AP/webhookで検証した。sourceと製品の独立レビューは承認済み。#172 の完了判定と、#176 の削除に絞って確認した範囲は[削除連携の計画](../superpowers/plans/2026-11-07-note-delete-integration-172.md)を参照する。後述の各sliceにある過去の残作業記述は当時の状態を示す。
 
-通常workerは投票終了・AP配送・投稿webhookのhandlerを実行する。#163の管理14 API・公開QueueStatsは下記の実依存検証で完了条件を満たす。#164の現在3業務queueの保持と全10名の終端清掃も下記の検証で完了条件を満たす。実payload互換/残仕事引継ぎ#165は下記の停止専用checkerと実測範囲を確認し、最終切替#139へ渡す。#124は2026-11-08の[独立した現行条件監査](../superpowers/compatibility/note/n7/README.md#remaining-ownership-and-124-audit)で全必須条件PASSとなり、人間の将来merge時の`Closes #124`が適切。GitHub上はmergeまでOPENで、全branch最終レビューは未完了。#176/#127は未完了。他の実ジョブは担当領域へ残る。#169 / PR #212は、基本text作成のHTTP・保存・応答・後続count更新と、独自BullMQ transport/Redis復旧の撤去を完了。[PR #213](https://github.com/tiramiss-community/tiramiss/pull/213)でPG通知を直接保存へ分離し、残るPGジョブ/AP protocol・専用テスト・起動Entity登録・未使用依存を撤去した。新migrationは未解決の仕事を拒否し、通知本体を保持して不要9表/課金列を廃止する。マージ済みの独自migrationは履歴として保持するが、未使用adapterや不要テーブルを最終構成に残す方針ではない。
+通常workerは投票終了・AP配送・投稿webhookのhandlerを実行する。#163の管理14 API・公開QueueStatsは下記の実依存検証で完了条件を満たす。#164の現在3業務queueの保持と全10名の終端清掃も下記の検証で完了条件を満たす。実payload互換/残仕事引継ぎ#165は下記の停止専用checkerと実測範囲を確認し、最終切替#139へ渡す。#124は2026-11-08の[独立した現行条件監査](../superpowers/compatibility/note/n7/README.md#remaining-ownership-and-124-audit)で全必須条件PASSとなった。#242の独立レビュー・マージを経て#124はCLOSED。監査時OPENや当時のclosure referencesは履歴として保持する。#176/#127は未完了。他の実ジョブは担当領域へ残る。#169 / PR #212は、基本text作成のHTTP・保存・応答・後続count更新と、独自BullMQ transport/Redis復旧の撤去を完了。[PR #213](https://github.com/tiramiss-community/tiramiss/pull/213)でPG通知を直接保存へ分離し、残るPGジョブ/AP protocol・専用テスト・起動Entity登録・未使用依存を撤去した。新migrationは未解決の仕事を拒否し、通知本体を保持して不要9表/課金列を廃止する。マージ済みの独自migrationは履歴として保持するが、未使用adapterや不要テーブルを最終構成に残す方針ではない。
 
 ## 本家比較から分かった追加仕様
 
@@ -74,8 +88,8 @@ PR単位で一括revertせず、現在の参照・必要な業務規則・保存
 | #124 / #127 | 最小契約、既存PG基盤の縮小/撤去、通常worker/投稿の縦断を追跡する。削減も初期の完了条件に含める |
 | #159 / #161 / #166 | 強いclaim/配送順序、物理容量制御は後続強化として保留。前提の独自実行基盤は撤去済みで、旧コードをそのまま再利用できる状態ではない |
 | #163 / #164 / #165 | 既存Issueを本家相当のqueue管理API/QueueStats、通常履歴保持/清掃、実queue/payload互換/残仕事引継ぎへ改訂し、初期作業として扱う。旧PG制御・課金・全版readerの保証は履歴へ分離する |
-| #160 / #162 | 署名HTTPと通常worker接続は引き続き必要。PG実行プロトコル依存を外すため、最小契約に合わせて再分割/改訂する |
-| #169 | PR #212マージ済み。基本text保存・応答・直後show・保存後countを実装。添付/返信等は#170へ残す |
+| #160 / #162 | 投稿に必要な署名HTTP・通常worker接続は実装済み。#124もCLOSED。残るhandlerは各領域が所有する |
+| #169 / #170 | 基本文字投稿と添付/返信等の限定投稿範囲は実装・比較済み。#195のremote解決は#243で接続し、残る初期機能は#176で追跡する |
 | #177 / #138 / #139 | 通知保存先の判断と、既存データ/配布上必要な作業を反映する。承認済み差異や移行を黙って消さない |
 
 個別の新しい依存は、利用する具体契約が決まった時点で設定する。#169の基本範囲の完了を投稿全体の完成とは扱わない。既存Issueを自動close/reopenせず、履歴と未完了範囲を維持する。
@@ -87,7 +101,7 @@ PR単位で一括revertせず、現在の参照・必要な業務規則・保存
 | 計画の対象 | 個別作業・完了確認の所有者 |
 | --- | --- |
 | Role初期範囲 / 残るRole API | #115（#116–#121完了）/ #181 |
-| 投稿の代表フロー | #125 → #127 → #170–#176（#167–#169完了）|
+| 投稿の代表フロー | #125 → #127 → #176が未完了。#167–#175はCLOSED、N7の基本比較は実施済み |
 | 通常ジョブ・署名HTTP・worker | #122 → #124 → #160 / #162 |
 | 本家queue管理・QueueStats / 履歴保持 / 実payload互換 | #163/#164実装・比較済み / #165は停止専用検査・現在3業務handlerの実引継ぎを検証。7業務handlerと最終切替は各担当へ残る |
 | 全公開契約の棚卸し / 残る機能の実装 | #128 → #129 / #177–#200（領域別の所有者表は #128）|
@@ -104,11 +118,11 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 - #172のAP削除完成は #170/#171が先行。#173/#175は #170/#162、#174は #170から進め、削除との最終連携を #176で確認する。通常更新を汎用再構築設計 #132の完了待ちにしない。
 - #163–#165は #162が先行。#139の最終切替リハーサルは #135/#138に加え、実残ジョブ #165と通知移行 #177が先行する。棚卸しや手順案は先に準備できる。
 - #215/#216は #160・#171・#195 の先行契約で、内容は[連合の共通土台](federation-base-contract.md)と[外向きHTTP](outbound-http-contract.md)の契約で確定した。各段階は最初の利用者と同じPRか直前のPRで接続し、全体の完了を一括のblockerにしない。
-- #170はローカルユーザーと登録済みリモートユーザーへのメンションまでを扱い、未登録のリモートユーザー宛ては暫定で501とし、登録済みリモートユーザーは `lastFetchedAt` が古くても再同期しない（同じく#195で除去する暫定制限）。WebFinger・Person取得による解決は #195 が最初に切り出し、その実装PRで501を除去する。#195の解決には #215の鍵・#216の送信・#160のGET署名が要る。signedGet本体（HTMLのalternate・content-typeの検証・`assertActivityMatchesUrl`）は最初の利用者の#195が持つ。
+- #170に残していた未登録remote mentionの暫定501とstale再同期の制限は、#195の最初のPR #243で解消済み。#215の鍵・#216の送信・#160のGET署名を使うWebFinger/Person解決とsignedGetを接続した。coreの解消を画像・chart・cache等まで含む全体完成には読み替えない。
 - #217は、書き込み系の機能（#180/#182/#194など）がキャッシュを持つ前に、使う範囲の契約を確定する。キャッシュを導入するsliceだけに適用し、キャッシュを持たずDBを直接読むsliceは#217を待たない。
 - #124の初期必須子は #160/#162–#165。保留 #159/#161/#166は同領域の履歴として所属するが、初期完成の前提には数えない。
 - 2026-11-08に、完了そのものを止める依存をblocked-byへ追加した。#139 ← #195/#182/#183/#188/#198/#199/#200/#193（切替checkerが未対応queueの未完了・failedジョブとschedulerを拒否し、clearによる回避は禁止のため、各queueのhandlerと定期ジョブが必要）。#130 ← #188/#199、#194 ← #179/#198/#188、#196 ← #193/#180、#187 ← #185、#192 ← #189、#199 ← #188。blocked-byは完了を止める依存で、着手は止めない。たとえば#192は、bubble-gameを今すぐ、reversi一覧を#185のページング部品の後、reversi channelを#189 registryの後に着手できるが、完了判定は#189全体の完了後になる。#189のTL系以外のchannel（chatは#190、reversiは#192、driveは#188、adminは#194、serverStatsは#138）はそれぞれの担当が追加し、#189の残りはregistryの担当セッションが最後に行う。
-- Issue単位では閉路になる組（#195↔#182、#195↔#199、#195↔#194、#180↔#182、#180↔#179/#181/#186/#194、#188↔#190、#189↔#190/#192）と、相手の一部sliceだけを待つ組（#179/#181 ← #178のgate、#190/#191 ← #185のページング部品、#176 ← PR #243）はblocked-byにせず、各Issue本文の「並列作業での着手順と担当」にslice単位で書く。
+- Issue単位では閉路になる組（#195↔#182、#195↔#199、#195↔#194、#180↔#182、#180↔#179/#181/#186/#194、#188↔#190、#189↔#190/#192）と、相手の一部sliceだけを待つ組（#179/#181 ← #178のgate、#190/#191 ← #185のページング部品。#176 ← PR #243の過去のマージ待ちは解消済み）はblocked-byにせず、各Issue本文の「並列作業での着手順と担当」にslice単位で書く。
 
 方針を変更したときは、GOALS/ROADMAPだけでなく、影響するIssueの有効な本文・完了条件・blocked-byと親の対応順を一緒に更新する。PRの実装/検証結果は実際のマージ状態を確認して反映する。
 
@@ -123,14 +137,14 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 
 #200の全chart、#183の予約投稿handler、#198のsystem webhook配送、#193のお知らせ期限切れジョブも#139の前提になる。
 
-**先に出す土台。** #185のページング部品、#178のAPI gate、#177の通知型拡張migration、#197のwebhookイベント型拡張、ModerationLogの共通appenderは、PR #243を待たずに小さなPRで先に出す。続けて#180 UserDetailedNotMe、#182の関係UseCase、#188のDriveを並走させる。PR #243のマージ後、HTTPの組み立てを領域別ファイルへ分ける、queueの登録表、CIの契約テスト一覧のglob化を行う共有rootの整理PRを1本だけ先に出す。
+**先に出す土台の現在地。** #178の初期API gateは#245、ModerationLog appenderは#246、#182のFollowRequest Entity同期は#248、共有root整理は#249でマージ済み。#178の残範囲、#185のページング部品、#177の通知型拡張migration、#197のwebhookイベント型拡張等は各Issueで進める。#243のマージ待ちや共有root整理の再実装は不要。#180 UserDetailedNotMe、#182の関係UseCase、#188のDriveへの順序と機能単位の依存は維持する。
 
 **セッション割り当て（5本の場合）。**
 
 | セッション | 順序 |
 | --- | --- |
-| S1 連合 | PR #243のマージ → 共有rootの整理 → #176 → #195 inbox中核（署名検証・#215段階4） |
-| S2 API・ユーザー | #178 → ModerationLog appender → #182のFollowRequest Entity同期 → #191 Page pack → #180 → #182の残り → #181 → #179 |
+| S1 連合 | #243・共有root #249はマージ済み → #176（基本比較済み・残初期機能待ち）→ #195 inbox中核（署名検証・#215段階4、未実装）。限定補完は#258–#263までマージ済み |
+| S2 API・ユーザー | #178の初期gate #245 → appender #246 → FollowRequest Entity #248はマージ済み。続く順序は#191 Page pack → #180 → #182の残り → #181 → #179。#178の残範囲は同Issueで追跡 |
 | S3 イベント・通知 | #177 → #197 → #217 → #198 → #189 registry → #200 chart core → #189の残り（接続操作と別名、他の担当が追加しないchannel、全channelの比較） |
 | S4 閲覧系 | #185 → LTL/GTL → TL系WebSocket channel（#189 registryの後）→ #186 → #187 |
 | S5 Drive・保守 | #188 → #199（定期ジョブのsliceから先に）→ #130 |
@@ -138,7 +152,7 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 
 3本に絞る場合は「S1 連合」「#178 → #185 → #177 → #182のFollowRequest Entity同期 → #191 Page pack → #180 → #182の残り → #217 → #189 registry → TL系WebSocket channel → #189の残り（接続操作と別名、他の担当が追加しないchannel、全channelの比較）」「#188 → #199 → #200」。空いたセッションは #193 /api/meta → #190 → #184 → #192（#189 registryの後）→ #191の残り → #196の独立route → #194 meta/ad/stats の順で拾う。#180のDetailedは#182のFollowRequest Entity同期と#191のPage packを待つため、どちらの案でも#180より先に出す。
 
-**同時に走らせない組み合わせ。** PR #243と#176・#215段階5・#195の別slice（着手はよいがマージは#243の後）。#178と#179・#181。#185と一覧API全般。#182と#195（Follow系rendererは#182が作る）。#189 registryとchannel追加。#136の本家固定SHA更新は全セッションを止めて単独で行う。
+**同時に走らせない組み合わせ。** PR #243との過去の同時マージ制限は解消済み。#176・#215・#195等は現在の変更ファイルと証跡単位で調整する。#178と#179・#181。#185と一覧API全般。#182と#195（Follow系rendererは#182が作る）。#189 registryとchannel追加。#136の本家固定SHA更新は全セッションを止めて単独で行う。
 
 **共有ファイルの運用。**
 
@@ -153,13 +167,26 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 
 1. inboxのfailedジョブの扱い：#139の前に全activityのhandlerを必須とするか、契約を変えるか（期限切れを待つ、受理だけする等）。クリティカルパスの長さが大きく変わる。
 2. 共有Entityを担当ごとに同期するか、1本のPRでまとめて同期するか。
-3. queueの登録表への作り直しを、既存3 queueを最初の利用者とするrefactorとして認めるか（「汎用基盤を先に作り込まない」との関係）。
+3. **解決済み:** #251の段階3として承認し、#255 / PR #257で既存3 queueをmokuroku-js 0.2.0へ移行済み。未対応7 handler・system 9 schedulerは元の担当へ残る。
 4. **確定済み（2026-11-09）:** #176はPR #243で残るmedia/emoji・instance・chart・cache等の初期機能を実装するまで未完了とする。担当の割り当てだけでは閉じない。これらは強化や承認済み差異ではなく、`Closes #176` / `Closes #127` は使わない。
 5. #115・#122は残りを#181・#199/#200へ移してcloseするか。
 
 ## 再開時に確認すること
 
+[GOALS](GOALS.md)、本書冒頭の現在地、対象Issue、PR/ブランチの実状態を確認する。S1の共有root整理・基本縦断・C2/C10比較・#258–#263の限定補完はマージ済みで、#176/#127/#195は残範囲があるためOPEN。#176に必要な機能単位と他担当待ちを区別し、過去のPR待ちを着手条件に戻さない。初期機能の完了条件・担当・正式なblocked-byは今回変更しない。
+
+着手するPRでは「移植する本家機能/解く依存」「必要な比較」「追加保証の有無」を短く説明する。以下の履歴やsource観測の測定件数を、現在の全機能の完了証明には用いない。
+
+## 実装・検証の履歴
+
+各記録の「次」「未実装」「未完了」は、その記録時点の状態を示す。現在の作業選定・完了判定には冒頭の現在地と各Issueを使う。既存の比較資料・測定件数・出典は保持する。
+
+<details>
+<summary>2026-11-07頃の再開案内（履歴。現在の着手条件には用いない）</summary>
+
 [GOALS](GOALS.md)、本書、対象Issue、PR/ブランチの実状態を確認する。最小契約と基本text作成の実装/検証は[実装計画](../superpowers/plans/2026-11-03-note-create-169.md)を参照する。PG通知の分離と残存PGジョブ/AP adapter削減の[作業記録](../superpowers/plans/2026-11-03-simplify-jobs-124.md)を確認する。#215の段階1（ホスト正規化・連合可否・Meta読み取りの統一）は実装済み。#170 のローカル部分は実装済み（PR #221。未登録リモートユーザー宛てのメンションは#195まで501、登録済みリモートユーザーも#195まで再同期しない）。#215 の段階2（鍵とシステムアカウント、PR #222）と #216 の最初の PR（send・getJson と private 宛ての遮断、PR #223）は、通常起動から呼ばれない状態で実装済み。#160 の最初の PR（AP の署名・署名付き送信・配送結果の分類と、`extractDbHost`・`isFederationAllowedUri`）は、呼び出し元のない状態で実装済み。インスタンス台帳・配送前のスキップ判定・状態の書き込みは配送を接続する PR へ回した（[引き継ぎ](ap-delivery-handoff.md)）。#162 の最初の PR（通常の BullMQ の Queue/Worker と、本家の投票終了ジョブの投入から PG の通知保存まで。Redis 接続は再接続しない）は実装済み（[投稿の最小契約](posting-contract.md#通常ジョブ162)）。#171 の最初の PR（ノート作成の Create/Announce の表現・宛先・deliver queue と Worker・インスタンス台帳。#215 の段階 3 を含み、relay を除く）は実装済み（[引き継ぎ](ap-delivery-handoff.md#171-の最初の-pr-で入れたもの)）。relay への配送と JSON-LD 署名は #171 の2番目のPR #227でマージ済み。続く #172 は下記の削除sliceを実装した。#170 の保存列だけで進められる #174 も並行して着手できる。#163–#165 は #162 の実 queue の情報（同じ節の表）から着手できる。PR #206のマージ待ちでも、新たな基盤強化の実装でもない。着手するPRでは「移植する本家機能/解く依存」「必要な比較」「追加保証の有無」を短く説明する。
+
+</details>
 
 
 #171 第2slice（PR #227、マージ済み）は、既存accepted relayの10分cache、作者鍵RsaSignature2017、個別Queue.addとpost-save drainを接続した。controllerの最終検証で単体1,652件、関連結合150件、process3件、固定本家probe2件が成功している。過去workerのlocalhost EPERMは最終未実行状態ではない。[実測](../superpowers/plans/2026-11-06-ap-relay-171.md)。登録・受信・actorは#195、チャートは#200、metadataは共通土台の段階5に残る。
