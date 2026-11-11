@@ -44,3 +44,27 @@ Reproduce the focused commands from the evidence measurements; run source replay
 Upstream reads an injected notification-refreshed Meta object; current composition deliberately reuses the existing fresh DB reader, including its established missing-row initialization. The tests establish stable-Meta equality only. Notification delay/cache failures remain unproven and owned by #217; no cache is introduced here. Neither source nor current evidence completes host-meta/NodeInfo/authorize-follow handling, collections/full actor, inbox/signature verification, remote Notes/media/featured/Move, or #176/#127/#195.
 
 Parent owns task review, root proof/inventory follow-up, CodeRabbit, commit and PR. Historic oracle JSON/probes/receipts remain unchanged. CHANGELOG was not edited; candidate: “backend-next: ローカルアカウントのWebFinger discoveryを既存actor GETへ接続”.
+
+## Task-review diagnostic fix: R2 (2026-11-11)
+
+The R1 results above are historical and remain unchanged. Task review found that the local catch discarded discovery exceptions. The adapter now records the original exception once through the existing Hono-style `console.error(error)` path, then returns the same local empty500. This preserves all four CORS values, no cache/Vary and empty HEAD without entering the REST private-cache handler. No logger framework, policy, composition or source-oracle changes were introduced.
+
+Four new Meta/User × GET/HEAD tests assert both actual local HTTP output (500, exact four-header map, empty body) and the original exception diagnosed once. Behavioral RED before product editing failed all4 specifically on zero diagnostic calls (`/tmp/tiramiss-s1-r10-fix-red.log`); focused GREEN passed54/54 (`/tmp/tiramiss-s1-r10-fix-green.log`).
+
+R2 receipt: `/tmp/tiramiss-s1-r10-validation-receipt-r2.json`; SHA256 `fb714a997acd4c3b48a49442c12ff3dc052eced3181e297bdc8fa027051b08a5`. Request: `/tmp/tiramiss-s1-r10-validation-request-r2.json`; SHA256 `19cf798419acd1c65e031063b0644c1fcac336dca904725ea04ce9ff83d1cd92`. The separate [logging runtime evidence](local-webfinger-logging-runtime-evidence.json) binds the actual receipt, full frozen map, measurements and log/artifact hashes. The R1 runtime JSON was preserved byte for byte.
+
+Window: **2026-11-11T12:56:26.502367+00:00 → 2026-11-11T12:56:40.625777+00:00**, Node v26.4.0 / pnpm12.9.1, PG55513 / Redis56413 / Meili57813. All846 R2 frozen inputs matched before/after commands. Exactly two inputs differ from R1: `src/http/webfinger-api.ts` and `test/unit/federation/webfinger-api.test.ts` under backend-next; only844/846 R1 inputs remain current. R1 remains valid historical evidence for its own measured inputs.
+
+| R2 check | Actual result | Log/artifact prefix |
+| --- | --- | --- |
+| Dependency-order build / typecheck | PASS / PASS | `/tmp/tiramiss-s1-r10-validation-r2-build`, `-typecheck` |
+| Same nine-file unit selection plus4 diagnostic cases | PASS **231/231** | `-units.log`, `.json` |
+| Unchanged real ordinary HTTP/PG WebFinger integration | PASS **46/46** | `-webfinger-integration.log`, `.json` |
+| Pinned source --check | PASS **49** | `-source-check.log` |
+| Changed-file eslint / SPDX / locale safety | PASS / PASS / PASS | `-shipping.log` |
+
+The R2 actual runtime log additionally contains exactly three intended discovery diagnostics: two `QueryFailedError: relation "user" does not exist` errors for GET/HEAD and one for missing `meta` on GET. They arise from existing test-owned table renames, are not suppressed, and retain adapter/reader stack locations. Existing integration assertions verify500/CORS/no cache/no Vary and empty HEAD, with restored tables followed by successful discovery. The new unit assertions verify exact diagnostic identity and no body leakage. This combines a focused diagnostic assertion with actual DB fault/output evidence.
+
+The existing HTTP-app/actor55 is retained solely as the separate R1 run, not rerun or counted as R2. Actor/composition code and tests are unchanged, and the diagnostic addition has no composition effect. Clarification of its stderr: all four stacks correspond to intentional tests in unchanged `activitypub-actor.test.ts`: injected Profile DB failure (line160), absent Profile (line168), injected emoji failure (line206), and a Drive reader using a transaction intentionally aborted by division by zero (line378). Those tests assert500/rejection. The existing pg concurrent-query deprecation warning remains baseline. Neither run has pristine output; raw logs and their receipt hashes are retained, with no unrelated actor or connection changes.
+
+Upstream full-server/PG comparison and notification/cache freshness remain unproven as described above. Parent still owns scoped re-review, metadata/root proof, final review, commit and PR; this fix does not complete #176/#127/#195 or posting.

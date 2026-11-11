@@ -49,7 +49,8 @@ export function createWebfingerApi(parts: {
 			}
 			c.header('Content-Type', `${jrd}; charset=utf-8`);
 			return c.body(JSON.stringify(document));
-		} catch {
+		} catch (error) {
+			console.error(error);
 			return c.body(null, 500);
 		}
 	});

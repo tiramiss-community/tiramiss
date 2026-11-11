@@ -59,3 +59,35 @@ test('a Meta read failure returns uncached discovery 500 with CORS before any us
 	expect(response.headers.get('vary')).toBeNull();
 	expect(readUser).not.toHaveBeenCalled();
 });
+
+test.each([
+	['Meta', 'GET'], ['Meta', 'HEAD'], ['User', 'GET'], ['User', 'HEAD'],
+] as const)('unexpected %s failure is diagnosed while %s retains the empty uncached CORS 500', async (stage, method) => {
+	const error = Error(`${stage} database unavailable: private diagnostic`);
+	const diagnostic = vi.spyOn(console, 'error').mockImplementation(() => {});
+	const readUser = vi.fn(async () => {
+		throw error;
+	});
+	try {
+		const app = createWebfingerApi({ selfUrl: corpus.defaults.selfUrl, readUser, federationEnabled: async () => {
+			if (stage === 'Meta') {
+				throw error;
+			}
+			return true;
+		} });
+		const response = await app.request('/.well-known/webfinger?resource=alice', { method });
+
+		expect(response.status).toBe(500);
+		expect(Object.fromEntries(response.headers)).toEqual({
+			'access-control-allow-headers': 'Accept',
+			'access-control-allow-methods': 'GET, OPTIONS',
+			'access-control-allow-origin': '*',
+			'access-control-expose-headers': 'Vary',
+		});
+		expect(await response.text()).toBe('');
+		expect(diagnostic).toHaveBeenCalledExactlyOnceWith(error);
+		expect(readUser).toHaveBeenCalledTimes(stage === 'Meta' ? 0 : 1);
+	} finally {
+		diagnostic.mockRestore();
+	}
+});
