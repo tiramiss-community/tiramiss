@@ -93,3 +93,17 @@ test('ordinary composition exposes discovery CORS for an unknown local account',
 	expect(response.status).toBe(404);
 	expect(response.headers.get('access-control-allow-headers')).toBe('Accept');
 });
+
+test.each(['GET', 'HEAD'])('ordinary composition passes its resource logger to discovery failures for %s', async method => {
+	const { resources, repository } = fixture();
+	repository.find.mockRejectedValueOnce(new Error('private Meta database diagnostic'));
+	const response = await createBackendHttpApp(resources, testConfig()).request('/.well-known/webfinger?resource=alice', { method });
+	expect(response.status).toBe(500);
+	expect(await response.text()).toBe('');
+	expect(response.headers.get('cache-control')).toBeNull();
+	expect(response.headers.get('vary')).toBeNull();
+	expect(response.headers.get('access-control-allow-origin')).toBe('*');
+	expect(resources.logger.error).toHaveBeenCalledExactlyOnceWith('webfinger.failed', {
+		classification: 'unexpected-failure', stage: 'meta-read',
+	});
+});

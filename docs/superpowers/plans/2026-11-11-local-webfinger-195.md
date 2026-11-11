@@ -72,10 +72,11 @@ export function createLocalWebfingerReader(manager: EntityManager):
   (query: LocalWebfingerQuery) => Promise<LocalWebfingerFacts | null>;
 export function createWebfingerApi(parts: {
   selfUrl: string;
+  logger: Pick<Logger, 'error'>;
   federationEnabled(): Promise<boolean>;
   readUser(query: LocalWebfingerQuery): Promise<LocalWebfingerFacts | null>;
 }): Hono;
-export function createWebfingerHttp(resources: Pick<RuntimeResources, 'dataSource'>,
+export function createWebfingerHttp(resources: Pick<RuntimeResources, 'dataSource' | 'logger'>,
   config: Pick<RuntimeConfig, 'url'>): Hono;
 ```
 
@@ -162,3 +163,6 @@ The spec is binding. Review exact literal source and independent expectations, H
 Source-execution clarification (2026-11-11): actual pinned Fastify inject showed XRD `application/xrd+xml` without charset (JRD has charset); a foreign actor URL with no `@` becomes a bare username lookup and normally404; equally weighted types follow client ordering. Initial source characterization failure is retained in `/tmp/tiramiss-s1-r10-source-initial.log`. These literal-source results refine the approved implementation, without expanding scope.
 
 Execution completed through Step 6 using broker receipt r1 PASS (2026-11-11T12:43:05.265096+00:00); 227 units, 46 WebFinger integration, 55 existing HTTP/actor integration, 49 source cases; actual logs/hashes in [results](../compatibility/remote-user/local-webfinger-results.md). No Git mutations or external sends. Parent review/publication remain parent-owned.
+
+
+Final-wave diagnostic clarification (2026-11-11): the signatures above now include the existing platform Logger error method, provided only by HTTP composition. This corrects the R2 console diagnostic format under the existing stdout JSON contract; it introduces no business dependency or logging framework. The original task-review history remains in R2 results. Six default-stdout failure cases (Meta/User × GET/HEAD plus arbitrary string/object throws) and two ordinary-composition forwarding cases cover this correction; final measured counts belong to the separate R3 request/receipt.

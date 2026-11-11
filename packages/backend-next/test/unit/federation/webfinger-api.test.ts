@@ -5,6 +5,7 @@
 import { expect, test, vi } from 'vitest';
 import { webfingerCorpus as corpus, webfingerSource as observations } from '../../helpers/webfinger-source.js';
 import { createWebfingerApi } from '../../../src/http/webfinger-api.js';
+import { createLogger } from '../../../src/platform/logger.js';
 import type { LocalWebfingerQuery } from '../../../src/modules/federation/public.js';
 
 test.each(corpus.cases)('$id directly matches pinned createServer HTTP and lookup observations', async c => {
@@ -26,7 +27,7 @@ test.each(corpus.cases)('$id directly matches pinned createServer HTTP and looku
 		}
 		return c.federation !== 'none';
 	});
-	const app = createWebfingerApi({ selfUrl: corpus.defaults.selfUrl, readUser, federationEnabled });
+	const app = createWebfingerApi({ logger: createLogger('http'), selfUrl: corpus.defaults.selfUrl, readUser, federationEnabled });
 	const query = c.queryString ?? (c.resource === null ? '' : `resource=${encodeURIComponent(c.resource)}`);
 	const response = await app.request(`/.well-known/webfinger?${query}`, { method: c.method ?? 'GET', headers: c.accept ? { Accept: c.accept } : {} });
 	expect(response.status).toBe(expected.status);
@@ -48,7 +49,7 @@ test.each(corpus.cases)('$id directly matches pinned createServer HTTP and looku
 
 test('a Meta read failure returns uncached discovery 500 with CORS before any user lookup', async () => {
 	const readUser = vi.fn(async () => null);
-	const app = createWebfingerApi({ selfUrl: corpus.defaults.selfUrl, readUser, federationEnabled: async () => {
+	const app = createWebfingerApi({ logger: createLogger('http'), selfUrl: corpus.defaults.selfUrl, readUser, federationEnabled: async () => {
 		throw Error('meta read unavailable');
 	} });
 	const response = await app.request('/.well-known/webfinger');
@@ -61,15 +62,19 @@ test('a Meta read failure returns uncached discovery 500 with CORS before any us
 });
 
 test.each([
-	['Meta', 'GET'], ['Meta', 'HEAD'], ['User', 'GET'], ['User', 'HEAD'],
-] as const)('unexpected %s failure is diagnosed while %s retains the empty uncached CORS 500', async (stage, method) => {
-	const error = Error(`${stage} database unavailable: private diagnostic`);
-	const diagnostic = vi.spyOn(console, 'error').mockImplementation(() => {});
+	['Meta', 'GET', 'Error'], ['Meta', 'HEAD', 'Error'], ['User', 'GET', 'Error'], ['User', 'HEAD', 'Error'],
+	['Meta', 'GET', 'string'], ['User', 'HEAD', 'object'],
+] as const)('unexpected %s failure with %s and thrown %s emits safe stdout JSON and retains the empty uncached CORS 500', async (stage, method, thrown) => {
+	const secret = `${stage} database unavailable: private diagnostic`;
+	const error = thrown === 'Error' ? Error(secret) : thrown === 'string' ? secret : { message: secret, nested: { detail: secret } };
+	const stdout = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+	const stderr = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+	const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
 	const readUser = vi.fn(async () => {
 		throw error;
 	});
 	try {
-		const app = createWebfingerApi({ selfUrl: corpus.defaults.selfUrl, readUser, federationEnabled: async () => {
+		const app = createWebfingerApi({ logger: createLogger('http'), selfUrl: corpus.defaults.selfUrl, readUser, federationEnabled: async () => {
 			if (stage === 'Meta') {
 				throw error;
 			}
@@ -85,9 +90,26 @@ test.each([
 			'access-control-expose-headers': 'Vary',
 		});
 		expect(await response.text()).toBe('');
-		expect(diagnostic).toHaveBeenCalledExactlyOnceWith(error);
+		expect(stderr).not.toHaveBeenCalled();
+		expect(stdout).toHaveBeenCalledTimes(1);
+		const output = String(stdout.mock.calls[0][0]);
+		expect(output).not.toContain(secret);
+		expect(output.split('\n')).toHaveLength(2);
+		expect(output.endsWith('\n')).toBe(true);
+		expect(consoleError).not.toHaveBeenCalled();
+		expect(JSON.parse(output)).toEqual({
+			timestamp: expect.any(String),
+			level: 'error',
+			event: 'webfinger.failed',
+			process: 'http',
+			pid: process.pid,
+			classification: 'unexpected-failure',
+			stage: stage === 'Meta' ? 'meta-read' : 'user-read',
+		});
 		expect(readUser).toHaveBeenCalledTimes(stage === 'Meta' ? 0 : 1);
 	} finally {
-		diagnostic.mockRestore();
+		stdout.mockRestore();
+		stderr.mockRestore();
+		consoleError.mockRestore();
 	}
 });

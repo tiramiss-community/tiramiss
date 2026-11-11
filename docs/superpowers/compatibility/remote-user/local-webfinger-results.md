@@ -68,3 +68,24 @@ The R2 actual runtime log additionally contains exactly three intended discovery
 The existing HTTP-app/actor55 is retained solely as the separate R1 run, not rerun or counted as R2. Actor/composition code and tests are unchanged, and the diagnostic addition has no composition effect. Clarification of its stderr: all four stacks correspond to intentional tests in unchanged `activitypub-actor.test.ts`: injected Profile DB failure (line160), absent Profile (line168), injected emoji failure (line206), and a Drive reader using a transaction intentionally aborted by division by zero (line378). Those tests assert500/rejection. The existing pg concurrent-query deprecation warning remains baseline. Neither run has pristine output; raw logs and their receipt hashes are retained, with no unrelated actor or connection changes.
 
 Upstream full-server/PG comparison and notification/cache freshness remain unproven as described above. Parent still owns scoped re-review, metadata/root proof, final review, commit and PR; this fix does not complete #176/#127/#195 or posting.
+
+
+## Final diagnostic format fix: R3 (2026-11-11)
+
+The R2 console diagnostic above remains historical. Final review confirmed one Minor format-contract finding: backend-next diagnostics use stdout JSON. The revised HTTP adapter receives the existing `resources.logger` through its WebFinger composition and emits one error-level `webfinger.failed` event with constant classification and a selected Meta-read/User-read/request/render stage. It never passes the thrown Error, string or plain object to the logger. Pure business modules, shared logger and actor handlers are unchanged. Local500 retains the exact four CORS values, empty GET/HEAD body and absent cache/Vary.
+
+The six focused cases exercise the real `createLogger` **default stdout sink**, spying on `process.stdout.write`: exactly one JSON line with the fixed event/error level and safe fields; no stderr/console.error, secret string or response leak. This includes Meta/User × GET/HEAD and additional string/plain-object throws. Two ordinary-composition cases verify resources.logger forwarding. Behavioral RED failed six assertions on zero stdout writes against the prior console.error implementation; subsequent local62 and typecheck passed. Initial local shipping failed on one extra blank line, then passed after correction. All original logs are retained.
+
+R3 request: `/tmp/tiramiss-s1-r10-validation-request-r3.json`, SHA256 `e0bc466847b48276a0d4b4109b70f6142c3007fee54d5a5984eccaee7fa58efb`; receipt: `/tmp/tiramiss-s1-r10-validation-receipt-r3.json`, SHA256 `1438e6acd250910f5bb9ad4a40ca76caec694fc9a9378b80695fc6d9696a274e`. Actual window **2026-11-11T13:28:11.572645+00:00 → 2026-11-11T13:28:28.219774+00:00**, Node v26.4.0/pnpm12.9.1, dedicated PG55513/Redis56413/Meili57813. [Structured logging runtime evidence](local-webfinger-structured-logging-runtime-evidence.json) binds the actual request, receipt, logs/artifacts and full-map SHA256 with only the direct14 relevant inputs.
+
+| R3 check | Actual result | Log/artifact prefix |
+| --- | --- | --- |
+| Dependency-order build / typecheck | PASS / PASS | `/tmp/tiramiss-s1-r10-validation-r3-build`, `-typecheck` |
+| Original nine unit files with revised/new logging cases | PASS **235/235**, no failed/skipped | `-units.log`, `.json` |
+| Actual ordinary listening HTTP/PG WebFinger integration | PASS **46/46**, no failed/skipped | `-webfinger-integration.log`, `.json` |
+| Unchanged pinned source --check | PASS **49**, direct comparisons retained | `-source-check.log` |
+| Changed-file eslint / SPDX / locale safety | PASS / PASS / PASS | `-shipping.log` |
+
+R3 binds846 inputs at measurement. Four differ from R2: `src/http/webfinger-api.ts`, `src/composition/webfinger-http.ts`, `test/unit/federation/webfinger-api.test.ts`, and `test/unit/composition/http-app.test.ts` under backend-next (842/846 R2 inputs still match). Exact before/after hashes are recorded in the R3 request and new evidence. R1/R2 receipts, requests, logs, source corpus/probe/observations and runtime JSON are unchanged. The previous current record was copied byte for byte to [R2 current-record archive](local-webfinger-r2-current-evidence.json), SHA256 `af63941a3bf606be9c7fb2b075a1d6da32fa06ffd41b5c4550cacb23db34b925`, before renewal. The current record is intentionally renewable after actual runs; historical artifacts are immutable.
+
+The integration's pre-existing resources logger has a no-op sink; connecting the adapter to it explains why R3 has no R2-style raw fault stacks. No integration sink was added/changed, and default stdout is proven by the focused unit cases. The baseline pg warning remains in raw output. Existing HTTP/actor55 belongs only to its separate R1 run and was not rerun. Stable Meta/source-method limits, #217 and the broader incomplete scope above remain unchanged; #176/#127/#195 stay OPEN, notes/create partial and postingComplete:false.

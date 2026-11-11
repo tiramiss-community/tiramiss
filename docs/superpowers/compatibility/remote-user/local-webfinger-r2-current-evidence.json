@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "scope": "local-webfinger-single-identity-hop",
+  "implementationCommit": "e9d8ebd07bc3d8e51c0a36c08ebbc97137504be4",
+  "notesCreateStatus": "partial",
+  "postingComplete": false,
+  "incompleteIssues": [
+    176,
+    127,
+    195
+  ],
+  "upstreamFullServerMeasured": false,
+  "predecessor": {
+    "path": "docs/superpowers/compatibility/remote-user/local-actor-images-current-evidence.json",
+    "sha256": "c31ad9b0e20c7c07829d2a205f9c9c8b8cf52110e41dae75432241f262fa5553",
+    "canonicalSha256": "1e3ddeef85c441ed5ba0f4f9ad953414eb9559f7525a430f3bcddba5124fc326"
+  },
+  "file": "packages/backend-next/src/modules/federation/public.ts",
+  "previousSha256": "d2d971b30cf383c5e273337f9dbf131fb5f7c4a773ffa07e3434011ffa1ae5ac",
+  "sha256": "1385d32f828400d712271410e9841c3316f9ab951c90cec57425ed68391b8170",
+  "validatedBy": [
+    "build",
+    "typecheck",
+    "units",
+    "webfinger-integration"
+  ],
+  "validationScope": "Export identity, WebFinger ordinary composition and selected actor unit tests in R2; not every function exported by public.ts. Existing HTTP/actor55 belongs only to separate historical R1.",
+  "request": {
+    "path": "/tmp/tiramiss-s1-r10-validation-request-r2.json",
+    "sha256": "19cf798419acd1c65e031063b0644c1fcac336dca904725ea04ce9ff83d1cd92",
+    "status": "FROZEN_READY",
+    "base": "5699e5ce92595e7065665fa964d0854c3194cca4",
+    "frozenInputs": 846,
+    "frozenInputMapSha256": "8ac07d3d425086bfb20ed304e0d99255ffa8fec32dde20f38ad6f6d9bad76a3d"
+  },
+  "receipt": {
+    "path": "/tmp/tiramiss-s1-r10-validation-receipt-r2.json",
+    "sha256": "fb714a997acd4c3b48a49442c12ff3dc052eced3181e297bdc8fa027051b08a5",
+    "record": {
+      "status": "PASS",
+      "requestPath": "/tmp/tiramiss-s1-r10-validation-request-r2.json",
+      "requestSha256": "19cf798419acd1c65e031063b0644c1fcac336dca904725ea04ce9ff83d1cd92",
+      "base": "5699e5ce92595e7065665fa964d0854c3194cca4",
+      "runtime": {
+        "node": "v26.4.0",
+        "pnpm": "12.9.1"
+      },
+      "frozenInputs": 846,
+      "startedAt": "2026-11-11T12:56:26.502367+00:00",
+      "commands": [
+        {
+          "id": "build",
+          "command": "pnpm --filter backend-next... build",
+          "exitCode": 0,
+          "log": "/tmp/tiramiss-s1-r10-validation-r2-build.log",
+          "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+        },
+        {
+          "id": "typecheck",
+          "command": "pnpm --filter backend-next... typecheck",
+          "exitCode": 0,
+          "log": "/tmp/tiramiss-s1-r10-validation-r2-typecheck.log",
+          "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+        },
+        {
+          "id": "units",
+          "command": "pnpm --filter backend-next test test/unit/federation/local-webfinger.test.ts test/unit/federation/webfinger-api.test.ts test/unit/composition/http-app.test.ts test/unit/federation/actor-api.test.ts test/unit/federation/local-actor.test.ts test/unit/federation/local-actor-profile.test.ts test/unit/federation/local-actor-tags.test.ts test/unit/federation/local-actor-images.test.ts test/package-imports.test.ts --reporter=default --reporter=json --outputFile=/tmp/tiramiss-s1-r10-validation-r2-units.json",
+          "exitCode": 0,
+          "log": "/tmp/tiramiss-s1-r10-validation-r2-units.log",
+          "logSha256": "c6bd47032546cbd7ff7e714463f8f8c96a3ef2ac33e5b3dc9ec8d9ab6526fa28",
+          "artifact": "/tmp/tiramiss-s1-r10-validation-r2-units.json",
+          "artifactSha256": "a059706dcff84e7295f3220ceaaf98a83b874440c6d965aef732938de0f273b7",
+          "tests": {
+            "numTotalTests": 231,
+            "numPassedTests": 231,
+            "numFailedTests": 0,
+            "numPendingTests": 0,
+            "success": true
+          }
+        },
+        {
+          "id": "webfinger-integration",
+          "command": "pnpm --filter backend-next test:integration test/integration/webfinger.test.ts --reporter=default --reporter=json --outputFile=/tmp/tiramiss-s1-r10-validation-r2-webfinger-integration.json",
+          "exitCode": 0,
+          "log": "/tmp/tiramiss-s1-r10-validation-r2-webfinger-integration.log",
+          "logSha256": "9f506f0f6bb5c38d88c982a1890736fdd7f345890d2e502f7494e00cc4aec58e",
+          "artifact": "/tmp/tiramiss-s1-r10-validation-r2-webfinger-integration.json",
+          "artifactSha256": "05f84c0c6e5870192e857a4157bf6be46912915ff5a2b8d2a245e0c5f7d70f18",
+          "tests": {
+            "numTotalTests": 46,
+            "numPassedTests": 46,
+            "numFailedTests": 0,
+            "numPendingTests": 0,
+            "success": true
+          }
+        },
+        {
+          "id": "source-check",
+          "command": "UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/remote-user/local-webfinger-source-probe.mjs --check",
+          "exitCode": 0,
+          "log": "/tmp/tiramiss-s1-r10-validation-r2-source-check.log",
+          "logSha256": "198a2bfbbf2ad6bc8f13485542a0cdaa79d9be318824a3f59dff8802c392c562"
+        },
+        {
+          "id": "shipping",
+          "command": "node scripts/check-shipping.mjs --base 5699e5ce92595e7065665fa964d0854c3194cca4",
+          "exitCode": 0,
+          "log": "/tmp/tiramiss-s1-r10-validation-r2-shipping.log",
+          "logSha256": "b68587278a7fcab1fd08fd11b4e2244d3f20033b8c42ce9c4133de1cf236278e"
+        }
+      ],
+      "completedAt": "2026-11-11T12:56:40.625777+00:00"
+    }
+  },
+  "frozenInputSha256": {
+    "packages/backend-next/src/modules/federation/local-webfinger.ts": "1be64a606998ab6ffa88a07d76a645852eef0dc6d567419850f96c3c73036695",
+    "packages/backend-next/src/modules/federation/public.ts": "1385d32f828400d712271410e9841c3316f9ab951c90cec57425ed68391b8170",
+    "packages/backend-next/src/platform/database/local-webfinger.ts": "a7684888ea4815f351fbd23e81a67511a30e282c0ed6c50e1c015a1132b49ccb",
+    "packages/backend-next/src/http/webfinger-api.ts": "093a49ba179f182cab669cb2133bc838587fb24a272545a94e55d2888f548632",
+    "packages/backend-next/src/composition/webfinger-http.ts": "aabe3e0c6fc7a83b77e97e9ef555ecd96934d211fb8353cd4eccc70f331c8cbd",
+    "packages/backend-next/src/composition/http-app.ts": "252c69dbf21d84d0ffcfb6663ceb2dbd5c7acca7841c33cedc926ead30f03048",
+    "packages/backend-next/test/helpers/webfinger-source.ts": "690975f39e04ec4495ee309f3396255993ebb129dcfcdb8f0a0d7ac290a9ed6f",
+    "packages/backend-next/test/unit/federation/local-webfinger.test.ts": "c2e63c279d75244cefc798de308de37f88c71c76fd2d8e7dac92654191ddb4fb",
+    "packages/backend-next/test/unit/federation/webfinger-api.test.ts": "8c1089e1b8cc5376724cf99141918895397634312cfd632c04082d9c385ebd61",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "3ca0a52b891762bfc9296cd763d2ddccc75e95ea250ffee2bf02e4bab710b23e",
+    "packages/backend-next/test/integration/webfinger.test.ts": "0df1737d134141dd60e82e6adfc16ebcb79d02a1735c058e2df29a6829503369",
+    "docs/superpowers/compatibility/remote-user/local-webfinger-corpus.json": "19feceff52545ab5e04c96e9f712cc197bc43cf55affe51545ad5b0ebc73e672",
+    "docs/superpowers/compatibility/remote-user/local-webfinger-observations.json": "4c09e1c310e897a7a05af1868ecc3c5d0fe9bf02f249598bef74cd11e087ca99",
+    "docs/superpowers/compatibility/remote-user/local-webfinger-source-probe.mjs": "758b3e79c87329ffabe33e0ba1976506885f16f3739bffa84b7585b82289947b"
+  },
+  "runtimeEvidence": {
+    "path": "docs/superpowers/compatibility/remote-user/local-webfinger-logging-runtime-evidence.json",
+    "sha256": "25bffd52d9d589d8d2280128100aec57a1fc0b4645fe8f3c12c5ae0715df0940"
+  },
+  "sourceOracle": {
+    "caseCount": 49,
+    "allCasesDirectlyAssertedBy": "packages/backend-next/test/unit/federation/webfinger-api.test.ts",
+    "sourceManifest": [
+      {
+        "path": "packages/backend/src/server/WellKnownServerService.ts",
+        "klass": "WellKnownServerService",
+        "sha256": "a95eae39e0a03afa7ace1c9902394923f753ee4ba578783b15bc2ddc40a38d02",
+        "methods": {
+          "createServer": "3625e950ebfe8d55bdd65546488d009286b42f7d734af41baa90e70389663cea"
+        },
+        "gitBlob": "5531bfdc0dff75c7107831d9cc1cc5729fe49cbc"
+      },
+      {
+        "path": "packages/backend/src/misc/acct.ts",
+        "sha256": "c1ceb56ab1f159d2a8261ac57c0c5f8b20330505a16dc08e572f30a15140e49d",
+        "methods": {
+          "parse": "26d9ba7a3eb16ee5f663857a05b77d5f8c3b4f63ddd2552acc05a6e2600e6d7f"
+        },
+        "gitBlob": "3d729b115109c0e0cb00e214411a5cc5e4f5d4dc"
+      },
+      {
+        "path": "packages/backend/src/misc/prelude/xml.ts",
+        "sha256": "43e37baa00eb7c9d3a84d1484c0b5be84a33a5fe70bbdeaada27bb868e45eb9c",
+        "methods": {
+          "escapeValue": "9cb4114e3ae0a2ccf19b1436a019a0ccf1614744b831c612191163e8aaa3a804",
+          "escapeAttribute": "80ed0208690e32882f95397776db1fbf6a49edf3c538f817466a618edcaacb19"
+        },
+        "gitBlob": "61c166cee544ac655a863f026bb65fc93a82928f"
+      }
+    ],
+    "doubles": {
+      "meta": "fixed injected federation; notification/cache behavior not tested",
+      "repository": "where predicates asserted; explicit plain row/missing/throw; no PG",
+      "uriService": "genLocalUserUri(id) maps explicit config URL + /users/id",
+      "nodeinfoAndOAuth": "throw if unexpectedly invoked"
+    },
+    "errorBodyScope": "non-200 bodies normalized to null; Fastify diagnostic error JSON is not the public compatibility contract"
+  },
+  "limits": [
+    "Source createServer runs under actual Fastify inject with explicit repository/URI/Meta/NodeInfo/OAuth doubles; not upstream full-server/PG.",
+    "Current integration uses actual listening ordinary composition and test-owned PG User/Profile/Key/Meta, including table-fault injection restored in finally.",
+    "Existing readMeta reads DB per request; upstream receives notification-refreshed injected Meta. Stable Meta only; notification/cache equivalence is unproven and belongs to #217.",
+    "Error diagnostic bodies are not compared; status/CORS/cache/Vary are.",
+    "No host-meta, NodeInfo, authorize-follow handler, collections, inbox, signature verification, cache or lifecycle additions."
+  ],
+  "sourceEvidence": {
+    "path": "docs/superpowers/compatibility/remote-user/local-webfinger-runtime-evidence.json",
+    "sha256": "6385bf7910344496789333187b0402e5e127fadd7e9de3d0b0139db8f469bfb4"
+  },
+  "consumerRenewal": {
+    "file": "packages/backend-next/test/unit/composition/http-app.test.ts",
+    "previousSha256": "a1b3612237d5de33cf8f20d7df16bc5ddb69db97b1b399c7f7b6a005440d995a",
+    "sha256": "3ca0a52b891762bfc9296cd763d2ddccc75e95ea250ffee2bf02e4bab710b23e",
+    "validatedBy": [
+      "units"
+    ],
+    "predecessor": {
+      "path": "docs/superpowers/compatibility/remote-user/actor-instance-registration-runtime-evidence.json",
+      "sha256": "d36d75bb0a90670c37ffbe0275562fe2d74f5e98e6c5fffe3069b36401919828"
+    },
+    "scope": "Only this changed ordinary HTTP composition unit consumer, actually selected in R2 units; discovered by current-byte assertion failure after the public export hop. No http-app production identity renewal."
+  }
+}
