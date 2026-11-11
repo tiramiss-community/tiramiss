@@ -25,8 +25,8 @@
   },
   "observationsSha256": "f70c760b005e0c4747dfd7a1eed9748537bae1328fb9e21fa1ef2cfbb7cdbe37",
   "probeSha256": "e7225db7217dc3b1f65f5aa431186449ce7eb97e7f81aabc3a4333fab302c847",
-  "brokerReceiptSha256": "45487192f07100547cc67bbe31ec616efcbb8d9fd97d554c8d63fc5bcc1feb51",
-  "frozenInputMapSha256": "f2e08bbb57a60be14b79bbac5ebe295f87e297aafd1a01971fbb8bc43702168c",
+  "brokerReceiptSha256": "e444b7e48f34a10e8a57afb53429bdfde7946811bd5cf5e2eb8e45a232d6ddc6",
+  "frozenInputMapSha256": "f015303605e5b71db33ce302e61b056d5f5439bc8ea8f874f11a411ab6d472d8",
   "frozenInputSha256": {
     "packages/backend-next/src/application/outbound-http.ts": "d73b3ce370e2edc467c469d19a19378a8c0d70b2eb72d99b6cc44355fad47809",
     "packages/backend-next/src/application/transaction.ts": "f8104aeb9b0b1fa032611b17209814f8e402b2992b01e69293d30ae1296d3655",
@@ -331,14 +331,14 @@
     "packages/backend-next/test/integration/remote-user.test.ts": "e1b9b125bb0144ad8587694d710dddf5c4357bd8102715dd31f4671620f6dc4e",
     "packages/backend-next/test/unit/federation/remote-actor.test.ts": "6b000dadca2701ca6f718554657cb6d58d1df3dbbd2fc10300c8d0512790a59a",
     "packages/backend-next/test/unit/federation/remote-emojis.test.ts": "968953ae4f640983d539aabd2568c29f0c9b2d692a71759d2fe7f64b2a73cad7",
-    "packages/backend-next/test/unit/federation/remote-profile.test.ts": "d2e1d08a3cbab0c5bf1e561c29cec4914289c91568f86406b33abea5ec8c97ac",
+    "packages/backend-next/test/unit/federation/remote-profile.test.ts": "f4d7a9e4bd31b0c69218f15f2f84d9e48fd9f42e8523102965f9140d476c885f",
     "packages/backend-upstream/package.json": "d1a95f10bf8816890eef6dd9a8392d0bb3e6d2613f8b746ab54c385ed90a7421",
     "packages/backend-upstream/tsconfig.json": "b74550a29e1c36dc4422e4645333c27398503f14dcee2a3de87f667891246e74",
     "pnpm-lock.yaml": "5d52a8f56ba2d206d69586d0515d3b7bd03ad5a127368a531acb7796fc4ad395",
     "pnpm-workspace.yaml": "75272da6534bc983219a8de6d741b29e4c02d3960cad4a9699b321d49d1fd407",
     "scripts/local-actor-tags-evidence.mjs": "e384debc57834d8e98e221ad88d460eb7903c6afd32344a95db57061470bf91a",
-    "scripts/remote-profile-contract.test.mjs": "91cbf7c8455e7c4e1de2877f6b6602d24f490e8543209866a9aaa9f0b2ca3ab7",
-    "scripts/remote-profile-evidence.mjs": "9a4a0882c60f48d235029ebf27f6c446447a6ba6b5e55dfd532c9b1e32e65f6e"
+    "scripts/remote-profile-contract.test.mjs": "0c51e6b4aae80c445ecb9be135d77a3dfb5f6f0b280406e46dbd3a0056ee54e4",
+    "scripts/remote-profile-evidence.mjs": "5e1ff222cbf99e5faa6fbec76f3a68fc721252af1f73f6108e5db4acd6e648a5"
   },
   "files": {
     "packages/backend-next/src/composition/remote-users.ts": {
@@ -372,7 +372,7 @@
       ]
     },
     "packages/backend-next/test/unit/federation/remote-profile.test.ts": {
-      "sha256": "d2e1d08a3cbab0c5bf1e561c29cec4914289c91568f86406b33abea5ec8c97ac",
+      "sha256": "f4d7a9e4bd31b0c69218f15f2f84d9e48fd9f42e8523102965f9140d476c885f",
       "previousSha256": [],
       "validatedBy": [
         "focused-unit"
@@ -428,11 +428,11 @@
   "measurements": {
     "build": {
       "command": "pnpm --filter backend-next... build",
-      "startedAt": "2026-11-11T04:59:55.972736+00:00",
-      "finishedAt": "2026-11-11T04:59:56.794932+00:00",
-      "artifact": "/tmp/tiramiss-s1-r7-validation-r1-build.log",
+      "startedAt": "2026-11-11T05:20:44.694448+00:00",
+      "finishedAt": "2026-11-11T05:20:45.615944+00:00",
+      "artifact": "/tmp/tiramiss-s1-r7-validation-r3-build.log",
       "artifactSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
-      "log": "/tmp/tiramiss-s1-r7-validation-r1-build.log",
+      "log": "/tmp/tiramiss-s1-r7-validation-r3-build.log",
       "exitCode": 0,
       "outcome": "PASS",
       "passed": null,
@@ -442,11 +442,11 @@
     },
     "typecheck": {
       "command": "pnpm --filter backend-next... typecheck",
-      "startedAt": "2026-11-11T04:59:56.800618+00:00",
-      "finishedAt": "2026-11-11T04:59:57.972946+00:00",
-      "artifact": "/tmp/tiramiss-s1-r7-validation-r1-typecheck.log",
+      "startedAt": "2026-11-11T05:20:45.621581+00:00",
+      "finishedAt": "2026-11-11T05:20:46.945641+00:00",
+      "artifact": "/tmp/tiramiss-s1-r7-validation-r3-typecheck.log",
       "artifactSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
-      "log": "/tmp/tiramiss-s1-r7-validation-r1-typecheck.log",
+      "log": "/tmp/tiramiss-s1-r7-validation-r3-typecheck.log",
       "exitCode": 0,
       "outcome": "PASS",
       "passed": null,
@@ -455,12 +455,12 @@
       "files": null
     },
     "focused-unit": {
-      "command": "pnpm --filter backend-next test test/unit/federation/remote-profile.test.ts test/unit/federation/remote-emojis.test.ts test/unit/federation/remote-actor.test.ts --reporter=json --outputFile=/tmp/tiramiss-s1-r7-validation-r1-unit.json",
-      "startedAt": "2026-11-11T04:59:57.979860+00:00",
-      "finishedAt": "2026-11-11T04:59:59.503343+00:00",
-      "artifact": "/tmp/tiramiss-s1-r7-validation-r1-unit.json",
-      "artifactSha256": "cbae14c9fe10ded7a07eb29c859861736133e1468eae981e03e8fb63e97ac085",
-      "log": "/tmp/tiramiss-s1-r7-validation-r1-focused-unit.log",
+      "command": "pnpm --filter backend-next test test/unit/federation/remote-profile.test.ts test/unit/federation/remote-emojis.test.ts test/unit/federation/remote-actor.test.ts --reporter=json --outputFile=/tmp/tiramiss-s1-r7-validation-r3-unit.json",
+      "startedAt": "2026-11-11T05:20:46.950998+00:00",
+      "finishedAt": "2026-11-11T05:20:48.576893+00:00",
+      "artifact": "/tmp/tiramiss-s1-r7-validation-r3-unit.json",
+      "artifactSha256": "5ed780141cf4b81283140be0e57e2f5377ccd6bbe09280be25c0cb7a425a10a4",
+      "log": "/tmp/tiramiss-s1-r7-validation-r3-focused-unit.log",
       "exitCode": 0,
       "outcome": "PASS",
       "passed": 195,
@@ -469,12 +469,12 @@
       "files": 3
     },
     "integration": {
-      "command": "BACKEND_NEXT_TEST_DB_PORT=55510 BACKEND_NEXT_TEST_REDIS_PORT=56410 BACKEND_NEXT_TEST_MEILI_PORT=57810 pnpm --filter backend-next test:integration test/integration/remote-user.test.ts --reporter=json --outputFile=/tmp/tiramiss-s1-r7-validation-r1-integration.json",
-      "startedAt": "2026-11-11T04:59:59.509030+00:00",
-      "finishedAt": "2026-11-11T05:00:08.651727+00:00",
-      "artifact": "/tmp/tiramiss-s1-r7-validation-r1-integration.json",
-      "artifactSha256": "5d9dca7d9e9e2487c5b5c7b8cb92e446eecbfde32b1958b59abea17e3a7d3416",
-      "log": "/tmp/tiramiss-s1-r7-validation-r1-integration.log",
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55510 BACKEND_NEXT_TEST_REDIS_PORT=56410 BACKEND_NEXT_TEST_MEILI_PORT=57810 pnpm --filter backend-next test:integration test/integration/remote-user.test.ts --reporter=json --outputFile=/tmp/tiramiss-s1-r7-validation-r3-integration.json",
+      "startedAt": "2026-11-11T05:20:48.583110+00:00",
+      "finishedAt": "2026-11-11T05:20:59.731214+00:00",
+      "artifact": "/tmp/tiramiss-s1-r7-validation-r3-integration.json",
+      "artifactSha256": "19feb21626069fcbe8c02055719fffd3bb362f3a164949815b144e890324956e",
+      "log": "/tmp/tiramiss-s1-r7-validation-r3-integration.log",
       "exitCode": 0,
       "outcome": "PASS",
       "passed": 100,
@@ -484,11 +484,11 @@
     },
     "source-probe": {
       "command": "UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/remote-user/remote-profile-source-probe.mjs --check",
-      "startedAt": "2026-11-11T05:00:08.657684+00:00",
-      "finishedAt": "2026-11-11T05:00:09.128422+00:00",
-      "artifact": "/tmp/tiramiss-s1-r7-validation-r1-source-probe.log",
+      "startedAt": "2026-11-11T05:20:59.736320+00:00",
+      "finishedAt": "2026-11-11T05:21:00.256950+00:00",
+      "artifact": "/tmp/tiramiss-s1-r7-validation-r3-source-probe.log",
       "artifactSha256": "84dda3f7fe9b3f2d50ad4d27c280530130dd905424b763013d67447868947d7a",
-      "log": "/tmp/tiramiss-s1-r7-validation-r1-source-probe.log",
+      "log": "/tmp/tiramiss-s1-r7-validation-r3-source-probe.log",
       "exitCode": 0,
       "outcome": "PASS",
       "passed": null,
@@ -654,6 +654,95 @@
       "passed": 96,
       "failed": 4,
       "reason": "Test expectation conflated source conversion success with varchar(2048) PG success. Expected source outputs unchanged; real PG storage-boundary assertions corrected before frozen revision 1."
+    },
+    {
+      "status": "PASS",
+      "revision": 1,
+      "receipt": "/tmp/tiramiss-s1-r7-validation-receipt-r1.json",
+      "receiptSha256": "45487192f07100547cc67bbe31ec616efcbb8d9fd97d554c8d63fc5bcc1feb51",
+      "evidence": "/tmp/tiramiss-s1-r7-runtime-evidence-r1.json",
+      "evidenceSha256": "a6d97044da1ee67d85bc7a64878906fddb64a5869fc201c642a02d15c145f55a",
+      "frozenInputMapSha256": "f2e08bbb57a60be14b79bbac5ebe295f87e297aafd1a01971fbb8bc43702168c",
+      "measurements": {
+        "build": {
+          "command": "pnpm --filter backend-next... build",
+          "startedAt": "2026-11-11T04:59:55.972736+00:00",
+          "finishedAt": "2026-11-11T04:59:56.794932+00:00",
+          "artifact": "/tmp/tiramiss-s1-r7-validation-r1-build.log",
+          "artifactSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
+          "log": "/tmp/tiramiss-s1-r7-validation-r1-build.log",
+          "exitCode": 0,
+          "outcome": "PASS",
+          "passed": null,
+          "failed": null,
+          "skipped": null,
+          "files": null
+        },
+        "typecheck": {
+          "command": "pnpm --filter backend-next... typecheck",
+          "startedAt": "2026-11-11T04:59:56.800618+00:00",
+          "finishedAt": "2026-11-11T04:59:57.972946+00:00",
+          "artifact": "/tmp/tiramiss-s1-r7-validation-r1-typecheck.log",
+          "artifactSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+          "log": "/tmp/tiramiss-s1-r7-validation-r1-typecheck.log",
+          "exitCode": 0,
+          "outcome": "PASS",
+          "passed": null,
+          "failed": null,
+          "skipped": null,
+          "files": null
+        },
+        "focused-unit": {
+          "command": "pnpm --filter backend-next test test/unit/federation/remote-profile.test.ts test/unit/federation/remote-emojis.test.ts test/unit/federation/remote-actor.test.ts --reporter=json --outputFile=/tmp/tiramiss-s1-r7-validation-r1-unit.json",
+          "startedAt": "2026-11-11T04:59:57.979860+00:00",
+          "finishedAt": "2026-11-11T04:59:59.503343+00:00",
+          "artifact": "/tmp/tiramiss-s1-r7-validation-r1-unit.json",
+          "artifactSha256": "cbae14c9fe10ded7a07eb29c859861736133e1468eae981e03e8fb63e97ac085",
+          "log": "/tmp/tiramiss-s1-r7-validation-r1-focused-unit.log",
+          "exitCode": 0,
+          "outcome": "PASS",
+          "passed": 195,
+          "failed": 0,
+          "skipped": 0,
+          "files": 3
+        },
+        "integration": {
+          "command": "BACKEND_NEXT_TEST_DB_PORT=55510 BACKEND_NEXT_TEST_REDIS_PORT=56410 BACKEND_NEXT_TEST_MEILI_PORT=57810 pnpm --filter backend-next test:integration test/integration/remote-user.test.ts --reporter=json --outputFile=/tmp/tiramiss-s1-r7-validation-r1-integration.json",
+          "startedAt": "2026-11-11T04:59:59.509030+00:00",
+          "finishedAt": "2026-11-11T05:00:08.651727+00:00",
+          "artifact": "/tmp/tiramiss-s1-r7-validation-r1-integration.json",
+          "artifactSha256": "5d9dca7d9e9e2487c5b5c7b8cb92e446eecbfde32b1958b59abea17e3a7d3416",
+          "log": "/tmp/tiramiss-s1-r7-validation-r1-integration.log",
+          "exitCode": 0,
+          "outcome": "PASS",
+          "passed": 100,
+          "failed": 0,
+          "skipped": 0,
+          "files": 1
+        },
+        "source-probe": {
+          "command": "UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/remote-user/remote-profile-source-probe.mjs --check",
+          "startedAt": "2026-11-11T05:00:08.657684+00:00",
+          "finishedAt": "2026-11-11T05:00:09.128422+00:00",
+          "artifact": "/tmp/tiramiss-s1-r7-validation-r1-source-probe.log",
+          "artifactSha256": "84dda3f7fe9b3f2d50ad4d27c280530130dd905424b763013d67447868947d7a",
+          "log": "/tmp/tiramiss-s1-r7-validation-r1-source-probe.log",
+          "exitCode": 0,
+          "outcome": "PASS",
+          "passed": null,
+          "failed": null,
+          "skipped": null,
+          "files": null
+        }
+      }
+    },
+    {
+      "status": "FAIL",
+      "revision": 2,
+      "phase": "pre-execution",
+      "receipt": "/tmp/tiramiss-s1-r7-validation-receipt-r2.json",
+      "receiptSha256": "872c308d837ecddeaa1011bedd87099c16b322a170458bf917cedf69309e4b8e",
+      "reason": "Fixture changed after freeze; input mismatch aborted before any command."
     }
   ],
   "limits": [
@@ -665,8 +754,8 @@
     "Immutable implementation commit and inventory own-row pin are parent-owned subsequent steps."
   ],
   "rootVerification": {
-    "receipt": "/tmp/tiramiss-s1-r7-root-receipt.json",
-    "receiptSha256": "f3e362fac224e578ccb7395e6d11350494312f82b7356de080ffaf8ef9617936",
+    "receipt": "/tmp/tiramiss-s1-r7-root-receipt-r1.json",
+    "receiptSha256": "d2a376490b146eaa708c36439933e13723ec14bbe1580246e00b67e2cdb6fd08",
     "node": "26.4.0",
     "completedAt": "2026-11-11T05:03:50.354767+00:00",
     "checks": [

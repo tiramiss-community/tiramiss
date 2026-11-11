@@ -8,7 +8,34 @@ import { readFileSync } from 'node:fs';
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
 const read = file => readFileSync(new URL(file, root));
+const readIfAvailable = file => {
+	try { return readFileSync(file); } catch (error) {
+		if (error.code === 'ENOENT') return null;
+		throw error;
+	}
+};
 export const remoteProfileSha = value => createHash('sha256').update(value).digest('hex');
+
+export function validateRootVerification(value, readOptional = readIfAvailable) {
+	assert.match(value.receiptSha256, /^[a-f0-9]{64}$/);
+	assert(value.receipt);
+	const bytes = readOptional(value.receipt);
+	if (bytes !== null) {
+		assert.equal(remoteProfileSha(bytes), value.receiptSha256, 'root receipt bytes');
+		const actual = JSON.parse(bytes);
+		assert.equal(actual.status, 'PASS');
+		assert.equal(actual.node, value.node);
+		assert.equal(actual.completedAt, value.completedAt);
+		assert.deepEqual(actual.checks, value.checks, 'root receipt checks');
+	}
+	for (const check of value.checks) {
+		assert.equal(check.status, 'PASS');
+		if (!check.log) continue;
+		assert.match(check.sha256, /^[a-f0-9]{64}$/);
+		const log = readOptional(check.log);
+		if (log !== null) assert.equal(remoteProfileSha(log), check.sha256, 'root log bytes');
+	}
+}
 
 function successfulRun(value, id) {
 	const run = value.measurements[id];
@@ -59,4 +86,5 @@ export function validateRemoteProfileEvidence(value, readFile = read) {
 	}
 	assert.equal(remoteProfileSha(JSON.stringify(value.frozenInputSha256)), value.frozenInputMapSha256);
 	assert.match(value.brokerReceiptSha256, /^[a-f0-9]{64}$/);
+	validateRootVerification(value.rootVerification);
 }

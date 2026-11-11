@@ -19,6 +19,7 @@ const source = JSON.parse(readFileSync(new URL('../../../../../docs/superpowers/
 // Meta and HTTP supply external material. Real validation, conversion and acquisition run.
 function acquisition(patch: Record<string, unknown> = {}) {
 	const events: string[] = [];
+	const requests: string[] = [];
 	const config = testConfig(); config.url = 'https://local.test';
 	const dataSource = createDataSource(config.database);
 	vi.spyOn(dataSource.getRepository(MiMeta), 'find').mockResolvedValue([Object.assign(new MiMeta(), { federation: 'all', signToActivityPubGet: false, blockedHosts: [], federationHosts: [], silencedHosts: [], mediaSilencedHosts: [], deliverSuspendedSoftware: [] })]);
@@ -31,19 +32,24 @@ function acquisition(patch: Record<string, unknown> = {}) {
 		},
 		outboundHttp: {
 			async send(url: string) {
+				requests.push(url);
+				if (url === 'https://remote.test/users/a/following' || url === 'https://remote.test/users/a/followers') {
+					return { finalUrl: url, header: () => 'application/activity+json', json: async () => ({ '@context': 'https://www.w3.org/ns/activitystreams', id: url, type: 'OrderedCollection', totalItems: 0 }) };
+				}
 				events.push('actor');
 				const body = { type: 'Person', id: existing.uri, preferredUsername: 'Alice', inbox: 'https://remote.test/inbox', tag: [], ...patch };
 				return { finalUrl: url, header: () => 'application/activity+json', json: async () => ({ '@context': 'https://www.w3.org/ns/activitystreams', ...body }) };
 			},
 		} as never, federationKeys: undefined as never,
 	}, config);
-	return { ports, events };
+	return { ports, events, requests };
 }
 
 test.each([false, true])('attachment selection fails before conversion of an earlier invalid URL (refresh=%s)', async refresh => {
-	const h = acquisition({ attachment: [{ type: 'PropertyValue', name: 'site', value: '<a href="not-a-url">@a</a>' }, null] });
+	const h = acquisition({ following: 'https://remote.test/users/a/following', followers: 'https://remote.test/users/a/followers', attachment: [{ type: 'PropertyValue', name: 'site', value: '<a href="not-a-url">@a</a>' }, null] });
 	await expect(h.ports.acquireActor(existing.uri!, refresh ? existing : null, Date.now, () => 'new-user')).rejects.toThrow("Cannot read properties of null (reading 'type')");
 	expect(h.events).toEqual(refresh ? ['actor', 'extract:entry.test'] : ['actor']);
+	expect(h.requests).toEqual([existing.uri]);
 });
 
 // Reverting filter-before-map changes the priority regression; changing real conversion,

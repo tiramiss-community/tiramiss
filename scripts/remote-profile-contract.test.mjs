@@ -5,7 +5,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { remoteProfileDigest, remoteProfileSha, validateRemoteProfileEvidence } from './remote-profile-evidence.mjs';
+import { remoteProfileDigest, remoteProfileSha, validateRemoteProfileEvidence, validateRootVerification } from './remote-profile-evidence.mjs';
 const directory = new URL('../docs/superpowers/compatibility/remote-user/', import.meta.url);
 const bytes = readFileSync(new URL('remote-profile-observations.json', directory));
 const source = JSON.parse(bytes);
@@ -68,4 +68,22 @@ for (const [name, mutate] of [
 }
 test('profile identity projection rejects an unmeasured predecessor', () => {
  assert.throws(() => remoteProfileDigest('packages/backend-next/src/composition/remote-users.ts', '0'.repeat(64)));
+});
+test('root receipt and available logs are bound to their declared bytes and checks', () => {
+ const root = receipt().rootVerification;
+ const rootBytes = Buffer.from(JSON.stringify({ status: 'PASS', node: root.node, completedAt: root.completedAt, checks: root.checks }));
+ const logBytes = Buffer.from('root log');
+ const sample = structuredClone(root);
+ sample.receiptSha256 = remoteProfileSha(rootBytes);
+ sample.checks[0].sha256 = remoteProfileSha(logBytes);
+ const boundBytes = Buffer.from(JSON.stringify({ status: 'PASS', node: sample.node, completedAt: sample.completedAt, checks: sample.checks }));
+ sample.receiptSha256 = remoteProfileSha(boundBytes);
+ const read = path => path === sample.receipt ? boundBytes : path === sample.checks[0].log ? logBytes : null;
+ validateRootVerification(sample, read);
+ const changedReceipt = structuredClone(sample); changedReceipt.receiptSha256 = '0'.repeat(64);
+ assert.throws(() => validateRootVerification(changedReceipt, read));
+ const changedLog = structuredClone(sample); changedLog.checks[0].sha256 = '0'.repeat(64);
+ assert.throws(() => validateRootVerification(changedLog, path => path === changedLog.receipt ? null : read(path)));
+ const changedChecks = structuredClone(sample); changedChecks.checks[0].passed++;
+ assert.throws(() => validateRootVerification(changedChecks, read));
 });
