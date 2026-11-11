@@ -9,12 +9,12 @@ import { createActivityPubActorApi } from '../../../src/http/activitypub-actor-a
 import type { LocalActorProfileFacts } from '../../../src/modules/federation/public.js';
 const source = JSON.parse(readFileSync(new URL('../../../../../docs/superpowers/compatibility/remote-user/local-actor-profile-observations.json', import.meta.url), 'utf8'));
 const empty: LocalActorProfileFacts = { description: null, followedMessage: null, fields: [], birthday: null, location: null };
-const user = { id: 'local', username: 'alice', name: null, isBot: false, isLocked: true, isExplorable: false, host: null, uri: null };
+const user = { id: 'local', username: 'alice', name: null, isBot: false, isLocked: true, isExplorable: false, emojis: [], tags: [], host: null, uri: null };
 const keys = ['name', 'summary', '_misskey_summary', '_misskey_followedMessage', 'attachment', 'vcard:bday', 'vcard:Address'];
 // Removing any projected property, changing URL serialization, or swallowing MFM errors breaks these source-derived outcomes.
 for (const c of source.cases.filter((c: { fail?: string; }) => !c.fail)) {
 	test(`profile ${c.id} matches independent real source raw and JSON projection`, () => {
-		const render = () => renderLocalActor({ ...user, name: c.name ?? null }, c.profile, 'https://local.test', 'key');
+		const render = () => renderLocalActor({ ...user, name: c.name ?? null }, c.profile, 'https://local.test', 'key', []);
 		if (c.expected.error) {
 			expect(render).toThrow(c.expected.error.message);
 			return;
@@ -28,7 +28,7 @@ for (const c of source.cases.filter((c: { fail?: string; }) => !c.fail)) {
 }
 // Moving the required Profile lookup ahead of the HTTP checks breaks these observable statuses.
 test.each(['disabled', 'missing', 'remote'])('HTTP %s does not read required Profile', async kind => {
-	const app = createActivityPubActorApi({ selfUrl: 'https://local.test', federationEnabled: async () => kind !== 'disabled', isSelfHost: () => false,
+	const app = createActivityPubActorApi({ readTags: async () => [], selfUrl: 'https://local.test', federationEnabled: async () => kind !== 'disabled', isSelfHost: () => false,
 																																									readActor: async () => kind === 'missing' ? null : { ...user, host: kind === 'remote' ? 'remote.test' : null, uri: 'https://remote.test/user' },
 																																									readProfile: async () => {
 																																										throw Error('must not read Profile');
@@ -39,7 +39,7 @@ test.each(['disabled', 'missing', 'remote'])('HTTP %s does not read required Pro
 	expect(response.status).toBe(kind === 'disabled' ? 403 : kind === 'missing' ? 404 : 301);
 });
 test.each(['missing Profile', 'database unavailable', 'MFM'])('HTTP surfaces %s instead of publishing empty facts', async kind => {
-	const app = createActivityPubActorApi({ selfUrl: 'https://local.test', federationEnabled: async () => true, isSelfHost: () => false, readActor: async () => user,
+	const app = createActivityPubActorApi({ readTags: async () => [], selfUrl: 'https://local.test', federationEnabled: async () => true, isSelfHost: () => false, readActor: async () => user,
 																																									readProfile: async () => {
 																																										if (kind !== 'MFM') {
 																																											throw Error(kind);
@@ -59,7 +59,7 @@ test('HTTP publishes profile with name and source raw summary', async () => {
 	const gate = new Promise<void>(resolve => {
 		releaseProfile = resolve;
 	});
-	const app = createActivityPubActorApi({
+	const app = createActivityPubActorApi({ readTags: async () => [],
 		selfUrl: 'https://local.test', federationEnabled: async () => true, isSelfHost: () => false, readActor: async () => ({ ...user, name: 'Alice' }),
 		readProfile: async () => {
 			calls.push('profile start');

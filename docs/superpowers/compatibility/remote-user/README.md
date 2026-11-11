@@ -217,3 +217,7 @@ The existing five `profile` cases in `../note/hashtag/source-observations.json` 
 ## Public actor emoji ingestion (#195)
 
 [Independent source observations, actual runtime proof and remaining scope](remote-emojis-results.md) cover extraction/persistence on the existing public remote-mention create/canonical/refresh caller. Historical corpora/receipts remain unchanged; current identities are additive. Drive/local emoji publication/other callers/cache parity and the five broader actor groups remain incomplete. `notes/create` stays partial with `postingComplete:false`.
+
+## Local actor emoji/hashtag publication (#195, 2026-11-11)
+
+[Additive tag source and runtime results](local-actor-tags-results.md) cover existing actor GET and local acquireActor, with 12 new pinned-source method observations, a real PG/HTTP consumer and shared Note regressions. Earlier corpora/receipts remain immutable; the new [current bindings](local-actor-tags-runtime-evidence.json) extend their identity chain and do not turn historical process runs into current tag measurements. Direct DB reads retain the cache-freshness/cache-hit failure gap (#217). Full actor/media/inbox and #176/#127/#195 remain incomplete; notes/create stays partial.

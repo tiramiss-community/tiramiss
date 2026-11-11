@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
-import { MiMeta, MiUser, MiUserKeypair, MiUserProfile } from 'backend-upstream/entities';
+import { MiEmoji, MiMeta, MiUser, MiUserKeypair, MiUserProfile } from 'backend-upstream/entities';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createBackendHttpApp } from '../../src/composition/note-http.js';
 import { createOutboundHttpClient } from '../../src/composition/outbound-http.js';
@@ -161,4 +161,50 @@ test('real Profile row reaches HTTP and actual createRemoteUsers local acquireAc
 	expect((await fetch(`http://127.0.0.1:${port}/users/${signerId}`, { headers: { Accept: 'application/activity+json' } })).status).toBe(500);
 	await expect(remote.acquireActor(`http://local.test/users/${signerId}`, null, () => Date.now(), () => 'unused')).rejects.toThrow();
 	await resources.dataSource.getRepository(MiUserProfile).insert({ userId: signerId });
+});
+
+// A missing local-only predicate, deduplication or either omitted composition wire changes this public result.
+test('stored local actor tags reach actual HTTP and acquireActor without remote-name contamination', async () => {
+	const { createRemoteUsers } = await import('../../src/composition/remote-users.js');
+	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+	await resources.dataSource.getRepository(MiUser).update(signerId, { emojis: ['tag_beta', 'absent', 'tag_alpha', 'tag_beta', 'tag_private'], tags: ['MiXeD', '日本 語/#', 'MiXeD'] });
+	const repository = resources.dataSource.getRepository(MiEmoji);
+	for (const row of [
+		{ name: 'tag_alpha', host: null, type: '', publicUrl: 'https://cdn.test/alpha', originalUrl: 'https://original.test/alpha', license: '' },
+		{ name: 'tag_beta', host: 'remote.test', type: 'image/png', publicUrl: 'https://remote.test/poison', originalUrl: 'https://remote.test/poison', license: null },
+		{ name: 'tag_private', host: null, type: null, publicUrl: 'https://cdn.test/private', originalUrl: '', license: null, localOnly: true },
+		{ name: 'tag_beta', host: null, type: null, publicUrl: '', originalUrl: 'https://original.test/beta', license: null },
+	]) {
+		await repository.insert({ id: codec.newId(Date.now()), updatedAt: new Date('2020-01-02T03:04:05.000Z'), ...row });
+	}
+	const beta = { id: 'http://local.test/emojis/tag_beta', type: 'Emoji', name: ':tag_beta:', updated: '2020-01-02T03:04:05.000Z', icon: { type: 'Image', mediaType: 'image/png', url: 'https://original.test/beta' }, _misskey_license: { freeText: null } };
+	const expected = [beta,
+		{ id: 'http://local.test/emojis/tag_alpha', type: 'Emoji', name: ':tag_alpha:', updated: '2020-01-02T03:04:05.000Z', icon: { type: 'Image', mediaType: '', url: 'https://cdn.test/alpha' }, _misskey_license: { freeText: '' } }, beta,
+		{ type: 'Hashtag', href: 'http://local.test/tags/MiXeD', name: '#MiXeD' },
+		{ type: 'Hashtag', href: 'http://local.test/tags/%E6%97%A5%E6%9C%AC%20%E8%AA%9E%2F%23', name: '#日本 語/#' },
+		{ type: 'Hashtag', href: 'http://local.test/tags/MiXeD', name: '#MiXeD' },
+	];
+	const response = await fetch(`http://127.0.0.1:${port}/users/${signerId}`, { headers: { Accept: 'application/activity+json' } });
+	expect(response.status).toBe(200);
+	expect((await response.json() as { tag: unknown }).tag).toEqual(expected);
+	let acquiredTags: unknown;
+	// Observe the actual local resolver at its next external extraction boundary.
+	const remote = createRemoteUsers({ ...resources, remoteEmojis: { extract: async tags => {
+		acquiredTags = tags;
+		return [];
+	} } }, database.config);
+	const plan = await remote.acquireActor(`http://local.test/users/${signerId}`, null, Date.now, () => 'unused');
+	expect(acquiredTags).toEqual(expected);
+	expect(plan.user.tags).toEqual(['mixed', '日本 語/#', 'mixed']);
+	const fault = vi.spyOn(repository, 'findBy').mockRejectedValue(new Error('emoji database unavailable'));
+	const key = vi.spyOn(resources.federationKeys, 'readUserKeypair');
+	try {
+		const failed = await fetch(`http://127.0.0.1:${port}/users/${signerId}`, { headers: { Accept: 'application/activity+json' } });
+		expect(failed.status).toBe(500);
+		expect(failed.headers.get('cache-control')).toBeNull();
+		await expect(remote.acquireActor(`http://local.test/users/${signerId}`, null, Date.now, () => 'unused')).rejects.toThrow('emoji database unavailable');
+		expect(key).not.toHaveBeenCalled();
+	} finally {
+		fault.mockRestore(); key.mockRestore();
+	}
 });

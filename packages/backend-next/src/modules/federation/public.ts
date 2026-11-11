@@ -16,7 +16,7 @@ export type { SignedPost } from './signed-post.js';
 export { deliverySucceeded, classifyDeliveryFailure } from './delivery-result.js';
 export type { DeliveryFailure } from './delivery-result.js';
 export { isPureRenote, renderApNote, renderNoteActivity } from './note-activity.js';
-export type { NoteActivityMaterials, NoteActivityNote, ApDocumentFacts, ApEmojiFacts } from './note-activity.js';
+export type { NoteActivityMaterials, NoteActivityNote, ApDocumentFacts } from './note-activity.js';
 export { collectInboxes, NoteDeliveryError } from './deliver-recipients.js';
 export type { DeliverRecipe, FollowerInbox, NoteDeliveryErrorCode } from './deliver-recipients.js';
 export { createDeliverCreatedNote } from './note-delivery.js';
@@ -46,3 +46,6 @@ export type { InstanceMetadataTarget, HtmlMetadata } from './instance-metadata.j
 
 export { extractRemoteEmojis } from './remote-emojis.js';
 export type { RemoteEmoji, RemoteEmojiPatch, RemoteEmojiInsert, RemoteEmojiRepository, RemoteEmojiPorts } from './remote-emojis.js';
+
+export { renderApEmoji, renderApHashtag } from './ap-tags.js';
+export type { ApEmojiFacts, LocalActorTag } from './ap-tags.js';

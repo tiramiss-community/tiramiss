@@ -2505,6 +2505,25 @@
       "differences": [
         "承認済み・意図的差異はdocs/superpowers/compatibility/api-common/README.mdのG1〜G8。Role2・queue14 APIをgateへ載せた最初のslice。note APIの移行・未知endpoint404・allowGet・multipart(#188)・secure・requiredRolePolicy・匿名IP limit・user_ip・OpenAPIは未実装。"
       ]
+    },
+    "http:packages/backend/src/server/ActivityPubServerService.ts:767": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/federation/local-actor.ts",
+        "packages/backend-next/src/http/activitypub-actor-api.ts",
+        "packages/backend-next/src/platform/database/local-actors.ts",
+        "packages/backend-next/src/composition/actor-http.ts",
+        "packages/backend-next/src/composition/remote-users.ts",
+        "packages/backend-next/src/modules/federation/ap-tags.ts",
+        "packages/backend-next/src/platform/database/local-emojis.ts",
+        "packages/backend-next/src/composition/local-actor-tags.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/federation/local-actor-tags.test.ts",
+        "packages/backend-next/test/integration/activitypub-actor.test.ts",
+        "docs/superpowers/compatibility/remote-user/local-actor-tags-results.md"
+      ],
+      "note": "#195: 既存GET /users/:userとacquireActorのlocal解決にemoji→hashtag tag公開を接続。順序・重複・localOnly・日時・URL/MIME fallback・失敗境界を固定本家12観測と実HTTP/PGで確認。Profile/鍵の既存公開を含むpartial。画像/他rich actor/featured/Move/inbox/remote Notesとcache鮮度#217は未完了。#176/#127/#195、notes/create partialを維持。"
     }
   }
 }

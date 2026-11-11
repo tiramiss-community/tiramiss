@@ -1,0 +1,299 @@
+{
+  "schemaVersion": 1,
+  "scope": "local-actor-tag-publication",
+  "baseCommit": "e6d422d4ee728fcccbd9a435f8560a9042addd68",
+  "workingTree": "dirty",
+  "runtime": {
+    "node": "24.20.0",
+    "pnpm": "12.9.1"
+  },
+  "environment": {
+    "dbPort": 55509,
+    "redisPort": 56409,
+    "meiliPort": 57809
+  },
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "upstreamHttpMeasured": false,
+  "notesCreateStatus": "partial",
+  "postingComplete": false,
+  "remainingGapIds": [
+    "media-emoji",
+    "instance-metadata",
+    "charts",
+    "rich-actor",
+    "remote-cache"
+  ],
+  "observationsSha256": "e6414ae6784d6398539a7e86d2bb197e84695ff49891d96aab117b34edc4297e",
+  "probeSha256": "a13fd10119931347af8660751ca4b5f2e0f3499dc8d51235754f64120c80d7f3",
+  "historicalSha256": {
+    "docs/superpowers/compatibility/remote-user/actor-instance-registration-observations.json": "588675d9c9ba68585fb153a7d365a931351d613ddd6b30b8d8c6594b2b514d1f",
+    "docs/superpowers/compatibility/remote-user/actor-instance-registration-runtime-evidence.json": "d36d75bb0a90670c37ffbe0275562fe2d74f5e98e6c5fffe3069b36401919828",
+    "docs/superpowers/compatibility/remote-user/actor-instance-registration-source-probe.mjs": "ecb025cc7130273bad238e8de0d3a745a69a84ff48a707b85fdb61876de4ff78",
+    "docs/superpowers/compatibility/remote-user/local-actor-profile-observations.json": "10c782ee3ba9d174cdc8fb3ff34554497dd2e5b0ec169a95ff69054fdbad628a",
+    "docs/superpowers/compatibility/remote-user/local-actor-profile-runtime-evidence.json": "8beec85496036c9e78c8fafb5328d367fd8590883b5b9d7c3767652a916d774e",
+    "docs/superpowers/compatibility/remote-user/local-actor-profile-source-probe.mjs": "183dd5e261a16e8b089dde12bf561dc82bf190e6c9fae63a6045f64cb5034d00",
+    "docs/superpowers/compatibility/remote-user/observations.json": "7427c62abb63c7a7414d9ad571450eb66bce15856ad0be9a5f4b02e1d554b8eb",
+    "docs/superpowers/compatibility/remote-user/remote-emojis-observations.json": "1e7d639b9656c456503b7d88c8dd13ccb57f18822fdda8944fbe19e73d72e391",
+    "docs/superpowers/compatibility/remote-user/remote-emojis-runtime-evidence.json": "e39b9baf86a82218de961f0613ced1065f812602d381991eb5c038580cc16a1c",
+    "docs/superpowers/compatibility/remote-user/remote-emojis-source-probe.mjs": "a1bf26d791bfcfdc804b3b910bf090ba6ba4cc6cd59083e7b3087236ef31210b",
+    "docs/superpowers/compatibility/remote-user/runtime-evidence.json": "f4516c9bae05d19a5ea15d6addf3c2246c0264501445b47d68a49aa6cc367f49",
+    "docs/superpowers/compatibility/remote-user/source-probe.mjs": "cfa37395cb59828426abd638738b2b6d92f556b6f9af57b7223a5fa8f5740976",
+    "docs/superpowers/compatibility/remote-user/user-hashtags-observations.json": "76f5e492fcb9439c4041774de505002ecd487df888e346a4010a86f47239ad86",
+    "docs/superpowers/compatibility/remote-user/user-hashtags-runtime-evidence.json": "263425c5e952a06370c638765f2207463e852c610e2153ff47abfdf594221fe4",
+    "docs/superpowers/compatibility/remote-user/user-hashtags-source-probe.mjs": "f617a1db513b8d1169589e52791e07a3e3e2c5c0e80fadf18a76f770c08c3234"
+  },
+  "brokerReceiptSha256": "022a5324094895656e890d2349fa431b245cbf75a2f7eec94a7aea5648cc65d6",
+  "frozenInputMapSha256": "963eee01b927334c8e6a2d7326c4959ee73b4a2cccff9f4f202687799d124628",
+  "frozenInputCount": 822,
+  "validationRevision": 1,
+  "measurements": {
+    "build": {
+      "command": "pnpm --filter backend-next... build",
+      "artifact": "/tmp/tiramiss-s1-r6-r1-build.log",
+      "log": "/tmp/tiramiss-s1-r6-r1-build.log",
+      "startedAt": "2026-11-11T02:32:19.695875+00:00",
+      "finishedAt": "2026-11-11T02:32:20.577436+00:00",
+      "exitCode": 0,
+      "artifactSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
+      "outcome": "PASS",
+      "passed": null,
+      "failed": null,
+      "skipped": null,
+      "files": null
+    },
+    "typecheck": {
+      "command": "pnpm --filter backend-next... typecheck",
+      "artifact": "/tmp/tiramiss-s1-r6-r1-typecheck.log",
+      "log": "/tmp/tiramiss-s1-r6-r1-typecheck.log",
+      "startedAt": "2026-11-11T02:32:20.589043+00:00",
+      "finishedAt": "2026-11-11T02:32:21.920062+00:00",
+      "exitCode": 0,
+      "artifactSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+      "outcome": "PASS",
+      "passed": null,
+      "failed": null,
+      "skipped": null,
+      "files": null
+    },
+    "focused-unit": {
+      "command": "pnpm --filter backend-next test test/unit/federation/local-actor-tags.test.ts test/unit/federation/local-actor.test.ts test/unit/federation/local-actor-profile.test.ts test/unit/federation/actor-api.test.ts test/unit/federation/note-activity.test.ts --reporter=json --outputFile=/tmp/tiramiss-s1-r6-r1-focused-unit.json",
+      "artifact": "/tmp/tiramiss-s1-r6-r1-focused-unit.json",
+      "log": "/tmp/tiramiss-s1-r6-r1-focused-unit.log",
+      "startedAt": "2026-11-11T02:32:21.934802+00:00",
+      "finishedAt": "2026-11-11T02:32:23.668656+00:00",
+      "exitCode": 0,
+      "artifactSha256": "58dd46e58716197b5adc6b4f7eb696edc150faf3fc54f5d42b6467f604125758",
+      "outcome": "PASS",
+      "passed": 127,
+      "failed": 0,
+      "skipped": 0,
+      "files": 5
+    },
+    "integration": {
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55509 BACKEND_NEXT_TEST_REDIS_PORT=56409 BACKEND_NEXT_TEST_MEILI_PORT=57809 pnpm --filter backend-next test:integration test/integration/activitypub-actor.test.ts test/integration/note-activity.test.ts --reporter=json --outputFile=/tmp/tiramiss-s1-r6-r1-integration.json",
+      "artifact": "/tmp/tiramiss-s1-r6-r1-integration.json",
+      "log": "/tmp/tiramiss-s1-r6-r1-integration.log",
+      "startedAt": "2026-11-11T02:32:23.683413+00:00",
+      "finishedAt": "2026-11-11T02:32:36.444082+00:00",
+      "exitCode": 0,
+      "artifactSha256": "2792d3a430e1a78e05671df4ced123a55bba1abbcf3c64d635b1e6b526f2e8c4",
+      "outcome": "PASS",
+      "passed": 145,
+      "failed": 0,
+      "skipped": 0,
+      "files": 2
+    },
+    "full-unit": {
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55509 BACKEND_NEXT_TEST_REDIS_PORT=56409 BACKEND_NEXT_TEST_MEILI_PORT=57809 pnpm --filter backend-next test --reporter=json --outputFile=/tmp/tiramiss-s1-r6-r1-full-unit.json",
+      "artifact": "/tmp/tiramiss-s1-r6-r1-full-unit.json",
+      "log": "/tmp/tiramiss-s1-r6-r1-full-unit.log",
+      "startedAt": "2026-11-11T02:32:36.456967+00:00",
+      "finishedAt": "2026-11-11T02:33:08.584889+00:00",
+      "exitCode": 0,
+      "artifactSha256": "163c6973fbd3360c9c94f4c94f4c731fc37d3d19181da4acd63c9f467795137f",
+      "outcome": "PASS",
+      "passed": 3021,
+      "failed": 0,
+      "skipped": 0,
+      "files": 93
+    },
+    "source-probe": {
+      "command": "UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/remote-user/local-actor-tags-source-probe.mjs --check",
+      "artifact": "/tmp/tiramiss-s1-r6-r1-source-probe.log",
+      "log": "/tmp/tiramiss-s1-r6-r1-source-probe.log",
+      "startedAt": "2026-11-11T02:33:08.598685+00:00",
+      "finishedAt": "2026-11-11T02:33:08.978254+00:00",
+      "exitCode": 0,
+      "artifactSha256": "3eda33cfbc2047ac69fc3048e843d5bc77eb2fab7402f1122dc9ecb5d71e4867",
+      "outcome": "PASS",
+      "passed": null,
+      "failed": null,
+      "skipped": null,
+      "files": null
+    }
+  },
+  "files": {
+    "packages/backend-next/src/composition/actor-http.ts": {
+      "sha256": "be0b713d97f235167b81a23b08f0fb9b539c97e456d4a52fe2322b143d21096a",
+      "previousSha256": [
+        "e0a71820f1badf098db72ba080abfa32ed31f6f1f3c211f2c11d3196c0f3129a"
+      ],
+      "validatedBy": [
+        "integration",
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/src/composition/local-actor-tags.ts": {
+      "sha256": "cc139c1e60515f95a5b0e31c52cd1c2c35537592672d957c257053eb08a388e9",
+      "previousSha256": [],
+      "validatedBy": [
+        "integration",
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/src/composition/remote-users.ts": {
+      "sha256": "62e2c79d68864256a0b633ada46e0a20fd5453417eb40e12a9c7fe223f345e94",
+      "previousSha256": [
+        "5be4ed2c851dcc8f459c07861c166dc6a492dc861d208c07a5cc3518bb4ec33f"
+      ],
+      "validatedBy": [
+        "integration",
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/src/http/activitypub-actor-api.ts": {
+      "sha256": "734a943d05d73ca31231e170cf8f20a75d0766f2ed3d0fbb6f031b272840983a",
+      "previousSha256": [
+        "ca099f1864b4d731b8fab18fe061843a4cd5683c16340565e57a0ad8b2ad9e5e"
+      ],
+      "validatedBy": [
+        "integration",
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/src/modules/federation/ap-tags.ts": {
+      "sha256": "3e4e6e8295bbbcf24f63a19c45bae07dd8886c9f67eb9931b8fe319a288d21a5",
+      "previousSha256": [],
+      "validatedBy": [
+        "integration",
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/src/modules/federation/local-actor.ts": {
+      "sha256": "a56c3b694bb05188ee0c9df2a73a301b9358fb1cf3bfed3523b3e48103c8b064",
+      "previousSha256": [
+        "89858a0307e904937f47a1d124c6b26cd2f242b13d8f02aed1e4dda836875282"
+      ],
+      "validatedBy": [
+        "integration",
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/src/modules/federation/note-activity.ts": {
+      "sha256": "6b80a363f019a31146844337dba3355ad15865f7ba4c2a066d780acc1d80f3bd",
+      "previousSha256": [
+        "e6dbb2ecb63bcc089ae1741e65bc08dc3acc1f164a85511300000322bdf5b78d"
+      ],
+      "validatedBy": [
+        "integration",
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/src/modules/federation/public.ts": {
+      "sha256": "a960dffc53b7e0c5fc4d29f67b8992558e9e7f6d6ea5a8397da51d4687240014",
+      "previousSha256": [
+        "aac074ea502f4d2f04f7a3b015dfb7dc60b34b15bf23b509d6ec048d0b710abf"
+      ],
+      "validatedBy": [
+        "integration",
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/src/platform/database/local-actors.ts": {
+      "sha256": "e98f7d1fda6b1959122d518a0a6f4c348e4edbc63d5206bc9531dee8e3e32a8f",
+      "previousSha256": [
+        "b5615b776ea0501c53fb0d30735c67a7f76662fe83a8093919a9039bf1a72bc4"
+      ],
+      "validatedBy": [
+        "integration",
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/src/platform/database/local-emojis.ts": {
+      "sha256": "46f1d2c55d0f64809081edb5b0368dbf59f50b7a2e5a804a5d797a29e468865a",
+      "previousSha256": [],
+      "validatedBy": [
+        "integration",
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/src/platform/database/note-activity.ts": {
+      "sha256": "4864c165505b1ec08afe967c6289be4c9f3f2f9c2145c6a3fe873badf698751d",
+      "previousSha256": [
+        "c364ce8e3bb0a8b9634c6fd948cf7f039b06fcc39bc5e484ed7c444492362db6"
+      ],
+      "validatedBy": [
+        "integration",
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/test/integration/activitypub-actor.test.ts": {
+      "sha256": "6a4b11805905165334bd334ee380dac19928bc36c55019582e9ce5e8e62015b0",
+      "previousSha256": [
+        "84d2dbf891959397ad6a46058c02206d4c6f44cf3a8bf796a01312cdc2389053"
+      ],
+      "validatedBy": [
+        "integration"
+      ]
+    },
+    "packages/backend-next/test/unit/federation/actor-api.test.ts": {
+      "sha256": "bf87146ed7b33f303636a6d9f5ff622e428ac3e226f0ce5fe998a41b7e8d3544",
+      "previousSha256": [
+        "01115bbb199ce8a0dd33c97701b7d353eadc306058d37d721b43bfa1f83c62ad"
+      ],
+      "validatedBy": [
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/test/unit/federation/local-actor-profile.test.ts": {
+      "sha256": "6becdffbd9c75606e5dacb434f9cdf89712fec5a043a7f4f759aaabcaa4dc6e7",
+      "previousSha256": [
+        "20e73fbd960118f22d271e7db8b310ab1f5df9d6efa184457c1d588450e79855"
+      ],
+      "validatedBy": [
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/test/unit/federation/local-actor-tags.test.ts": {
+      "sha256": "022927774ce1eecfc601222aebcf493bc648f7205c2bcb5f76a6080b31d250ed",
+      "previousSha256": [],
+      "validatedBy": [
+        "full-unit"
+      ]
+    },
+    "packages/backend-next/test/unit/federation/local-actor.test.ts": {
+      "sha256": "389d71db9d3840368b0cad53280f5ffafd7247fec0d7eb532dbe294300fca6e2",
+      "previousSha256": [
+        "76dda4441999067102947d49170a62a33332d8744b3f6d292d3ae1d830edbe96"
+      ],
+      "validatedBy": [
+        "full-unit"
+      ]
+    }
+  },
+  "behavioralRed": {
+    "command": "pnpm --filter backend-next test test/unit/federation/local-actor-tags.test.ts --reporter=json --outputFile=/tmp/tiramiss-s1-r6-red-unit.json",
+    "artifact": "/tmp/tiramiss-s1-r6-red-unit.json",
+    "artifactSha256": "af46cf1e569ffe447bda1a4d40d9a56cd2a953f4fdb23621af830764d132ca41",
+    "passed": 0,
+    "failed": 3,
+    "meaning": "Preimplementation behavioral failures: undefined tag[]/missing published tag/200 rather than500. Extended RED separately recorded 4pass16fail including unavailable new modules."
+  },
+  "limitations": [
+    "source-method projection with declared doubles; upstream HTTP/DB not executed",
+    "direct DB reads differ from upstream Redis30min/memory3min cache freshness and cache-hit DB-failure behavior; initial gap #217 remains",
+    "existing Note snapshot clock/tag order retained; no new process ownership/lifetime or process suite",
+    "older runtime receipts remain historical, not rerun process evidence for this revision",
+    "root checks, CodeRabbit, final review, inventory implementation pin and Git/PR are parent-owned follow-up gates"
+  ]
+}

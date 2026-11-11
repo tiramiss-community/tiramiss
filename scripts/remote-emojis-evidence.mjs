@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { localActorTagDigest } from './local-actor-tags-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 const root = new URL('../', import.meta.url);
@@ -31,11 +32,11 @@ function measuredFile(receipt, file) {
 export function remoteEmojiDigest(file, historicalDigest, label = 'remote emoji previous identity') {
 	const receipt = JSON.parse(read(directory + 'remote-emojis-runtime-evidence.json'));
 	if (!receipt.files[file]) {
-		return historicalDigest;
+		return localActorTagDigest(file, historicalDigest, label);
 	}
 	const binding = measuredFile(receipt, file);
 	assert(binding.previousSha256.includes(historicalDigest) || binding.sha256 === historicalDigest, label);
-	return binding.sha256;
+	return localActorTagDigest(file, binding.sha256, label);
 }
 
 export function validateRemoteEmojiEvidence(receipt, readFile = read) {
@@ -54,7 +55,7 @@ export function validateRemoteEmojiEvidence(receipt, readFile = read) {
 	}
 	for (const [file, binding] of Object.entries(receipt.files)) {
 		measuredFile(receipt, file);
-		assert.equal(sha(readFile(file)), binding.sha256, 'actual frozen emoji input drift');
+		assert.equal(sha(readFile(file)), localActorTagDigest(file, binding.sha256), 'actual frozen emoji input drift');
 	}
 	assert.match(receipt.brokerReceiptSha256, /^[a-f0-9]{64}$/);
 	assert.match(receipt.frozenInputMapSha256, /^[a-f0-9]{64}$/);

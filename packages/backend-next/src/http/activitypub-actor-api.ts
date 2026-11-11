@@ -6,7 +6,7 @@ import accepts from 'accepts';
 import type { IncomingMessage } from 'node:http';
 import { Hono } from 'hono';
 import { renderLocalActor } from '../modules/federation/public.js';
-import type { LocalActorFacts, LocalActorProfileFacts } from '../modules/federation/public.js';
+import type { LocalActorFacts, LocalActorProfileFacts, LocalActorTag } from '../modules/federation/public.js';
 const ap = 'application/activity+json';
 const ld = 'application/ld+json';
 export function createActivityPubActorApi(parts: {
@@ -14,6 +14,7 @@ export function createActivityPubActorApi(parts: {
 		host: string | null;
 		uri: string | null;
 	}) | null>;
+	readTags(user: LocalActorFacts): Promise<LocalActorTag[]>;
 	readProfile(id: string): Promise<LocalActorProfileFacts>;
 	federationEnabled(): Promise<boolean>;
 	isSelfHost(host: string): boolean;
@@ -41,7 +42,8 @@ export function createActivityPubActorApi(parts: {
 			return c.redirect(user.uri, 301);
 		}
 		const profile = await parts.readProfile(user.id);
-		const body = JSON.stringify(renderLocalActor(user, profile, parts.selfUrl, await parts.publicKey(user.id)));
+		const tag = await parts.readTags(user);
+		const body = JSON.stringify(renderLocalActor(user, profile, parts.selfUrl, await parts.publicKey(user.id), tag));
 
 		c.header('Cache-Control', 'public, max-age=180');
 		c.header('Content-Type', `${negotiation.type([ap, ld]) === ld ? ld + '; profile="https://www.w3.org/ns/activitystreams"' : ap}; charset=utf-8`);

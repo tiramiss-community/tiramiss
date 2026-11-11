@@ -13,8 +13,8 @@ export function createActorReader(manager: EntityManager, options: {
 		if (!row) {
 			return null;
 		}
-		const { username, name, isBot, isLocked, isExplorable, host, uri } = row;
-		return { id, username, name, isBot, isLocked, isExplorable, host, uri };
+		const { username, name, isBot, isLocked, isExplorable, emojis, tags, host, uri } = row;
+		return { id, username, name, isBot, isLocked, isExplorable, emojis, tags, host, uri };
 	};
 }
 
