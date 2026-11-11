@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "50df73178c230df45f5a1809767d06dfe86d8560",
+  "implementationCommit": "88fa06ca1b7b2d89742052807feed61db58b6260",
   "domains": [
     {
       "id": "api-common",
@@ -1713,12 +1713,14 @@
         "packages/backend-next/test/unit/federation/remote-actor.test.ts",
         "packages/backend-next/test/integration/remote-user.test.ts",
         "packages/backend-next/test/integration/activitypub-actor.test.ts",
-        "packages/backend-next/test/processes/remote-mentions.test.ts"
+        "packages/backend-next/test/processes/remote-mentions.test.ts",
+        "packages/backend-next/test/unit/federation/remote-profile.test.ts",
+        "docs/superpowers/compatibility/remote-user/remote-profile-results.md"
       ],
       "differences": [
         "#195 core remote取得/refreshと失敗出現の省略は33e67182e3dea5a39bd2b7c251ba9ee9ec4e0f45で接続済み。旧501/stale省略はN7歴史証跡であり、現行coreの制限ではない。media/emoji #188/#195、user hashtag関係 #195、instance usersCount/metadata #215、chart #200、featured/Move/full actor/inbox/remote Notes #195、cache/remoteUserUpdated #217は未完了。全95 unitケースは95 real HTTPケースではない。postingComplete:falseとnotes/create partialを維持（docs/superpowers/compatibility/remote-user/runtime-results.md）。"
       ],
-      "note": "既存post-save producerにremote mention取得/core保存/refresh・最小actor/key公開・通常worker署名配送を接続。rich actor副作用、N7 C2/C10のqualified比較ギャップ #176、閲覧/API/WS等の既存所有者は残る。#195/#176/#127全体は未完了。"
+      "note": "既存post-save producerにremote mention取得/core保存/refresh・最小actor/key公開・通常worker署名配送を接続。rich actor副作用、閲覧/API/WS等の既存所有者は残る。N7 C2/C10の比較は#250で完了し、#176は残る初期機能の実装・比較待ち。#195/#176/#127全体は未完了。 Remote-profile attachment selection/error-priority regression is covered by fixed 68-source finite observations, 69 unit cases and 100 real HTTP/PG integration cases; result: ../remote-user/remote-profile-results.md. This establishes neither full upstream HTTP coverage nor a changed public HTTP/persisted outcome; notes/create remains partial."
     },
     "processor:EndedPollNotification": {
       "status": "partial",
