@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "corpusSha256": "48b1e78757270fbb70f59580e910e5c03613a5fbe38eee43b82a7fc98f7c9705",
+  "manifest": [
+    {
+      "path": "packages/backend/src/core/activitypub/ApRendererService.ts",
+      "klass": "ApRendererService",
+      "sha256": "8e4bcdcb5d062ffb707b0e038e5e1f62f0afca2ac4ddaa44c10e1b21bcbf1098",
+      "gitBlob": "601edcebe931a2c98e1bf967debdbe8c91e508ad",
+      "methods": {
+        "renderPerson": "409ee63404fdfbc27bc4c199b34166e30cef4ce137b26cd053ab92eb84a6ec97",
+        "renderImage": "94b2ff87b6c429deb94a26232cbcbace546147d3cbc5697bd696f926aaab2c7d",
+        "renderIdenticon": "5802cb350b6b5a377fdde5366f7288a4fa9a0deac85a2b51ae5ab8c792366f4e",
+        "renderSystemAvatar": "bdaa8399d001085dc5191c65440c9374b4ad9809de288e838a5fe75ef8535180",
+        "renderSystemBanner": "f3de587e501641b5b0785a4f615ad2db1513932630b4ad4bf58baa338abac3e9"
+      }
+    },
+    {
+      "path": "packages/backend/src/core/entities/DriveFileEntityService.ts",
+      "klass": "DriveFileEntityService",
+      "sha256": "a48a07792b784a3ded4364594d346e2cd2d9a7e0a506b56b082325a8f41ca738",
+      "gitBlob": "1865d494c4ba39d84daa62501469895e7224a3fb",
+      "methods": {
+        "getPublicUrl": "09996dc02d88f72f98206a35ca2f41396057e133ec4365ea1206429f6f226c24",
+        "getProxiedUrl": "5da80d298150002f856c758001957886560ad956f7dc4e2abb3949bd3fe54c97"
+      }
+    },
+    {
+      "path": "packages/backend/src/core/entities/UserEntityService.ts",
+      "klass": "UserEntityService",
+      "sha256": "c986907bacb822863fe19214b7ec1443c02ebb028820f33932e7cde7f47f6464",
+      "gitBlob": "7b932e3230699f4266ff4860d0c850c41038047a",
+      "methods": {
+        "getIdenticonUrl": "6059f11d806e180dd0cbb1432977d80ac233ee1040effd48cf5f240142f653a5"
+      }
+    },
+    {
+      "path": "packages/backend/src/misc/prelude/url.ts",
+      "klass": null,
+      "sha256": "23157930e879afe70598a81c2e2671e2ceaee6a71023afc2f7b4a15fecb58e9d",
+      "gitBlob": "270a0750754eac81c651b7090bd0a7c2d7b3c798",
+      "methods": {
+        "query": "e31749d7aa1ba1b6f021364e477bd7d39d5d6f63de1d850c0c89cd85236cd816",
+        "appendQuery": "566f5d75d99a226d39684a01742794b6d180d3a8837afc058bef330119da992f"
+      }
+    }
+  ],
+  "evidence": "literal pinned source methods with doubles; not upstream full-server HTTP/PG",
+  "doubles": {
+    "files": "independent findOneBy({id}); plain rows/missing/rejection",
+    "profile": "required empty profile or rejection",
+    "meta": "explicit iconUrl/bannerUrl/proxyRemoteFiles",
+    "config": "explicit effective normalized URL/host/proxy settings; production normalization tested separately",
+    "tags": "getEmojis returns [] or rejects; user tags empty",
+    "key": "getUserKeypair returns {} or rejects; renderKey null",
+    "mfm": "null description; no parser/html execution"
+  },
+  "cases": [
+    {"id":"ordinary-missing-port-case","expected":{"json":{"icon":{"type":"Image","url":"https://local.test:8443/identicon/alice@local.test:8443","sensitive":false,"name":null},"image":null},"events":[{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"system-null","expected":{"json":{"icon":{"type":"Image","url":"https://local.test:8443/identicon/instance.actor@local.test:8443","sensitive":false,"name":null},"image":null},"events":[{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"system-file-avatar-meta-banner","expected":{"json":{"icon":{"type":"Image","url":"https://files.test/original","sensitive":true,"name":"stored avatar"},"image":{"type":"Image","url":"https://meta.test/banner","sensitive":false,"name":null}},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"system-meta-icon-file-banner","expected":{"json":{"icon":{"type":"Image","url":"","sensitive":false,"name":null},"image":{"type":"Image","url":"https://files.test/original","sensitive":false,"name":"stored banner"}},"events":[{"op":"file","id":"b"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"system-meta","expected":{"json":{"icon":{"type":"Image","url":"https://meta.test/icon","sensitive":false,"name":null},"image":{"type":"Image","url":"https://meta.test/banner","sensitive":false,"name":null}},"events":[{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"system-empty-meta","expected":{"json":{"icon":{"type":"Image","url":"","sensitive":false,"name":null},"image":{"type":"Image","url":"","sensitive":false,"name":null}},"events":[{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"ordinary-ignores-meta-and-user-url","expected":{"json":{"icon":{"type":"Image","url":"https://local.test:8443/identicon/alice@local.test:8443","sensitive":false,"name":null},"image":null},"events":[{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"avatar-sensitive-null","expected":{"json":{"icon":{"type":"Image","url":"https://files.test/original","sensitive":true,"name":null},"image":null},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"banner-empty-comment","expected":{"json":{"icon":{"type":"Image","url":"https://local.test:8443/identicon/alice@local.test:8443","sensitive":false,"name":null},"image":{"type":"Image","url":"https://files.test/banner","sensitive":false,"name":""}},"events":[{"op":"file","id":"b"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"both-files","expected":{"json":{"icon":{"type":"Image","url":"https://files.test/original","sensitive":false,"name":"avatar"},"image":{"type":"Image","url":"https://files.test/banner","sensitive":true,"name":"banner"}},"events":[{"op":"file","id":"a"},{"op":"file","id":"b"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"shared-id","expected":{"json":{"icon":{"type":"Image","url":"https://files.test/original","sensitive":false,"name":"shared"},"image":{"type":"Image","url":"https://files.test/original","sensitive":false,"name":"shared"}},"events":[{"op":"file","id":"a"},{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"dangling-both","expected":{"json":{"icon":{"type":"Image","url":"https://local.test:8443/identicon/alice@local.test:8443","sensitive":false,"name":null},"image":null},"events":[{"op":"file","id":"gone"},{"op":"file","id":"gone"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"dangling-avatar-found-banner","expected":{"json":{"icon":{"type":"Image","url":"https://local.test:8443/identicon/alice@local.test:8443","sensitive":false,"name":null},"image":{"type":"Image","url":"https://files.test/original","sensitive":false,"name":null}},"events":[{"op":"file","id":"gone"},{"op":"file","id":"b"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"system-dangling","expected":{"json":{"icon":{"type":"Image","url":"","sensitive":false,"name":null},"image":{"type":"Image","url":"","sensitive":false,"name":null}},"events":[{"op":"file","id":"gone"},{"op":"file","id":"gone"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"stored-empty-url","expected":{"json":{"icon":{"type":"Image","url":"","sensitive":false,"name":null},"image":null},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"external-before-link","expected":{"json":{"icon":{"type":"Image","url":"https://proxy.test/image.webp?url=https%3A%2F%2Fremote.test%2Fa%20b.png%3Fq%3D1%26x%3D%2525","sensitive":false,"name":null},"image":null},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"external-without-link","expected":{"json":{"icon":{"type":"Image","url":"https://proxy.test/image.webp?url=https%3A%2F%2Fremote.test%2Fa%20b.png%3Fq%3D1%26x%3D%2525","sensitive":false,"name":null},"image":null},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"link-without-owner-host","expected":{"json":{"icon":{"type":"Image","url":"https://local.test:8443/files/public-key","sensitive":false,"name":null},"image":null},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"link-external-off","expected":{"json":{"icon":{"type":"Image","url":"https://local.test:8443/files/public-key","sensitive":false,"name":null},"image":null},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"link-policy-off","expected":{"json":{"icon":{"type":"Image","url":"https://files.test/public","sensitive":false,"name":null},"image":null},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"slash-key","expected":{"json":{"icon":{"type":"Image","url":"https://files.test/public","sensitive":false,"name":null},"image":null},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"empty-key","expected":{"json":{"icon":{"type":"Image","url":"https://files.test/public","sensitive":false,"name":null},"image":null},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"null-key","expected":{"json":{"icon":{"type":"Image","url":"https://files.test/public","sensitive":false,"name":null},"image":null},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"nonlink","expected":{"json":{"icon":{"type":"Image","url":"https://files.test/public","sensitive":false,"name":null},"image":null},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"null-uri","expected":{"json":{"icon":{"type":"Image","url":"https://files.test/public","sensitive":false,"name":null},"image":null},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"external-off-stored","expected":{"json":{"icon":{"type":"Image","url":"https://files.test/public","sensitive":false,"name":null},"image":null},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"proxy-encoding-error","expected":{"error":{"name":"URIError","message":"URI malformed"},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"key-before-url-error","expected":{"error":{"name":"Error","message":"key unavailable"},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"},{"op":"key"}]}},
+    {"id":"tags-before-url-error","expected":{"error":{"name":"Error","message":"tags unavailable"},"events":[{"op":"file","id":"a"},{"op":"profile"},{"op":"tags"}]}},
+    {"id":"avatar-db-before-later-errors","expected":{"error":{"name":"Error","message":"file a unavailable"},"events":[{"op":"file","id":"a"},{"op":"file","id":"b"},{"op":"profile"}]}},
+    {"id":"banner-db-failure","expected":{"error":{"name":"Error","message":"file b unavailable"},"events":[{"op":"file","id":"b"},{"op":"profile"}]}},
+    {"id":"profile-before-tags","expected":{"error":{"name":"Error","message":"profile unavailable"},"events":[{"op":"file","id":"a"},{"op":"profile"}]}},
+    {"id":"key-failure","expected":{"error":{"name":"Error","message":"key unavailable"},"events":[{"op":"profile"},{"op":"tags"},{"op":"key"}]}}
+  ]
+}

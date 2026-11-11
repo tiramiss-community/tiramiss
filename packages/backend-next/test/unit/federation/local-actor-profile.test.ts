@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { emptyActorMedia } from '../../helpers/local-actor.js';
 import { readFileSync } from 'node:fs';
 import { expect, test } from 'vitest';
 import { renderLocalActor } from '../../../src/modules/federation/public.js';
@@ -9,12 +10,12 @@ import { createActivityPubActorApi } from '../../../src/http/activitypub-actor-a
 import type { LocalActorProfileFacts } from '../../../src/modules/federation/public.js';
 const source = JSON.parse(readFileSync(new URL('../../../../../docs/superpowers/compatibility/remote-user/local-actor-profile-observations.json', import.meta.url), 'utf8'));
 const empty: LocalActorProfileFacts = { description: null, followedMessage: null, fields: [], birthday: null, location: null };
-const user = { id: 'local', username: 'alice', name: null, isBot: false, isLocked: true, isExplorable: false, emojis: [], tags: [], host: null, uri: null };
+const user = { id: 'local', avatarId: null, bannerId: null, username: 'alice', name: null, isBot: false, isLocked: true, isExplorable: false, emojis: [], tags: [], host: null, uri: null };
 const keys = ['name', 'summary', '_misskey_summary', '_misskey_followedMessage', 'attachment', 'vcard:bday', 'vcard:Address'];
 // Removing any projected property, changing URL serialization, or swallowing MFM errors breaks these source-derived outcomes.
 for (const c of source.cases.filter((c: { fail?: string; }) => !c.fail)) {
 	test(`profile ${c.id} matches independent real source raw and JSON projection`, () => {
-		const render = () => renderLocalActor({ ...user, name: c.name ?? null }, c.profile, 'https://local.test', 'key', []);
+		const render = () => renderLocalActor({ ...user, name: c.name ?? null }, c.profile, 'https://local.test', 'key', [], emptyActorMedia);
 		if (c.expected.error) {
 			expect(render).toThrow(c.expected.error.message);
 			return;
@@ -30,7 +31,7 @@ for (const c of source.cases.filter((c: { fail?: string; }) => !c.fail)) {
 test.each(['disabled', 'missing', 'remote'])('HTTP %s does not read required Profile', async kind => {
 	const app = createActivityPubActorApi({ readTags: async () => [], selfUrl: 'https://local.test', federationEnabled: async () => kind !== 'disabled', isSelfHost: () => false,
 																																									readActor: async () => kind === 'missing' ? null : { ...user, host: kind === 'remote' ? 'remote.test' : null, uri: 'https://remote.test/user' },
-																																									readProfile: async () => {
+																																									readMaterials: async () => {
 																																										throw Error('must not read Profile');
 																																									}, publicKey: async () => {
 																																										throw Error('must not read key');
@@ -40,11 +41,11 @@ test.each(['disabled', 'missing', 'remote'])('HTTP %s does not read required Pro
 });
 test.each(['missing Profile', 'database unavailable', 'MFM'])('HTTP surfaces %s instead of publishing empty facts', async kind => {
 	const app = createActivityPubActorApi({ readTags: async () => [], selfUrl: 'https://local.test', federationEnabled: async () => true, isSelfHost: () => false, readActor: async () => user,
-																																									readProfile: async () => {
+																																									readMaterials: async () => {
 																																										if (kind !== 'MFM') {
 																																											throw Error(kind);
 																																										}
-																																										return { ...empty, description: '$[ruby single]' };
+																																										return { profile: { ...empty, description: '$[ruby single]' }, media: emptyActorMedia };
 																																									}, publicKey: async () => 'key' });
 	app.onError(() => new Response('failed', { status: 500 }));
 	expect((await app.request('/users/local', { headers: { Accept: 'application/activity+json' } })).status).toBe(500);
@@ -61,15 +62,15 @@ test('HTTP publishes profile with name and source raw summary', async () => {
 	});
 	const app = createActivityPubActorApi({ readTags: async () => [],
 		selfUrl: 'https://local.test', federationEnabled: async () => true, isSelfHost: () => false, readActor: async () => ({ ...user, name: 'Alice' }),
-		readProfile: async () => {
+		readMaterials: async () => {
 			calls.push('profile start');
 			profileStarted();
 			await gate;
 			calls.push('profile complete');
-			return { ...empty, get description() {
+			return { profile: { ...empty, get description() {
 				calls.push('render');
 				return '**bold**';
-			}, followedMessage: '', location: 'Tokyo' };
+			}, followedMessage: '', location: 'Tokyo' }, media: emptyActorMedia };
 		},
 		publicKey: async () => {
 			calls.push('key');

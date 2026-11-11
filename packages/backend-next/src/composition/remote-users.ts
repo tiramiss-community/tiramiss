@@ -2,10 +2,11 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { createLocalActorMaterialsReader } from './local-actor-materials.js';
 import { createLocalActorTagReader } from './local-actor-tags.js';
 import { htmlToMfm, apType, webfingerUrl, selectWebfingerSelf, createActivitySession, createHostRules, isFederationAllowedHost, toPuny, punyHost, validateActor, validateActorProfileUrl, prepareActor, collectionVisibility, insertActor, truncate } from '../modules/federation/public.js';
 import { createRemoteUserRepository, createRemoteActorTransactions } from '../platform/database/remote-users.js';
-import { createActorReader, createActorProfileReader } from '../platform/database/local-actors.js';
+import { createActorReader } from '../platform/database/local-actors.js';
 import { readMeta, readFederationPolicy } from '../platform/database/meta.js';
 import { renderLocalActor } from '../modules/federation/public.js';
 import type { DataSource } from 'typeorm';
@@ -28,7 +29,7 @@ export function createRemoteUsers(parts: {
 	const withoutRootDot = (host: string) => host.replace(/\.$/, '');
 	const requestRules = createHostRules(withoutRootDot(new URL(config.url).hostname));
 	const readTags = createLocalActorTagReader(parts.dataSource.manager, config.url);
-	const readProfile = createActorProfileReader(parts.dataSource.manager);
+	const readMaterials = createLocalActorMaterialsReader(parts.dataSource.manager, config);
 	const readActor = createActorReader(parts.dataSource.manager, { includeSuspended: true });
 	const readRequestPolicy = async () => {
 		const current = await readFederationPolicy(parts.dataSource.manager);
@@ -96,9 +97,9 @@ export function createRemoteUsers(parts: {
 					if (!user || user.host !== null) {
 						throw new Error('local user not found');
 					}
-					const profile = await readProfile(user.id);
+					const { profile, media } = await readMaterials(user);
 					const tag = await readTags(user);
-					return renderLocalActor(user, profile, config.url, parts.federationKeys.toSpkiPublicKeyPem((await parts.federationKeys.readUserKeypair(user.id)).publicKeyPem), tag);
+					return renderLocalActor(user, profile, config.url, parts.federationKeys.toSpkiPublicKeyPem((await parts.federationKeys.readUserKeypair(user.id)).publicKeyPem), tag, media);
 				},
 			});
 			const material = validateActor(await session.resolve(uri), uri);

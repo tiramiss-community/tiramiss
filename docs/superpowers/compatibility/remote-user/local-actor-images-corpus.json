@@ -1,0 +1,83 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "defaults": {
+    "user": {
+      "id": "local",
+      "username": "ALIce",
+      "host": null,
+      "name": null,
+      "isBot": false,
+      "isLocked": false,
+      "isExplorable": true,
+      "emojis": [
+        "tag"
+      ],
+      "tags": [],
+      "avatarId": null,
+      "bannerId": null
+    },
+    "file": {
+      "uri": null,
+      "userHost": null,
+      "isLink": false,
+      "webpublicAccessKey": null,
+      "webpublicUrl": null,
+      "url": "https://files.test/original",
+      "isSensitive": false,
+      "comment": null
+    },
+    "profile": {
+      "description": null,
+      "followedMessage": null,
+      "fields": [],
+      "birthday": null,
+      "location": null
+    },
+    "meta": {
+      "iconUrl": null,
+      "bannerUrl": null,
+      "proxyRemoteFiles": false
+    },
+    "config": {
+      "url": "https://local.test:8443",
+      "host": "local.test:8443",
+      "mediaProxy": "https://local.test:8443/proxy",
+      "externalMediaProxyEnabled": false
+    }
+  },
+  "cases": [
+    {"id":"ordinary-missing-port-case"},
+    {"id":"system-null","user":{"username":"instance.actor"}},
+    {"id":"system-file-avatar-meta-banner","user":{"username":"Instance.ACtor","avatarId":"a"},"files":{"a":{"comment":"stored avatar","isSensitive":true}},"meta":{"iconUrl":"https://meta.test/ignored-icon","bannerUrl":"https://meta.test/banner"}},
+    {"id":"system-meta-icon-file-banner","user":{"username":"instance.actor","bannerId":"b"},"files":{"b":{"comment":"stored banner"}},"meta":{"iconUrl":"","bannerUrl":"https://meta.test/ignored-banner"}},
+    {"id":"system-meta","user":{"username":"instance.actor"},"meta":{"iconUrl":"https://meta.test/icon","bannerUrl":"https://meta.test/banner"}},
+    {"id":"system-empty-meta","user":{"username":"instance.actor"},"meta":{"iconUrl":"","bannerUrl":""}},
+    {"id":"ordinary-ignores-meta-and-user-url","user":{"avatarUrl":"https://poison.test/avatar"},"meta":{"iconUrl":"https://meta.test/icon","bannerUrl":"https://meta.test/banner"}},
+    {"id":"avatar-sensitive-null","user":{"avatarId":"a"},"files":{"a":{"isSensitive":true}}},
+    {"id":"banner-empty-comment","user":{"bannerId":"b"},"files":{"b":{"comment":"","webpublicUrl":"https://files.test/banner"}}},
+    {"id":"both-files","user":{"avatarId":"a","bannerId":"b"},"files":{"a":{"comment":"avatar"},"b":{"comment":"banner","isSensitive":true,"webpublicUrl":"https://files.test/banner"}}},
+    {"id":"shared-id","user":{"avatarId":"a","bannerId":"a"},"files":{"a":{"comment":"shared"}}},
+    {"id":"dangling-both","user":{"avatarId":"gone","bannerId":"gone"}},
+    {"id":"dangling-avatar-found-banner","user":{"avatarId":"gone","bannerId":"b"},"files":{"b":{}}},
+    {"id":"system-dangling","user":{"username":"system.actor","avatarId":"gone","bannerId":"gone"},"meta":{"iconUrl":"","bannerUrl":""}},
+    {"id":"stored-empty-url","user":{"avatarId":"a"},"files":{"a":{"webpublicUrl":""}}},
+    {"id":"external-before-link","user":{"avatarId":"a"},"files":{"a":{"uri":"https://remote.test/a b.png?q=1&x=%25","userHost":"remote.test","isLink":true,"webpublicAccessKey":"public-key","webpublicUrl":"https://files.test/public"}},"meta":{"proxyRemoteFiles":true},"config":{"externalMediaProxyEnabled":true,"mediaProxy":"https://proxy.test"}},
+    {"id":"external-without-link","user":{"avatarId":"a"},"files":{"a":{"uri":"https://remote.test/a b.png?q=1&x=%25","userHost":"remote.test","isLink":false,"webpublicAccessKey":"public-key","webpublicUrl":"https://files.test/public"}},"meta":{},"config":{"externalMediaProxyEnabled":true,"mediaProxy":"https://proxy.test"}},
+    {"id":"link-without-owner-host","user":{"avatarId":"a"},"files":{"a":{"uri":"https://remote.test/a b.png?q=1&x=%25","userHost":null,"isLink":true,"webpublicAccessKey":"public-key","webpublicUrl":"https://files.test/public"}},"meta":{"proxyRemoteFiles":true},"config":{"externalMediaProxyEnabled":true}},
+    {"id":"link-external-off","user":{"avatarId":"a"},"files":{"a":{"uri":"https://remote.test/a b.png?q=1&x=%25","userHost":"remote.test","isLink":true,"webpublicAccessKey":"public-key","webpublicUrl":"https://files.test/public"}},"meta":{"proxyRemoteFiles":true},"config":{}},
+    {"id":"link-policy-off","user":{"avatarId":"a"},"files":{"a":{"uri":"https://remote.test/a b.png?q=1&x=%25","userHost":"remote.test","isLink":true,"webpublicAccessKey":"public-key","webpublicUrl":"https://files.test/public"}},"meta":{"proxyRemoteFiles":false},"config":{}},
+    {"id":"slash-key","user":{"avatarId":"a"},"files":{"a":{"uri":"https://remote.test/a b.png?q=1&x=%25","userHost":"remote.test","isLink":true,"webpublicAccessKey":"old/key","webpublicUrl":"https://files.test/public"}},"meta":{"proxyRemoteFiles":true},"config":{}},
+    {"id":"empty-key","user":{"avatarId":"a"},"files":{"a":{"uri":"https://remote.test/a b.png?q=1&x=%25","userHost":"remote.test","isLink":true,"webpublicAccessKey":"","webpublicUrl":"https://files.test/public"}},"meta":{"proxyRemoteFiles":true},"config":{}},
+    {"id":"null-key","user":{"avatarId":"a"},"files":{"a":{"uri":"https://remote.test/a b.png?q=1&x=%25","userHost":"remote.test","isLink":true,"webpublicAccessKey":null,"webpublicUrl":"https://files.test/public"}},"meta":{"proxyRemoteFiles":true},"config":{}},
+    {"id":"nonlink","user":{"avatarId":"a"},"files":{"a":{"uri":"https://remote.test/a b.png?q=1&x=%25","userHost":"remote.test","isLink":false,"webpublicAccessKey":"public-key","webpublicUrl":"https://files.test/public"}},"meta":{"proxyRemoteFiles":true},"config":{}},
+    {"id":"null-uri","user":{"avatarId":"a"},"files":{"a":{"uri":null,"userHost":"remote.test","isLink":true,"webpublicAccessKey":"public-key","webpublicUrl":"https://files.test/public"}},"meta":{"proxyRemoteFiles":true},"config":{"externalMediaProxyEnabled":true}},
+    {"id":"external-off-stored","user":{"avatarId":"a"},"files":{"a":{"uri":"https://remote.test/a b.png?q=1&x=%25","userHost":"remote.test","isLink":true,"webpublicAccessKey":"public-key","webpublicUrl":"https://files.test/public"}},"meta":{},"config":{}},
+    {"id":"proxy-encoding-error","user":{"avatarId":"a"},"files":{"a":{"uri":"\ud800","userHost":"remote.test","isLink":true,"webpublicAccessKey":"public-key","webpublicUrl":"https://files.test/public"}},"meta":{},"config":{"externalMediaProxyEnabled":true}},
+    {"id":"key-before-url-error","user":{"avatarId":"a"},"files":{"a":{"uri":"\ud800","userHost":"remote.test","isLink":true,"webpublicAccessKey":"public-key","webpublicUrl":"https://files.test/public"}},"config":{"externalMediaProxyEnabled":true},"fail":{"key":true}},
+    {"id":"tags-before-url-error","user":{"avatarId":"a"},"files":{"a":{"uri":"\ud800","userHost":"remote.test","isLink":true,"webpublicAccessKey":"public-key","webpublicUrl":"https://files.test/public"}},"config":{"externalMediaProxyEnabled":true},"fail":{"tags":true,"key":true}},
+    {"id":"avatar-db-before-later-errors","user":{"avatarId":"a","bannerId":"b"},"files":{"b":{}},"fail":{"file":"a","tags":true,"key":true}},
+    {"id":"banner-db-failure","user":{"bannerId":"b"},"fail":{"file":"b"}},
+    {"id":"profile-before-tags","user":{"avatarId":"a"},"files":{"a":{}},"fail":{"profile":true,"tags":true,"key":true}},
+    {"id":"key-failure","fail":{"key":true}}
+  ]
+}

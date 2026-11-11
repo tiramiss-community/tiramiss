@@ -2,27 +2,28 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { emptyActorMedia } from '../../helpers/local-actor.js';
 import { readFileSync } from 'node:fs';
 import type { EntityManager } from 'typeorm';
 import { expect, test } from 'vitest';
 import { createActivityPubActorApi } from '../../../src/http/activitypub-actor-api.js';
 import { renderLocalActor } from '../../../src/modules/federation/public.js';
-const user = { id: 'local', username: 'alice', name: null, isBot: false, isLocked: false, isExplorable: true, emojis: [], tags: [], host: null, uri: null };
+const user = { id: 'local', avatarId: null, bannerId: null, username: 'alice', name: null, isBot: false, isLocked: false, isExplorable: true, emojis: [], tags: [], host: null, uri: null };
 const profile = { description: null, followedMessage: null, fields: [], birthday: null, location: null };
-const base = { selfUrl: 'https://local.test', federationEnabled: async () => true, isSelfHost: () => false, readActor: async () => user, readProfile: async () => profile, readTags: async () => [], publicKey: async () => 'key' };
+const base = { selfUrl: 'https://local.test', federationEnabled: async () => true, isSelfHost: () => false, readActor: async () => user, readMaterials: async () => ({ profile: profile, media: emptyActorMedia }), readTags: async () => [], publicKey: async () => 'key' };
 
 // Omitting tag from the actor body must break an externally visible result.
 test('empty local actor explicitly publishes tag array', () => {
-	expect(renderLocalActor(user, profile, base.selfUrl, 'key', []).tag).toEqual([]);
+	expect(renderLocalActor(user, profile, base.selfUrl, 'key', [], emptyActorMedia).tag).toEqual([]);
 });
 
 test('HTTP publishes acquired tags before it reads the key', async () => {
 	const events: string[] = [];
 	const tag = [{ type: 'Hashtag' as const, href: 'https://local.test/tags/visible', name: '#visible' }];
 	const app = createActivityPubActorApi({ ...base,
-		readProfile: async () => {
+		readMaterials: async () => {
 			events.push('profile');
-			return profile;
+			return { profile: profile, media: emptyActorMedia };
 		},
 		readTags: async () => {
 			events.push('tags');
@@ -73,12 +74,12 @@ for (const fixture of source.cases) {
 		});
 		let caught: { name: string; message: string } | undefined;
 		const app = createActivityPubActorApi({ ...base, readActor: async () => ({ ...user, emojis: fixture.names, tags: fixture.tags }), readTags,
-			readProfile: async () => {
+			readMaterials: async () => {
 				events.push({ op: 'profile' });
 				if (fixture.profileFailure) {
 					throw Error('profile unavailable');
 				}
-				return profile;
+				return { profile: profile, media: emptyActorMedia };
 			},
 			publicKey: async () => {
 				events.push({ op: 'key' });
