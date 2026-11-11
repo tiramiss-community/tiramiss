@@ -4,6 +4,8 @@
  */
 import { escapeHtml, getNoteHtml } from '../mfm/public.js';
 import { apContext } from './ap-context.js';
+import { renderApEmoji, renderApHashtag } from './ap-tags.js';
+import type { ApEmojiFacts } from './ap-tags.js';
 import type { MentionedRemoteUser } from '../mfm/public.js';
 
 const publicAddress = 'https://www.w3.org/ns/activitystreams#Public';
@@ -34,16 +36,6 @@ export interface ApDocumentFacts {
 	width?: number;
 	height?: number;
 	isSensitive: boolean;
-}
-
-export interface ApEmojiFacts {
-	name: string;
-	type: string | null;
-	publicUrl: string;
-	originalUrl: string;
-	license: string | null;
-	localOnly: boolean;
-	updatedAtMs: number | null;
 }
 
 /** 表現の時点で DB から読んだ材料。読み取りは呼び出し側が行い、ここでは DB に触れない。 */
@@ -113,25 +105,13 @@ export function renderApNote(materials: NoteActivityMaterials, options: { selfUr
 	const text = note.text ?? '';
 
 	const tag = [
-		...note.tags.map(name => ({ type: 'Hashtag', href: `${selfUrl}/tags/${encodeURIComponent(name)}`, name: `#${name}` })),
+		...note.tags.map(name => renderApHashtag(name, selfUrl)),
 		...mentionedUsers.map(user => ({
 			type: 'Mention',
 			href: user.host === null ? localUserUri(selfUrl, user.id) : user.uri,
 			name: user.host === null ? `@${user.username}` : `@${user.username}@${user.host}`,
 		})),
-		...emojis.filter(emoji => !emoji.localOnly).map(emoji => ({
-			id: `${selfUrl}/emojis/${emoji.name}`,
-			type: 'Emoji',
-			name: `:${emoji.name}:`,
-			updated: new Date(emoji.updatedAtMs ?? options.now).toISOString(),
-			icon: {
-				type: 'Image',
-				mediaType: emoji.type ?? 'image/png',
-				// publicUrl は空文字列のことがあるため、?? ではなく || で originalUrl へ戻す（本家の後方互換）。
-				url: emoji.publicUrl || emoji.originalUrl,
-			},
-			_misskey_license: { freeText: emoji.license },
-		})),
+		...emojis.filter(emoji => !emoji.localOnly).map(emoji => renderApEmoji(emoji, selfUrl, options.now)),
 	];
 
 	// 本家は type を Question で上書きするため、type の位置は 2 番目のまま、締切と選択肢が末尾に付く。

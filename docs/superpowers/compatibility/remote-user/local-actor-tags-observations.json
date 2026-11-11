@@ -1,0 +1,674 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "sourcePath": "packages/backend/src/core/activitypub/ApRendererService.ts",
+  "sourceSha256": "8e4bcdcb5d062ffb707b0e038e5e1f62f0afca2ac4ddaa44c10e1b21bcbf1098",
+  "methods": {
+    "renderPerson": "409ee63404fdfbc27bc4c199b34166e30cef4ce137b26cd053ab92eb84a6ec97",
+    "getEmojis": "86e48acc62b89444ee411c740fa4fbb141c0a186346ca1ae87c7945dcdce1673",
+    "renderEmoji": "f89fbf2c7337c944ad0f1611d49aa8dc48e9ee33a8b68a5c40c33ff9a3ce7c54",
+    "renderHashtag": "191f257ef3b67efbac07f6e94513855111a524d22836f489d147b2aeb2573819"
+  },
+  "epoch": 1794355200000,
+  "upstreamHttpMeasured": false,
+  "doubles": {
+    "profile": "required findOneByOrFail, empty valid profile or throw",
+    "emojiCache": "Map of plain rows or throw; no cache TTL/Redis measured",
+    "clock": "Date subclass: zero-argument constructor samples epoch then advances 1ms; explicit date conversion uses native Date",
+    "key": "empty key, optional 60000ms clock advance or throw; renderKey null",
+    "media": "no avatar/banner; identicon null",
+    "uri": "literal https://local.test/users/<id>",
+    "mfm": "null description, no toHtml call"
+  },
+  "exclusions": [
+    "full actor equivalence",
+    "upstream HTTP/DB server",
+    "cache freshness and cache-hit DB failure behavior",
+    "malformed unrelated profile fields"
+  ],
+  "cases": [
+    {
+      "id": "empty",
+      "names": [],
+      "tags": [],
+      "rows": [],
+      "cacheFailure": true,
+      "expected": {
+        "tag": [],
+        "events": [
+          {
+            "op": "profile"
+          },
+          {
+            "op": "key"
+          }
+        ]
+      }
+    },
+    {
+      "id": "missing",
+      "names": [
+        "missing"
+      ],
+      "tags": [],
+      "rows": [],
+      "expected": {
+        "tag": [],
+        "events": [
+          {
+            "op": "profile"
+          },
+          {
+            "op": "emojis"
+          },
+          {
+            "op": "key"
+          }
+        ]
+      }
+    },
+    {
+      "id": "order-duplicates",
+      "names": [
+        "beta",
+        "missing",
+        "alpha",
+        "beta",
+        "private"
+      ],
+      "tags": [
+        "MiXeD",
+        "日本 語/#",
+        "MiXeD"
+      ],
+      "rows": [
+        {
+          "name": "alpha",
+          "type": "image/webp",
+          "publicUrl": "https://cdn.test/alpha",
+          "originalUrl": "https://original.test/alpha",
+          "license": "CC0",
+          "localOnly": false,
+          "updatedAt": "2020-01-02T03:04:05.000Z"
+        },
+        {
+          "name": "private",
+          "type": "image/webp",
+          "publicUrl": "https://cdn.test/alpha",
+          "originalUrl": "https://original.test/alpha",
+          "license": "CC0",
+          "localOnly": true,
+          "updatedAt": "2020-01-02T03:04:05.000Z"
+        },
+        {
+          "name": "beta",
+          "type": null,
+          "publicUrl": "",
+          "originalUrl": "https://original.test/alpha",
+          "license": null,
+          "localOnly": false,
+          "updatedAt": null
+        }
+      ],
+      "expected": {
+        "tag": [
+          {
+            "id": "https://local.test/emojis/beta",
+            "type": "Emoji",
+            "name": ":beta:",
+            "updated": "2026-11-11T00:00:00.000Z",
+            "icon": {
+              "type": "Image",
+              "mediaType": "image/png",
+              "url": "https://original.test/alpha"
+            },
+            "_misskey_license": {
+              "freeText": null
+            }
+          },
+          {
+            "id": "https://local.test/emojis/alpha",
+            "type": "Emoji",
+            "name": ":alpha:",
+            "updated": "2020-01-02T03:04:05.000Z",
+            "icon": {
+              "type": "Image",
+              "mediaType": "image/webp",
+              "url": "https://cdn.test/alpha"
+            },
+            "_misskey_license": {
+              "freeText": "CC0"
+            }
+          },
+          {
+            "id": "https://local.test/emojis/beta",
+            "type": "Emoji",
+            "name": ":beta:",
+            "updated": "2026-11-11T00:00:00.001Z",
+            "icon": {
+              "type": "Image",
+              "mediaType": "image/png",
+              "url": "https://original.test/alpha"
+            },
+            "_misskey_license": {
+              "freeText": null
+            }
+          },
+          {
+            "type": "Hashtag",
+            "href": "https://local.test/tags/MiXeD",
+            "name": "#MiXeD"
+          },
+          {
+            "type": "Hashtag",
+            "href": "https://local.test/tags/%E6%97%A5%E6%9C%AC%20%E8%AA%9E%2F%23",
+            "name": "#日本 語/#"
+          },
+          {
+            "type": "Hashtag",
+            "href": "https://local.test/tags/MiXeD",
+            "name": "#MiXeD"
+          }
+        ],
+        "events": [
+          {
+            "op": "profile"
+          },
+          {
+            "op": "emojis"
+          },
+          {
+            "op": "emoji",
+            "name": "beta"
+          },
+          {
+            "op": "clock",
+            "value": 1794355200000
+          },
+          {
+            "op": "emoji",
+            "name": "alpha"
+          },
+          {
+            "op": "emoji",
+            "name": "beta"
+          },
+          {
+            "op": "clock",
+            "value": 1794355200001
+          },
+          {
+            "op": "hashtag",
+            "name": "MiXeD"
+          },
+          {
+            "op": "hashtag",
+            "name": "日本 語/#"
+          },
+          {
+            "op": "hashtag",
+            "name": "MiXeD"
+          },
+          {
+            "op": "key"
+          }
+        ]
+      }
+    },
+    {
+      "id": "empty-values",
+      "names": [
+        "alpha"
+      ],
+      "tags": [
+        ""
+      ],
+      "rows": [
+        {
+          "name": "alpha",
+          "type": "",
+          "publicUrl": "",
+          "originalUrl": "",
+          "license": "",
+          "localOnly": false,
+          "updatedAt": "2020-01-02T03:04:05.000Z"
+        }
+      ],
+      "expected": {
+        "tag": [
+          {
+            "id": "https://local.test/emojis/alpha",
+            "type": "Emoji",
+            "name": ":alpha:",
+            "updated": "2020-01-02T03:04:05.000Z",
+            "icon": {
+              "type": "Image",
+              "mediaType": "",
+              "url": ""
+            },
+            "_misskey_license": {
+              "freeText": ""
+            }
+          },
+          {
+            "type": "Hashtag",
+            "href": "https://local.test/tags/",
+            "name": "#"
+          }
+        ],
+        "events": [
+          {
+            "op": "profile"
+          },
+          {
+            "op": "emojis"
+          },
+          {
+            "op": "emoji",
+            "name": "alpha"
+          },
+          {
+            "op": "hashtag",
+            "name": ""
+          },
+          {
+            "op": "key"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hashtags-only",
+      "names": [],
+      "tags": [
+        "A%20B",
+        "#raw",
+        "é",
+        "É"
+      ],
+      "rows": [],
+      "expected": {
+        "tag": [
+          {
+            "type": "Hashtag",
+            "href": "https://local.test/tags/A%2520B",
+            "name": "#A%20B"
+          },
+          {
+            "type": "Hashtag",
+            "href": "https://local.test/tags/%23raw",
+            "name": "##raw"
+          },
+          {
+            "type": "Hashtag",
+            "href": "https://local.test/tags/e%CC%81",
+            "name": "#é"
+          },
+          {
+            "type": "Hashtag",
+            "href": "https://local.test/tags/%C3%89",
+            "name": "#É"
+          }
+        ],
+        "events": [
+          {
+            "op": "profile"
+          },
+          {
+            "op": "hashtag",
+            "name": "A%20B"
+          },
+          {
+            "op": "hashtag",
+            "name": "#raw"
+          },
+          {
+            "op": "hashtag",
+            "name": "é"
+          },
+          {
+            "op": "hashtag",
+            "name": "É"
+          },
+          {
+            "op": "key"
+          }
+        ]
+      }
+    },
+    {
+      "id": "all-private",
+      "names": [
+        "alpha",
+        "alpha"
+      ],
+      "tags": [
+        "visible"
+      ],
+      "rows": [
+        {
+          "name": "alpha",
+          "type": "image/webp",
+          "publicUrl": "https://cdn.test/alpha",
+          "originalUrl": "https://original.test/alpha",
+          "license": "CC0",
+          "localOnly": true,
+          "updatedAt": null
+        }
+      ],
+      "expected": {
+        "tag": [
+          {
+            "type": "Hashtag",
+            "href": "https://local.test/tags/visible",
+            "name": "#visible"
+          }
+        ],
+        "events": [
+          {
+            "op": "profile"
+          },
+          {
+            "op": "emojis"
+          },
+          {
+            "op": "hashtag",
+            "name": "visible"
+          },
+          {
+            "op": "key"
+          }
+        ]
+      }
+    },
+    {
+      "id": "clock-before-key",
+      "names": [
+        "alpha",
+        "alpha"
+      ],
+      "tags": [
+        "after"
+      ],
+      "rows": [
+        {
+          "name": "alpha",
+          "type": "image/webp",
+          "publicUrl": "https://cdn.test/alpha",
+          "originalUrl": "https://original.test/alpha",
+          "license": "CC0",
+          "localOnly": false,
+          "updatedAt": null
+        }
+      ],
+      "keyAdvanceMs": 60000,
+      "expected": {
+        "tag": [
+          {
+            "id": "https://local.test/emojis/alpha",
+            "type": "Emoji",
+            "name": ":alpha:",
+            "updated": "2026-11-11T00:00:00.000Z",
+            "icon": {
+              "type": "Image",
+              "mediaType": "image/webp",
+              "url": "https://cdn.test/alpha"
+            },
+            "_misskey_license": {
+              "freeText": "CC0"
+            }
+          },
+          {
+            "id": "https://local.test/emojis/alpha",
+            "type": "Emoji",
+            "name": ":alpha:",
+            "updated": "2026-11-11T00:00:00.001Z",
+            "icon": {
+              "type": "Image",
+              "mediaType": "image/webp",
+              "url": "https://cdn.test/alpha"
+            },
+            "_misskey_license": {
+              "freeText": "CC0"
+            }
+          },
+          {
+            "type": "Hashtag",
+            "href": "https://local.test/tags/after",
+            "name": "#after"
+          }
+        ],
+        "events": [
+          {
+            "op": "profile"
+          },
+          {
+            "op": "emojis"
+          },
+          {
+            "op": "emoji",
+            "name": "alpha"
+          },
+          {
+            "op": "clock",
+            "value": 1794355200000
+          },
+          {
+            "op": "emoji",
+            "name": "alpha"
+          },
+          {
+            "op": "clock",
+            "value": 1794355200001
+          },
+          {
+            "op": "hashtag",
+            "name": "after"
+          },
+          {
+            "op": "key"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile-failure",
+      "names": [
+        "alpha"
+      ],
+      "tags": [],
+      "rows": [
+        {
+          "name": "alpha",
+          "type": "image/webp",
+          "publicUrl": "https://cdn.test/alpha",
+          "originalUrl": "https://original.test/alpha",
+          "license": "CC0",
+          "localOnly": false,
+          "updatedAt": "2020-01-02T03:04:05.000Z"
+        }
+      ],
+      "profileFailure": true,
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "profile unavailable"
+        },
+        "events": [
+          {
+            "op": "profile"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cache-failure",
+      "names": [
+        "alpha"
+      ],
+      "tags": [],
+      "rows": [
+        {
+          "name": "alpha",
+          "type": "image/webp",
+          "publicUrl": "https://cdn.test/alpha",
+          "originalUrl": "https://original.test/alpha",
+          "license": "CC0",
+          "localOnly": false,
+          "updatedAt": "2020-01-02T03:04:05.000Z"
+        }
+      ],
+      "cacheFailure": true,
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "emoji unavailable"
+        },
+        "events": [
+          {
+            "op": "profile"
+          },
+          {
+            "op": "emojis"
+          }
+        ]
+      }
+    },
+    {
+      "id": "emoji-render-failure",
+      "names": [
+        "alpha",
+        "beta"
+      ],
+      "tags": [],
+      "rows": [
+        {
+          "name": "alpha",
+          "type": "image/webp",
+          "publicUrl": "https://cdn.test/alpha",
+          "originalUrl": "https://original.test/alpha",
+          "license": "CC0",
+          "localOnly": false,
+          "updatedAt": "invalid"
+        },
+        {
+          "name": "beta",
+          "type": "image/webp",
+          "publicUrl": "https://cdn.test/alpha",
+          "originalUrl": "https://original.test/alpha",
+          "license": "CC0",
+          "localOnly": false,
+          "updatedAt": null
+        }
+      ],
+      "expected": {
+        "error": {
+          "name": "RangeError",
+          "message": "Invalid time value"
+        },
+        "events": [
+          {
+            "op": "profile"
+          },
+          {
+            "op": "emojis"
+          },
+          {
+            "op": "emoji",
+            "name": "alpha"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hashtag-render-failure",
+      "names": [
+        "alpha"
+      ],
+      "tags": [
+        "\ud800"
+      ],
+      "rows": [
+        {
+          "name": "alpha",
+          "type": "image/webp",
+          "publicUrl": "https://cdn.test/alpha",
+          "originalUrl": "https://original.test/alpha",
+          "license": "CC0",
+          "localOnly": false,
+          "updatedAt": null
+        }
+      ],
+      "expected": {
+        "error": {
+          "name": "URIError",
+          "message": "URI malformed"
+        },
+        "events": [
+          {
+            "op": "profile"
+          },
+          {
+            "op": "emojis"
+          },
+          {
+            "op": "emoji",
+            "name": "alpha"
+          },
+          {
+            "op": "clock",
+            "value": 1794355200000
+          },
+          {
+            "op": "hashtag",
+            "name": "\ud800"
+          }
+        ]
+      }
+    },
+    {
+      "id": "key-failure",
+      "names": [
+        "alpha"
+      ],
+      "tags": [],
+      "rows": [
+        {
+          "name": "alpha",
+          "type": "image/webp",
+          "publicUrl": "https://cdn.test/alpha",
+          "originalUrl": "https://original.test/alpha",
+          "license": "CC0",
+          "localOnly": false,
+          "updatedAt": null
+        }
+      ],
+      "keyFailure": true,
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "key unavailable"
+        },
+        "events": [
+          {
+            "op": "profile"
+          },
+          {
+            "op": "emojis"
+          },
+          {
+            "op": "emoji",
+            "name": "alpha"
+          },
+          {
+            "op": "clock",
+            "value": 1794355200000
+          },
+          {
+            "op": "key"
+          }
+        ]
+      }
+    }
+  ]
+}

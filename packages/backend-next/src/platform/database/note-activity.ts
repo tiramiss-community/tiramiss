@@ -2,8 +2,9 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { In, IsNull } from 'typeorm';
-import { MiDriveFile, MiEmoji, MiNote, MiPoll, MiUser } from 'backend-upstream/entities';
+import { In } from 'typeorm';
+import { MiDriveFile, MiNote, MiPoll, MiUser } from 'backend-upstream/entities';
+import { createLocalEmojiReader } from './local-emojis.js';
 import { readMeta } from './meta.js';
 import { publicFileUrl } from './note-files.js';
 import type { EntityManager } from 'typeorm';
@@ -67,22 +68,7 @@ export function createNoteActivityReader(manager: EntityManager, options: Pick<N
 		return poll && { choices: poll.choices, multiple: poll.multiple, votes: poll.votes, expiresAtMs: poll.expiresAt?.getTime() ?? null };
 	}
 
-	// 本家はローカルの絵文字全件を Redis とメモリにキャッシュして引く。ここでは名前で DB から引き、キャッシュの鮮度の差だけを許す。
-	async function readEmojis(names: string[]): Promise<NoteActivityMaterials['emojis']> {
-		if (names.length === 0) {
-			return [];
-		}
-		const emojis = await manager.getRepository(MiEmoji).findBy({ host: IsNull(), name: In(names) });
-		return names.flatMap(name => emojis.filter(emoji => emoji.name === name).map(emoji => ({
-			name: emoji.name,
-			type: emoji.type,
-			publicUrl: emoji.publicUrl,
-			originalUrl: emoji.originalUrl,
-			license: emoji.license,
-			localOnly: emoji.localOnly,
-			updatedAtMs: emoji.updatedAt?.getTime() ?? null,
-		})));
-	}
+	const readEmojis = createLocalEmojiReader(manager);
 
 	return async (noteId: string): Promise<NoteDeliveryMaterials | null> => {
 		const note = await manager.getRepository(MiNote).findOneBy({ id: noteId });

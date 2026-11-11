@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { createLocalActorTagReader } from './local-actor-tags.js';
 import { htmlToMfm, apType, webfingerUrl, selectWebfingerSelf, createActivitySession, createHostRules, isFederationAllowedHost, toPuny, punyHost, validateActor, validateActorProfileUrl, prepareActor, collectionVisibility, insertActor, truncate } from '../modules/federation/public.js';
 import { createRemoteUserRepository, createRemoteActorTransactions } from '../platform/database/remote-users.js';
 import { createActorReader, createActorProfileReader } from '../platform/database/local-actors.js';
@@ -26,6 +27,7 @@ export function createRemoteUsers(parts: {
 	// Transport policy uses DNS hostnames: a nondefault port must not collapse either side to an empty host.
 	const withoutRootDot = (host: string) => host.replace(/\.$/, '');
 	const requestRules = createHostRules(withoutRootDot(new URL(config.url).hostname));
+	const readTags = createLocalActorTagReader(parts.dataSource.manager, config.url);
 	const readProfile = createActorProfileReader(parts.dataSource.manager);
 	const readActor = createActorReader(parts.dataSource.manager, { includeSuspended: true });
 	const readRequestPolicy = async () => {
@@ -92,7 +94,8 @@ export function createRemoteUsers(parts: {
 						throw new Error('local user not found');
 					}
 					const profile = await readProfile(user.id);
-					return renderLocalActor(user, profile, config.url, parts.federationKeys.toSpkiPublicKeyPem((await parts.federationKeys.readUserKeypair(user.id)).publicKeyPem));
+					const tag = await readTags(user);
+					return renderLocalActor(user, profile, config.url, parts.federationKeys.toSpkiPublicKeyPem((await parts.federationKeys.readUserKeypair(user.id)).publicKeyPem), tag);
 				},
 			});
 			const material = validateActor(await session.resolve(uri), uri);

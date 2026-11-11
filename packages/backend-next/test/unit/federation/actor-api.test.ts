@@ -10,11 +10,12 @@ afterEach(() => vi.restoreAllMocks());
 test.each(['application/activity+json', 'application/ld+json'])('key lookup failure does not cache the %s error response', async accept => {
 	vi.spyOn(console, 'error').mockImplementation(() => {});
 	const app = createActivityPubActorApi({
+		readTags: async () => [],
 		readProfile: async () => ({ description: null, followedMessage: null, fields: [], birthday: null, location: null }),
 		selfUrl: 'https://local.test',
 		isSelfHost: host => host === 'local.test',
 		federationEnabled: async () => true,
-		readActor: async id => ({ id, username: 'alice', name: null, isBot: false, isLocked: false, isExplorable: true, host: null, uri: null }),
+		readActor: async id => ({ id, username: 'alice', name: null, isBot: false, isLocked: false, isExplorable: true, emojis: [], tags: [], host: null, uri: null }),
 		publicKey: async () => {
 			throw new Error('key lookup failed');
 		},

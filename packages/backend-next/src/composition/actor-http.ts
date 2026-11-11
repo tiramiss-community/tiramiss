@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { createLocalActorTagReader } from './local-actor-tags.js';
 import { createActivityPubActorApi } from '../http/activitypub-actor-api.js';
 import { createHostRules } from '../modules/federation/public.js';
 import { createActorReader, createActorProfileReader } from '../platform/database/local-actors.js';
@@ -10,6 +11,7 @@ import type { RuntimeResources } from './create-runtime.js';
 import type { RuntimeConfig } from '../config/types.js';
 export function createActorHttp(resources: RuntimeResources, config: RuntimeConfig) {
 	return createActivityPubActorApi({
+		readTags: createLocalActorTagReader(resources.dataSource.manager, config.url),
 		readActor: createActorReader(resources.dataSource.manager),
 		readProfile: createActorProfileReader(resources.dataSource.manager),
 		federationEnabled: async () => (await readMeta(resources.dataSource.manager)).federation !== 'none',

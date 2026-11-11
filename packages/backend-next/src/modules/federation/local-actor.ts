@@ -5,6 +5,7 @@
 import * as mfm from 'mfm-js';
 import { toHtml } from '../mfm/public.js';
 import { apContext } from './ap-context.js';
+import type { LocalActorTag } from './ap-tags.js';
 export interface LocalActorFacts {
 	id: string;
 	username: string;
@@ -12,6 +13,8 @@ export interface LocalActorFacts {
 	isBot: boolean;
 	isLocked: boolean;
 	isExplorable: boolean;
+	emojis: readonly string[];
+	tags: readonly string[];
 }
 export interface LocalActorProfileFacts {
 	description: string | null;
@@ -36,7 +39,7 @@ function rewriteFieldUrl(value: string): string {
 	}
 }
 
-export function renderLocalActor(facts: LocalActorFacts, profile: LocalActorProfileFacts, selfUrl: string, publicKeyPem: string): Record<string, unknown> {
+export function renderLocalActor(facts: LocalActorFacts, profile: LocalActorProfileFacts, selfUrl: string, publicKeyPem: string, tag: readonly LocalActorTag[]): Record<string, unknown> {
 	const id = `${selfUrl}/users/${facts.id}`;
 	const attachment = profile.fields.map(field => ({ type: 'PropertyValue', name: field.name,
 		value: field.value.startsWith('http://') || field.value.startsWith('https://') ? rewriteFieldUrl(field.value) : field.value }));
@@ -46,6 +49,7 @@ export function renderLocalActor(facts: LocalActorFacts, profile: LocalActorProf
 		sharedInbox: `${selfUrl}/inbox`, endpoints: { sharedInbox: `${selfUrl}/inbox` }, url: `${selfUrl}/@${facts.username}`,
 		preferredUsername: facts.username, name: facts.name, manuallyApprovesFollowers: facts.isLocked, discoverable: facts.isExplorable,
 		summary: profile.description ? toHtml(mfm.parse(profile.description), { selfUrl, mentionedRemoteUsers: [] }) : null,
+		tag,
 		_misskey_summary: profile.description, _misskey_followedMessage: profile.followedMessage,
 		attachment: attachment.length ? attachment : undefined,
 		...(profile.birthday ? { 'vcard:bday': profile.birthday } : {}),
