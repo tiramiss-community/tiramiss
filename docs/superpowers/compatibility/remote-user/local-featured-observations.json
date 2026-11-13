@@ -137,7 +137,7 @@
       }
     }
   ],
-  "corpusSha256": "739ea3ae9e9e527ff04976d531b1d9e89f019a63538156dd0a8bacdc445261d7",
+  "corpusSha256": "873f758b8405fd7e27ce890813ec42b9ca529af11996777fa3206db361311e3b",
   "doubles": [
     "In/IsNull retain actual TypeORM operators; repository doubles implement pinned predicates and record facts/read failures",
     "clock frozen; literal IdService.parse/parseAidx (finite aidx IDs); literal Drive getPublicUrl/getProxiedUrl with declared config/meta",
@@ -3762,6 +3762,52 @@
         "events": [
           "html",
           "emoji"
+        ]
+      }
+    },
+    {
+      "id": "note-redirect-guard-unicode",
+      "expected": {
+        "status": 406,
+        "headers": {
+          "cache-control": null,
+          "content-type": "text/plain; charset=utf-8",
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": "<https://remote.test/%E6%97%A5%E6%9C%AC>; rel=\"canonical\""
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "text": "Refusing to relay remote ActivityPub object lookup.\n\nPlease remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at https://remote.test/日本.",
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-redirect-guard-unicode-percent-query",
+      "expected": {
+        "status": 406,
+        "headers": {
+          "cache-control": null,
+          "content-type": "text/plain; charset=utf-8",
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": "<https://remote.test/%E6%97%A5%E6%9C%AC%2520x?q=%252F&name=%E6%97%A5%E6%9C%AC>; rel=\"canonical\""
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "text": "Refusing to relay remote ActivityPub object lookup.\n\nPlease remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at https://remote.test/日本%20x?q=%2F&name=日本.",
+        "events": [
+          "lookup"
         ]
       }
     }

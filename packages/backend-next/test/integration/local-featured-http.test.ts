@@ -153,6 +153,20 @@ test('stored redirect policy rejects external AP lookup with canonical link whil
 		await resources.dataSource.getRepository(MiNote).update(note.id, { userHost: null, uri: null });
 	}
 });
+test('blocked stored Unicode URI retains the source canonical link and explanatory text', async () => {
+	const uri = 'https://remote.test/日本%20x?q=%2F&name=日本';
+	await resources.dataSource.getRepository(MiMeta).update('singleton', { allowExternalApRedirect: false });
+	await resources.dataSource.getRepository(MiNote).update(note.id, { userHost: 'remote.test', uri });
+	try {
+		const response = await get(`/notes/${note.id}`);
+		expect(response.status).toBe(406);
+		expect(response.headers.get('link')).toBe('<https://remote.test/%E6%97%A5%E6%9C%AC%2520x?q=%252F&name=%E6%97%A5%E6%9C%AC>; rel="canonical"');
+		expect(await response.text()).toBe("Refusing to relay remote ActivityPub object lookup.\n\nPlease remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at https://remote.test/日本%20x?q=%2F&name=日本.");
+	} finally {
+		await resources.dataSource.getRepository(MiMeta).update('singleton', { allowExternalApRedirect: true });
+		await resources.dataSource.getRepository(MiNote).update(note.id, { userHost: null, uri: null });
+	}
+});
 test('a pin target retrieval failure never becomes a partial successful collection', async () => {
 	const repository = resources.dataSource.getRepository(MiNote);
 	const original = repository.findOneByOrFail.bind(repository);

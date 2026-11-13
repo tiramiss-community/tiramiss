@@ -80,8 +80,7 @@ export function createActivityPubNotesApi(parts: {
 				if (note.uri === null || parts.isSelfHost(note.userHost)) {
 					return c.body(null, 500);
 				}
-				const redirected = c.redirect(note.uri, 302);
-				const location = redirected.headers.get('location')!;
+				const location = note.uri;
 				const effectiveLocation = parts.production ? location : location.replace(/^http:\/\//, 'https://');
 				if (!await parts.allowExternalApRedirect()
 					&& /application\/activity\+json|application\/ld\+json.+activitystreams/i.test(c.req.header('accept') ?? '')
@@ -95,7 +94,7 @@ export function createActivityPubNotesApi(parts: {
 						`Please remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at ${location}.`,
 					].join('\n'), 406);
 				}
-				return redirected;
+				return c.redirect(note.uri, 302);
 			}
 			c.header('Cache-Control', 'public, max-age=180');
 			responseType(c);

@@ -2018,6 +2018,18 @@
       "fail": [
         "emoji"
       ]
+    },
+    {
+      "id": "note-redirect-guard-unicode",
+      "route": "note",
+      "allowExternalApRedirect": false,
+      "note": { "userHost": "remote.test", "uri": "https://remote.test/日本" }
+    },
+    {
+      "id": "note-redirect-guard-unicode-percent-query",
+      "route": "note",
+      "allowExternalApRedirect": false,
+      "note": { "userHost": "remote.test", "uri": "https://remote.test/日本%20x?q=%2F&name=日本" }
     }
   ]
 }
