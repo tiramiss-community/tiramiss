@@ -8,6 +8,7 @@ import type { FollowCollectionDirection, FollowCollectionReader } from '../../sr
 export interface FollowCollectionCase {
 	id: string;
 	direction: FollowCollectionDirection;
+	pathUser?: string;
 	size?: number;
 	query?: string;
 	method?: string;
@@ -30,12 +31,13 @@ export const followCorpus = JSON.parse(readFileSync(new URL('local-follow-collec
 	cases: FollowCollectionCase[];
 };
 export const followSource = JSON.parse(readFileSync(new URL('local-follow-collections-observations.json', root), 'utf8')) as {
-	cases: { id: string; expected: { status: number; headers: Record<string, string | null>; json?: unknown; bodyEmpty: boolean; events: string[]; relationCursors: (string | null)[] } }[];
+	cases: { id: string; expected: { status: number; headers: Record<string, string | null>; json?: unknown; bodyEmpty: boolean; events: string[]; relationCursors: (string | null)[]; lookupIds: string[]; metaEntries: number; errorProjection?: { statusCode: number; error: string } } }[];
 };
 
 export function followFixture(c: FollowCollectionCase) {
 	const events: string[] = [];
 	const relationCursors: (string | null)[] = [];
+	const lookupIds: string[] = [];
 	const event = (stage: string) => {
 		events.push(stage);
 		if (c.fail === stage) {
@@ -43,9 +45,10 @@ export function followFixture(c: FollowCollectionCase) {
 		}
 	};
 	const reader: FollowCollectionReader = {
-		async readLocalUser() {
+		async readLocalUser(id) {
+			lookupIds.push(id);
 			event('user');
-			return c.missing || c.ownerHost ? null : { id: 'alice', followersCount: 123, followingCount: 456 };
+			return id !== 'alice' || c.missing || c.ownerHost ? null : { id: 'alice', followersCount: 123, followingCount: 456 };
 		},
 		async readVisibility() {
 			event('profile');
@@ -70,5 +73,5 @@ export function followFixture(c: FollowCollectionCase) {
 			return { id, host: Number(id.slice(1)) % 2 ? 'remote.test' : null, uri: c.nullMember ? null : `https://remote.test/${id}` };
 		},
 	};
-	return { reader, events, relationCursors };
+	return { reader, events, relationCursors, lookupIds };
 }

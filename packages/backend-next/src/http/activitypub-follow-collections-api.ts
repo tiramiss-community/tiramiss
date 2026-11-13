@@ -46,6 +46,13 @@ export function createActivityPubFollowCollectionsApi(parts: {
 	for (const direction of ['followers', 'following'] as const) {
 		const path = `/users/:id/${direction}`;
 		app.get(path, async c => {
+			let id: string;
+			try {
+				// Hono's decoded param can retain invalid escapes; the pinned router rejects the raw component before route hooks.
+				id = decodeURIComponent(new URL(c.req.url).pathname.split('/')[2]);
+			} catch {
+				return c.body(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'Bad Request' }), 400, { 'Content-Type': 'application/json' });
+			}
 			c.header('Access-Control-Allow-Headers', 'Accept');
 			c.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
 			c.header('Access-Control-Allow-Origin', '*');
@@ -58,7 +65,7 @@ export function createActivityPubFollowCollectionsApi(parts: {
 				if (cursors && cursors.length !== 1) {
 					return c.body(null, 400);
 				}
-				const result = await parts.readCollection(c.req.param('id')!, direction, pages?.length === 1 && pages[0] === 'true', cursors?.[0]);
+				const result = await parts.readCollection(id, direction, pages?.length === 1 && pages[0] === 'true', cursors?.[0]);
 				if (result.cacheSeconds !== undefined) {
 					c.header('Cache-Control', `public, max-age=${result.cacheSeconds}`);
 				}

@@ -732,6 +732,1442 @@
       "direction": "following",
       "query": "?page=true&cursor=r%30z%&%63ursor=b",
       "missing": true
+    },
+    {
+      "id": "followers-path-mixed-percent-get-all-index",
+      "direction": "followers",
+      "pathUser": "ali%63e%",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-mixed-percent-get-all-query-error",
+      "direction": "followers",
+      "pathUser": "ali%63e%",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-mixed-percent-get-none-index",
+      "direction": "followers",
+      "pathUser": "ali%63e%",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-mixed-percent-get-none-query-error",
+      "direction": "followers",
+      "pathUser": "ali%63e%",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-mixed-percent-head-all-index",
+      "direction": "followers",
+      "pathUser": "ali%63e%",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-mixed-percent-head-all-query-error",
+      "direction": "followers",
+      "pathUser": "ali%63e%",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-mixed-percent-head-none-index",
+      "direction": "followers",
+      "pathUser": "ali%63e%",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-mixed-percent-head-none-query-error",
+      "direction": "followers",
+      "pathUser": "ali%63e%",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-invalid-utf8-get-all-index",
+      "direction": "followers",
+      "pathUser": "%FF",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-invalid-utf8-get-all-query-error",
+      "direction": "followers",
+      "pathUser": "%FF",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-invalid-utf8-get-none-index",
+      "direction": "followers",
+      "pathUser": "%FF",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-invalid-utf8-get-none-query-error",
+      "direction": "followers",
+      "pathUser": "%FF",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-invalid-utf8-head-all-index",
+      "direction": "followers",
+      "pathUser": "%FF",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-invalid-utf8-head-all-query-error",
+      "direction": "followers",
+      "pathUser": "%FF",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-invalid-utf8-head-none-index",
+      "direction": "followers",
+      "pathUser": "%FF",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-invalid-utf8-head-none-query-error",
+      "direction": "followers",
+      "pathUser": "%FF",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-truncated-utf8-get-all-index",
+      "direction": "followers",
+      "pathUser": "%E6%97",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-truncated-utf8-get-all-query-error",
+      "direction": "followers",
+      "pathUser": "%E6%97",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-truncated-utf8-get-none-index",
+      "direction": "followers",
+      "pathUser": "%E6%97",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-truncated-utf8-get-none-query-error",
+      "direction": "followers",
+      "pathUser": "%E6%97",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-truncated-utf8-head-all-index",
+      "direction": "followers",
+      "pathUser": "%E6%97",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-truncated-utf8-head-all-query-error",
+      "direction": "followers",
+      "pathUser": "%E6%97",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-truncated-utf8-head-none-index",
+      "direction": "followers",
+      "pathUser": "%E6%97",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-truncated-utf8-head-none-query-error",
+      "direction": "followers",
+      "pathUser": "%E6%97",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-alice-get-all-index",
+      "direction": "followers",
+      "pathUser": "%61lice",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-encoded-alice-get-all-query-error",
+      "direction": "followers",
+      "pathUser": "%61lice",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-alice-get-none-index",
+      "direction": "followers",
+      "pathUser": "%61lice",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-encoded-alice-get-none-query-error",
+      "direction": "followers",
+      "pathUser": "%61lice",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-alice-head-all-index",
+      "direction": "followers",
+      "pathUser": "%61lice",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-encoded-alice-head-all-query-error",
+      "direction": "followers",
+      "pathUser": "%61lice",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-alice-head-none-index",
+      "direction": "followers",
+      "pathUser": "%61lice",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-encoded-alice-head-none-query-error",
+      "direction": "followers",
+      "pathUser": "%61lice",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-middle-get-all-index",
+      "direction": "followers",
+      "pathUser": "ali%63e",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-encoded-middle-get-all-query-error",
+      "direction": "followers",
+      "pathUser": "ali%63e",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-middle-get-none-index",
+      "direction": "followers",
+      "pathUser": "ali%63e",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-encoded-middle-get-none-query-error",
+      "direction": "followers",
+      "pathUser": "ali%63e",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-middle-head-all-index",
+      "direction": "followers",
+      "pathUser": "ali%63e",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-encoded-middle-head-all-query-error",
+      "direction": "followers",
+      "pathUser": "ali%63e",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-middle-head-none-index",
+      "direction": "followers",
+      "pathUser": "ali%63e",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-encoded-middle-head-none-query-error",
+      "direction": "followers",
+      "pathUser": "ali%63e",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-double-encoded-alice-get-all-index",
+      "direction": "followers",
+      "pathUser": "%2561lice",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-double-encoded-alice-get-all-query-error",
+      "direction": "followers",
+      "pathUser": "%2561lice",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-double-encoded-alice-get-none-index",
+      "direction": "followers",
+      "pathUser": "%2561lice",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-double-encoded-alice-get-none-query-error",
+      "direction": "followers",
+      "pathUser": "%2561lice",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-double-encoded-alice-head-all-index",
+      "direction": "followers",
+      "pathUser": "%2561lice",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-double-encoded-alice-head-all-query-error",
+      "direction": "followers",
+      "pathUser": "%2561lice",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-double-encoded-alice-head-none-index",
+      "direction": "followers",
+      "pathUser": "%2561lice",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-double-encoded-alice-head-none-query-error",
+      "direction": "followers",
+      "pathUser": "%2561lice",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-double-encoded-malformed-get-all-index",
+      "direction": "followers",
+      "pathUser": "ali%2563e%25",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-double-encoded-malformed-get-all-query-error",
+      "direction": "followers",
+      "pathUser": "ali%2563e%25",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-double-encoded-malformed-get-none-index",
+      "direction": "followers",
+      "pathUser": "ali%2563e%25",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-double-encoded-malformed-get-none-query-error",
+      "direction": "followers",
+      "pathUser": "ali%2563e%25",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-double-encoded-malformed-head-all-index",
+      "direction": "followers",
+      "pathUser": "ali%2563e%25",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-double-encoded-malformed-head-all-query-error",
+      "direction": "followers",
+      "pathUser": "ali%2563e%25",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-double-encoded-malformed-head-none-index",
+      "direction": "followers",
+      "pathUser": "ali%2563e%25",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-double-encoded-malformed-head-none-query-error",
+      "direction": "followers",
+      "pathUser": "ali%2563e%25",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-invalid-utf8-get-all-index",
+      "direction": "followers",
+      "pathUser": "%25FF",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-encoded-invalid-utf8-get-all-query-error",
+      "direction": "followers",
+      "pathUser": "%25FF",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-invalid-utf8-get-none-index",
+      "direction": "followers",
+      "pathUser": "%25FF",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-encoded-invalid-utf8-get-none-query-error",
+      "direction": "followers",
+      "pathUser": "%25FF",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-invalid-utf8-head-all-index",
+      "direction": "followers",
+      "pathUser": "%25FF",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-encoded-invalid-utf8-head-all-query-error",
+      "direction": "followers",
+      "pathUser": "%25FF",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-invalid-utf8-head-none-index",
+      "direction": "followers",
+      "pathUser": "%25FF",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-encoded-invalid-utf8-head-none-query-error",
+      "direction": "followers",
+      "pathUser": "%25FF",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-truncated-utf8-get-all-index",
+      "direction": "followers",
+      "pathUser": "%25E6%2597",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-encoded-truncated-utf8-get-all-query-error",
+      "direction": "followers",
+      "pathUser": "%25E6%2597",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-truncated-utf8-get-none-index",
+      "direction": "followers",
+      "pathUser": "%25E6%2597",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-encoded-truncated-utf8-get-none-query-error",
+      "direction": "followers",
+      "pathUser": "%25E6%2597",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-truncated-utf8-head-all-index",
+      "direction": "followers",
+      "pathUser": "%25E6%2597",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-encoded-truncated-utf8-head-all-query-error",
+      "direction": "followers",
+      "pathUser": "%25E6%2597",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-truncated-utf8-head-none-index",
+      "direction": "followers",
+      "pathUser": "%25E6%2597",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-encoded-truncated-utf8-head-none-query-error",
+      "direction": "followers",
+      "pathUser": "%25E6%2597",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-literal-percent-get-all-index",
+      "direction": "followers",
+      "pathUser": "alice%25",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-literal-percent-get-all-query-error",
+      "direction": "followers",
+      "pathUser": "alice%25",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-literal-percent-get-none-index",
+      "direction": "followers",
+      "pathUser": "alice%25",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-literal-percent-get-none-query-error",
+      "direction": "followers",
+      "pathUser": "alice%25",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-literal-percent-head-all-index",
+      "direction": "followers",
+      "pathUser": "alice%25",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-literal-percent-head-all-query-error",
+      "direction": "followers",
+      "pathUser": "alice%25",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-literal-percent-head-none-index",
+      "direction": "followers",
+      "pathUser": "alice%25",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-literal-percent-head-none-query-error",
+      "direction": "followers",
+      "pathUser": "alice%25",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-valid-unicode-get-all-index",
+      "direction": "followers",
+      "pathUser": "%E6%97%A5",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-valid-unicode-get-all-query-error",
+      "direction": "followers",
+      "pathUser": "%E6%97%A5",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-valid-unicode-get-none-index",
+      "direction": "followers",
+      "pathUser": "%E6%97%A5",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-valid-unicode-get-none-query-error",
+      "direction": "followers",
+      "pathUser": "%E6%97%A5",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-valid-unicode-head-all-index",
+      "direction": "followers",
+      "pathUser": "%E6%97%A5",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "followers-path-valid-unicode-head-all-query-error",
+      "direction": "followers",
+      "pathUser": "%E6%97%A5",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-valid-unicode-head-none-index",
+      "direction": "followers",
+      "pathUser": "%E6%97%A5",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "followers-path-valid-unicode-head-none-query-error",
+      "direction": "followers",
+      "pathUser": "%E6%97%A5",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "followers-path-encoded-page-get",
+      "direction": "followers",
+      "pathUser": "%61lice",
+      "method": "GET",
+      "query": "?page=true&cursor=r%30z%"
+    },
+    {
+      "id": "followers-path-encoded-page-head",
+      "direction": "followers",
+      "pathUser": "%61lice",
+      "method": "HEAD",
+      "query": "?page=true&cursor=r%30z%"
+    },
+    {
+      "id": "following-path-mixed-percent-get-all-index",
+      "direction": "following",
+      "pathUser": "ali%63e%",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-mixed-percent-get-all-query-error",
+      "direction": "following",
+      "pathUser": "ali%63e%",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-mixed-percent-get-none-index",
+      "direction": "following",
+      "pathUser": "ali%63e%",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-mixed-percent-get-none-query-error",
+      "direction": "following",
+      "pathUser": "ali%63e%",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-mixed-percent-head-all-index",
+      "direction": "following",
+      "pathUser": "ali%63e%",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-mixed-percent-head-all-query-error",
+      "direction": "following",
+      "pathUser": "ali%63e%",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-mixed-percent-head-none-index",
+      "direction": "following",
+      "pathUser": "ali%63e%",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-mixed-percent-head-none-query-error",
+      "direction": "following",
+      "pathUser": "ali%63e%",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-invalid-utf8-get-all-index",
+      "direction": "following",
+      "pathUser": "%FF",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-invalid-utf8-get-all-query-error",
+      "direction": "following",
+      "pathUser": "%FF",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-invalid-utf8-get-none-index",
+      "direction": "following",
+      "pathUser": "%FF",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-invalid-utf8-get-none-query-error",
+      "direction": "following",
+      "pathUser": "%FF",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-invalid-utf8-head-all-index",
+      "direction": "following",
+      "pathUser": "%FF",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-invalid-utf8-head-all-query-error",
+      "direction": "following",
+      "pathUser": "%FF",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-invalid-utf8-head-none-index",
+      "direction": "following",
+      "pathUser": "%FF",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-invalid-utf8-head-none-query-error",
+      "direction": "following",
+      "pathUser": "%FF",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-truncated-utf8-get-all-index",
+      "direction": "following",
+      "pathUser": "%E6%97",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-truncated-utf8-get-all-query-error",
+      "direction": "following",
+      "pathUser": "%E6%97",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-truncated-utf8-get-none-index",
+      "direction": "following",
+      "pathUser": "%E6%97",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-truncated-utf8-get-none-query-error",
+      "direction": "following",
+      "pathUser": "%E6%97",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-truncated-utf8-head-all-index",
+      "direction": "following",
+      "pathUser": "%E6%97",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-truncated-utf8-head-all-query-error",
+      "direction": "following",
+      "pathUser": "%E6%97",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-truncated-utf8-head-none-index",
+      "direction": "following",
+      "pathUser": "%E6%97",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-truncated-utf8-head-none-query-error",
+      "direction": "following",
+      "pathUser": "%E6%97",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-alice-get-all-index",
+      "direction": "following",
+      "pathUser": "%61lice",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-encoded-alice-get-all-query-error",
+      "direction": "following",
+      "pathUser": "%61lice",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-alice-get-none-index",
+      "direction": "following",
+      "pathUser": "%61lice",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-encoded-alice-get-none-query-error",
+      "direction": "following",
+      "pathUser": "%61lice",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-alice-head-all-index",
+      "direction": "following",
+      "pathUser": "%61lice",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-encoded-alice-head-all-query-error",
+      "direction": "following",
+      "pathUser": "%61lice",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-alice-head-none-index",
+      "direction": "following",
+      "pathUser": "%61lice",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-encoded-alice-head-none-query-error",
+      "direction": "following",
+      "pathUser": "%61lice",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-middle-get-all-index",
+      "direction": "following",
+      "pathUser": "ali%63e",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-encoded-middle-get-all-query-error",
+      "direction": "following",
+      "pathUser": "ali%63e",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-middle-get-none-index",
+      "direction": "following",
+      "pathUser": "ali%63e",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-encoded-middle-get-none-query-error",
+      "direction": "following",
+      "pathUser": "ali%63e",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-middle-head-all-index",
+      "direction": "following",
+      "pathUser": "ali%63e",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-encoded-middle-head-all-query-error",
+      "direction": "following",
+      "pathUser": "ali%63e",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-middle-head-none-index",
+      "direction": "following",
+      "pathUser": "ali%63e",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-encoded-middle-head-none-query-error",
+      "direction": "following",
+      "pathUser": "ali%63e",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-double-encoded-alice-get-all-index",
+      "direction": "following",
+      "pathUser": "%2561lice",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-double-encoded-alice-get-all-query-error",
+      "direction": "following",
+      "pathUser": "%2561lice",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-double-encoded-alice-get-none-index",
+      "direction": "following",
+      "pathUser": "%2561lice",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-double-encoded-alice-get-none-query-error",
+      "direction": "following",
+      "pathUser": "%2561lice",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-double-encoded-alice-head-all-index",
+      "direction": "following",
+      "pathUser": "%2561lice",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-double-encoded-alice-head-all-query-error",
+      "direction": "following",
+      "pathUser": "%2561lice",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-double-encoded-alice-head-none-index",
+      "direction": "following",
+      "pathUser": "%2561lice",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-double-encoded-alice-head-none-query-error",
+      "direction": "following",
+      "pathUser": "%2561lice",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-double-encoded-malformed-get-all-index",
+      "direction": "following",
+      "pathUser": "ali%2563e%25",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-double-encoded-malformed-get-all-query-error",
+      "direction": "following",
+      "pathUser": "ali%2563e%25",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-double-encoded-malformed-get-none-index",
+      "direction": "following",
+      "pathUser": "ali%2563e%25",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-double-encoded-malformed-get-none-query-error",
+      "direction": "following",
+      "pathUser": "ali%2563e%25",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-double-encoded-malformed-head-all-index",
+      "direction": "following",
+      "pathUser": "ali%2563e%25",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-double-encoded-malformed-head-all-query-error",
+      "direction": "following",
+      "pathUser": "ali%2563e%25",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-double-encoded-malformed-head-none-index",
+      "direction": "following",
+      "pathUser": "ali%2563e%25",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-double-encoded-malformed-head-none-query-error",
+      "direction": "following",
+      "pathUser": "ali%2563e%25",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-invalid-utf8-get-all-index",
+      "direction": "following",
+      "pathUser": "%25FF",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-encoded-invalid-utf8-get-all-query-error",
+      "direction": "following",
+      "pathUser": "%25FF",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-invalid-utf8-get-none-index",
+      "direction": "following",
+      "pathUser": "%25FF",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-encoded-invalid-utf8-get-none-query-error",
+      "direction": "following",
+      "pathUser": "%25FF",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-invalid-utf8-head-all-index",
+      "direction": "following",
+      "pathUser": "%25FF",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-encoded-invalid-utf8-head-all-query-error",
+      "direction": "following",
+      "pathUser": "%25FF",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-invalid-utf8-head-none-index",
+      "direction": "following",
+      "pathUser": "%25FF",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-encoded-invalid-utf8-head-none-query-error",
+      "direction": "following",
+      "pathUser": "%25FF",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-truncated-utf8-get-all-index",
+      "direction": "following",
+      "pathUser": "%25E6%2597",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-encoded-truncated-utf8-get-all-query-error",
+      "direction": "following",
+      "pathUser": "%25E6%2597",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-truncated-utf8-get-none-index",
+      "direction": "following",
+      "pathUser": "%25E6%2597",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-encoded-truncated-utf8-get-none-query-error",
+      "direction": "following",
+      "pathUser": "%25E6%2597",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-truncated-utf8-head-all-index",
+      "direction": "following",
+      "pathUser": "%25E6%2597",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-encoded-truncated-utf8-head-all-query-error",
+      "direction": "following",
+      "pathUser": "%25E6%2597",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-truncated-utf8-head-none-index",
+      "direction": "following",
+      "pathUser": "%25E6%2597",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-encoded-truncated-utf8-head-none-query-error",
+      "direction": "following",
+      "pathUser": "%25E6%2597",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-literal-percent-get-all-index",
+      "direction": "following",
+      "pathUser": "alice%25",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-literal-percent-get-all-query-error",
+      "direction": "following",
+      "pathUser": "alice%25",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-literal-percent-get-none-index",
+      "direction": "following",
+      "pathUser": "alice%25",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-literal-percent-get-none-query-error",
+      "direction": "following",
+      "pathUser": "alice%25",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-literal-percent-head-all-index",
+      "direction": "following",
+      "pathUser": "alice%25",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-literal-percent-head-all-query-error",
+      "direction": "following",
+      "pathUser": "alice%25",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-literal-percent-head-none-index",
+      "direction": "following",
+      "pathUser": "alice%25",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-literal-percent-head-none-query-error",
+      "direction": "following",
+      "pathUser": "alice%25",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-valid-unicode-get-all-index",
+      "direction": "following",
+      "pathUser": "%E6%97%A5",
+      "method": "GET",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-valid-unicode-get-all-query-error",
+      "direction": "following",
+      "pathUser": "%E6%97%A5",
+      "method": "GET",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-valid-unicode-get-none-index",
+      "direction": "following",
+      "pathUser": "%E6%97%A5",
+      "method": "GET",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-valid-unicode-get-none-query-error",
+      "direction": "following",
+      "pathUser": "%E6%97%A5",
+      "method": "GET",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-valid-unicode-head-all-index",
+      "direction": "following",
+      "pathUser": "%E6%97%A5",
+      "method": "HEAD",
+      "federation": "all",
+      "query": ""
+    },
+    {
+      "id": "following-path-valid-unicode-head-all-query-error",
+      "direction": "following",
+      "pathUser": "%E6%97%A5",
+      "method": "HEAD",
+      "federation": "all",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-valid-unicode-head-none-index",
+      "direction": "following",
+      "pathUser": "%E6%97%A5",
+      "method": "HEAD",
+      "federation": "none",
+      "query": ""
+    },
+    {
+      "id": "following-path-valid-unicode-head-none-query-error",
+      "direction": "following",
+      "pathUser": "%E6%97%A5",
+      "method": "HEAD",
+      "federation": "none",
+      "query": "?cursor=a&cursor=b"
+    },
+    {
+      "id": "following-path-encoded-page-get",
+      "direction": "following",
+      "pathUser": "%61lice",
+      "method": "GET",
+      "query": "?page=true&cursor=r%30z%"
+    },
+    {
+      "id": "following-path-encoded-page-head",
+      "direction": "following",
+      "pathUser": "%61lice",
+      "method": "HEAD",
+      "query": "?page=true&cursor=r%30z%"
     }
   ]
 }

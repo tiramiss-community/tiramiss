@@ -69,6 +69,8 @@ const cases = [];
 for (const c of corpus.cases) {
  const events = [];
  const relationCursors = [];
+ const lookupIds = [];
+ let metaEntries = 0;
  const event = s => { events.push(s); if (c.fail === s) throw Error(`${s} unavailable`); };
  const size = c.size ?? corpus.defaults.size;
  const rows = Array.from({length:size},(_,i) => { const n=String(i+1).padStart(3,'0'); return {id:`r${n}`,followerId:c.direction==='followers'?`u${n}`:'alice',followeeId:c.direction==='following'?`u${n}`:'alice'}; });
@@ -78,18 +80,18 @@ for (const c of corpus.cases) {
   if (c.missingMember) throw Error('member missing');
   return {id,host:Number(id.slice(1))%2 ? 'remote.test':null,uri:c.nullMember?null:`https://remote.test/${id}`};
  }}};
- const receiver = {...server,config:{url:corpus.defaults.selfUrl},meta:{federation:c.federation??'all'},apRendererService,
-  usersRepository:{async findOneBy(where) { assert.equal(where.host._type,'isNull'); event('user'); return c.missing||c.ownerHost?null:{id:'alice',followersCount:123,followingCount:456,isSuspended:c.suspended??false}; }},
-  userProfilesRepository:{async findOneByOrFail() {event('profile'); if(c.missingProfile) throw Error('profile missing'); return {[`${c.direction}Visibility`]:c.visibility??'public',[`${c.direction==='followers'?'following':'followers'}Visibility`]:c.otherVisibility??'public'};}},
+ const receiver = {...server,config:{url:corpus.defaults.selfUrl},meta:{get federation() {metaEntries++;return c.federation??'all';}},apRendererService,
+  usersRepository:{async findOneBy(where) { assert.equal(where.host._type,'isNull'); lookupIds.push(where.id); event('user'); return where.id!=='alice'||c.missing||c.ownerHost?null:{id:'alice',followersCount:123,followingCount:456,isSuspended:c.suspended??false}; }},
+  userProfilesRepository:{async findOneByOrFail({userId}) {assert.equal(userId,'alice');event('profile'); if(c.missingProfile) throw Error('profile missing'); return {[`${c.direction}Visibility`]:c.visibility??'public',[`${c.direction==='followers'?'following':'followers'}Visibility`]:c.otherVisibility??'public'};}},
   followingsRepository:{async find(q) {event('relations');relationCursors.push(q.where.id?._value ?? null);assert.equal(q.take,11);assert.equal(q.order.id,-1);assert.equal(q.where[c.direction==='followers'?'followeeId':'followerId'],'alice');assert.equal(Object.keys(q.where).length,q.where.id?2:1);if(q.where.id) assert.equal(q.where.id._type,'lessThan');return rows.filter(r=>!q.where.id||r.id<q.where.id._value).sort((a,b)=>a.id<b.id?1:-1).slice(0,11);}}
  };
  const app = Fastify();
  try {
   await app.register(server.createServer.bind(receiver));
-  const response = await app.inject({method:c.method??'GET',url:`/users/alice/${c.direction}${c.query??''}`,headers:c.accept===null?{}:{accept:c.accept??'application/activity+json'}});
+  const response = await app.inject({method:c.method??'GET',url:`/users/${c.pathUser??'alice'}/${c.direction}${c.query??''}`,headers:c.accept===null?{}:{accept:c.accept??'application/activity+json'}});
   if(response.statusCode===500) assert(c.missingProfile||c.missingMember||c.fail,`${c.id} unexpected 500: ${response.body}`);
   const headers = Object.fromEntries(['cache-control','content-type','vary','access-control-allow-headers','access-control-allow-methods','access-control-allow-origin','access-control-expose-headers'].map(k=>[k,response.headers[k]??null]));
-  cases.push({id:c.id,expected:{status:response.statusCode,headers,bodyEmpty:response.body==='',...(response.statusCode===200&&c.method!=='HEAD'?{json:JSON.parse(response.body)}:{}),events,relationCursors}});
+  cases.push({id:c.id,expected:{status:response.statusCode,headers,bodyEmpty:response.body==='',...(response.statusCode===200&&c.method!=='HEAD'?{json:JSON.parse(response.body)}:{}),events,relationCursors,lookupIds,metaEntries,...(c.pathUser&&response.statusCode===400&&headers['access-control-allow-origin']===null&&c.method!=='HEAD'?{errorProjection:(({statusCode,error})=>({statusCode,error}))(JSON.parse(response.body))}:{})}});
  } finally {await app.close();}
 }
 const output=JSON.stringify({upstreamCommit:pin,runtime:{node:process.version,fastify:require('fastify/package.json').version,fastifyAccepts:require('@fastify/accepts/package.json').version,typescript:ts.version,typeorm:JSON.parse(readFileSync(require.resolve('typeorm').replace(/index\.js$/, 'package.json'), 'utf8')).version},queryParser,manifest,corpusSha256:sha(corpusBytes),doubles:corpus.doubles,cases},null,2)+'\n';

@@ -87,6 +87,18 @@ test.each(followCorpus.cases)('$id through normal listening HTTP and PostgreSQL 
 	const manager = resources.dataSource.manager;
 	const before = await snapshot();
 	const restore: (() => void)[] = [];
+	const pathReads = c.pathUser === undefined ? undefined : {
+		user: vi.spyOn(manager.getRepository(MiUser), 'findOne'),
+		profile: vi.spyOn(manager.getRepository(MiUserProfile), 'findOneByOrFail'),
+		relations: vi.spyOn(manager.getRepository(MiFollowing), 'find'),
+		member: vi.spyOn(manager.getRepository(MiUser), 'findOneByOrFail'),
+		meta: vi.spyOn(manager.getRepository(MiMeta), 'find'),
+	};
+	if (pathReads) {
+		for (const spy of Object.values(pathReads)) {
+			restore.push(() => spy.mockRestore());
+		}
+	}
 	if (c.fail === 'user') {
 		restore.push(vi.spyOn(manager.getRepository(MiUser), 'findOne').mockRejectedValue(Error('database unavailable')).mockRestore);
 	}
@@ -108,23 +120,30 @@ test.each(followCorpus.cases)('$id through normal listening HTTP and PostgreSQL 
 	}
 	try {
 		const expected = followSource.cases.find(row => row.id === c.id)!.expected;
-		const response = await request(`/users/alice/${c.direction}${c.query ?? ''}`, c.method, c.accept);
+		const response = await request(`/users/${c.pathUser ?? 'alice'}/${c.direction}${c.query ?? ''}`, c.method, c.accept);
 		expect(response.status).toBe(expected.status);
 		for (const [key, value] of Object.entries(expected.headers)) {
 			expect(response.headers.get(key), key).toBe(value);
 		}
+		const cursor = expected.relationCursors[0];
+		let sqlRows: { id: string; memberId: string }[] | undefined;
+		if ((expected.json || pathReads) && cursor && !/^r\d{3}$/.test(cursor)) {
+			// Source doubles use JS ordering; independently query PostgreSQL with the source-observed cursor.
+			// HEAD performs the same member reads as GET, even though it has no JSON body to compare.
+			const column = c.direction === 'followers' ? 'followeeId' : 'followerId';
+			const memberColumn = c.direction === 'followers' ? 'followerId' : 'followeeId';
+			sqlRows = await manager.query<{ id: string; memberId: string }[]>(`SELECT id, "${memberColumn}" AS "memberId" FROM following WHERE "${column}" = $1 AND id < $2 ORDER BY id DESC LIMIT 11`, ['alice', cursor]);
+		}
+		const expectedReadEvents = sqlRows === undefined ? expected.events : [
+			...expected.events.filter(event => !event.startsWith('member:')),
+			...sqlRows.slice(0, 10).map(row => `member:${row.memberId}`),
+		];
 		if (expected.json) {
 			let json = expected.json;
-			const cursor = expected.relationCursors[0];
-			if (cursor && !/^r\d{3}$/.test(cursor)) {
-				// Take the cursor from the literal source query, independently of the product decoder.
-				// Source doubles use JS string comparison; PostgreSQL owns non-ID cursor collation.
-				const column = c.direction === 'followers' ? 'followeeId' : 'followerId';
-				const memberColumn = c.direction === 'followers' ? 'followerId' : 'followeeId';
-				const rows = await manager.query<{ id: string; memberId: string }[]>(`SELECT id, "${memberColumn}" AS "memberId" FROM following WHERE "${column}" = $1 AND id < $2 ORDER BY id DESC LIMIT 11`, ['alice', cursor]);
-				const retained = rows.slice(0, 10);
+			if (sqlRows !== undefined) {
+				const retained = sqlRows.slice(0, 10);
 				const page = { ...json as Record<string, unknown>, orderedItems: retained.map(row => Number(row.memberId.slice(1)) % 2 ? `https://remote.test/${row.memberId}` : `${followCorpus.defaults.selfUrl}/users/${row.memberId}`) };
-				if (rows.length === 11) {
+				if (sqlRows.length === 11) {
 					(page as Record<string, unknown>).next = `${followCorpus.defaults.selfUrl}/users/alice/${c.direction}?page=true&cursor=${encodeURIComponent(retained.at(-1)!.id)}`;
 				} else {
 					delete (page as Record<string, unknown>).next;
@@ -132,8 +151,22 @@ test.each(followCorpus.cases)('$id through normal listening HTTP and PostgreSQL 
 				json = page;
 			}
 			expect(await response.json()).toEqual(json);
+		} else if (expected.errorProjection) {
+			expect(await response.json()).toMatchObject(expected.errorProjection);
 		} else if (expected.bodyEmpty || c.method === 'HEAD') {
 			expect(await response.text()).toBe('');
+		}
+		if (pathReads) {
+			expect(pathReads.user.mock.calls.map(([options]) => (options.where as { id: string }).id)).toEqual(expected.lookupIds);
+			expect(pathReads.meta).toHaveBeenCalledTimes(expected.metaEntries);
+			for (const stage of ['profile', 'relations', 'member'] as const) {
+				expect(pathReads[stage]).toHaveBeenCalledTimes(expectedReadEvents.filter(event => event === stage || event.startsWith(`${stage}:`)).length);
+			}
+			const readEvents = Object.entries(pathReads).flatMap(([stage, spy]) => spy.mock.invocationCallOrder.map((order, index) => ({
+				order,
+				event: stage === 'member' ? `member:${(pathReads.member.mock.calls[index][0] as { id: string }).id}` : stage,
+			}))).sort((a, b) => a.order - b.order).map(call => call.event);
+			expect(readEvents).toEqual([...Array.from({ length: expected.metaEntries }, () => 'meta'), ...expectedReadEvents]);
 		}
 	} finally {
 		for (const undo of restore) {

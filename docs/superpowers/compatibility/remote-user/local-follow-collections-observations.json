@@ -86,7 +86,7 @@
       }
     }
   ],
-  "corpusSha256": "9df176817db02036b8214a8894746ff99a857c3516f8a3fb44df841ddc2df884",
+  "corpusSha256": "350e8da99ebeaa2839cee555810d3710521f8b9020b3d77a9a75af9282f8ca60",
   "doubles": [
     "Repository doubles enforce relation endpoint, descending id, LessThan cursor and take=11; they do not establish PostgreSQL collation or FK semantics.",
     "Literal source methods and real Fastify plugin injection; not full Nest server or Meta cache/notification behavior.",
@@ -152,7 +152,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -218,7 +222,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -287,7 +295,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -374,7 +386,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -462,7 +478,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -550,7 +570,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -638,7 +662,11 @@
         ],
         "relationCursors": [
           "r015"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -704,7 +732,11 @@
         ],
         "relationCursors": [
           "r001"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -792,7 +824,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -858,7 +894,11 @@
         ],
         "relationCursors": [
           "r 01/&"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -946,7 +986,11 @@
         ],
         "relationCursors": [
           "日本"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -964,7 +1008,9 @@
         },
         "bodyEmpty": true,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
       }
     },
     {
@@ -982,7 +1028,9 @@
         },
         "bodyEmpty": true,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
       }
     },
     {
@@ -1000,7 +1048,9 @@
         },
         "bodyEmpty": true,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
       }
     },
     {
@@ -1018,7 +1068,9 @@
         },
         "bodyEmpty": true,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
       }
     },
     {
@@ -1080,7 +1132,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1142,7 +1198,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1204,7 +1264,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1266,7 +1330,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1328,7 +1396,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1416,7 +1488,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1437,7 +1513,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1458,7 +1538,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1520,7 +1604,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1540,7 +1628,11 @@
         "events": [
           "user"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1560,7 +1652,11 @@
         "events": [
           "user"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1581,7 +1677,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1643,7 +1743,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1731,7 +1835,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1765,7 +1873,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1827,7 +1939,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1889,7 +2005,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -1951,7 +2071,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -2013,7 +2137,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -2047,7 +2175,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -2065,7 +2197,9 @@
         },
         "bodyEmpty": false,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
       }
     },
     {
@@ -2085,7 +2219,11 @@
         "events": [
           "user"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -2106,7 +2244,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -2128,7 +2270,11 @@
           "profile",
           "relations"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -2162,7 +2308,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -2224,7 +2374,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -2290,7 +2444,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -2359,7 +2517,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -2446,7 +2608,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -2534,7 +2700,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -2622,7 +2792,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -2710,7 +2884,11 @@
         ],
         "relationCursors": [
           "r015"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -2776,7 +2954,11 @@
         ],
         "relationCursors": [
           "r001"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -2864,7 +3046,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -2930,7 +3116,11 @@
         ],
         "relationCursors": [
           "r 01/&"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3018,7 +3208,11 @@
         ],
         "relationCursors": [
           "日本"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3036,7 +3230,9 @@
         },
         "bodyEmpty": true,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
       }
     },
     {
@@ -3054,7 +3250,9 @@
         },
         "bodyEmpty": true,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
       }
     },
     {
@@ -3072,7 +3270,9 @@
         },
         "bodyEmpty": true,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
       }
     },
     {
@@ -3090,7 +3290,9 @@
         },
         "bodyEmpty": true,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
       }
     },
     {
@@ -3152,7 +3354,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3214,7 +3420,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3276,7 +3486,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3338,7 +3552,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3400,7 +3618,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3488,7 +3710,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3509,7 +3735,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3530,7 +3760,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3592,7 +3826,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3612,7 +3850,11 @@
         "events": [
           "user"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3632,7 +3874,11 @@
         "events": [
           "user"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3653,7 +3899,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3715,7 +3965,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3803,7 +4057,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3837,7 +4095,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3899,7 +4161,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -3961,7 +4227,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4023,7 +4293,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4085,7 +4359,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4119,7 +4397,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4137,7 +4419,9 @@
         },
         "bodyEmpty": false,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
       }
     },
     {
@@ -4157,7 +4441,11 @@
         "events": [
           "user"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4178,7 +4466,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4200,7 +4492,11 @@
           "profile",
           "relations"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4234,7 +4530,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4300,7 +4600,11 @@
         ],
         "relationCursors": [
           "r%30z%"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4366,7 +4670,11 @@
         ],
         "relationCursors": [
           "r%30z%2G"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4432,7 +4740,11 @@
         ],
         "relationCursors": [
           "r%30z%2"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4498,7 +4810,11 @@
         ],
         "relationCursors": [
           "r%30z%FF"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4564,7 +4880,11 @@
         ],
         "relationCursors": [
           "r%30z%E6%97"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4630,7 +4950,11 @@
         ],
         "relationCursors": [
           "r%30z%C0%AF"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4696,7 +5020,11 @@
         ],
         "relationCursors": [
           "r%30z%ED%A0%80"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4762,7 +5090,11 @@
         ],
         "relationCursors": [
           "r%30z%F4%90%80%80"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4828,7 +5160,11 @@
         ],
         "relationCursors": [
           "r %30z%"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4894,7 +5230,11 @@
         ],
         "relationCursors": [
           "r 0z"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -4960,7 +5300,11 @@
         ],
         "relationCursors": [
           "r+0z"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -5048,7 +5392,11 @@
         ],
         "relationCursors": [
           "r0z%"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -5136,7 +5484,11 @@
         ],
         "relationCursors": [
           "日本 r"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -5202,7 +5554,11 @@
         ],
         "relationCursors": [
           "r%30z%"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -5220,7 +5576,9 @@
         },
         "bodyEmpty": true,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
       }
     },
     {
@@ -5238,7 +5596,9 @@
         },
         "bodyEmpty": true,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
       }
     },
     {
@@ -5304,7 +5664,11 @@
         ],
         "relationCursors": [
           "r%30z%"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -5366,7 +5730,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -5454,7 +5822,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -5542,7 +5914,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -5630,7 +6006,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -5718,7 +6098,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -5784,7 +6168,11 @@
         ],
         "relationCursors": [
           "r%30=10%"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -5850,7 +6238,11 @@
         ],
         "relationCursors": [
           "r&cursor=x"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -5938,7 +6330,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -6004,7 +6400,11 @@
         ],
         "relationCursors": [
           "r%30z%"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -6070,7 +6470,11 @@
         ],
         "relationCursors": [
           "r%30z%"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -6088,7 +6492,9 @@
         },
         "bodyEmpty": true,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
       }
     },
     {
@@ -6106,7 +6512,9 @@
         },
         "bodyEmpty": true,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
       }
     },
     {
@@ -6172,7 +6580,11 @@
         ],
         "relationCursors": [
           "r%30z%"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -6238,7 +6650,11 @@
         ],
         "relationCursors": [
           "r%30z%2G"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -6304,7 +6720,11 @@
         ],
         "relationCursors": [
           "r%30z%2"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -6370,7 +6790,11 @@
         ],
         "relationCursors": [
           "r%30z%FF"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -6436,7 +6860,11 @@
         ],
         "relationCursors": [
           "r%30z%E6%97"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -6502,7 +6930,11 @@
         ],
         "relationCursors": [
           "r%30z%C0%AF"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -6568,7 +7000,11 @@
         ],
         "relationCursors": [
           "r%30z%ED%A0%80"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -6634,7 +7070,11 @@
         ],
         "relationCursors": [
           "r%30z%F4%90%80%80"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -6700,7 +7140,11 @@
         ],
         "relationCursors": [
           "r %30z%"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -6766,7 +7210,11 @@
         ],
         "relationCursors": [
           "r 0z"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -6832,7 +7280,11 @@
         ],
         "relationCursors": [
           "r+0z"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -6920,7 +7372,11 @@
         ],
         "relationCursors": [
           "r0z%"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -7008,7 +7464,11 @@
         ],
         "relationCursors": [
           "日本 r"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -7074,7 +7534,11 @@
         ],
         "relationCursors": [
           "r%30z%"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -7092,7 +7556,9 @@
         },
         "bodyEmpty": true,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
       }
     },
     {
@@ -7110,7 +7576,9 @@
         },
         "bodyEmpty": true,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
       }
     },
     {
@@ -7176,7 +7644,11 @@
         ],
         "relationCursors": [
           "r%30z%"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -7238,7 +7710,11 @@
           "user",
           "profile"
         ],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -7326,7 +7802,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -7414,7 +7894,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -7502,7 +7986,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -7590,7 +8078,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -7656,7 +8148,11 @@
         ],
         "relationCursors": [
           "r%30=10%"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -7722,7 +8218,11 @@
         ],
         "relationCursors": [
           "r&cursor=x"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -7810,7 +8310,11 @@
         ],
         "relationCursors": [
           null
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -7876,7 +8380,11 @@
         ],
         "relationCursors": [
           "r%30z%"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -7942,7 +8450,11 @@
         ],
         "relationCursors": [
           "r%30z%"
-        ]
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     },
     {
@@ -7960,7 +8472,9 @@
         },
         "bodyEmpty": true,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
       }
     },
     {
@@ -7978,7 +8492,4121 @@
         },
         "bodyEmpty": true,
         "events": [],
-        "relationCursors": []
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-mixed-percent-get-all-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "followers-path-mixed-percent-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "followers-path-mixed-percent-get-none-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "followers-path-mixed-percent-get-none-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "followers-path-mixed-percent-head-all-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "followers-path-mixed-percent-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "followers-path-mixed-percent-head-none-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "followers-path-mixed-percent-head-none-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "followers-path-invalid-utf8-get-all-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "followers-path-invalid-utf8-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "followers-path-invalid-utf8-get-none-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "followers-path-invalid-utf8-get-none-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "followers-path-invalid-utf8-head-all-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "followers-path-invalid-utf8-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "followers-path-invalid-utf8-head-none-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "followers-path-invalid-utf8-head-none-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "followers-path-truncated-utf8-get-all-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "followers-path-truncated-utf8-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "followers-path-truncated-utf8-get-none-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "followers-path-truncated-utf8-get-none-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "followers-path-truncated-utf8-head-all-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "followers-path-truncated-utf8-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "followers-path-truncated-utf8-head-none-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "followers-path-truncated-utf8-head-none-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "followers-path-encoded-alice-get-all-index",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": false,
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/followers",
+          "type": "OrderedCollection",
+          "totalItems": 123,
+          "first": "https://local.example/users/alice/followers?page=true"
+        },
+        "events": [
+          "user",
+          "profile"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-alice-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-alice-get-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-alice-get-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-alice-head-all-index",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user",
+          "profile"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-alice-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-alice-head-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-alice-head-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-middle-get-all-index",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": false,
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/followers",
+          "type": "OrderedCollection",
+          "totalItems": 123,
+          "first": "https://local.example/users/alice/followers?page=true"
+        },
+        "events": [
+          "user",
+          "profile"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-middle-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-middle-get-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-middle-get-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-middle-head-all-index",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user",
+          "profile"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-middle-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-middle-head-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-middle-head-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-double-encoded-alice-get-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "%61lice"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-double-encoded-alice-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-double-encoded-alice-get-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-double-encoded-alice-get-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-double-encoded-alice-head-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "%61lice"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-double-encoded-alice-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-double-encoded-alice-head-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-double-encoded-alice-head-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-double-encoded-malformed-get-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "ali%63e%"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-double-encoded-malformed-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-double-encoded-malformed-get-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-double-encoded-malformed-get-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-double-encoded-malformed-head-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "ali%63e%"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-double-encoded-malformed-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-double-encoded-malformed-head-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-double-encoded-malformed-head-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-invalid-utf8-get-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "%FF"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-invalid-utf8-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-invalid-utf8-get-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-invalid-utf8-get-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-invalid-utf8-head-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "%FF"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-invalid-utf8-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-invalid-utf8-head-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-invalid-utf8-head-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-truncated-utf8-get-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "%E6%97"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-truncated-utf8-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-truncated-utf8-get-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-truncated-utf8-get-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-truncated-utf8-head-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "%E6%97"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-truncated-utf8-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-truncated-utf8-head-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-truncated-utf8-head-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-literal-percent-get-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "alice%"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-literal-percent-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-literal-percent-get-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-literal-percent-get-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-literal-percent-head-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "alice%"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-literal-percent-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-literal-percent-head-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-literal-percent-head-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-valid-unicode-get-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "日"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-valid-unicode-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-valid-unicode-get-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-valid-unicode-get-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-valid-unicode-head-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "日"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-valid-unicode-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-valid-unicode-head-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-valid-unicode-head-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-page-get",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": false,
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/followers?page=true&cursor=r%2530z%25",
+          "partOf": "https://local.example/users/alice/followers",
+          "type": "OrderedCollectionPage",
+          "totalItems": 123,
+          "orderedItems": []
+        },
+        "events": [
+          "user",
+          "profile",
+          "relations"
+        ],
+        "relationCursors": [
+          "r%30z%"
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "followers-path-encoded-page-head",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user",
+          "profile",
+          "relations"
+        ],
+        "relationCursors": [
+          "r%30z%"
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-mixed-percent-get-all-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "following-path-mixed-percent-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "following-path-mixed-percent-get-none-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "following-path-mixed-percent-get-none-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "following-path-mixed-percent-head-all-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "following-path-mixed-percent-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "following-path-mixed-percent-head-none-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "following-path-mixed-percent-head-none-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "following-path-invalid-utf8-get-all-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "following-path-invalid-utf8-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "following-path-invalid-utf8-get-none-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "following-path-invalid-utf8-get-none-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "following-path-invalid-utf8-head-all-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "following-path-invalid-utf8-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "following-path-invalid-utf8-head-none-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "following-path-invalid-utf8-head-none-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "following-path-truncated-utf8-get-all-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "following-path-truncated-utf8-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "following-path-truncated-utf8-get-none-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "following-path-truncated-utf8-get-none-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0,
+        "errorProjection": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "id": "following-path-truncated-utf8-head-all-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "following-path-truncated-utf8-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "following-path-truncated-utf8-head-none-index",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "following-path-truncated-utf8-head-none-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "bodyEmpty": false,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 0
+      }
+    },
+    {
+      "id": "following-path-encoded-alice-get-all-index",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": false,
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/following",
+          "type": "OrderedCollection",
+          "totalItems": 456,
+          "first": "https://local.example/users/alice/following?page=true"
+        },
+        "events": [
+          "user",
+          "profile"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-alice-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-alice-get-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-alice-get-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-alice-head-all-index",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user",
+          "profile"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-alice-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-alice-head-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-alice-head-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-middle-get-all-index",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": false,
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/following",
+          "type": "OrderedCollection",
+          "totalItems": 456,
+          "first": "https://local.example/users/alice/following?page=true"
+        },
+        "events": [
+          "user",
+          "profile"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-middle-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-middle-get-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-middle-get-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-middle-head-all-index",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user",
+          "profile"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-middle-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-middle-head-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-middle-head-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-double-encoded-alice-get-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "%61lice"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-double-encoded-alice-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-double-encoded-alice-get-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-double-encoded-alice-get-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-double-encoded-alice-head-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "%61lice"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-double-encoded-alice-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-double-encoded-alice-head-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-double-encoded-alice-head-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-double-encoded-malformed-get-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "ali%63e%"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-double-encoded-malformed-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-double-encoded-malformed-get-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-double-encoded-malformed-get-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-double-encoded-malformed-head-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "ali%63e%"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-double-encoded-malformed-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-double-encoded-malformed-head-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-double-encoded-malformed-head-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-invalid-utf8-get-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "%FF"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-invalid-utf8-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-invalid-utf8-get-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-invalid-utf8-get-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-invalid-utf8-head-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "%FF"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-invalid-utf8-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-invalid-utf8-head-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-invalid-utf8-head-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-truncated-utf8-get-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "%E6%97"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-truncated-utf8-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-truncated-utf8-get-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-truncated-utf8-get-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-truncated-utf8-head-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "%E6%97"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-truncated-utf8-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-truncated-utf8-head-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-truncated-utf8-head-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-literal-percent-get-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "alice%"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-literal-percent-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-literal-percent-get-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-literal-percent-get-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-literal-percent-head-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "alice%"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-literal-percent-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-literal-percent-head-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-literal-percent-head-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-valid-unicode-get-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "日"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-valid-unicode-get-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-valid-unicode-get-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-valid-unicode-get-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-valid-unicode-head-all-index",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user"
+        ],
+        "relationCursors": [],
+        "lookupIds": [
+          "日"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-valid-unicode-head-all-query-error",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-valid-unicode-head-none-index",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-valid-unicode-head-none-query-error",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [],
+        "relationCursors": [],
+        "lookupIds": [],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-page-get",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": false,
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/following?page=true&cursor=r%2530z%25",
+          "partOf": "https://local.example/users/alice/following",
+          "type": "OrderedCollectionPage",
+          "totalItems": 456,
+          "orderedItems": []
+        },
+        "events": [
+          "user",
+          "profile",
+          "relations"
+        ],
+        "relationCursors": [
+          "r%30z%"
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
+      }
+    },
+    {
+      "id": "following-path-encoded-page-head",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "bodyEmpty": true,
+        "events": [
+          "user",
+          "profile",
+          "relations"
+        ],
+        "relationCursors": [
+          "r%30z%"
+        ],
+        "lookupIds": [
+          "alice"
+        ],
+        "metaEntries": 1
       }
     }
   ]
