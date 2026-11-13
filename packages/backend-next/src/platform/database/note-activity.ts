@@ -8,7 +8,7 @@ import { createLocalEmojiReader } from './local-emojis.js';
 import { readMeta } from './meta.js';
 import { publicFileUrl } from './note-files.js';
 import type { EntityManager } from 'typeorm';
-import type { NoteActivityMaterials, NoteDeliveryMaterials } from '../../modules/federation/public.js';
+import type { NoteActivityMaterials, NoteDeliveryMaterials, ApDocumentSourceFacts } from '../../modules/federation/public.js';
 import type { MentionedRemoteUser } from '../../modules/mfm/public.js';
 import type { NoteMediaOptions } from './note-files.js';
 
@@ -16,7 +16,7 @@ import type { NoteMediaOptions } from './note-files.js';
  * 保存済みの投稿を AP 表現と配送の材料として読み直す。投稿が無ければ null。
  * 本家 ApRendererService.renderNote と同じく、返信先・引用先・メンション・添付・投票・絵文字は表現の時点の行を使う。
  */
-export function createNoteActivityReader(manager: EntityManager, options: Pick<NoteMediaOptions, 'url' | 'mediaProxy' | 'externalMediaProxyEnabled' | 'createdAtFromId'>) {
+export function createNoteActivityFactReader(manager: EntityManager, options: Pick<NoteMediaOptions, 'url' | 'mediaProxy' | 'externalMediaProxyEnabled' | 'createdAtFromId'>) {
 	async function readReply(replyId: string | null): Promise<NoteActivityMaterials['reply']> {
 		if (replyId === null) {
 			return null;
@@ -44,7 +44,7 @@ export function createNoteActivityReader(manager: EntityManager, options: Pick<N
 		return ids.flatMap(id => users.filter(user => user.id === id).map(user => ({ id: user.id, username: user.username, host: user.host, uri: user.uri })));
 	}
 
-	async function readFiles(ids: string[]): Promise<NoteActivityMaterials['files']> {
+	async function readFileFacts(ids: string[]): Promise<ApDocumentSourceFacts[]> {
 		if (ids.length === 0) {
 			return [];
 		}
@@ -52,12 +52,17 @@ export function createNoteActivityReader(manager: EntityManager, options: Pick<N
 		return ids.flatMap(id => files.filter(file => file.id === id).map(file => ({
 			type: file.type,
 			webpublicType: file.webpublicType,
-			url: publicFileUrl(file, meta.proxyRemoteFiles, options),
+			publicFile: { uri: file.uri, userHost: file.userHost, isLink: file.isLink, webpublicAccessKey: file.webpublicAccessKey, webpublicUrl: file.webpublicUrl, url: file.url },
+			proxyRemoteFiles: meta.proxyRemoteFiles, urlOptions: options,
 			comment: file.comment,
 			width: file.properties?.width,
 			height: file.properties?.height,
 			isSensitive: file.isSensitive,
 		})));
+	}
+
+	async function readFiles(ids: string[]): Promise<NoteActivityMaterials['files']> {
+		return (await readFileFacts(ids)).map(({ publicFile, proxyRemoteFiles, urlOptions, ...file }) => ({ ...file, url: publicFileUrl(publicFile, proxyRemoteFiles, urlOptions) }));
 	}
 
 	async function readPoll(noteId: string, hasPoll: boolean): Promise<NoteActivityMaterials['poll']> {
@@ -70,6 +75,11 @@ export function createNoteActivityReader(manager: EntityManager, options: Pick<N
 
 	const readEmojis = createLocalEmojiReader(manager);
 
+	return { readReply, readRenote, readMentionedUsers, readFiles, readFileFacts, readPoll, readEmojis };
+}
+
+export function createNoteActivityReader(manager: EntityManager, options: Pick<NoteMediaOptions, 'url' | 'mediaProxy' | 'externalMediaProxyEnabled' | 'createdAtFromId'>) {
+	const { readReply, readRenote, readMentionedUsers, readFiles, readPoll, readEmojis } = createNoteActivityFactReader(manager, options);
 	return async (noteId: string): Promise<NoteDeliveryMaterials | null> => {
 		const note = await manager.getRepository(MiNote).findOneBy({ id: noteId });
 		if (note === null) {

@@ -1,0 +1,3769 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "manifest": [
+    {
+      "path": "packages/backend/src/misc/escape-html.ts",
+      "gitBlob": "819aeeed525f17d34dd70617dec54000ff433bde",
+      "sha256": "35236da6de026b969f0af3f27d873d1d81d8678fb60ab3cdfdf8c0d04cca67df",
+      "methods": {
+        "escapeHtml": "8bebe6c087a00497532a5b385ced9b50a3fbce7398134618cb734399a5a10a84"
+      }
+    },
+    {
+      "path": "packages/backend/src/misc/prelude/array.ts",
+      "gitBlob": "f741a0c9133911688727cd72499b7476e3783a56",
+      "sha256": "8319bf6a858b2afb934e50595798c2d914388c077d6bf49a2338a5f0520bcdc4",
+      "methods": {
+        "concat": "ce0295d9d5a56bcc6309cbe5d660b17535e8e8f7f1e89e7ea59a92363613f1ae",
+        "intersperse": "3213315ff901561083346b81b4bef88c5384c501f6007269e4e8b666960debb2"
+      }
+    },
+    {
+      "path": "packages/backend/src/misc/prelude/array.ts",
+      "gitBlob": "f741a0c9133911688727cd72499b7476e3783a56",
+      "sha256": "8319bf6a858b2afb934e50595798c2d914388c077d6bf49a2338a5f0520bcdc4",
+      "methods": {
+        "intersperse": "3213315ff901561083346b81b4bef88c5384c501f6007269e4e8b666960debb2"
+      }
+    },
+    {
+      "path": "packages/backend/src/core/activitypub/misc/contexts.ts",
+      "gitBlob": "6611e4b7f9321f4bca2959b599573cddaddafdb2",
+      "sha256": "ad16ce93794fec1c0229745f602188ded4edf712e69d5c12e5ee3e1f68b00bd3",
+      "methods": {}
+    },
+    {
+      "path": "packages/backend/src/misc/prelude/url.ts",
+      "gitBlob": "270a0750754eac81c651b7090bd0a7c2d7b3c798",
+      "sha256": "23157930e879afe70598a81c2e2671e2ceaee6a71023afc2f7b4a15fecb58e9d",
+      "methods": {
+        "query": "e31749d7aa1ba1b6f021364e477bd7d39d5d6f63de1d850c0c89cd85236cd816",
+        "appendQuery": "566f5d75d99a226d39684a01742794b6d180d3a8837afc058bef330119da992f"
+      }
+    },
+    {
+      "path": "packages/backend/src/core/entities/DriveFileEntityService.ts",
+      "gitBlob": "1865d494c4ba39d84daa62501469895e7224a3fb",
+      "sha256": "a48a07792b784a3ded4364594d346e2cd2d9a7e0a506b56b082325a8f41ca738",
+      "methods": {
+        "getPublicUrl": "09996dc02d88f72f98206a35ca2f41396057e133ec4365ea1206429f6f226c24",
+        "getProxiedUrl": "5da80d298150002f856c758001957886560ad956f7dc4e2abb3949bd3fe54c97"
+      }
+    },
+    {
+      "path": "packages/backend/src/core/MfmService.ts",
+      "gitBlob": "274966d9213a6a05dcb4167e0ab59b95fc984580",
+      "sha256": "494918ebbe07f3e1850f923df5f57fffdb3241c35a08066efe417e542496b6c0",
+      "methods": {
+        "toHtml": "88f0cb8d9bac0063cf043c6a4442c7daae967e9078cdbd6873b9a0aeadb2466c"
+      }
+    },
+    {
+      "path": "packages/backend/src/core/activitypub/ApMfmService.ts",
+      "gitBlob": "a928ed5ccf7ec0e2425690e9ced6bec543c6f4ea",
+      "sha256": "d9efe129fff0ceffc711b4aed2f46ea34e2bd42ff45558b6c813211aac53acc4",
+      "methods": {
+        "getNoteHtml": "b54faf5dc70a553a00c9b51c60cf8e82328d662fc5662076f104dcc2bfbb0112"
+      }
+    },
+    {
+      "path": "packages/backend/src/misc/id/aidx.ts",
+      "gitBlob": "006673a6d013e372226efcfbddf858316ed1115d",
+      "sha256": "613a33f3247823856f861961a05961a8c50151133669d56b8b6441dd0d5e86f9",
+      "methods": {}
+    },
+    {
+      "path": "packages/backend/src/misc/id/aidx.ts",
+      "gitBlob": "006673a6d013e372226efcfbddf858316ed1115d",
+      "sha256": "613a33f3247823856f861961a05961a8c50151133669d56b8b6441dd0d5e86f9",
+      "methods": {
+        "parseAidx": "5ec06d2bed3197b868ebeabaeb97b2f560de2ac1eca1719925b47ec40c5a3ecc"
+      }
+    },
+    {
+      "path": "packages/backend/src/core/IdService.ts",
+      "gitBlob": "223a8de678382fda4ec01e771525e120b41f95ae",
+      "sha256": "237d9410066fb6acfe872e7e617e6f4ce7b0093989e88baad1c29066b69f4f65",
+      "methods": {
+        "parse": "8b7891dc4e8301f26af94d31909488ae8d3e733afcee1e6039acfcda2f6212a3"
+      }
+    },
+    {
+      "path": "packages/backend/src/core/activitypub/ApRendererService.ts",
+      "gitBlob": "601edcebe931a2c98e1bf967debdbe8c91e508ad",
+      "sha256": "8e4bcdcb5d062ffb707b0e038e5e1f62f0afca2ac4ddaa44c10e1b21bcbf1098",
+      "methods": {
+        "renderNote": "261e6bb3787e9c301445a0ddb2778b5f194732c569cd6166ef30a9229d8f0365",
+        "renderDocument": "90f5d2ae69aed50a52458ad08e504f5df74b69a29cf5f918de64f1da0d77bfe1",
+        "renderEmoji": "f89fbf2c7337c944ad0f1611d49aa8dc48e9ee33a8b68a5c40c33ff9a3ce7c54",
+        "renderHashtag": "191f257ef3b67efbac07f6e94513855111a524d22836f489d147b2aeb2573819",
+        "renderMention": "f8ff585e3faff9dd46a26ef42a5ce53531c1284e457cc138cc3a65f72e7c8189",
+        "renderOrderedCollection": "204a476191ad5f451d0012c7dfd2a898edbebb36a555b264483f5c4928afbf74",
+        "addContext": "65e6046ed1c2462a0b365240799eaecd17da1d8873aeb4164c71a4105875551b",
+        "getEmojis": "86e48acc62b89444ee411c740fa4fbb141c0a186346ca1ae87c7945dcdce1673"
+      }
+    },
+    {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "gitBlob": "e3ceebccaeb0c9058a919318ef7c4216f8e64649",
+      "sha256": "99f8779e002fc2c0aa2cd203613d31fcc87e7eaeb797ef65aae6c5175b62e331",
+      "methods": {
+        "isSelfHost": "a027a92bcc38e2b1b4b5384df22bfb1df8bad9e4eaac1d2ea15ea418c990cbb7",
+        "toPuny": "fcb70ffa3b4a1ad01eda9b2c97d696dd2b26fc5be8fad9f56ddb6a75e256e4d2"
+      }
+    },
+    {
+      "path": "packages/backend/src/server/ServerService.ts",
+      "gitBlob": "e17bccb0940353fa1ebde2f1f4d2ae666916a947",
+      "sha256": "f2e254ff190067175f9015553b88ebe1faaabb55e63d26dfaf060d4669685c17",
+      "methods": {
+        "externalApRedirectGuard": "3ee7b770e063bec1bca335d63ec8c7759acdabe1e06e9a8c1d5b917cf00abab1"
+      }
+    },
+    {
+      "path": "packages/backend/src/server/ActivityPubServerService.ts",
+      "gitBlob": "51b46a10c05f44a598a33938ef26ce12bbad2c59",
+      "sha256": "de7a1dfc13085039bd7f305f034c8f72bd9c2a6cdaa671941b75b6b4a76f3af5",
+      "methods": {}
+    },
+    {
+      "path": "packages/backend/src/server/ActivityPubServerService.ts",
+      "gitBlob": "51b46a10c05f44a598a33938ef26ce12bbad2c59",
+      "sha256": "de7a1dfc13085039bd7f305f034c8f72bd9c2a6cdaa671941b75b6b4a76f3af5",
+      "methods": {
+        "setResponseType": "21b281e6033295ac26cb2dd943d5d264feb5ac89d4f0924acba826d3e983ef33",
+        "featured": "1191f7c172bb3337eb7a301b7f83eaa1b95655594e3ec85c5835a1b44e65b1e9",
+        "createServer": "f2f3d00bf8990258b5cf02cad72aafdc7193181f2748f4af5f86ad0493f98597"
+      }
+    }
+  ],
+  "corpusSha256": "739ea3ae9e9e527ff04976d531b1d9e89f019a63538156dd0a8bacdc445261d7",
+  "doubles": [
+    "In/IsNull retain actual TypeORM operators; repository doubles implement pinned predicates and record facts/read failures",
+    "clock frozen; literal IdService.parse/parseAidx (finite aidx IDs); literal Drive getPublicUrl/getProxiedUrl with declared config/meta",
+    "actual extracted MFM toHtml/getNoteHtml, renderNote/helpers/context, featured/createServer; real Fastify inject/accepts/vary",
+    "HTML handler deliberately absent; literal ServerService external-AP-redirect onSend guard is registered on finite disabled-policy cases; HSTS and diagnostic framework error bodies remain outside comparison"
+  ],
+  "cases": [
+    {
+      "id": "plain",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "no-text",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "cw-empty",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "summary": "​",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": true,
+          "tag": []
+        },
+        "events": [
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "cw-present",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "summary": "cw",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": true,
+          "tag": []
+        },
+        "events": [
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "audience-home",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://local.example/users/alice/followers"
+          ],
+          "cc": [
+            "https://www.w3.org/ns/activitystreams#Public",
+            "https://remote.test/users/bob"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "audience-followers",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://local.example/users/alice/followers"
+          ],
+          "cc": [
+            "https://remote.test/users/bob"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "audience-specified",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://remote.test/users/bob"
+          ],
+          "cc": [],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "reply-local",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": {
+            "id": "https://local.example/notes/at3hjq77note0002",
+            "type": "Note",
+            "attributedTo": "https://local.example/users/alice",
+            "content": "reply",
+            "published": "2026-11-03T00:00:01.123Z",
+            "to": [
+              "https://www.w3.org/ns/activitystreams#Public"
+            ],
+            "cc": [
+              "https://local.example/users/alice/followers"
+            ],
+            "inReplyTo": null,
+            "attachment": [],
+            "sensitive": false,
+            "tag": []
+          },
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "reply",
+          "author",
+          "html",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "reply-remote",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": "https://remote.test/n/1",
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "reply",
+          "author",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "reply-empty-uri",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": {
+            "id": "https://local.example/notes/at3hjq77note0002",
+            "type": "Note",
+            "attributedTo": "https://local.example/users/alice",
+            "content": "reply",
+            "published": "2026-11-03T00:00:01.123Z",
+            "to": [
+              "https://www.w3.org/ns/activitystreams#Public"
+            ],
+            "cc": [
+              "https://local.example/users/alice/followers"
+            ],
+            "inReplyTo": null,
+            "attachment": [],
+            "sensitive": false,
+            "tag": []
+          },
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "reply",
+          "author",
+          "html",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "reply-missing",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "reply",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "reply-author-missing",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "reply",
+          "author",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "reply-inner",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": {
+            "id": "https://local.example/notes/at3hjq77note0002",
+            "type": "Note",
+            "attributedTo": "https://local.example/users/alice",
+            "content": "reply",
+            "published": "2026-11-03T00:00:01.123Z",
+            "to": [
+              "https://www.w3.org/ns/activitystreams#Public"
+            ],
+            "cc": [
+              "https://local.example/users/alice/followers"
+            ],
+            "inReplyTo": "https://local.example/notes/at3hjq77note0003",
+            "attachment": [],
+            "sensitive": false,
+            "tag": []
+          },
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "reply",
+          "author",
+          "reply",
+          "author",
+          "html",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "reply-self",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": {
+            "id": "https://local.example/notes/at3hjq77note0001",
+            "type": "Note",
+            "attributedTo": "https://local.example/users/alice",
+            "content": "hello",
+            "published": "2026-11-03T00:00:01.123Z",
+            "to": [
+              "https://www.w3.org/ns/activitystreams#Public"
+            ],
+            "cc": [
+              "https://local.example/users/alice/followers"
+            ],
+            "inReplyTo": "https://local.example/notes/at3hjq77note0001",
+            "attachment": [],
+            "sensitive": false,
+            "tag": []
+          },
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "reply",
+          "author",
+          "reply",
+          "author",
+          "html",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "reply-false",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": "https://local.example/notes/at3hjq77note0002",
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "reply",
+          "author",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "reply-inner-author-missing",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": {
+            "id": "https://local.example/notes/at3hjq77note0002",
+            "type": "Note",
+            "attributedTo": "https://local.example/users/alice",
+            "content": "reply",
+            "published": "2026-11-03T00:00:01.123Z",
+            "to": [
+              "https://www.w3.org/ns/activitystreams#Public"
+            ],
+            "cc": [
+              "https://local.example/users/alice/followers"
+            ],
+            "attachment": [],
+            "sensitive": false,
+            "tag": []
+          },
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "reply",
+          "author",
+          "reply",
+          "author",
+          "html",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "quote-None",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "quote<br><br><span class=\"quote-inline\">RE: <a href=\"https://local.example/notes/at3hjq77note0002\">https://local.example/notes/at3hjq77note0002</a></span>",
+          "_misskey_content": "quote",
+          "source": {
+            "content": "quote",
+            "mediaType": "text/x.misskeymarkdown"
+          },
+          "_misskey_quote": "https://local.example/notes/at3hjq77note0002",
+          "quoteUrl": "https://local.example/notes/at3hjq77note0002",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "quote",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "quote-",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "quote<br><br><span class=\"quote-inline\">RE: <a href=\"https://local.example/notes/at3hjq77note0002\">https://local.example/notes/at3hjq77note0002</a></span>",
+          "_misskey_content": "quote",
+          "source": {
+            "content": "quote",
+            "mediaType": "text/x.misskeymarkdown"
+          },
+          "_misskey_quote": "https://local.example/notes/at3hjq77note0002",
+          "quoteUrl": "https://local.example/notes/at3hjq77note0002",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "quote",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "quote-https://remote.test/n/quote?a=1&b=2",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "quote<br><br><span class=\"quote-inline\">RE: <a href=\"https://remote.test/n/quote?a=1&amp;b=2\">https://remote.test/n/quote?a=1&amp;b=2</a></span>",
+          "_misskey_content": "quote",
+          "source": {
+            "content": "quote",
+            "mediaType": "text/x.misskeymarkdown"
+          },
+          "_misskey_quote": "https://remote.test/n/quote?a=1&b=2",
+          "quoteUrl": "https://remote.test/n/quote?a=1&b=2",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "quote",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "quote-missing",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "quote",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "rich",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Question",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello<br><br><span class=\"quote-inline\">RE: <a href=\"https://local.example/notes/at3hjq77note0002\">https://local.example/notes/at3hjq77note0002</a></span>",
+          "_misskey_content": "hello",
+          "source": {
+            "content": "hello",
+            "mediaType": "text/x.misskeymarkdown"
+          },
+          "_misskey_quote": "https://local.example/notes/at3hjq77note0002",
+          "quoteUrl": "https://local.example/notes/at3hjq77note0002",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [
+            {
+              "type": "Document",
+              "mediaType": "image/webp",
+              "url": "https://local.example/files/webpublic.webp",
+              "name": "alt <text>",
+              "width": 640,
+              "height": 480,
+              "sensitive": false
+            },
+            {
+              "type": "Document",
+              "mediaType": "image/webp",
+              "url": "https://local.example/files/webpublic.webp",
+              "name": "alt <text>",
+              "width": 640,
+              "height": 480,
+              "sensitive": false
+            }
+          ],
+          "sensitive": false,
+          "tag": [
+            {
+              "type": "Hashtag",
+              "href": "https://local.example/tags/%E6%97%A5%E6%9C%AC%E8%AA%9E",
+              "name": "#日本語"
+            },
+            {
+              "type": "Mention",
+              "href": "https://remote.test/users/bob",
+              "name": "@bob@remote.test"
+            },
+            {
+              "type": "Mention",
+              "href": "https://local.example/users/alice",
+              "name": "@alice"
+            },
+            {
+              "id": "https://local.example/emojis/blobcat",
+              "type": "Emoji",
+              "name": ":blobcat:",
+              "updated": "2026-10-01T00:00:00.000Z",
+              "icon": {
+                "type": "Image",
+                "mediaType": "image/png",
+                "url": "https://local.example/emoji/blobcat.png"
+              },
+              "_misskey_license": {
+                "freeText": "CC0"
+              }
+            }
+          ],
+          "closed": "2026-11-01T00:00:00.000Z",
+          "anyOf": [
+            {
+              "type": "Note",
+              "name": "yes",
+              "replies": {
+                "type": "Collection",
+                "totalItems": 3
+              }
+            },
+            {
+              "type": "Note",
+              "name": "no",
+              "replies": {
+                "type": "Collection",
+                "totalItems": 1
+              }
+            }
+          ]
+        },
+        "events": [
+          "quote",
+          "mentions",
+          "files",
+          "poll",
+          "html",
+          "emoji"
+        ]
+      }
+    },
+    {
+      "id": "poll-missing",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "poll",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "poll-open",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Question",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": [],
+          "endTime": null,
+          "oneOf": [
+            {
+              "type": "Note",
+              "name": "yes",
+              "replies": {
+                "type": "Collection",
+                "totalItems": 0
+              }
+            }
+          ]
+        },
+        "events": [
+          "poll",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "poll-future",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Question",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": [],
+          "endTime": "2027-01-01T00:00:00.000Z",
+          "oneOf": [
+            {
+              "type": "Note",
+              "name": "yes",
+              "replies": {
+                "type": "Collection",
+                "totalItems": 0
+              }
+            }
+          ]
+        },
+        "events": [
+          "poll",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "mfm-bold",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "<b>hello</b>",
+          "_misskey_content": "**hello**",
+          "source": {
+            "content": "**hello**",
+            "mediaType": "text/x.misskeymarkdown"
+          },
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "mfm-ruby",
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of undefined (reading 'replace')"
+        },
+        "events": [
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "failure-reply",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "reply unavailable"
+        },
+        "events": [
+          "reply"
+        ]
+      }
+    },
+    {
+      "id": "failure-author",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "author unavailable"
+        },
+        "events": [
+          "reply",
+          "author"
+        ]
+      }
+    },
+    {
+      "id": "failure-quote",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "quote unavailable"
+        },
+        "events": [
+          "reply",
+          "author",
+          "quote"
+        ]
+      }
+    },
+    {
+      "id": "failure-mentions",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "mentions unavailable"
+        },
+        "events": [
+          "reply",
+          "author",
+          "quote",
+          "mentions"
+        ]
+      }
+    },
+    {
+      "id": "failure-files",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "files unavailable"
+        },
+        "events": [
+          "reply",
+          "author",
+          "quote",
+          "mentions",
+          "files"
+        ]
+      }
+    },
+    {
+      "id": "failure-poll",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "poll unavailable"
+        },
+        "events": [
+          "reply",
+          "author",
+          "quote",
+          "mentions",
+          "files",
+          "poll"
+        ]
+      }
+    },
+    {
+      "id": "failure-html",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "html unavailable"
+        },
+        "events": [
+          "reply",
+          "author",
+          "quote",
+          "mentions",
+          "files",
+          "poll",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "failure-emoji",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "emoji unavailable"
+        },
+        "events": [
+          "reply",
+          "author",
+          "quote",
+          "mentions",
+          "files",
+          "poll",
+          "html",
+          "emoji"
+        ]
+      }
+    },
+    {
+      "id": "inner-failure-before-outer-quote",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "files unavailable"
+        },
+        "events": [
+          "reply",
+          "author",
+          "files"
+        ]
+      }
+    },
+    {
+      "id": "bad-json-before-files",
+      "expected": {
+        "error": {
+          "name": "SyntaxError",
+          "message": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+        },
+        "events": []
+      }
+    },
+    {
+      "id": "featured-ap",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/collections/featured",
+          "type": "OrderedCollection",
+          "totalItems": 1,
+          "orderedItems": [
+            {
+              "id": "https://local.example/notes/at3hjq77note0001",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            }
+          ]
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "featured-ld",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/collections/featured",
+          "type": "OrderedCollection",
+          "totalItems": 1,
+          "orderedItems": [
+            {
+              "id": "https://local.example/notes/at3hjq77note0001",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            }
+          ]
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "featured-profile",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/collections/featured",
+          "type": "OrderedCollection",
+          "totalItems": 1,
+          "orderedItems": [
+            {
+              "id": "https://local.example/notes/at3hjq77note0001",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            }
+          ]
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "featured-html",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/collections/featured",
+          "type": "OrderedCollection",
+          "totalItems": 1,
+          "orderedItems": [
+            {
+              "id": "https://local.example/notes/at3hjq77note0001",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            }
+          ]
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "featured-none-accept",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/collections/featured",
+          "type": "OrderedCollection",
+          "totalItems": 1,
+          "orderedItems": [
+            {
+              "id": "https://local.example/notes/at3hjq77note0001",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            }
+          ]
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "featured-unsupported",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/collections/featured",
+          "type": "OrderedCollection",
+          "totalItems": 1,
+          "orderedItems": [
+            {
+              "id": "https://local.example/notes/at3hjq77note0001",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            }
+          ]
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "featured-q-ap",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/collections/featured",
+          "type": "OrderedCollection",
+          "totalItems": 1,
+          "orderedItems": [
+            {
+              "id": "https://local.example/notes/at3hjq77note0001",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            }
+          ]
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "featured-q-html",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/collections/featured",
+          "type": "OrderedCollection",
+          "totalItems": 1,
+          "orderedItems": [
+            {
+              "id": "https://local.example/notes/at3hjq77note0001",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            }
+          ]
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "featured-head",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "featured-disabled",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": []
+      }
+    },
+    {
+      "id": "featured-missing",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "featured-lookup-failure",
+      "expected": {
+        "status": 500,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "featured-render-failure",
+      "expected": {
+        "status": 500,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "note-ap",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "note-ld",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"; charset=utf-8",
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "note-profile",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"; charset=utf-8",
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "note-html",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null,
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "events": []
+      }
+    },
+    {
+      "id": "note-none-accept",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null,
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "events": []
+      }
+    },
+    {
+      "id": "note-unsupported",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null,
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "events": []
+      }
+    },
+    {
+      "id": "note-q-ap",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": null,
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "note-q-html",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null,
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "events": []
+      }
+    },
+    {
+      "id": "note-head",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "note-disabled",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": []
+      }
+    },
+    {
+      "id": "note-missing",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-lookup-failure",
+      "expected": {
+        "status": 500,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json; charset=utf-8",
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-render-failure",
+      "expected": {
+        "status": 500,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/json; charset=utf-8",
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "featured-suspended-system",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/collections/featured",
+          "type": "OrderedCollection",
+          "totalItems": 1,
+          "orderedItems": [
+            {
+              "id": "https://local.example/notes/at3hjq77note0001",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            }
+          ]
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "featured-remote-user",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "featured-empty",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/collections/featured",
+          "type": "OrderedCollection",
+          "totalItems": 0,
+          "orderedItems": []
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins"
+        ]
+      }
+    },
+    {
+      "id": "featured-all-pins-desc",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/collections/featured",
+          "type": "OrderedCollection",
+          "totalItems": 7,
+          "orderedItems": [
+            {
+              "id": "https://local.example/notes/at3hjq77note0002",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            },
+            {
+              "id": "https://local.example/notes/at3hjq77note0003",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://local.example/users/alice/followers"
+              ],
+              "cc": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            },
+            {
+              "id": "https://local.example/notes/at3hjq77note0004",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            },
+            {
+              "id": "https://local.example/notes/at3hjq77note0005",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://local.example/users/alice/followers"
+              ],
+              "cc": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            },
+            {
+              "id": "https://local.example/notes/at3hjq77note0006",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            },
+            {
+              "id": "https://local.example/notes/at3hjq77note0007",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://local.example/users/alice/followers"
+              ],
+              "cc": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            },
+            {
+              "id": "https://local.example/notes/at3hjq77note0008",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            }
+          ]
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note",
+          "pin-note",
+          "pin-note",
+          "pin-note",
+          "pin-note",
+          "pin-note",
+          "pin-note",
+          "html",
+          "html",
+          "html",
+          "html",
+          "html",
+          "html",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "featured-visibility",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/collections/featured",
+          "type": "OrderedCollection",
+          "totalItems": 1,
+          "orderedItems": [
+            {
+              "id": "https://local.example/notes/at3hjq77note0001",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            }
+          ]
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note",
+          "pin-note",
+          "pin-note",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "featured-broken-pin",
+      "expected": {
+        "status": 500,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note"
+        ]
+      }
+    },
+    {
+      "id": "featured-no-limit",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/collections/featured",
+          "type": "OrderedCollection",
+          "totalItems": 1,
+          "orderedItems": [
+            {
+              "id": "https://local.example/notes/at3hjq77note0001",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            }
+          ]
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "note-hidden",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-specified",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-local-only",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-remote",
+      "expected": {
+        "status": 302,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": "Accept",
+          "location": "https://remote.test/n/1",
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-remote-empty",
+      "expected": {
+        "status": 302,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": "Accept",
+          "location": "",
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-remote-null",
+      "expected": {
+        "status": 500,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-remote-self",
+      "expected": {
+        "status": 500,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-remote-malformed",
+      "expected": {
+        "status": 302,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": "Accept",
+          "location": "not a URL",
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-remote-no-hydration",
+      "expected": {
+        "status": 302,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": "Accept",
+          "location": "https://remote.test/n/1",
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-reply-false",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": "https://local.example/notes/at3hjq77note0002",
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "reply",
+          "author",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "bad-audience-shape-before-media",
+      "expected": {
+        "error": {
+          "name": "TypeError",
+          "message": "JSON.parse(...).map is not a function"
+        },
+        "events": []
+      }
+    },
+    {
+      "id": "invalid-tag-before-media",
+      "expected": {
+        "error": {
+          "name": "URIError",
+          "message": "URI malformed"
+        },
+        "events": []
+      }
+    },
+    {
+      "id": "media-url-after-emoji",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "emoji unavailable"
+        },
+        "events": [
+          "files",
+          "html",
+          "emoji"
+        ]
+      }
+    },
+    {
+      "id": "media-url-after-poll",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "poll unavailable"
+        },
+        "events": [
+          "files",
+          "poll"
+        ]
+      }
+    },
+    {
+      "id": "media-url-encoding-error",
+      "expected": {
+        "error": {
+          "name": "URIError",
+          "message": "URI malformed"
+        },
+        "events": [
+          "files",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "featured-pin-read-failure",
+      "expected": {
+        "status": 500,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins"
+        ]
+      }
+    },
+    {
+      "id": "featured-note-read-failure",
+      "expected": {
+        "status": 500,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note"
+        ]
+      }
+    },
+    {
+      "id": "featured-pure-renote-is-note",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/collections/featured",
+          "type": "OrderedCollection",
+          "totalItems": 1,
+          "orderedItems": [
+            {
+              "id": "https://local.example/notes/at3hjq77note0001",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "<br><br><span class=\"quote-inline\">RE: <a href=\"https://local.example/notes/at3hjq77note0002\">https://local.example/notes/at3hjq77note0002</a></span>",
+              "_misskey_content": "",
+              "source": {
+                "content": "",
+                "mediaType": "text/x.misskeymarkdown"
+              },
+              "_misskey_quote": "https://local.example/notes/at3hjq77note0002",
+              "quoteUrl": "https://local.example/notes/at3hjq77note0002",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            }
+          ]
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note",
+          "quote",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "featured-remote-note-is-rendered",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/users/alice/collections/featured",
+          "type": "OrderedCollection",
+          "totalItems": 1,
+          "orderedItems": [
+            {
+              "id": "https://local.example/notes/at3hjq77note0001",
+              "type": "Note",
+              "attributedTo": "https://local.example/users/alice",
+              "content": "hello",
+              "published": "2026-11-03T00:00:01.123Z",
+              "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+              ],
+              "cc": [
+                "https://local.example/users/alice/followers"
+              ],
+              "inReplyTo": null,
+              "attachment": [],
+              "sensitive": false,
+              "tag": []
+            }
+          ]
+        },
+        "bodyEmpty": false,
+        "events": [
+          "lookup",
+          "pins",
+          "pin-note",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "delivery-empty-uris",
+      "expected": {
+        "json": {
+          "id": "https://local.example/notes/at3hjq77note0001",
+          "type": "Note",
+          "attributedTo": "https://local.example/users/alice",
+          "content": "hello<br><br><span class=\"quote-inline\">RE: <a href=\"https://local.example/notes/at3hjq77note0003\">https://local.example/notes/at3hjq77note0003</a></span>",
+          "_misskey_content": "hello",
+          "source": {
+            "content": "hello",
+            "mediaType": "text/x.misskeymarkdown"
+          },
+          "_misskey_quote": "https://local.example/notes/at3hjq77note0003",
+          "quoteUrl": "https://local.example/notes/at3hjq77note0003",
+          "published": "2026-11-03T00:00:01.123Z",
+          "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+          ],
+          "cc": [
+            "https://local.example/users/alice/followers"
+          ],
+          "inReplyTo": "https://local.example/notes/at3hjq77note0002",
+          "attachment": [],
+          "sensitive": false,
+          "tag": []
+        },
+        "events": [
+          "reply",
+          "author",
+          "quote",
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "note-redirect-guard-activity",
+      "expected": {
+        "status": 406,
+        "headers": {
+          "cache-control": null,
+          "content-type": "text/plain; charset=utf-8",
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": "<https://remote.test/note>; rel=\"canonical\""
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "text": "Refusing to relay remote ActivityPub object lookup.\n\nPlease remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at https://remote.test/note.",
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-redirect-guard-ld-profile",
+      "expected": {
+        "status": 406,
+        "headers": {
+          "cache-control": null,
+          "content-type": "text/plain; charset=utf-8",
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": "<https://remote.test/note>; rel=\"canonical\""
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "text": "Refusing to relay remote ActivityPub object lookup.\n\nPlease remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at https://remote.test/note.",
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-redirect-guard-bare-ld",
+      "expected": {
+        "status": 302,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": "Accept",
+          "location": "https://remote.test/note",
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-redirect-guard-local-uri",
+      "expected": {
+        "status": 302,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": "Accept",
+          "location": "https://local.example/notes/alias",
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-redirect-guard-development-http",
+      "expected": {
+        "status": 302,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": "Accept",
+          "location": "http://local.example/notes/alias",
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": null
+        },
+        "json": null,
+        "bodyEmpty": true,
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-redirect-guard-production-http",
+      "expected": {
+        "status": 406,
+        "headers": {
+          "cache-control": null,
+          "content-type": "text/plain; charset=utf-8",
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": "<http://local.example/notes/alias>; rel=\"canonical\""
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "text": "Refusing to relay remote ActivityPub object lookup.\n\nPlease remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at http://local.example/notes/alias.",
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "note-redirect-guard-remote-empty",
+      "expected": {
+        "status": 406,
+        "headers": {
+          "cache-control": null,
+          "content-type": "text/plain; charset=utf-8",
+          "vary": "Accept",
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary",
+          "link": "<>; rel=\"canonical\""
+        },
+        "json": null,
+        "bodyEmpty": false,
+        "text": "Refusing to relay remote ActivityPub object lookup.\n\nPlease remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at .",
+        "events": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "invalid-id-after-html",
+      "expected": {
+        "error": {
+          "name": "RangeError",
+          "message": "Invalid time value"
+        },
+        "events": [
+          "html"
+        ]
+      }
+    },
+    {
+      "id": "invalid-id-after-emoji",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "emoji unavailable"
+        },
+        "events": [
+          "html",
+          "emoji"
+        ]
+      }
+    }
+  ]
+}

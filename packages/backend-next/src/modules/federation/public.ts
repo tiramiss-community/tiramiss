@@ -15,8 +15,8 @@ export { createSignedPostSender } from './signed-post.js';
 export type { SignedPost } from './signed-post.js';
 export { deliverySucceeded, classifyDeliveryFailure } from './delivery-result.js';
 export type { DeliveryFailure } from './delivery-result.js';
-export { isPureRenote, renderApNote, renderNoteActivity } from './note-activity.js';
-export type { NoteActivityMaterials, NoteActivityNote, ApDocumentFacts } from './note-activity.js';
+export { isPureRenote, renderApNote, renderNoteActivity, noteAudience } from './note-activity.js';
+export type { NoteActivityMaterials, NoteActivityNote, ApDocumentFacts, ApDocumentSourceFacts, PreparedApNoteMaterials } from './note-activity.js';
 export { collectInboxes, NoteDeliveryError } from './deliver-recipients.js';
 export type { DeliverRecipe, FollowerInbox, NoteDeliveryErrorCode } from './deliver-recipients.js';
 export { createDeliverCreatedNote } from './note-delivery.js';
@@ -52,3 +52,8 @@ export type { ApEmojiFacts, LocalActorTag } from './ap-tags.js';
 
 export { localWebfingerQuery, renderLocalWebfinger, renderWebfingerXrd } from './local-webfinger.js';
 export type { LocalWebfingerQuery, LocalWebfingerFacts, LocalWebfingerDocument } from './local-webfinger.js';
+
+export { readFeaturedNotes, renderFeaturedCollection } from './local-featured.js';
+export type { NotePublicationRow, NotePublicationReader, FeaturedReader } from './local-featured.js';
+
+export { apContext } from './ap-context.js';
