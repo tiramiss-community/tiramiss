@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { emptyActorFields } from '../../helpers/local-actor.js';
 import { readFileSync } from 'node:fs';
 import { expect, test } from 'vitest';
 import { renderLocalActor } from '../../../src/modules/federation/public.js';
@@ -22,7 +23,7 @@ for (const c of corpus.cases) {
 	}
 	test(`source ${c.id} publishes stored actor images and exact fallbacks`, () => {
 		const defaults = corpus.defaults;
-		const user = { ...defaults.user, ...c.user };
+		const user = { ...emptyActorFields, ...defaults.user, ...c.user };
 		const file = (id: string | null) => id && c.files?.[id] ? { ...defaults.file, ...c.files[id] } : null;
 		const media = { ...defaults.meta, ...defaults.config, ...c.meta, ...c.config, avatar: file(user.avatarId), banner: file(user.bannerId) };
 		const body = renderLocalActor(user, defaults.profile, defaults.config.url, 'key', [], media);
@@ -35,7 +36,7 @@ for (const c of corpus.cases) {
 	test(`source ${c.id} reaches HTTP through actual acquisition and preserves error priority`, async () => {
 		const expected = source.cases.find((row: { id: string }) => row.id === c.id).expected;
 		const defaults = corpus.defaults;
-		const user = { ...defaults.user, ...c.user, uri: null };
+		const user = { ...emptyActorFields, ...defaults.user, ...c.user, uri: null };
 		const events: { op: string; id?: string }[] = [];
 		const manager = { getRepository(entity: unknown) {
 			if (entity === MiDriveFile) {
@@ -127,7 +128,7 @@ test('pending avatar and banner reads start alongside profile and gate tags/key 
 	} } as unknown as EntityManager;
 	const config = testConfig();
 	const app = createActivityPubActorApi({ selfUrl: config.url, federationEnabled: async () => true, isSelfHost: () => false,
-		readActor: async () => ({ ...corpus.defaults.user, avatarId: 'a', bannerId: 'b', uri: null }), readMaterials: createLocalActorMaterialsReader(manager, config),
+		readActor: async () => ({ ...emptyActorFields, ...corpus.defaults.user, avatarId: 'a', bannerId: 'b', uri: null }), readMaterials: createLocalActorMaterialsReader(manager, config),
 		readTags: async () => {
 			later.push('tags'); return [];
 		}, publicKey: async () => {
@@ -162,7 +163,7 @@ test('Meta acquisition failure returns an uncached error before tags/key', async
 	} } as unknown as EntityManager;
 	const config = testConfig();
 	const app = createActivityPubActorApi({ selfUrl: config.url, federationEnabled: async () => true, isSelfHost: () => false,
-		readActor: async () => ({ ...defaults.user, uri: null }), readMaterials: createLocalActorMaterialsReader(manager, config),
+		readActor: async () => ({ ...emptyActorFields, ...defaults.user, uri: null }), readMaterials: createLocalActorMaterialsReader(manager, config),
 		readTags: async () => {
 			laterWork = true; return [];
 		}, publicKey: async () => {

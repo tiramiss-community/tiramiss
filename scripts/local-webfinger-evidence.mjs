@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { localActorFieldsDigest } from './local-actor-fields-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
 const evidencePath = directory + 'local-webfinger-current-evidence.json';
@@ -124,7 +125,7 @@ export function validateLocalWebfingerEvidence(value, readFile = read, optional 
 		assert.equal(sha(correctionLog), correction.run.logSha256, 'WebFinger actual source probe log bytes');
 	}
 	for (const [path, digest] of Object.entries(value.frozenInputSha256)) {
-		assert.equal(sha(readFile(path)), path === sourceProbePath ? correction.sha256 : digest, 'WebFinger measured input drift');
+		assert.equal(sha(readFile(path)), path === sourceProbePath ? correction.sha256 : localActorFieldsDigest(path, digest, readFile, optional), 'WebFinger measured input drift');
 	}
 	for (const binding of [value.runtimeEvidence, value.sourceEvidence]) {
 		assert.equal(sha(readFile(binding.path)), binding.sha256, 'WebFinger historical evidence drift');
@@ -192,11 +193,11 @@ export function validateLocalWebfingerEvidence(value, readFile = read, optional 
 }
 
 export function localWebfingerDigest(path, previousDigest, readFile = read, optional = optionalRead) {
-	if (path !== file && path !== consumerFile) return previousDigest;
+	if (path !== file && path !== consumerFile) return localActorFieldsDigest(path, previousDigest, readFile, optional);
 	const value = JSON.parse(readFile(evidencePath));
 	const binding = path === file ? value : value.consumerRenewal;
 	const previous = path === file ? previousSha256 : consumerPreviousSha256;
 	assert(previousDigest === previous || previousDigest === binding.sha256, 'WebFinger previous identity');
 	validateLocalWebfingerEvidence(value, readFile, optional);
-	return binding.sha256;
+	return localActorFieldsDigest(path, binding.sha256, readFile, optional);
 }

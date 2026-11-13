@@ -10,7 +10,7 @@ const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
 const read = file => readFileSync(new URL(file, root), 'utf8');
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
-const receipt = () => JSON.parse(read(directory + 'local-actor-tags-runtime-evidence.json'));
+const receipt = (readFile = read) => JSON.parse(readFile(directory + 'local-actor-tags-runtime-evidence.json'));
 
 function measuredFile(value, file) {
 	const binding = value.files[file];
@@ -29,15 +29,15 @@ function measuredFile(value, file) {
 }
 
 // Extend the existing identity chain; never replace a historical receipt or its run counts.
-export function localActorTagDigest(file, previousDigest, label = 'local actor tags previous identity') {
-	const value = receipt();
-	if (!value.files[file]) return remoteProfileDigest(file, previousDigest, label);
+export function localActorTagDigest(file, previousDigest, label = 'local actor tags previous identity', readFile = read, optional) {
+	const value = receipt(readFile);
+	if (!value.files[file]) return remoteProfileDigest(file, previousDigest, label, readFile, optional);
 	const binding = measuredFile(value, file);
 	assert(binding.previousSha256.includes(previousDigest) || binding.sha256 === previousDigest, label);
-	return remoteProfileDigest(file, binding.sha256, label);
+	return remoteProfileDigest(file, binding.sha256, label, readFile, optional);
 }
 
-export function validateLocalActorTagEvidence(value, readFile = read) {
+export function validateLocalActorTagEvidence(value, readFile = read, optional) {
 	assert.equal(value.scope, 'local-actor-tag-publication');
 	assert.equal(value.notesCreateStatus, 'partial');
 	assert.equal(value.postingComplete, false);
@@ -59,7 +59,7 @@ export function validateLocalActorTagEvidence(value, readFile = read) {
 	}
 	for (const [file, binding] of Object.entries(value.files)) {
 		measuredFile(value, file);
-		assert.equal(sha(readFile(file)), remoteProfileDigest(file, binding.sha256), 'actual frozen tag input drift');
+		assert.equal(sha(readFile(file)), remoteProfileDigest(file, binding.sha256, undefined, readFile, optional), 'actual frozen tag input drift');
 	}
 	assert.match(value.brokerReceiptSha256, /^[a-f0-9]{64}$/);
 	assert.match(value.frozenInputMapSha256, /^[a-f0-9]{64}$/);

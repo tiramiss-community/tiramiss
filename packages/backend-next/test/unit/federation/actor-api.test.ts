@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { emptyActorMedia } from '../../helpers/local-actor.js';
+import { emptyActorFields, emptyActorMedia } from '../../helpers/local-actor.js';
 import { afterEach, expect, test, vi } from 'vitest';
 import { createActivityPubActorApi } from '../../../src/http/activitypub-actor-api.js';
 
@@ -16,7 +16,7 @@ test.each(['application/activity+json', 'application/ld+json'])('key lookup fail
 		selfUrl: 'https://local.test',
 		isSelfHost: host => host === 'local.test',
 		federationEnabled: async () => true,
-		readActor: async id => ({ id, avatarId: null, bannerId: null, username: 'alice', name: null, isBot: false, isLocked: false, isExplorable: true, emojis: [], tags: [], host: null, uri: null }),
+		readActor: async id => ({ ...emptyActorFields, id, avatarId: null, bannerId: null, username: 'alice', name: null, isBot: false, isLocked: false, isExplorable: true, emojis: [], tags: [], host: null, uri: null }),
 		publicKey: async () => {
 			throw new Error('key lookup failed');
 		},
@@ -38,7 +38,7 @@ test.each([
 ])('$kind bypasses image/profile acquisition', async ({ kind, status }) => {
 	let materialsRead = false;
 	const app = createActivityPubActorApi({ selfUrl: 'https://local.test', isSelfHost: host => host === 'local.test', federationEnabled: async () => kind !== 'disabled',
-		readActor: async () => kind === 'missing' ? null : { id: 'local', avatarId: 'avatar', bannerId: 'banner', username: 'alice', name: null, isBot: false, isLocked: false, isExplorable: true, emojis: [], tags: [], host: kind === 'remote-self-host' ? 'local.test' : kind.startsWith('remote') ? 'remote.test' : null, uri: kind === 'remote-without-uri' ? null : 'https://remote.test/actor' },
+		readActor: async () => kind === 'missing' ? null : { ...emptyActorFields, id: 'local', avatarId: 'avatar', bannerId: 'banner', username: 'alice', name: null, isBot: false, isLocked: false, isExplorable: true, emojis: [], tags: [], host: kind === 'remote-self-host' ? 'local.test' : kind.startsWith('remote') ? 'remote.test' : null, uri: kind === 'remote-without-uri' ? null : 'https://remote.test/actor' },
 		readMaterials: async () => {
 			materialsRead = true; throw Error('must not acquire media');
 		}, readTags: async () => {

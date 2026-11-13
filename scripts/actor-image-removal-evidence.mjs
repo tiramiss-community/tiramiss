@@ -88,12 +88,12 @@ export function validateActorImageRemovalEvidence(value, readFile = read, option
 	assert.equal(sha(JSON.stringify(value)), reviewedRecordSha256, 'reviewed renewal record');
 }
 
-export function actorImageRemovalDigest(file, previousDigest, label = 'actor image removal previous identity') {
-	const value = JSON.parse(read(evidencePath));
+export function actorImageRemovalDigest(file, previousDigest, label = 'actor image removal previous identity', readFile = read, optional = readOptional) {
+	const value = JSON.parse(readFile(evidencePath));
 	const binding = value.files[file];
 	if (!binding) return previousDigest;
 	// Preserve callers' predecessor error contracts before inspecting the new hop.
 	assert(binding.previousSha256 === previousDigest || binding.sha256 === previousDigest, label);
-	validateActorImageRemovalEvidence(value);
+	validateActorImageRemovalEvidence(value, readFile, optional);
 	return binding.sha256;
 }

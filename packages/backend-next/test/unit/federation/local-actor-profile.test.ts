@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { emptyActorMedia } from '../../helpers/local-actor.js';
+import { emptyActorFields, emptyActorMedia } from '../../helpers/local-actor.js';
 import { readFileSync } from 'node:fs';
 import { expect, test } from 'vitest';
 import { renderLocalActor } from '../../../src/modules/federation/public.js';
@@ -10,7 +10,7 @@ import { createActivityPubActorApi } from '../../../src/http/activitypub-actor-a
 import type { LocalActorProfileFacts } from '../../../src/modules/federation/public.js';
 const source = JSON.parse(readFileSync(new URL('../../../../../docs/superpowers/compatibility/remote-user/local-actor-profile-observations.json', import.meta.url), 'utf8'));
 const empty: LocalActorProfileFacts = { description: null, followedMessage: null, fields: [], birthday: null, location: null };
-const user = { id: 'local', avatarId: null, bannerId: null, username: 'alice', name: null, isBot: false, isLocked: true, isExplorable: false, emojis: [], tags: [], host: null, uri: null };
+const user = { ...emptyActorFields, id: 'local', avatarId: null, bannerId: null, username: 'alice', name: null, isBot: false, isLocked: true, isExplorable: false, emojis: [], tags: [], host: null, uri: null };
 const keys = ['name', 'summary', '_misskey_summary', '_misskey_followedMessage', 'attachment', 'vcard:bday', 'vcard:Address'];
 // Removing any projected property, changing URL serialization, or swallowing MFM errors breaks these source-derived outcomes.
 for (const c of source.cases.filter((c: { fail?: string; }) => !c.fail)) {

@@ -109,7 +109,7 @@ export function validateLocalActorImagesEvidence(value, readFile = read, optiona
 }
 
 export function localActorImagesDigest(file, previousDigest, label = 'local actor images previous identity', readFile = read, optional = optionalRead) {
-	const value = JSON.parse(read(evidencePath));
+	const value = JSON.parse(readFile(evidencePath));
 	const binding = value.files[file];
 	if (!binding) return previousDigest;
 	assert((binding.previousSha256 !== null && binding.previousSha256 === previousDigest) || binding.sha256 === previousDigest, label);

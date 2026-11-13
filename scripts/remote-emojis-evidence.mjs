@@ -29,17 +29,17 @@ function measuredFile(receipt, file) {
 }
 
 // Last hop after historical actor/profile/metadata bindings; those receipts remain immutable.
-export function remoteEmojiDigest(file, historicalDigest, label = 'remote emoji previous identity') {
-	const receipt = JSON.parse(read(directory + 'remote-emojis-runtime-evidence.json'));
+export function remoteEmojiDigest(file, historicalDigest, label = 'remote emoji previous identity', readFile = read, optional) {
+	const receipt = JSON.parse(readFile(directory + 'remote-emojis-runtime-evidence.json'));
 	if (!receipt.files[file]) {
-		return localActorTagDigest(file, historicalDigest, label);
+		return localActorTagDigest(file, historicalDigest, label, readFile, optional);
 	}
 	const binding = measuredFile(receipt, file);
 	assert(binding.previousSha256.includes(historicalDigest) || binding.sha256 === historicalDigest, label);
-	return localActorTagDigest(file, binding.sha256, label);
+	return localActorTagDigest(file, binding.sha256, label, readFile, optional);
 }
 
-export function validateRemoteEmojiEvidence(receipt, readFile = read) {
+export function validateRemoteEmojiEvidence(receipt, readFile = read, optional) {
 	assert.equal(receipt.scope, 'public-remote-mention-actor-emojis');
 	assert.equal(receipt.notesCreateStatus, 'partial');
 	assert.equal(receipt.postingComplete, false);
@@ -55,7 +55,7 @@ export function validateRemoteEmojiEvidence(receipt, readFile = read) {
 	}
 	for (const [file, binding] of Object.entries(receipt.files)) {
 		measuredFile(receipt, file);
-		assert.equal(sha(readFile(file)), localActorTagDigest(file, binding.sha256), 'actual frozen emoji input drift');
+		assert.equal(sha(readFile(file)), localActorTagDigest(file, binding.sha256, undefined, readFile, optional), 'actual frozen emoji input drift');
 	}
 	assert.match(receipt.brokerReceiptSha256, /^[a-f0-9]{64}$/);
 	assert.match(receipt.frozenInputMapSha256, /^[a-f0-9]{64}$/);

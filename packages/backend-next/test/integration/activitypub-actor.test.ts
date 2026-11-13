@@ -23,6 +23,7 @@ import { createIdCodec } from '../../src/platform/id-codec.js';
 import { createTestDatabase } from '../helpers/database.js';
 import { startRemotePeer, deferred } from '../helpers/remote-peer.js';
 import { remoteSource } from '../helpers/remote-source.js';
+import { actorFieldsCorpus, actorFieldsProjection, actorFieldsSource } from '../helpers/local-actor-fields.js';
 import type { Server } from 'node:http';
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 let resources: Awaited<ReturnType<typeof connectResources>>;
@@ -94,6 +95,51 @@ function session(signed: boolean, http = resources.outboundHttp) {
 		}
 	});
 }
+
+// A renderer-only implementation cannot pass: both callers must publish actual stored User values.
+test.each(actorFieldsCorpus.cases.filter(row => !row.fail))('$id retains stored actor fields through HTTP and internal document acquisition', async c => {
+	const { createRemoteUsers } = await import('../../src/composition/remote-users.js');
+	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+	const id = codec.newId(Date.now());
+	const pair = await generateRsaKeyPair();
+	const user = { ...actorFieldsCorpus.defaults.user, ...c.user, id };
+	const users = resources.dataSource.getRepository(MiUser);
+	const profiles = resources.dataSource.getRepository(MiUserProfile);
+	const keys = resources.dataSource.getRepository(MiUserKeypair);
+	await users.insert({ ...user, usernameLower: `fields-${c.id}`, emojis: [...user.emojis], tags: [...user.tags], alsoKnownAs: user.alsoKnownAs === null ? null : [...user.alsoKnownAs] });
+	await profiles.insert({ userId: id });
+	await keys.insert({ userId: id, publicKey: pair.publicKeyPem, privateKey: pair.privateKeyPem });
+	const state = () => Promise.all([users.findOneByOrFail({ id }), profiles.findOneByOrFail({ userId: id }), keys.findOneByOrFail({ userId: id })]);
+	const retained = await state();
+	const observed = actorFieldsSource.cases.find(row => row.id === c.id)!.expected;
+	const expected = { ...observed.json, featured: `http://local.test/users/${id}/collections/featured` };
+	let document: Record<string, unknown> | undefined;
+	const originalValidate = federation.validateActor;
+	const observe = vi.spyOn(federation, 'validateActor').mockImplementation((value, uri) => {
+		document = structuredClone(value) as Record<string, unknown>;
+		return originalValidate(value, uri);
+	});
+	try {
+		const response = await fetch(`http://127.0.0.1:${port}/users/${id}`, { headers: { Accept: 'application/activity+json' } });
+		expect(response.status).toBe(200);
+		expect(response.headers.get('cache-control')).toBe('public, max-age=180');
+		expect(actorFieldsProjection(await response.json() as Record<string, unknown>)).toEqual(expected);
+		const plan = await createRemoteUsers(resources, database.config).acquireActor(`http://local.test/users/${id}`, null, Date.now, () => 'unused');
+		expect(plan.kind).toBe('create');
+		expect(document).toBeDefined();
+		expect(actorFieldsProjection(document!)).toEqual(expected);
+		// Publication uses _misskey_ settings; existing ingestion reads unprefixed settings.
+		expect(plan.user.requireSigninToViewContents).toBe(false);
+		expect(plan.user.makeNotesFollowersOnlyBefore).toBeNull();
+		expect(plan.user.makeNotesHiddenBefore).toBeNull();
+		expect(await state()).toEqual(retained);
+	} finally {
+		observe.mockRestore();
+		await keys.delete({ userId: id });
+		await profiles.delete({ userId: id });
+		await users.delete(id);
+	}
+});
 
 function activity(url: string, patch: Record<string, unknown> = {}) {
 	return { id: url, '@context': 'https://www.w3.org/ns/activitystreams', ...patch };

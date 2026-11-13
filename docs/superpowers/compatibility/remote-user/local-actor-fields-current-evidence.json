@@ -1,0 +1,259 @@
+{
+  "schemaVersion": 1,
+  "scope": "local-actor-fields-finite-identity-renewal",
+  "baseCommit": "6601944296f367e66fde8ecf3a2458c946ae2a6c",
+  "implementationCommit": "efd6b94ea9911fc6b9aeaad0edeea04da3932da1",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "notesCreateStatus": "partial",
+  "postingComplete": false,
+  "upstreamFullServerMeasured": false,
+  "remainingGapIds": [
+    "media-emoji",
+    "instance-metadata",
+    "charts",
+    "rich-actor",
+    "remote-cache"
+  ],
+  "request": {
+    "path": "/tmp/tiramiss-s1-r11-validation-request-r1.json",
+    "sha256": "02214775bece4397197829ea51c723a88485cbaadf624cffb57940fad7877701",
+    "status": "FROZEN_READY",
+    "frozenInputs": 877,
+    "frozenInputMapSha256": "cc10a3ff1950c450c04e408c9d4d57ddeeb39a2501f0da2ce4d8966d5cc1ac87"
+  },
+  "receipt": {
+    "path": "/tmp/tiramiss-s1-r11-validation-receipt-r1.json",
+    "sha256": "757d68d3dc1b6ff48f4b4e3c5ecc65291271e7dbab7861bf4b3e736025495174",
+    "record": {
+      "status": "PASS",
+      "requestPath": "/tmp/tiramiss-s1-r11-validation-request-r1.json",
+      "requestSha256": "02214775bece4397197829ea51c723a88485cbaadf624cffb57940fad7877701",
+      "base": "6601944296f367e66fde8ecf3a2458c946ae2a6c",
+      "runtime": {
+        "node": "v26.4.0",
+        "pnpm": "12.9.1"
+      },
+      "frozenInputs": 877,
+      "startedAt": "2026-11-13T06:37:28.083319+00:00",
+      "commands": [
+        {
+          "id": "sync-check",
+          "command": "pnpm --filter backend-upstream sync:check",
+          "exitCode": 0,
+          "log": "/tmp/tiramiss-s1-r11-validation-r1-sync-check.log",
+          "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd"
+        },
+        {
+          "id": "build",
+          "command": "pnpm --filter backend-next... build",
+          "exitCode": 0,
+          "log": "/tmp/tiramiss-s1-r11-validation-r1-build.log",
+          "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+        },
+        {
+          "id": "typecheck",
+          "command": "pnpm --filter backend-next... typecheck",
+          "exitCode": 0,
+          "log": "/tmp/tiramiss-s1-r11-validation-r1-typecheck.log",
+          "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+        },
+        {
+          "id": "units",
+          "command": "pnpm --filter backend-next test test/unit/federation/local-actor-fields.test.ts test/unit/federation/local-actor.test.ts test/unit/federation/local-actor-profile.test.ts test/unit/federation/local-actor-tags.test.ts test/unit/federation/local-actor-images.test.ts test/unit/federation/actor-api.test.ts test/unit/federation/local-webfinger.test.ts test/unit/federation/webfinger-api.test.ts test/unit/composition/http-app.test.ts test/unit/federation/remote-user.test.ts test/package-imports.test.ts --reporter=default --reporter=json --outputFile=/tmp/tiramiss-s1-r11-validation-r1-units.json",
+          "exitCode": 0,
+          "log": "/tmp/tiramiss-s1-r11-validation-r1-units.log",
+          "logSha256": "2d231c6d4f06b66d32b031ab52544e0322a9a533f48ee8feaab8ac3e6c9d70ad",
+          "artifact": "/tmp/tiramiss-s1-r11-validation-r1-units.json",
+          "artifactSha256": "55fd198d3423cd14edc16b82fd8abaf914c1ea0e255702ccee8a8e81bc390a54",
+          "tests": {
+            "numTotalTests": 283,
+            "numPassedTests": 283,
+            "numFailedTests": 0,
+            "numPendingTests": 0,
+            "success": true
+          }
+        },
+        {
+          "id": "actor-remote-integration",
+          "command": "pnpm --filter backend-next test:integration test/integration/activitypub-actor.test.ts test/integration/remote-user.test.ts --reporter=default --reporter=json --outputFile=/tmp/tiramiss-s1-r11-validation-r1-actor-remote-integration.json",
+          "exitCode": 0,
+          "log": "/tmp/tiramiss-s1-r11-validation-r1-actor-remote-integration.log",
+          "logSha256": "d2b33058ebe1c256a88440d6c468896579df28945de2973985d7e2bb9a568140",
+          "artifact": "/tmp/tiramiss-s1-r11-validation-r1-actor-remote-integration.json",
+          "artifactSha256": "641e2f9aa74ac4d8ee4ab70a438eb69cba19ce72a16e19a35ce36db9fb95084b",
+          "tests": {
+            "numTotalTests": 177,
+            "numPassedTests": 177,
+            "numFailedTests": 0,
+            "numPendingTests": 0,
+            "success": true
+          }
+        },
+        {
+          "id": "source-check",
+          "command": "UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/remote-user/local-actor-fields-source-probe.mjs --check",
+          "exitCode": 0,
+          "log": "/tmp/tiramiss-s1-r11-validation-r1-source-check.log",
+          "logSha256": "2a0cf31597741a0799ca2bae5a0a3b1f97bcb94154904d7fc7753c21155d51a9"
+        },
+        {
+          "id": "shipping",
+          "command": "node scripts/check-shipping.mjs --base 6601944296f367e66fde8ecf3a2458c946ae2a6c",
+          "exitCode": 0,
+          "log": "/tmp/tiramiss-s1-r11-validation-r1-shipping.log",
+          "logSha256": "46b4b8ef1036cddcc65fdcf2de413d3fe70a33441a3e556f008d846ac3ee73b4"
+        }
+      ],
+      "completedAt": "2026-11-13T06:38:00.307402+00:00"
+    }
+  },
+  "predecessor": {
+    "path": "docs/superpowers/compatibility/remote-user/local-actor-images-current-evidence.json",
+    "sha256": "c31ad9b0e20c7c07829d2a205f9c9c8b8cf52110e41dae75432241f262fa5553"
+  },
+  "webfingerEvidence": {
+    "path": "docs/superpowers/compatibility/remote-user/local-webfinger-current-evidence.json",
+    "sha256": "7e26209c23beea3499e2aded29c44ecdc175d02ec25dc9b900c31dc8debd35ab"
+  },
+  "files": {
+    "packages/backend-next/src/modules/federation/local-actor.ts": {
+      "previousSha256": "9ea18129a650c908929dfce71d349fba256e095b869c974adeb73454bc1c045e",
+      "sha256": "d54a777934fbfc1c42626f4209fe5cf04da9ae22ed8a6306ceea667153bd5ab7",
+      "validatedBy": [
+        "build",
+        "typecheck",
+        "actor-remote-integration"
+      ]
+    },
+    "packages/backend-next/src/platform/database/local-actors.ts": {
+      "previousSha256": "b592295ee192864bfaa6af4068670983758edad9d655cbddbb583e0cfd689bea",
+      "sha256": "9c12ceed720643ecf8b1e1e0296c95a6cc3136a52a94cd1d4ccdb3df4f9ce40a",
+      "validatedBy": [
+        "build",
+        "typecheck",
+        "actor-remote-integration"
+      ]
+    },
+    "packages/backend-next/test/helpers/local-actor.ts": {
+      "previousSha256": "24b63006e8b062b219a8a1da517244bba16d223e78a740d1e4e1bd42c34783e4",
+      "sha256": "6e42343b07d8c77801f4a7060175b6fe9f8b5fa3f481364088a15201dca8cad1",
+      "validatedBy": [
+        "units",
+        "actor-remote-integration"
+      ]
+    },
+    "packages/backend-next/test/integration/activitypub-actor.test.ts": {
+      "previousSha256": "3f979c87e8dac172ad57b2a489c2cfb8442da750953bba61ee7a1988f0a15636",
+      "sha256": "a191d54a49698217600c4a33ed7e38a0275eda3ef447db3db8e1a56d97f6c96d",
+      "validatedBy": [
+        "actor-remote-integration"
+      ]
+    },
+    "packages/backend-next/test/unit/federation/actor-api.test.ts": {
+      "previousSha256": "77406a2b358f1bb64926c8e5cec915c1ef5a9bfd66561a60e74e96a6b8295ba4",
+      "sha256": "898126f9a39c19974b1211141b267ff02ead016b4023bacfcb7ff391bc857b61",
+      "validatedBy": [
+        "units"
+      ]
+    },
+    "packages/backend-next/test/unit/federation/local-actor-images.test.ts": {
+      "previousSha256": "e2a0720c22f3fa194cba67b13112f731077b66f4a45e31d2cfd7c1c3f06af569",
+      "sha256": "370b04904038b34850aa64be9d46c5a25819c944070125bb4a5be14c36bf4f4b",
+      "validatedBy": [
+        "units"
+      ]
+    },
+    "packages/backend-next/test/unit/federation/local-actor-profile.test.ts": {
+      "previousSha256": "a54254bfc74f1848f5c632c9687efd2d0dba36362c459bcf92132a8908a27265",
+      "sha256": "e5a942fed7b6cf4588817c7aba8251b6963610a6215df406f0f537a3485cada6",
+      "validatedBy": [
+        "units"
+      ]
+    },
+    "packages/backend-next/test/unit/federation/local-actor-tags.test.ts": {
+      "previousSha256": "8f0e0cda3ab64a11738961e7345f41735f334af7748f3f98054fa25d2e1915df",
+      "sha256": "e6f6afe38380f9c88cb2114f615a11067ce1d94ee605e5acf1d05d97e0127998",
+      "validatedBy": [
+        "units"
+      ]
+    },
+    "packages/backend-next/test/unit/federation/local-actor.test.ts": {
+      "previousSha256": "43969c179d95e551896308cd850cba55e5601da66e9d96086491bc8342104217",
+      "sha256": "5f1325ccbd0cf7115ea191cd72e374af5bc3b716b3b1b8d66937287a67685836",
+      "validatedBy": [
+        "units"
+      ]
+    }
+  },
+  "frozenInputSha256": {
+    "docs/superpowers/compatibility/remote-user/local-actor-fields-corpus.json": "7437632fea607d63686d6909a9ac61c2373736356e4f99e958934df3ccb63344",
+    "docs/superpowers/compatibility/remote-user/local-actor-fields-observations.json": "12aa523c51e202bb22980fcb263ee5d35f6ccfe8f6065c7278b8f562ea6731ec",
+    "docs/superpowers/compatibility/remote-user/local-actor-fields-source-probe.mjs": "f7e86ea6dfc3ff18425a737e2fa2c7f7545a281944323c3deaa8ba9c0dfd1be9",
+    "packages/backend-next/src/modules/federation/local-actor.ts": "d54a777934fbfc1c42626f4209fe5cf04da9ae22ed8a6306ceea667153bd5ab7",
+    "packages/backend-next/src/platform/database/local-actors.ts": "9c12ceed720643ecf8b1e1e0296c95a6cc3136a52a94cd1d4ccdb3df4f9ce40a",
+    "packages/backend-next/test/helpers/local-actor-fields.ts": "03323444c9a5e215a021061d02a422e9c2a6cf14804ba0f2f7bc3a90fba35ae7",
+    "packages/backend-next/test/helpers/local-actor.ts": "6e42343b07d8c77801f4a7060175b6fe9f8b5fa3f481364088a15201dca8cad1",
+    "packages/backend-next/test/integration/activitypub-actor.test.ts": "a191d54a49698217600c4a33ed7e38a0275eda3ef447db3db8e1a56d97f6c96d",
+    "packages/backend-next/test/unit/federation/actor-api.test.ts": "898126f9a39c19974b1211141b267ff02ead016b4023bacfcb7ff391bc857b61",
+    "packages/backend-next/test/unit/federation/local-actor-fields.test.ts": "c703e55d295c2344ebe6c23ee643c20d3c815bc3a0d6bfad5cba1d2d138d4fbb",
+    "packages/backend-next/test/unit/federation/local-actor-images.test.ts": "370b04904038b34850aa64be9d46c5a25819c944070125bb4a5be14c36bf4f4b",
+    "packages/backend-next/test/unit/federation/local-actor-profile.test.ts": "e5a942fed7b6cf4588817c7aba8251b6963610a6215df406f0f537a3485cada6",
+    "packages/backend-next/test/unit/federation/local-actor-tags.test.ts": "e6f6afe38380f9c88cb2114f615a11067ce1d94ee605e5acf1d05d97e0127998",
+    "packages/backend-next/test/unit/federation/local-actor.test.ts": "5f1325ccbd0cf7115ea191cd72e374af5bc3b716b3b1b8d66937287a67685836"
+  },
+  "sourceOracle": {
+    "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+    "manifest": {
+      "path": "packages/backend/src/core/activitypub/ApRendererService.ts",
+      "sha256": "8e4bcdcb5d062ffb707b0e038e5e1f62f0afca2ac4ddaa44c10e1b21bcbf1098",
+      "gitBlob": "601edcebe931a2c98e1bf967debdbe8c91e508ad",
+      "methods": {
+        "renderPerson": "409ee63404fdfbc27bc4c199b34166e30cef4ce137b26cd053ab92eb84a6ec97"
+      }
+    },
+    "corpusSha256": "7437632fea607d63686d6909a9ac61c2373736356e4f99e958934df3ccb63344",
+    "bounds": {
+      "cases": 21,
+      "cutoffValues": [
+        null,
+        0,
+        86400,
+        -3600,
+        -1
+      ],
+      "aliasMaxLength": 3,
+      "moveValues": [
+        null,
+        "",
+        "https://OTHER.test/users/raw%2f#key"
+      ],
+      "failures": [
+        "profile",
+        "media",
+        "tags",
+        "key",
+        "conversion"
+      ]
+    },
+    "doubles": {
+      "profile": "required lookup returns defaults.profile plus case.profile or rejects; verifies userId",
+      "media": "optional reads return null or reject; image/identicon/system conversion returns null, excluded from projection",
+      "tags": "getEmojis verifies input and returns []; empty tags, renderEmoji/renderHashtag forbidden",
+      "key": "lookup verifies userId and returns {}; renderKey returns null, excluded from projection",
+      "conversion": "mfm.parse returns input; toHtml returns input or rejects synchronously; excluded summary"
+    },
+    "projection": [
+      "type",
+      "featured",
+      "isCat",
+      "_misskey_requireSigninToViewContents",
+      "_misskey_makeNotesFollowersOnlyBefore",
+      "_misskey_makeNotesHiddenBefore",
+      "movedTo",
+      "alsoKnownAs"
+    ],
+    "caseCount": 21,
+    "successCases": 16,
+    "rejectionCases": 5
+  }
+}

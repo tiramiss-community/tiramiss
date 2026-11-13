@@ -60,15 +60,15 @@ function measuredFile(value, file) {
 }
 
 // Add one measured identity hop after local actor tags; historical receipts stay intact.
-export function remoteProfileDigest(file, previousDigest, label = 'remote profile previous identity') {
-	const value = JSON.parse(read(directory + 'remote-profile-runtime-evidence.json'));
-	if (!value.files[file]) return localActorImagesDigest(file, actorImageRemovalDigest(file, previousDigest, label), label);
+export function remoteProfileDigest(file, previousDigest, label = 'remote profile previous identity', readFile = read, optional = readIfAvailable) {
+	const value = JSON.parse(readFile(directory + 'remote-profile-runtime-evidence.json'));
+	if (!value.files[file]) return localActorImagesDigest(file, actorImageRemovalDigest(file, previousDigest, label, readFile, optional), label, readFile, optional);
 	const binding = measuredFile(value, file);
 	assert(binding.previousSha256.includes(previousDigest) || binding.sha256 === previousDigest, label);
-	return localActorImagesDigest(file, actorImageRemovalDigest(file, binding.sha256, label), label);
+	return localActorImagesDigest(file, actorImageRemovalDigest(file, binding.sha256, label, readFile, optional), label, readFile, optional);
 }
 
-export function validateRemoteProfileEvidence(value, readFile = read) {
+export function validateRemoteProfileEvidence(value, readFile = read, optional = readIfAvailable) {
 	assert.equal(value.scope, 'public-remote-mention-profile-conversion');
 	assert.equal(value.notesCreateStatus, 'partial');
 	assert.equal(value.postingComplete, false);
@@ -84,9 +84,9 @@ export function validateRemoteProfileEvidence(value, readFile = read) {
 	for (const [file, binding] of Object.entries(value.files)) {
 		measuredFile(value, file);
 		assert.equal(value.frozenInputSha256[file], binding.sha256, 'profile binding was frozen');
-		assert.equal(remoteProfileSha(readFile(file)), localActorImagesDigest(file, actorImageRemovalDigest(file, binding.sha256)), 'actual frozen profile input drift');
+		assert.equal(remoteProfileSha(readFile(file)), localActorImagesDigest(file, actorImageRemovalDigest(file, binding.sha256, undefined, readFile, optional), undefined, readFile, optional), 'actual frozen profile input drift');
 	}
 	assert.equal(remoteProfileSha(JSON.stringify(value.frozenInputSha256)), value.frozenInputMapSha256);
 	assert.match(value.brokerReceiptSha256, /^[a-f0-9]{64}$/);
-	validateRootVerification(value.rootVerification);
+	validateRootVerification(value.rootVerification, optional);
 }
