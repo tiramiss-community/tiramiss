@@ -12,7 +12,7 @@
 
 ## 現在地と既存成果
 
-基準: develop `0b5ab105952292ea1ac63ea54cefc638cbf88012`（PR #269マージ後）。保存済みlocal actorフィールド公開 `efd6b94ea9911fc6b9aeaad0edeea04da3932da1` は#269でマージ済み。#267のlocal actor画像、#268のWebFingerとstdout JSON診断も引き継ぐ。今回のlocal featured collection＋AP Note GETの最新sourceは `bcb828e878c5d14cb5be7b9ebf743fd452cca648`（元の通常2コミット・23ファイルとUnicode修正、[限定結果](../superpowers/compatibility/remote-user/local-featured-results.md)）。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
+基準: develop `50ffa6157c557f72ca10857201f390b5855c8016`（PR #270マージ後）。保存済みlocal actorフィールド公開 `efd6b94ea9911fc6b9aeaad0edeea04da3932da1` は#269でマージ済み。#267のlocal actor画像、#268のWebFingerとstdout JSON診断も引き継ぐ。PR #270でマージ済みのlocal featured collection＋AP Note GETのsourceは `bcb828e878c5d14cb5be7b9ebf743fd452cca648`（元の通常2コミット・23ファイルとUnicode修正、[限定結果](../superpowers/compatibility/remote-user/local-featured-results.md)）。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
 
 [画像削除の限定結果](../superpowers/compatibility/remote-user/actor-image-removal-results.md): public remote mentionの作成・canonical復旧後、両画像が不在なら6フィールドを消去し、更新失敗は報告してmentionを継続する。
 
@@ -21,11 +21,12 @@
 | 対象 | 実装済み | 残作業・完了判定 |
 | --- | --- | --- |
 | local WebFinger #195 | 通常GET/HEAD/OPTIONS `/.well-known/webfinger`、resource解決・JRD/XRD・path限定CORSを既存actor GETへ接続。[source49とR3単体235・実HTTP/PG46の結果](../superpowers/compatibility/remote-user/local-webfinger-results.md)。既存HTTP/actor55は別R1実行 | wildcard OPTIONS・他well-known/host-meta/NodeInfo/authorize-follow・collections/inbox/remote Notesは未完了。sourceはFastify inject＋doubles、error body診断文字列とMeta DB対injected cache/通知同等性は未比較。#176/#127/#195 OPEN、notes/create partial・postingComplete:false |
-| local actor保存済フィールド #195 | 既存HTTP/内部actorへisCat・設定3項目・movedTo・alsoKnownAsとfeatured URLを公開。[source21・単体283・実HTTP/PG177の親実測](../superpowers/compatibility/remote-user/local-actor-fields-results.md) | featured endpointはnot_implemented、Move実行・Drive/media・remote Notes・inbox/cacheは未完了。内部取込の設定prefix差とMeta/cache差を維持。#176/#127/#195 OPEN、notes/create partial・postingComplete:false |
+| local actor保存済フィールド #195 | 既存HTTP/内部actorへisCat・設定3項目・movedTo・alsoKnownAsとfeatured URLを公開。[source21・単体283・実HTTP/PG177の親実測](../superpowers/compatibility/remote-user/local-actor-fields-results.md) | 当該slice当時はfeatured endpointが未実装だったが、PR #270でlocal featured/AP Note GETはマージ済み。Move実行・Drive/media・remote Notes・inbox/cacheは未完了。内部取込の設定prefix差とMeta/cache差を維持。#176/#127/#195 OPEN、notes/create partial・postingComplete:false |
+| local followers/following GET #195 | 未マージの製品 `8f200fc583f40eda2455f2196013b976c39b937d`。source138ケース/138 injections、R2全単体3543・integration1139（実PG/listening HTTP collection144を含む）・acceptance65、987凍結入力ですべて0失敗/0pending/0drift。[実測とreceipt/hash](../superpowers/compatibility/remote-user/local-follow-collections-results.md) | literal methods/Fastify doublesは本家full server/PGではない。独立oracle80/86は別証跡。厳密診断/global hooks/Content-Length/Location/MetaCache未証明、最終CodeRabbit review PENDING、CI未確認。#176直結投稿完了や#182 mutation完了ではない |
 | 共有root | PR #249でHTTP・既存worker・CIの整理がマージ済み | 追加handlerを実装した意味ではない |
 | 投稿N0–N6 | #167–#175はCLOSED。#238で削除連携も確認済み | 全通知・閲覧・全WS等は各領域に残る |
 | 投稿N7 #176 | #242で基本縦断・停止再開・通常retry、#250でC2/C10の比較不足を補完。#243のremote解決もマージ済み | 残るactor関連の初期機能の実装・比較待ち。#176/#127はOPEN |
-| 連合 #195 | #243のremote user解決に加え、user hashtag #258、localプロフィール #259、remote絵文字取込 #262、local actor tag公開 #263、#266のremote actor画像削除、保存済Driveによるlocal actor画像URL公開と#268 WebFinger・#269保存済みfield公開。今回のlocal featured/AP Note GETは限定実装・製品R3検証済み | inbox中核・署名検証・受信activity、画像バイト配信・Drive取得・remote media・remote featured/Note取込・Move等の残範囲あり |
+| 連合 #195 | #243のremote user解決に加え、user hashtag #258、localプロフィール #259、remote絵文字取込 #262、local actor tag公開 #263、#266のremote actor画像削除、保存済Driveによるlocal actor画像URL公開と#268 WebFinger・#269保存済みfield公開。PR #270のlocal featured/AP Note GETはマージ済み。現在のfollowers/following GETは未マージの限定read sliceで製品R2検証済み | inbox中核・署名検証・受信activity、画像バイト配信・Drive取得・remote media・remote featured/Note取込・Move等の残範囲あり |
 | 連合土台 #215 / 外向きHTTP #216 | actor作成後usersCount #260、現在のactor取得/配送成功後のmetadata/getHtml #261 | inbox用の#215段階4、他のinstance取得経路、Drive等のHTTP利用側は未完了 |
 
 2026-11-09のユーザー回答に従い、残る初期機能を実装・比較するまで#176を未完了に保つ。担当Issueを付けるだけでは閉じない。#195全体を一括のblocked-byにはせず、#176に必要な機能単位で照合する。画像/Driveは#188/#195（S5と連携）、他のinstance経路は#215、chartは#200（S3）、rich actor/featured/Move等は#195/#199、cache/remoteUserUpdated等は#217（S3）に残る。`notes/create:partial`・`postingComplete:false`を維持する。

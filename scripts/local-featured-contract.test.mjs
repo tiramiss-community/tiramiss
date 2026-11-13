@@ -31,9 +31,10 @@ test('current readers renew five bound identities while historical projections r
 		assert.equal(localFeaturedDigest(file, binding.previousSha256, read, () => null), binding.sha256);
 		assert.equal(localFeaturedDigest(file, binding.sha256, read, () => null), binding.sha256);
 		assert.throws(() => localFeaturedDigest(file, '0'.repeat(64), read, () => null), /featured previous identity/);
-		assert.equal(currentLocalWebfingerDigest(file, binding.previousSha256, read, () => null), binding.sha256);
+		const current = JSON.parse(read(directory + 'local-follow-collections-current-evidence.json')).files[file]?.sha256 ?? binding.sha256;
+		assert.equal(currentLocalWebfingerDigest(file, binding.previousSha256, read, () => null), current);
 		const imageRecord = JSON.parse(read(directory + 'local-actor-images-current-evidence.json'));
-		assert.equal(currentFeaturedActorImagesDigest(file, imageRecord.files[file]?.sha256 ?? binding.previousSha256, undefined, read, () => null), binding.sha256);
+		assert.equal(currentFeaturedActorImagesDigest(file, imageRecord.files[file]?.sha256 ?? binding.previousSha256, undefined, read, () => null), current);
 		assert.equal(localActorFieldsDigest(file, binding.previousSha256, read, () => null), binding.previousSha256);
 	}
 	const webfinger = JSON.parse(read(directory + 'local-webfinger-current-evidence.json'));
@@ -126,10 +127,13 @@ test('optional host request, receipt, command logs and artifacts verify exact by
 	}
 });
 
-test('leaf imports only Node and never invokes an ancestor helper or global validator', () => {
+test('featured imports only Node and its explicit successor leaf, without ancestor helpers', () => {
 	const source = read('scripts/local-featured-evidence.mjs').toString();
 	const imports = [...source.matchAll(/from ['"]([^'"]+)['"]/g)].map(m => m[1]);
-	assert(imports.length > 0 && imports.every(p => p.startsWith('node:')));
+	assert.deepEqual(imports.filter(p => !p.startsWith('node:')), ['./local-follow-collections-evidence.mjs']);
+	const successor = read('scripts/local-follow-collections-evidence.mjs').toString();
+	assert([...successor.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:')));
+	assert(!/import\(|execFile|spawn|validateLocalFeatured|localFeaturedDigest|localActor.*Digest|validateLocalActor/.test(successor));
 	assert(!/import\(|execFile|spawn|validateLocalActor|localActor.*Digest/.test(source));
 	assert.equal(sha(read(directory + 'local-featured-corpus.json')), record().sourceOracle.corpusSha256);
 });

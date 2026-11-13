@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { localFollowCollectionsDigest } from './local-follow-collections-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
@@ -53,7 +54,7 @@ export function validateLocalFeaturedEvidence(value, readFile = read, optional =
 	assert.deepEqual(value.remainingGapIds, ['media-emoji', 'instance-metadata', 'charts', 'rich-actor', 'remote-cache']);
 	assert.deepEqual(Object.keys(value.files).sort(), [...renewedFiles].sort(), 'featured renewal subset');
 	assert.deepEqual(Object.keys(value.frozenInputSha256).sort(), measuredFiles, 'featured frozen subset');
-	for (const [path, digest] of Object.entries(value.frozenInputSha256)) assert.equal(sha(readFile(path)), digest, driftLabel);
+	for (const [path, digest] of Object.entries(value.frozenInputSha256)) assert.equal(sha(readFile(path)), localFollowCollectionsDigest(path, digest, readFile, optional, driftLabel), driftLabel);
 	for (const [file, binding] of Object.entries(value.files)) {
 		const predecessor = binding.predecessor;
 		const bytes = readFile(predecessor.path);
@@ -127,14 +128,15 @@ export function validateLocalFeaturedEvidence(value, readFile = read, optional =
 	}
 }
 
-// No ancestor imports, recursion or global traversal. New files have no invented predecessor.
+// Only the explicit successor leaf is imported; no ancestor recursion or global traversal. New files have no invented predecessor.
 export function localFeaturedDigest(file, previousDigest, readFile = read, optional = optionalRead, driftLabel) {
 	if (!renewedFiles.includes(file)) return previousDigest;
 	const bytes = readFile(evidencePath);
 	const value = JSON.parse(bytes);
 	const binding = value.files[file];
 	assert(binding && (previousDigest === binding.previousSha256 || previousDigest === binding.sha256), 'featured previous identity');
-	validateLocalFeaturedEvidence(value, readFile, optional, driftLabel);
+	assert.equal(sha(JSON.stringify(value)), canonicalRecordSha256, 'featured canonical record');
 	assert.equal(sha(bytes), recordBytesSha256, 'featured record bytes');
+	validateLocalFeaturedEvidence(value, readFile, optional, driftLabel);
 	return binding.sha256;
 }
