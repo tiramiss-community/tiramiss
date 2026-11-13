@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "498009e4d8bdfc0afc581fbcf5954da2c2953fed",
+  "implementationCommit": "10c0d76c3724cd4e52a0a17c24ed92accaa10f75",
   "contracts": [
     {"name":"Accept","line":154,"id":"ap-inbound:Accept","source":"packages/backend/src/core/activitypub/ApInboxService.ts","kind":"ap-inbound","domain":"federation","status":"not_implemented"},
     {"name":"Add","line":158,"id":"ap-inbound:Add","source":"packages/backend/src/core/activitypub/ApInboxService.ts","kind":"ap-inbound","domain":"federation","status":"not_implemented"},

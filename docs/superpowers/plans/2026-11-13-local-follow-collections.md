@@ -8,7 +8,7 @@
 
 **Tech Stack:** TypeScript, Hono, TypeORM, PostgreSQL, Fastify source probe.
 
-**Spec:** `docs/superpowers/specs/2026-11-13-local-follow-collections-design.md` (actual parent R3b runtime/source validation PASS; Phase 2 evidence binding; final scoped re-review/PR checks separate, CI UNRUN).
+**Spec:** `docs/superpowers/specs/2026-11-13-local-follow-collections-design.md` (actual parent R4 runtime PASS; new external fixes/evidence author-verified; targeted review/replies/new-head CI pending).
 
 ## Global Constraints
 
@@ -86,7 +86,7 @@ Pinned upstream `8e07cf085adf7009583d234a208e30436f020e26`; base `50ffa6157c557f
 - Final direct changed-package ESLint quiet, SPDX and locale/scope checks PASS; aggregate worker shipping SKIPPED to avoid dependency retrieval, no aggregate PASS claimed.
 - Minor stale review/host-gate PENDING wording corrected as time-scoped completed facts. #176/#127/#195/#215 OPEN; notes/create:partial, postingComplete:false, five gaps, owners and formal order unchanged.
 
-## Actual R3b and Phase 2 evidence/docs binding (2026-11-14)
+## Historical R3b and internal Phase 2 evidence/docs binding (2026-11-14)
 
 - [x] Verify host-ready product `498009e4d8bdfc0afc581fbcf5954da2c2953fed`, actual R3b request/receipt/logs/artifacts/full988 map, all9 exit0/no drift; units3723, integration1319, acceptance65, source318, upstream5, build/typecheck/shipping PASS. Collection units318 and PG/HTTP324 are real per-file counts.
 - [x] Preserve failed initial R3 integration1315/1319 with four encoded-page member-count failures as history. Correct only the test's JS/PG collation expectation using source-observed cursor + independent SQL for GET/HEAD; actual fresh R3b passed those cases. Runtime/source stays unchanged in Phase 2.
@@ -94,7 +94,25 @@ Pinned upstream `8e07cf085adf7009583d234a208e30436f020e26`; base `50ffa6157c557f
 - [x] Point inventory implementationCommit at actual measured product498009e4d8bdfc0afc581fbcf5954da2c2953fed, resolve all refs in that Git tree and regenerate/check existing catalog. Only the same two HTTP collection rows stay partial.
 - [x] Update ROADMAP/results/design/README with actual R3b and time-scoped R2/R1/Node24/EPERM history, source318 vs independent80/86 and unproven boundaries.
 - [x] Worker root382/382 and near105/105, inventory write/check, SPDX/locale/scope. Root commands use the unchanged /tmp stdio transport preload; no assertion skipped.
-- [ ] Parent native post-integration metadata root/aggregate shipping gate and final scoped re-review of the complete runtime+evidence+docs fix; worker results are reported separately and cannot approve the whole branch.
-- [ ] CI execution (UNRUN).
+- [x] Historical internal final scope subsequently received18-file APPROVED and all4 CI checks green at5acf; those checks do not cover later external-review fixes.
+- [x] Historical internal-scope CI at5acf passed all4; new external-fix head CI remains a separate pending gate below.
 
-Pre-path CodeRabbit product16/metadata14 files each had 0 findings, on their earlier committed scopes. The complete final fix (runtime + evidence + docs) has not yet received the controller’s final scoped re-review or new CodeRabbit/PR checks; those gates remain to be run by the controller. CI is UNRUN. #176/#127/#195/#215 OPEN, notes/create:partial/postingComplete:false, five gaps/owners/formal order unchanged. No agent/commit/staging/external review or send.
+Historical pre-external-feedback scope: CodeRabbit product16/metadata14 and later CLI12/11-file reviews each had0 findings; the internal18-file scoped final review subsequently APPROVED the fix, and all4 CI checks at5acf passed. Those approvals/checks precede the later two GitHub findings; author-fixed external changes still await controller targeted review/replies/new-head PR271 checks. #176/#127/#195/#215 OPEN, notes/create:partial/postingComplete:false, five gaps/owners/formal order unchanged. No agent/commit/staging/external review or send.
+
+## GitHub PR271 external review wave (after original approval)
+
+- [x] Both verified external findings corrected with domain RED10/2→GREEN12 and static real R2 fixture; source318/near442/typecheck/lint/history without Git passed. Original9 evidence bytes preserved.
+- [x] Verify actual R4 request/receipt/logs/artifacts991 inputs;3735/1319/65/source318, all9/no drift; use actual measured runtime commit in inventory.
+- [x] Add R4 proof with57 finite inputs, explicit R3 public renewal preserving featured/history bindings, sealed R2/R3 records/fixture and original negative guards.
+- [ ] Controller targeted review of both external fixes plus proof, ordinary PR push and replies to both inline threads.
+- [ ] All new-head PR271 CI green; old5acf CI is historical.
+
+## Current external-review R4 measurement (2026-11-14)
+
+Runtime product **`10c0d76c3724cd4e52a0a17c24ed92accaa10f75`**; actual parent R4 **991 frozen inputs**, units**3735/3735**, integration**1319/1319** (collection324), acceptance**65/65**, source**318/318**, upstream5/sync/build/typecheck/shipping PASS, all9 exit0/no drift. Domain unit12 and collection source unit318 are measured per-file counts. Node26.4.0/pnpm12.9.1, 2026-11-13 **23:24:01.526576→23:27:00.670092 UTC**. [Fresh R4 record](../compatibility/remote-user/local-follow-collections-review-current-evidence.json) binds request SHA256 `00e2f798beef4e0012ff360433f7c08a6f7761bbb801f4066a41db5c7041b353`, receipt `28ca271d4ae339e67ae36886896c28475294f3137beae15958f7abd1fb31e6fd`, full991 map `ca3f63e4b7b0f2871e725b996f94da4f9a9ed9e329e7c905ea87d96c8b8fb9c2`, canonical seal `0ce2723dc26193a14b6254bcd240e03a12c855b09108d7fca05f7f4a4bf0c824` and byte seal `09e17bdc0b6681fc73db0c7c17cf68d34b2ee598d132ac8bf189257791f1eeff`. Actual artifacts/commands/per-file counts are embedded; optional host files must match when present.
+
+Business/public follow result now returns collection data; absent/private owners throw identifiable domain errors. HTTP adapter alone owns404/403/cache30/index180/uncached pages. Source318 outcomes, query/path rules, order/mandatory failures/URI/paging remain unchanged. Original R2 validator and55 frozen inputs live in the independently sealed compact static fixture, not test-time Git reads, so squash/rebase/branch deletion does not break historical validation. Old original validator bytes/map and fixture seals are verified.
+
+Current finite measured subset is57 inputs: prior55 plus domain unit and history fixture. Exactly3 runtime paths changed from R3b (API/domain/public). R3→R4 public digest renewal has an explicit pointer to the unchanged R3 raw record; original featured predecessors and historical projection returns stay intact, and the other2 identities remain unchanged. All9 old records, including C355 R2 and df5f R3 path-current, remain byte-identical. The whole R3→R4 request-map delta is8 paths: runtime3, added domain unit/fixture2, added R3 raw history1, inventory context2. Later inventory/proof/docs edits are outside current-byte comparison of the full991 map, never falsely attributed to R4 runtime measurement.
+
+R3b3723/1319/65/source318 and R2/R1/Node24/EPERM are history, not amended-code proof. The prior internal18-file scoped review was APPROVED and CLI16/14/12/11-file reviews reported0 findings on their earlier scopes. All4 CI checks at5acf07914f2c4225bf49ed382a45e47441cd58de were green (controller-provided history). The two later GitHub CodeRabbit findings are author-fixed; controller targeted review, inline replies, ordinary push and new-head [PR271 checks](https://github.com/tiramiss-community/tiramiss/pull/271/checks) remain pending. No new review or CI success is claimed. Worker near proof110/110, full root387/387, Git-free history4/4, inventory write/check and SPDX/locale/scope passed; exact logs are in the new evidence report. Parent native post-integration gates follow. Independent80/86 remains distinct from318 literal methods/Fastify doubles and product real PG/HTTP324. Full upstream server/PG, exact diagnostic/global hooks/Content-Length/Location and Meta/cache timing/failure/notification remain unproven. #176/#127/#195/#215 OPEN, notes/create:partial/postingComplete:false, five gaps/owners/formal order unchanged.

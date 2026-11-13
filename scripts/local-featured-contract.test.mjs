@@ -31,7 +31,7 @@ test('current readers renew five bound identities while historical projections r
 		assert.equal(localFeaturedDigest(file, binding.previousSha256, read, () => null), binding.sha256);
 		assert.equal(localFeaturedDigest(file, binding.sha256, read, () => null), binding.sha256);
 		assert.throws(() => localFeaturedDigest(file, '0'.repeat(64), read, () => null), /featured previous identity/);
-		const current = JSON.parse(read(directory + 'local-follow-collections-current-evidence.json')).files[file]?.sha256 ?? binding.sha256;
+		const current = JSON.parse(read(directory + 'local-follow-collections-review-current-evidence.json')).files[file]?.sha256 ?? binding.sha256;
 		assert.equal(currentLocalWebfingerDigest(file, binding.previousSha256, read, () => null), current);
 		const imageRecord = JSON.parse(read(directory + 'local-actor-images-current-evidence.json'));
 		assert.equal(currentFeaturedActorImagesDigest(file, imageRecord.files[file]?.sha256 ?? binding.previousSha256, undefined, read, () => null), current);

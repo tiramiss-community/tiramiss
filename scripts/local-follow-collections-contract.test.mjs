@@ -20,7 +20,7 @@ import { validateRemoteEmojiEvidence } from './remote-emojis-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
-const path = directory + 'local-follow-collections-path-current-evidence.json';
+const path = directory + 'local-follow-collections-review-current-evidence.json';
 const r2Path = directory + 'local-follow-collections-current-evidence.json';
 const read = file => readFileSync(new URL(file, root));
 const json = file => JSON.parse(read(file));
@@ -28,7 +28,7 @@ const record = () => json(path);
 const absent = () => null;
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 
-test('actual R3b proof validates with host artifacts and when ephemeral files are absent', () => {
+test('actual R4 proof validates with host artifacts and when ephemeral files are absent', () => {
 	validateLocalFollowCollectionsEvidence(record());
 	validateLocalFollowCollectionsEvidence(record(), read, absent);
 });
@@ -166,7 +166,7 @@ test('R2 bytes, canonical seal, receipt and original validator remain usable as 
 	assert.throws(() => historical.validateLocalFollowCollectionsEvidence(failed, historicalRead, absent), /successful receipt/);
 	const first = Object.keys(r2.frozenInputSha256)[0];
 	assert.throws(() => historical.validateLocalFollowCollectionsEvidence(r2, p => p === first ? Buffer.from('corrupt') : historicalRead(p), absent), /input drift/);
-	assert.deepEqual(record().files, r2.files, 'three featured-hop bindings remain identical');
+	for (const [file, binding] of Object.entries(record().files)) assert.deepEqual({ ...binding, sha256: r2.files[file].sha256 }, r2.files[file], 'original featured-hop bindings remain identical');
 });
 
 for (const [name, mutate, error] of [
@@ -197,4 +197,24 @@ test('available previous R2 request and receipt must match sealed historical bin
 	for (const file of [value.previousMeasurement.request.path, value.previousMeasurement.receipt.path]) {
 		assert.throws(() => validateLocalFollowCollectionsEvidence(value, read, p => p === file ? Buffer.from('{}') : null), /actual previous .* bytes/);
 	}
+});
+
+
+test('public current identity explicitly renews from sealed R3 while historical projections remain', () => {
+	const value = record();
+	const binding = value.publicRenewal;
+	assert.equal(localFollowCollectionsDigest(binding.file, binding.previousSha256, read, absent), binding.sha256);
+	assert.notEqual(binding.previousSha256, binding.sha256);
+	const broken = structuredClone(value); broken.publicRenewal.previousSha256 = '0'.repeat(64);
+	assert.throws(() => validateLocalFollowCollectionsEvidence(broken, read, absent), /public renewal/);
+});
+
+test('R3 raw history and fixture seals reject corruption without host artifacts', () => {
+	const value = record();
+	const prior = value.previousPathMeasurement.path;
+	assert.throws(() => validateLocalFollowCollectionsEvidence(value, p => p === prior ? Buffer.concat([read(p), Buffer.from(' ')]) : read(p), absent), /R3 history bytes/);
+	const broken = structuredClone(value); broken.historyFixture.validator = '0'.repeat(64);
+	assert.throws(() => validateLocalFollowCollectionsEvidence(broken, read, absent), /history fixture seals/);
+	const missing = structuredClone(value); delete missing.addedInputs[Object.keys(missing.addedInputs)[0]];
+	assert.throws(() => validateLocalFollowCollectionsEvidence(missing, read, absent), /added input subset/);
 });

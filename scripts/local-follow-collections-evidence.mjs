@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs';
 
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
-const evidencePath = directory + 'local-follow-collections-path-current-evidence.json';
+const evidencePath = directory + 'local-follow-collections-review-current-evidence.json';
 export const r2Seals = Object.freeze({
 	path: directory + 'local-follow-collections-current-evidence.json',
 	canonicalSha256: '5e988b100594c786564fc78780796c88daf2aa70d9edde8ecef271d1dda73c99',
@@ -31,6 +31,8 @@ const renewedFiles = [
 	'src/composition/http-app.ts', 'src/modules/federation/public.ts', 'test/unit/composition/http-app.test.ts',
 ].map(path => 'packages/backend-next/' + path);
 const measuredFiles = [
+	"docs/superpowers/compatibility/remote-user/local-follow-collections-r2-history-fixture.json",
+	"packages/backend-next/test/unit/federation/local-follow-collections-domain.test.ts",
 	"docs/superpowers/compatibility/remote-user/local-featured-corpus.json",
 	"docs/superpowers/compatibility/remote-user/local-featured-observations.json",
 	"docs/superpowers/compatibility/remote-user/local-featured-source-probe.mjs",
@@ -86,29 +88,41 @@ const measuredFiles = [
 	"packages/backend-upstream/exports/entities.ts",
 	"packages/backend-upstream/src/models/UserNotePining.ts",
 	"packages/backend-upstream/upstream-sync.json"
-];
+].sort();
 const requiredRuns = ['sync-check', 'upstream-tests', 'build', 'typecheck', 'units', 'db-http', 'acceptance', 'source-probe', 'shipping'];
-const testCounts = { units: 3723, 'db-http': 1319, acceptance: 65 };
-// Exact parent R3b request/receipt, finite current subset and all 988 input identities
+const testCounts = { units: 3735, 'db-http': 1319, acceptance: 65 };
+// Exact parent R4 request/receipt, finite current subset and all 991 input identities
 // are sealed together. Temporary host artifacts are optional only when absent.
-const canonicalRecordSha256 = '82bc361a09526e22653cdb23724c20ba1a51507e06a4acee40d91f8e5e94a7cf';
-const recordBytesSha256 = 'df5f163d45a09a1c619436b027f83c04793e7fcf06d3edca70acdb7b46aa6da8';
+const canonicalRecordSha256 = '0ce2723dc26193a14b6254bcd240e03a12c855b09108d7fca05f7f4a4bf0c824';
+const recordBytesSha256 = '09e17bdc0b6681fc73db0c7c17cf68d34b2ee598d132ac8bf189257791f1eeff';
 
+const pathHistory = directory + 'local-follow-collections-path-current-evidence.json';
+const pathHistorySha256 = 'df5f163d45a09a1c619436b027f83c04793e7fcf06d3edca70acdb7b46aa6da8';
+const pathHistoryCanonical = '82bc361a09526e22653cdb23724c20ba1a51507e06a4acee40d91f8e5e94a7cf';
+const publicPath = 'packages/backend-next/src/modules/federation/public.ts';
 const changedPaths = [
-  "docs/superpowers/compatibility/remote-user/local-follow-collections-corpus.json",
-  "docs/superpowers/compatibility/remote-user/local-follow-collections-observations.json",
-  "docs/superpowers/compatibility/remote-user/local-follow-collections-source-probe.mjs",
   "packages/backend-next/src/http/activitypub-follow-collections-api.ts",
-  "packages/backend-next/test/helpers/local-follow-collections.ts",
-  "packages/backend-next/test/integration/local-follow-collections-http.test.ts",
-  "packages/backend-next/test/unit/federation/local-follow-collections.test.ts"
+  "packages/backend-next/src/modules/federation/local-follow-collections.ts",
+  "packages/backend-next/src/modules/federation/public.ts"
 ];
-const requestChangePaths = [...changedPaths, directory + 'local-follow-collections-current-evidence.json',
-	'docs/superpowers/compatibility/backend-inventory/contracts.json', 'docs/superpowers/compatibility/backend-inventory/domains.json'].sort();
+const addedPaths = [
+  "docs/superpowers/compatibility/remote-user/local-follow-collections-r2-history-fixture.json",
+  "packages/backend-next/test/unit/federation/local-follow-collections-domain.test.ts"
+];
+const requestChangePaths = [
+  "docs/superpowers/compatibility/backend-inventory/contracts.json",
+  "docs/superpowers/compatibility/backend-inventory/domains.json",
+  "docs/superpowers/compatibility/remote-user/local-follow-collections-path-current-evidence.json",
+  "docs/superpowers/compatibility/remote-user/local-follow-collections-r2-history-fixture.json",
+  "packages/backend-next/src/http/activitypub-follow-collections-api.ts",
+  "packages/backend-next/src/modules/federation/local-follow-collections.ts",
+  "packages/backend-next/src/modules/federation/public.ts",
+  "packages/backend-next/test/unit/federation/local-follow-collections-domain.test.ts"
+];
 
 export function validateLocalFollowCollectionsEvidence(value, readFile = read, optional = optionalRead, driftLabel = 'follow collections current input drift') {
-	assert.equal(value.schemaVersion, 2);
-	assert.equal(value.scope, 'local-follow-collections-path-measurement');
+	assert.equal(value.schemaVersion, 3);
+	assert.equal(value.scope, 'local-follow-collections-external-review-measurement');
 	assert.equal(value.notesCreateStatus, 'partial');
 	assert.equal(value.postingComplete, false, 'posting remains partial');
 	assert.equal(value.upstreamFullServerMeasured, false, 'source is not full server');
@@ -141,12 +155,45 @@ export function validateLocalFollowCollectionsEvidence(value, readFile = read, o
 		request: previous.request,
 		receipt: { path: previous.receipt.path, sha256: previous.receipt.sha256, requestSha256: previous.receipt.record.requestSha256 },
 	}, 'follow collections previous measurement binding');
-	assert.deepEqual(value.files, previous.files, 'follow collections unchanged R2 identities');
+	const pathBytes = readFile(pathHistory);
+	assert.equal(sha(pathBytes), pathHistorySha256, 'follow collections R3 history bytes');
+	const priorPath = JSON.parse(pathBytes);
+	assert.equal(sha(JSON.stringify(priorPath)), pathHistoryCanonical, 'follow collections R3 history canonical');
+	assert.deepEqual(value.previousPathMeasurement, {
+		path: pathHistory, sha256: pathHistorySha256, canonicalSha256: pathHistoryCanonical,
+		request: priorPath.request,
+		receipt: { path: priorPath.receipt.path, sha256: priorPath.receipt.sha256, requestSha256: priorPath.receipt.record.requestSha256 },
+	}, 'follow collections R3 measurement binding');
+	assert.equal(priorPath.receipt.record.requestSha256, priorPath.request.sha256, 'follow collections R3 receipt binding');
+	for (const [file, binding] of Object.entries(value.files)) {
+		assert.deepEqual({ ...binding, sha256: previous.files[file].sha256 }, previous.files[file], 'follow collections original featured bindings');
+		if (file !== publicPath) assert.equal(binding.sha256, priorPath.files[file].sha256, 'follow collections unchanged identities');
+	}
+	assert.deepEqual(value.publicRenewal, {
+		file: publicPath,
+		predecessor: { path: pathHistory, sha256: pathHistorySha256, pointer: ['files', publicPath, 'sha256'] },
+		previousSha256: priorPath.files[publicPath].sha256, sha256: value.frozenInputSha256[publicPath],
+		validatedBy: ['build', 'typecheck', 'units', 'db-http'],
+	}, 'follow collections public renewal');
+	assert.notEqual(value.publicRenewal.previousSha256, value.publicRenewal.sha256, 'follow collections changed public identity');
+	assert.deepEqual(Object.keys(value.addedInputs).sort(), addedPaths, 'follow collections added input subset');
+	for (const file of addedPaths) assert.deepEqual(value.addedInputs[file], {
+		sha256: value.frozenInputSha256[file], validatedBy: file.includes('/test/') ? ['typecheck', 'units'] : ['frozen-input-map'],
+	}, 'follow collections added measured input');
+	assert.deepEqual(value.historyFixture, {
+		path: addedPaths[0], fixture: 'c5861e12865ee253e925f70abecbc3e67dd1f526bf6362fde730ae7b04059195',
+		validator: '394053a84c26b723e17ddd130bdd5bf1417b11c43660fc0575115ccb792b022d',
+		map: '1d4dc8c435ba99221332fac74be79247520efbf3d9d60acfc90ecb8a15814c88',
+	}, 'follow collections history fixture seals');
+	const fixtureBytes = readFile(value.historyFixture.path), fixture = JSON.parse(fixtureBytes);
+	assert.equal(sha(fixtureBytes), value.historyFixture.fixture, 'follow collections history fixture bytes');
+	assert.equal(fixture.validatorSha256, value.historyFixture.validator, 'follow collections historical validator seal');
+	assert.equal(fixture.inputMapSha256, value.historyFixture.map, 'follow collections historical map seal');
 	assert.deepEqual(Object.keys(value.changedInputs).sort(), changedPaths, 'follow collections changed input subset');
-	assert.deepEqual(measuredFiles.filter(path => previous.frozenInputSha256[path] !== value.frozenInputSha256[path]), changedPaths, 'follow collections changed input subset');
+	assert.deepEqual(measuredFiles.filter(path => path in priorPath.frozenInputSha256 && priorPath.frozenInputSha256[path] !== value.frozenInputSha256[path]), changedPaths, 'follow collections changed input subset');
 	for (const [path, binding] of Object.entries(value.changedInputs)) {
-		assert.deepEqual(binding.predecessor, { path: r2Seals.path, sha256: r2Seals.bytesSha256, pointer: ['frozenInputSha256', path] }, 'follow collections changed predecessor binding');
-		assert.equal(binding.previousSha256, previous.frozenInputSha256[path], 'follow collections changed predecessor identity');
+		assert.deepEqual(binding.predecessor, { path: pathHistory, sha256: pathHistorySha256, pointer: ['frozenInputSha256', path] }, 'follow collections changed predecessor binding');
+		assert.equal(binding.previousSha256, priorPath.frozenInputSha256[path], 'follow collections changed predecessor identity');
 		assert.equal(binding.sha256, value.frozenInputSha256[path], 'follow collections changed frozen identity');
 		const runs = path.startsWith('docs/') ? ['source-probe', 'units', 'db-http'] : path.includes('/src/') ? ['build', 'typecheck', 'units', 'db-http'] : path.includes('/integration/') ? ['typecheck', 'db-http'] : path.includes('/helpers/') ? ['typecheck', 'units', 'db-http'] : ['typecheck', 'units'];
 		assert.deepEqual(binding.validatedBy, runs, 'follow collections changed applicable runs');
@@ -154,10 +201,10 @@ export function validateLocalFollowCollectionsEvidence(value, readFile = read, o
 	assert.deepEqual(Object.keys(value.requestChanges).sort(), requestChangePaths, 'follow collections request change subset');
 	for (const [path, binding] of Object.entries(value.requestChanges)) {
 		assert.equal(binding.sha256, value.request.inputSha256[path], 'follow collections changed full map identity');
-		if (path === r2Seals.path) {
-			assert.deepEqual(binding, { predecessor: null, previousSha256: null, sha256: r2Seals.bytesSha256, scope: 'added-R2-history-record' }, 'follow collections added history record');
+		if (path === pathHistory || addedPaths.includes(path)) {
+			assert.deepEqual(binding, { predecessor: null, previousSha256: null, sha256: value.request.inputSha256[path], scope: path === pathHistory ? 'added-R3-history-record' : 'added-measured-input' }, 'follow collections added history record');
 		} else {
-			assert.deepEqual(binding.predecessor, { path: previous.request.path, sha256: previous.request.sha256, pointer: ['sha256', path] }, 'follow collections request predecessor binding');
+			assert.deepEqual(binding.predecessor, { path: priorPath.request.path, sha256: priorPath.request.sha256, pointer: ['sha256', path] }, 'follow collections request predecessor binding');
 			assert.match(binding.previousSha256, /^[a-f0-9]{64}$/, 'follow collections request predecessor identity');
 			assert.equal(binding.scope, changedPaths.includes(path) ? 'measured-input' : 'inventory-context', 'follow collections request change scope');
 			if (path in value.changedInputs) assert.equal(binding.previousSha256, value.changedInputs[path].previousSha256, 'follow collections request predecessor identity');
@@ -172,6 +219,17 @@ export function validateLocalFollowCollectionsEvidence(value, readFile = read, o
 		else {
 			assert.equal(sha(canonicalMap(actual.sha256)), previous.request.frozenInputMapSha256, 'follow collections actual previous request map');
 			assert.equal(Object.keys(actual.sha256).length, 987, 'follow collections actual previous request count');
+
+		}
+	}
+	for (const key of ['request', 'receipt']) {
+		const binding = priorPath[key], bytes = optional(binding.path);
+		if (bytes === null) continue;
+		assert.equal(sha(bytes), binding.sha256, `follow collections actual R3 ${key} bytes`);
+		const actual = JSON.parse(bytes);
+		if (key === 'receipt') assert.deepEqual(actual, priorPath.receipt.record, 'follow collections actual R3 receipt');
+		else {
+			assert.equal(sha(canonicalMap(actual.sha256)), priorPath.request.frozenInputMapSha256, 'follow collections actual R3 map');
 			const changes = [...new Set([...Object.keys(actual.sha256), ...Object.keys(value.request.inputSha256)])].filter(path => actual.sha256[path] !== value.request.inputSha256[path]).sort();
 			assert.deepEqual(changes, requestChangePaths, 'follow collections actual previous request changes');
 			for (const path of changes) assert.equal(actual.sha256[path] ?? null, value.requestChanges[path].previousSha256, 'follow collections actual previous request changes');
@@ -179,14 +237,14 @@ export function validateLocalFollowCollectionsEvidence(value, readFile = read, o
 	}
 	const receipt = value.receipt.record;
 	assert.equal(receipt.status, 'PASS', 'follow collections successful receipt');
-	assert.equal(receipt.frozenInputs, 988, 'follow collections frozen count');
-	assert.equal(value.request.frozenInputs, 988, 'follow collections frozen count');
+	assert.equal(receipt.frozenInputs, 991, 'follow collections frozen count');
+	assert.equal(value.request.frozenInputs, 991, 'follow collections frozen count');
 	assert.equal(value.request.status, 'READY_FOR_HOST_VALIDATION', 'follow collections frozen request');
 	assert.equal(receipt.requestPath, value.request.path, 'follow collections request binding');
 	assert.equal(receipt.requestSha256, value.request.sha256, 'follow collections request binding');
 	assert.equal(receipt.base, value.baseCommit, 'follow collections request binding');
 	assert.equal(receipt.inputsSha256, value.request.frozenInputMapSha256, 'follow collections full map binding');
-	assert.equal(Object.keys(value.request.inputSha256).length, 988, 'follow collections full map binding');
+	assert.equal(Object.keys(value.request.inputSha256).length, 991, 'follow collections full map binding');
 	assert.equal(sha(canonicalMap(value.request.inputSha256)), value.request.frozenInputMapSha256, 'follow collections full map binding');
 	for (const [path, digest] of Object.entries(value.frozenInputSha256)) assert.equal(value.request.inputSha256[path], digest, 'follow collections full map frozen identity');
 	assert.equal(receipt.runtime, 'v26.4.0', 'follow collections runtime');
@@ -259,8 +317,8 @@ export function validateLocalFollowCollectionsEvidence(value, readFile = read, o
 		else {
 			assert.equal(actual.status, value.request.status, 'follow collections actual request status');
 			assert.equal(actual.base, value.baseCommit, 'follow collections actual request base');
-			assert.equal(actual.frozenInputs, 988, 'follow collections actual frozen count');
-			assert.equal(Object.keys(actual.sha256).length, 988, 'follow collections actual frozen count');
+			assert.equal(actual.frozenInputs, 991, 'follow collections actual frozen count');
+			assert.equal(Object.keys(actual.sha256).length, 991, 'follow collections actual frozen count');
 			assert.equal(sha(canonicalMap(actual.sha256)), value.request.frozenInputMapSha256, 'follow collections actual frozen map');
 			assert.deepEqual(actual.sha256, value.request.inputSha256, 'follow collections actual frozen map');
 			for (const [path, digest] of Object.entries(value.frozenInputSha256)) assert.equal(actual.sha256[path], digest, 'follow collections actual frozen identity');
@@ -294,7 +352,7 @@ export function validateLocalFollowCollectionsEvidence(value, readFile = read, o
 export function localFollowCollectionsDigest(file, previousDigest, readFile = read, optional = optionalRead, driftLabel) {
 	if (!renewedFiles.includes(file)) return previousDigest;
 	const bytes = readFile(evidencePath), value = JSON.parse(bytes), binding = value.files[file];
-	assert(binding && (previousDigest === binding.previousSha256 || previousDigest === binding.sha256), 'follow collections previous identity');
+	assert(binding && (previousDigest === binding.previousSha256 || previousDigest === binding.sha256 || (file === publicPath && previousDigest === value.publicRenewal.previousSha256)), 'follow collections previous identity');
 	validateLocalFollowCollectionsEvidence(value, readFile, optional, driftLabel);
 	assert.equal(sha(bytes), recordBytesSha256, 'follow collections record bytes');
 	return binding.sha256;
