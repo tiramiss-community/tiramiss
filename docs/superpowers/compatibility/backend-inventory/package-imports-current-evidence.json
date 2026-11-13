@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "scope": "package-imports-38-entities",
+  "previousSha256": "0af0eab138933f819193cd77f2a063bc600905fcd926cc8b4388253ef6053d4b",
+  "inputSha256": {
+    "packages/backend-next/test/package-imports.test.ts": "6cbf1b616b51d139298dc85350137a10c430a89205467cf454ba8b101de68d90",
+    "packages/backend-upstream/src/models/UserNotePining.ts": "88b35d6a010530807d4f1e347a02cceb4b7026695c41c0d7e7c4712c868e8d90",
+    "packages/backend-upstream/upstream-sync.json": "321ffe253df336975cc763aacb04f8f5a2286c1d4e85a76285b74b58373429dd",
+    "packages/backend-upstream/exports/entities.ts": "a3ba9f949469c6d730cbdcdd070994b38dbc55980075397ffc6df4eccc6d03dc",
+    "packages/backend-upstream/.managed-files.json": "e2a6859ffa1f6e0ac16db2c92b5b6a0a0a451d197ebd5672fbc3aff21250781a"
+  },
+  "entityCount": 38,
+  "measurement": {
+    "command": [
+      "pnpm",
+      "--filter",
+      "backend-next",
+      "test",
+      "--reporter=json",
+      "--outputFile=/tmp/tiramiss-pr270-ci-full-unit.json"
+    ],
+    "exitCode": 0,
+    "startedAt": "2026-11-13T10:16:04.570790+00:00",
+    "completedAt": "2026-11-13T10:16:34.418557+00:00",
+    "log": "/tmp/tiramiss-pr270-ci-full-unit.log",
+    "logSha256": "6498296d9099cda1ab740ed65f29b1b0176a06729810751e1b74161e499e6a8c",
+    "artifact": "/tmp/tiramiss-pr270-ci-full-unit.json",
+    "artifactSha256": "779e9c1cd4501cebc9003132c21fa34286253060c84df60ea1b58716f3290016",
+    "tests": {
+      "numTotalTests": 3403,
+      "numPassedTests": 3403,
+      "numFailedTests": 0,
+      "numPendingTests": 0,
+      "success": true
+    }
+  }
+}
