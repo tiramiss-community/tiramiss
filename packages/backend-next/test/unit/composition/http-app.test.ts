@@ -41,7 +41,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 	expect(legacy).toBe(createBackendHttpApp);
 	expect([...new Set(app.routes.map(route => route.path))]).toEqual([
 		'/api/admin/roles/show', '/api/admin/roles/update', '/users/:id', '/.well-known/webfinger',
-		'/users/:id/collections/featured', '/notes/:id',
+		'/users/:id/collections/featured', '/notes/:id', '/users/:id/followers', '/users/:id/following',
 		'/api/notes/delete', '/api/notes/show', '/api/notes/create', '/api/test-queue',
 	]);
 	for (const path of ['admin/roles/show', 'admin/roles/update', 'notes/delete', 'notes/create']) {
@@ -107,4 +107,22 @@ test.each(['GET', 'HEAD'])('ordinary composition passes its resource logger to d
 	expect(resources.logger.error).toHaveBeenCalledExactlyOnceWith('webfinger.failed', {
 		classification: 'unexpected-failure', stage: 'meta-read',
 	});
+});
+
+test.each(['followers', 'following'])('ordinary root exposes %s with federation gating and source OPTIONS fallback', async direction => {
+	const { resources, repository } = fixture();
+	repository.find.mockResolvedValue([{ federation: 'none' }]);
+	const app = createBackendHttpApp(resources, testConfig());
+	for (const method of ['GET', 'HEAD']) {
+		const response = await app.request(`/users/missing/${direction}?cursor=a&cursor=b`, { method });
+		expect(response.status).toBe(403);
+		expect(response.headers.get('access-control-allow-origin')).toBe('*');
+		expect(response.headers.get('cache-control')).toBeNull();
+		expect(await response.text()).toBe('');
+	}
+	const options = await app.request(`/users/missing/${direction}`, { method: 'OPTIONS' });
+	expect(options.status).toBe(404);
+	expect(options.headers.get('content-type')).toBe('application/json; charset=utf-8');
+	expect(options.headers.get('access-control-allow-origin')).toBeNull();
+	expect(repository.findOne).not.toHaveBeenCalled();
 });
