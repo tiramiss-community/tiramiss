@@ -1,0 +1,203 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "scope": "Finite literal renderPerson field projection, serialized JSON; source-method doubles only, not upstream full server.",
+  "bounds": {
+    "cases": 21,
+    "cutoffValues": [
+      null,
+      0,
+      86400,
+      -3600,
+      -1
+    ],
+    "aliasMaxLength": 3,
+    "moveValues": [
+      null,
+      "",
+      "https://OTHER.test/users/raw%2f#key"
+    ],
+    "failures": [
+      "profile",
+      "media",
+      "tags",
+      "key",
+      "conversion"
+    ]
+  },
+  "projection": [
+    "type",
+    "featured",
+    "isCat",
+    "_misskey_requireSigninToViewContents",
+    "_misskey_makeNotesFollowersOnlyBefore",
+    "_misskey_makeNotesHiddenBefore",
+    "movedTo",
+    "alsoKnownAs"
+  ],
+  "doubles": {
+    "profile": "required lookup returns defaults.profile plus case.profile or rejects; verifies userId",
+    "media": "optional reads return null or reject; image/identicon/system conversion returns null, excluded from projection",
+    "tags": "getEmojis verifies input and returns []; empty tags, renderEmoji/renderHashtag forbidden",
+    "key": "lookup verifies userId and returns {}; renderKey returns null, excluded from projection",
+    "conversion": "mfm.parse returns input; toHtml returns input or rejects synchronously; excluded summary"
+  },
+  "defaults": {
+    "url": "http://local.test",
+    "user": {
+      "id": "local",
+      "avatarId": null,
+      "bannerId": null,
+      "username": "alice",
+      "name": null,
+      "isBot": false,
+      "isLocked": false,
+      "isExplorable": true,
+      "emojis": [],
+      "tags": [],
+      "isCat": false,
+      "requireSigninToViewContents": false,
+      "makeNotesFollowersOnlyBefore": null,
+      "makeNotesHiddenBefore": null,
+      "movedToUri": null,
+      "alsoKnownAs": null
+    },
+    "profile": {
+      "description": null,
+      "followedMessage": null,
+      "fields": [],
+      "birthday": null,
+      "location": null
+    }
+  },
+  "cases": [
+    {
+      "id": "defaults"
+    },
+    {
+      "id": "cat-only",
+      "user": {
+        "isCat": true
+      }
+    },
+    {
+      "id": "signin-only",
+      "user": {
+        "requireSigninToViewContents": true
+      }
+    },
+    {
+      "id": "makeNotesFollowersOnlyBefore-zero",
+      "user": {
+        "makeNotesFollowersOnlyBefore": 0
+      }
+    },
+    {
+      "id": "makeNotesFollowersOnlyBefore-positive",
+      "user": {
+        "makeNotesFollowersOnlyBefore": 86400
+      }
+    },
+    {
+      "id": "makeNotesFollowersOnlyBefore-negative",
+      "user": {
+        "makeNotesFollowersOnlyBefore": -3600
+      }
+    },
+    {
+      "id": "makeNotesHiddenBefore-zero",
+      "user": {
+        "makeNotesHiddenBefore": 0
+      }
+    },
+    {
+      "id": "makeNotesHiddenBefore-positive",
+      "user": {
+        "makeNotesHiddenBefore": 86400
+      }
+    },
+    {
+      "id": "makeNotesHiddenBefore-negative",
+      "user": {
+        "makeNotesHiddenBefore": -3600
+      }
+    },
+    {
+      "id": "move-empty",
+      "user": {
+        "movedToUri": ""
+      }
+    },
+    {
+      "id": "move-value",
+      "user": {
+        "movedToUri": "https://OTHER.test/users/raw%2f#key"
+      }
+    },
+    {
+      "id": "aliases-empty",
+      "user": {
+        "alsoKnownAs": []
+      }
+    },
+    {
+      "id": "aliases-order",
+      "user": {
+        "alsoKnownAs": [
+          "https://B.test/raw%2f",
+          "https://a.test/",
+          "https://B.test/raw%2f"
+        ]
+      }
+    },
+    {
+      "id": "bot",
+      "user": {
+        "isBot": true,
+        "isCat": true,
+        "requireSigninToViewContents": true
+      }
+    },
+    {
+      "id": "system",
+      "user": {
+        "username": "instance.actor"
+      }
+    },
+    {
+      "id": "system-bot",
+      "user": {
+        "username": "instance.actor",
+        "isBot": true,
+        "alsoKnownAs": [],
+        "makeNotesFollowersOnlyBefore": 0,
+        "makeNotesHiddenBefore": -1
+      }
+    },
+    {
+      "id": "profile-reject",
+      "fail": "profile"
+    },
+    {
+      "id": "media-reject",
+      "user": {
+        "avatarId": "avatar"
+      },
+      "fail": "media"
+    },
+    {
+      "id": "tags-reject",
+      "fail": "tags"
+    },
+    {
+      "id": "key-reject",
+      "fail": "key"
+    },
+    {
+      "id": "conversion-reject",
+      "profile": {
+        "description": "convert"
+      },
+      "fail": "conversion"
+    }
+  ]
+}

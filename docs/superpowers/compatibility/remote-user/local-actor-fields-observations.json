@@ -1,0 +1,417 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "manifest": {
+    "path": "packages/backend/src/core/activitypub/ApRendererService.ts",
+    "sha256": "8e4bcdcb5d062ffb707b0e038e5e1f62f0afca2ac4ddaa44c10e1b21bcbf1098",
+    "gitBlob": "601edcebe931a2c98e1bf967debdbe8c91e508ad",
+    "methods": {
+      "renderPerson": "409ee63404fdfbc27bc4c199b34166e30cef4ce137b26cd053ab92eb84a6ec97"
+    }
+  },
+  "corpusSha256": "7437632fea607d63686d6909a9ac61c2373736356e4f99e958934df3ccb63344",
+  "bounds": {
+    "cases": 21,
+    "cutoffValues": [
+      null,
+      0,
+      86400,
+      -3600,
+      -1
+    ],
+    "aliasMaxLength": 3,
+    "moveValues": [
+      null,
+      "",
+      "https://OTHER.test/users/raw%2f#key"
+    ],
+    "failures": [
+      "profile",
+      "media",
+      "tags",
+      "key",
+      "conversion"
+    ]
+  },
+  "doubles": {
+    "profile": "required lookup returns defaults.profile plus case.profile or rejects; verifies userId",
+    "media": "optional reads return null or reject; image/identicon/system conversion returns null, excluded from projection",
+    "tags": "getEmojis verifies input and returns []; empty tags, renderEmoji/renderHashtag forbidden",
+    "key": "lookup verifies userId and returns {}; renderKey returns null, excluded from projection",
+    "conversion": "mfm.parse returns input; toHtml returns input or rejects synchronously; excluded summary"
+  },
+  "projection": [
+    "type",
+    "featured",
+    "isCat",
+    "_misskey_requireSigninToViewContents",
+    "_misskey_makeNotesFollowersOnlyBefore",
+    "_misskey_makeNotesHiddenBefore",
+    "movedTo",
+    "alsoKnownAs"
+  ],
+  "cases": [
+    {
+      "id": "defaults",
+      "expected": {
+        "json": {
+          "type": "Person",
+          "featured": "http://local.test/users/local/collections/featured",
+          "isCat": false,
+          "_misskey_requireSigninToViewContents": false,
+          "_misskey_makeNotesFollowersOnlyBefore": null,
+          "_misskey_makeNotesHiddenBefore": null
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "cat-only",
+      "expected": {
+        "json": {
+          "type": "Person",
+          "featured": "http://local.test/users/local/collections/featured",
+          "isCat": true,
+          "_misskey_requireSigninToViewContents": false,
+          "_misskey_makeNotesFollowersOnlyBefore": null,
+          "_misskey_makeNotesHiddenBefore": null
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "signin-only",
+      "expected": {
+        "json": {
+          "type": "Person",
+          "featured": "http://local.test/users/local/collections/featured",
+          "isCat": false,
+          "_misskey_requireSigninToViewContents": true,
+          "_misskey_makeNotesFollowersOnlyBefore": null,
+          "_misskey_makeNotesHiddenBefore": null
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "makeNotesFollowersOnlyBefore-zero",
+      "expected": {
+        "json": {
+          "type": "Person",
+          "featured": "http://local.test/users/local/collections/featured",
+          "isCat": false,
+          "_misskey_requireSigninToViewContents": false,
+          "_misskey_makeNotesFollowersOnlyBefore": 0,
+          "_misskey_makeNotesHiddenBefore": null
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "makeNotesFollowersOnlyBefore-positive",
+      "expected": {
+        "json": {
+          "type": "Person",
+          "featured": "http://local.test/users/local/collections/featured",
+          "isCat": false,
+          "_misskey_requireSigninToViewContents": false,
+          "_misskey_makeNotesFollowersOnlyBefore": 86400,
+          "_misskey_makeNotesHiddenBefore": null
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "makeNotesFollowersOnlyBefore-negative",
+      "expected": {
+        "json": {
+          "type": "Person",
+          "featured": "http://local.test/users/local/collections/featured",
+          "isCat": false,
+          "_misskey_requireSigninToViewContents": false,
+          "_misskey_makeNotesFollowersOnlyBefore": -3600,
+          "_misskey_makeNotesHiddenBefore": null
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "makeNotesHiddenBefore-zero",
+      "expected": {
+        "json": {
+          "type": "Person",
+          "featured": "http://local.test/users/local/collections/featured",
+          "isCat": false,
+          "_misskey_requireSigninToViewContents": false,
+          "_misskey_makeNotesFollowersOnlyBefore": null,
+          "_misskey_makeNotesHiddenBefore": 0
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "makeNotesHiddenBefore-positive",
+      "expected": {
+        "json": {
+          "type": "Person",
+          "featured": "http://local.test/users/local/collections/featured",
+          "isCat": false,
+          "_misskey_requireSigninToViewContents": false,
+          "_misskey_makeNotesFollowersOnlyBefore": null,
+          "_misskey_makeNotesHiddenBefore": 86400
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "makeNotesHiddenBefore-negative",
+      "expected": {
+        "json": {
+          "type": "Person",
+          "featured": "http://local.test/users/local/collections/featured",
+          "isCat": false,
+          "_misskey_requireSigninToViewContents": false,
+          "_misskey_makeNotesFollowersOnlyBefore": null,
+          "_misskey_makeNotesHiddenBefore": -3600
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "move-empty",
+      "expected": {
+        "json": {
+          "type": "Person",
+          "featured": "http://local.test/users/local/collections/featured",
+          "isCat": false,
+          "_misskey_requireSigninToViewContents": false,
+          "_misskey_makeNotesFollowersOnlyBefore": null,
+          "_misskey_makeNotesHiddenBefore": null
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "move-value",
+      "expected": {
+        "json": {
+          "type": "Person",
+          "featured": "http://local.test/users/local/collections/featured",
+          "isCat": false,
+          "_misskey_requireSigninToViewContents": false,
+          "_misskey_makeNotesFollowersOnlyBefore": null,
+          "_misskey_makeNotesHiddenBefore": null,
+          "movedTo": "https://OTHER.test/users/raw%2f#key"
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "aliases-empty",
+      "expected": {
+        "json": {
+          "type": "Person",
+          "featured": "http://local.test/users/local/collections/featured",
+          "isCat": false,
+          "_misskey_requireSigninToViewContents": false,
+          "_misskey_makeNotesFollowersOnlyBefore": null,
+          "_misskey_makeNotesHiddenBefore": null,
+          "alsoKnownAs": []
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "aliases-order",
+      "expected": {
+        "json": {
+          "type": "Person",
+          "featured": "http://local.test/users/local/collections/featured",
+          "isCat": false,
+          "_misskey_requireSigninToViewContents": false,
+          "_misskey_makeNotesFollowersOnlyBefore": null,
+          "_misskey_makeNotesHiddenBefore": null,
+          "alsoKnownAs": [
+            "https://B.test/raw%2f",
+            "https://a.test/",
+            "https://B.test/raw%2f"
+          ]
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "bot",
+      "expected": {
+        "json": {
+          "type": "Service",
+          "featured": "http://local.test/users/local/collections/featured",
+          "isCat": true,
+          "_misskey_requireSigninToViewContents": true,
+          "_misskey_makeNotesFollowersOnlyBefore": null,
+          "_misskey_makeNotesHiddenBefore": null
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "system",
+      "expected": {
+        "json": {
+          "type": "Application",
+          "featured": "http://local.test/users/local/collections/featured",
+          "isCat": false,
+          "_misskey_requireSigninToViewContents": false,
+          "_misskey_makeNotesFollowersOnlyBefore": null,
+          "_misskey_makeNotesHiddenBefore": null
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "system-bot",
+      "expected": {
+        "json": {
+          "type": "Application",
+          "featured": "http://local.test/users/local/collections/featured",
+          "isCat": false,
+          "_misskey_requireSigninToViewContents": false,
+          "_misskey_makeNotesFollowersOnlyBefore": 0,
+          "_misskey_makeNotesHiddenBefore": -1,
+          "alsoKnownAs": []
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "profile-reject",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "profile unavailable"
+        },
+        "events": [
+          "profile"
+        ]
+      }
+    },
+    {
+      "id": "media-reject",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "media unavailable"
+        },
+        "events": [
+          "media",
+          "profile"
+        ]
+      }
+    },
+    {
+      "id": "tags-reject",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "tags unavailable"
+        },
+        "events": [
+          "profile",
+          "tags"
+        ]
+      }
+    },
+    {
+      "id": "key-reject",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "key unavailable"
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key"
+        ]
+      }
+    },
+    {
+      "id": "conversion-reject",
+      "expected": {
+        "error": {
+          "name": "Error",
+          "message": "conversion unavailable"
+        },
+        "events": [
+          "profile",
+          "tags",
+          "key",
+          "conversion"
+        ]
+      }
+    }
+  ]
+}

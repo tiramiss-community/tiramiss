@@ -15,6 +15,12 @@ export interface LocalActorFacts {
 	username: string;
 	name: string | null;
 	isBot: boolean;
+	isCat: boolean;
+	requireSigninToViewContents: boolean;
+	makeNotesFollowersOnlyBefore: number | null;
+	makeNotesHiddenBefore: number | null;
+	movedToUri: string | null;
+	alsoKnownAs: readonly string[] | null;
 	isLocked: boolean;
 	isExplorable: boolean;
 	emojis: readonly string[];
@@ -73,6 +79,7 @@ export function renderLocalActor(facts: LocalActorFacts, profile: LocalActorProf
 	return {
 		'@context': apContext, type: isSystem ? 'Application' : facts.isBot ? 'Service' : 'Person',
 		id, inbox: `${id}/inbox`, outbox: `${id}/outbox`, followers: `${id}/followers`, following: `${id}/following`,
+		featured: `${id}/collections/featured`,
 		sharedInbox: `${selfUrl}/inbox`, endpoints: { sharedInbox: `${selfUrl}/inbox` }, url: `${selfUrl}/@${facts.username}`,
 		preferredUsername: facts.username, name: facts.name, manuallyApprovesFollowers: facts.isLocked, discoverable: facts.isExplorable,
 		summary: profile.description ? toHtml(mfm.parse(profile.description), { selfUrl, mentionedRemoteUsers: [] }) : null,
@@ -80,6 +87,12 @@ export function renderLocalActor(facts: LocalActorFacts, profile: LocalActorProf
 		image: media.banner ? image(media.banner) : isSystem && media.bannerUrl != null ? fallback(media.bannerUrl) : null,
 		tag,
 		_misskey_summary: profile.description, _misskey_followedMessage: profile.followedMessage,
+		isCat: facts.isCat,
+		_misskey_requireSigninToViewContents: facts.requireSigninToViewContents,
+		_misskey_makeNotesFollowersOnlyBefore: facts.makeNotesFollowersOnlyBefore,
+		_misskey_makeNotesHiddenBefore: facts.makeNotesHiddenBefore,
+		...(facts.movedToUri ? { movedTo: facts.movedToUri } : {}),
+		...(facts.alsoKnownAs ? { alsoKnownAs: facts.alsoKnownAs } : {}),
 		attachment: attachment.length ? attachment : undefined,
 		...(profile.birthday ? { 'vcard:bday': profile.birthday } : {}),
 		...(profile.location ? { 'vcard:Address': profile.location } : {}),

@@ -2,22 +2,21 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { emptyActorMedia } from '../../helpers/local-actor.js';
+import { emptyActorFields, emptyActorMedia } from '../../helpers/local-actor.js';
 import { expect, test } from 'vitest';
 import { renderLocalActor } from '../../../src/modules/federation/public.js';
 const emptyProfile = { description: null, followedMessage: null, fields: [], birthday: null, location: null };
 
-// Historical publication oracle excludes tags/images; additive corpora cover them.
+// Preserve the original pinned source probe's explicit signer projection.
 function identity(body: Record<string, unknown>) {
-	const { summary, _misskey_summary, _misskey_followedMessage, attachment, tag, icon, image, ...rest } = body;
-	return rest;
+	return Object.fromEntries(['id', 'type', 'inbox', 'outbox', 'followers', 'following', 'sharedInbox', 'endpoints', 'url', 'preferredUsername', 'name', 'manuallyApprovesFollowers', 'discoverable', 'publicKey'].map(key => [key, body[key]]));
 }
 
 import { remoteSource } from '../../helpers/remote-source.js';
 
 test.each(remoteSource.cases.filter((c: { id: string; }) => ['publication-local', 'publication-system', 'publication-bot', 'publication-deleted'].includes(c.id)))('$id renders the consumed source signer projection with an actual context', fixture => {
 	const expected = fixture.expected.result;
-	const rendered = renderLocalActor({ id: 'local', avatarId: null, bannerId: null, username: fixture.input.system ? 'instance.actor' : 'alice', name: null, isBot: fixture.input.bot ?? false, isLocked: true, isExplorable: false, emojis: [], tags: [] }, emptyProfile, 'https://local.test', expected.publicKey.publicKeyPem, [], emptyActorMedia);
+	const rendered = renderLocalActor({ ...emptyActorFields, id: 'local', avatarId: null, bannerId: null, username: fixture.input.system ? 'instance.actor' : 'alice', name: null, isBot: fixture.input.bot ?? false, isLocked: true, isExplorable: false, emojis: [], tags: [] }, emptyProfile, 'https://local.test', expected.publicKey.publicKeyPem, [], emptyActorMedia);
 	const { '@context': context, ...projection } = rendered;
 	expect(Array.isArray(context)).toBe(true);
 	expect(context).toContain('https://www.w3.org/ns/activitystreams');
@@ -37,7 +36,7 @@ for (const fixture of remoteSource.cases.filter(c => c.area === 'publication')) 
 			publicKey: async () => keyFixture.expected.result.publicKey.publicKeyPem,
 			readActor: async id => {
 				calls.push({ id, isSuspended: false });
-				return fixture.input.missing || fixture.input.user?.isSuspended ? null : { id, avatarId: null, bannerId: null, username: fixture.input.system ? 'instance.actor' : 'alice', name: null, isBot: fixture.input.bot ?? false, isLocked: true, isExplorable: false, emojis: [], tags: [], host: null, uri: null, ...fixture.input.user };
+				return fixture.input.missing || fixture.input.user?.isSuspended ? null : { ...emptyActorFields, id, avatarId: null, bannerId: null, username: fixture.input.system ? 'instance.actor' : 'alice', name: null, isBot: fixture.input.bot ?? false, isLocked: true, isExplorable: false, emojis: [], tags: [], host: null, uri: null, ...fixture.input.user };
 			},
 		});
 		const response = await app.request('/users/local', { headers: { Accept: fixture.input.accept ?? 'application/activity+json' } });

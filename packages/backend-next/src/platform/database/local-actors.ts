@@ -13,8 +13,10 @@ export function createActorReader(manager: EntityManager, options: {
 		if (!row) {
 			return null;
 		}
-		const { avatarId, bannerId, username, name, isBot, isLocked, isExplorable, emojis, tags, host, uri } = row;
-		return { id, avatarId, bannerId, username, name, isBot, isLocked, isExplorable, emojis, tags, host, uri };
+		const { avatarId, bannerId, username, name, isBot, isLocked, isExplorable, emojis, tags, host, uri,
+			isCat, requireSigninToViewContents, makeNotesFollowersOnlyBefore, makeNotesHiddenBefore, movedToUri, alsoKnownAs } = row;
+		return { id, avatarId, bannerId, username, name, isBot, isLocked, isExplorable, emojis, tags, host, uri,
+			isCat, requireSigninToViewContents, makeNotesFollowersOnlyBefore, makeNotesHiddenBefore, movedToUri, alsoKnownAs };
 	};
 }
 

@@ -2,13 +2,13 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { emptyActorMedia } from '../../helpers/local-actor.js';
+import { emptyActorFields, emptyActorMedia } from '../../helpers/local-actor.js';
 import { readFileSync } from 'node:fs';
 import type { EntityManager } from 'typeorm';
 import { expect, test } from 'vitest';
 import { createActivityPubActorApi } from '../../../src/http/activitypub-actor-api.js';
 import { renderLocalActor } from '../../../src/modules/federation/public.js';
-const user = { id: 'local', avatarId: null, bannerId: null, username: 'alice', name: null, isBot: false, isLocked: false, isExplorable: true, emojis: [], tags: [], host: null, uri: null };
+const user = { ...emptyActorFields, id: 'local', avatarId: null, bannerId: null, username: 'alice', name: null, isBot: false, isLocked: false, isExplorable: true, emojis: [], tags: [], host: null, uri: null };
 const profile = { description: null, followedMessage: null, fields: [], birthday: null, location: null };
 const base = { selfUrl: 'https://local.test', federationEnabled: async () => true, isSelfHost: () => false, readActor: async () => user, readMaterials: async () => ({ profile: profile, media: emptyActorMedia }), readTags: async () => [], publicKey: async () => 'key' };
 
