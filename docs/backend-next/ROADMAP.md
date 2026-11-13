@@ -1,6 +1,6 @@
 # 新バックエンドの全体計画
 
-更新: 2026-11-11。判断基準は [GOALS](GOALS.md)。全体Issueは [#114](https://github.com/tiramiss-community/tiramiss/issues/114)。本書は工程と現在地、Issueは個別作業と依存、各PRは実装・検証結果を持つ。
+更新: 2026-11-13。判断基準は [GOALS](GOALS.md)。全体Issueは [#114](https://github.com/tiramiss-community/tiramiss/issues/114)。本書は工程と現在地、Issueは個別作業と依存、各PRは実装・検証結果を持つ。
 
 ## 今回の方針整理
 
@@ -12,7 +12,7 @@
 
 ## 現在地と既存成果
 
-基準: develop `5699e5ce92595e7065665fa964d0854c3194cca4`（PR #267マージ後）。local actor画像公開 `ac37daa75d55b24cc811a7c4082ffd0da924fc3c` は#267でマージ済み。今回の限定WebFinger公開は元実装 `770750d88b4d27820616d7f264b186017e52b9c9`、R2診断 `e9d8ebd07bc3d8e51c0a36c08ebbc97137504be4` とstdout JSON修正後 `1716e0f14207ddfe5b51730e256347ebe7579c5e`。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
+基準: develop `6601944296f367e66fde8ecf3a2458c946ae2a6c`（PR #268マージ後）。local actor画像公開 `ac37daa75d55b24cc811a7c4082ffd0da924fc3c` は#267でマージ済み。#268でマージ済みの限定WebFinger公開は元実装 `770750d88b4d27820616d7f264b186017e52b9c9`、R2診断 `e9d8ebd07bc3d8e51c0a36c08ebbc97137504be4` とstdout JSON修正後 `1716e0f14207ddfe5b51730e256347ebe7579c5e`。今回のlocal actor保存済フィールド公開は `efd6b94ea9911fc6b9aeaad0edeea04da3932da1`（[限定結果](../superpowers/compatibility/remote-user/local-actor-fields-results.md)）。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
 
 [画像削除の限定結果](../superpowers/compatibility/remote-user/actor-image-removal-results.md): public remote mentionの作成・canonical復旧後、両画像が不在なら6フィールドを消去し、更新失敗は報告してmentionを継続する。
 
@@ -21,6 +21,7 @@
 | 対象 | 実装済み | 残作業・完了判定 |
 | --- | --- | --- |
 | local WebFinger #195 | 通常GET/HEAD/OPTIONS `/.well-known/webfinger`、resource解決・JRD/XRD・path限定CORSを既存actor GETへ接続。[source49とR3単体235・実HTTP/PG46の結果](../superpowers/compatibility/remote-user/local-webfinger-results.md)。既存HTTP/actor55は別R1実行 | wildcard OPTIONS・他well-known/host-meta/NodeInfo/authorize-follow・collections/inbox/remote Notesは未完了。sourceはFastify inject＋doubles、error body診断文字列とMeta DB対injected cache/通知同等性は未比較。#176/#127/#195 OPEN、notes/create partial・postingComplete:false |
+| local actor保存済フィールド #195 | 既存HTTP/内部actorへisCat・設定3項目・movedTo・alsoKnownAsとfeatured URLを公開。[source21・単体283・実HTTP/PG177の親実測](../superpowers/compatibility/remote-user/local-actor-fields-results.md) | featured endpointはnot_implemented、Move実行・Drive/media・remote Notes・inbox/cacheは未完了。内部取込の設定prefix差とMeta/cache差を維持。#176/#127/#195 OPEN、notes/create partial・postingComplete:false |
 | 共有root | PR #249でHTTP・既存worker・CIの整理がマージ済み | 追加handlerを実装した意味ではない |
 | 投稿N0–N6 | #167–#175はCLOSED。#238で削除連携も確認済み | 全通知・閲覧・全WS等は各領域に残る |
 | 投稿N7 #176 | #242で基本縦断・停止再開・通常retry、#250でC2/C10の比較不足を補完。#243のremote解決もマージ済み | 残るactor関連の初期機能の実装・比較待ち。#176/#127はOPEN |
@@ -298,3 +299,5 @@ media/emoji #188/#195、user hashtag関係 #195、actor由来instance usersCount
 
 
 2026-11-11（診断形式の追加修正）: local WebFingerの既存Logger stdout JSON契約を `1716e0f14207ddfe5b51730e256347ebe7579c5e` で反映した。[R3の実測結果](../superpowers/compatibility/remote-user/local-webfinger-results.md#final-diagnostic-format-fix-r3-2026-11-11): build/typecheck、単体235件、通常listening HTTP/PG46件、変更のないsource49件がPASS。R2 current recordは完全なバイト複製をarchiveして保持し、current proofをR3へ更新する。既存HTTP/actor55は別R1の記録であり再測定していない。上記のR2履歴と正式な対応順、stable Meta/source-methodの検証範囲、#217および#176/#127/#195 OPEN・notes/create partial・postingComplete:falseを維持する。
+
+2026-11-13: PR #268後の基準 `6601944296f367e66fde8ecf3a2458c946ae2a6c` で、#195のlocal actor保存済フィールド限定sliceを `efd6b94ea9911fc6b9aeaad0edeea04da3932da1` に実装。[scopeと実測](../superpowers/compatibility/remote-user/local-actor-fields-results.md): 親の877凍結入力でsync/build/typecheck、近傍単体283件、実HTTP/PG actor69件+remote-user108件、固定renderPerson source21件とshippingがPASS。sourceは明示doubleによるmethod観測で本家full server比較ではない。featured URL公開だけでcollection endpointはnot_implemented、movedTo/alias公開だけでMove実行はない。Drive取得/画像配信・他remote media、remote Notes/collections、inbox中核/署名/受信activity、cache鮮度/remoteUserUpdated #217と他instance/chart/rich actorの残責任を維持する。五つのgap、#176/#127/#195 OPEN、notes/create:partial・postingComplete:false、正式な対応順は変わらない。過去のslice結果・件数・hashは履歴として保持する。Task2 root/inventoryのhost gateと親のレビュー/PR完了はこの製品実測からは主張しない。

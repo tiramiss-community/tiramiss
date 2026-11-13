@@ -37,14 +37,17 @@
 - [x] Capture literal pinned renderPerson outputs with explicit doubles and verified source identity. Run `UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/remote-user/local-actor-fields-source-probe.mjs --write`, then `--check`; expected exact replay.
 - [x] Add pure oracle comparisons and PG HTTP/internal-document cases covering booleans independently, each cutoff null/zero/positive/negative, move null/empty/value, aliases null/empty/ordered duplicates, ordinary/bot/system. Run `pnpm --filter backend-next test test/unit/federation/local-actor-fields.test.ts`; expected actual missing-field assertions RED before product edits.
 - [x] Add required facts and exact source output rules; pass stored columns through reader. Add explicit defaults to typed callers and restore historical explicit signer allowlist without editing historical oracle bytes.
-- [ ] Run closest actor fields/actor/profile/tags/images/API/composition/WebFinger consumers, pinned `--check`, sync:check, build/typecheck, integration actor+remote-user and shipping as applicable; expected PASS or recorded one-time sandbox block.
-- [ ] Freeze current executable package/test/config, oracle and required sync/schema/build inputs in `/tmp/tiramiss-s1-r11-validation-request-r1.json`; report files, RED, outcomes and remaining risks. Stop for parent validation; no commits.
+- [x] Run closest actor fields/actor/profile/tags/images/API/composition/WebFinger consumers, pinned `--check`, sync:check, build/typecheck, integration actor+remote-user and shipping as applicable; expected PASS or recorded one-time sandbox block.
+- [x] Freeze current executable package/test/config, oracle and required sync/schema/build inputs in `/tmp/tiramiss-s1-r11-validation-request-r1.json`; report files, RED, outcomes and remaining risks. Stop for parent validation; no commits.
 
 ### Task 2: Measured metadata renewal (fresh writer after host receipt)
 
 **Files:** Parent-owned root evidence helper/contracts, new current receipt, results/remote README, applicable inventory rows and ROADMAP.
 
-**Interfaces:** Consumes Task 1 frozen sha256 map and actual successful host receipt; produces a finite additive evidence hop retaining all predecessors through WebFinger, with exact command timestamps/counts/artifact hashes.
+**Interfaces:** Consumes Task 1 frozen sha256 map and actual successful host receipt; produces a finite additive evidence hop retaining all predecessors through WebFinger, with exact recorded overall timestamps/counts/artifact hashes (the runner has no per-command timestamps).
 
-- [ ] Fresh metadata writer tests unknown predecessors, altered bytes, missing/inapplicable/failed/skipped measurements and tampered provenance before adding the leaf validator; no predecessor helper imports or recursive validation.
-- [ ] Update only measured partial inventory rows and scope/result links; retain historical return identities and receipts. Parent performs review/CodeRabbit/shipping/commits/PR with `Refs #195, #176` after validation. This task is intentionally deferred from the implementation writer.
+- [x] Fresh metadata writer tests unknown predecessors, altered bytes, missing/inapplicable/failed/skipped measurements and tampered provenance before adding the leaf validator; no predecessor helper imports or recursive validation.
+- [x] Update only measured partial inventory rows and scope/result links; retain historical return identities and receipts. Parent host generation, normal root 271/271, inventory invariants and shipping passed with 1,063 frozen metadata inputs. The actual receipt is recorded in the bounded results.
+- [ ] Parent completes independent metadata and whole-branch review, CodeRabbit, commits and PR with `Refs #195, #176`; those gates are not claimed complete by this plan.
+
+Task2 gate evidence: [bounded results](../compatibility/remote-user/local-actor-fields-results.md) and current record. Product/source pin `efd6b94ea9911fc6b9aeaad0edeea04da3932da1`; actual R11 parent receipt PASS (877 inputs, units 283, actor/remote-user 177, source 21). New metadata rejection tests RED before helper; final direct 28/28 PASS. The subsequent actual host receipt records normal root 271/271 and inventory/shipping PASS; selected/direct tests were not substituted for this gate. Only this plan status and the results' factual host-gate note changed after the metadata measurement.

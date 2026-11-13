@@ -29,3 +29,7 @@ Node 26.4.0 via `/tmp/tiramiss-s1-node26/bin`; frozen installed dependencies. Si
 If genuine RED is sandbox-blocked, record NEEDS_HOST_RED and stop before product edits. After stable implementation freeze executable/source/build inputs in an R11 validation request; parent runs the host receipt. Parent owns metadata renewal, review, shipping, commits, push and PR.
 
 `featured` endpoint remains `not_implemented`; publishing `movedTo` executes no Move. Preserve current Meta/cache and remote-row qualifications, all historical chain hops through image removal, local images and WebFinger, five gap groups, #176/#127/#195 OPEN, `notes/create:partial`, `postingComplete:false`. This is source-method evidence with doubles, not an upstream full-server comparison.
+
+## Alternatives and tradeoff
+
+Keep the existing shared pure renderer and User reader: per-caller mapping would duplicate serialization and risk HTTP/internal divergence; adding featured serving, Move or other rich actor behavior now would exceed this bounded stored-field slice. The additive evidence leaf preserves historical projections at the cost of one explicit, finite current-byte hop.
