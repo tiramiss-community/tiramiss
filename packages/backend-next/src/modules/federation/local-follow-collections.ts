@@ -13,7 +13,17 @@ export interface FollowCollectionReader {
 	readMember(id: string): Promise<{ id: string; host: string | null; uri: string | null }>;
 }
 
-export type FollowCollectionResult = { status: 200; collection: Record<string, unknown>; cacheSeconds?: number } | { status: 403 | 404; cacheSeconds?: number };
+export interface FollowCollectionResult {
+	collection: Record<string, unknown>;
+}
+
+export class FollowCollectionNotFoundError extends Error {
+	override readonly name = 'FollowCollectionNotFoundError';
+}
+
+export class FollowCollectionPrivateError extends Error {
+	override readonly name = 'FollowCollectionPrivateError';
+}
 
 export function followCollectionIsPublic(visibility: string): boolean {
 	return visibility !== 'private' && visibility !== 'followers';
@@ -38,21 +48,21 @@ export function renderFollowCollection(partOf: string, totalItems: number, page?
 export async function readFollowCollection(id: string, direction: FollowCollectionDirection, page: boolean, cursor: string | undefined, reader: FollowCollectionReader, selfUrl: string): Promise<FollowCollectionResult> {
 	const user = await reader.readLocalUser(id);
 	if (user === null) {
-		return { status: 404 };
+		throw new FollowCollectionNotFoundError();
 	}
 	const visibility = await reader.readVisibility(user.id, direction);
 	if (!followCollectionIsPublic(visibility)) {
-		return { status: 403, cacheSeconds: 30 };
+		throw new FollowCollectionPrivateError();
 	}
 	const partOf = `${selfUrl}/users/${id}/${direction}`;
 	const count = direction === 'followers' ? user.followersCount : user.followingCount;
 	if (!page) {
-		return { status: 200, cacheSeconds: 180, collection: renderFollowCollection(partOf, count) };
+		return { collection: renderFollowCollection(partOf, count) };
 	}
 	const rows = await reader.readRelations(user.id, direction, cursor);
 	const hasNext = rows.length === 11;
 	const retained = hasNext ? rows.slice(0, 10) : rows;
 	// Do not join/filter members: mandatory per-user reads must fail on a vanished reference, like findOneByOrFail.
 	const items = await Promise.all(retained.map(async row => renderFollowMember(await reader.readMember(row.memberId), selfUrl)));
-	return { status: 200, collection: renderFollowCollection(partOf, count, { cursor, items, nextCursor: hasNext ? retained.at(-1)!.id : undefined }) };
+	return { collection: renderFollowCollection(partOf, count, { cursor, items, nextCursor: hasNext ? retained.at(-1)!.id : undefined }) };
 }

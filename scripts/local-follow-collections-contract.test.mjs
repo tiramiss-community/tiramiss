@@ -5,7 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { execFileSync } from 'node:child_process';
+import { loadFollowCollectionsR2History } from './local-follow-collections-history.mjs';
 import * as currentLeaf from './local-follow-collections-evidence.mjs';
 import test from 'node:test';
 import { localFollowCollectionsDigest, validateLocalFollowCollectionsEvidence } from './local-follow-collections-evidence.mjs';
@@ -153,21 +153,19 @@ test('new evidence leaf uses only Node builtins and has no ancestor calls or pro
 
 
 test('R2 bytes, canonical seal, receipt and original validator remain usable as actual history', async () => {
-	const original = execFileSync('git', ['show', '949e3040d4401aea68b7a505dda0b65453237c02:scripts/local-follow-collections-evidence.mjs'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }).toString();
+	const history = loadFollowCollectionsR2History();
+	const original = history.validator;
 	const historical = await import('data:text/javascript;base64,' + Buffer.from(original.replace("const root = new URL('../', import.meta.url);", `const root = new URL(${JSON.stringify(root.href)});`)).toString('base64'));
 	const r2 = json(r2Path);
-	const cache = new Map();
-	const historicalRead = file => {
-		if (!(file in r2.frozenInputSha256)) return read(file);
-		if (!cache.has(file)) cache.set(file, execFileSync('git', ['show', '8f200fc583f40eda2455f2196013b976c39b937d:' + file], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }));
-		return cache.get(file);
-	};
+	const historicalRead = history.read;
 	assert.equal(sha(read(r2Path)), currentLeaf.r2Seals.bytesSha256);
 	assert.equal(sha(JSON.stringify(r2)), currentLeaf.r2Seals.canonicalSha256);
 	historical.validateLocalFollowCollectionsEvidence(r2, historicalRead, absent);
 	assert.throws(() => historical.validateLocalFollowCollectionsEvidence(r2, read, absent), /input drift/);
 	const failed = structuredClone(r2); failed.receipt.record.status = 'FAIL';
 	assert.throws(() => historical.validateLocalFollowCollectionsEvidence(failed, historicalRead, absent), /successful receipt/);
+	const first = Object.keys(r2.frozenInputSha256)[0];
+	assert.throws(() => historical.validateLocalFollowCollectionsEvidence(r2, p => p === first ? Buffer.from('corrupt') : historicalRead(p), absent), /input drift/);
 	assert.deepEqual(record().files, r2.files, 'three featured-hop bindings remain identical');
 });
 

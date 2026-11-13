@@ -5,6 +5,7 @@
 import accepts from 'accepts';
 import { Hono } from 'hono';
 import type { IncomingMessage } from 'node:http';
+import { FollowCollectionNotFoundError, FollowCollectionPrivateError } from '../modules/federation/public.js';
 import type { FollowCollectionDirection, FollowCollectionResult } from '../modules/federation/public.js';
 import type { Logger } from '../platform/logger.js';
 
@@ -65,17 +66,22 @@ export function createActivityPubFollowCollectionsApi(parts: {
 				if (cursors && cursors.length !== 1) {
 					return c.body(null, 400);
 				}
-				const result = await parts.readCollection(id, direction, pages?.length === 1 && pages[0] === 'true', cursors?.[0]);
-				if (result.cacheSeconds !== undefined) {
-					c.header('Cache-Control', `public, max-age=${result.cacheSeconds}`);
-				}
-				if (result.status !== 200) {
-					return c.body(null, result.status);
+				const page = pages?.length === 1 && pages[0] === 'true';
+				const result = await parts.readCollection(id, direction, page, cursors?.[0]);
+				if (!page) {
+					c.header('Cache-Control', 'public, max-age=180');
 				}
 				const negotiation = accepts({ headers: { accept: c.req.header('accept') } } as IncomingMessage);
 				c.header('Content-Type', negotiation.type([activity, ld]) === ld ? ld : activity);
 				return c.body(JSON.stringify(result.collection));
-			} catch {
+			} catch (error) {
+				if (error instanceof FollowCollectionNotFoundError) {
+					return c.body(null, 404);
+				}
+				if (error instanceof FollowCollectionPrivateError) {
+					c.header('Cache-Control', 'public, max-age=30');
+					return c.body(null, 403);
+				}
 				parts.logger.error('activitypub-publication.failed', { classification: 'unexpected-failure', route: direction });
 				c.header('Content-Type', 'application/json; charset=utf-8');
 				return c.body(JSON.stringify({ statusCode: 500, error: 'Internal Server Error', message: 'Internal Server Error' }), 500);

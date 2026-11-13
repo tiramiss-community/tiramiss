@@ -58,5 +58,5 @@ export type { NotePublicationRow, NotePublicationReader, FeaturedReader } from '
 
 export { apContext } from './ap-context.js';
 
-export { readFollowCollection } from './local-follow-collections.js';
+export { readFollowCollection, FollowCollectionNotFoundError, FollowCollectionPrivateError } from './local-follow-collections.js';
 export type { FollowCollectionDirection, FollowCollectionReader, FollowCollectionResult } from './local-follow-collections.js';
