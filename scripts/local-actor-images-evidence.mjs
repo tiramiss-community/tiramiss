@@ -5,7 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { localWebfingerDigest } from './local-webfinger-evidence.mjs';
+import { localWebfingerDigest, currentLocalWebfingerDigest } from './local-webfinger-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const evidencePath = 'docs/superpowers/compatibility/remote-user/local-actor-images-current-evidence.json';
 const read = path => readFileSync(new URL(path, root));
@@ -56,7 +56,7 @@ export function validateLocalActorImagesEvidence(value, readFile = read, optiona
 		else applicable = ['build', 'typecheck', 'activitypub-actor-integration'];
 		assert(applicable.every(id => binding.validatedBy.includes(id)), 'applicable successful run');
 		assert.equal(binding.sha256, value.frozenInputSha256[file], 'image binding was frozen');
-		assert.equal(sha(readFile(file)), localWebfingerDigest(file, binding.sha256, readFile, optional), 'renewal measured input drift');
+		assert.equal(sha(readFile(file)), currentLocalWebfingerDigest(file, binding.sha256, readFile, optional), 'renewal measured input drift');
 	}
 	for (const binding of [value.historicalEvidence, value.predecessorEvidence]) {
 		assert.equal(sha(readFile(binding.path)), binding.sha256, 'renewal historical evidence drift');
@@ -121,4 +121,9 @@ export function localActorImagesDigest(file, previousDigest, label = 'local acto
 // follow the single WebFinger hop after validating the unchanged image record.
 export function currentLocalActorImagesDigest(file, previousDigest, label = 'local actor images previous identity', readFile = read, optional = optionalRead) {
 	return localWebfingerDigest(file, localActorImagesDigest(file, previousDigest, label, readFile, optional), readFile, optional);
+}
+
+// Current byte checks explicitly opt into featured; the older public projection stays stable.
+export function currentFeaturedActorImagesDigest(file, previousDigest, label = 'local actor images previous identity', readFile = read, optional = optionalRead) {
+	return currentLocalWebfingerDigest(file, localActorImagesDigest(file, previousDigest, label, readFile, optional), readFile, optional);
 }
