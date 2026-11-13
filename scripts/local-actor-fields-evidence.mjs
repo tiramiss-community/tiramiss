@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { localFeaturedDigest } from './local-featured-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
@@ -140,4 +141,9 @@ export function localActorFieldsDigest(file, previousDigest, readFile = read, op
 	assert(previousDigest === binding.previousSha256 || previousDigest === binding.sha256, 'fields previous identity');
 	validateLocalActorFieldsEvidence(value, readFile, optional);
 	return binding.sha256;
+}
+
+// Preserve the fields projection; current consumers append the finite featured hop.
+export function currentLocalActorFieldsDigest(file, previousDigest, readFile = read, optional = optionalRead, driftLabel) {
+	return localFeaturedDigest(file, localActorFieldsDigest(file, previousDigest, readFile, optional), readFile, optional, driftLabel);
 }

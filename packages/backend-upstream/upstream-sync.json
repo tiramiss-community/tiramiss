@@ -39,7 +39,8 @@
 		"src/models/ChannelMuting.ts",
 		"src/models/Antenna.ts",
 		"src/models/UserPublickey.ts",
-		"src/models/FollowRequest.ts"
+		"src/models/FollowRequest.ts",
+		"src/models/UserNotePining.ts"
 	],
 	"migrationDirectory": "migration",
 	"externalDependencies": [

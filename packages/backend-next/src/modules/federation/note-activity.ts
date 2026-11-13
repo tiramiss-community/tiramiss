@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { publicFileUrl } from '../drive/public.js';
+import type { PublicFileFacts, PublicFileUrlOptions } from '../drive/public.js';
 import { escapeHtml, getNoteHtml } from '../mfm/public.js';
 import { apContext } from './ap-context.js';
 import { renderApEmoji, renderApHashtag } from './ap-tags.js';
@@ -54,6 +56,19 @@ export interface NoteActivityMaterials {
 	emojis: ApEmojiFacts[];
 }
 
+export interface ApDocumentSourceFacts extends Omit<ApDocumentFacts, 'url'> {
+	publicFile: PublicFileFacts;
+	proxyRemoteFiles: boolean;
+	urlOptions: PublicFileUrlOptions;
+}
+export interface PreparedApNoteMaterials extends Omit<NoteActivityMaterials, 'files'> {
+	files: ApDocumentSourceFacts[];
+	audience: { to: string[]; cc: string[] };
+	tag: Record<string, unknown>[];
+	embeddedReply: Record<string, unknown> | null;
+	html: ReturnType<typeof getNoteHtml>;
+}
+
 /** 本家 NoteCreateService.isRenote && !isQuote。本家は作成時の入力で判定するが、判定に使う値はすべて同じ値のまま保存される。 */
 export function isPureRenote(note: Pick<NoteActivityNote, 'renoteId' | 'text' | 'replyId' | 'cw' | 'hasPoll' | 'fileIds'>): boolean {
 	return note.renoteId !== null
@@ -72,39 +87,45 @@ function noteUri(selfUrl: string, noteId: string): string {
 	return `${selfUrl}/notes/${noteId}`;
 }
 
-/** 本家 ApRendererService.renderNote（dive=false）。キーの順は本家の JSON の本文と一致させる。 */
-export function renderApNote(materials: NoteActivityMaterials, options: { selfUrl: string; now: number }): Record<string, unknown> {
+export function noteAudience(visibility: NoteActivityNote['visibility'], attributedTo: string, mentions: string[]): { to: string[]; cc: string[] } {
+	if (visibility === 'public') {
+		return { to: [publicAddress], cc: [`${attributedTo}/followers`, ...mentions] };
+	}
+	if (visibility === 'home') {
+		return { to: [`${attributedTo}/followers`], cc: [publicAddress, ...mentions] };
+	}
+	if (visibility === 'followers') {
+		return { to: [`${attributedTo}/followers`], cc: mentions };
+	}
+	return { to: mentions, cc: [] };
+}
+
+/** Source default dive=true; preparation supplies the one embedded reply without reads during conversion. */
+export function renderApNote(materials: PreparedApNoteMaterials, options: { selfUrl: string; now: number }, dive?: boolean): Record<string, unknown>;
+export function renderApNote(materials: NoteActivityMaterials, options: { selfUrl: string; now: number }, dive: false): Record<string, unknown>;
+export function renderApNote(materials: NoteActivityMaterials | PreparedApNoteMaterials, options: { selfUrl: string; now: number }, dive = true): Record<string, unknown> {
 	const { note, reply, renote, mentionedUsers, files, poll, emojis } = materials;
 	const { selfUrl } = options;
 
 	// 本家は返信でなければ null、返信先が見つからなければキーごと省く（undefined）。
-	const inReplyTo = note.replyId === null ? null : reply === null ? undefined : reply.uri ?? noteUri(selfUrl, reply.id);
-	const quote = renote === null ? undefined : renote.uri ?? noteUri(selfUrl, renote.id);
+	let inReplyTo: unknown = !note.replyId ? null : reply === null ? undefined : reply.uri || noteUri(selfUrl, reply.id);
+	if (note.replyId && reply !== null && !reply.uri && dive) {
+		if (!('embeddedReply' in materials) || materials.embeddedReply === null) {
+			throw new Error('local reply material is required for dive=true');
+		}
+		inReplyTo = materials.embeddedReply;
+	}
+	const quote = renote === null ? undefined : renote.uri || noteUri(selfUrl, renote.id);
 
 	const attributedTo = localUserUri(selfUrl, note.userId);
-	const mentions = note.mentionedRemoteUsers.map(user => user.uri);
-	let to: string[];
-	let cc: string[];
-	if (note.visibility === 'public') {
-		to = [publicAddress];
-		cc = [`${attributedTo}/followers`, ...mentions];
-	} else if (note.visibility === 'home') {
-		to = [`${attributedTo}/followers`];
-		cc = [publicAddress, ...mentions];
-	} else if (note.visibility === 'followers') {
-		to = [`${attributedTo}/followers`];
-		cc = mentions;
-	} else {
-		to = mentions;
-		cc = [];
-	}
+	const { to, cc } = 'audience' in materials ? materials.audience : noteAudience(note.visibility, attributedTo, note.mentionedRemoteUsers.map(user => user.uri));
 
 	// class 名 quote-inline は Misskey 以外のクライアントが引用の表示に使うため、この形を保つ。
 	const extraHtml = quote === undefined ? null : `<br><br><span class="quote-inline">RE: <a href="${escapeHtml(quote)}">${escapeHtml(quote)}</a></span>`;
-	const { content, noMisskeyContent } = getNoteHtml(note, selfUrl, extraHtml);
+	const { content, noMisskeyContent } = 'html' in materials ? materials.html : getNoteHtml(note, selfUrl, extraHtml);
 	const text = note.text ?? '';
 
-	const tag = [
+	const tag = 'tag' in materials ? materials.tag : [
 		...note.tags.map(name => renderApHashtag(name, selfUrl)),
 		...mentionedUsers.map(user => ({
 			type: 'Mention',
@@ -144,7 +165,7 @@ export function renderApNote(materials: NoteActivityMaterials, options: { selfUr
 		attachment: files.map(file => ({
 			type: 'Document',
 			mediaType: file.webpublicType ?? file.type,
-			url: file.url,
+			url: 'publicFile' in file ? publicFileUrl(file.publicFile, file.proxyRemoteFiles, file.urlOptions) : file.url,
 			name: file.comment,
 			width: file.width,
 			height: file.height,
@@ -171,7 +192,7 @@ export function renderNoteActivity(materials: NoteActivityMaterials, options: { 
 		return { '@context': apContext, id, actor, type: 'Announce', published, ...announceAudience(note, actor), object: announcedUri(materials, selfUrl) };
 	}
 
-	const object = renderApNote(materials, options);
+	const object = renderApNote(materials, options, false);
 	return { '@context': apContext, id, actor, type: 'Create', published, object, to: object.to, cc: object.cc };
 }
 
@@ -190,7 +211,7 @@ function announceAudience(note: NoteActivityNote, actor: string): { to: string[]
 
 function announcedUri({ note, renote }: NoteActivityMaterials, selfUrl: string): string {
 	if (renote !== null) {
-		return renote.uri ?? noteUri(selfUrl, renote.id);
+		return renote.uri || noteUri(selfUrl, renote.id);
 	}
 
 	// 本家は作成時に読んだ Renote 先から URI を作るため、表現の前に消えていても Announce を送る。

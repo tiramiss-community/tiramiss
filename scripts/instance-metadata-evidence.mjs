@@ -5,9 +5,13 @@
 import assert from 'node:assert/strict';
 import { remoteEmojiDigest } from './remote-emojis-evidence.mjs';
 import { readFileSync } from 'node:fs';
+import { packageImportsDigest, packageImportsPath } from './package-imports-evidence.mjs';
 
 // Finite additive identity chain; the original observations and run receipts remain historical.
 export function metadataDigest(file, historicalDigest, label = 'instance metadata previous measured identity') {
+	if (file === packageImportsPath) {
+		return packageImportsDigest(file, historicalDigest);
+	}
 	const receipt = JSON.parse(readFileSync(new URL('../docs/superpowers/compatibility/instance-metadata/runtime-evidence.json', import.meta.url), 'utf8'));
 	const renewal = receipt.renewals[file];
 	if (!renewal) {

@@ -5,7 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { localActorFieldsDigest } from './local-actor-fields-evidence.mjs';
+import { localActorFieldsDigest, currentLocalActorFieldsDigest } from './local-actor-fields-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
 const evidencePath = directory + 'local-webfinger-current-evidence.json';
@@ -125,7 +125,7 @@ export function validateLocalWebfingerEvidence(value, readFile = read, optional 
 		assert.equal(sha(correctionLog), correction.run.logSha256, 'WebFinger actual source probe log bytes');
 	}
 	for (const [path, digest] of Object.entries(value.frozenInputSha256)) {
-		assert.equal(sha(readFile(path)), path === sourceProbePath ? correction.sha256 : localActorFieldsDigest(path, digest, readFile, optional), 'WebFinger measured input drift');
+		assert.equal(sha(readFile(path)), path === sourceProbePath ? correction.sha256 : currentLocalActorFieldsDigest(path, digest, readFile, optional, 'WebFinger measured input drift'), 'WebFinger measured input drift');
 	}
 	for (const binding of [value.runtimeEvidence, value.sourceEvidence]) {
 		assert.equal(sha(readFile(binding.path)), binding.sha256, 'WebFinger historical evidence drift');
@@ -200,4 +200,9 @@ export function localWebfingerDigest(path, previousDigest, readFile = read, opti
 	assert(previousDigest === previous || previousDigest === binding.sha256, 'WebFinger previous identity');
 	validateLocalWebfingerEvidence(value, readFile, optional);
 	return localActorFieldsDigest(path, binding.sha256, readFile, optional);
+}
+
+// Existing WebFinger callers retain their R3 identity projection.
+export function currentLocalWebfingerDigest(path, previousDigest, readFile = read, optional = optionalRead) {
+	return currentLocalActorFieldsDigest(path, localWebfingerDigest(path, previousDigest, readFile, optional), readFile, optional);
 }

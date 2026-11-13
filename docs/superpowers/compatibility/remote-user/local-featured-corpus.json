@@ -1,0 +1,2035 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "defaults": {
+    "selfUrl": "https://local.example",
+    "now": "2026-11-03T12:00:00.000Z",
+    "note": {
+      "id": "at3hjq77note0001",
+      "userId": "alice",
+      "userHost": null,
+      "uri": null,
+      "text": "hello",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "replyId": null,
+      "renoteId": null,
+      "channelId": null,
+      "fileIds": [],
+      "hasPoll": false,
+      "tags": [],
+      "emojis": [],
+      "mentions": [],
+      "visibleUserIds": [],
+      "mentionedRemoteUsers": "[]"
+    },
+    "users": [
+      {
+        "id": "alice",
+        "username": "alice",
+        "host": null,
+        "uri": null,
+        "isSuspended": false
+      },
+      {
+        "id": "remote",
+        "username": "bob",
+        "host": "remote.test",
+        "uri": "https://remote.test/users/bob",
+        "isSuspended": false
+      }
+    ]
+  },
+  "doubles": [
+    "In/IsNull retain actual TypeORM operators; repository doubles implement pinned predicates and record facts/read failures",
+    "clock frozen; literal IdService.parse/parseAidx (finite aidx IDs); literal Drive getPublicUrl/getProxiedUrl with declared config/meta",
+    "actual extracted MFM toHtml/getNoteHtml, renderNote/helpers/context, featured/createServer; real Fastify inject/accepts/vary",
+    "HTML handler deliberately absent; literal ServerService external-AP-redirect onSend guard is registered on finite disabled-policy cases; HSTS and diagnostic framework error bodies remain outside comparison"
+  ],
+  "cases": [
+    {
+      "id": "plain",
+      "route": "render"
+    },
+    {
+      "id": "no-text",
+      "route": "render",
+      "note": {
+        "text": null
+      }
+    },
+    {
+      "id": "cw-empty",
+      "route": "render",
+      "note": {
+        "cw": ""
+      }
+    },
+    {
+      "id": "cw-present",
+      "route": "render",
+      "note": {
+        "cw": "cw"
+      }
+    },
+    {
+      "id": "audience-home",
+      "route": "render",
+      "note": {
+        "visibility": "home",
+        "mentionedRemoteUsers": "[{\"uri\":\"https://remote.test/users/bob\"}]"
+      }
+    },
+    {
+      "id": "audience-followers",
+      "route": "render",
+      "note": {
+        "visibility": "followers",
+        "mentionedRemoteUsers": "[{\"uri\":\"https://remote.test/users/bob\"}]"
+      }
+    },
+    {
+      "id": "audience-specified",
+      "route": "render",
+      "note": {
+        "visibility": "specified",
+        "mentionedRemoteUsers": "[{\"uri\":\"https://remote.test/users/bob\"}]"
+      }
+    },
+    {
+      "id": "reply-local",
+      "route": "render",
+      "note": {
+        "replyId": "at3hjq77note0002"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ]
+    },
+    {
+      "id": "reply-remote",
+      "route": "render",
+      "note": {
+        "replyId": "at3hjq77note0002"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": "https://remote.test/n/1",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ]
+    },
+    {
+      "id": "reply-empty-uri",
+      "route": "render",
+      "note": {
+        "replyId": "at3hjq77note0002"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": "",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ]
+    },
+    {
+      "id": "reply-missing",
+      "route": "render",
+      "note": {
+        "replyId": "gone"
+      }
+    },
+    {
+      "id": "reply-author-missing",
+      "route": "render",
+      "note": {
+        "replyId": "at3hjq77note0002"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "gone",
+          "userHost": null,
+          "uri": null,
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ]
+    },
+    {
+      "id": "reply-inner",
+      "route": "render",
+      "note": {
+        "replyId": "at3hjq77note0002"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": "at3hjq77note0003",
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0003",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "inner",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ]
+    },
+    {
+      "id": "reply-self",
+      "route": "render",
+      "note": {
+        "replyId": "at3hjq77note0001"
+      }
+    },
+    {
+      "id": "reply-false",
+      "route": "render",
+      "dive": false,
+      "note": {
+        "replyId": "at3hjq77note0002"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ]
+    },
+    {
+      "id": "reply-inner-author-missing",
+      "route": "render",
+      "note": {
+        "replyId": "at3hjq77note0002"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": "at3hjq77note0003",
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0003",
+          "userId": "gone",
+          "userHost": null,
+          "uri": null,
+          "text": "inner",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ]
+    },
+    {
+      "id": "quote-None",
+      "route": "render",
+      "note": {
+        "renoteId": "at3hjq77note0002",
+        "text": "quote"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ]
+    },
+    {
+      "id": "quote-",
+      "route": "render",
+      "note": {
+        "renoteId": "at3hjq77note0002",
+        "text": "quote"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": "",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ]
+    },
+    {
+      "id": "quote-https://remote.test/n/quote?a=1&b=2",
+      "route": "render",
+      "note": {
+        "renoteId": "at3hjq77note0002",
+        "text": "quote"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": "https://remote.test/n/quote?a=1&b=2",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ]
+    },
+    {
+      "id": "quote-missing",
+      "route": "render",
+      "note": {
+        "renoteId": "gone"
+      }
+    },
+    {
+      "id": "rich",
+      "route": "render",
+      "note": {
+        "renoteId": "at3hjq77note0002",
+        "fileIds": [
+          "file-image",
+          "gone",
+          "file-image"
+        ],
+        "hasPoll": true,
+        "tags": [
+          "\u65e5\u672c\u8a9e"
+        ],
+        "emojis": [
+          "blobcat",
+          "private",
+          "gone"
+        ],
+        "mentions": [
+          "remote",
+          "alice"
+        ]
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ],
+      "files": [
+        {
+          "id": "file-image",
+          "type": "image/png",
+          "webpublicType": "image/webp",
+          "url": "https://local.example/files/original.png",
+          "webpublicUrl": "https://local.example/files/webpublic.webp",
+          "comment": "alt <text>",
+          "properties": {
+            "width": 640,
+            "height": 480
+          },
+          "isSensitive": false,
+          "uri": null,
+          "userHost": null,
+          "isLink": false,
+          "webpublicAccessKey": "webpublic-key"
+        }
+      ],
+      "poll": {
+        "choices": [
+          "yes",
+          "no"
+        ],
+        "multiple": true,
+        "votes": [
+          3,
+          1
+        ],
+        "expiresAt": "2026-11-01T00:00:00.000Z"
+      },
+      "emojis": [
+        {
+          "name": "blobcat",
+          "host": null,
+          "type": "image/png",
+          "publicUrl": "https://local.example/emoji/blobcat.png",
+          "originalUrl": "https://local.example/emoji/blobcat-original.png",
+          "license": "CC0",
+          "localOnly": false,
+          "updatedAt": "2026-10-01T00:00:00.000Z"
+        },
+        {
+          "name": "private",
+          "host": null,
+          "type": "image/png",
+          "publicUrl": "https://local.example/emoji/blobcat.png",
+          "originalUrl": "https://local.example/emoji/blobcat-original.png",
+          "license": "CC0",
+          "localOnly": true,
+          "updatedAt": "2026-10-01T00:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "poll-missing",
+      "route": "render",
+      "note": {
+        "hasPoll": true
+      }
+    },
+    {
+      "id": "poll-open",
+      "route": "render",
+      "note": {
+        "hasPoll": true
+      },
+      "poll": {
+        "choices": [
+          "yes"
+        ],
+        "multiple": false,
+        "votes": [
+          0
+        ],
+        "expiresAt": null
+      }
+    },
+    {
+      "id": "poll-future",
+      "route": "render",
+      "note": {
+        "hasPoll": true
+      },
+      "poll": {
+        "choices": [
+          "yes"
+        ],
+        "multiple": false,
+        "votes": [
+          0
+        ],
+        "expiresAt": "2027-01-01T00:00:00.000Z"
+      }
+    },
+    {
+      "id": "mfm-bold",
+      "route": "render",
+      "note": {
+        "text": "**hello**"
+      }
+    },
+    {
+      "id": "mfm-ruby",
+      "route": "render",
+      "note": {
+        "text": "$[ruby a]",
+        "emojis": [
+          "blobcat"
+        ]
+      },
+      "fail": [
+        "emoji"
+      ]
+    },
+    {
+      "id": "failure-reply",
+      "route": "render",
+      "note": {
+        "replyId": "at3hjq77note0002",
+        "renoteId": "at3hjq77note0003",
+        "mentions": [
+          "alice"
+        ],
+        "fileIds": [
+          "file-image"
+        ],
+        "hasPoll": true,
+        "emojis": [
+          "blobcat"
+        ]
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": "https://remote.test/reply",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0003",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "inner",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ],
+      "fail": [
+        "reply"
+      ]
+    },
+    {
+      "id": "failure-author",
+      "route": "render",
+      "note": {
+        "replyId": "at3hjq77note0002",
+        "renoteId": "at3hjq77note0003",
+        "mentions": [
+          "alice"
+        ],
+        "fileIds": [
+          "file-image"
+        ],
+        "hasPoll": true,
+        "emojis": [
+          "blobcat"
+        ]
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": "https://remote.test/reply",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0003",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "inner",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ],
+      "fail": [
+        "author"
+      ]
+    },
+    {
+      "id": "failure-quote",
+      "route": "render",
+      "note": {
+        "replyId": "at3hjq77note0002",
+        "renoteId": "at3hjq77note0003",
+        "mentions": [
+          "alice"
+        ],
+        "fileIds": [
+          "file-image"
+        ],
+        "hasPoll": true,
+        "emojis": [
+          "blobcat"
+        ]
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": "https://remote.test/reply",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0003",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "inner",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ],
+      "fail": [
+        "quote"
+      ]
+    },
+    {
+      "id": "failure-mentions",
+      "route": "render",
+      "note": {
+        "replyId": "at3hjq77note0002",
+        "renoteId": "at3hjq77note0003",
+        "mentions": [
+          "alice"
+        ],
+        "fileIds": [
+          "file-image"
+        ],
+        "hasPoll": true,
+        "emojis": [
+          "blobcat"
+        ]
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": "https://remote.test/reply",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0003",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "inner",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ],
+      "fail": [
+        "mentions"
+      ]
+    },
+    {
+      "id": "failure-files",
+      "route": "render",
+      "note": {
+        "replyId": "at3hjq77note0002",
+        "renoteId": "at3hjq77note0003",
+        "mentions": [
+          "alice"
+        ],
+        "fileIds": [
+          "file-image"
+        ],
+        "hasPoll": true,
+        "emojis": [
+          "blobcat"
+        ]
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": "https://remote.test/reply",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0003",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "inner",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ],
+      "fail": [
+        "files"
+      ]
+    },
+    {
+      "id": "failure-poll",
+      "route": "render",
+      "note": {
+        "replyId": "at3hjq77note0002",
+        "renoteId": "at3hjq77note0003",
+        "mentions": [
+          "alice"
+        ],
+        "fileIds": [
+          "file-image"
+        ],
+        "hasPoll": true,
+        "emojis": [
+          "blobcat"
+        ]
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": "https://remote.test/reply",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0003",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "inner",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ],
+      "fail": [
+        "poll"
+      ]
+    },
+    {
+      "id": "failure-html",
+      "route": "render",
+      "note": {
+        "replyId": "at3hjq77note0002",
+        "renoteId": "at3hjq77note0003",
+        "mentions": [
+          "alice"
+        ],
+        "fileIds": [
+          "file-image"
+        ],
+        "hasPoll": true,
+        "emojis": [
+          "blobcat"
+        ]
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": "https://remote.test/reply",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0003",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "inner",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ],
+      "fail": [
+        "html"
+      ]
+    },
+    {
+      "id": "failure-emoji",
+      "route": "render",
+      "note": {
+        "replyId": "at3hjq77note0002",
+        "renoteId": "at3hjq77note0003",
+        "mentions": [
+          "alice"
+        ],
+        "fileIds": [
+          "file-image"
+        ],
+        "hasPoll": true,
+        "emojis": [
+          "blobcat"
+        ]
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": "https://remote.test/reply",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0003",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "inner",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ],
+      "fail": [
+        "emoji"
+      ]
+    },
+    {
+      "id": "inner-failure-before-outer-quote",
+      "route": "render",
+      "note": {
+        "replyId": "at3hjq77note0002",
+        "renoteId": "at3hjq77note0003"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [
+            "file-image"
+          ],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0003",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "inner",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ],
+      "fail": [
+        "files",
+        "quote"
+      ]
+    },
+    {
+      "id": "bad-json-before-files",
+      "route": "render",
+      "note": {
+        "mentionedRemoteUsers": "{",
+        "fileIds": [
+          "file-image"
+        ]
+      },
+      "fail": [
+        "files"
+      ]
+    },
+    {
+      "id": "featured-ap",
+      "route": "featured"
+    },
+    {
+      "id": "featured-ld",
+      "route": "featured",
+      "accept": "application/ld+json"
+    },
+    {
+      "id": "featured-profile",
+      "route": "featured",
+      "accept": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\""
+    },
+    {
+      "id": "featured-html",
+      "route": "featured",
+      "accept": "text/html"
+    },
+    {
+      "id": "featured-none-accept",
+      "route": "featured",
+      "accept": null
+    },
+    {
+      "id": "featured-unsupported",
+      "route": "featured",
+      "accept": "image/png"
+    },
+    {
+      "id": "featured-q-ap",
+      "route": "featured",
+      "accept": "text/html;q=0.1, application/activity+json;q=0.9"
+    },
+    {
+      "id": "featured-q-html",
+      "route": "featured",
+      "accept": "application/activity+json;q=0.1, text/html;q=0.9"
+    },
+    {
+      "id": "featured-head",
+      "route": "featured",
+      "method": "HEAD"
+    },
+    {
+      "id": "featured-disabled",
+      "route": "featured",
+      "federation": "none"
+    },
+    {
+      "id": "featured-missing",
+      "route": "featured",
+      "missing": true
+    },
+    {
+      "id": "featured-lookup-failure",
+      "route": "featured",
+      "fail": [
+        "lookup"
+      ]
+    },
+    {
+      "id": "featured-render-failure",
+      "route": "featured",
+      "fail": [
+        "html"
+      ]
+    },
+    {
+      "id": "note-ap",
+      "route": "note"
+    },
+    {
+      "id": "note-ld",
+      "route": "note",
+      "accept": "application/ld+json"
+    },
+    {
+      "id": "note-profile",
+      "route": "note",
+      "accept": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\""
+    },
+    {
+      "id": "note-html",
+      "route": "note",
+      "accept": "text/html"
+    },
+    {
+      "id": "note-none-accept",
+      "route": "note",
+      "accept": null
+    },
+    {
+      "id": "note-unsupported",
+      "route": "note",
+      "accept": "image/png"
+    },
+    {
+      "id": "note-q-ap",
+      "route": "note",
+      "accept": "text/html;q=0.1, application/activity+json;q=0.9"
+    },
+    {
+      "id": "note-q-html",
+      "route": "note",
+      "accept": "application/activity+json;q=0.1, text/html;q=0.9"
+    },
+    {
+      "id": "note-head",
+      "route": "note",
+      "method": "HEAD"
+    },
+    {
+      "id": "note-disabled",
+      "route": "note",
+      "federation": "none"
+    },
+    {
+      "id": "note-missing",
+      "route": "note",
+      "missing": true
+    },
+    {
+      "id": "note-lookup-failure",
+      "route": "note",
+      "fail": [
+        "lookup"
+      ]
+    },
+    {
+      "id": "note-render-failure",
+      "route": "note",
+      "fail": [
+        "html"
+      ]
+    },
+    {
+      "id": "featured-suspended-system",
+      "route": "featured",
+      "user": {
+        "isSuspended": true,
+        "username": "internal.system"
+      }
+    },
+    {
+      "id": "featured-remote-user",
+      "route": "featured",
+      "user": {
+        "host": "remote.test"
+      }
+    },
+    {
+      "id": "featured-empty",
+      "route": "featured",
+      "pins": []
+    },
+    {
+      "id": "featured-all-pins-desc",
+      "route": "featured",
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "hello",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0003",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "hello",
+          "cw": null,
+          "visibility": "home",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0004",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "hello",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0005",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "hello",
+          "cw": null,
+          "visibility": "home",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0006",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "hello",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0007",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "hello",
+          "cw": null,
+          "visibility": "home",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0008",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "hello",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ],
+      "pins": [
+        {
+          "id": "20",
+          "noteId": "at3hjq77note0002"
+        },
+        {
+          "id": "19",
+          "noteId": "at3hjq77note0003"
+        },
+        {
+          "id": "18",
+          "noteId": "at3hjq77note0004"
+        },
+        {
+          "id": "17",
+          "noteId": "at3hjq77note0005"
+        },
+        {
+          "id": "16",
+          "noteId": "at3hjq77note0006"
+        },
+        {
+          "id": "15",
+          "noteId": "at3hjq77note0007"
+        },
+        {
+          "id": "14",
+          "noteId": "at3hjq77note0008"
+        }
+      ]
+    },
+    {
+      "id": "featured-visibility",
+      "route": "featured",
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "reply",
+          "cw": null,
+          "visibility": "followers",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0003",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "inner",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": true,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ],
+      "pins": [
+        {
+          "id": "3",
+          "noteId": "at3hjq77note0002"
+        },
+        {
+          "id": "2",
+          "noteId": "at3hjq77note0003"
+        },
+        {
+          "id": "1",
+          "noteId": "at3hjq77note0001"
+        }
+      ]
+    },
+    {
+      "id": "featured-broken-pin",
+      "route": "featured",
+      "pins": [
+        {
+          "id": "1",
+          "noteId": "gone"
+        }
+      ]
+    },
+    {
+      "id": "featured-no-limit",
+      "route": "featured",
+      "query": "?page=true&limit=1"
+    },
+    {
+      "id": "note-hidden",
+      "route": "note",
+      "note": {
+        "visibility": "followers"
+      }
+    },
+    {
+      "id": "note-specified",
+      "route": "note",
+      "note": {
+        "visibility": "specified"
+      }
+    },
+    {
+      "id": "note-local-only",
+      "route": "note",
+      "note": {
+        "localOnly": true
+      }
+    },
+    {
+      "id": "note-remote",
+      "route": "note",
+      "note": {
+        "userHost": "remote.test",
+        "uri": "https://remote.test/n/1"
+      }
+    },
+    {
+      "id": "note-remote-empty",
+      "route": "note",
+      "note": {
+        "userHost": "remote.test",
+        "uri": ""
+      }
+    },
+    {
+      "id": "note-remote-null",
+      "route": "note",
+      "note": {
+        "userHost": "remote.test",
+        "uri": null
+      }
+    },
+    {
+      "id": "note-remote-self",
+      "route": "note",
+      "note": {
+        "userHost": "local.example",
+        "uri": "https://remote.test/n/1"
+      }
+    },
+    {
+      "id": "note-remote-malformed",
+      "route": "note",
+      "note": {
+        "userHost": "remote.test",
+        "uri": "not a URL"
+      }
+    },
+    {
+      "id": "note-remote-no-hydration",
+      "route": "note",
+      "note": {
+        "userHost": "remote.test",
+        "uri": "https://remote.test/n/1",
+        "fileIds": [
+          "file-image"
+        ]
+      },
+      "fail": [
+        "files"
+      ]
+    },
+    {
+      "id": "note-reply-false",
+      "route": "note",
+      "note": {
+        "replyId": "at3hjq77note0002"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": null,
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ]
+    },
+    {
+      "id": "bad-audience-shape-before-media",
+      "route": "render",
+      "note": {
+        "mentionedRemoteUsers": "{}",
+        "fileIds": [
+          "file-image"
+        ]
+      },
+      "fail": [
+        "files"
+      ]
+    },
+    {
+      "id": "invalid-tag-before-media",
+      "route": "render",
+      "note": {
+        "tags": [
+          "\ud800"
+        ],
+        "fileIds": [
+          "file-image"
+        ]
+      },
+      "fail": [
+        "files"
+      ]
+    },
+    {
+      "id": "media-url-after-emoji",
+      "route": "render",
+      "note": {
+        "fileIds": [
+          "file-image"
+        ],
+        "emojis": [
+          "blobcat"
+        ]
+      },
+      "files": [
+        {
+          "id": "file-image",
+          "type": "image/png",
+          "webpublicType": "image/webp",
+          "url": "https://local.example/files/original.png",
+          "webpublicUrl": "https://local.example/files/webpublic.webp",
+          "comment": "alt <text>",
+          "properties": {
+            "width": 640,
+            "height": 480
+          },
+          "isSensitive": false,
+          "uri": "\ud800",
+          "userHost": "remote.test",
+          "isLink": false,
+          "webpublicAccessKey": "webpublic-key"
+        }
+      ],
+      "config": {
+        "externalMediaProxyEnabled": true,
+        "mediaProxy": "https://proxy.test"
+      },
+      "fail": [
+        "emoji"
+      ]
+    },
+    {
+      "id": "media-url-after-poll",
+      "route": "render",
+      "note": {
+        "fileIds": [
+          "file-image"
+        ],
+        "hasPoll": true
+      },
+      "files": [
+        {
+          "id": "file-image",
+          "type": "image/png",
+          "webpublicType": "image/webp",
+          "url": "https://local.example/files/original.png",
+          "webpublicUrl": "https://local.example/files/webpublic.webp",
+          "comment": "alt <text>",
+          "properties": {
+            "width": 640,
+            "height": 480
+          },
+          "isSensitive": false,
+          "uri": "\ud800",
+          "userHost": "remote.test",
+          "isLink": false,
+          "webpublicAccessKey": "webpublic-key"
+        }
+      ],
+      "config": {
+        "externalMediaProxyEnabled": true,
+        "mediaProxy": "https://proxy.test"
+      },
+      "fail": [
+        "poll"
+      ]
+    },
+    {
+      "id": "media-url-encoding-error",
+      "route": "render",
+      "note": {
+        "fileIds": [
+          "file-image"
+        ]
+      },
+      "files": [
+        {
+          "id": "file-image",
+          "type": "image/png",
+          "webpublicType": "image/webp",
+          "url": "https://local.example/files/original.png",
+          "webpublicUrl": "https://local.example/files/webpublic.webp",
+          "comment": "alt <text>",
+          "properties": {
+            "width": 640,
+            "height": 480
+          },
+          "isSensitive": false,
+          "uri": "\ud800",
+          "userHost": "remote.test",
+          "isLink": false,
+          "webpublicAccessKey": "webpublic-key"
+        }
+      ],
+      "config": {
+        "externalMediaProxyEnabled": true,
+        "mediaProxy": "https://proxy.test"
+      }
+    },
+    {
+      "id": "featured-pin-read-failure",
+      "route": "featured",
+      "fail": [
+        "pins"
+      ]
+    },
+    {
+      "id": "featured-note-read-failure",
+      "route": "featured",
+      "fail": [
+        "pin-note"
+      ]
+    },
+    {
+      "id": "featured-pure-renote-is-note",
+      "route": "featured",
+      "note": {
+        "renoteId": "at3hjq77note0002",
+        "text": null
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": "",
+          "text": "hello",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ]
+    },
+    {
+      "id": "featured-remote-note-is-rendered",
+      "route": "featured",
+      "note": {
+        "userHost": "remote.test",
+        "uri": "https://remote.test/note"
+      }
+    },
+    {
+      "id": "delivery-empty-uris",
+      "route": "render",
+      "dive": false,
+      "note": {
+        "replyId": "at3hjq77note0002",
+        "renoteId": "at3hjq77note0003"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "alice",
+          "userHost": null,
+          "uri": "",
+          "text": "hello",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        },
+        {
+          "id": "at3hjq77note0003",
+          "userId": "alice",
+          "userHost": null,
+          "uri": "",
+          "text": "hello",
+          "cw": null,
+          "visibility": "public",
+          "localOnly": false,
+          "replyId": null,
+          "renoteId": null,
+          "channelId": null,
+          "fileIds": [],
+          "hasPoll": false,
+          "tags": [],
+          "emojis": [],
+          "mentions": [],
+          "visibleUserIds": [],
+          "mentionedRemoteUsers": "[]"
+        }
+      ]
+    },
+    {
+      "id": "note-redirect-guard-activity",
+      "route": "note",
+      "allowExternalApRedirect": false,
+      "note": {
+        "userHost": "remote.test",
+        "uri": "https://remote.test/note"
+      }
+    },
+    {
+      "id": "note-redirect-guard-ld-profile",
+      "route": "note",
+      "allowExternalApRedirect": false,
+      "accept": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"",
+      "note": {
+        "userHost": "remote.test",
+        "uri": "https://remote.test/note"
+      }
+    },
+    {
+      "id": "note-redirect-guard-bare-ld",
+      "route": "note",
+      "allowExternalApRedirect": false,
+      "accept": "application/ld+json",
+      "note": {
+        "userHost": "remote.test",
+        "uri": "https://remote.test/note"
+      }
+    },
+    {
+      "id": "note-redirect-guard-local-uri",
+      "route": "note",
+      "allowExternalApRedirect": false,
+      "note": {
+        "userHost": "remote.test",
+        "uri": "https://local.example/notes/alias"
+      }
+    },
+    {
+      "id": "note-redirect-guard-development-http",
+      "route": "note",
+      "allowExternalApRedirect": false,
+      "note": {
+        "userHost": "remote.test",
+        "uri": "http://local.example/notes/alias"
+      }
+    },
+    {
+      "id": "note-redirect-guard-production-http",
+      "route": "note",
+      "allowExternalApRedirect": false,
+      "production": true,
+      "note": {
+        "userHost": "remote.test",
+        "uri": "http://local.example/notes/alias"
+      }
+    },
+    {
+      "id": "note-redirect-guard-remote-empty",
+      "route": "note",
+      "allowExternalApRedirect": false,
+      "note": {
+        "userHost": "remote.test",
+        "uri": ""
+      }
+    },
+    {
+      "id": "invalid-id-after-html",
+      "route": "render",
+      "note": {
+        "id": "_invalid"
+      }
+    },
+    {
+      "id": "invalid-id-after-emoji",
+      "route": "render",
+      "note": {
+        "id": "_invalid",
+        "emojis": [
+          "blobcat"
+        ]
+      },
+      "fail": [
+        "emoji"
+      ]
+    },
+    {
+      "id": "note-redirect-guard-unicode",
+      "route": "note",
+      "allowExternalApRedirect": false,
+      "note": { "userHost": "remote.test", "uri": "https://remote.test/日本" }
+    },
+    {
+      "id": "note-redirect-guard-unicode-percent-query",
+      "route": "note",
+      "allowExternalApRedirect": false,
+      "note": { "userHost": "remote.test", "uri": "https://remote.test/日本%20x?q=%2F&name=日本" }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "efd6b94ea9911fc6b9aeaad0edeea04da3932da1",
+  "implementationCommit": "bcb828e878c5d14cb5be7b9ebf743fd452cca648",
   "domains": [
     {
       "id": "api-common",
@@ -716,7 +716,8 @@
         "public notes/createの両画像不在時の作成・canonical復旧後の限定修復は docs/superpowers/compatibility/remote-user/actor-image-removal-results.md を参照。画像取得、refresh、rich actorとinboxは未完了。",
         "local actor画像URL公開の限定実装とR2実測は docs/superpowers/compatibility/remote-user/local-actor-images-results.md を参照。画像バイト配信・Drive取得・remote media等の残責任と#176/#127/#195未完了を維持する。",
         "local WebFinger GET/HEAD/OPTIONSの限定公開は1716e0f14207ddfe5b51730e256347ebe7579c5e（元実装770750d88b4d27820616d7f264b186017e52b9c9、R2診断e9d8ebd07bc3d8e51c0a36c08ebbc97137504be4）。固定本家createServerのFastify inject＋明示repository/URI/Meta/NodeInfo/OAuth doublesとAcct/XMLの49件を直接照合。R3はbuild/typecheck・近傍単体235件・通常listening HTTP/PG WebFinger46件を実測。既存Loggerのstdout JSONと固定event・安全な定数fieldsを6単体ケース、通常compositionのlogger受け渡しを2ケースで確認。R2のconsole診断と旧current recordは歴史的archiveに保持。既存HTTP/actor55件は別の歴史的R1実行。本家full server/PG比較ではない。error bodyの診断文字列は比較せず、status/CORS/cache/Varyを比較。MetaはDB直読対本家の通知更新injected Metaで、stable Metaだけを確認しcache/通知同等性は#217に残す。#176/#127/#195はOPEN、notes/create:partial・postingComplete:false。 詳細: docs/superpowers/compatibility/remote-user/local-webfinger-results.md。",
-        "#195 local stored fields (efd6b94ea9911fc6b9aeaad0edeea04da3932da1): isCat・_misskey_設定3項目・movedTo・alsoKnownAsとfeatured URLを既存HTTP/内部actorへ公開。固定renderPerson 21件（成功16/拒否5）、親877入力のbuild/typecheck・単体283・実HTTP/PG actor69+remote-user108を検証。詳細: docs/superpowers/compatibility/remote-user/local-actor-fields-results.md。featured endpointはnot_implemented、Move実行・Drive/remote media・remote Notes・inbox・cache等は未完了。既存5gap、#176/#127/#195 OPEN、notes/create:partial・postingComplete:falseを維持。"
+        "#195 local stored fields (efd6b94ea9911fc6b9aeaad0edeea04da3932da1): isCat・_misskey_設定3項目・movedTo・alsoKnownAsとfeatured URLを既存HTTP/内部actorへ公開。固定renderPerson 21件（成功16/拒否5）、親877入力のbuild/typecheck・単体283・実HTTP/PG actor69+remote-user108を検証。詳細: docs/superpowers/compatibility/remote-user/local-actor-fields-results.md。featured endpointはnot_implemented、Move実行・Drive/remote media・remote Notes・inbox・cache等は未完了。既存5gap、#176/#127/#195 OPEN、notes/create:partial・postingComplete:falseを維持。",
+        "#195 local featured＋AP Note GETの現在の追加slice:  R3: bcb828e878c5d14cb5be7b9ebf743fd452cca648、1084凍結入力。literal method＋Fastify inject/doubles 100件、本家full HTTP/PGではない。build/typecheck・単体257・別composition6・実DB/listening HTTP203・migration/schema6は0失敗/0skip。詳細: docs/superpowers/compatibility/remote-user/local-featured-results.md。notes/create:partial、postingComplete:false、#176/#127/#195/#215 OPENと五gap/正式順を維持。 過去の保存済みfield/WebFingerの限定結果は当時のscope。local collection公開はremote featured取込・remote Note保存・inbox object lock・Move・pin mutationの完成を意味しない。HTMLは#196、他global header/Fastify診断は比較外。Meta/cache鮮度と既存mention順差を保持。"
       ]
     },
     {
@@ -2603,6 +2604,38 @@
         "docs/superpowers/compatibility/remote-user/local-webfinger-results.md"
       ],
       "note": "WebFinger pathのOPTIONSと4 CORS headersだけを確認。wildcard OPTIONS /.well-known/*はmountせず、他well-known全体の契約を満たさない。固定本家createServerのFastify inject＋明示repository/URI/Meta/NodeInfo/OAuth doublesとAcct/XMLの49件を直接照合。R3はbuild/typecheck・近傍単体235件・通常listening HTTP/PG WebFinger46件を実測。既存Loggerのstdout JSONと固定event・安全な定数fieldsを6単体ケース、通常compositionのlogger受け渡しを2ケースで確認。R2のconsole診断と旧current recordは歴史的archiveに保持。既存HTTP/actor55件は別の歴史的R1実行。本家full server/PG比較ではない。error bodyの診断文字列は比較せず、status/CORS/cache/Varyを比較。MetaはDB直読対本家の通知更新injected Metaで、stable Metaだけを確認しcache/通知同等性は#217に残す。#176/#127/#195はOPEN、notes/create:partial・postingComplete:false。"
+    },
+    "http:packages/backend/src/server/ActivityPubServerService.ts:655": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/http/activitypub-notes-api.ts",
+        "packages/backend-next/src/composition/featured-http.ts",
+        "packages/backend-next/src/modules/federation/local-featured.ts",
+        "packages/backend-next/src/platform/database/local-featured.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/federation/local-featured.test.ts",
+        "packages/backend-next/test/integration/local-featured-http.test.ts",
+        "docs/superpowers/compatibility/remote-user/local-featured-source-probe.mjs",
+        "docs/superpowers/compatibility/remote-user/local-featured-observations.json"
+      ],
+      "note": "#195 local publication: AP GET/HEAD /notes/:id: HTML/未対応Acceptは既存404へ委譲しAP読取をしない。AP分岐はVary Accept、federation noneの先行403、visibility/localOnly、remote302/500/設定による406、local dive=falseと描画前cache/typeを比較。 remote featured取込/object lock/inbox/Move/pin mutationは実装しない。 R3: bcb828e878c5d14cb5be7b9ebf743fd452cca648、1084凍結入力。literal method＋Fastify inject/doubles 100件、本家full HTTP/PGではない。build/typecheck・単体257・別composition6・実DB/listening HTTP203・migration/schema6は0失敗/0skip。詳細: docs/superpowers/compatibility/remote-user/local-featured-results.md。notes/create:partial、postingComplete:false、#176/#127/#195/#215 OPENと五gap/正式順を維持。"
+    },
+    "http:packages/backend/src/server/ActivityPubServerService.ts:734": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/http/activitypub-notes-api.ts",
+        "packages/backend-next/src/composition/featured-http.ts",
+        "packages/backend-next/src/modules/federation/local-featured.ts",
+        "packages/backend-next/src/platform/database/local-featured.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/federation/local-featured.test.ts",
+        "packages/backend-next/test/integration/local-featured-http.test.ts",
+        "docs/superpowers/compatibility/remote-user/local-featured-source-probe.mjs",
+        "docs/superpowers/compatibility/remote-user/local-featured-observations.json"
+      ],
+      "note": "#195 local publication: GET/HEAD /users/:id/collections/featured: local User、pin ID降順全件の必須Note取得後にpublic/home・non-localOnlyで絞る。dive=trueのNote本体、空collection、Accept fallback、180秒cache/CORSと描画後headerを比較。 remote featured取込/object lock/inbox/Move/pin mutationは実装しない。 R3: bcb828e878c5d14cb5be7b9ebf743fd452cca648、1084凍結入力。literal method＋Fastify inject/doubles 100件、本家full HTTP/PGではない。build/typecheck・単体257・別composition6・実DB/listening HTTP203・migration/schema6は0失敗/0skip。詳細: docs/superpowers/compatibility/remote-user/local-featured-results.md。notes/create:partial、postingComplete:false、#176/#127/#195/#215 OPENと五gap/正式順を維持。"
     }
   }
 }

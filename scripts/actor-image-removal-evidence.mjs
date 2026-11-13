@@ -5,7 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { currentLocalActorImagesDigest as localActorImagesDigest } from './local-actor-images-evidence.mjs';
+import { currentFeaturedActorImagesDigest as localActorImagesDigest } from './local-actor-images-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const evidencePath = 'docs/superpowers/compatibility/remote-user/actor-image-removal-current-evidence.json';
 const read = file => readFileSync(new URL(file, root));
