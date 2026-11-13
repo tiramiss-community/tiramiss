@@ -5,6 +5,8 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import * as currentLeaf from './local-follow-collections-evidence.mjs';
 import test from 'node:test';
 import { localFollowCollectionsDigest, validateLocalFollowCollectionsEvidence } from './local-follow-collections-evidence.mjs';
 import { localFeaturedDigest, validateLocalFeaturedEvidence } from './local-featured-evidence.mjs';
@@ -18,14 +20,15 @@ import { validateRemoteEmojiEvidence } from './remote-emojis-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
-const path = directory + 'local-follow-collections-current-evidence.json';
+const path = directory + 'local-follow-collections-path-current-evidence.json';
+const r2Path = directory + 'local-follow-collections-current-evidence.json';
 const read = file => readFileSync(new URL(file, root));
 const json = file => JSON.parse(read(file));
 const record = () => json(path);
 const absent = () => null;
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 
-test('actual R2 proof validates with host artifacts and when ephemeral files are absent', () => {
+test('actual R3b proof validates with host artifacts and when ephemeral files are absent', () => {
 	validateLocalFollowCollectionsEvidence(record());
 	validateLocalFollowCollectionsEvidence(record(), read, absent);
 });
@@ -146,4 +149,54 @@ test('new evidence leaf uses only Node builtins and has no ancestor calls or pro
 	assert(imports.length > 0 && imports.every(p => p.startsWith('node:')));
 	assert(!/import\(|execFile|spawn|validateLocalFeatured|localFeaturedDigest|localActor.*Digest|validateLocalActor/.test(source));
 	assert.equal(sha(read(directory + 'local-featured-current-evidence.json')), Object.values(record().files)[0].predecessor.sha256);
+});
+
+
+test('R2 bytes, canonical seal, receipt and original validator remain usable as actual history', async () => {
+	const original = execFileSync('git', ['show', '949e3040d4401aea68b7a505dda0b65453237c02:scripts/local-follow-collections-evidence.mjs'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }).toString();
+	const historical = await import('data:text/javascript;base64,' + Buffer.from(original.replace("const root = new URL('../', import.meta.url);", `const root = new URL(${JSON.stringify(root.href)});`)).toString('base64'));
+	const r2 = json(r2Path);
+	const cache = new Map();
+	const historicalRead = file => {
+		if (!(file in r2.frozenInputSha256)) return read(file);
+		if (!cache.has(file)) cache.set(file, execFileSync('git', ['show', '8f200fc583f40eda2455f2196013b976c39b937d:' + file], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }));
+		return cache.get(file);
+	};
+	assert.equal(sha(read(r2Path)), currentLeaf.r2Seals.bytesSha256);
+	assert.equal(sha(JSON.stringify(r2)), currentLeaf.r2Seals.canonicalSha256);
+	historical.validateLocalFollowCollectionsEvidence(r2, historicalRead, absent);
+	assert.throws(() => historical.validateLocalFollowCollectionsEvidence(r2, read, absent), /input drift/);
+	const failed = structuredClone(r2); failed.receipt.record.status = 'FAIL';
+	assert.throws(() => historical.validateLocalFollowCollectionsEvidence(failed, historicalRead, absent), /successful receipt/);
+	assert.deepEqual(record().files, r2.files, 'three featured-hop bindings remain identical');
+});
+
+for (const [name, mutate, error] of [
+	['R2 byte seal', v => { v.previousMeasurement.sha256 = '0'.repeat(64); }, /previous measurement binding/],
+	['R2 receipt binding', v => { v.previousMeasurement.receipt.requestSha256 = '0'.repeat(64); }, /previous measurement binding/],
+	['missing changed input', v => { delete v.changedInputs[Object.keys(v.changedInputs)[0]]; }, /changed input subset/],
+	['invented changed input', v => { v.changedInputs.unrelated = Object.values(v.changedInputs)[0]; }, /changed input subset/],
+	['unknown changed predecessor', v => { Object.values(v.changedInputs)[0].previousSha256 = '0'.repeat(64); }, /changed predecessor identity/],
+	['changed predecessor pointer', v => { Object.values(v.changedInputs)[0].predecessor.pointer = ['files']; }, /changed predecessor binding/],
+	['unmeasured changed bytes', v => { Object.values(v.changedInputs)[0].sha256 = '0'.repeat(64); }, /changed frozen identity/],
+	['unmeasured changed validation', v => { Object.values(v.changedInputs)[0].validatedBy = []; }, /changed applicable runs/],
+	['missing complete-map change', v => { delete v.requestChanges[Object.keys(v.requestChanges)[0]]; }, /request change subset/],
+	['false complete-map predecessor', v => { Object.values(v.requestChanges)[0].previousSha256 = '0'.repeat(64); }, /canonical record|actual previous request changes/],
+	['unbound complete map', v => { v.request.inputSha256.unrelated = '0'.repeat(64); }, /full map binding/],
+	['lookup instrumentation', v => { v.sourceOracle.lookupInstrumentationSha256 = '0'.repeat(64); }, /source instrumentation/],
+	['old source outcome projection', v => { v.sourceOracle.originalCaseProjectionSha256 = '0'.repeat(64); }, /original source outcomes/],
+]) test(`path measurement rejects ${name} without host artifacts`, () => {
+	const value = record(); mutate(value);
+	assert.throws(() => validateLocalFollowCollectionsEvidence(value, read, absent), error);
+});
+
+test('R2 historical record byte corruption rejects even when temporary host files are absent', () => {
+	assert.throws(() => validateLocalFollowCollectionsEvidence(record(), p => p === r2Path ? Buffer.concat([read(p), Buffer.from(' ')]) : read(p), absent), /previous measurement bytes/);
+});
+
+test('available previous R2 request and receipt must match sealed historical bindings', () => {
+	const value = record();
+	for (const file of [value.previousMeasurement.request.path, value.previousMeasurement.receipt.path]) {
+		assert.throws(() => validateLocalFollowCollectionsEvidence(value, read, p => p === file ? Buffer.from('{}') : null), /actual previous .* bytes/);
+	}
 });

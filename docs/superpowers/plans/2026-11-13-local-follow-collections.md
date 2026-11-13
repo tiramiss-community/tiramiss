@@ -8,7 +8,7 @@
 
 **Tech Stack:** TypeScript, Hono, TypeORM, PostgreSQL, Fastify source probe.
 
-**Spec:** `docs/superpowers/specs/2026-11-13-local-follow-collections-design.md` (Phase 1 source318/nearest units430/typecheck measured; pre-path reviews complete; actual parent R3 runtime/proof binding pending).
+**Spec:** `docs/superpowers/specs/2026-11-13-local-follow-collections-design.md` (actual parent R3b runtime/source validation PASS; Phase 2 evidence binding; final scoped re-review/PR checks separate, CI UNRUN).
 
 ## Global Constraints
 
@@ -28,19 +28,19 @@ Pinned upstream `8e07cf085adf7009583d234a208e30436f020e26`; base `50ffa6157c557f
 
 **Files:** Create `docs/superpowers/compatibility/remote-user/local-follow-collections-corpus.json`, `local-follow-collections-source-probe.mjs`, and `local-follow-collections-observations.json` in that directory.
 
-- [ ] Restore the specified pinned upstream checkout and its dependencies, Node 26, and the supplied issue snapshots; verify checkout bytes against Git blobs. Read both issue snapshots and the decision/journal.
-- [ ] Follow `local-featured-source-probe.mjs` conventions, executing literal `followers`, `following`, renderer, URI and HTTP server methods with Fastify inject and explicit deterministic repository doubles. Record source-file and method hashes, double limitations, ordered events, response status, headers and body. Never derive expected results from backend-next.
-- [ ] Enumerate approximately 50–80 meaningful cases covering both routes, all five review-focus classes, federation/visibility precedence, every pagination boundary, local and remote users, absent references, and errors. Execute every case without a silent cap.
-- [ ] Run with `--write`, then `--check`; record exact commands and results. Update the preliminary design from observed output, retaining uncertainty about full-server and DB behavior.
+- [x] Restore the specified pinned upstream checkout and its dependencies, Node 26, and the supplied issue snapshots; verify checkout bytes against Git blobs. Read both issue snapshots and the decision/journal.
+- [x] Follow `local-featured-source-probe.mjs` conventions, executing literal `followers`, `following`, renderer, URI and HTTP server methods with Fastify inject and explicit deterministic repository doubles. Record source-file and method hashes, double limitations, ordered events, response status, headers and body. Never derive expected results from backend-next.
+- [x] Enumerate all318 meaningful cases (initial80 + query58 + path180) covering both routes, all five review-focus classes, federation/visibility precedence, every pagination boundary, local and remote users, absent references, and errors. Execute every case without a silent cap.
+- [x] Run with `--write`, then `--check`; record exact commands and results. Update the preliminary design from observed output, retaining uncertainty about full-server and DB behavior.
 
 ### Task 2: Implement and verify the read path
 
 **Files:** Add focused collection domain, persistence, composition, HTTP and test files under `packages/backend-next`, following existing local featured route boundaries; connect them in `packages/backend-next/src/composition/http-app.ts`. Exact signatures require inspection of those existing boundaries by the implementing controller.
 
-- [ ] Add tests consuming all fixed source observations and separate real PostgreSQL cases for saved count, ordered cursor pagination, both relation ends, missing references, and no writes beyond existing Meta initialization. Verify failures before implementation.
-- [ ] Implement the sequence and representations in the completed design. Reuse existing AP context and HTTP response conventions; do not reuse #182 activity rendering interfaces.
-- [ ] Run targeted backend-next tests and integration tests, including HEAD/OPTIONS and raw repeated query values; compare all source observations and report mismatches without silently rewriting historical evidence.
-- [ ] Run `node scripts/check-shipping.mjs` and report actual lint, SPDX and locale results; record any unavailable validation separately.
+- [x] Add tests consuming all fixed source observations and separate real PostgreSQL cases for saved count, ordered cursor pagination, both relation ends, missing references, and no writes beyond existing Meta initialization. Verify failures before implementation.
+- [x] Implement the sequence and representations in the completed design. Reuse existing AP context and HTTP response conventions; do not reuse #182 activity rendering interfaces.
+- [x] Run targeted backend-next tests and integration tests, including HEAD/OPTIONS and raw repeated query values; compare all source observations and report mismatches without silently rewriting historical evidence.
+- [x] Run `node scripts/check-shipping.mjs` and report actual lint, SPDX and locale results; record any unavailable validation separately.
 
 ## Product-lane execution ledger (2026-11-13)
 
@@ -85,3 +85,16 @@ Pinned upstream `8e07cf085adf7009583d234a208e30436f020e26`; base `50ffa6157c557f
 - Pre-path product CodeRabbit completed on 16 files with 0 findings; metadata CodeRabbit completed on 14 files with 0 findings. Parent pre-path root contracts passed 366/366, inventory PASS, aggregate shipping PASS (metadata-only ESLint SKIPPED). These are completed reviews/gates for their earlier snapshots, not reviews or validation of the new path fix. CI remains UNRUN.
 - Final direct changed-package ESLint quiet, SPDX and locale/scope checks PASS; aggregate worker shipping SKIPPED to avoid dependency retrieval, no aggregate PASS claimed.
 - Minor stale review/host-gate PENDING wording corrected as time-scoped completed facts. #176/#127/#195/#215 OPEN; notes/create:partial, postingComplete:false, five gaps, owners and formal order unchanged.
+
+## Actual R3b and Phase 2 evidence/docs binding (2026-11-14)
+
+- [x] Verify host-ready product `498009e4d8bdfc0afc581fbcf5954da2c2953fed`, actual R3b request/receipt/logs/artifacts/full988 map, all9 exit0/no drift; units3723, integration1319, acceptance65, source318, upstream5, build/typecheck/shipping PASS. Collection units318 and PG/HTTP324 are real per-file counts.
+- [x] Preserve failed initial R3 integration1315/1319 with four encoded-page member-count failures as history. Correct only the test's JS/PG collation expectation using source-observed cursor + independent SQL for GET/HEAD; actual fresh R3b passed those cases. Runtime/source stays unchanged in Phase 2.
+- [x] Preserve old7 records plus exact C355 R2 record. New path evidence keeps unchanged three featured-hop bindings and current/historical projections, explicitly binds7 changed finite inputs and complete10-path request difference,988 full map/55 current inputs, parser/lookup/Meta and original138 projection. Root tests retain all49 old guards and add16 R3/history guards. Original R2 validator from Git949e validates real Git8f200fc frozen inputs.
+- [x] Point inventory implementationCommit at actual measured product498009e4d8bdfc0afc581fbcf5954da2c2953fed, resolve all refs in that Git tree and regenerate/check existing catalog. Only the same two HTTP collection rows stay partial.
+- [x] Update ROADMAP/results/design/README with actual R3b and time-scoped R2/R1/Node24/EPERM history, source318 vs independent80/86 and unproven boundaries.
+- [x] Worker root382/382 and near105/105, inventory write/check, SPDX/locale/scope. Root commands use the unchanged /tmp stdio transport preload; no assertion skipped.
+- [ ] Parent native post-integration metadata root/aggregate shipping gate and final scoped re-review of the complete runtime+evidence+docs fix; worker results are reported separately and cannot approve the whole branch.
+- [ ] CI execution (UNRUN).
+
+Pre-path CodeRabbit product16/metadata14 files each had 0 findings, on their earlier committed scopes. The complete final fix (runtime + evidence + docs) has not yet received the controller’s final scoped re-review or new CodeRabbit/PR checks; those gates remain to be run by the controller. CI is UNRUN. #176/#127/#195/#215 OPEN, notes/create:partial/postingComplete:false, five gaps/owners/formal order unchanged. No agent/commit/staging/external review or send.
