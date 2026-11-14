@@ -109,8 +109,8 @@ test('explicit offline readers ignore residual host files while default readers 
  }
 });
 
-test('leaf imports only Node builtins and performs no subprocess or dynamic imports', () => {
+test('historical reader imports only Node builtins and its finite emoji leaf', () => {
  const source = read('scripts/local-outbox-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:')));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:') || m[1] === './local-emoji-object-evidence.mjs'));
  assert(!/execFile|spawn|import\(/.test(source));
 });

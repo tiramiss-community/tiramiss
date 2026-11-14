@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "1e75c5b2b3be158fba8afb14a9c1c30809825127",
+  "implementationCommit": "140acaf7d0283a76cc4de4a9f0227ae130a86ccd",
   "domains": [
     {
       "id": "api-common",
@@ -2785,6 +2785,23 @@
       ],
       "note": "#324: runtime 1e75c5b2; parent units 2113/42 files, real HTTP/PG/Redis 707/7 files (outbox 23), literal source 115 and source-contract 12. Finite comparison; no full upstream server/PG/Redis claim.",
       "implementationCommit": "1e75c5b2b3be158fba8afb14a9c1c30809825127"
+    },
+    "http:packages/backend/src/server/ActivityPubServerService.ts:808": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/composition/emoji-http.ts",
+        "packages/backend-next/src/http/activitypub-emoji-api.ts",
+        "packages/backend-next/src/platform/database/local-emoji-object.ts",
+        "packages/backend-next/src/modules/federation/ap-tags.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/federation/local-emoji-object-source.test.ts",
+        "packages/backend-next/test/integration/local-emoji-object-http.test.ts",
+        "docs/superpowers/compatibility/remote-user/local-emoji-object-observations.json",
+        "scripts/local-emoji-object-contract.test.mjs"
+      ],
+      "note": "#325: local Emoji GET and pure renderer compared against53 fixed-source cases; runtime140acaf7, units115/4files and real HTTP/PG42/2files (Emoji19). Finite source-method comparison with stable Meta; malformed HEAD injection body differs from wire suppression. Other callers, image serving and Meta/emoji-cache freshness #217 remain outside this endpoint proof.",
+      "implementationCommit": "140acaf7d0283a76cc4de4a9f0227ae130a86ccd"
     }
   }
 }
