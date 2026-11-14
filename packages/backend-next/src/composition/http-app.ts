@@ -5,6 +5,7 @@
 import { createWebfingerHttp } from './webfinger-http.js';
 import { createFollowCollectionsHttp } from './follow-collections-http.js';
 import { createOutboxHttp } from './outbox-http.js';
+import { createEmojiHttp } from './emoji-http.js';
 import { createFeaturedHttp } from './featured-http.js';
 import { createActorHttp } from './actor-http.js';
 import { prepareNoteRoutes, registerNoteRoutes } from './note-routes.js';
@@ -20,7 +21,8 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		.route('/', createWebfingerHttp(resources, config))
 		.route('/', createFeaturedHttp(resources, config))
 		.route('/', createFollowCollectionsHttp(resources, config))
-		.route('/', createOutboxHttp(resources, config));
+		.route('/', createOutboxHttp(resources, config))
+		.route('/', createEmojiHttp(resources, config));
 	registerNoteRoutes(app, resources, note);
 	if (queueApi) {
 		app.route('/', queueApi);
