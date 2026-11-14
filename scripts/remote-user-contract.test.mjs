@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync, existsSync } from 'node:fs';
 import test from 'node:test';
@@ -63,7 +64,7 @@ function validate(data) {
 
 test('committed projections have consumable outcomes and declared source boundaries', () => validate(dataset()));
 const root = new URL('../', import.meta.url);
-const read = file => readFileSync(new URL(file, root), 'utf8');
+const read = file => readPreAliasKey(file, 'utf8');
 const sha = value => createHash('sha256').update(value).digest('hex');
 const runtime = () => JSON.parse(readFileSync(new URL('runtime-evidence.json', directory), 'utf8'));
 const currentHashtags = () => JSON.parse(readFileSync(new URL('user-hashtags-runtime-evidence.json', directory), 'utf8'));

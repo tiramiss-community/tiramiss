@@ -105,6 +105,26 @@ test('rejects live fixture content drift with intact case IDs', () => {
   (file === 'docs/superpowers/compatibility/note/observations.json' ? '\n' : '')), /fixture hash/);
 });
 
+test('future live inventory progression does not rewrite dated classification', () => {
+	validate(load(), file => {
+		assert.ok(!['docs/backend-next/backlog.json', 'docs/superpowers/compatibility/backend-inventory/contracts.json', 'docs/superpowers/compatibility/backend-inventory/audit-items.json'].includes(file), 'classification must use pinned history');
+		return read(file);
+	});
+});
+
+test('rejects forged dated inventory classification', () => {
+	assert.throws(() => validate(load(), read, (commit, file) => {
+		const bytes = historicalSource(commit, file);
+		if (file.endsWith('/contracts.json')) {
+			assert.equal(commit, 'f4bb7803a814a112b18286d4ca1b0cfb71e5787e');
+			const inventory = JSON.parse(bytes);
+			inventory.contracts.find(row => row.id === load().assignments[0].id).status = 'forged';
+			return JSON.stringify(inventory);
+		}
+		return bytes;
+	}), /inventory status/);
+});
+
 // Integrity checks preserve reviewed finite claims; they are not behavior/parity tests.
 function validate(value, readInput = read, readHistorical = historicalSource) {
 	assert.equal(value.schemaVersion, 1);
@@ -118,9 +138,10 @@ function validate(value, readInput = read, readHistorical = historicalSource) {
 		parents: { 176: 'OPEN', 127: 'OPEN' }, residualIssues: [277, 322],
 		wholeServiceParity: false, strongCreateDeleteOrdering: false,
 	}, 'protected scope');
-	const catalogue = JSON.parse(readInput('docs/backend-next/backlog.json')).units.find(x => x.key === '176-posting-proof');
-	const contracts = JSON.parse(readInput('docs/superpowers/compatibility/backend-inventory/contracts.json')).contracts;
-	const audit = JSON.parse(readInput('docs/superpowers/compatibility/backend-inventory/audit-items.json')).items;
+	// Classification belongs to the dated proof; live consumer and fixture checks below remain active.
+	const catalogue = JSON.parse(readHistorical('f4bb7803a814a112b18286d4ca1b0cfb71e5787e', 'docs/backend-next/backlog.json')).units.find(x => x.key === '176-posting-proof');
+	const contracts = JSON.parse(readHistorical('f4bb7803a814a112b18286d4ca1b0cfb71e5787e', 'docs/superpowers/compatibility/backend-inventory/contracts.json')).contracts;
+	const audit = JSON.parse(readHistorical('f4bb7803a814a112b18286d4ca1b0cfb71e5787e', 'docs/superpowers/compatibility/backend-inventory/audit-items.json')).items;
 	assert.equal(value.assignments.length, 62, 'assignment identities');
 	assert.deepEqual(value.assignments.map(x => x.id).sort(), [...catalogue.contract_ids].sort(), 'assignment identities');
 	assert.deepEqual(value.assignments.filter(x => x.audit).map(x => x.id).sort(), [...catalogue.audit_ids].sort(), 'audit identities');

@@ -9,7 +9,7 @@
 
 ## Constraints and review focus
 
-Start `f4bb7803a814a112b18286d4ca1b0cfb71e5787e`. Preserve existing ID actor behavior, other routes, #176/#127 OPEN, partial posting, D7 and PG decisions. No HTML, migrations, dependency upgrades, inventory edits or historical evidence rewrites. Dedicated PG 56473 / Redis 57473 only. Review single decoding, remote host case, suspended key visibility, production redirect guard and legacy key/cache writes.
+Start `f4bb7803a814a112b18286d4ca1b0cfb71e5787e`. Preserve existing ID actor behavior, other routes, #176/#127 OPEN, partial posting, D7 and PG decisions. Original runtime-worker scope: no HTML, migrations, dependency upgrades, inventory edits or historical evidence rewrites. The final evidence phase below adds the authorized four inventory overrides. Dedicated PG 56473 / Redis 57473 only. Review single decoding, remote host case, suspended key visibility, production redirect guard and legacy key/cache writes.
 
 ## Task 1: Fixed-source fixture and RED
 
@@ -25,12 +25,12 @@ Start `f4bb7803a814a112b18286d4ca1b0cfb71e5787e`. Preserve existing ID actor beh
 
 ## Task 3: Live checks and handoff
 
-- [ ] Add listening HTTP/PG checks consuming finite observations, predicate/suspended coverage, no ordinary DML or remote work, plus separately observed legacy key/cache and missing Meta exceptions.
-- [ ] Run focused integration, structural/composition regression, source replay/contract checks and shipping checks. Report frozen-source validator drift without modifying historical bindings.
-- [ ] Write results with exact commands/counts/limits and the four parent-only metadata updates. Add intended new paths with `git add -N`; save binary HEAD diff to writer.patch.
+- [x] Add listening HTTP/PG checks consuming finite observations, predicate/suspended coverage, no ordinary DML or remote work, plus separately observed legacy key/cache and missing Meta exceptions.
+- [x] Run focused integration, structural/composition regression, source replay/contract checks and shipping checks. Report frozen-source validator drift without modifying historical bindings.
+- [x] Write results with exact commands/counts/limits and the four parent-only metadata updates. Add intended new paths with `git add -N`; save binary HEAD diff to writer.patch.
 
 ## Execution ledger
 
 Plan recorded before production edits. Existing isolated worktree HEAD verified. Approval/commit pauses in generic skills are superseded by the explicit continuous-work/no-commit request. Test and source measurements will be recorded in the results document.
 
-Worker implementation and source/unit/type checks completed; live execution blocked by sandbox PG EPERM. Final counts, failure history, parent-only metadata and successor bindings: [results](../compatibility/remote-user/local-actor-alias-key-results.md). No commits. Reviewer dispatch unavailable (thread-store error); author self-review only.
+Final evidence phase: parent runtime/reviewer fixes at `43e72c7b6f1394fe6685eeca2ff368a6bd641d6f` have successful build/typecheck, unit1927, real HTTP/PG216, source172 and structural5 receipts. The separate ed83098 regression614 remains a historical measurement. Six sealed successor bindings, static pre-323 bytes and four inventory/two audit updates complete #323 pending merge; next is #324. Existing historical evidence remains unchanged. See [results](../compatibility/remote-user/local-actor-alias-key-results.md) for commands and limits. No commit or external action in this evidence phase.

@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import { remoteProfileDigest } from './remote-profile-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
-const read = file => readFileSync(new URL(file, root), 'utf8');
+const read = file => readPreAliasKey(file, 'utf8');
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const receipt = (readFile = read) => JSON.parse(readFile(directory + 'local-actor-tags-runtime-evidence.json'));
 

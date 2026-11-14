@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "scope": "local-actor-alias-key-six-consumer-successor",
+  "predecessorCommit": "f4bb7803a814a112b18286d4ca1b0cfb71e5787e",
+  "implementationCommit": "43e72c7b6f1394fe6685eeca2ff368a6bd641d6f",
+  "files": {
+    "packages/backend-next/src/composition/actor-http.ts": {
+      "previousSha256": "e92117aa760f8965304fee921c88c2c461acebda9c0f30e6c872970acc3b9550",
+      "sha256": "fece1ef879d814be464bedd593b7af2cb7bae6a1feb6757b66c553d7bee13d0e",
+      "validatedBy": [
+        "build",
+        "typecheck",
+        "units",
+        "db-http"
+      ]
+    },
+    "packages/backend-next/src/http/activitypub-actor-api.ts": {
+      "previousSha256": "5fa892c9eee15c022fa4e47ad91d87494a27df52aa99b45da5cb336928a2f1c1",
+      "sha256": "5d6d4dbb8b6048d0fa1f89596b2c4f69e6ff85db023c4110c4f534dcc09f5651",
+      "validatedBy": [
+        "build",
+        "typecheck",
+        "units",
+        "db-http"
+      ]
+    },
+    "packages/backend-next/src/modules/federation/local-actor.ts": {
+      "previousSha256": "d54a777934fbfc1c42626f4209fe5cf04da9ae22ed8a6306ceea667153bd5ab7",
+      "sha256": "f2966c52654ab1dceda7a872aa2b083ba15e1e104094d8686c48b05079f1c2d9",
+      "validatedBy": [
+        "build",
+        "typecheck",
+        "units",
+        "db-http"
+      ]
+    },
+    "packages/backend-next/src/modules/federation/public.ts": {
+      "previousSha256": "8be46f3e2a1f44b20f8d0788828af4af5e3ef928b3e2ec51c08390b7d299d66d",
+      "sha256": "70c93b4ecee8f6573f72def7609a6524e5cdb653450f0a0340bdf2dbb43d3995",
+      "validatedBy": [
+        "build",
+        "typecheck",
+        "units",
+        "db-http"
+      ]
+    },
+    "packages/backend-next/src/platform/database/local-actors.ts": {
+      "previousSha256": "9c12ceed720643ecf8b1e1e0296c95a6cc3136a52a94cd1d4ccdb3df4f9ce40a",
+      "sha256": "5e203bae8a64a2e5b5235f603686085fad6a70aed245e38d685fb2dd2e089740",
+      "validatedBy": [
+        "build",
+        "typecheck",
+        "units",
+        "db-http"
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "previousSha256": "918021ca82ee9b95998f0320632b9548baf27d333aaff086ef50918b3a26b8dc",
+      "sha256": "54608bebc86a70f09823870181cac59de6d2f4e953f8cf6aff0f265d18ab13ff",
+      "validatedBy": [
+        "units"
+      ]
+    }
+  },
+  "receipt": {
+    "scope": "actor-alias-key-323-parent-runtime",
+    "base": "f4bb7803a814a112b18286d4ca1b0cfb71e5787e",
+    "runtimeCommit": "43e72c7b6f1394fe6685eeca2ff368a6bd641d6f",
+    "sourceInputs": {
+      "docs/superpowers/compatibility/remote-user/local-actor-alias-key-corpus.json": "ce2f86ed843e9ac687d0cfc0bc0cd56a57e3901474e281be9b2363489750aa8c",
+      "docs/superpowers/compatibility/remote-user/local-actor-alias-key-key.json": "d4e009ef4fbd0c1f1bab09997ab7cbf2a4f77df132efd0dfd2bc2c2b8086b0c1",
+      "docs/superpowers/compatibility/remote-user/local-actor-alias-key-observations.json": "3f55b747d8bc8c8c8e6349647862c481ac270bb1bc0ef77df007f057e36d9f42",
+      "docs/superpowers/compatibility/remote-user/local-actor-alias-key-source-probe.mjs": "15205be74e15bd1619e539a57b1bc55730837dc209add9aa22fd54375d788916",
+      "packages/backend-next/src/composition/actor-http.ts": "fece1ef879d814be464bedd593b7af2cb7bae6a1feb6757b66c553d7bee13d0e",
+      "packages/backend-next/src/http/activitypub-actor-api.ts": "5d6d4dbb8b6048d0fa1f89596b2c4f69e6ff85db023c4110c4f534dcc09f5651",
+      "packages/backend-next/src/modules/federation/acct.ts": "90004b71b8fa63f9e161d69db1df9427ee1cb3971025a56f76602a3c0c9ca9df",
+      "packages/backend-next/src/modules/federation/local-actor.ts": "f2966c52654ab1dceda7a872aa2b083ba15e1e104094d8686c48b05079f1c2d9",
+      "packages/backend-next/src/modules/federation/local-key.ts": "98f678b761ee53469ad962cfa677e4ad6aa6d1365e67f9487006b7035b772065",
+      "packages/backend-next/src/modules/federation/public.ts": "70c93b4ecee8f6573f72def7609a6524e5cdb653450f0a0340bdf2dbb43d3995",
+      "packages/backend-next/src/platform/database/local-actors.ts": "5e203bae8a64a2e5b5235f603686085fad6a70aed245e38d685fb2dd2e089740",
+      "packages/backend-next/test/integration/actor-alias-key.test.ts": "481e56f7382115a9682e965b8cae46c6bcfa47366c8b24599bf01a83429891ec",
+      "packages/backend-next/test/unit/composition/http-app.test.ts": "54608bebc86a70f09823870181cac59de6d2f4e953f8cf6aff0f265d18ab13ff",
+      "packages/backend-next/test/unit/federation/actor-alias-key.test.ts": "ca27b444943bf397839ddfe9a0f61f7cf3cab197742296735451dfad53e3162c",
+      "scripts/local-actor-alias-key-contract.test.mjs": "09f77f065a529b6dcd159497c3009ba082c9916661dd6fa31158dd2865e6b931"
+    },
+    "runs": {
+      "build": {
+        "commandLog": "/tmp/tiramiss-s1-323-20261114/build-fixed.log",
+        "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
+        "exitCode": 0,
+        "tests": null
+      },
+      "typecheck": {
+        "commandLog": "/tmp/tiramiss-s1-323-20261114/typecheck-fixed.log",
+        "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+        "exitCode": 0,
+        "tests": null
+      },
+      "units": {
+        "commandLog": "/tmp/tiramiss-s1-323-20261114/unit-fixed.log",
+        "logSha256": "e619ecd076dce52a8fcdf3b104606016600842036a4da3b350062528990174ca",
+        "exitCode": 0,
+        "tests": 1927
+      },
+      "db-http": {
+        "commandLog": "/tmp/tiramiss-s1-323-20261114/integration-fixed.log",
+        "logSha256": "e8d4fbb5aa0144d2db9c806a841d0041485f7880ebf4fbf15c87e07623fb9297",
+        "exitCode": 0,
+        "tests": 216
+      },
+      "source": {
+        "commandLog": "/tmp/tiramiss-s1-323-20261114/source-fixed.log",
+        "logSha256": "0ce4b1c95ed722f4b1341036b7a6c62791e29695ef7abba74db6f1c7e3dd8498",
+        "exitCode": 0,
+        "tests": 172
+      },
+      "structural": {
+        "commandLog": "/tmp/tiramiss-s1-323-20261114/contract-fixed.log",
+        "logSha256": "30e64c88ff06965c46e62bbf7d1ff8ccdf7613694d9025890a06f99239ad1c10",
+        "exitCode": 0,
+        "tests": 5
+      },
+      "shipping": {
+        "commandLog": "/tmp/tiramiss-s1-323-20261114/shipping-fixed.log",
+        "logSha256": "f32306113d6e016f049fda5a5b15e4a9e59fcf10cfead67840cefb2eda9627b5",
+        "exitCode": 0,
+        "tests": null
+      },
+      "sync": {
+        "commandLog": "/tmp/tiramiss-s1-323-20261114/sync.log",
+        "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd",
+        "exitCode": 0,
+        "tests": null
+      }
+    },
+    "node": "26.4.0",
+    "pnpm": "12.9.1",
+    "upstreamFullServerMeasured": false,
+    "ports": {
+      "postgres": 56473,
+      "redis": 57473
+    },
+    "project": "backend-next-s1-323-20261114"
+  },
+  "regression": {
+    "runtimeCommit": "ed83098e343983f3c3a24762f4edd2a125d83c99",
+    "command": "pnpm --filter backend-next test:integration http-app remote-user webfinger local-featured-http local-follow-collections-http note-activity",
+    "commandLog": "/tmp/tiramiss-s1-323-20261114/integration-regression.log",
+    "logSha256": "73c2cc29af1ec29f76fad2b623efa269091b3e92a577f6ec6e31a3dbf26f0465",
+    "exitCode": 0,
+    "files": 6,
+    "tests": 614
+  }
+}

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "10c0d76c3724cd4e52a0a17c24ed92accaa10f75",
+  "implementationCommit": "43e72c7b6f1394fe6685eeca2ff368a6bd641d6f",
   "domains": [
     {
       "id": "api-common",
@@ -2674,6 +2674,42 @@
         "docs/superpowers/compatibility/remote-user/local-follow-collections-results.md"
       ],
       "note": "#195 local collection read slice only. Product 8f200fc583f40eda2455f2196013b976c39b937d; parent R2 PASS on 987 frozen inputs, Node 26.4.0/pnpm 12.9.1: units 3543, integration 1139 (new real-PG/listening HTTP 144), acceptance 65, source 138 cases/138 injections, all zero failed/pending/drift. Receipt SHA256 24e9c5a939673b4807dab72a8e02b4b06fa4f7ce4ac5bc489909b0ad6dde158d. Literal methods + Fastify doubles, not full upstream server/PG; independent oracle 80/86 is separate. Partial: exact diagnostics, global hooks, Content-Length/Location and Meta/cache #217 equivalence remain unproven. No CI claim or #176 direct posting completion. #176/#127/#195/#215 OPEN; notes/create:partial, postingComplete:false; five gaps and #182 mutations unchanged."
+    },
+    "http:packages/backend/src/server/ActivityPubServerService.ts:737": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/http/activitypub-actor-api.ts",
+        "packages/backend-next/src/composition/actor-http.ts",
+        "packages/backend-next/src/platform/database/local-actors.ts",
+        "packages/backend-next/src/modules/federation/local-key.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/federation/actor-alias-key.test.ts",
+        "packages/backend-next/test/integration/actor-alias-key.test.ts",
+        "docs/superpowers/compatibility/remote-user/local-actor-alias-key-source-probe.mjs",
+        "docs/superpowers/compatibility/remote-user/local-actor-alias-key-observations.json",
+        "docs/superpowers/compatibility/remote-user/local-actor-alias-key-results.md"
+      ],
+      "implementationCommit": "43e72c7b6f1394fe6685eeca2ff368a6bd641d6f",
+      "note": "#323: runtime 43e72c7b6f1394fe6685eeca2ff368a6bd641d6f。source-method/Fastify inject doubles 162 route+7 acct+3 key=172、近傍単体1927、実HTTP/PG actor+alias/key216、構造5を実測。build/typecheck PASS。本家full HTTP/PG・HTML・cache lifecycleは比較外。既存鍵cache/legacy upgradeとMeta初期化は維持。#176/#127/#195 OPEN、notes/create:partial・postingComplete:false。"
+    },
+    "http:packages/backend/src/server/ActivityPubServerService.ts:785": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/http/activitypub-actor-api.ts",
+        "packages/backend-next/src/composition/actor-http.ts",
+        "packages/backend-next/src/platform/database/local-actors.ts",
+        "packages/backend-next/src/modules/federation/acct.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/federation/actor-alias-key.test.ts",
+        "packages/backend-next/test/integration/actor-alias-key.test.ts",
+        "docs/superpowers/compatibility/remote-user/local-actor-alias-key-source-probe.mjs",
+        "docs/superpowers/compatibility/remote-user/local-actor-alias-key-observations.json",
+        "docs/superpowers/compatibility/remote-user/local-actor-alias-key-results.md"
+      ],
+      "implementationCommit": "43e72c7b6f1394fe6685eeca2ff368a6bd641d6f",
+      "note": "#323: runtime 43e72c7b6f1394fe6685eeca2ff368a6bd641d6f。source-method/Fastify inject doubles 162 route+7 acct+3 key=172、近傍単体1927、実HTTP/PG actor+alias/key216、構造5を実測。build/typecheck PASS。本家full HTTP/PG・HTML・cache lifecycleは比較外。既存鍵cache/legacy upgradeとMeta初期化は維持。#176/#127/#195 OPEN、notes/create:partial・postingComplete:false。"
     }
   }
 }

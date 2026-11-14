@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
@@ -12,7 +13,7 @@ import { validateLocalWebfingerEvidence, localWebfingerDigest, currentLocalWebfi
 import { localActorFieldsDigest } from './local-actor-fields-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
-const read = path => readFileSync(new URL(path, root));
+const read = path => readPreAliasKey(path);
 const record = () => JSON.parse(read(directory + 'local-featured-current-evidence.json'));
 const leaf = () => import('./local-featured-evidence.mjs');
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -130,9 +131,9 @@ test('optional host request, receipt, command logs and artifacts verify exact by
 test('featured imports only Node and its explicit successor leaf, without ancestor helpers', () => {
 	const source = read('scripts/local-featured-evidence.mjs').toString();
 	const imports = [...source.matchAll(/from ['"]([^'"]+)['"]/g)].map(m => m[1]);
-	assert.deepEqual(imports.filter(p => !p.startsWith('node:')), ['./local-follow-collections-evidence.mjs']);
+	assert.deepEqual(imports.filter(p => !p.startsWith('node:')), ['./local-actor-alias-key-evidence.mjs', './local-follow-collections-evidence.mjs']);
 	const successor = read('scripts/local-follow-collections-evidence.mjs').toString();
-	assert([...successor.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:')));
+	assert([...successor.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:') || m[1] === './local-actor-alias-key-evidence.mjs'));
 	assert(!/import\(|execFile|spawn|validateLocalFeatured|localFeaturedDigest|localActor.*Digest|validateLocalActor/.test(successor));
 	assert(!/import\(|execFile|spawn|validateLocalActor|localActor.*Digest/.test(source));
 	assert.equal(sha(read(directory + 'local-featured-corpus.json')), record().sourceOracle.corpusSha256);

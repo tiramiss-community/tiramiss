@@ -347,3 +347,5 @@ media/emoji #188/#195、user hashtag関係 #195、actor由来instance usersCount
 
 
 2026-11-14: #272の有限な投稿証跡照合で、[62 contract / 59 audit IDの個別契約・C1–C10/F1–F8・再現と限界](../superpowers/compatibility/note/n7/posting-proof-272.md)とdrift checkerを追加した。親の変更なしruntime `b4f28f6ceef458575f203c19d4ede37d7311468c` の実ログ（結合216＋通知14、process20＋削除2、単体726）を現在のconsumer/fixture hashへ結び、source-only調査とは分ける。歴史的coverage/receiptとinventory判定は保持する。未証明のutility/packer部分は明示し、全service互換と扱わない。広い副作用#277・actor比較#322と既存依存、#176/#127 OPEN、`notes/create:partial` / `postingComplete:false`、D7 64-depth/256-Note、PG通知保存の承認と強い順序保証の保留を維持する。#272の子acceptanceに限定した照合であり、正式な対応順・blocked-byや親の完了は変更しない。
+
+2026-11-14: #323のactor acct別名/公開鍵は `43e72c7b6f1394fe6685eeca2ff368a6bd641d6f` の実装と有限証跡を完了しmerge待ち。次は#324。[実測・境界](../superpowers/compatibility/remote-user/local-actor-alias-key-results.md): 単体1927、実HTTP/PG216、source-method172、構造5。旧614の回帰はed83098での別測定。親#176/#127/#195はOPEN、投稿partial・D7 64/256・PG通知保存/強い順序保留と正式な対応順を維持する。
