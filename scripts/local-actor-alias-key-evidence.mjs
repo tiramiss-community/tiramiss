@@ -35,7 +35,7 @@ function record(readFile) {
 }
 
 export function validateAliasKeySuccessor(value = record(read), rawRead = read, optional = optionalRead) {
- const readFile = path => readPreOutbox(path, undefined, rawRead);
+ const readFile = path => readPreOutbox(path, undefined, rawRead, optional);
  assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'alias-key successor record seal');
  assert.deepEqual(Object.keys(value.files), successorFiles, 'alias-key finite subset');
  assert.equal(value.implementationCommit, '43e72c7b6f1394fe6685eeca2ff368a6bd641d6f');

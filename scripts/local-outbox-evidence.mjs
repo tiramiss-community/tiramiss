@@ -81,11 +81,11 @@ export function validateOutboxSuccessor(value = record(read), readFile = read, o
 
 // Outside the six historical consumers bytes pass through untouched. Before
 // any projection, check all 22 measured inputs, both seals and available logs.
-export function readPreOutbox(path, encoding, readFile = read) {
+export function readPreOutbox(path, encoding, readFile = read, optional = optionalRead) {
  let bytes;
  if (successorFiles.includes(path)) {
   const value = record(readFile);
-  bytes = Buffer.from(validateOutboxSuccessor(value, readFile)[path]);
+  bytes = Buffer.from(validateOutboxSuccessor(value, readFile, optional)[path]);
  } else bytes = readFile(path);
  return encoding ? bytes.toString(encoding) : bytes;
 }

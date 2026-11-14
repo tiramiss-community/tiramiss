@@ -4,8 +4,9 @@
  */
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
-import test from 'node:test';
+import fs, { readFileSync } from 'node:fs';
+import { syncBuiltinESMExports } from 'node:module';
+import test, { mock } from 'node:test';
 import { readPreOutbox, successorFiles, validateOutboxSuccessor } from './local-outbox-evidence.mjs';
 import { readPreAliasKey, validateAliasKeySuccessor } from './local-actor-alias-key-evidence.mjs';
 
@@ -85,6 +86,27 @@ test('323 validates original current inputs after finite projection with explici
  assert.notEqual(sha(readPreAliasKey('packages/backend-next/src/modules/federation/public.ts')), sha(readPreOutbox('packages/backend-next/src/modules/federation/public.ts')));
  const old = directory + 'local-actor-alias-key-predecessor.json';
  assert.throws(() => readPreAliasKey('packages/backend-next/src/modules/federation/public.ts', undefined, p => p === old ? Buffer.from('{}') : read(p)), /alias-key historical fixture drift/);
+});
+
+test('explicit offline readers ignore residual host files while default readers reject them', () => {
+ const alias = JSON.parse(read(directory + 'local-actor-alias-key-current-evidence.json'));
+ const originalRead = fs.readFileSync;
+ const patched = mock.method(fs, 'readFileSync', (path, ...args) => {
+  if (typeof path === 'string' && path.startsWith('/tmp/tiramiss-s1-324-20261114/')) {
+   return Buffer.from('stale host artifact');
+  }
+  return originalRead(path, ...args);
+ });
+ syncBuiltinESMExports();
+ try {
+  assert.doesNotThrow(() => validateAliasKeySuccessor(alias, read, () => null));
+  assert.doesNotThrow(() => readPreOutbox(successorFiles[0], undefined, read, () => null));
+  assert.throws(() => validateAliasKeySuccessor(alias, read), /outbox actual (log|receipt) drift/);
+  assert.throws(() => readPreOutbox(successorFiles[0], undefined, read), /outbox actual (log|receipt) drift/);
+ } finally {
+  patched.mock.restore();
+  syncBuiltinESMExports();
+ }
 });
 
 test('leaf imports only Node builtins and performs no subprocess or dynamic imports', () => {
