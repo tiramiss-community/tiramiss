@@ -1,0 +1,183 @@
+{
+  "runtimeRevision": "4047f7fc8696ee45104d0ed317722273afbcce1e",
+  "baseRevision": "fa57cedcd7923e02144eedc4fbec50bbda8b333d",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "startedAt": "2026-11-14T22:31:24.861386+00:00",
+  "node": "v26.4.0",
+  "pnpm": "12.9.1",
+  "inputs": {
+    "docs/superpowers/compatibility/url-preview/corpus.json": "1bb5f5cd55c3cd4a58e1543cbf8d9838f68f16cc0136da16aeb06931126a3fd2",
+    "docs/superpowers/compatibility/url-preview/observations.json": "c80ec3d13014c6223638e2df4919a175b9b0d24b0870993ab1a3586bed433441",
+    "docs/superpowers/compatibility/url-preview/source-probe.mjs": "7bbab5d9f5cdb2f25b587ad8d19cd198c93a4928227cf6855fe6f54f6aa4ad20",
+    "packages/backend-next/package.json": "9dd322c7e0e4efbd5c27cf97abbf26f96949806c0207a16d874945c34f9418e5",
+    "packages/backend-next/src/application/outbound-http.ts": "b35ff83f8b77915be3a549c876083c694b368f77912ce2ed4f65960df7b641d9",
+    "packages/backend-next/src/composition/http-app.ts": "39dd0c1779fd0003aea7cd2aa0454ea7502c17995a07f8be929a41fc911c816b",
+    "packages/backend-next/src/composition/outbound-http.ts": "82698911eb135eff8cba44815ff5726abcffd3eaccc4501763b9d552b574a512",
+    "packages/backend-next/src/composition/url-preview-http.ts": "dbf46e8c48b04f42265909b289adae6c1b2db20ad823df766bf7f5be11118c45",
+    "packages/backend-next/src/http/url-preview-api.ts": "2bed244764640d59e3da1cfb3baa551492970c4f3241411dc83f7304e4c230cd",
+    "packages/backend-next/src/modules/note/keywords.ts": "d114d45936288bbea09a474066efcfc71c28374415d664e739571b81760e2dd1",
+    "packages/backend-next/src/modules/note/public.ts": "6ba915caac0c26b9be0a2679b548eb5966492ce4a39333d7d9b8ed7f83f930cd",
+    "packages/backend-next/src/modules/url-preview/preview.ts": "3722e21302c048c5363d5ad2807996e72c4f1151f028b0c4c0628da889af571e",
+    "packages/backend-next/src/modules/url-preview/public.ts": "3bc75604f26ae0e1a46977f3dfad50fadd5aecbde7d96014809a7cf9e1b26c02",
+    "packages/backend-next/src/platform/connect-resources.ts": "341318a60876329cedf6bc1bdd7cbcb5794b0ac8e57e795f5a9ef1e3fbc2cd20",
+    "packages/backend-next/src/platform/database/meta.ts": "dfbf3750c258aba4bcb14d96fbed4444879c51ee9bdb82affc87a498445aa3e5",
+    "packages/backend-next/src/platform/outbound-http/agents.ts": "89430c9276e6492ca4b0a8740851ade0ec78d4cb51af91d4a073859e9e95199d",
+    "packages/backend-next/src/platform/outbound-http/client.ts": "1a26cf393bb1806ff0973c1e437b8fba3c1ba18853d4b5fc0d8d96f62568f2c1",
+    "packages/backend-next/src/platform/outbound-http/private-address.ts": "132e5a2738925f1738bca955de39dd8eab982682d7b8aabfa10bdc50098c28db",
+    "packages/backend-next/src/platform/url-preview.ts": "161b1d355084d25cc04b5117d624575275f8c244934d19767d46afd2b498410e",
+    "packages/backend-next/test/integration/url-preview.test.ts": "1c524d9d750111146b5d415b4c5b07e5ba2e08389a10478132222972a2412a24",
+    "packages/backend-next/test/processes/url-preview.test.ts": "a34ea2437c56444016e7bd58537bdcc0e764959fc8eeaeab2c986d32bf2dfeb5",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "f856cbd0703fd4f9e25260f1a27ffbfce5bb847d008ef30a534cfa4173f130db",
+    "packages/backend-next/test/unit/url-preview-network.test.ts": "bf25eb05a0bdbc852aa1accb784615b92769c431cf98150baf4a8c47f466570d",
+    "packages/backend-next/test/unit/url-preview-source.test.ts": "620f67e500594362103139c9fe96ab51f2f351cfc5c6433bd105797ee82a80a1",
+    "packages/backend-next/test/unit/url-preview.test.ts": "7bd21e328271893f894e44aaaa49445708001e9daeb21121c7923c97003c07a2",
+    "packages/backend-upstream/src/models/Meta.ts": "27bd75b935886158a59b4126fa50e4687e6c38e3e91789cddf3438154d6ec38f",
+    "pnpm-lock.yaml": "d44160a3d0159171adf292d7050798e40702ec20e2d494bbbfa47e7c811b4041"
+  },
+  "runs": [
+    {
+      "name": "build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "build"
+      ],
+      "startedAt": "2026-11-14T22:31:24.880872+00:00",
+      "finishedAt": "2026-11-14T22:31:25.577845+00:00",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-377-20261115/r2-frozen-build.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "typecheck"
+      ],
+      "startedAt": "2026-11-14T22:31:25.577948+00:00",
+      "finishedAt": "2026-11-14T22:31:26.746901+00:00",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-377-20261115/r2-frozen-typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "name": "unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/url-preview-source.test.ts",
+        "test/unit/url-preview.test.ts",
+        "test/unit/url-preview-network.test.ts",
+        "test/unit/composition/http-app.test.ts",
+        "test/unit/outbound-http"
+      ],
+      "startedAt": "2026-11-14T22:31:26.746972+00:00",
+      "finishedAt": "2026-11-14T22:31:39.991033+00:00",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-377-20261115/r2-frozen-unit.log",
+      "logSha256": "ad61730ac56988a99912c01e16c5ca0af020eb04b543dde0e3d50b4ea5b01f5b",
+      "passed": 544,
+      "files": 6
+    },
+    {
+      "name": "integration",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/url-preview.test.ts",
+        "test/integration/http-app.test.ts",
+        "test/integration/instance-admin.test.ts"
+      ],
+      "startedAt": "2026-11-14T22:31:39.991585+00:00",
+      "finishedAt": "2026-11-14T22:31:47.519389+00:00",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-377-20261115/r2-frozen-integration.log",
+      "logSha256": "c30c7fc348ef20b8bd229b3a76e9568cfe5dfd0040600ddb0fc299af472c8cb9",
+      "passed": 30,
+      "files": 3
+    },
+    {
+      "name": "process",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:process",
+        "test/processes/url-preview.test.ts",
+        "test/processes/children.test.ts"
+      ],
+      "startedAt": "2026-11-14T22:31:47.519466+00:00",
+      "finishedAt": "2026-11-14T22:32:00.794467+00:00",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-377-20261115/r2-frozen-process.log",
+      "logSha256": "9710cefe1f3da166a35e29f4c1d7292e5830728de5856036496ba1e105da57ee",
+      "passed": 15,
+      "files": 2
+    },
+    {
+      "name": "source",
+      "command": [
+        "node",
+        "docs/superpowers/compatibility/url-preview/source-probe.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-11-14T22:32:00.794584+00:00",
+      "finishedAt": "2026-11-14T22:32:01.144439+00:00",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-377-20261115/r2-frozen-source.log",
+      "logSha256": "85042db547524a9a5350991d14d5bac2a28526750c3be6f1b4fc4e225df2bdbb"
+    },
+    {
+      "name": "sync",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-upstream",
+        "sync:check"
+      ],
+      "startedAt": "2026-11-14T22:32:01.144512+00:00",
+      "finishedAt": "2026-11-14T22:32:02.063202+00:00",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-377-20261115/r2-frozen-sync.log",
+      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd"
+    }
+  ],
+  "inputsAfter": {
+    "docs/superpowers/compatibility/url-preview/corpus.json": "1bb5f5cd55c3cd4a58e1543cbf8d9838f68f16cc0136da16aeb06931126a3fd2",
+    "docs/superpowers/compatibility/url-preview/observations.json": "c80ec3d13014c6223638e2df4919a175b9b0d24b0870993ab1a3586bed433441",
+    "docs/superpowers/compatibility/url-preview/source-probe.mjs": "7bbab5d9f5cdb2f25b587ad8d19cd198c93a4928227cf6855fe6f54f6aa4ad20",
+    "packages/backend-next/package.json": "9dd322c7e0e4efbd5c27cf97abbf26f96949806c0207a16d874945c34f9418e5",
+    "packages/backend-next/src/application/outbound-http.ts": "b35ff83f8b77915be3a549c876083c694b368f77912ce2ed4f65960df7b641d9",
+    "packages/backend-next/src/composition/http-app.ts": "39dd0c1779fd0003aea7cd2aa0454ea7502c17995a07f8be929a41fc911c816b",
+    "packages/backend-next/src/composition/outbound-http.ts": "82698911eb135eff8cba44815ff5726abcffd3eaccc4501763b9d552b574a512",
+    "packages/backend-next/src/composition/url-preview-http.ts": "dbf46e8c48b04f42265909b289adae6c1b2db20ad823df766bf7f5be11118c45",
+    "packages/backend-next/src/http/url-preview-api.ts": "2bed244764640d59e3da1cfb3baa551492970c4f3241411dc83f7304e4c230cd",
+    "packages/backend-next/src/modules/note/keywords.ts": "d114d45936288bbea09a474066efcfc71c28374415d664e739571b81760e2dd1",
+    "packages/backend-next/src/modules/note/public.ts": "6ba915caac0c26b9be0a2679b548eb5966492ce4a39333d7d9b8ed7f83f930cd",
+    "packages/backend-next/src/modules/url-preview/preview.ts": "3722e21302c048c5363d5ad2807996e72c4f1151f028b0c4c0628da889af571e",
+    "packages/backend-next/src/modules/url-preview/public.ts": "3bc75604f26ae0e1a46977f3dfad50fadd5aecbde7d96014809a7cf9e1b26c02",
+    "packages/backend-next/src/platform/connect-resources.ts": "341318a60876329cedf6bc1bdd7cbcb5794b0ac8e57e795f5a9ef1e3fbc2cd20",
+    "packages/backend-next/src/platform/database/meta.ts": "dfbf3750c258aba4bcb14d96fbed4444879c51ee9bdb82affc87a498445aa3e5",
+    "packages/backend-next/src/platform/outbound-http/agents.ts": "89430c9276e6492ca4b0a8740851ade0ec78d4cb51af91d4a073859e9e95199d",
+    "packages/backend-next/src/platform/outbound-http/client.ts": "1a26cf393bb1806ff0973c1e437b8fba3c1ba18853d4b5fc0d8d96f62568f2c1",
+    "packages/backend-next/src/platform/outbound-http/private-address.ts": "132e5a2738925f1738bca955de39dd8eab982682d7b8aabfa10bdc50098c28db",
+    "packages/backend-next/src/platform/url-preview.ts": "161b1d355084d25cc04b5117d624575275f8c244934d19767d46afd2b498410e",
+    "packages/backend-next/test/integration/url-preview.test.ts": "1c524d9d750111146b5d415b4c5b07e5ba2e08389a10478132222972a2412a24",
+    "packages/backend-next/test/processes/url-preview.test.ts": "a34ea2437c56444016e7bd58537bdcc0e764959fc8eeaeab2c986d32bf2dfeb5",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "f856cbd0703fd4f9e25260f1a27ffbfce5bb847d008ef30a534cfa4173f130db",
+    "packages/backend-next/test/unit/url-preview-network.test.ts": "bf25eb05a0bdbc852aa1accb784615b92769c431cf98150baf4a8c47f466570d",
+    "packages/backend-next/test/unit/url-preview-source.test.ts": "620f67e500594362103139c9fe96ab51f2f351cfc5c6433bd105797ee82a80a1",
+    "packages/backend-next/test/unit/url-preview.test.ts": "7bd21e328271893f894e44aaaa49445708001e9daeb21121c7923c97003c07a2",
+    "packages/backend-upstream/src/models/Meta.ts": "27bd75b935886158a59b4126fa50e4687e6c38e3e91789cddf3438154d6ec38f",
+    "pnpm-lock.yaml": "d44160a3d0159171adf292d7050798e40702ec20e2d494bbbfa47e7c811b4041"
+  },
+  "noInputDrift": true,
+  "finishedAt": "2026-11-14T22:32:02.064185+00:00"
+}

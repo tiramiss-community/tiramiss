@@ -61,9 +61,9 @@ test('unchanged Emoji receipt still validates all fourteen original measured inp
  validateOutboxSuccessor(undefined, read, () => null);
 });
 
-test('leaf reader imports only Node builtins, passes outside paths through and launches no subprocess/ancestor', () => {
+test('reader imports only Node builtins and its finite preview successor, passes outside paths through and launches no subprocess/ancestor', () => {
  const source = read('scripts/instance-admin-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:')));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:') || m[1] === './url-preview-evidence.mjs'));
  assert(!/execFile|spawn|import\(/.test(source));
  assert.equal(readPreInstanceAdmin('unrelated.ts', 'utf8', () => Buffer.from('live'), () => null), 'live');
 });

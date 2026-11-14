@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { readPreUrlPreview, validateUrlPreviewSuccessor } from './url-preview-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
@@ -41,6 +42,8 @@ function record(readFile) {
 // The terminal hop validates the actual merged runtime measurement and restores
 // only nine predecessor files. No Git, subprocess or ancestor reader is needed.
 export function validateInstanceAdminSuccessor(value = record(read), readFile = read, optional = optionalRead) {
+	const previousPreview = validateUrlPreviewSuccessor(undefined, readFile, optional);
+	const beforePreview = path => path in previousPreview ? Buffer.from(previousPreview[path]) : readFile(path);
  assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'instance admin current receipt seal');
  assert.equal(value.runtimeRevision, '82d47cc0bb6dd61a15b33ca0166157527a505683');
  assert.equal(value.baseRevision, 'bb735037096259712fd381d910423ffc9927e0e1');
@@ -49,7 +52,7 @@ export function validateInstanceAdminSuccessor(value = record(read), readFile = 
  assert.equal(value.noInputDrift, true);
  assert.deepEqual(value.inputsAfter, value.inputs);
  for (const [path, digest] of Object.entries(value.inputs)) {
-  assert.equal(sha(readFile(path)), digest, `instance admin measured current input drift: ${path}`);
+  assert.equal(sha(beforePreview(path)), digest, `instance admin measured current input drift: ${path}`);
  }
  const bytes = readFile(predecessorPath);
  assert.equal(sha(bytes), predecessorSeal, 'instance admin predecessor seal');
@@ -76,6 +79,6 @@ export function validateInstanceAdminSuccessor(value = record(read), readFile = 
 }
 
 export function readPreInstanceAdmin(path, encoding, readFile = read, optional = optionalRead) {
- const bytes = successorFiles.includes(path) ? Buffer.from(validateInstanceAdminSuccessor(record(readFile), readFile, optional)[path]) : readFile(path);
+ const bytes = successorFiles.includes(path) ? Buffer.from(validateInstanceAdminSuccessor(record(readFile), readFile, optional)[path]) : readPreUrlPreview(path, undefined, readFile, optional);
  return encoding ? bytes.toString(encoding) : bytes;
 }
