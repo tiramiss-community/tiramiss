@@ -23,7 +23,7 @@
 
 ## UserLiteで代用できない理由
 
-[FollowingEntityService](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/entities/FollowingEntityService.ts#L95) は、両relation入口の `populateFollowee: true` を UserDetailedNotMe へ接続する。`federation/following` の条件は follower のhostであり、followeeのhostには制約がない。「remote.testのユーザー → ローカル閲覧者本人」の既存Followingが1件あれば、remote.testを照会する閲覧者に本人分岐が返る。これは不正データを必要としない。
+[FollowingEntityService](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/entities/FollowingEntityService.ts#L95) は、両relation入口の `populateFollowee: true` を UserDetailedNotMe へ接続する。`federation/following` のhost条件は follower に対するものであり、followeeのhostには制約がない。「remote.testのユーザー → ローカル閲覧者本人」の既存Followingと、remote followerの保存済みProfileの `followingVisibility: 'public'` があれば、[一覧所有者の公開範囲による絞り込み](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/QueryService.ts#L399)を通過し、remote.testを照会する閲覧者に本人分岐が返る。これは不正データやmoderatorの例外を必要としない。
 
 [UserEntityService](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/entities/UserEntityService.ts#L424) はschema名の `NotMe` で本人を除外せず、`schema !== 'UserLite'` と `meId === user.id` で分岐する。
 
