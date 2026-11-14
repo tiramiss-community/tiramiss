@@ -1,0 +1,17 @@
+# Profile hashtag oracle schedule — PR #589 CI correction
+
+[Run 43630590850 / job 132556089517](https://github.com/tiramiss-community/tiramiss/actions/runs/43630590850/job/132556089517) failed only `profile-boundary-old-normalized-new-collision` in `note-hashtags.test.ts`: the expected ranking score was1 and the real Redis score was2. The other1507 integration tests and all4137 unit tests passed. The Emoji endpoint was not the failing contract.
+
+The fixture compares old raw tag `a` with new raw tag `Ａ`, so the fixed upstream and port both perform two changes for normalized `a`: attach, then detach. `HashtagService.updateHashtag` starts ranking without awaiting it. A ranking update checks `SISMEMBER` before eventually doing `SADD`; these operations are non-atomic. Both reads can miss before either pipeline adds the member, yielding score2 but membership/HLL count1.
+
+The source oracle's in-memory Redis double executes each pipeline synchronously and records the second `SISMEMBER` returning1. The integration test accidentally treated that one interleaving as a guarantee of real asynchronous Redis. UUID namespaces, the fixed oracle clock and reset/drain were present; cross-test key contamination was not needed to reproduce the failure.
+
+The exact original assertion was reproduced with real isolated PostgreSQL/Redis by holding both membership read results until two reads completed. The trace was `0,0`, and the same expected1/received2 assertion failed. The production ranking, attachment and normalization code remain unchanged.
+
+The five oracle comparisons now explicitly queue only their test adapter's ranking calls, selecting the recorded first-SADD-before-second-SISMEMBER interleaving. Their exact DB row, Redis set and score expectations are unchanged. A separate profile-collision test uses the ordinary production composition and real DB/Redis, forces both membership misses, and requires score2 while checking the exact source attachment row plus unique membership and HLL count1. Its bounded wait releases the barrier on failure so cleanup cannot hang.
+
+Validation in the dedicated `backend-next-parallel-325` Compose environment (PG56525, Redis57525, Meili58525): the corrected hashtag file passes29 tests, typecheck passes, and the local complete integration command passes1509 tests /51 files. The final bounded-cleanup adjustment was rechecked with the29-case file and typecheck; the renewal receipt binds those final two runs and four exact current inputs. The full integration log is an additional diagnostic result, not a replacement for the final file's sealed input measurement. Existing pg concurrent-query deprecation warnings remain.
+
+`oracle-schedule-evidence.json` binds the final29-case run, typecheck, the changed integration test and three unchanged inputs (ranking composition, Redis adapter, source oracle). `oracle-schedule-predecessor.json` preserves the original integration test from `bb735037096259712fd381d910423ffc9927e0e1`. The new terminal reader validates current hashes and optional raw logs before restoring that one file for older proof consumers. Older receipts, source observations, assertions and seals are unchanged. The Emoji reader forwards explicit offline/host readers through this leaf.
+
+This corrects the test schedule and documents the existing race; it does not add ranking atomicity or change posting completion, API behavior, parent issue ownership or cache guarantees.

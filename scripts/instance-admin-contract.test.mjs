@@ -7,7 +7,8 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { readPreInstanceAdmin, successorFiles, validateInstanceAdminSuccessor } from './instance-admin-evidence.mjs';
-import { validateEmojiObjectSuccessor } from './local-emoji-object-evidence.mjs';
+import { readPreEmojiObject, validateEmojiObjectSuccessor } from './local-emoji-object-evidence.mjs';
+import { readPreHashtagOracle, validateHashtagOracleSuccessor } from './hashtag-oracle-evidence.mjs';
 import { readPreOutbox, validateOutboxSuccessor } from './local-outbox-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const read = path => readFileSync(new URL(path, root));
@@ -65,4 +66,18 @@ test('leaf reader imports only Node builtins, passes outside paths through and l
  assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:')));
  assert(!/execFile|spawn|import\(/.test(source));
  assert.equal(readPreInstanceAdmin('unrelated.ts', 'utf8', () => Buffer.from('live'), () => null), 'live');
+});
+
+test('hashtag oracle renewal is disjoint and cannot mask the sixteen instance-admin inputs', () => {
+ const oracle = JSON.parse(read('docs/superpowers/compatibility/note/hashtag/oracle-schedule-evidence.json'));
+ const oraclePaths = Object.keys(oracle.inputs);
+ assert.equal(oraclePaths.length, 4);
+ assert.deepEqual(oraclePaths.filter(path => path in record().inputs || successorFiles.includes(path)), []);
+ for (const path of Object.keys(record().inputs)) assert.deepEqual(readPreHashtagOracle(path), read(path));
+ for (const path of oraclePaths) assert.deepEqual(readPreInstanceAdmin(path), read(path));
+ const previous = validateHashtagOracleSuccessor(oracle, read, () => null);
+ const path = 'packages/backend-next/test/integration/note-hashtags.test.ts';
+ assert.equal(readPreEmojiObject(path, 'utf8'), previous[path]);
+ assert.notEqual(sha(readPreEmojiObject(path)), oracle.inputs[path]);
+ validateInstanceAdminSuccessor(record(), read, () => null);
 });

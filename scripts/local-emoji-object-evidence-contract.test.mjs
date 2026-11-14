@@ -49,9 +49,9 @@ test('optional available logs and actual receipt must match; explicit offline mo
  assert.doesNotThrow(() => validateEmojiObjectSuccessor(record(), read, () => null));
 });
 
-test('Emoji reader imports only builtins and its finite successor, without Git or ancestor readers', () => {
+test('Emoji reader imports only builtins and its two finite successors, without Git or ancestor readers', () => {
  const source = read('scripts/local-emoji-object-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || match[1] === './instance-admin-evidence.mjs'));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || ['./instance-admin-evidence.mjs', './hashtag-oracle-evidence.mjs'].includes(match[1])));
  assert(!/execFile|spawn|import\(/.test(source));
  assert.equal(readPreEmojiObject('unrelated.ts', 'utf8', () => Buffer.from('live'), () => null), 'live');
 });

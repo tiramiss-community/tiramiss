@@ -1,0 +1,55 @@
+{
+  "baseRevision": "bb735037096259712fd381d910423ffc9927e0e1",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "failedCi": {
+    "pullRequest": 589,
+    "runId": 43630590850,
+    "jobId": 132556089517,
+    "file": "packages/backend-next/test/integration/note-hashtags.test.ts",
+    "expectedScore": 1,
+    "receivedScore": 2
+  },
+  "inputs": {
+    "packages/backend-next/test/integration/note-hashtags.test.ts": "26a0c1da36b84d44363bed824707e147052d10e2f75708559850158385d42f5c",
+    "packages/backend-next/src/composition/user-hashtags.ts": "35dd1182a377953e59a5aa825c335a3a38dc0cfc695096a4d207f99b8d4621d1",
+    "packages/backend-next/src/platform/hashtag-ranking.ts": "3c30373aebcdc87dc2667e59168f5e12cf75076d0778dbc56bd4a1950bce253c",
+    "docs/superpowers/compatibility/note/hashtag/source-observations.json": "626e4dac90c5fc5e399e612e75178d35efe283a2712ee0cbe643b024fda111b1"
+  },
+  "runs": [
+    {
+      "name": "hashtags-integration",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/note-hashtags.test.ts"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-325-ci-20261115/hashtags-integration-final.log",
+      "logSha256": "d9d9f51690797d7cbc429b4f6b844699cd8033a02d9bbb4a5bf937ca078aaea4",
+      "passed": 29,
+      "files": 1,
+      "skipped": 0
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-325-ci-20261115/typecheck-final.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    }
+  ],
+  "inputsAfter": {
+    "packages/backend-next/test/integration/note-hashtags.test.ts": "26a0c1da36b84d44363bed824707e147052d10e2f75708559850158385d42f5c",
+    "packages/backend-next/src/composition/user-hashtags.ts": "35dd1182a377953e59a5aa825c335a3a38dc0cfc695096a4d207f99b8d4621d1",
+    "packages/backend-next/src/platform/hashtag-ranking.ts": "3c30373aebcdc87dc2667e59168f5e12cf75076d0778dbc56bd4a1950bce253c",
+    "docs/superpowers/compatibility/note/hashtag/source-observations.json": "626e4dac90c5fc5e399e612e75178d35efe283a2712ee0cbe643b024fda111b1"
+  },
+  "noInputDrift": true
+}
