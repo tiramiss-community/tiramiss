@@ -2,6 +2,28 @@
 
 更新: 2026-11-14。判断基準は [GOALS](GOALS.md)。全体Issueは [#114](https://github.com/tiramiss-community/tiramiss/issues/114)。本書は工程と現在地、Issueは個別作業と依存、各PRは実装・検証結果を持つ。
 
+
+## 現在の作業入口（2026-11-14、全工程再編）
+
+[BACKLOG](BACKLOG.md) と [全318単位のカタログ](backlog.json) を #114 全工程の現在の作業選定・完了条件・依存の入口とする。S1だけでなく既存S1–S5、独立領域、運用・追従・配布・切替を含む。親は領域を取りまとめ、有限の子が実装・比較を閉じる。件数は公開完了数や機能完成率ではない。
+
+基準は PR #271 マージ後の `110ef5d3af7bb7263337876c2f38be1652c0a23b`。followers/following GETはマージ済み、#271最終headは `ee0da1cd23770aa99774b4c6359fb0542aebf422`。R4 runtime `10c0d76c3724cd4e52a0a17c24ed92accaa10f75` と後続metadata更新（49bf系・ee0系）は区別する。ここでは新たなCI確認・runtime再測定を主張しない。R1/R2/R3b/R4の既存receipt・件数・入力とraw JSONは当時の記録として維持する。
+
+通常親の広いblocked-by 10件はsourceに即した具体葉へ置き換える（下表）。準備は先行でき、完了には列挙した機能が必要。#139最終gateだけは元Issueの「対象版の全機能・配布物・未対応なし」に基づき、GitHub上限に合わせ既存領域親を使う。全葉要件はカタログに保持する。これは新たな保証の追加ではない。
+
+| 親 | 旧・親全体待ち | 現在の具体的な完了依存 |
+| --- | --- | --- |
+| [#199](https://github.com/tiramiss-community/tiramiss/issues/199) | [#188](https://github.com/tiramiss-community/tiramiss/issues/188) | [188-cleanup · #509](https://github.com/tiramiss-community/tiramiss/issues/509) / [188-url-ingest · #287](https://github.com/tiramiss-community/tiramiss/issues/287) |
+| [#196](https://github.com/tiramiss-community/tiramiss/issues/196) | [#180](https://github.com/tiramiss-community/tiramiss/issues/180) | [180-user-detail · #297](https://github.com/tiramiss-community/tiramiss/issues/297) |
+| [#196](https://github.com/tiramiss-community/tiramiss/issues/196) | [#193](https://github.com/tiramiss-community/tiramiss/issues/193) | [193-announcement-read · #337](https://github.com/tiramiss-community/tiramiss/issues/337) / [193-emoji-read · #304](https://github.com/tiramiss-community/tiramiss/issues/304) / [193-nodeinfo-hostmeta · #531](https://github.com/tiramiss-community/tiramiss/issues/531) / [193-public-meta · #399](https://github.com/tiramiss-community/tiramiss/issues/399) |
+| [#194](https://github.com/tiramiss-community/tiramiss/issues/194) | [#188](https://github.com/tiramiss-community/tiramiss/issues/188) | [188-file-update · #464](https://github.com/tiramiss-community/tiramiss/issues/464) / [188-url-ingest · #287](https://github.com/tiramiss-community/tiramiss/issues/287) |
+| [#194](https://github.com/tiramiss-community/tiramiss/issues/194) | [#198](https://github.com/tiramiss-community/tiramiss/issues/198) | [198-delivery-test · #353](https://github.com/tiramiss-community/tiramiss/issues/353) |
+| [#194](https://github.com/tiramiss-community/tiramiss/issues/194) | [#179](https://github.com/tiramiss-community/tiramiss/issues/179) | [179-captcha · #392](https://github.com/tiramiss-community/tiramiss/issues/392) / [179-invites · #393](https://github.com/tiramiss-community/tiramiss/issues/393) / [179-passwords · #394](https://github.com/tiramiss-community/tiramiss/issues/394) |
+| [#192](https://github.com/tiramiss-community/tiramiss/issues/192) | [#189](https://github.com/tiramiss-community/tiramiss/issues/189) | [189-connection-protocol · #432](https://github.com/tiramiss-community/tiramiss/issues/432) / [189-game-channel-comparison · #475](https://github.com/tiramiss-community/tiramiss/issues/475) |
+| [#187](https://github.com/tiramiss-community/tiramiss/issues/187) | [#185](https://github.com/tiramiss-community/tiramiss/issues/185) | [185-featured-read · #494](https://github.com/tiramiss-community/tiramiss/issues/494) |
+| [#130](https://github.com/tiramiss-community/tiramiss/issues/130) | [#199](https://github.com/tiramiss-community/tiramiss/issues/199) | [199-delete-account · #341](https://github.com/tiramiss-community/tiramiss/issues/341) / [199-export-config · #516](https://github.com/tiramiss-community/tiramiss/issues/516) / [199-export-emojis · #518](https://github.com/tiramiss-community/tiramiss/issues/518) / [199-export-notes · #517](https://github.com/tiramiss-community/tiramiss/issues/517) / [199-import-antennas · #524](https://github.com/tiramiss-community/tiramiss/issues/524) / [199-import-emojis · #520](https://github.com/tiramiss-community/tiramiss/issues/520) / [199-import-lists · #523](https://github.com/tiramiss-community/tiramiss/issues/523) / [199-import-muting · #522](https://github.com/tiramiss-community/tiramiss/issues/522) / [199-import-relations · #521](https://github.com/tiramiss-community/tiramiss/issues/521) / [199-move · #525](https://github.com/tiramiss-community/tiramiss/issues/525) |
+| [#130](https://github.com/tiramiss-community/tiramiss/issues/130) | [#188](https://github.com/tiramiss-community/tiramiss/issues/188) | [188-cleanup · #509](https://github.com/tiramiss-community/tiramiss/issues/509) / [188-url-ingest · #287](https://github.com/tiramiss-community/tiramiss/issues/287) |
+
 ## 今回の方針整理
 
 既存コードを全廃せず、本家相当の業務機能を通す順序へ戻す。独自の障害保証を備えた基盤の完成を、投稿機能の先行条件にしない。基本設計の依存境界は引き継ぐが、後から詳細化した同時確定・復旧・容量の契約は初期必須か再評価する。
@@ -12,7 +34,7 @@
 
 ## 現在地と既存成果
 
-基準: develop `50ffa6157c557f72ca10857201f390b5855c8016`（PR #270マージ後）。保存済みlocal actorフィールド公開 `efd6b94ea9911fc6b9aeaad0edeea04da3932da1` は#269でマージ済み。#267のlocal actor画像、#268のWebFingerとstdout JSON診断も引き継ぐ。PR #270でマージ済みのlocal featured collection＋AP Note GETのsourceは `bcb828e878c5d14cb5be7b9ebf743fd452cca648`（元の通常2コミット・23ファイルとUnicode修正、[限定結果](../superpowers/compatibility/remote-user/local-featured-results.md)）。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
+基準: develop `110ef5d3af7bb7263337876c2f38be1652c0a23b`（PR #271マージ後）。保存済みlocal actorフィールド公開 `efd6b94ea9911fc6b9aeaad0edeea04da3932da1` は#269でマージ済み。#267のlocal actor画像、#268のWebFingerとstdout JSON診断も引き継ぐ。PR #270でマージ済みのlocal featured collection＋AP Note GETのsourceは `bcb828e878c5d14cb5be7b9ebf743fd452cca648`（元の通常2コミット・23ファイルとUnicode修正、[限定結果](../superpowers/compatibility/remote-user/local-featured-results.md)）。本家の固定基準は `packages/backend-upstream/upstream-sync.json` を参照。
 
 [画像削除の限定結果](../superpowers/compatibility/remote-user/actor-image-removal-results.md): public remote mentionの作成・canonical復旧後、両画像が不在なら6フィールドを消去し、更新失敗は報告してmentionを継続する。
 
@@ -22,12 +44,12 @@
 | --- | --- | --- |
 | local WebFinger #195 | 通常GET/HEAD/OPTIONS `/.well-known/webfinger`、resource解決・JRD/XRD・path限定CORSを既存actor GETへ接続。[source49とR3単体235・実HTTP/PG46の結果](../superpowers/compatibility/remote-user/local-webfinger-results.md)。既存HTTP/actor55は別R1実行 | wildcard OPTIONS・他well-known/host-meta/NodeInfo/authorize-follow・collections/inbox/remote Notesは未完了。sourceはFastify inject＋doubles、error body診断文字列とMeta DB対injected cache/通知同等性は未比較。#176/#127/#195 OPEN、notes/create partial・postingComplete:false |
 | local actor保存済フィールド #195 | 既存HTTP/内部actorへisCat・設定3項目・movedTo・alsoKnownAsとfeatured URLを公開。[source21・単体283・実HTTP/PG177の親実測](../superpowers/compatibility/remote-user/local-actor-fields-results.md) | 当該slice当時はfeatured endpointが未実装だったが、PR #270でlocal featured/AP Note GETはマージ済み。Move実行・Drive/media・remote Notes・inbox/cacheは未完了。内部取込の設定prefix差とMeta/cache差を維持。#176/#127/#195 OPEN、notes/create partial・postingComplete:false |
-| local followers/following GET #195 | 実R4 runtime `10c0d76c3724cd4e52a0a17c24ed92accaa10f75`、991入力、source318・単体3735・integration1319（collection PG/HTTP324含む）・acceptance65、全9コマンド/no drift PASS。[新R4証跡](../superpowers/compatibility/remote-user/local-follow-collections-results.md) | 業務resultのHTTP/cache除去とGit不要の静的R2 fixtureを実装。57有限入力とR3 public→R4の明示binding、旧9証跡/featured歴史投影を保持。内部18-file APPROVED・CLI16/14/12/11指摘0・旧5acf全4CI成功は新外部指摘前の履歴。今回のtargeted review・thread replies・新head PR271 CIは親待ち。full upstream server/PG・厳密診断/MetaCacheは未証明。#176/#182完了ではない |
+| local followers/following GET #195 | 実R4 runtime `10c0d76c3724cd4e52a0a17c24ed92accaa10f75`、991入力、source318・単体3735・integration1319（collection PG/HTTP324含む）・acceptance65、全9コマンド/no drift PASS。[新R4証跡](../superpowers/compatibility/remote-user/local-follow-collections-results.md) | 業務resultのHTTP/cache除去とGit不要の静的R2 fixtureを実装。57有限入力とR3 public→R4の明示binding、旧9証跡/featured歴史投影を保持。内部18-file APPROVED・CLI16/14/12/11指摘0・旧5acf全4CI成功は新外部指摘前の履歴。PR #271は最終head `ee0da1cd23770aa99774b4c6359fb0542aebf422` でマージ済み。R4実測と後続metadataを区別し、本書でCIを再確認したとは扱わない。full upstream server/PG・厳密診断/MetaCacheは未証明。#176/#182完了ではない |
 | 共有root | PR #249でHTTP・既存worker・CIの整理がマージ済み | 追加handlerを実装した意味ではない |
 | 投稿N0–N6 | #167–#175はCLOSED。#238で削除連携も確認済み | 全通知・閲覧・全WS等は各領域に残る |
 | 投稿N7 #176 | #242で基本縦断・停止再開・通常retry、#250でC2/C10の比較不足を補完。#243のremote解決もマージ済み | 残るactor関連の初期機能の実装・比較待ち。#176/#127はOPEN |
-| 連合 #195 | #243のremote user解決に加え、user hashtag #258、localプロフィール #259、remote絵文字取込 #262、local actor tag公開 #263、#266のremote actor画像削除、保存済Driveによるlocal actor画像URL公開と#268 WebFinger・#269保存済みfield公開。PR #270のlocal featured/AP Note GETはマージ済み。現在のfollowers/following GETは未マージの限定read slice。path修正とtest期待値補正後の実R3bはPASS、最終review/CIは別gate | inbox中核・署名検証・受信activity、画像バイト配信・Drive取得・remote media・remote featured/Note取込・Move等の残範囲あり |
-| 連合土台 #215 / 外向きHTTP #216 | actor作成後usersCount #260、現在のactor取得/配送成功後のmetadata/getHtml #261 | inbox用の#215段階4、他のinstance取得経路、Drive等のHTTP利用側は未完了 |
+| 連合 #195 | #243のremote user解決に加え、user hashtag #258、localプロフィール #259、remote絵文字取込 #262、local actor tag公開 #263、#266のremote actor画像削除、保存済Driveによるlocal actor画像URL公開と#268 WebFinger・#269保存済みfield公開。PR #270のlocal featured/AP Note GETはマージ済み。followers/following GETもPR #271でマージ済みの限定read slice。R3b/R4は各時点の限定実測を保持する | inbox中核・署名検証・受信activity、画像バイト配信・Drive取得・remote media・remote featured/Note取込・Move等の残範囲あり |
+| 連合土台 #215 / 外向きHTTP #216 | actor作成後usersCount #260、現在のactor取得/配送成功後のmetadata/getHtml #261 | 公開actor featuredを最初の利用者にする#215段階4、他のinstance取得経路、Drive等のHTTP利用側は未完了 |
 
 2026-11-14: raw pathの不正percent/UTF-8をCORS・Metaより前に400拒否し、一度だけdecodeする。Phase1のsource318/近傍430/typecheck PASS後、親R3でencoded-valid pageのmember期待数4件が失敗した。JS-doubleとPG照合順の差を独立SQLで補正し、fresh R3bが324 collectionを含む全integration1319を通過。Phase2はruntime無変更で実測product `498009e4d8bdfc0afc581fbcf5954da2c2953fed` の証跡を更新する。旧7証跡＋R2 C355 bytes、3既知identityの歴史的/current投影を保持し、55入力中の変更7件と全request差分10件を明示する。旧製品CR16/metadata14各指摘0・root366/inventory/shippingは過去snapshotの履歴。今回の最終scoped re-review/PR checksとCI成功は主張しない。
 
@@ -68,7 +90,7 @@
 
 1. **投稿に必要な最小契約を再確定する。** PR #212で[最小契約](posting-contract.md)を確定しマージ済み。保存/応答と後続開始を分け、必要な実jobだけ通常BullMQへ渡す。PG通知を維持し、独自の永続台帳・claim/effect/容量は初期経路から外す。新しい万能dispatcherや汎用イベント基盤は作らない。
 2. **既存実装を縮小し、投稿の縦断フローを通す。** 最小契約に照らして不要と確認できた部分から削減する。置換が必要な部分は、本家相当の経路を接続するPRか直後のPRで旧経路を撤去し、全機能の完成後まで待たせない。#169の基本作成 → #170の投稿要素 → #171/#172の配送/削除 → #173–#175の通知/stream/TL/検索/webhook → #176の連携確認。途中から通常workerへ接続し、HTTP・DB・Redis・配送先の結果を小さく確認する。すべての副作用を必ずqueue化する設計にはしない。本家の必要な失敗処理も確認する。
-3. **残る本家機能を移植する。** #129/#178–#200/#215–#217の対応表を入口に、利用できる機能単位で進める。未評価・未移植・比較済みを区別し、基盤PR数を完成率に換算しない。複数セッションで並行する順序・担当・並走禁止は「[並列作業とクリティカルパス](#並列作業とクリティカルパス2026-11-08)」に従う。
+3. **残る本家機能を移植する。** #129/#178–#200/#215–#217の対応表を入口に、利用できる機能単位で進める。未評価・未移植・比較済みを区別し、基盤PR数を完成率に換算しない。現在の機能単位の依存と同一PR条件は[BACKLOG](BACKLOG.md)に従う。
 4. **全体の互換性と切り替えを確認する。** #130/#131/#137の必要な回復・既存データ・配布/観測・完全停止移行を、実装した機能に合わせて整える。移行に必要な処理は先送りしない。本家以上の自動復旧や運用基盤を一括のリリース前提にしない。
 
 ## マージ済み実装の削減
@@ -119,6 +141,13 @@ PR単位で一括revertせず、現在の参照・必要な業務規則・保存
 
 Issueの有効な本文・タイトル・完了条件も本方針へ揃え、旧条件は履歴へ分ける。#178–#200の共通条件から独自台帳/claim/容量/強い復旧の一律要求を外し、各機能の本家の保存境界・後続開始・通常retry・必要な保持を比較する。未移植の機能は今後、利用できる小さな単位へ分割して実装する。
 
+## 旧依存・並行計画の履歴
+
+以下は2026-11-08時点の計画であり、現在の着手・完了規則ではない。親全体待ち10件、セッション割当、未決事項は上の全工程再編とBACKLOGで置き換える。#115は限定完了・OPEN維持、#122は残業務/定期ジョブ待ち、#176/#127は残actor機能の実装・比較待ちである。
+
+<details>
+<summary>2026-11-08の依存・並列計画（履歴）</summary>
+
 GitHubの親子関係は領域所属として維持し、blocked-byは次の具体的な依存へ合わせる。
 
 - #162は署名HTTP #160の一律完了待ちにしない。AP以外の実仕事から接続でき、AP配送の完成は #171で #160/#162を必須にする。
@@ -133,7 +162,7 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 
 方針を変更したときは、GOALS/ROADMAPだけでなく、影響するIssueの有効な本文・完了条件・blocked-byと親の対応順を一緒に更新する。PRの実装/検証結果は実際のマージ状態を確認して反映する。
 
-## 並列作業とクリティカルパス（2026-11-08）
+### 並列作業とクリティカルパス（2026-11-08 当時）
 
 複数セッションで同時に進めるための分類。Issue本文・契約文書・本家のService依存・backend-nextの実コードから暗黙の依存を洗い出し、slice単位で判断した。分類表と各Issueの着手順は [#114](https://github.com/tiramiss-community/tiramiss/issues/114) と各Issue本文、共通部品の担当表は [#128](https://github.com/tiramiss-community/tiramiss/issues/128) を正とする。
 
@@ -161,16 +190,21 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 
 **同時に走らせない組み合わせ。** PR #243との過去の同時マージ制限は解消済み。#176・#215・#195等は現在の変更ファイルと証跡単位で調整する。#178と#179・#181。#185と一覧API全般。#182と#195（Follow系rendererは#182が作る）。#189 registryとchannel追加。#136の本家固定SHA更新は全セッションを止めて単独で行う。
 
-**共有ファイルの運用。**
+</details>
+
+## 共有ファイルの運用（継続する規則）
 
 1. 進捗は作業中にplansと`compatibility/<domain>/README.md`へ書き、本書には要約とリンクだけをマージ直前に足す。
-2. 対応表（backend-inventory）は自分の行だけを編集する。衝突したらdevelop側を採って生成し直す。`implementationCommit`を進めた後の追従はmergeで行う（rebaseすると記録したSHAが孤立する）。
+2. 対応表（backend-inventory）は自分の行だけを編集する。衝突したらdevelop側を採って生成し直す。`implementationCommit`を進めた後の追従はmerge、PRの最終取り込みはmerge commitで行う。rebaseやsquashで記録したSHAを置き換えない。
 3. `backend-upstream`のEntity同期は、`upstream-sync.json`の`files`を和集合でマージし、同期スクリプトで生成し直す。共有Entityは最初に必要とする担当が同期し、他の領域はrebaseして使う。
 4. 独自migrationは未マージの側が`Date.now()`で振り直す。同じテーブルを触るmigration同士は並列にしない。
 5. lockfileはマージ直前に生成し直す。設定キーは領域ごとのネストしたオブジェクトとして足す。
 6. 検証環境はセッションごとに専用のComposeプロジェクトとポート（`BACKEND_NEXT_TEST_DB_PORT` / `BACKEND_NEXT_TEST_REDIS_PORT`）を使う。
 
-**未決事項。**
+## 旧計画の未決事項（履歴）
+
+<details>
+<summary>2026-11-08 当時の未決事項</summary>
 
 1. inboxのfailedジョブの扱い：#139の前に全activityのhandlerを必須とするか、契約を変えるか（期限切れを待つ、受理だけする等）。クリティカルパスの長さが大きく変わる。
 2. 共有Entityを担当ごとに同期するか、1本のPRでまとめて同期するか。
@@ -178,9 +212,11 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 4. **確定済み（2026-11-09）:** #176はPR #243で残るmedia/emoji・instance・chart・cache等の初期機能を実装するまで未完了とする。担当の割り当てだけでは閉じない。これらは強化や承認済み差異ではなく、`Closes #176` / `Closes #127` は使わない。
 5. #115・#122は残りを#181・#199/#200へ移してcloseするか。
 
+</details>
+
 ## 再開時に確認すること
 
-[GOALS](GOALS.md)、本書冒頭の現在地、対象Issue、PR/ブランチの実状態を確認する。S1の共有root整理・基本縦断・C2/C10比較・#258–#263の限定補完はマージ済みで、#176/#127/#195は残範囲があるためOPEN。#176に必要な機能単位と他担当待ちを区別し、過去のPR待ちを着手条件に戻さない。初期機能の完了条件・担当・正式なblocked-byは今回変更しない。
+[GOALS](GOALS.md)、本書冒頭の現在地、対象Issue、PR/ブランチの実状態を確認する。S1の共有root整理・基本縦断・C2/C10比較・#258–#263の限定補完はマージ済みで、#176/#127/#195は残範囲があるためOPEN。#176に必要な機能単位と他担当待ちを区別し、過去のPR待ちを着手条件に戻さない。初期範囲を維持し、現在の有限作業・具体的な依存は[BACKLOG](BACKLOG.md)を確認する。
 
 着手するPRでは「移植する本家機能/解く依存」「必要な比較」「追加保証の有無」を短く説明する。以下の履歴やsource観測の測定件数を、現在の全機能の完了証明には用いない。
 

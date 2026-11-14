@@ -24,7 +24,7 @@ I/O を持たない判定は `src/modules/federation/` に置き、`public.ts` �
 | `findPublicKeyByKeyId(keyId)`/`findPublicKeyByUserId(userId)` | DB 例外 | platform/database | #195 |
 | `fetchInstance(host)`/`fetchOrRegisterInstance(host)` → InstanceFacts/null、`updateInstance(id, patch)`、`listSuspendedHosts()` | DB 例外を伝播。初回登録の競合は例外にせず、登録済みの行を返す（下記の意図的差異） | platform | #171（実装済み）、#195 |
 | `deliverSuccessPatch(instance)`/`deliverFailurePatch(instance, now)`、`packInstanceState(instance, policy)` | なし（純関数） | modules | patch は #171（実装済み）。`packInstanceState` は最初の利用者（#195 など）の PR |
-| `acquireApObjectLock(uri)` → `release()` | 約 5 秒で取得できなければ例外 | platform | #195 |
+| `acquireApObjectLock(uri)` → `release()` | 約 5 秒で取得できなければ例外 | platform | #195 の公開actor featuredからのremote Note取込（段階4） |
 | `fetchInstanceMetadata(instance, {force})` | 取得・更新の例外は記録して握る | platform（判断は modules） | 段階 5（#216 の `getHtml` と一緒に）。配送の成功時の呼び出しも段階 5 で足す。#195 |
 
 `ensureSystemAccount` は、呼び出し元の transaction には参加しない。本家と同じく、自前の transaction で作成を確定する。UseCase は自分の transaction を開く前に呼ぶ。[backend-next の運用ルール](../../packages/backend-next/AGENTS.md)は共有 Service による transaction 開始を禁じているが、本家と同じ遅延作成にはこの例外が必要になる。例外はこの 1 操作に限る。
@@ -108,6 +108,8 @@ Redis のキー名と値の形式は本家と揃える。こうしておけば�
    - #171 の最初の PR で実装済み。台帳は `src/platform/instance-ledger.ts`、成功・失敗の patch は `src/modules/federation/instance.ts`、スキップ判定と書き込みの順は `src/modules/federation/deliver-job.ts`。本家の probe と実 DB/Redis で比べた（[比較資料](../superpowers/compatibility/ap-deliver/README.md)）。
    - 成功時の `fetchInstanceMetadata` は段階 5 まで呼ばない（一時的な差異）。チャートの更新は #200。
 4. **リモート鍵の参照と AP オブジェクトの排他**: UserPublickeyは固定本家の機械同期で複製し、#195のposting core保存/refreshで使用。一般受信の鍵照会・AP object排他全体は未完了。
+   - **2026-11-14の最初の利用者の明確化**: [195-remote-notes · #329](https://github.com/tiramiss-community/tiramiss/issues/329)・[195-remote-featured · #289](https://github.com/tiramiss-community/tiramiss/issues/289)・[215-object-lock · #328](https://github.com/tiramiss-community/tiramiss/issues/328) は同一PRで、公開actorのfeatured取込から通常経路へ接続する。HTTP inboxとの同時導入を先行必須にしない。固定本家の [actor作成後のupdateFeatured](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/activitypub/models/ApPersonService.ts#L475)、[refresh後の呼出し](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/activitypub/models/ApPersonService.ts#L638)、[featuredからresolveNoteへの接続](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/activitypub/models/ApPersonService.ts#L725)が根拠。公開投稿の残機能をinbox全体待ちにせず、未使用の排他primitiveも残さないための順序補正であり、実装済みという記述ではない。
+   - URIの扱いと本書の `lock:ap-object:<uri>`・SET PX 30000 NX・100ms/50回・GET一致後DELの契約は変更しない。remote media等の具体先行条件は[BACKLOG](BACKLOG.md)と各作業Issueを参照する。一般受信の公開鍵照会・inbox接続は別の実利用経路として比較する。#176/#127は残actor機能を実装・比較するまでOPEN、`notes/create:partial` / `postingComplete:false`を維持する。
 5. **メタデータ取得**: #216 の `getHtml` と一緒に入れる。
 
 各段階は最初の利用者と同じ PR か、その直前の PR で通常起動へ接続する。利用者のいない adapter を先に積まない。
