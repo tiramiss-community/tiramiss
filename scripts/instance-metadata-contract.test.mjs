@@ -4,13 +4,12 @@
  */
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import test from 'node:test';
 import { remoteEmojiDigest } from './remote-emojis-evidence.mjs';
 import { metadataDigest } from './instance-metadata-evidence.mjs';
-const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/instance-metadata/';
-const read = file => readFileSync(new URL(file, root), 'utf8');
+const read = file => readPreAliasKey(file, 'utf8');
 const sha = value => createHash('sha256').update(value).digest('hex');
 
 function validate(value) {

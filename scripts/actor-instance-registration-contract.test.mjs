@@ -4,13 +4,12 @@
  */
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import test from 'node:test';
 import { metadataDigest } from './instance-metadata-evidence.mjs';
 import { actorInstanceDigest } from './actor-instance-registration-evidence.mjs';
-const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
-const read = path => readFileSync(new URL(path, root), 'utf8');
+const read = path => readPreAliasKey(path, 'utf8');
 const sha = value => createHash('sha256').update(value).digest('hex');
 
 test('new source observation gates prove normal/duplicate stats, origin authority and separate nonwaiting boundaries', () => {
