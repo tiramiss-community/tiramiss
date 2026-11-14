@@ -57,6 +57,48 @@ test('actual logs and receipt must agree when present; missing host artifacts do
  assert.throws(() => validateUrlPreviewSuccessor(record(), read, p => p.endsWith('product-run-receipt.json') ? Buffer.from('{}') : null), /actual receipt drift/);
  assert.doesNotThrow(() => validateUrlPreviewSuccessor(record(), read, () => null));
 });
+test('a warm content cache still hashes a changed second lock read', () => {
+ validateUrlPreviewSuccessor();
+ let lockReads = 0;
+ const changing = path => {
+  const bytes = read(path);
+  return path === 'pnpm-lock.yaml' && ++lockReads === 2 ? Buffer.concat([bytes, Buffer.from('\n')]) : bytes;
+ };
+ assert.throws(() => validateUrlPreviewSuccessor(undefined, changing, () => null), /exact historical lock identity/);
+ assert.equal(lockReads, 2);
+});
+test('cross-call input and receipt drift reject after warming parsed content', () => {
+ let corruptedPath;
+ const changing = path => path === corruptedPath ? Buffer.concat([read(path), Buffer.from('\n')]) : read(path);
+ validateUrlPreviewSuccessor(undefined, changing, () => null);
+ corruptedPath = 'packages/backend-next/package.json';
+ assert.throws(() => validateUrlPreviewSuccessor(undefined, changing, () => null), /measured current input drift/);
+ corruptedPath = evidencePath;
+ assert.throws(() => validateUrlPreviewSuccessor(undefined, changing, () => null), /receipt seal/);
+ corruptedPath = predecessorPath;
+ assert.throws(() => validateUrlPreviewSuccessor(undefined, changing, () => null), /predecessor seal/);
+});
+test('mutating a returned historical map cannot alter later projections', () => {
+ const first = validateUrlPreviewSuccessor(undefined, read, () => null);
+ const expected = { ...first };
+ first['pnpm-lock.yaml'] = 'forged';
+ first[successorFiles[0]] = 'forged';
+ first.unrelated = 'injected';
+ assert.deepEqual(validateUrlPreviewSuccessor(undefined, read, () => null), expected);
+});
+test('repeated validations retain every actual read and optional-artifact check', () => {
+ const reads = []; const artifacts = [];
+ const observing = path => { reads.push(path); return read(path); };
+ const optional = path => { artifacts.push(path); return null; };
+ validateUrlPreviewSuccessor(undefined, observing, optional);
+ const before = { reads: [...reads], artifacts: [...artifacts] };
+ reads.length = 0; artifacts.length = 0;
+ validateUrlPreviewSuccessor(undefined, observing, optional);
+ assert.deepEqual({ reads, artifacts }, before);
+ assert.equal(reads.filter(path => path === 'pnpm-lock.yaml').length, 2);
+ for (const path of Object.keys(record().inputs)) assert(reads.includes(path));
+ assert.equal(artifacts.length, record().runs.length + 1);
+});
 test('preview reader uses only builtins and its disjoint fixture successor, without subprocesses or ancestor readers', () => {
  const source = read('scripts/url-preview-evidence.mjs').toString();
  assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || match[1] === './url-preview-fixture-evidence.mjs'));

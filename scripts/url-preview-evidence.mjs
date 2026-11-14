@@ -32,10 +32,16 @@ export const successorFiles = Object.freeze([
  'packages/backend-next/src/platform/outbound-http/client.ts',
  'pnpm-lock.yaml',
 ]);
+const parsedSealed = new Map();
+let historicalLock;
+function parseSealed(bytes, digest) {
+ if (!parsedSealed.has(digest)) parsedSealed.set(digest, JSON.parse(bytes));
+ return parsedSealed.get(digest);
+}
 function record(readFile) {
  const bytes = readFile(evidencePath);
  assert.equal(sha(bytes), seal, 'URL preview current receipt seal');
- return JSON.parse(bytes);
+ return parseSealed(bytes, seal);
 }
 
 // A finite terminal hop for #377/#560. Historical receipts remain byte-for-byte
@@ -54,16 +60,25 @@ export function validateUrlPreviewSuccessor(value, readFile = read, optional = o
  }
  const bytes = readFile(predecessorPath);
  assert.equal(sha(bytes), predecessorSeal, 'URL preview predecessor seal');
- const previous = JSON.parse(bytes);
+ const previous = parseSealed(bytes, predecessorSeal);
  assert.equal(previous.commit, value.baseRevision);
  assert.deepEqual(Object.keys(previous.files), successorFiles.filter(path => path !== 'pnpm-lock.yaml'));
  const patch = previous.lockPatch;
  assert.equal(patch.path, 'pnpm-lock.yaml');
  assert.equal(patch.currentSha256, value.inputs[patch.path]);
- const currentLock = readFile(patch.path).toString();
- assert.equal(currentLock.split(patch.before).length, 2, 'URL preview lock patch has one exact anchor');
- const previousLock = currentLock.replace(patch.before, patch.after);
- assert.equal(sha(Buffer.from(previousLock)), patch.previousSha256, 'URL preview exact historical lock identity');
+ const actualLock = readFile(patch.path);
+ const actualLockSha = sha(actualLock);
+ assert.equal(actualLockSha, patch.currentSha256, 'URL preview exact historical lock identity');
+ let previousLock;
+ if (historicalLock?.sha === actualLockSha) {
+  previousLock = historicalLock.value;
+ } else {
+  const currentLock = actualLock.toString();
+  assert.equal(currentLock.split(patch.before).length, 2, 'URL preview lock patch has one exact anchor');
+  previousLock = currentLock.replace(patch.before, patch.after);
+  assert.equal(sha(Buffer.from(previousLock)), patch.previousSha256, 'URL preview exact historical lock identity');
+  historicalLock = { sha: actualLockSha, value: previousLock };
+ }
  const projected = { ...previous.files, [patch.path]: previousLock };
  assert.deepEqual(Object.keys(projected), successorFiles);
  for (const path of successorFiles) assert.notEqual(sha(Buffer.from(projected[path])), value.inputs[path]);
