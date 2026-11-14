@@ -41,7 +41,7 @@ Interfaces: createOutboxReader(manager,timelinesRedis) implements Task 1 ports. 
 ### Task 3: Real dependency validation and handoff
 
 Files: new listening HTTP/PG/Redis integration; dedicated independent static fixture consumer when available; this plan status only.
-- [ ] Execute authored tests for duplicate/stale/missing/filtered cache candidates, refill/fallback/since, WRONGTYPE, DB-only differences and HTTP posting producer; capture GET DML excluding explicitly established infrastructure exceptions.
+- [x] Parent executed authored tests for duplicate/stale/missing/filtered cache candidates, refill/fallback/since, WRONGTYPE, DB-only differences and HTTP posting producer; capture GET DML excluding explicitly established infrastructure exceptions.
 - [x] Attempt real integration using dedicated PG56474/Redis57474; record sandbox failures without reporting skips as passes.
 - [x] Run focused unit, build, typecheck, changed-file lint, SPDX and locale checks; save every log and binary patch under supplied /tmp directory.
 - [x] Report exact files, interfaces, counts, failures and hashes requiring parent successor work.
@@ -54,3 +54,17 @@ Files: new listening HTTP/PG/Redis integration; dedicated independent static fix
 - The worker uses a temporary `/tmp/.../runtime-writer-source-vitest.config.mjs` resolver for those two absent worker fixtures. Parent must integrate both patches and rerun canonical test discovery. The narrow JSON declarations support static test imports without changing project configuration.
 - Ruling: explicit static empty-path registrations avoid Hono's empty regexp capture crash while preserving source routing. No existing route was changed.
 - Focused units, build and test typecheck passed before final shipping checks; exact final counts/logs and historical input digests are in the runtime writer handoff under `/tmp/tiramiss-s1-324-20261114/`. No parent/CI verification is claimed.
+
+
+## Final parent measurement and metadata handoff (2026-11-14)
+
+- [x] Parent measured runtime `1e75c5b2b3be158fba8afb14a9c1c30809825127`: build/typecheck exit 0, units 2113/42 files, real HTTP/PG/Redis 707/7 files (23 outbox), literal source 115, contract 12; all 22 before/after inputs identical.
+- [x] Metadata binding verifies actual 22 current input bytes and six measured raw logs, seals exact six `5981cce` predecessor strings and the original receipt, and composes below #323 including injected readers. Old evidence JSON and #272 checker/seals remain unchanged.
+- [x] Scope inventory to four contracts/two audit rows at the actual 1e75 tree; generate derived JSON/Markdown with the official inventory generator. Sandbox Git spawn limitations and parent canonical replay are recorded in the handoff.
+- [x] Add concise [results/schema/replay/limits](../compatibility/remote-user/local-outbox-activity-results.md) and current README/ROADMAP links; save metadata patch/new file bytes and detailed commands/counts in `/tmp/tiramiss-s1-324-20261114/metadata-handoff.md`.
+- [ ] Parent canonical all-root/shipping checks and subsequent review; no metadata-worker product rerun, CI or CR approval claimed.
+- [ ] Create #324 PR after parent checks (not authorized in this metadata task). #323/PR #587 merged and closed; next #325. Keep #176/#127/#195 OPEN and all posting/D7/PG notification/deferred guarantees unchanged.
+
+Earlier execution entries describe worker history (including EPERM and the rejected 104-case oracle), not the final parent results. The final repaired oracle retains 22 source manifest entries/39 method digests, uses identity-keyed fixture joins with 12 contracts, and the product consumer pins 115 cases plus one identity test. OPTIONS 101 returns 404 while GET/HEAD 414 remains; token length/DB visibility fixtures were corrected before the final product run.
+
+Root verification exposed a separate old N7 live-inventory comparison for responsibility:activitypub:09. Only that historical classification read was pinned through the existing f556 historical reader; #272 and all seals/JSON remain unchanged. The N7 checker passes 75/75 using actual Git bytes supplied by a scratch-only stdin adapter. The full-root attempt before this repair was 452 pass / 38 fail (33 dated-inventory cascade failures and five sandbox Git/Node subprocess EPERM); canonical parent replay remains required. Focused outbox/#323 checks pass 52/52.

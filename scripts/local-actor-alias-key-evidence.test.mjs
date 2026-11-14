@@ -7,6 +7,7 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
 import { readPreAliasKey, validateAliasKeySuccessor, successorFiles } from './local-actor-alias-key-evidence.mjs';
+import { readPreOutbox } from './local-outbox-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
 const read = path => readFileSync(new URL(path, root));
@@ -19,13 +20,13 @@ test('sealed six-consumer successor validates actual 43e measurements with and w
  validateAliasKeySuccessor(record(), read, () => null);
  for (const file of successorFiles) {
   assert.equal(sha(readPreAliasKey(file)), record().files[file].previousSha256);
-  assert.equal(sha(read(file)), record().files[file].sha256);
+  assert.equal(sha(readPreOutbox(file)), record().files[file].sha256);
  }
 });
 
 test('all six live source/test drifts reject before historical projection', () => {
  for (const file of successorFiles) {
-  assert.throws(() => readPreAliasKey(file, undefined, p => p === file ? Buffer.concat([read(p), Buffer.from(' ')]) : read(p)), /current source\/test drift/);
+  assert.throws(() => readPreAliasKey(file, undefined, p => p === file ? Buffer.concat([read(p), Buffer.from(' ')]) : read(p)), /current source\/test drift|measured current input drift/);
  }
 });
 
@@ -63,6 +64,6 @@ test('optional actual logs and receipt cannot disagree with saved measurements',
 
 test('successor reader has no ancestor helpers or subprocess fallback', () => {
  const source = read('scripts/local-actor-alias-key-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:')));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:') || m[1] === './local-outbox-evidence.mjs'));
  assert(!/execFile|spawn|import\(/.test(source));
 });

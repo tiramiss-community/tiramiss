@@ -1,0 +1,159 @@
+{
+  "runtimeRevision": "1e75c5b2b3be158fba8afb14a9c1c30809825127",
+  "baseRevision": "5981cce83b9243bf22102b2f0ba1b866b1ed03da",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "startedAt": "2026-11-14T11:59:03.067030+00:00",
+  "finishedAt": "2026-11-14T11:59:45.656836+00:00",
+  "node": "v26.4.0",
+  "pnpm": "12.9.1",
+  "inputs": {
+    "packages/backend-next/src/composition/http-app.ts": "14885b566afb3a3a19e9b246637afe9cacc3f94cc08ef121c33f2f13535bcc06",
+    "packages/backend-next/src/composition/outbox-http.ts": "2260111d4d1c63ddf498791e4c30f44b917ae8cd5b85426c6e5274b6ae09c21c",
+    "packages/backend-next/src/composition/published-activity.ts": "39705b3b3ed7f0e0683599eaf86430528647f35ec1f5ba195fabc3b78819edc1",
+    "packages/backend-next/src/http/activitypub-outbox-api.ts": "8220d40a4efdc24e3cd3376d443615fa09445105abb1388fba10beb5517e83a2",
+    "packages/backend-next/src/modules/federation/local-outbox.ts": "a0b2519854f836db4e5575dd1c94ec745d77316a95b2b009ac22d9d217740047",
+    "packages/backend-next/src/modules/federation/note-activity.ts": "0050792f40a61196b7f5f52bd0a10cc0547165576254b64cd18ccb48e0bb7b5e",
+    "packages/backend-next/src/modules/federation/public.ts": "7cf1ada3d5e2acbf69bee982fe6edb6f4c8bfd7437c767e5dcdbb79e6b17936d",
+    "packages/backend-next/src/platform/database/local-featured.ts": "a1e5ff22b843522d6955b6a4591897ced366ab832d1c3a860dd885d51278c2a8",
+    "packages/backend-next/src/platform/database/local-outbox.ts": "eb79b691f2a2986cc5e87146957f66ae06747dc0ca74e5a8db7a741ce5c20f73",
+    "packages/backend-next/test/helpers/local-outbox-json.d.ts": "d1caf5b58b0d82377afed2f4a71b524b740ed4cfedb6ca324671aa9855f1c02c",
+    "packages/backend-next/test/integration/local-outbox-http.test.ts": "e63299c7b560378f06f3d886430114c8795e9dc85e45c93fe49c99c13217a178",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "0887dd6bffec3e4cc5b84a3d0c6613b12257352879abc2b6d5968b2089ac3359",
+    "packages/backend-next/test/unit/composition/published-activity.test.ts": "1ca575a7fcbf41645c61e9170bbb48d083e4e8f1fa745f7a180879d559c2c489",
+    "packages/backend-next/test/unit/federation/local-outbox-source.test.ts": "51bb687d98d275c94b44cc6eb2a5d51abf5f3464f68bcfdd2203a2db5444499c",
+    "packages/backend-next/test/unit/federation/local-outbox.test.ts": "6f6d9b60b4fb6c4eff31f19a81c78667a1c3231c8929a53e0fd89466077b0599",
+    "packages/backend-next/test/unit/federation/note-activity.test.ts": "7a2ac907af922f9816f65a08865fad02efc0fd671e1cc080546a9f3bffa57616",
+    "packages/backend-next/test/unit/http/activitypub-outbox.test.ts": "482016b8fe80e70696e16029e888a1ddd929b2966bc80c5de68a6e405fa2f550",
+    "packages/backend-next/test/unit/platform/outbox-cache.test.ts": "03a47c3eae6602f41e1ecc058f481918ff3939f7262dcbddd4353c1ec677c4ed",
+    "docs/superpowers/compatibility/remote-user/local-outbox-activity-corpus.json": "f1fe7f100cf7e9b06c6be22c889f959b0f652fa375fa06da22cfb7d94e2aa61c",
+    "docs/superpowers/compatibility/remote-user/local-outbox-activity-observations.json": "668391fc072277a0f0b2a34b2aa873126c820f56ee684dd9b3a5a84b131e72eb",
+    "docs/superpowers/compatibility/remote-user/local-outbox-activity-source-probe.mjs": "72ed9445b9311ce3830b82c18b594471eaaf02bba3e0e218140de919bb005370",
+    "scripts/local-outbox-activity-contract.test.mjs": "c40d05efda661cb2e38055833446d2e0f1421fa7eaf065ec47917e2c00423f5c"
+  },
+  "inputsAfter": {
+    "packages/backend-next/src/composition/http-app.ts": "14885b566afb3a3a19e9b246637afe9cacc3f94cc08ef121c33f2f13535bcc06",
+    "packages/backend-next/src/composition/outbox-http.ts": "2260111d4d1c63ddf498791e4c30f44b917ae8cd5b85426c6e5274b6ae09c21c",
+    "packages/backend-next/src/composition/published-activity.ts": "39705b3b3ed7f0e0683599eaf86430528647f35ec1f5ba195fabc3b78819edc1",
+    "packages/backend-next/src/http/activitypub-outbox-api.ts": "8220d40a4efdc24e3cd3376d443615fa09445105abb1388fba10beb5517e83a2",
+    "packages/backend-next/src/modules/federation/local-outbox.ts": "a0b2519854f836db4e5575dd1c94ec745d77316a95b2b009ac22d9d217740047",
+    "packages/backend-next/src/modules/federation/note-activity.ts": "0050792f40a61196b7f5f52bd0a10cc0547165576254b64cd18ccb48e0bb7b5e",
+    "packages/backend-next/src/modules/federation/public.ts": "7cf1ada3d5e2acbf69bee982fe6edb6f4c8bfd7437c767e5dcdbb79e6b17936d",
+    "packages/backend-next/src/platform/database/local-featured.ts": "a1e5ff22b843522d6955b6a4591897ced366ab832d1c3a860dd885d51278c2a8",
+    "packages/backend-next/src/platform/database/local-outbox.ts": "eb79b691f2a2986cc5e87146957f66ae06747dc0ca74e5a8db7a741ce5c20f73",
+    "packages/backend-next/test/helpers/local-outbox-json.d.ts": "d1caf5b58b0d82377afed2f4a71b524b740ed4cfedb6ca324671aa9855f1c02c",
+    "packages/backend-next/test/integration/local-outbox-http.test.ts": "e63299c7b560378f06f3d886430114c8795e9dc85e45c93fe49c99c13217a178",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "0887dd6bffec3e4cc5b84a3d0c6613b12257352879abc2b6d5968b2089ac3359",
+    "packages/backend-next/test/unit/composition/published-activity.test.ts": "1ca575a7fcbf41645c61e9170bbb48d083e4e8f1fa745f7a180879d559c2c489",
+    "packages/backend-next/test/unit/federation/local-outbox-source.test.ts": "51bb687d98d275c94b44cc6eb2a5d51abf5f3464f68bcfdd2203a2db5444499c",
+    "packages/backend-next/test/unit/federation/local-outbox.test.ts": "6f6d9b60b4fb6c4eff31f19a81c78667a1c3231c8929a53e0fd89466077b0599",
+    "packages/backend-next/test/unit/federation/note-activity.test.ts": "7a2ac907af922f9816f65a08865fad02efc0fd671e1cc080546a9f3bffa57616",
+    "packages/backend-next/test/unit/http/activitypub-outbox.test.ts": "482016b8fe80e70696e16029e888a1ddd929b2966bc80c5de68a6e405fa2f550",
+    "packages/backend-next/test/unit/platform/outbox-cache.test.ts": "03a47c3eae6602f41e1ecc058f481918ff3939f7262dcbddd4353c1ec677c4ed",
+    "docs/superpowers/compatibility/remote-user/local-outbox-activity-corpus.json": "f1fe7f100cf7e9b06c6be22c889f959b0f652fa375fa06da22cfb7d94e2aa61c",
+    "docs/superpowers/compatibility/remote-user/local-outbox-activity-observations.json": "668391fc072277a0f0b2a34b2aa873126c820f56ee684dd9b3a5a84b131e72eb",
+    "docs/superpowers/compatibility/remote-user/local-outbox-activity-source-probe.mjs": "72ed9445b9311ce3830b82c18b594471eaaf02bba3e0e218140de919bb005370",
+    "scripts/local-outbox-activity-contract.test.mjs": "c40d05efda661cb2e38055833446d2e0f1421fa7eaf065ec47917e2c00423f5c"
+  },
+  "noInputDrift": true,
+  "runs": [
+    {
+      "name": "build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "build"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-11-14T11:59:03.067084+00:00",
+      "finishedAt": "2026-11-14T11:59:03.849955+00:00",
+      "log": "/tmp/tiramiss-s1-324-20261114/build-measured.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-11-14T11:59:03.850230+00:00",
+      "finishedAt": "2026-11-14T11:59:05.086787+00:00",
+      "log": "/tmp/tiramiss-s1-324-20261114/typecheck-measured.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "name": "unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/federation",
+        "test/unit/composition",
+        "test/unit/http/activitypub-outbox.test.ts",
+        "test/unit/platform/outbox-cache.test.ts"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-11-14T11:59:05.088273+00:00",
+      "finishedAt": "2026-11-14T11:59:20.373570+00:00",
+      "log": "/tmp/tiramiss-s1-324-20261114/unit-measured.log",
+      "logSha256": "9a58e615c3b138601f2bc9ce9afec3574c6e09e1d890da7217d4849809331fed",
+      "passed": 2113,
+      "files": 42
+    },
+    {
+      "name": "integration",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/local-outbox-http.test.ts",
+        "test/integration/note-activity.test.ts",
+        "test/integration/local-featured-http.test.ts",
+        "test/integration/local-follow-collections-http.test.ts",
+        "test/integration/note-timelines.test.ts",
+        "test/integration/actor-alias-key.test.ts",
+        "test/integration/activitypub-actor.test.ts"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-11-14T11:59:05.089124+00:00",
+      "finishedAt": "2026-11-14T11:59:45.655616+00:00",
+      "log": "/tmp/tiramiss-s1-324-20261114/integration-measured.log",
+      "logSha256": "6cb1b8a831be3ad7704bdf2e58ce3f0404316b55a675b086bd9ea85c01377c5a",
+      "passed": 707,
+      "files": 7
+    },
+    {
+      "name": "source",
+      "command": [
+        "node",
+        "docs/superpowers/compatibility/remote-user/local-outbox-activity-source-probe.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-11-14T11:59:05.089321+00:00",
+      "finishedAt": "2026-11-14T11:59:05.979011+00:00",
+      "log": "/tmp/tiramiss-s1-324-20261114/source-measured.log",
+      "logSha256": "0becb996f97e5b260de0812dd8b5c6eb4bc6a44a0e8bc270f7dcc2fe61362910",
+      "sourceCases": 115
+    },
+    {
+      "name": "source-contract",
+      "command": [
+        "node",
+        "--test",
+        "scripts/local-outbox-activity-contract.test.mjs"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-11-14T11:59:05.089886+00:00",
+      "finishedAt": "2026-11-14T11:59:05.219096+00:00",
+      "log": "/tmp/tiramiss-s1-324-20261114/source-contract-measured.log",
+      "logSha256": "11ddeb30b2b26d9c78386313c6b6fffb88cb1ef87a9e6ac5f8d208b3287c14aa",
+      "nodeTests": 12
+    }
+  ]
+}

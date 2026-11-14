@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "43e72c7b6f1394fe6685eeca2ff368a6bd641d6f",
+  "implementationCommit": "1e75c5b2b3be158fba8afb14a9c1c30809825127",
   "domains": [
     {
       "id": "api-common",
@@ -2710,6 +2710,81 @@
       ],
       "implementationCommit": "43e72c7b6f1394fe6685eeca2ff368a6bd641d6f",
       "note": "#323: runtime 43e72c7b6f1394fe6685eeca2ff368a6bd641d6f。source-method/Fastify inject doubles 162 route+7 acct+3 key=172、近傍単体1927、実HTTP/PG actor+alias/key216、構造5を実測。build/typecheck PASS。本家full HTTP/PG・HTML・cache lifecycleは比較外。既存鍵cache/legacy upgradeとMeta初期化は維持。#176/#127/#195 OPEN、notes/create:partial・postingComplete:false。"
+    },
+    "http:packages/backend/src/server/ActivityPubServerService.ts:690": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/composition/outbox-http.ts",
+        "packages/backend-next/src/http/activitypub-outbox-api.ts",
+        "packages/backend-next/src/composition/published-activity.ts",
+        "packages/backend-next/src/modules/federation/note-activity.ts",
+        "packages/backend-next/src/platform/database/local-outbox.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/local-outbox-http.test.ts",
+        "packages/backend-next/test/unit/federation/local-outbox-source.test.ts",
+        "packages/backend-next/test/unit/http/activitypub-outbox.test.ts",
+        "packages/backend-next/test/unit/composition/published-activity.test.ts",
+        "docs/superpowers/compatibility/remote-user/local-outbox-activity-observations.json",
+        "scripts/local-outbox-activity-contract.test.mjs"
+      ],
+      "note": "#324: runtime 1e75c5b2; parent units 2113/42 files, real HTTP/PG/Redis 707/7 files (outbox 23), literal source 115 and source-contract 12. Finite comparison; no full upstream server/PG/Redis claim.",
+      "implementationCommit": "1e75c5b2b3be158fba8afb14a9c1c30809825127"
+    },
+    "http:packages/backend/src/server/ActivityPubServerService.ts:716": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/composition/outbox-http.ts",
+        "packages/backend-next/src/http/activitypub-outbox-api.ts",
+        "packages/backend-next/src/modules/federation/local-outbox.ts",
+        "packages/backend-next/src/platform/database/local-outbox.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/local-outbox-http.test.ts",
+        "packages/backend-next/test/unit/federation/local-outbox-source.test.ts",
+        "packages/backend-next/test/unit/federation/local-outbox.test.ts",
+        "packages/backend-next/test/unit/platform/outbox-cache.test.ts",
+        "docs/superpowers/compatibility/remote-user/local-outbox-activity-observations.json",
+        "scripts/local-outbox-activity-contract.test.mjs"
+      ],
+      "note": "#324: runtime 1e75c5b2; parent units 2113/42 files, real HTTP/PG/Redis 707/7 files (outbox 23), literal source 115 and source-contract 12. Finite comparison; no full upstream server/PG/Redis claim.",
+      "implementationCommit": "1e75c5b2b3be158fba8afb14a9c1c30809825127"
+    },
+    "responsibility:activitypub:08": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/composition/outbox-http.ts",
+        "packages/backend-next/src/http/activitypub-outbox-api.ts",
+        "packages/backend-next/src/modules/federation/local-outbox.ts",
+        "packages/backend-next/src/platform/database/local-outbox.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/local-outbox-http.test.ts",
+        "packages/backend-next/test/unit/federation/local-outbox-source.test.ts",
+        "packages/backend-next/test/unit/federation/local-outbox.test.ts",
+        "packages/backend-next/test/unit/platform/outbox-cache.test.ts",
+        "docs/superpowers/compatibility/remote-user/local-outbox-activity-observations.json",
+        "scripts/local-outbox-activity-contract.test.mjs"
+      ],
+      "note": "#324: runtime 1e75c5b2; parent units 2113/42 files, real HTTP/PG/Redis 707/7 files (outbox 23), literal source 115 and source-contract 12. Finite comparison; no full upstream server/PG/Redis claim.",
+      "implementationCommit": "1e75c5b2b3be158fba8afb14a9c1c30809825127"
+    },
+    "responsibility:activitypub:09": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/composition/published-activity.ts",
+        "packages/backend-next/src/modules/federation/note-activity.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/integration/local-outbox-http.test.ts",
+        "packages/backend-next/test/unit/federation/local-outbox-source.test.ts",
+        "packages/backend-next/test/unit/composition/published-activity.test.ts",
+        "packages/backend-next/test/unit/federation/note-activity.test.ts",
+        "docs/superpowers/compatibility/remote-user/local-outbox-activity-observations.json",
+        "scripts/local-outbox-activity-contract.test.mjs"
+      ],
+      "note": "#324: runtime 1e75c5b2; parent units 2113/42 files, real HTTP/PG/Redis 707/7 files (outbox 23), literal source 115 and source-contract 12. Finite comparison; no full upstream server/PG/Redis claim.",
+      "implementationCommit": "1e75c5b2b3be158fba8afb14a9c1c30809825127"
     }
   }
 }

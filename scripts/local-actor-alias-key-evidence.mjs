@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { readPreOutbox } from './local-outbox-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
 const evidencePath = 'docs/superpowers/compatibility/remote-user/local-actor-alias-key-current-evidence.json';
@@ -33,7 +34,8 @@ function record(readFile) {
  return JSON.parse(bytes);
 }
 
-export function validateAliasKeySuccessor(value = record(read), readFile = read, optional = optionalRead) {
+export function validateAliasKeySuccessor(value = record(read), rawRead = read, optional = optionalRead) {
+ const readFile = path => readPreOutbox(path, undefined, rawRead);
  assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'alias-key successor record seal');
  assert.deepEqual(Object.keys(value.files), successorFiles, 'alias-key finite subset');
  assert.equal(value.implementationCommit, '43e72c7b6f1394fe6685eeca2ff368a6bd641d6f');
@@ -81,7 +83,8 @@ function predecessorBytes(value, path, readFile = read) {
 // Dated proofs retain their pre-323 projection. Only these six consumers may
 // cross the boundary, and each read first verifies the measured live bytes.
 // All other paths (including corpora and receipts) remain ordinary live reads.
-export function readPreAliasKey(path, encoding, readFile = read) {
+export function readPreAliasKey(path, encoding, rawRead = read) {
+ const readFile = path => readPreOutbox(path, undefined, rawRead);
  if (!successorFiles.includes(path)) {
   const bytes = readFile(path);
   return encoding ? bytes.toString(encoding) : bytes;
