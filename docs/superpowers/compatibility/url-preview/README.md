@@ -61,3 +61,9 @@
 Meta は既存の DB reader から取得するため、本家の injected/cache Meta と更新の時点・失敗の扱いに差がある。これは既存 #217 の責任に残し、stable Meta と保存後の新実装更新を区別する。一般 web header/CORS/error fallback、HTML/SPA/SSR/feed、mediaProxy が返す画像バイト、本家 full server/DB での全経路比較は範囲外。#196/#216 と親の未完了項目、`notes/create:partial` / `postingComplete:false` は維持する。
 
 CHANGELOG 候補: `Feat: 新バックエンドで URL プレビューと設定・キャッシュ・画像 URL 変換を利用可能にする`
+
+## CI 後の試験 mock 補正
+
+PR #593 の初回 checks job `132616298876` は、既存 `remote-emoji-resources.test.ts` の外向き HTTP mock が `close` だけを返し、新しく利用する `defaultAgents` を持たないため単体1件が失敗した（他4288件成功）。製品を変えず、試験 mock に既定 agent 窓口と想定外の取得を拒否する getJson を追加した。修正 `f84d9df32f26caaf63d9ace0846dea798675495e` の後、focused1件・全単体4289件/113files・shipping が成功し、その1入力の実行前後 hash も一致した。
+
+この補正は [`fixture-correction-evidence.json`](fixture-correction-evidence.json) と [`fixture-correction-predecessor.json`](fixture-correction-predecessor.json)、`scripts/url-preview-fixture-evidence.mjs` で、既存27入力/8経路の製品記録とは独立した1ファイルの末端として扱う。旧製品 receipt バイトは更新しない。取得時の working tree 入力を明記し、過去の全単体結果・初回CI失敗を新しい head のCI成功へ読み替えない。新しい head のCI・Webレビューは別途確認する。

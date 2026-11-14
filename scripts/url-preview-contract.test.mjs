@@ -57,9 +57,9 @@ test('actual logs and receipt must agree when present; missing host artifacts do
  assert.throws(() => validateUrlPreviewSuccessor(record(), read, p => p.endsWith('product-run-receipt.json') ? Buffer.from('{}') : null), /actual receipt drift/);
  assert.doesNotThrow(() => validateUrlPreviewSuccessor(record(), read, () => null));
 });
-test('preview leaf reads only builtins and passes outside paths through without subprocesses or ancestor readers', () => {
+test('preview reader uses only builtins and its disjoint fixture successor, without subprocesses or ancestor readers', () => {
  const source = read('scripts/url-preview-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:')));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || match[1] === './url-preview-fixture-evidence.mjs'));
  assert(!/execFile|spawn|import\(/.test(source));
  assert.equal(readPreUrlPreview('unrelated.ts', 'utf8', () => Buffer.from('live'), () => null), 'live');
 });
