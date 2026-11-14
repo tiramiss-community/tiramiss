@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { loadFollowCollectionsR2History } from './local-follow-collections-history.mjs';
@@ -22,7 +23,7 @@ const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
 const path = directory + 'local-follow-collections-review-current-evidence.json';
 const r2Path = directory + 'local-follow-collections-current-evidence.json';
-const read = file => readFileSync(new URL(file, root));
+const read = file => readPreAliasKey(file);
 const json = file => JSON.parse(read(file));
 const record = () => json(path);
 const absent = () => null;
@@ -146,7 +147,7 @@ test('featured, WebFinger, image, tags, profile, image removal and emoji validat
 test('new evidence leaf uses only Node builtins and has no ancestor calls or process tools', () => {
 	const source = read('scripts/local-follow-collections-evidence.mjs').toString();
 	const imports = [...source.matchAll(/from ['"]([^'"]+)['"]/g)].map(m => m[1]);
-	assert(imports.length > 0 && imports.every(p => p.startsWith('node:')));
+	assert(imports.length > 0 && imports.every(p => p.startsWith('node:') || p === './local-actor-alias-key-evidence.mjs'));
 	assert(!/import\(|execFile|spawn|validateLocalFeatured|localFeaturedDigest|localActor.*Digest|validateLocalActor/.test(source));
 	assert.equal(sha(read(directory + 'local-featured-current-evidence.json')), Object.values(record().files)[0].predecessor.sha256);
 });

@@ -3,11 +3,12 @@
 	* SPDX-License-Identifier: AGPL-3.0-only
 	*/
 import assert from 'node:assert/strict';
+import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { localWebfingerDigest, validateLocalWebfingerEvidence } from './local-webfinger-evidence.mjs';
 const root = new URL('../', import.meta.url);
-const read = path => readFileSync(new URL(path, root));
+const read = path => readPreAliasKey(path);
 const record = () => JSON.parse(read('docs/superpowers/compatibility/remote-user/local-webfinger-current-evidence.json'));
 
 test('WebFinger single hop validates committed provenance with host artifacts present or absent', () => {

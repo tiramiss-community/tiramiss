@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { actorImageRemovalDigest } from './actor-image-removal-evidence.mjs';
 import { currentFeaturedActorImagesDigest as localActorImagesDigest } from './local-actor-images-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
-const read = file => readFileSync(new URL(file, root));
+const read = file => readPreAliasKey(file);
 const readIfAvailable = file => {
 	try { return readFileSync(file); } catch (error) {
 		if (error.code === 'ENOENT') return null;

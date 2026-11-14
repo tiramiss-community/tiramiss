@@ -6,6 +6,7 @@ import * as mfm from 'mfm-js';
 import { publicFileUrl } from '../drive/public.js';
 import type { PublicFileFacts } from '../drive/public.js';
 import { toHtml } from '../mfm/public.js';
+import { renderLocalKey } from './local-key.js';
 import { apContext } from './ap-context.js';
 import type { LocalActorTag } from './ap-tags.js';
 export interface LocalActorFacts {
@@ -96,6 +97,6 @@ export function renderLocalActor(facts: LocalActorFacts, profile: LocalActorProf
 		attachment: attachment.length ? attachment : undefined,
 		...(profile.birthday ? { 'vcard:bday': profile.birthday } : {}),
 		...(profile.location ? { 'vcard:Address': profile.location } : {}),
-		publicKey: { id: `${id}#main-key`, type: 'Key', owner: id, publicKeyPem },
+		publicKey: renderLocalKey(facts.id, selfUrl, publicKeyPem, '#main-key'),
 	};
 }

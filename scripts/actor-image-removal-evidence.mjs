@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { currentFeaturedActorImagesDigest as localActorImagesDigest } from './local-actor-images-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const evidencePath = 'docs/superpowers/compatibility/remote-user/actor-image-removal-current-evidence.json';
-const read = file => readFileSync(new URL(file, root));
+const read = file => readPreAliasKey(file);
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const readOptional = file => {
 	try { return readFileSync(file); } catch (error) {

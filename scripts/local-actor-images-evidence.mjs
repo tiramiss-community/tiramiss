@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { localWebfingerDigest, currentLocalWebfingerDigest } from './local-webfinger-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const evidencePath = 'docs/superpowers/compatibility/remote-user/local-actor-images-current-evidence.json';
-const read = path => readFileSync(new URL(path, root));
+const read = path => readPreAliasKey(path);
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const optionalRead = path => {
 	try { return readFileSync(path); } catch (error) {

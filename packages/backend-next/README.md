@@ -350,3 +350,5 @@ Supervisor自然retry試験は通常の60–72秒backoffを待つ（test timeout
 通常HTTP compositionの `GET` / `HEAD /.well-known/webfinger` がローカルアカウント・actor/profile URLからJRD/XRDを返し、self linkを既存actor GETへ接続する。OPTIONSは204。固定本家のparser/XML/Accept/CORS/cacheの挙動と、専用PGの実User/Profile/Keyからの発見→actor取得・DB障害を検証する。[実測・証跡・比較限界](../../docs/superpowers/compatibility/remote-user/local-webfinger-results.md)。
 
 専用検証環境で `pnpm --filter backend-next test:integration test/integration/webfinger.test.ts test/integration/http-app.test.ts test/integration/activitypub-actor.test.ts` を実行する。並行時は既存の `BACKEND_NEXT_TEST_DB_PORT` / `BACKEND_NEXT_TEST_REDIS_PORT` / `BACKEND_NEXT_TEST_MEILI_PORT` を設定する。Metaは既存DB readerを使い、通知/cache鮮度の同等性は#217へ残す。host-meta・NodeInfo・authorize-follow本体・collections・inbox、#176/#127/#195全体の完成は含めない。
+
+#323（actor acct別名・公開鍵）は実装と証跡が完了しmerge待ち。次は#324。[有限の比較・実測](../../docs/superpowers/compatibility/remote-user/local-actor-alias-key-results.md)を参照。
