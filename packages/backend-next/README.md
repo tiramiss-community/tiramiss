@@ -343,7 +343,7 @@ node scripts/backend-contract-inventory.mjs --check
 node scripts/check-shipping.mjs
 ```
 
-Supervisor自然retry試験は通常の60–72秒backoffを待つ（test timeout180秒）。新WS接続へのlive通知でありreplayを証明しない。通常CIは記録済みfixtureを利用し、固定本家checkoutでの任意確認時だけ`BACKEND_NEXT_UPSTREAM_PATH=/path/to/pinned-upstream`を指定する。N7旧証跡の501/stale制限は履歴として固定し、#195の現行core取得/refresh実測で証明した部分だけをsupersedeする。rich actor効果・C2/C10比較ギャップ・投稿全体・本番切替は未完了。#242はマージ済みで#124はCLOSED、N7の監査時OPENは過去の事実として保持する。
+Supervisor自然retry試験は通常の60–72秒backoffを待つ（test timeout180秒）。新WS接続へのlive通知でありreplayを証明しない。通常CIは記録済みfixtureを利用し、固定本家checkoutでの任意確認時だけ`BACKEND_NEXT_UPSTREAM_PATH=/path/to/pinned-upstream`を指定する。N7旧証跡の501/stale制限は履歴として固定し、#195の現行core取得/refresh実測で証明した部分だけをsupersedeする。C2 whole rate DB-delta・C10 moderator応答/監査/削除streamの4比較は既存consumerで補完済み（[現在の限定照合 #272](../../docs/superpowers/compatibility/note/n7/posting-proof-272.md)）。rich actor効果・投稿全体・本番切替は未完了。#242はマージ済みで#124はCLOSED、N7の監査時OPENは過去の事実として保持する。
 
 ## Local WebFinger discovery（#195 の限定範囲）
 

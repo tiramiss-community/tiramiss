@@ -672,3 +672,10 @@ GlobalEventのRedis pub/sub形式、internalイベントの発行と購読、Cac
 - 検証根拠: 未接続。担当 Issue で固定本家との比較 fixture と受け入れを追加。
 - 監査行: 50 行（うち監査時に計画あり以外 38 行）。
 - 既知差異: この棚卸しで新たな差異は採用していない。実装時の差異は個別に記録する。
+
+
+## #272 posting proof reconciliation (2026-11-14)
+
+The [finite current index](../note/n7/posting-proof-272.json) and [readable scope / reproduction](../note/n7/posting-proof-272.md) reconcile exactly the 62 contract and 59 audit IDs assigned to `176-posting-proof`. Every assigned ID has explicit posting subcontracts, assertion/fixture/provenance references or an unproved disposition with existing residual owners. Inventory kind/status and audit A/B classifications are preserved; newer scoped evidence does not promote `not_implemented` rows or certify entire shared services. `contracts.json`, `audit-items.json` and historical N7 coverage are unchanged.
+
+This child evidence result does not complete posting or actor/effects work: #176/#127 remain OPEN, `notes/create:partial` / `postingComplete:false`; broader effects #277 and actor comparison #322 retain their existing dependencies. D7, approved PG notification storage and deferred strong ordering remain unchanged.
