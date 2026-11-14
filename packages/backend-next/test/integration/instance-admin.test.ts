@@ -243,7 +243,8 @@ test('runtime shutdown waits for an accepted refresh before releasing Redis and 
  closed = true; 
 });
 	try {
-		await Promise.resolve();
+		// Give the other cleanup promises time to finish while metadata stays blocked.
+		await new Promise(resolve => setTimeout(resolve, 50));
 		expect(closed).toBe(false);
 		expect(resources.dataSource.isInitialized).toBe(true);
 		expect(resources.redis.status).toBe('ready');
@@ -252,4 +253,5 @@ test('runtime shutdown waits for an accepted refresh before releasing Redis and 
 }
 	expect(resources.dataSource.isInitialized).toBe(false);
 	expect(resources.redis.status).toBe('end');
+	expect(logs.some(line => line.includes('instance-metadata.failed'))).toBe(false);
 });
