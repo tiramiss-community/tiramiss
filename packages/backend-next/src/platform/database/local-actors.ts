@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { IsNull } from 'typeorm';
+import type { Acct } from '../../modules/federation/public.js';
 import { MiDriveFile, MiUser, MiUserProfile } from 'backend-upstream/entities';
 import type { ActorFileFacts, LocalActorProfileFacts } from '../../modules/federation/public.js';
 import type { EntityManager } from 'typeorm';
@@ -13,10 +15,7 @@ export function createActorReader(manager: EntityManager, options: {
 		if (!row) {
 			return null;
 		}
-		const { avatarId, bannerId, username, name, isBot, isLocked, isExplorable, emojis, tags, host, uri,
-			isCat, requireSigninToViewContents, makeNotesFollowersOnlyBefore, makeNotesHiddenBefore, movedToUri, alsoKnownAs } = row;
-		return { id, avatarId, bannerId, username, name, isBot, isLocked, isExplorable, emojis, tags, host, uri,
-			isCat, requireSigninToViewContents, makeNotesFollowersOnlyBefore, makeNotesHiddenBefore, movedToUri, alsoKnownAs };
+		return actorFacts(row);
 	};
 }
 
@@ -39,5 +38,25 @@ export function createActorFileReader(manager: EntityManager): (id: string) => P
 		}
 		const { uri, userHost, isLink, webpublicAccessKey, webpublicUrl, url, isSensitive, comment } = file;
 		return { uri, userHost, isLink, webpublicAccessKey, webpublicUrl, url, isSensitive, comment };
+	};
+}
+
+function actorFacts(row: MiUser) {
+	const { avatarId, bannerId, username, name, isBot, isLocked, isExplorable, emojis, tags, host, uri,
+		isCat, requireSigninToViewContents, makeNotesFollowersOnlyBefore, makeNotesHiddenBefore, movedToUri, alsoKnownAs } = row;
+	return { id: row.id, avatarId, bannerId, username, name, isBot, isLocked, isExplorable, emojis, tags, host, uri,
+		isCat, requireSigninToViewContents, makeNotesFollowersOnlyBefore, makeNotesHiddenBefore, movedToUri, alsoKnownAs };
+}
+
+export function createAcctActorReader(manager: EntityManager) {
+	return async (acct: Acct) => {
+		const row = await manager.getRepository(MiUser).findOneBy({ usernameLower: acct.username, host: acct.host ?? IsNull(), isSuspended: false });
+		return row ? actorFacts(row) : null;
+	};
+}
+export function createLocalKeyOwnerReader(manager: EntityManager) {
+	return async (id: string) => {
+		const row = await manager.getRepository(MiUser).findOne({ where: { id, host: IsNull() }, select: { id: true } });
+		return row ? { id: row.id } : null;
 	};
 }

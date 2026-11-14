@@ -1,0 +1,1674 @@
+{
+  "source": "8e07cf085adf7009583d234a208e30436f020e26",
+  "manifest": [
+    {
+      "path": "packages/backend/src/misc/acct.ts",
+      "blob": "3d729b115109c0e0cb00e214411a5cc5e4f5d4dc",
+      "sha256": "c1ceb56ab1f159d2a8261ac57c0c5f8b20330505a16dc08e572f30a15140e49d"
+    },
+    {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "blob": "e3ceebccaeb0c9058a919318ef7c4216f8e64649",
+      "sha256": "99f8779e002fc2c0aa2cd203613d31fcc87e7eaeb797ef65aae6c5175b62e331"
+    },
+    {
+      "path": "packages/backend/src/core/activitypub/misc/contexts.ts",
+      "blob": "6611e4b7f9321f4bca2959b599573cddaddafdb2",
+      "sha256": "ad16ce93794fec1c0229745f602188ded4edf712e69d5c12e5ee3e1f68b00bd3"
+    },
+    {
+      "path": "packages/backend/src/core/activitypub/ApRendererService.ts",
+      "blob": "601edcebe931a2c98e1bf967debdbe8c91e508ad",
+      "sha256": "8e4bcdcb5d062ffb707b0e038e5e1f62f0afca2ac4ddaa44c10e1b21bcbf1098"
+    },
+    {
+      "path": "packages/backend/src/server/ActivityPubServerService.ts",
+      "blob": "51b46a10c05f44a598a33938ef26ce12bbad2c59",
+      "sha256": "de7a1dfc13085039bd7f305f034c8f72bd9c2a6cdaa671941b75b6b4a76f3af5"
+    },
+    {
+      "path": "packages/backend/src/server/ServerService.ts",
+      "blob": "e17bccb0940353fa1ebde2f1f4d2ae666916a947",
+      "sha256": "f2e254ff190067175f9015553b88ebe1faaabb55e63d26dfaf060d4669685c17"
+    }
+  ],
+  "dependencies": {
+    "fastify": "5.12.5",
+    "@fastify/accepts": "5.0.6",
+    "accepts": "1.3.8",
+    "typescript": "6.0.2",
+    "typeorm": "1.1.1"
+  },
+  "limits": "Literal Git methods + real Fastify inject; repository/key acquisition/person dependencies are doubles. Person compared by key/id projection. No full upstream server/PG/cache equivalence. Framework diagnostic message text excluded; empty vs exception bodies retained.",
+  "acct": [
+    {
+      "input": "",
+      "parsed": {
+        "username": "",
+        "host": null
+      },
+      "formatted": ""
+    },
+    {
+      "input": "@",
+      "parsed": {
+        "username": "",
+        "host": null
+      },
+      "formatted": ""
+    },
+    {
+      "input": "@@alice",
+      "parsed": {
+        "username": "",
+        "host": "alice"
+      },
+      "formatted": "@alice"
+    },
+    {
+      "input": "Alice@",
+      "parsed": {
+        "username": "Alice",
+        "host": ""
+      },
+      "formatted": "Alice@"
+    },
+    {
+      "input": "Alice@REMOTE.test@ignored",
+      "parsed": {
+        "username": "Alice",
+        "host": "REMOTE.test"
+      },
+      "formatted": "Alice@REMOTE.test"
+    },
+    {
+      "input": " Alice ",
+      "parsed": {
+        "username": " Alice ",
+        "host": null
+      },
+      "formatted": " Alice "
+    },
+    {
+      "input": "a%40b",
+      "parsed": {
+        "username": "a%40b",
+        "host": null
+      },
+      "formatted": "a%40b"
+    }
+  ],
+  "key": [
+    {
+      "postfix": null,
+      "output": {
+        "id": "https://local.test/users/local/publickey",
+        "type": "Key",
+        "owner": "https://local.test/users/local",
+        "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\nPQIDAQAB\n-----END PUBLIC KEY-----\n"
+      }
+    },
+    {
+      "postfix": "",
+      "output": {
+        "id": "https://local.test/users/local",
+        "type": "Key",
+        "owner": "https://local.test/users/local",
+        "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\nPQIDAQAB\n-----END PUBLIC KEY-----\n"
+      }
+    },
+    {
+      "postfix": "#main-key",
+      "output": {
+        "id": "https://local.test/users/local#main-key",
+        "type": "Key",
+        "owner": "https://local.test/users/local",
+        "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\nPQIDAQAB\n-----END PUBLIC KEY-----\n"
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "alias",
+      "status": 200,
+      "headers": {
+        "content-type": "application/activity+json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"type\":\"Person\",\"id\":\"https://local.test/users/local\",\"publicKey\":{\"id\":\"https://local.test/users/local#main-key\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": null,
+            "isSuspended": false
+          }
+        ],
+        [
+          "person",
+          "local"
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "double-at",
+      "status": 200,
+      "headers": {
+        "content-type": "application/activity+json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"type\":\"Person\",\"id\":\"https://local.test/users/local\",\"publicKey\":{\"id\":\"https://local.test/users/local#main-key\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": null,
+            "isSuspended": false
+          }
+        ],
+        [
+          "person",
+          "local"
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "self",
+      "status": 200,
+      "headers": {
+        "content-type": "application/activity+json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"type\":\"Person\",\"id\":\"https://local.test/users/local\",\"publicKey\":{\"id\":\"https://local.test/users/local#main-key\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": null,
+            "isSuspended": false
+          }
+        ],
+        [
+          "person",
+          "local"
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "remote",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": "Accept",
+        "location": "https://remote.test/actor",
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": "remote.test",
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "remote-case",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": "Accept",
+        "location": "https://remote.test/actor",
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": "REMOTE.test",
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "extra-at",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": "Accept",
+        "location": "https://remote.test/actor",
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": "remote.test",
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "empty-host",
+      "status": 200,
+      "headers": {
+        "content-type": "application/activity+json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"type\":\"Person\",\"id\":\"https://local.test/users/local\",\"publicKey\":{\"id\":\"https://local.test/users/local#main-key\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": "",
+            "isSuspended": false
+          }
+        ],
+        [
+          "person",
+          "local"
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "encoded",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": "Accept",
+        "location": "https://remote.test/actor",
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": "remote.test",
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "double-encoded",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": "Accept",
+        "location": "https://remote.test/actor",
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice%40remote.test",
+            "host": null,
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "slash",
+      "status": 200,
+      "headers": {
+        "content-type": "application/activity+json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"type\":\"Person\",\"id\":\"https://local.test/users/local\",\"publicKey\":{\"id\":\"https://local.test/users/local#main-key\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice/foo",
+            "host": null,
+            "isSuspended": false
+          }
+        ],
+        [
+          "person",
+          "local"
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "invalid",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-headers": null,
+        "access-control-expose-headers": null
+      },
+      "body": "{\"statusCode\":400,\"error\":\"Bad Request\"}",
+      "calls": []
+    },
+    {
+      "id": "utf8",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-headers": null,
+        "access-control-expose-headers": null
+      },
+      "body": "{\"statusCode\":400,\"error\":\"Bad Request\"}",
+      "calls": []
+    },
+    {
+      "id": "prefix",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-headers": null,
+        "access-control-expose-headers": null
+      },
+      "body": "{\"statusCode\":404,\"error\":\"Not Found\"}",
+      "calls": []
+    },
+    {
+      "id": "alias-missing",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": null,
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "alias-suspended",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": null,
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "alias-null-uri",
+      "status": 500,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": null,
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "alias-empty-uri",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": "Accept",
+        "location": "",
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": null,
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "alias-self-row",
+      "status": 500,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": null,
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "alias-key-missing",
+      "status": 500,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"statusCode\":500,\"error\":\"Internal Server Error\"}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": null,
+            "isSuspended": false
+          }
+        ],
+        [
+          "person",
+          "local"
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "alias-key-invalid",
+      "status": 500,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"statusCode\":500,\"error\":\"Internal Server Error\"}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": null,
+            "isSuspended": false
+          }
+        ],
+        [
+          "person",
+          "local"
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "alias-accept-20",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-headers": null,
+        "access-control-expose-headers": null
+      },
+      "body": "{\"statusCode\":404,\"error\":\"Not Found\"}",
+      "calls": []
+    },
+    {
+      "id": "alias-accept-21",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-headers": null,
+        "access-control-expose-headers": null
+      },
+      "body": "{\"statusCode\":404,\"error\":\"Not Found\"}",
+      "calls": []
+    },
+    {
+      "id": "alias-accept-22",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-headers": null,
+        "access-control-expose-headers": null
+      },
+      "body": "{\"statusCode\":404,\"error\":\"Not Found\"}",
+      "calls": []
+    },
+    {
+      "id": "alias-accept-23",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-headers": null,
+        "access-control-expose-headers": null
+      },
+      "body": "{\"statusCode\":404,\"error\":\"Not Found\"}",
+      "calls": []
+    },
+    {
+      "id": "alias-accept-24",
+      "status": 200,
+      "headers": {
+        "content-type": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"type\":\"Person\",\"id\":\"https://local.test/users/local\",\"publicKey\":{\"id\":\"https://local.test/users/local#main-key\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": null,
+            "isSuspended": false
+          }
+        ],
+        [
+          "person",
+          "local"
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "alias-accept-25",
+      "status": 200,
+      "headers": {
+        "content-type": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"type\":\"Person\",\"id\":\"https://local.test/users/local\",\"publicKey\":{\"id\":\"https://local.test/users/local#main-key\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": null,
+            "isSuspended": false
+          }
+        ],
+        [
+          "person",
+          "local"
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "alias-accept-26",
+      "status": 200,
+      "headers": {
+        "content-type": "application/activity+json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"type\":\"Person\",\"id\":\"https://local.test/users/local\",\"publicKey\":{\"id\":\"https://local.test/users/local#main-key\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": null,
+            "isSuspended": false
+          }
+        ],
+        [
+          "person",
+          "local"
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "alias-none",
+      "status": 403,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": []
+    },
+    {
+      "id": "guard-28",
+      "status": 406,
+      "headers": {
+        "content-type": "text/plain; charset=utf-8",
+        "cache-control": null,
+        "vary": "Accept",
+        "location": null,
+        "link": "<https://remote.test/actor>; rel=\"canonical\"",
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "Refusing to relay remote ActivityPub object lookup.\n\nPlease remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at https://remote.test/actor.",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": "remote.test",
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "guard-29",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": "Accept",
+        "location": "https://remote.test/actor",
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": "remote.test",
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "guard-30",
+      "status": 406,
+      "headers": {
+        "content-type": "text/plain; charset=utf-8",
+        "cache-control": null,
+        "vary": "Accept",
+        "location": null,
+        "link": "<https://remote.test/actor>; rel=\"canonical\"",
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "Refusing to relay remote ActivityPub object lookup.\n\nPlease remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at https://remote.test/actor.",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": "remote.test",
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "guard-same-31",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": "Accept",
+        "location": "http://local.test/actor",
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": "remote.test",
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "guard-same-32",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": "Accept",
+        "location": "https://local.test/actor",
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": "remote.test",
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "guard-same-33",
+      "status": 406,
+      "headers": {
+        "content-type": "text/plain; charset=utf-8",
+        "cache-control": null,
+        "vary": "Accept",
+        "location": null,
+        "link": "<https://local.test.evil/actor>; rel=\"canonical\"",
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "Refusing to relay remote ActivityPub object lookup.\n\nPlease remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at https://local.test.evil/actor.",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": "remote.test",
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "guard-same-34",
+      "status": 406,
+      "headers": {
+        "content-type": "text/plain; charset=utf-8",
+        "cache-control": null,
+        "vary": "Accept",
+        "location": null,
+        "link": "<http://local.test/actor>; rel=\"canonical\"",
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "Refusing to relay remote ActivityPub object lookup.\n\nPlease remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at http://local.test/actor.",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": "remote.test",
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "guard-same-35",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": "Accept",
+        "location": "https://local.test/actor",
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": "remote.test",
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "guard-same-36",
+      "status": 406,
+      "headers": {
+        "content-type": "text/plain; charset=utf-8",
+        "cache-control": null,
+        "vary": "Accept",
+        "location": null,
+        "link": "<https://local.test.evil/actor>; rel=\"canonical\"",
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "Refusing to relay remote ActivityPub object lookup.\n\nPlease remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at https://local.test.evil/actor.",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": "remote.test",
+            "isSuspended": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "host-37",
+      "status": 200,
+      "headers": {
+        "content-type": "application/activity+json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"type\":\"Person\",\"id\":\"https://例え.test/users/local\",\"publicKey\":{\"id\":\"https://例え.test/users/local#main-key\",\"type\":\"Key\",\"owner\":\"https://例え.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": null,
+            "isSuspended": false
+          }
+        ],
+        [
+          "person",
+          "local"
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "host-38",
+      "status": 200,
+      "headers": {
+        "content-type": "application/activity+json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"type\":\"Person\",\"id\":\"https://local.test:3000/users/local\",\"publicKey\":{\"id\":\"https://local.test:3000/users/local#main-key\",\"type\":\"Key\",\"owner\":\"https://local.test:3000/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": null,
+            "isSuspended": false
+          }
+        ],
+        [
+          "person",
+          "local"
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "host-39",
+      "status": 200,
+      "headers": {
+        "content-type": "application/activity+json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": "Accept",
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"type\":\"Person\",\"id\":\"https://local.test:3000/users/local\",\"publicKey\":{\"id\":\"https://local.test:3000/users/local#main-key\",\"type\":\"Key\",\"owner\":\"https://local.test:3000/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "usernameLower": "alice",
+            "host": null,
+            "isSuspended": false
+          }
+        ],
+        [
+          "person",
+          "local"
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "key-local",
+      "status": 200,
+      "headers": {
+        "content-type": "application/activity+json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"id\":\"https://local.test/users/local/publickey\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "id": "local",
+            "host": null
+          }
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "key-missing",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "id": "local",
+            "host": null
+          }
+        ]
+      ]
+    },
+    {
+      "id": "key-suspended",
+      "status": 200,
+      "headers": {
+        "content-type": "application/activity+json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"id\":\"https://local.test/users/local/publickey\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "id": "local",
+            "host": null
+          }
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "key-remote",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "id": "local",
+            "host": null
+          }
+        ]
+      ]
+    },
+    {
+      "id": "key-key-missing",
+      "status": 500,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"statusCode\":500,\"error\":\"Internal Server Error\"}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "id": "local",
+            "host": null
+          }
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "key-key-invalid",
+      "status": 500,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"statusCode\":500,\"error\":\"Internal Server Error\"}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "id": "local",
+            "host": null
+          }
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "key-path-46",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "id": "LOCAL",
+            "host": null
+          }
+        ]
+      ]
+    },
+    {
+      "id": "key-path-47",
+      "status": 200,
+      "headers": {
+        "content-type": "application/activity+json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"id\":\"https://local.test/users/local/publickey\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "id": "local",
+            "host": null
+          }
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "key-path-48",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": [
+        [
+          "lookup",
+          {
+            "id": "%6cocal",
+            "host": null
+          }
+        ]
+      ]
+    },
+    {
+      "id": "key-path-49",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-headers": null,
+        "access-control-expose-headers": null
+      },
+      "body": "{\"statusCode\":400,\"error\":\"Bad Request\"}",
+      "calls": []
+    },
+    {
+      "id": "key-path-50",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-headers": null,
+        "access-control-expose-headers": null
+      },
+      "body": "{\"statusCode\":400,\"error\":\"Bad Request\"}",
+      "calls": []
+    },
+    {
+      "id": "key-accept-51",
+      "status": 200,
+      "headers": {
+        "content-type": "application/activity+json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"id\":\"https://local.test/users/local/publickey\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "id": "local",
+            "host": null
+          }
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "key-accept-52",
+      "status": 200,
+      "headers": {
+        "content-type": "application/activity+json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"id\":\"https://local.test/users/local/publickey\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "id": "local",
+            "host": null
+          }
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "key-accept-53",
+      "status": 200,
+      "headers": {
+        "content-type": "application/activity+json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"id\":\"https://local.test/users/local/publickey\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "id": "local",
+            "host": null
+          }
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "key-accept-54",
+      "status": 200,
+      "headers": {
+        "content-type": "application/activity+json; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"id\":\"https://local.test/users/local/publickey\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "id": "local",
+            "host": null
+          }
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "key-accept-55",
+      "status": 200,
+      "headers": {
+        "content-type": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"id\":\"https://local.test/users/local/publickey\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "id": "local",
+            "host": null
+          }
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "key-accept-56",
+      "status": 200,
+      "headers": {
+        "content-type": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"; charset=utf-8",
+        "cache-control": "public, max-age=180",
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "{\"@context\":[\"https://www.w3.org/ns/activitystreams\",\"https://w3id.org/security/v1\",{\"Key\":\"sec:Key\",\"manuallyApprovesFollowers\":\"as:manuallyApprovesFollowers\",\"sensitive\":\"as:sensitive\",\"Hashtag\":\"as:Hashtag\",\"quoteUrl\":\"as:quoteUrl\",\"toot\":\"http://joinmastodon.org/ns#\",\"Emoji\":\"toot:Emoji\",\"featured\":\"toot:featured\",\"discoverable\":\"toot:discoverable\",\"schema\":\"http://schema.org#\",\"PropertyValue\":\"schema:PropertyValue\",\"value\":\"schema:value\",\"misskey\":\"https://misskey-hub.net/ns#\",\"_misskey_content\":\"misskey:_misskey_content\",\"_misskey_quote\":\"misskey:_misskey_quote\",\"_misskey_reaction\":\"misskey:_misskey_reaction\",\"_misskey_votes\":\"misskey:_misskey_votes\",\"_misskey_summary\":\"misskey:_misskey_summary\",\"_misskey_followedMessage\":\"misskey:_misskey_followedMessage\",\"_misskey_requireSigninToViewContents\":\"misskey:_misskey_requireSigninToViewContents\",\"_misskey_makeNotesFollowersOnlyBefore\":\"misskey:_misskey_makeNotesFollowersOnlyBefore\",\"_misskey_makeNotesHiddenBefore\":\"misskey:_misskey_makeNotesHiddenBefore\",\"_misskey_license\":\"misskey:_misskey_license\",\"freeText\":{\"@id\":\"misskey:freeText\",\"@type\":\"schema:text\"},\"isCat\":\"misskey:isCat\",\"vcard\":\"http://www.w3.org/2006/vcard/ns#\"}],\"id\":\"https://local.test/users/local/publickey\",\"type\":\"Key\",\"owner\":\"https://local.test/users/local\",\"publicKeyPem\":\"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+PF9lxkFCAb6xePSofVj\\nvDtAgDhT2BDpuz1hVNYRXT+4w6Eh/FXrHzgmkxUu1KSHdGpGRBhpSHcMh/OrsbOs\\nuRkrY4A0/i3OlT0s+l0dikNUqCjddoIfHoBMGRpXfnN9k4l8bVkG8S1BC3UtJhcX\\nqabwc8qGMRySHe/NAz7uVzGJbgWNUEI9KgI5Gr7CpUNa64dX9Smgh2isTMeyeAcd\\nCs4APynV6/oNdfREijCqQNH3pRSOp55Ti0mLvVTmPGAMdtHLGBaY2fIG/P0mo66V\\niN/e1JuT5ADAenef9l1Vmphz/MMbrIpGIhLoUD60u9BmNRYyHZvunXB/1soXnYyS\\nPQIDAQAB\\n-----END PUBLIC KEY-----\\n\"}",
+      "calls": [
+        [
+          "lookup",
+          {
+            "id": "local",
+            "host": null
+          }
+        ],
+        [
+          "key",
+          "local"
+        ]
+      ]
+    },
+    {
+      "id": "key-none",
+      "status": 403,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "vary": null,
+        "location": null,
+        "link": null,
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Accept",
+        "access-control-expose-headers": "Vary"
+      },
+      "body": "",
+      "calls": []
+    }
+  ]
+}

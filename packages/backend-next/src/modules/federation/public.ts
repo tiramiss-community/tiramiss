@@ -60,3 +60,7 @@ export { apContext } from './ap-context.js';
 
 export { readFollowCollection, FollowCollectionNotFoundError, FollowCollectionPrivateError } from './local-follow-collections.js';
 export type { FollowCollectionDirection, FollowCollectionReader, FollowCollectionResult } from './local-follow-collections.js';
+
+export { parseAcct, formatAcct, actorLookupAcct } from './acct.js';
+export type { Acct } from './acct.js';
+export { renderLocalKey } from './local-key.js';

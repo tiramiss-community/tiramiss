@@ -1,0 +1,292 @@
+{
+  "source": "8e07cf085adf7009583d234a208e30436f020e26",
+  "cases": [
+    {
+      "id": "alias",
+      "path": "/@Alice"
+    },
+    {
+      "id": "double-at",
+      "path": "/@@Alice"
+    },
+    {
+      "id": "self",
+      "path": "/@ALICE@LOCAL.TEST"
+    },
+    {
+      "id": "remote",
+      "path": "/@Alice@remote.test"
+    },
+    {
+      "id": "remote-case",
+      "path": "/@Alice@REMOTE.test"
+    },
+    {
+      "id": "extra-at",
+      "path": "/@Alice@remote.test@ignored"
+    },
+    {
+      "id": "empty-host",
+      "path": "/@Alice@"
+    },
+    {
+      "id": "encoded",
+      "path": "/@Alice%40remote.test"
+    },
+    {
+      "id": "double-encoded",
+      "path": "/@Alice%2540remote.test"
+    },
+    {
+      "id": "slash",
+      "path": "/@alice%2Ffoo"
+    },
+    {
+      "id": "invalid",
+      "path": "/@alice%ZZ"
+    },
+    {
+      "id": "utf8",
+      "path": "/@alice%C0%AF"
+    },
+    {
+      "id": "prefix",
+      "path": "/%40Alice"
+    },
+    {
+      "id": "alias-missing",
+      "path": "/@Alice",
+      "kind": "missing"
+    },
+    {
+      "id": "alias-suspended",
+      "path": "/@Alice",
+      "kind": "suspended"
+    },
+    {
+      "id": "alias-null-uri",
+      "path": "/@Alice",
+      "kind": "null-uri"
+    },
+    {
+      "id": "alias-empty-uri",
+      "path": "/@Alice",
+      "kind": "empty-uri"
+    },
+    {
+      "id": "alias-self-row",
+      "path": "/@Alice",
+      "kind": "self-row"
+    },
+    {
+      "id": "alias-key-missing",
+      "path": "/@Alice",
+      "kind": "key-missing"
+    },
+    {
+      "id": "alias-key-invalid",
+      "path": "/@Alice",
+      "kind": "key-invalid"
+    },
+    {
+      "id": "alias-accept-20",
+      "path": "/@Alice",
+      "accept": ""
+    },
+    {
+      "id": "alias-accept-21",
+      "path": "/@Alice",
+      "accept": "*/*"
+    },
+    {
+      "id": "alias-accept-22",
+      "path": "/@Alice",
+      "accept": "text/html"
+    },
+    {
+      "id": "alias-accept-23",
+      "path": "/@Alice",
+      "accept": "application/json"
+    },
+    {
+      "id": "alias-accept-24",
+      "path": "/@Alice",
+      "accept": "application/ld+json"
+    },
+    {
+      "id": "alias-accept-25",
+      "path": "/@Alice",
+      "accept": "application/activity+json;q=0,application/ld+json;q=1"
+    },
+    {
+      "id": "alias-accept-26",
+      "path": "/@Alice",
+      "accept": "text/html;q=0.1,application/activity+json;q=1"
+    },
+    {
+      "id": "alias-none",
+      "path": "/@Alice",
+      "federation": "none"
+    },
+    {
+      "id": "guard-28",
+      "path": "/@Alice@remote.test",
+      "allow": false,
+      "accept": "application/activity+json"
+    },
+    {
+      "id": "guard-29",
+      "path": "/@Alice@remote.test",
+      "allow": false,
+      "accept": "application/ld+json"
+    },
+    {
+      "id": "guard-30",
+      "path": "/@Alice@remote.test",
+      "allow": false,
+      "accept": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\""
+    },
+    {
+      "id": "guard-same-31",
+      "path": "/@Alice@remote.test",
+      "allow": false,
+      "production": false,
+      "uri": "http://local.test/actor"
+    },
+    {
+      "id": "guard-same-32",
+      "path": "/@Alice@remote.test",
+      "allow": false,
+      "production": false,
+      "uri": "https://local.test/actor"
+    },
+    {
+      "id": "guard-same-33",
+      "path": "/@Alice@remote.test",
+      "allow": false,
+      "production": false,
+      "uri": "https://local.test.evil/actor"
+    },
+    {
+      "id": "guard-same-34",
+      "path": "/@Alice@remote.test",
+      "allow": false,
+      "production": true,
+      "uri": "http://local.test/actor"
+    },
+    {
+      "id": "guard-same-35",
+      "path": "/@Alice@remote.test",
+      "allow": false,
+      "production": true,
+      "uri": "https://local.test/actor"
+    },
+    {
+      "id": "guard-same-36",
+      "path": "/@Alice@remote.test",
+      "allow": false,
+      "production": true,
+      "uri": "https://local.test.evil/actor"
+    },
+    {
+      "id": "host-37",
+      "path": "/@Alice@xn--r8jz45g.test",
+      "selfUrl": "https://例え.test"
+    },
+    {
+      "id": "host-38",
+      "path": "/@Alice@",
+      "selfUrl": "https://local.test:3000"
+    },
+    {
+      "id": "host-39",
+      "path": "/@Alice@other:4000",
+      "selfUrl": "https://local.test:3000"
+    },
+    {
+      "id": "key-local",
+      "path": "/users/local/publickey",
+      "kind": "local"
+    },
+    {
+      "id": "key-missing",
+      "path": "/users/local/publickey",
+      "kind": "missing"
+    },
+    {
+      "id": "key-suspended",
+      "path": "/users/local/publickey",
+      "kind": "suspended"
+    },
+    {
+      "id": "key-remote",
+      "path": "/users/local/publickey",
+      "kind": "remote"
+    },
+    {
+      "id": "key-key-missing",
+      "path": "/users/local/publickey",
+      "kind": "key-missing"
+    },
+    {
+      "id": "key-key-invalid",
+      "path": "/users/local/publickey",
+      "kind": "key-invalid"
+    },
+    {
+      "id": "key-path-46",
+      "path": "/users/LOCAL/publickey"
+    },
+    {
+      "id": "key-path-47",
+      "path": "/users/%6cocal/publickey"
+    },
+    {
+      "id": "key-path-48",
+      "path": "/users/%256cocal/publickey"
+    },
+    {
+      "id": "key-path-49",
+      "path": "/users/%ZZ/publickey"
+    },
+    {
+      "id": "key-path-50",
+      "path": "/users/%C0%AF/publickey"
+    },
+    {
+      "id": "key-accept-51",
+      "path": "/users/local/publickey",
+      "accept": ""
+    },
+    {
+      "id": "key-accept-52",
+      "path": "/users/local/publickey",
+      "accept": "*/*"
+    },
+    {
+      "id": "key-accept-53",
+      "path": "/users/local/publickey",
+      "accept": "text/html"
+    },
+    {
+      "id": "key-accept-54",
+      "path": "/users/local/publickey",
+      "accept": "application/json"
+    },
+    {
+      "id": "key-accept-55",
+      "path": "/users/local/publickey",
+      "accept": "application/ld+json"
+    },
+    {
+      "id": "key-accept-56",
+      "path": "/users/local/publickey",
+      "accept": "application/activity+json;q=0,application/ld+json;q=1"
+    },
+    {
+      "id": "key-none",
+      "path": "/users/local/publickey",
+      "federation": "none"
+    }
+  ]
+}

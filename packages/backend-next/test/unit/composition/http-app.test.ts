@@ -40,7 +40,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 	expect(events).toEqual(['note', 'role']);
 	expect(legacy).toBe(createBackendHttpApp);
 	expect([...new Set(app.routes.map(route => route.path))]).toEqual([
-		'/api/admin/roles/show', '/api/admin/roles/update', '/users/:id', '/.well-known/webfinger',
+		'/api/admin/roles/show', '/api/admin/roles/update', '/users/:id', '/:acct{@[^/]+}', '/users/:user/publickey', '/.well-known/webfinger',
 		'/users/:id/collections/featured', '/notes/:id', '/users/:id/followers', '/users/:id/following',
 		'/api/notes/delete', '/api/notes/show', '/api/notes/create', '/api/test-queue',
 	]);
@@ -125,4 +125,27 @@ test.each(['followers', 'following'])('ordinary root exposes %s with federation 
 	expect(options.headers.get('content-type')).toBe('application/json; charset=utf-8');
 	expect(options.headers.get('access-control-allow-origin')).toBeNull();
 	expect(repository.findOne).not.toHaveBeenCalled();
+});
+
+test.each(['production', 'test'])('ordinary alias composition uses actual NODE_ENV=%s and stored redirect Meta', async mode => {
+	const previous = process.env.NODE_ENV;
+	process.env.NODE_ENV = mode;
+	try {
+		const { resources, repository } = fixture();
+		repository.find.mockResolvedValue([{ federation: 'all', allowExternalApRedirect: false }] as never);
+		repository.findOneBy.mockResolvedValue({ id: 'remote', host: 'remote.test', uri: 'http://example.test/actor' } as never);
+		const app = createBackendHttpApp(resources, testConfig());
+		const response = await app.request('/@alice@remote.test', { headers: { Accept: 'application/activity+json' } });
+		expect(response.status).toBe(mode === 'production' ? 406 : 301);
+		repository.find.mockResolvedValue([{ federation: 'all', allowExternalApRedirect: true }] as never);
+		const allowed = await app.request('/@alice@remote.test', { headers: { Accept: 'application/activity+json' } });
+		expect(allowed.status).toBe(301);
+		expect(allowed.headers.get('location')).toBe('http://example.test/actor');
+	} finally {
+		if (previous === undefined) {
+			delete process.env.NODE_ENV;
+		} else {
+			process.env.NODE_ENV = previous;
+		}
+	}
 });
