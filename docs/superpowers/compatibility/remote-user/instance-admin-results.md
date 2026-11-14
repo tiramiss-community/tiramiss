@@ -35,3 +35,29 @@ PATH=/tmp/tiramiss-s1-node26/bin:$PATH UPSTREAM_ROOT=/tmp/tiramiss-relay171-upst
 ```
 
 Source probe の `--write` は意図的に観測を再取得するときだけ使い、変更を review する。本家 checkout の固定 Git object・既存 TypeORM と、この worktree の TypeScript/pg が必要。CI は記録済み観測を通常 unit suite で検査する。
+
+## 実測と現在の証跡
+
+実装 `a5c08da37c` と終了待機テスト補強 `1bd9aac3bd` の後、#325 (`bb735037096259712fd381d910423ffc9927e0e1`) を通常 merge した **`906979d7695785cad8d6f2fd691bc5b96a7e4413`** を測定した。Node 26.4.0 / pnpm 12.9.1、2026-11-14 13:19:30–13:20:13 UTC。
+
+| 実行 | 結果 |
+| --- | --- |
+| build / typecheck / upstream sync | 各 exit 0 |
+| backend-next 全 unit | 4,197件 / 110ファイル成功 |
+| 実 HTTP・PG・Redis・TLS と近傍 | 36件 / 3ファイル成功（今回26件） |
+| 固定本家 callback probe | 59観測一致 |
+
+[906979d の全 unit 実測 receipt](instance-admin-full-unit-evidence.json) は runtime/base/upstream SHA、開始終了、6コマンド、exit、実ログの保存先/SHA256、変更された product と source 入力16ファイルの実行前後 hash を記録する。16ファイルに drift はなかった。最初の merge 後 full unit は、無変更の `note/post-save.test.ts` の `idle waits for post-save work started while it is waiting` が timer 0 の判定で1回失敗した。対象14件と全4,197件の再実行は成功し、当該実装/テストは編集していない。最初のログは `/tmp/tiramiss-s1-362-20261114/unit-first-transient-failure.log` に保持した。PG の既存並行 query に関する deprecation warning は今回の修正対象にしていない。
+
+[有限 reader](../../../../scripts/instance-admin-evidence.mjs) は[現在の receipt](instance-admin-current-evidence.json)と [9個の predecessor](instance-admin-predecessor.json) を固定 seal で検証し、16 current inputs と存在する実ログを確認してから、9パスだけを #325 完了時点の bytes へ投影する。#325 の14入力（今回変えた root・public export・root test を含む）はその reader を通して元の測定 bytes を検証し、以後 #324 → #323 → 以前の読取へ続く。元の receipt・seal・corpus・predecessor は変更していない。新しい reader は Node builtin のみを使い、Git subprocess・再帰的 manifest・祖先 reader 呼出しを持たない。
+
+終了待機の検査は metadata を50ms保留して close が未完了であることを確認し、`scope.defer(instanceAdministration.close)` を一時的に除去した mutation で `closed === true` になって失敗することを観測した。登録を戻した同一テストと最終26件は成功した。mutation は commit に含めていない。
+
+CHANGELOG 候補: `Feat: 新バックエンドに連合先の停止・管理メモ更新と metadata 強制取得 API を追加`。
+
+
+CodeRabbit は commit 済み17ファイルを review し、実装本体の指摘はなかった。保留中の metadata を assertion 失敗時にも解放する `finally` がテストに必要という minor 1件を確認し、`82d47cc0bb6dd61a15b33ca0166157527a505683` で修正した。独立 reviewer もこの修正を確認する。CodeRabbit の再実行で指摘0件を確認したという意味ではない。
+
+[現在の receipt](instance-admin-current-evidence.json) はそのテスト修正後、82d47cc0bb の同じ16入力を測定したもの。2026-11-14 13:25:34–13:25:46 UTC に、近傍 unit **60件 / 1ファイル**、実 HTTP/PG/Redis/TLS と近傍 **36件 / 3ファイル**、build/typecheck/source59/sync が成功した。906979d の全4,197件を、このテスト後始末だけの変更後にも再実行したとは扱わない。2つの実測の raw log はそれぞれ元の `*-measured.log` と `after-review-*-measured.log` を保存している。leaf は新しい現在の receipt を seal し、歴史上の全 unit receipt は元の記録として保持する。
+
+ルート契約は修正前の metadata で481件成功し、現在の receipt へ更新した後に finite bridge の対象を再検証する。shipping の変更ファイル lint・SPDX・locale safety は最終差分で実行する。

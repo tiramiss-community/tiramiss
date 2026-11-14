@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { readPreInstanceAdmin } from './instance-admin-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
@@ -31,9 +32,10 @@ function record(readFile) {
  return JSON.parse(bytes);
 }
 
-// This leaf checks a finite measured input set and two original predecessors.
-// It never calls ancestor readers, Git or subprocesses.
-export function validateEmojiObjectSuccessor(value = record(read), readFile = read, optional = optionalRead) {
+// The instance-admin leaf restores the three changed measured inputs before
+// the original Emoji receipt is validated. Neither historical receipt is rewritten.
+export function validateEmojiObjectSuccessor(value = record(read), rawRead = read, optional = optionalRead) {
+ const readFile = path => readPreInstanceAdmin(path, undefined, rawRead, optional);
  assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'emoji current receipt seal');
  assert.equal(value.runtimeRevision, runtime);
  assert.equal(value.baseRevision, '0ffa36d8f5ba78d97acd45a8b74ebf544e9e3408');
@@ -69,7 +71,8 @@ export function validateEmojiObjectSuccessor(value = record(read), readFile = re
  return saved.files;
 }
 
-export function readPreEmojiObject(path, encoding, readFile = read, optional = optionalRead) {
- const bytes = successorFiles.includes(path) ? Buffer.from(validateEmojiObjectSuccessor(record(readFile), readFile, optional)[path]) : readFile(path);
+export function readPreEmojiObject(path, encoding, rawRead = read, optional = optionalRead) {
+ const readFile = path => readPreInstanceAdmin(path, undefined, rawRead, optional);
+ const bytes = successorFiles.includes(path) ? Buffer.from(validateEmojiObjectSuccessor(record(readFile), rawRead, optional)[path]) : readFile(path);
  return encoding ? bytes.toString(encoding) : bytes;
 }

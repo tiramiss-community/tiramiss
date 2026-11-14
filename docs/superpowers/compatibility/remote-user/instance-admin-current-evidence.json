@@ -1,0 +1,106 @@
+{
+  "runtimeRevision": "82d47cc0bb6dd61a15b33ca0166157527a505683",
+  "baseRevision": "bb735037096259712fd381d910423ffc9927e0e1",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "startedAt": "2026-11-14T13:25:34.622227+00:00",
+  "finishedAt": "2026-11-14T13:25:46.432288+00:00",
+  "node": "v26.4.0",
+  "pnpm": "12.9.1",
+  "inputs": {
+    "docs/superpowers/compatibility/remote-user/instance-admin-observations.json": "9b55fbd4029dd9d6a2b88da3221702ef72f458ce583af4433279eeb4c9d3bea2",
+    "docs/superpowers/compatibility/remote-user/instance-admin-source-probe.mjs": "bdcbe67058c21eefddeb35f6f3892b9e6fc64b66f8fbc463efed80d8b58314c3",
+    "packages/backend-next/src/composition/http-app.ts": "ca4be57a18b1c777662ed0875d788cf62a2ddcf9deacd886e677c1d9d7ee9b97",
+    "packages/backend-next/src/composition/instance-admin-http.ts": "1a80f1c69c4236cad41e3ddce49618741cf2a5e90e8431d08300aeadcec45b82",
+    "packages/backend-next/src/composition/instance-admin.ts": "75b24d5ccf7360153f241f028679e7ea40cad06e87db95b5527492a99edcb74f",
+    "packages/backend-next/src/modules/audit/public.ts": "fc3ba87b83788ded77e541ff9795c637bebf1c4a7fffd53da6c546ab8c88e940",
+    "packages/backend-next/src/modules/federation/deliver-job.ts": "a84d4a9798a7b8b13094099fed527ccde6fb2933eb0d73d4f8962a3547b24131",
+    "packages/backend-next/src/modules/federation/instance-admin.ts": "a09a439791365a29a40205210d41043266c8e927a2be94d62a89ef8ee07be9d2",
+    "packages/backend-next/src/modules/federation/instance.ts": "d15f68fdc86a11d868c28bfe62d0b6423b98f4cbd1e3c9ed483106c4ac10b41c",
+    "packages/backend-next/src/modules/federation/public.ts": "0743a174df8020cccab5c4ceaafdbbd416c148f02195895fe4a8597580c394af",
+    "packages/backend-next/src/platform/connect-resources.ts": "a511582ad97080ba89d77f0f01693e002cf8a2ab1aed85cdc34fc31015191d2f",
+    "packages/backend-next/src/platform/instance-ledger.ts": "14154ca683b87976d514eccacf3366a29d797876314a81fbd453557f4206a673",
+    "packages/backend-next/test/integration/instance-admin.test.ts": "50a11d2437870abf9fd4432835cfed29d16018cf842c1615a5a213f1c6cb67a8",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "27d75f8dee425db04c70953dfecf5f66ac54cc4ee7c5e02dab8ec4ea2c57baf4",
+    "packages/backend-next/test/unit/federation/instance-admin.test.ts": "263a57a6d88d0881c569cca98dea6ad00eb4a7c1e6064d12fc902ace34cb498a",
+    "packages/backend-next/test/unit/federation/local-featured-red.test.ts": "1a9ae61148dcea0f96eb196e3d71df2d35557ef5ceffa3e8fd073733272820de"
+  },
+  "inputsAfter": {
+    "docs/superpowers/compatibility/remote-user/instance-admin-observations.json": "9b55fbd4029dd9d6a2b88da3221702ef72f458ce583af4433279eeb4c9d3bea2",
+    "docs/superpowers/compatibility/remote-user/instance-admin-source-probe.mjs": "bdcbe67058c21eefddeb35f6f3892b9e6fc64b66f8fbc463efed80d8b58314c3",
+    "packages/backend-next/src/composition/http-app.ts": "ca4be57a18b1c777662ed0875d788cf62a2ddcf9deacd886e677c1d9d7ee9b97",
+    "packages/backend-next/src/composition/instance-admin-http.ts": "1a80f1c69c4236cad41e3ddce49618741cf2a5e90e8431d08300aeadcec45b82",
+    "packages/backend-next/src/composition/instance-admin.ts": "75b24d5ccf7360153f241f028679e7ea40cad06e87db95b5527492a99edcb74f",
+    "packages/backend-next/src/modules/audit/public.ts": "fc3ba87b83788ded77e541ff9795c637bebf1c4a7fffd53da6c546ab8c88e940",
+    "packages/backend-next/src/modules/federation/deliver-job.ts": "a84d4a9798a7b8b13094099fed527ccde6fb2933eb0d73d4f8962a3547b24131",
+    "packages/backend-next/src/modules/federation/instance-admin.ts": "a09a439791365a29a40205210d41043266c8e927a2be94d62a89ef8ee07be9d2",
+    "packages/backend-next/src/modules/federation/instance.ts": "d15f68fdc86a11d868c28bfe62d0b6423b98f4cbd1e3c9ed483106c4ac10b41c",
+    "packages/backend-next/src/modules/federation/public.ts": "0743a174df8020cccab5c4ceaafdbbd416c148f02195895fe4a8597580c394af",
+    "packages/backend-next/src/platform/connect-resources.ts": "a511582ad97080ba89d77f0f01693e002cf8a2ab1aed85cdc34fc31015191d2f",
+    "packages/backend-next/src/platform/instance-ledger.ts": "14154ca683b87976d514eccacf3366a29d797876314a81fbd453557f4206a673",
+    "packages/backend-next/test/integration/instance-admin.test.ts": "50a11d2437870abf9fd4432835cfed29d16018cf842c1615a5a213f1c6cb67a8",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "27d75f8dee425db04c70953dfecf5f66ac54cc4ee7c5e02dab8ec4ea2c57baf4",
+    "packages/backend-next/test/unit/federation/instance-admin.test.ts": "263a57a6d88d0881c569cca98dea6ad00eb4a7c1e6064d12fc902ace34cb498a",
+    "packages/backend-next/test/unit/federation/local-featured-red.test.ts": "1a9ae61148dcea0f96eb196e3d71df2d35557ef5ceffa3e8fd073733272820de"
+  },
+  "noInputDrift": true,
+  "runs": [
+    {
+      "name": "build",
+      "command": "pnpm --filter backend-next... build",
+      "exitCode": 0,
+      "startedAt": "2026-11-14T13:25:34.622245+00:00",
+      "finishedAt": "2026-11-14T13:25:35.337064+00:00",
+      "log": "/tmp/tiramiss-s1-362-20261114/after-review-build-measured.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm --filter backend-next... typecheck",
+      "exitCode": 0,
+      "startedAt": "2026-11-14T13:25:35.337191+00:00",
+      "finishedAt": "2026-11-14T13:25:36.419605+00:00",
+      "log": "/tmp/tiramiss-s1-362-20261114/after-review-typecheck-measured.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "name": "unit",
+      "command": "pnpm --filter backend-next test test/unit/federation/instance-admin.test.ts",
+      "exitCode": 0,
+      "startedAt": "2026-11-14T13:25:36.419696+00:00",
+      "finishedAt": "2026-11-14T13:25:37.040829+00:00",
+      "log": "/tmp/tiramiss-s1-362-20261114/after-review-unit-measured.log",
+      "logSha256": "5edd7dcf9245c8a050606760cba42f7d007cfa56234f83eca98e5eb8b154b676",
+      "passed": 60,
+      "files": 1
+    },
+    {
+      "name": "integration",
+      "command": "pnpm --filter backend-next test:integration test/integration/instance-admin.test.ts test/integration/instance-metadata.test.ts test/integration/http-app.test.ts",
+      "exitCode": 0,
+      "startedAt": "2026-11-14T13:25:37.041095+00:00",
+      "finishedAt": "2026-11-14T13:25:45.308972+00:00",
+      "log": "/tmp/tiramiss-s1-362-20261114/after-review-integration-measured.log",
+      "logSha256": "aced3f4bb031b6ee68818c61c4462e639d4df1d43f199374fbcab3debd587ade",
+      "passed": 36,
+      "files": 3
+    },
+    {
+      "name": "source",
+      "command": "node docs/superpowers/compatibility/remote-user/instance-admin-source-probe.mjs --check",
+      "exitCode": 0,
+      "startedAt": "2026-11-14T13:25:45.309082+00:00",
+      "finishedAt": "2026-11-14T13:25:45.588088+00:00",
+      "log": "/tmp/tiramiss-s1-362-20261114/after-review-source-measured.log",
+      "logSha256": "2722fdeb9ef35c491dede7aa79d7d354ca848b0b5f702f29e631c1c192a8e049"
+    },
+    {
+      "name": "sync",
+      "command": "pnpm --filter backend-upstream sync:check",
+      "exitCode": 0,
+      "startedAt": "2026-11-14T13:25:45.588178+00:00",
+      "finishedAt": "2026-11-14T13:25:46.430756+00:00",
+      "log": "/tmp/tiramiss-s1-362-20261114/after-review-sync-measured.log",
+      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd"
+    }
+  ]
+}
