@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "bcb828e878c5d14cb5be7b9ebf743fd452cca648",
+  "implementationCommit": "10c0d76c3724cd4e52a0a17c24ed92accaa10f75",
   "domains": [
     {
       "id": "api-common",
@@ -2636,6 +2636,44 @@
         "docs/superpowers/compatibility/remote-user/local-featured-observations.json"
       ],
       "note": "#195 local publication: GET/HEAD /users/:id/collections/featured: local User、pin ID降順全件の必須Note取得後にpublic/home・non-localOnlyで絞る。dive=trueのNote本体、空collection、Accept fallback、180秒cache/CORSと描画後headerを比較。 remote featured取込/object lock/inbox/Move/pin mutationは実装しない。 R3: bcb828e878c5d14cb5be7b9ebf743fd452cca648、1084凍結入力。literal method＋Fastify inject/doubles 100件、本家full HTTP/PGではない。build/typecheck・単体257・別composition6・実DB/listening HTTP203・migration/schema6は0失敗/0skip。詳細: docs/superpowers/compatibility/remote-user/local-featured-results.md。notes/create:partial、postingComplete:false、#176/#127/#195/#215 OPENと五gap/正式順を維持。"
+    },
+    "http:packages/backend/src/server/ActivityPubServerService.ts:722": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/composition/http-app.ts",
+        "packages/backend-next/src/composition/follow-collections-http.ts",
+        "packages/backend-next/src/http/activitypub-follow-collections-api.ts",
+        "packages/backend-next/src/modules/federation/local-follow-collections.ts",
+        "packages/backend-next/src/platform/database/local-follow-collections.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/federation/local-follow-collections.test.ts",
+        "packages/backend-next/test/unit/composition/http-app.test.ts",
+        "packages/backend-next/test/integration/local-follow-collections-http.test.ts",
+        "docs/superpowers/compatibility/remote-user/local-follow-collections-source-probe.mjs",
+        "docs/superpowers/compatibility/remote-user/local-follow-collections-observations.json",
+        "docs/superpowers/compatibility/remote-user/local-follow-collections-results.md"
+      ],
+      "note": "#195 local collection read slice only. Product 8f200fc583f40eda2455f2196013b976c39b937d; parent R2 PASS on 987 frozen inputs, Node 26.4.0/pnpm 12.9.1: units 3543, integration 1139 (new real-PG/listening HTTP 144), acceptance 65, source 138 cases/138 injections, all zero failed/pending/drift. Receipt SHA256 24e9c5a939673b4807dab72a8e02b4b06fa4f7ce4ac5bc489909b0ad6dde158d. Literal methods + Fastify doubles, not full upstream server/PG; independent oracle 80/86 is separate. Partial: exact diagnostics, global hooks, Content-Length/Location and Meta/cache #217 equivalence remain unproven. No CI claim or #176 direct posting completion. #176/#127/#195/#215 OPEN; notes/create:partial, postingComplete:false; five gaps and #182 mutations unchanged."
+    },
+    "http:packages/backend/src/server/ActivityPubServerService.ts:728": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/composition/http-app.ts",
+        "packages/backend-next/src/composition/follow-collections-http.ts",
+        "packages/backend-next/src/http/activitypub-follow-collections-api.ts",
+        "packages/backend-next/src/modules/federation/local-follow-collections.ts",
+        "packages/backend-next/src/platform/database/local-follow-collections.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/federation/local-follow-collections.test.ts",
+        "packages/backend-next/test/unit/composition/http-app.test.ts",
+        "packages/backend-next/test/integration/local-follow-collections-http.test.ts",
+        "docs/superpowers/compatibility/remote-user/local-follow-collections-source-probe.mjs",
+        "docs/superpowers/compatibility/remote-user/local-follow-collections-observations.json",
+        "docs/superpowers/compatibility/remote-user/local-follow-collections-results.md"
+      ],
+      "note": "#195 local collection read slice only. Product 8f200fc583f40eda2455f2196013b976c39b937d; parent R2 PASS on 987 frozen inputs, Node 26.4.0/pnpm 12.9.1: units 3543, integration 1139 (new real-PG/listening HTTP 144), acceptance 65, source 138 cases/138 injections, all zero failed/pending/drift. Receipt SHA256 24e9c5a939673b4807dab72a8e02b4b06fa4f7ce4ac5bc489909b0ad6dde158d. Literal methods + Fastify doubles, not full upstream server/PG; independent oracle 80/86 is separate. Partial: exact diagnostics, global hooks, Content-Length/Location and Meta/cache #217 equivalence remain unproven. No CI claim or #176 direct posting completion. #176/#127/#195/#215 OPEN; notes/create:partial, postingComplete:false; five gaps and #182 mutations unchanged."
     }
   }
 }

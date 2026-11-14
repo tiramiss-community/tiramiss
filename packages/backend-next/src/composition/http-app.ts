@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { createWebfingerHttp } from './webfinger-http.js';
+import { createFollowCollectionsHttp } from './follow-collections-http.js';
 import { createFeaturedHttp } from './featured-http.js';
 import { createActorHttp } from './actor-http.js';
 import { prepareNoteRoutes, registerNoteRoutes } from './note-routes.js';
@@ -16,7 +17,8 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 	const app = createRoleHttpApp(resources, config)
 		.route('/', createActorHttp(resources, config))
 		.route('/', createWebfingerHttp(resources, config))
-		.route('/', createFeaturedHttp(resources, config));
+		.route('/', createFeaturedHttp(resources, config))
+		.route('/', createFollowCollectionsHttp(resources, config));
 	registerNoteRoutes(app, resources, note);
 	if (queueApi) {
 		app.route('/', queueApi);

@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { localFeaturedDigest } from './local-featured-evidence.mjs';
+import { localFollowCollectionsDigest } from './local-follow-collections-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
@@ -143,7 +144,7 @@ export function localActorFieldsDigest(file, previousDigest, readFile = read, op
 	return binding.sha256;
 }
 
-// Preserve the fields projection; current consumers append the finite featured hop.
+// Preserve the fields projection; current consumers append featured then follow collections.
 export function currentLocalActorFieldsDigest(file, previousDigest, readFile = read, optional = optionalRead, driftLabel) {
-	return localFeaturedDigest(file, localActorFieldsDigest(file, previousDigest, readFile, optional), readFile, optional, driftLabel);
+	return localFollowCollectionsDigest(file, localFeaturedDigest(file, localActorFieldsDigest(file, previousDigest, readFile, optional), readFile, optional, driftLabel), readFile, optional, driftLabel);
 }
