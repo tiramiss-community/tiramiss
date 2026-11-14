@@ -42,12 +42,14 @@ PROBE_HARNESS=/tmp/tiramiss-s1-r13-probe UPSTREAM_ROOT=/tmp/tiramiss-relay171-up
 /tmp/tiramiss-s1-node26/bin/node scripts/backend-contract-inventory.mjs --check
 ```
 
-Use `--write` instead of `--check` only when intentionally recapturing source observations, then review the resulting provenance/output changes. A sandbox unable to spawn test children can run the evidence tests with `--test-isolation=none`; Git-based checks still require parent-host replay. The lost scratch source-worker notes are not needed to reconstruct this schema/replay.
+Use `--write` instead of `--check` only when intentionally recapturing source observations, then review the resulting provenance/output changes. A sandbox unable to spawn test children can run the evidence tests with `--test-isolation=none`; Git-based checks still require parent-host replay.
 
 ## Historical binding and remaining work
 
 The Node-builtin-only [readPreOutbox leaf](../../../../scripts/local-outbox-evidence.mjs) seals the original receipt and [six exact base strings](local-outbox-predecessor.json), verifies all 22 current inputs and available actual logs, then projects only those six paths. It composes beneath `readPreAliasKey`: **#324 → #323 → older readers**. #323 validates its original 43e current inputs even with an injected reader. Old JSON/corpora/seals/receipts remain byte-identical; no new universal manifest or Git-dependent product helper was introduced. #272 retains dated classifications and unchanged seals. The root run exposed the older N7 checker comparing its dated `activitypub:09` classification with live inventory; that one comparison now uses its existing `f556283b` historical reader. Its live `notes/create:partial` gate and all evidence JSON remain unchanged.
 
-Inventory changes are exactly HTTP contracts `ActivityPubServerService.ts:690` and `:716`, and responsibilities `activitypub:08` / `:09` (the latter two audit rows), pinned to the actual 1e75 implementation tree. No backlog/parent classifications change. Parent canonical root tests/shipping and subsequent review remain handoff gates, not measured product results.
+Inventory changes are exactly HTTP contracts `ActivityPubServerService.ts:690` and `:716`, and responsibilities `activitypub:08` / `:09` (the latter two audit rows), pinned to the actual 1e75 implementation tree. No backlog/parent classifications change. Subsequent parent checks passed all 491 canonical root tests, the direct inventory generator and shipping. CodeRabbit reviewed the 23 product files without findings; its one finding in the 15 metadata files was repaired and the three changed files were re-reviewed without findings. The metadata audit has no unresolved findings. These checks remain separate from the 1e75 product measurement.
 
 #176/#127/#195 remain OPEN; `notes/create:partial`, `postingComplete:false`, D7 64-depth/256-Note, approved PG notification storage and deferred strong ordering/recovery guarantees remain unchanged. Inbox, remote Note ingestion and broader actor/cache/media responsibilities are not completed by #324.
+
+[PR #588](https://github.com/tiramiss-community/tiramiss/pull/588) closes #324 on merge. Its checks tab records CI status.

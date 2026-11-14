@@ -40,7 +40,7 @@
 
 現在のS1進捗は次のとおり。各PRの限定した実装・比較範囲と、Issue全体の完了を区別する。
 
-#323はPR #587でマージ済み・CLOSED。#324 outbox/activityは `1e75c5b2` で実装完了・PR未作成、次は#325。[親実測2113/707/source115/12・有限履歴bindingと限界](../superpowers/compatibility/remote-user/local-outbox-activity-results.md)。親#176/#127/#195のOPENと投稿partialは維持する。
+#323はPR #587でマージ済み・CLOSED。#324 outbox/activityは `1e75c5b2` で実装し、[PR #588](https://github.com/tiramiss-community/tiramiss/pull/588) でマージ待ち。次は#325。[親実測2113/707/source115/12・有限履歴bindingと限界](../superpowers/compatibility/remote-user/local-outbox-activity-results.md)。親#176/#127/#195のOPENと投稿partialは維持する。
 
 | 対象 | 実装済み | 残作業・完了判定 |
 | --- | --- | --- |
