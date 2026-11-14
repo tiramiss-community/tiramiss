@@ -195,7 +195,7 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 ## 共有ファイルの運用（継続する規則）
 
 1. 進捗は作業中にplansと`compatibility/<domain>/README.md`へ書き、本書には要約とリンクだけをマージ直前に足す。
-2. 対応表（backend-inventory）は自分の行だけを編集する。衝突したらdevelop側を採って生成し直す。`implementationCommit`を進めた後の追従はmergeで行う（rebaseすると記録したSHAが孤立する）。
+2. 対応表（backend-inventory）は自分の行だけを編集する。衝突したらdevelop側を採って生成し直す。`implementationCommit`を進めた後の追従はmerge、PRの最終取り込みはmerge commitで行う。rebaseやsquashで記録したSHAを置き換えない。
 3. `backend-upstream`のEntity同期は、`upstream-sync.json`の`files`を和集合でマージし、同期スクリプトで生成し直す。共有Entityは最初に必要とする担当が同期し、他の領域はrebaseして使う。
 4. 独自migrationは未マージの側が`Date.now()`で振り直す。同じテーブルを触るmigration同士は並列にしない。
 5. lockfileはマージ直前に生成し直す。設定キーは領域ごとのネストしたオブジェクトとして足す。
