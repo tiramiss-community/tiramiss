@@ -30,7 +30,13 @@ vi.mock('ioredis', () => ({
 }));
 
 vi.mock('../../src/composition/outbound-http.js', () => ({
-	createOutboundHttpClient: () => ({ close: async () => {} }),
+	createOutboundHttpClient: () => ({
+		defaultAgents: () => ({}),
+		getJson: async () => {
+			throw new Error('Unexpected preview acquisition in emoji resource test');
+		},
+		close: async () => {},
+	}),
 }));
 
 afterEach(() => vi.restoreAllMocks());

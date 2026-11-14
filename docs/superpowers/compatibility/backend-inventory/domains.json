@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "82d47cc0bb6dd61a15b33ca0166157527a505683",
+  "implementationCommit": "4047f7fc8696ee45104d0ed317722273afbcce1e",
   "domains": [
     {
       "id": "api-common",
@@ -784,8 +784,21 @@
         "fetch-external-resources",
         "fetch-rss"
       ],
-      "implementation": [],
-      "verification": [],
+      "implementation": [
+        "packages/backend-next/src/modules/url-preview/preview.ts",
+        "packages/backend-next/src/platform/url-preview.ts",
+        "packages/backend-next/src/http/url-preview-api.ts",
+        "packages/backend-next/src/composition/url-preview-http.ts",
+        "packages/backend-next/src/platform/connect-resources.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/url-preview-source.test.ts",
+        "packages/backend-next/test/unit/url-preview.test.ts",
+        "packages/backend-next/test/unit/url-preview-network.test.ts",
+        "packages/backend-next/test/integration/url-preview.test.ts",
+        "packages/backend-next/test/processes/url-preview.test.ts",
+        "docs/superpowers/compatibility/url-preview/observations.json"
+      ],
       "differences": []
     },
     {
@@ -2834,6 +2847,26 @@
       ],
       "note": "#362の限定2管理API。固定source endpoint callback/toPuny 59ケース（repository/effect doubles +本家TypeORM空更新検査）を実装へ接続し、別途実HTTP/PG/Redis/TLSで認可・停止状態・監査・cache部分失敗・force取得・runtime終了待機を検証。source full HTTP/DB比較と診断文字列全一致は未証明。#195/#176/#127は未完了。",
       "implementationCommit": "82d47cc0bb6dd61a15b33ca0166157527a505683"
+    },
+    "http:packages/backend/src/server/web/ClientServerService.ts:450": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/url-preview/preview.ts",
+        "packages/backend-next/src/platform/url-preview.ts",
+        "packages/backend-next/src/http/url-preview-api.ts",
+        "packages/backend-next/src/composition/url-preview-http.ts",
+        "packages/backend-next/src/platform/connect-resources.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/url-preview-source.test.ts",
+        "packages/backend-next/test/unit/url-preview.test.ts",
+        "packages/backend-next/test/unit/url-preview-network.test.ts",
+        "packages/backend-next/test/integration/url-preview.test.ts",
+        "packages/backend-next/test/processes/url-preview.test.ts",
+        "docs/superpowers/compatibility/url-preview/observations.json"
+      ],
+      "note": "#377/#560のGET/HEAD /url。固定source59ケース/174リクエスト（Fastify parser・RE2・取得double）と、実Summaly5.5.2/HTTP/TLS/CONNECT、PG設定・Redis runtime・終了待機を別に検証。8設定、proxy/bypass/private/outgoingAddress、結果検証・1h/100件cache・画像URL/sensitive変換。Meta DB直読と本家injected cacheの鮮度差は#217、画像バイト配信とweb全体は未完了。",
+      "implementationCommit": "4047f7fc8696ee45104d0ed317722273afbcce1e"
     }
   }
 }

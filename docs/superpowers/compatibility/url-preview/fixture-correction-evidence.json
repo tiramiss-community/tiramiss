@@ -1,0 +1,69 @@
+{
+  "baseRevision": "e972af7583aef146d7c77a6692b6387b896dff48",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "measuredWorkingTree": true,
+  "failedCi": {
+    "runId": 43650059099,
+    "jobId": 132616298876,
+    "failed": 1,
+    "passed": 4288
+  },
+  "startedAt": "2026-11-14T22:58:12.520305+00:00",
+  "inputs": {
+    "packages/backend-next/test/unit/remote-emoji-resources.test.ts": "319a9e7a85ce8cc2f7fb36c19e0a5c6c003c4d236845f4f2d349b7ec2f61757f"
+  },
+  "runs": [
+    {
+      "name": "focused",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/remote-emoji-resources.test.ts"
+      ],
+      "startedAt": "2026-11-14T22:58:12.520379+00:00",
+      "finishedAt": "2026-11-14T22:58:13.805883+00:00",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-377-20261115/fixture-final-focused.log",
+      "logSha256": "c02cce55b43a81e99db73d9ac458b117d9e6db5bed75fe03722fff51d64ea5b1",
+      "passed": 1,
+      "files": 1
+    },
+    {
+      "name": "full-unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test"
+      ],
+      "startedAt": "2026-11-14T22:58:13.806053+00:00",
+      "finishedAt": "2026-11-14T22:58:53.476073+00:00",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-377-20261115/fixture-final-full-unit.log",
+      "logSha256": "0e36255a7817f3e729a3619cea249433698f35c6e9dd803a2a8dcac34908eb1d",
+      "passed": 4289,
+      "files": 113
+    },
+    {
+      "name": "shipping",
+      "command": [
+        "node",
+        "scripts/check-shipping.mjs",
+        "--base",
+        "fa57cedcd7923e02144eedc4fbec50bbda8b333d"
+      ],
+      "startedAt": "2026-11-14T22:58:53.476220+00:00",
+      "finishedAt": "2026-11-14T22:58:56.127272+00:00",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-377-20261115/fixture-final-shipping.log",
+      "logSha256": "247466597e9aac466df9f39146d7a45d93952ebf501c6b933f1d2a91758d8837"
+    }
+  ],
+  "inputsAfter": {
+    "packages/backend-next/test/unit/remote-emoji-resources.test.ts": "319a9e7a85ce8cc2f7fb36c19e0a5c6c003c4d236845f4f2d349b7ec2f61757f"
+  },
+  "noInputDrift": true,
+  "finishedAt": "2026-11-14T22:58:56.127392+00:00"
+}

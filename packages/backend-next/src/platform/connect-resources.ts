@@ -2,13 +2,13 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { createInstanceAdministration } from '../composition/instance-admin.js';
-import { createRemoteEmojis } from '../composition/remote-emojis.js';
-import { createRemoteEmojiRepository } from './database/remote-emojis.js';
-import { createActorInstanceRegistration } from '../composition/actor-instance-registration.js';
 import { randomBytes } from 'node:crypto';
 import { MiInstance } from 'backend-upstream/entities';
 import { Redis } from 'ioredis';
+import { createUrlPreview } from '../modules/url-preview/public.js';
+import { createActorInstanceRegistration } from '../composition/actor-instance-registration.js';
+import { createRemoteEmojis } from '../composition/remote-emojis.js';
+import { createInstanceAdministration } from '../composition/instance-admin.js';
 import { createUserHashtags } from '../composition/user-hashtags.js';
 import { createOutboundHttpClient } from '../composition/outbound-http.js';
 import { createPostingAntennas } from '../composition/posting-antennas.js';
@@ -21,6 +21,8 @@ import { createPostingRoleTimelines } from '../composition/posting-role-timeline
 import { createPostingNotifications } from '../composition/posting-notifications.js';
 import { createFederationKeys } from '../composition/federation-keys.js';
 import { createDeliverCreatedNote, createDeliverToRelays, createDeliverDeletedNote } from '../modules/federation/public.js';
+import { createPreviewFetcher } from './url-preview.js';
+import { createRemoteEmojiRepository } from './database/remote-emojis.js';
 import { createUserHashtagWriter } from './database/user-hashtags.js';
 import { createRoleTimelineReader } from './database/role-timelines.js';
 import { createFeaturedRanking } from './featured-ranking.js';
@@ -267,6 +269,13 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 
 		const outboundHttp = createOutboundHttpClient(config);
 		scope.defer(outboundHttp.close);
+		const urlPreview = createUrlPreview({
+			readSettings: () => readMeta(dataSource.manager),
+			fetchSummary: createPreviewFetcher({ url: config.url, agents: outboundHttp.defaultAgents(), getJson: outboundHttp.getJson }),
+			mediaProxy: config.noteMedia?.mediaProxy ?? `${config.url}/proxy`,
+			now: Date.now,
+		});
+		scope.defer(urlPreview.close);
 		const federationKeys = createFederationKeys({ dataSource, redis, logger }, config);
 		const deliverToRelays = createDeliverToRelays({
 			readAcceptedRelays: createAcceptedRelayReader({ manager: dataSource.manager, currentTime: Date.now }),
@@ -393,7 +402,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw new DiagnosticError('TIMELINES_REDIS_ENDED', {});
 		}
 		active = true;
-		return { instanceAdministration, dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, remoteEmojis, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
+		return { urlPreview, instanceAdministration, dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, remoteEmojis, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
 	};
 
 	try {

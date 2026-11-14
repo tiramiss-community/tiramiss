@@ -6,6 +6,8 @@ import { createOutboundAgents } from '../platform/outbound-http/agents.js';
 import { createOutboundHttp } from '../platform/outbound-http/client.js';
 import type { OutboundHttp } from '../application/outbound-http.js';
 import type { RuntimeConfig } from '../config/types.js';
+import type { Agent as HttpAgent } from 'node:http';
+import type { Agent as HttpsAgent } from 'node:https';
 
 /**
  * UseCase へ渡す外向き HTTP の関数を組み立てる。
@@ -17,14 +19,17 @@ export function createOutboundHttpClient(
 		checkPrivateAddress: boolean;
 	} = { checkPrivateAddress: process.env.NODE_ENV === 'production' },
 ): OutboundHttp & {
+	/** Adapter-only port: Summaly uses the URL-independent pair from the pinned upstream. */
+	defaultAgents(): { http: HttpAgent; https: HttpsAgent };
 	close(): Promise<void>;
 } {
 	const agents = createOutboundAgents({ ...config.outboundHttp, checkPrivateAddress: options.checkPrivateAddress });
 	return {
+		defaultAgents: () => ({ http: agents.httpAgent, https: agents.httpsAgent }),
 		...createOutboundHttp(agents, config.userAgent), async close() {
 			for (const agent of new Set([agents.httpNative, agents.httpsNative, agents.http, agents.https, agents.httpAgent, agents.httpsAgent])) {
 				agent.destroy();
 			}
-		}
+		},
 	};
 }

@@ -22,6 +22,7 @@
 		"start": "node built/entrypoints/supervisor.js"
 	},
 	"dependencies": {
+		"@misskey-dev/summaly": "5.5.2",
 		"backend-upstream": "workspace:*",
 		"typeorm": "1.1.1",
 		"pg": "8.23.1",
