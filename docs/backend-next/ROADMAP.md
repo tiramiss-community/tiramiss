@@ -190,7 +190,9 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 
 **同時に走らせない組み合わせ。** PR #243との過去の同時マージ制限は解消済み。#176・#215・#195等は現在の変更ファイルと証跡単位で調整する。#178と#179・#181。#185と一覧API全般。#182と#195（Follow系rendererは#182が作る）。#189 registryとchannel追加。#136の本家固定SHA更新は全セッションを止めて単独で行う。
 
-**共有ファイルの運用。**
+</details>
+
+## 共有ファイルの運用（継続する規則）
 
 1. 進捗は作業中にplansと`compatibility/<domain>/README.md`へ書き、本書には要約とリンクだけをマージ直前に足す。
 2. 対応表（backend-inventory）は自分の行だけを編集する。衝突したらdevelop側を採って生成し直す。`implementationCommit`を進めた後の追従はmergeで行う（rebaseすると記録したSHAが孤立する）。
@@ -199,7 +201,10 @@ GitHubの親子関係は領域所属として維持し、blocked-byは次の具�
 5. lockfileはマージ直前に生成し直す。設定キーは領域ごとのネストしたオブジェクトとして足す。
 6. 検証環境はセッションごとに専用のComposeプロジェクトとポート（`BACKEND_NEXT_TEST_DB_PORT` / `BACKEND_NEXT_TEST_REDIS_PORT`）を使う。
 
-**未決事項。**
+## 旧計画の未決事項（履歴）
+
+<details>
+<summary>2026-11-08 当時の未決事項</summary>
 
 1. inboxのfailedジョブの扱い：#139の前に全activityのhandlerを必須とするか、契約を変えるか（期限切れを待つ、受理だけする等）。クリティカルパスの長さが大きく変わる。
 2. 共有Entityを担当ごとに同期するか、1本のPRでまとめて同期するか。

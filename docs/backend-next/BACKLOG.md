@@ -93,6 +93,8 @@ chartの未決事項は [200-chart-storage-contract · #273](https://github.com/
 
 このカタログは2026-11-14の作業選定用snapshot。公開後の進捗は各IssueとRelationshipsを確認する。公開番号の結合と、Issue本文・親子・依存の公開検証は別の確認である。
 
+inventoryの `implementationCommit` を記録後にdevelopへ追従するときはmergeを使い、記録済みコミットをrebaseで書き換えない。その他の共有ファイルの運用も [ROADMAP](ROADMAP.md) の継続規則に従う。
+
 実装するagentはPRで対象の作業子を閉じ、自分のinventory行と親の残作業・証跡を更新する。親は固有の完了条件を確認して閉じる。Refs、担当割当、子一覧への追加、基盤の完成から親を自動closeしない。既存の閉鎖済み範囲と保留を新しい切替blockerにしない。
 
 2,119契約・1,432監査行の割当にはmissing/unknownがないが、source上の対応事実であり、新しいruntime parityや全3,551行の独立実行を意味しない。S1の一部ID配列は先行対応表から継承して機械照合したもの。既存の限定実測・source-method/doubles・未検証を分け、元inventoryを昇格させない。最終9指摘と2 command依存修正は適用済みで、patch一致・依存検査で追跡した。元レビューのMUST_FIXは修正前の履歴であり、全体の形式的APPROVEDや新テスト成功を主張しない。
