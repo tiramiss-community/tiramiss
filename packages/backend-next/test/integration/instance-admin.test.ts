@@ -203,21 +203,31 @@ test('forced refresh starts despite suspension/fresh timestamp/existing mutex an
 	await resources.redis.set(lockKey, '1', 'EX', 30);
 	const entered = deferred(); const release = deferred();
 	peer.respond(async path => {
- if (path === '/') {
- entered.resolve(); await release.promise; 
-} return metadataReply(path); 
-});
-	const response = await post('refresh-remote-instance-metadata', { host: 'REMOTE.TEST' }, 'instance-admin-scope-362');
-	expect(response.status).toBe(204);
-	await entered.promise;
-	let drained = false; const idle = resources.instanceAdministration.close().then(() => {
- drained = true; 
-});
-	await Promise.resolve(); expect(drained).toBe(false);
-	release.resolve(); await idle;
-	expect(await row()).toMatchObject({ ...expectedMetadata, suspensionState: 'goneSuspended' });
-	expect(await resources.redis.exists(lockKey)).toBe(0);
-	expect(await audits()).toEqual([]);
+		if (path === '/') {
+			entered.resolve();
+			await release.promise;
+		}
+		return metadataReply(path);
+	});
+	try {
+		const response = await post('refresh-remote-instance-metadata', { host: 'REMOTE.TEST' }, 'instance-admin-scope-362');
+		expect(response.status).toBe(204);
+		await entered.promise;
+		let drained = false;
+		const idle = resources.instanceAdministration.close().then(() => {
+			drained = true;
+		});
+		await Promise.resolve();
+		expect(drained).toBe(false);
+		release.resolve();
+		await idle;
+		expect(await row()).toMatchObject({ ...expectedMetadata, suspensionState: 'goneSuspended' });
+		expect(await resources.redis.exists(lockKey)).toBe(0);
+		expect(await audits()).toEqual([]);
+	} finally {
+		release.resolve();
+		await resources.instanceAdministration.idle();
+	}
 });
 
 test('forced metadata remote errors preserve HTTP success and save completion timestamp', async () => {
@@ -232,25 +242,29 @@ test('forced metadata remote errors preserve HTTP success and save completion ti
 test('runtime shutdown waits for an accepted refresh before releasing Redis and database', async () => {
 	const entered = deferred(); const release = deferred();
 	peer.respond(async path => {
- if (path === '/') {
- entered.resolve(); await release.promise; 
-} return metadataReply(path); 
-});
-	expect((await post('refresh-remote-instance-metadata', { host: 'remote.test' })).status).toBe(204);
-	await entered.promise;
+		if (path === '/') {
+			entered.resolve();
+			await release.promise;
+		}
+		return metadataReply(path);
+	});
 	let closed = false;
-	const closing = resources.close().then(() => {
- closed = true; 
-});
+	let closing: Promise<void> | undefined;
 	try {
+		expect((await post('refresh-remote-instance-metadata', { host: 'remote.test' })).status).toBe(204);
+		await entered.promise;
+		closing = resources.close().then(() => {
+			closed = true;
+		});
 		// Give the other cleanup promises time to finish while metadata stays blocked.
 		await new Promise(resolve => setTimeout(resolve, 50));
 		expect(closed).toBe(false);
 		expect(resources.dataSource.isInitialized).toBe(true);
 		expect(resources.redis.status).toBe('ready');
 	} finally {
- release.resolve(); await closing; 
-}
+		release.resolve();
+		await (closing ?? resources.instanceAdministration.idle());
+	}
 	expect(resources.dataSource.isInitialized).toBe(false);
 	expect(resources.redis.status).toBe('end');
 	expect(logs.some(line => line.includes('instance-metadata.failed'))).toBe(false);
