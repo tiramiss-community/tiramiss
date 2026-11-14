@@ -140,13 +140,18 @@ export function createInstanceLedger(options: {
 			return (await set(host, row))!;
 		},
 
-		async updateInstance(id, patch) {
+		async updateInstance(id, patch, startCacheWrite) {
 			const result = await repository.createQueryBuilder().update().set(toColumns(patch)).where('id = :id', { id }).returning('*').execute();
 			const row = (result.raw as CachedRow[])[0];
 			if (row === undefined) {
 				throw new DiagnosticError('INSTANCE_NOT_FOUND', { id });
 			}
-			await set(row.host, row);
+			const cacheWrite = set(row.host, row).then(() => {});
+			if (startCacheWrite) {
+				startCacheWrite(cacheWrite);
+			} else {
+				await cacheWrite;
+			}
 		},
 
 		async listSuspendedHosts() {

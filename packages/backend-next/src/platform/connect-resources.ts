@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { createInstanceAdministration } from '../composition/instance-admin.js';
 import { createRemoteEmojis } from '../composition/remote-emojis.js';
 import { createRemoteEmojiRepository } from './database/remote-emojis.js';
 import { createActorInstanceRegistration } from '../composition/actor-instance-registration.js';
@@ -300,6 +301,8 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		}
 		const instanceLedger = createInstanceLedger({ manager: dataSource.manager, redis, newId: createIdCodec(config.id).newId });
 		const fetchMetadata = createInstanceMetadata({ ledger: instanceLedger, redis, http: outboundHttp, clock: Date.now, reportFailure: (error, context) => logger.error('instance-metadata.failed', { ...context, error }) });
+		const instanceAdministration = createInstanceAdministration({ dataSource, ledger: instanceLedger, fetchMetadata, logger, id: config.id });
+		scope.defer(instanceAdministration.close);
 		const actorInstanceRegistration = createActorInstanceRegistration({
 			fetchMetadata,
 			enabled: async () => (await readMeta(dataSource.manager)).enableStatsForFederatedInstances,
@@ -390,7 +393,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw new DiagnosticError('TIMELINES_REDIS_ENDED', {});
 		}
 		active = true;
-		return { dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, remoteEmojis, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
+		return { instanceAdministration, dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, remoteEmojis, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
 	};
 
 	try {

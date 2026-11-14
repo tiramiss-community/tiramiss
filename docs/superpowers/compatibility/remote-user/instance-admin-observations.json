@@ -1,0 +1,1874 @@
+{
+  "source": "8e07cf085adf7009583d234a208e30436f020e26",
+  "probeSha256": "bdcbe67058c21eefddeb35f6f3892b9e6fc64b66f8fbc463efed80d8b58314c3",
+  "manifest": [
+    {
+      "path": "packages/backend/src/server/api/endpoints/admin/federation/update-instance.ts",
+      "sha256": "34732f03e8b847f91909e830d21523f7825c7846cc84a474b44816fa3ebcf382"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/admin/federation/refresh-remote-instance-metadata.ts",
+      "sha256": "90516bfb3e38dd567897794b8fc41162789b25718ea81948a3294b428742c497"
+    },
+    {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "99f8779e002fc2c0aa2cd203613d31fcc87e7eaeb797ef65aae6c5175b62e331"
+    },
+    {
+      "path": "packages/backend/src/core/FederatedInstanceService.ts",
+      "sha256": "84ac1640b6eda2d838e44a80c7db1bd5ca1c6b2273793eee6b3af805db9714af"
+    }
+  ],
+  "limits": "Literal endpoint callback + UtilityService.toPuny; repository/effect doubles and real installed TypeORM empty-update SQL validation. No upstream HTTP, authentication, Redis, PG, cache failure or audit/metadata completion observed.",
+  "cases": [
+    {
+      "id": "none-true-omitted",
+      "operation": "update-instance",
+      "state": "none",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": true
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "manuallySuspended",
+          "moderationNote": "before"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "suspendRemoteInstance",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "none-true-empty",
+      "operation": "update-instance",
+      "state": "none",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": true,
+        "moderationNote": ""
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "manuallySuspended",
+          "moderationNote": ""
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "suspendRemoteInstance",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test"
+            }
+          },
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": ""
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "none-true-before",
+      "operation": "update-instance",
+      "state": "none",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": true,
+        "moderationNote": "before"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "manuallySuspended",
+          "moderationNote": "before"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "suspendRemoteInstance",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "none-true-after",
+      "operation": "update-instance",
+      "state": "none",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": true,
+        "moderationNote": "after"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "manuallySuspended",
+          "moderationNote": "after"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "suspendRemoteInstance",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test"
+            }
+          },
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": "after"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "none-false-omitted",
+      "operation": "update-instance",
+      "state": "none",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": false
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": {
+          "name": "UpdateValuesMissingError",
+          "message": "Cannot perform update query because update values are not defined. Call \"qb.set(...)\" method to specify updated values."
+        }
+      }
+    },
+    {
+      "id": "none-false-empty",
+      "operation": "update-instance",
+      "state": "none",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": false,
+        "moderationNote": ""
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": ""
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": ""
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "none-false-before",
+      "operation": "update-instance",
+      "state": "none",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": false,
+        "moderationNote": "before"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "none-false-after",
+      "operation": "update-instance",
+      "state": "none",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": false,
+        "moderationNote": "after"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "after"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": "after"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "none-undefined-omitted",
+      "operation": "update-instance",
+      "state": "none",
+      "input": {
+        "host": "REMOTE.TEST"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": {
+          "name": "UpdateValuesMissingError",
+          "message": "Cannot perform update query because update values are not defined. Call \"qb.set(...)\" method to specify updated values."
+        }
+      }
+    },
+    {
+      "id": "none-undefined-empty",
+      "operation": "update-instance",
+      "state": "none",
+      "input": {
+        "host": "REMOTE.TEST",
+        "moderationNote": ""
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": ""
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": ""
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "none-undefined-before",
+      "operation": "update-instance",
+      "state": "none",
+      "input": {
+        "host": "REMOTE.TEST",
+        "moderationNote": "before"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "none-undefined-after",
+      "operation": "update-instance",
+      "state": "none",
+      "input": {
+        "host": "REMOTE.TEST",
+        "moderationNote": "after"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "after"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": "after"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "manuallySuspended-true-omitted",
+      "operation": "update-instance",
+      "state": "manuallySuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": true
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "manuallySuspended",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": {
+          "name": "UpdateValuesMissingError",
+          "message": "Cannot perform update query because update values are not defined. Call \"qb.set(...)\" method to specify updated values."
+        }
+      }
+    },
+    {
+      "id": "manuallySuspended-true-empty",
+      "operation": "update-instance",
+      "state": "manuallySuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": true,
+        "moderationNote": ""
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "manuallySuspended",
+          "moderationNote": ""
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": ""
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "manuallySuspended-true-before",
+      "operation": "update-instance",
+      "state": "manuallySuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": true,
+        "moderationNote": "before"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "manuallySuspended",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "manuallySuspended-true-after",
+      "operation": "update-instance",
+      "state": "manuallySuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": true,
+        "moderationNote": "after"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "manuallySuspended",
+          "moderationNote": "after"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": "after"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "manuallySuspended-false-omitted",
+      "operation": "update-instance",
+      "state": "manuallySuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": false
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "unsuspendRemoteInstance",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "manuallySuspended-false-empty",
+      "operation": "update-instance",
+      "state": "manuallySuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": false,
+        "moderationNote": ""
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": ""
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "unsuspendRemoteInstance",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test"
+            }
+          },
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": ""
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "manuallySuspended-false-before",
+      "operation": "update-instance",
+      "state": "manuallySuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": false,
+        "moderationNote": "before"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "unsuspendRemoteInstance",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "manuallySuspended-false-after",
+      "operation": "update-instance",
+      "state": "manuallySuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": false,
+        "moderationNote": "after"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "after"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "unsuspendRemoteInstance",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test"
+            }
+          },
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": "after"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "manuallySuspended-undefined-omitted",
+      "operation": "update-instance",
+      "state": "manuallySuspended",
+      "input": {
+        "host": "REMOTE.TEST"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "manuallySuspended",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": {
+          "name": "UpdateValuesMissingError",
+          "message": "Cannot perform update query because update values are not defined. Call \"qb.set(...)\" method to specify updated values."
+        }
+      }
+    },
+    {
+      "id": "manuallySuspended-undefined-empty",
+      "operation": "update-instance",
+      "state": "manuallySuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "moderationNote": ""
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "manuallySuspended",
+          "moderationNote": ""
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": ""
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "manuallySuspended-undefined-before",
+      "operation": "update-instance",
+      "state": "manuallySuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "moderationNote": "before"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "manuallySuspended",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "manuallySuspended-undefined-after",
+      "operation": "update-instance",
+      "state": "manuallySuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "moderationNote": "after"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "manuallySuspended",
+          "moderationNote": "after"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": "after"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "goneSuspended-true-omitted",
+      "operation": "update-instance",
+      "state": "goneSuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": true
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "goneSuspended",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": {
+          "name": "UpdateValuesMissingError",
+          "message": "Cannot perform update query because update values are not defined. Call \"qb.set(...)\" method to specify updated values."
+        }
+      }
+    },
+    {
+      "id": "goneSuspended-true-empty",
+      "operation": "update-instance",
+      "state": "goneSuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": true,
+        "moderationNote": ""
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "goneSuspended",
+          "moderationNote": ""
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": ""
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "goneSuspended-true-before",
+      "operation": "update-instance",
+      "state": "goneSuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": true,
+        "moderationNote": "before"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "goneSuspended",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "goneSuspended-true-after",
+      "operation": "update-instance",
+      "state": "goneSuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": true,
+        "moderationNote": "after"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "goneSuspended",
+          "moderationNote": "after"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": "after"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "goneSuspended-false-omitted",
+      "operation": "update-instance",
+      "state": "goneSuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": false
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "unsuspendRemoteInstance",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "goneSuspended-false-empty",
+      "operation": "update-instance",
+      "state": "goneSuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": false,
+        "moderationNote": ""
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": ""
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "unsuspendRemoteInstance",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test"
+            }
+          },
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": ""
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "goneSuspended-false-before",
+      "operation": "update-instance",
+      "state": "goneSuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": false,
+        "moderationNote": "before"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "unsuspendRemoteInstance",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "goneSuspended-false-after",
+      "operation": "update-instance",
+      "state": "goneSuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": false,
+        "moderationNote": "after"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "after"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "unsuspendRemoteInstance",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test"
+            }
+          },
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": "after"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "goneSuspended-undefined-omitted",
+      "operation": "update-instance",
+      "state": "goneSuspended",
+      "input": {
+        "host": "REMOTE.TEST"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "goneSuspended",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": {
+          "name": "UpdateValuesMissingError",
+          "message": "Cannot perform update query because update values are not defined. Call \"qb.set(...)\" method to specify updated values."
+        }
+      }
+    },
+    {
+      "id": "goneSuspended-undefined-empty",
+      "operation": "update-instance",
+      "state": "goneSuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "moderationNote": ""
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "goneSuspended",
+          "moderationNote": ""
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": ""
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "goneSuspended-undefined-before",
+      "operation": "update-instance",
+      "state": "goneSuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "moderationNote": "before"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "goneSuspended",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "goneSuspended-undefined-after",
+      "operation": "update-instance",
+      "state": "goneSuspended",
+      "input": {
+        "host": "REMOTE.TEST",
+        "moderationNote": "after"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "goneSuspended",
+          "moderationNote": "after"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": "after"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "autoSuspendedForNotResponding-true-omitted",
+      "operation": "update-instance",
+      "state": "autoSuspendedForNotResponding",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": true
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "autoSuspendedForNotResponding",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": {
+          "name": "UpdateValuesMissingError",
+          "message": "Cannot perform update query because update values are not defined. Call \"qb.set(...)\" method to specify updated values."
+        }
+      }
+    },
+    {
+      "id": "autoSuspendedForNotResponding-true-empty",
+      "operation": "update-instance",
+      "state": "autoSuspendedForNotResponding",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": true,
+        "moderationNote": ""
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "autoSuspendedForNotResponding",
+          "moderationNote": ""
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": ""
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "autoSuspendedForNotResponding-true-before",
+      "operation": "update-instance",
+      "state": "autoSuspendedForNotResponding",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": true,
+        "moderationNote": "before"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "autoSuspendedForNotResponding",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "autoSuspendedForNotResponding-true-after",
+      "operation": "update-instance",
+      "state": "autoSuspendedForNotResponding",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": true,
+        "moderationNote": "after"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "autoSuspendedForNotResponding",
+          "moderationNote": "after"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": "after"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "autoSuspendedForNotResponding-false-omitted",
+      "operation": "update-instance",
+      "state": "autoSuspendedForNotResponding",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": false
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "unsuspendRemoteInstance",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "autoSuspendedForNotResponding-false-empty",
+      "operation": "update-instance",
+      "state": "autoSuspendedForNotResponding",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": false,
+        "moderationNote": ""
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": ""
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "unsuspendRemoteInstance",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test"
+            }
+          },
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": ""
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "autoSuspendedForNotResponding-false-before",
+      "operation": "update-instance",
+      "state": "autoSuspendedForNotResponding",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": false,
+        "moderationNote": "before"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "unsuspendRemoteInstance",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "autoSuspendedForNotResponding-false-after",
+      "operation": "update-instance",
+      "state": "autoSuspendedForNotResponding",
+      "input": {
+        "host": "REMOTE.TEST",
+        "isSuspended": false,
+        "moderationNote": "after"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "after"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "unsuspendRemoteInstance",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test"
+            }
+          },
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": "after"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "autoSuspendedForNotResponding-undefined-omitted",
+      "operation": "update-instance",
+      "state": "autoSuspendedForNotResponding",
+      "input": {
+        "host": "REMOTE.TEST"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "autoSuspendedForNotResponding",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": {
+          "name": "UpdateValuesMissingError",
+          "message": "Cannot perform update query because update values are not defined. Call \"qb.set(...)\" method to specify updated values."
+        }
+      }
+    },
+    {
+      "id": "autoSuspendedForNotResponding-undefined-empty",
+      "operation": "update-instance",
+      "state": "autoSuspendedForNotResponding",
+      "input": {
+        "host": "REMOTE.TEST",
+        "moderationNote": ""
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "autoSuspendedForNotResponding",
+          "moderationNote": ""
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": ""
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "autoSuspendedForNotResponding-undefined-before",
+      "operation": "update-instance",
+      "state": "autoSuspendedForNotResponding",
+      "input": {
+        "host": "REMOTE.TEST",
+        "moderationNote": "before"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "autoSuspendedForNotResponding",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "autoSuspendedForNotResponding-undefined-after",
+      "operation": "update-instance",
+      "state": "autoSuspendedForNotResponding",
+      "input": {
+        "host": "REMOTE.TEST",
+        "moderationNote": "after"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "autoSuspendedForNotResponding",
+          "moderationNote": "after"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "remote.test",
+              "before": "before",
+              "after": "after"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "operation": "update-instance",
+      "id": "idn",
+      "input": {
+        "host": "例え.TEST",
+        "moderationNote": "after"
+      },
+      "host": "xn--r8jz45g.test",
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "xn--r8jz45g.test",
+          "suspensionState": "none",
+          "moderationNote": "after"
+        },
+        "audits": [
+          {
+            "actorId": "moderator1",
+            "type": "updateRemoteInstanceNote",
+            "info": {
+              "id": "instance1",
+              "host": "xn--r8jz45g.test",
+              "before": "before",
+              "after": "after"
+            }
+          }
+        ],
+        "refresh": [],
+        "lookups": [
+          "xn--r8jz45g.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "operation": "update-instance",
+      "id": "missing",
+      "input": {
+        "host": "missing.test",
+        "moderationNote": "after"
+      },
+      "missing": true,
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "missing.test"
+        ],
+        "error": {
+          "name": "Error",
+          "message": "instance not found"
+        }
+      }
+    },
+    {
+      "operation": "update-instance",
+      "id": "trailing-dot",
+      "input": {
+        "host": "remote.test.",
+        "moderationNote": "after"
+      },
+      "missing": true,
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test."
+        ],
+        "error": {
+          "name": "Error",
+          "message": "instance not found"
+        }
+      }
+    },
+    {
+      "operation": "update-instance",
+      "id": "port",
+      "input": {
+        "host": "remote.test:3000",
+        "moderationNote": "after"
+      },
+      "missing": true,
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          ""
+        ],
+        "error": {
+          "name": "Error",
+          "message": "instance not found"
+        }
+      }
+    },
+    {
+      "operation": "update-instance",
+      "id": "db-failure",
+      "input": {
+        "host": "remote.test",
+        "moderationNote": "after"
+      },
+      "fail": "db",
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": {
+          "name": "Error",
+          "message": "DB rejected"
+        }
+      }
+    },
+    {
+      "operation": "update-instance",
+      "id": "read-failure",
+      "input": {
+        "host": "remote.test",
+        "moderationNote": "after"
+      },
+      "fail": "read",
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": {
+          "name": "Error",
+          "message": "read rejected"
+        }
+      }
+    },
+    {
+      "id": "refresh-none",
+      "operation": "refresh-remote-instance-metadata",
+      "state": "none",
+      "input": {
+        "host": "REMOTE.TEST"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [
+          {
+            "id": "instance1",
+            "host": "remote.test",
+            "force": true
+          }
+        ],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "refresh-manuallySuspended",
+      "operation": "refresh-remote-instance-metadata",
+      "state": "manuallySuspended",
+      "input": {
+        "host": "REMOTE.TEST"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "manuallySuspended",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [
+          {
+            "id": "instance1",
+            "host": "remote.test",
+            "force": true
+          }
+        ],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "refresh-goneSuspended",
+      "operation": "refresh-remote-instance-metadata",
+      "state": "goneSuspended",
+      "input": {
+        "host": "REMOTE.TEST"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "goneSuspended",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [
+          {
+            "id": "instance1",
+            "host": "remote.test",
+            "force": true
+          }
+        ],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "refresh-autoSuspendedForNotResponding",
+      "operation": "refresh-remote-instance-metadata",
+      "state": "autoSuspendedForNotResponding",
+      "input": {
+        "host": "REMOTE.TEST"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "autoSuspendedForNotResponding",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [
+          {
+            "id": "instance1",
+            "host": "remote.test",
+            "force": true
+          }
+        ],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": null
+      }
+    },
+    {
+      "id": "refresh-missing",
+      "operation": "refresh-remote-instance-metadata",
+      "missing": true,
+      "input": {
+        "host": "remote.test"
+      },
+      "expected": {
+        "row": {
+          "id": "instance1",
+          "host": "remote.test",
+          "suspensionState": "none",
+          "moderationNote": "before"
+        },
+        "audits": [],
+        "refresh": [],
+        "lookups": [
+          "remote.test"
+        ],
+        "error": {
+          "name": "Error",
+          "message": "instance not found"
+        }
+      }
+    }
+  ]
+}

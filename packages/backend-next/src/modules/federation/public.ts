@@ -67,3 +67,6 @@ export { renderLocalKey } from './local-key.js';
 
 export { readOutboxNotes, renderOutboxCollection, outboxCandidateVisible } from './local-outbox.js';
 export type { OutboxBounds, OutboxCandidate, OutboxPolicy, OutboxReader } from './local-outbox.js';
+
+export { createInstanceAdmin } from './instance-admin.js';
+export type { InstanceAdminPorts, InstanceAdminSnapshot } from './instance-admin.js';
