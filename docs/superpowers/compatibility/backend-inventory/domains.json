@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
-  "implementationCommit": "140acaf7d0283a76cc4de4a9f0227ae130a86ccd",
+  "implementationCommit": "82d47cc0bb6dd61a15b33ca0166157527a505683",
   "domains": [
     {
       "id": "api-common",
@@ -2802,6 +2802,38 @@
       ],
       "note": "#325: local Emoji GET and pure renderer compared against53 fixed-source cases; runtime140acaf7, units115/4files and real HTTP/PG42/2files (Emoji19). Finite source-method comparison with stable Meta; malformed HEAD injection body differs from wire suppression. Other callers, image serving and Meta/emoji-cache freshness #217 remain outside this endpoint proof.",
       "implementationCommit": "140acaf7d0283a76cc4de4a9f0227ae130a86ccd"
+    },
+    "api:admin/federation/update-instance": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/federation/instance-admin.ts",
+        "packages/backend-next/src/composition/instance-admin.ts",
+        "packages/backend-next/src/composition/instance-admin-http.ts",
+        "packages/backend-next/src/platform/instance-ledger.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/federation/instance-admin.test.ts",
+        "packages/backend-next/test/integration/instance-admin.test.ts",
+        "docs/superpowers/compatibility/remote-user/instance-admin-results.md"
+      ],
+      "note": "#362の限定2管理API。固定source endpoint callback/toPuny 59ケース（repository/effect doubles +本家TypeORM空更新検査）を実装へ接続し、別途実HTTP/PG/Redis/TLSで認可・停止状態・監査・cache部分失敗・force取得・runtime終了待機を検証。source full HTTP/DB比較と診断文字列全一致は未証明。#195/#176/#127は未完了。",
+      "implementationCommit": "82d47cc0bb6dd61a15b33ca0166157527a505683"
+    },
+    "api:admin/federation/refresh-remote-instance-metadata": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/federation/instance-admin.ts",
+        "packages/backend-next/src/composition/instance-admin.ts",
+        "packages/backend-next/src/composition/instance-admin-http.ts",
+        "packages/backend-next/src/platform/instance-ledger.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/federation/instance-admin.test.ts",
+        "packages/backend-next/test/integration/instance-admin.test.ts",
+        "docs/superpowers/compatibility/remote-user/instance-admin-results.md"
+      ],
+      "note": "#362の限定2管理API。固定source endpoint callback/toPuny 59ケース（repository/effect doubles +本家TypeORM空更新検査）を実装へ接続し、別途実HTTP/PG/Redis/TLSで認可・停止状態・監査・cache部分失敗・force取得・runtime終了待機を検証。source full HTTP/DB比較と診断文字列全一致は未証明。#195/#176/#127は未完了。",
+      "implementationCommit": "82d47cc0bb6dd61a15b33ca0166157527a505683"
     }
   }
 }

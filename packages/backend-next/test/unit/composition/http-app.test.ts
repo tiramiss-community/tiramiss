@@ -13,6 +13,7 @@ function fixture() {
 	const events: string[] = [];
 	const repository = { find: vi.fn(async () => [{ federation: 'all' }]), findOne: vi.fn(async () => null), findOneBy: vi.fn(async () => null), findOneByOrFail: vi.fn(async () => ({ federation: 'all' })), findBy: vi.fn(async () => []) };
 	const resources = {
+		instanceAdministration: { updateInstance: vi.fn(), refreshMetadata: vi.fn() },
 		dataSource: { manager: { getRepository: () => repository } },
 		logger: { error: vi.fn() },
 		roleMaterials: { get changes() {
@@ -40,7 +41,8 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 	expect(events).toEqual(['note', 'role']);
 	expect(legacy).toBe(createBackendHttpApp);
 	expect([...new Set(app.routes.map(route => route.path))]).toEqual([
-		'/api/admin/roles/show', '/api/admin/roles/update', '/users/:id', '/:acct{@[^/]*}', '/users/:user{[^/]*}/publickey', '/.well-known/webfinger',
+		'/api/admin/roles/show', '/api/admin/roles/update', '/users/:id', '/:acct{@[^/]*}', '/users/:user{[^/]*}/publickey',
+		'/api/admin/federation/update-instance', '/api/admin/federation/refresh-remote-instance-metadata', '/.well-known/webfinger',
 		'/users/:id/collections/featured', '/notes/:id', '/users/:id/followers', '/users/:id/following',
 		'/users/:user/outbox', '/users//outbox', '/notes/:note/activity', '/notes//activity',
 		'/emojis/:emoji', '/emojis/',

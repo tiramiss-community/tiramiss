@@ -19,6 +19,7 @@ export interface InstanceFacts {
 
 /** instance 表へ書く列。指定した列だけを更新する。 */
 export interface InstancePatch {
+	moderationNote?: string;
 	infoUpdatedAtMs?: number;
 	softwareName?: unknown;
 	softwareVersion?: unknown;

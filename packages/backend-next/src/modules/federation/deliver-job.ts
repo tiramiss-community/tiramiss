@@ -49,7 +49,8 @@ export interface DeliverJobSettings {
 export interface InstanceLedger {
 	fetchInstance(host: string): Promise<InstanceFacts | null>;
 	fetchOrRegisterInstance(host: string): Promise<InstanceFacts>;
-	updateInstance(id: string, patch: InstancePatch): Promise<void>;
+	/** 管理APIはDB保存後のcache書込を待たず、呼出元が失敗の観測と終了待機を所有する。 */
+	updateInstance(id: string, patch: InstancePatch, startCacheWrite?: (work: Promise<void>) => void): Promise<void>;
 	/** 停止中の instance の host。本家と同じく 1 時間まで古い一覧でよい。 */
 	listSuspendedHosts(): Promise<readonly string[]>;
 }

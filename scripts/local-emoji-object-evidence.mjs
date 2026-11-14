@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { readPreInstanceAdmin } from './instance-admin-evidence.mjs';
 import { readPreHashtagOracle } from './hashtag-oracle-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
@@ -32,10 +33,11 @@ function record(readFile) {
  return JSON.parse(bytes);
 }
 
-// The terminal hashtag oracle reader restores the one changed integration test
-// before historical consumers inspect it; this Emoji receipt and its inputs stay fixed.
+// The disjoint finite readers restore instance-admin inputs and the hashtag
+// oracle test before older consumers read them. Both current proofs stay strict.
 export function validateEmojiObjectSuccessor(value = record(read), rawRead = read, optional = optionalRead) {
- const readFile = path => readPreHashtagOracle(path, undefined, rawRead, optional);
+ const beforeAdmin = path => readPreInstanceAdmin(path, undefined, rawRead, optional);
+ const readFile = path => readPreHashtagOracle(path, undefined, beforeAdmin, optional);
  assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'emoji current receipt seal');
  assert.equal(value.runtimeRevision, runtime);
  assert.equal(value.baseRevision, '0ffa36d8f5ba78d97acd45a8b74ebf544e9e3408');
@@ -72,7 +74,8 @@ export function validateEmojiObjectSuccessor(value = record(read), rawRead = rea
 }
 
 export function readPreEmojiObject(path, encoding, rawRead = read, optional = optionalRead) {
- const readFile = path => readPreHashtagOracle(path, undefined, rawRead, optional);
+ const beforeAdmin = path => readPreInstanceAdmin(path, undefined, rawRead, optional);
+ const readFile = path => readPreHashtagOracle(path, undefined, beforeAdmin, optional);
  const bytes = successorFiles.includes(path) ? Buffer.from(validateEmojiObjectSuccessor(record(readFile), rawRead, optional)[path]) : readFile(path);
  return encoding ? bytes.toString(encoding) : bytes;
 }

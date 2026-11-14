@@ -267,3 +267,7 @@ R3b3723/1319/65/source318 and R2/R1/Node24/EPERM are history, not amended-code p
 ## #325 local Emoji object GET（2026-11-14）
 
 上の#324段落は当時の引き継ぎ。#325はruntime `140acaf7d0283a76cc4de4a9f0227ae130a86ccd` で通常GET/HEAD `/emojis/:emoji` に接続した。[有限の契約・実測と残責任](local-emoji-object-results.md): 単体115/4 files、実HTTP/PG42/2 files（Emoji19）、literal source53、source-contract6、sync/build/typecheck/shippingがPASS。固定14入力・無drift・実log hashを保持し、既存outboxの過去入力へ新旧のroot2ファイルだけを投影する。旧receipt/sealは保持する。malformed HEADのinject本文差、stable Meta/Meta不在時の既存初期化、source-methodと実PGの境界を明記し、他caller・画像配信・管理・cache#217と親#195/#176/#127未完了、投稿partialを維持する。
+
+## instance 管理更新・metadata 強制更新（#362）
+
+通常管理 HTTP の停止/メモ更新・独立監査・cache、既存 metadata の force 取得を接続した。[限定比較・実測と境界](instance-admin-results.md)を参照する。#195/#176/#127 全体は未完了。
