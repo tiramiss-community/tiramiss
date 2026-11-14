@@ -1,6 +1,6 @@
 # #272 finite posting proof reconciliation
 
-Task intent is settled by #272 (`176-posting-proof`) and the reconciled design inputs. Baseline: `b4f28f6ceef458575f203c19d4ede37d7311468c`; fixed upstream: `8e07cf085adf7009583d234a208e30436f020e26`. Work stays in this isolated worktree; no runtime changes, commits, configuration changes or external publication.
+Task intent is settled by #272 (`176-posting-proof`) and the reconciled design inputs. Baseline: `b4f28f6ceef458575f203c19d4ede37d7311468c`; fixed upstream: `8e07cf085adf7009583d234a208e30436f020e26`. Work stays in isolated worktrees without runtime or configuration changes. Writers leave their diffs for the integrating parent, which owns commits and PR publication.
 
 - [x] Read repository/package guides, GOALS/ROADMAP, shipping, Issue/PR and TDD skills; inspect design inputs and parent execution logs.
 - [x] RED: require the absent current proof artifact; define integrity rejection cases before checker implementation.
@@ -19,4 +19,4 @@ Validation (isolated writer, Node v26.4.0):
 - SKIPPED (cannot start): `node scripts/backend-contract-inventory.mjs --check` needs absent `typescript`; `node scripts/check-shipping.mjs --base b4f28f6ceef458575f203c19d4ede37d7311468c` needs absent `execa`. No dependency install or configuration change was made.
 - PASS: `node scripts/check-spdx.mjs` (`SPDX: OK`), `git diff --check`, NUL-safe changed-path locale check (zero non-Japanese locale YAML), source/inventory/historical-artifact preservation. Changed package ESLint target set is empty under the shipping script's rules (root structural script syntax checked above).
 
-The existing runtime results were inspected from parent logs/receipt, not reexecuted by this writer: integration216/7, notifications14/1, process20/4, delete-process2/1, unit726/23; build/typecheck/sync exit0. Inventory and complete shipping must be rerun by the integrating parent in its dependency-equipped environment. Finite index acceptance is reconciled; parent integration/PR publication and broad runtime completion are not claimed.
+The existing runtime results were inspected from parent logs/receipt, not reexecuted by this writer: integration216/7, notifications14/1, process20/4, delete-process2/1, unit726/23; build/typecheck/sync exit0. The parent subsequently applied the three independently reviewed P2 fixes and reran the integrated Node suite: **122/122 PASS**, including the new checker's **29 tests**. Inventory `--check`, shipping SPDX/locale and diff checks passed (lint skipped: no targets). The writer-local limitations above remain historical and do not describe the integrated result. Finite index acceptance is reconciled; broad runtime completion is not claimed.

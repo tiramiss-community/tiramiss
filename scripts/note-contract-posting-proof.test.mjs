@@ -75,8 +75,29 @@ test('rejects false direct-runtime provenance for a source-only deletion case', 
 	assert.throws(() => validate(value), /reviewed deleteSourceCases/);
 });
 
+
+for (const file of [
+ 'packages/backend-next/test/unit/logger.test.ts',
+ 'packages/backend-next/test/unit/role/conditions.test.ts',
+ 'pnpm-lock.yaml',
+]) {
+ test(`unrelated live drift preserves dated snapshot: ${file}`, () => {
+  validate(load(), path => read(path) + (path === file ? '\n# unrelated drift\n' : ''));
+ });
+}
+
+test('rejects corrupted historical input bytes', () => {
+ assert.throws(() => validate(load(), read, (commit, file) =>
+  historicalSource(commit, file) + (file === 'pnpm-lock.yaml' ? '\n' : '')), /input hash/);
+});
+
+test('rejects live fixture content drift with intact case IDs', () => {
+ assert.throws(() => validate(load(), file => read(file) +
+  (file === 'docs/superpowers/compatibility/note/observations.json' ? '\n' : '')), /fixture hash/);
+});
+
 // Integrity checks preserve reviewed finite claims; they are not behavior/parity tests.
-function validate(value, readInput = read) {
+function validate(value, readInput = read, readHistorical = historicalSource) {
 	assert.equal(value.schemaVersion, 1);
 	assert.equal(value.runtimeBaseline, 'b4f28f6ceef458575f203c19d4ede37d7311468c');
 	assert.equal(value.upstreamCommit, '8e07cf085adf7009583d234a208e30436f020e26');
@@ -125,12 +146,14 @@ function validate(value, readInput = read) {
 		assert.ok(value.measurements[ref.measurement], 'known dated measurement');
 		assert.ok(ref.assertions.length > 20 && ref.limitations.length > 20);
 		if (ref.dataset?.file.endsWith('.json')) {
-			const fixture = JSON.parse(readInput(ref.dataset.file));
+			const fixtureSource = readInput(ref.dataset.file);
+			const fixture = JSON.parse(fixtureSource);
 			const collection = ref.dataset.collection ? fixture[ref.dataset.collection] : fixture;
 			assert.equal(new Set(ref.dataset.caseIds).size, ref.dataset.caseIds.length, 'unique fixture cases');
 			for (const id of ref.dataset.caseIds) {
 				assert.ok(Array.isArray(collection) ? collection.some(x => x.id === id) : Object.hasOwn(collection, id), `fixture case ${id}`);
 			}
+			assert.equal(digest(fixtureSource), value.sourceInputs[ref.dataset.file], `fixture hash ${ref.dataset.file}`);
 			if (ref.dataset.sourceExpression) assert.ok(source.includes(ref.dataset.sourceExpression), 'parameter expression');
 		}
 	}
@@ -139,7 +162,7 @@ function validate(value, readInput = read) {
 		for (const obs of group.observations ?? []) assert.ok(Object.hasOwn(JSON.parse(readInput(obs.file)), obs.key), 'observation key');
 	}
 	assert.deepEqual(value.groups.map(x => x.id), ['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','F1','F2','F3','F4','F5','F6','F7','F8']);
-	for (const [file, hash] of Object.entries(value.sourceInputs)) assert.equal(digest(readInput(file)), hash, `input hash ${file}`);
+	for (const [file, hash] of Object.entries(value.sourceInputs)) assert.equal(digest(readHistorical(value.runtimeBaseline, file)), hash, `input hash ${file}`);
 	for (const [file, hash] of Object.entries(value.upstreamSourceHashes)) assert.equal(digest(historicalSource(value.upstreamCommit, file)), hash, `upstream source hash ${file}`);
 	// Seals require a deliberate review when a declaration's meaning, parameters,
 	// provenance or ID mapping changes; a valid key/title alone is insufficient.
@@ -147,8 +170,8 @@ function validate(value, readInput = read) {
 }
 
 const reviewed = {
-  "evidenceBindings": "0eb55065ba2330357b281846eded8d7f85c242ef78d40bdbab6886979cfbc424",
-  "assignments": "0d2f830777d834352fd5b5706b4d50623aa7f687e51079ad498dfe1b1d4d5768",
+  "evidenceBindings": "020594b2c8e28aa25a668a0647a862321fe61e5f4db0a8162153d536b4f6d1ec",
+  "assignments": "442250a5e6026e859eae86fa9c3661da0db6f201ec4488a7951a4d1be936a96d",
   "groups": "1c4d4c9f782d27db33123ebf3a6c2345d1778004b8644c1e71dd3ab5279ed6ca",
   "deleteSourceCases": "6f96b4d8be861c69830e67c4af728f0e1de7899d97e381912eef102a921dde11",
   "measurements": "72e823fda9a60bd801cf1afbeeffadaaddf08126e5819f2d0fbb87f2bab8a6a9",
