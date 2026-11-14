@@ -9,7 +9,7 @@ import type { EntityManager } from 'typeorm';
 import type { FeaturedReader, NotePublicationReader, NotePublicationRow } from '../../modules/federation/public.js';
 import type { NoteMediaOptions } from './note-files.js';
 
-function row(note: MiNote): NotePublicationRow {
+export function publicationRow(note: MiNote): NotePublicationRow {
 	return {
 		id: note.id, userId: note.userId, userHost: note.userHost, uri: note.uri, localOnly: note.localOnly,
 		text: note.text, cw: note.cw, visibility: note.visibility, replyId: note.replyId, renoteId: note.renoteId,
@@ -23,7 +23,7 @@ export function createNotePublicationReader(manager: EntityManager, options: Pic
 	return {
 		async readNote(id) {
 			const note = await manager.getRepository(MiNote).findOneBy({ id });
-			return note === null ? null : row(note);
+			return note === null ? null : publicationRow(note);
 		},
 		authorExists: id => manager.getRepository(MiUser).existsBy({ id }),
 		readMentionedUsers: facts.readMentionedUsers, readFiles: facts.readFileFacts,
@@ -40,13 +40,13 @@ export function createFeaturedReader(manager: EntityManager): FeaturedReader {
 			return (await manager.getRepository(MiUserNotePining).find({ where: { userId }, order: { id: 'DESC' } })).map(pin => pin.noteId);
 		},
 		async readPinnedNote(id) {
-			return row(await manager.getRepository(MiNote).findOneByOrFail({ id }));
+			return publicationRow(await manager.getRepository(MiNote).findOneByOrFail({ id }));
 		},
 	};
 }
 export function createPublicNoteReader(manager: EntityManager) {
 	return async (id: string): Promise<NotePublicationRow | null> => {
 		const note = await manager.getRepository(MiNote).findOneBy({ id, visibility: In(['public', 'home']), localOnly: false });
-		return note === null ? null : row(note);
+		return note === null ? null : publicationRow(note);
 	};
 }

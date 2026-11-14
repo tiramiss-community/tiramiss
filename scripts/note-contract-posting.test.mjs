@@ -95,7 +95,8 @@ function validate(value) {
 	unique(value.cases.map(x => x.id), 'C groups');
 	same(value.cases.map(x => x.id), historical.cases.filter(x => /^C\d+$/.test(x.id)).map(x => x.id), 'C groups');
 	unique(value.contracts.map(x => x.id), 'inventory IDs');
-	const primary = inventory.filter(x => ['notes', 'ap-outbound'].includes(x.domain));
+	// This ledger records dated classifications; live progress is checked separately below.
+	const primary = JSON.parse(readHistorical('docs/superpowers/compatibility/backend-inventory/contracts.json')).contracts.filter(x => ['notes', 'ap-outbound'].includes(x.domain));
 	assert.equal(primary.length, 104);
 	same(value.contracts.map(x => x.id), primary.map(x => x.id), 'inventory identities');
 	for (const row of value.contracts) {

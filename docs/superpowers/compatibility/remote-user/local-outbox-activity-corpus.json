@@ -1,0 +1,1581 @@
+{
+  "source": "8e07cf085adf7009583d234a208e30436f020e26",
+  "defaults": {
+    "selfUrl": "https://local.example",
+    "now": "2026-11-03T12:00:00.000Z",
+    "note": {
+      "id": "at3hjq77note0001",
+      "userId": "alice",
+      "userHost": null,
+      "uri": null,
+      "text": "hello",
+      "cw": null,
+      "visibility": "public",
+      "localOnly": false,
+      "replyId": null,
+      "renoteId": null,
+      "channelId": null,
+      "fileIds": [],
+      "hasPoll": false,
+      "tags": [],
+      "emojis": [],
+      "mentions": [],
+      "visibleUserIds": [],
+      "mentionedRemoteUsers": "[]",
+      "replyUserId": null,
+      "replyUserHost": null,
+      "renoteUserId": null,
+      "renoteUserHost": null
+    },
+    "users": [
+      {
+        "id": "alice",
+        "username": "alice",
+        "host": null,
+        "uri": null,
+        "isSuspended": false,
+        "notesCount": 123
+      },
+      {
+        "id": "remote",
+        "username": "bob",
+        "host": "remote.test",
+        "uri": "https://remote.test/users/bob",
+        "isSuspended": false
+      },
+      {
+        "id": "suspended",
+        "username": "suspended",
+        "host": null,
+        "uri": null,
+        "isSuspended": true
+      },
+      {
+        "id": "blocked",
+        "username": "blocked",
+        "host": "blocked.test",
+        "uri": "https://blocked.test/users/blocked",
+        "isSuspended": false
+      }
+    ]
+  },
+  "limits": [
+    "Literal methods and real Fastify injection; no full upstream boot, PostgreSQL, Redis server or network.",
+    "Repository/QueryBuilder/Redis doubles implement only the finite source predicates and facts. JS ASCII ordering does not establish PostgreSQL collation.",
+    "Actual Note/Create/Announce/collection/MFM renderers and context; file/poll/user/emoji repositories are doubles.",
+    "Fastify root options are literal; ActivityPub createServer installs its own hooks. Global ServerService hooks, HTML frontend, redirects policy, production security headers and full error diagnostic strings are excluded.",
+    "JSON error bodies retain statusCode/error only; empty bodies and text responses remain exact. Events are source traces, not product architecture requirements."
+  ],
+  "datasets": {
+    "rows0": [],
+    "rows1": [
+      {
+        "id": "at3hjq77note0001"
+      }
+    ],
+    "rows20": [
+      {
+        "id": "at3hjq77note0001"
+      },
+      {
+        "id": "at3hjq77note0002"
+      },
+      {
+        "id": "at3hjq77note0003"
+      },
+      {
+        "id": "at3hjq77note0004"
+      },
+      {
+        "id": "at3hjq77note0005"
+      },
+      {
+        "id": "at3hjq77note0006"
+      },
+      {
+        "id": "at3hjq77note0007"
+      },
+      {
+        "id": "at3hjq77note0008"
+      },
+      {
+        "id": "at3hjq77note0009"
+      },
+      {
+        "id": "at3hjq77note0010"
+      },
+      {
+        "id": "at3hjq77note0011"
+      },
+      {
+        "id": "at3hjq77note0012"
+      },
+      {
+        "id": "at3hjq77note0013"
+      },
+      {
+        "id": "at3hjq77note0014"
+      },
+      {
+        "id": "at3hjq77note0015"
+      },
+      {
+        "id": "at3hjq77note0016"
+      },
+      {
+        "id": "at3hjq77note0017"
+      },
+      {
+        "id": "at3hjq77note0018"
+      },
+      {
+        "id": "at3hjq77note0019"
+      },
+      {
+        "id": "at3hjq77note0020"
+      }
+    ],
+    "rows21": [
+      {
+        "id": "at3hjq77note0001"
+      },
+      {
+        "id": "at3hjq77note0002"
+      },
+      {
+        "id": "at3hjq77note0003"
+      },
+      {
+        "id": "at3hjq77note0004"
+      },
+      {
+        "id": "at3hjq77note0005"
+      },
+      {
+        "id": "at3hjq77note0006"
+      },
+      {
+        "id": "at3hjq77note0007"
+      },
+      {
+        "id": "at3hjq77note0008"
+      },
+      {
+        "id": "at3hjq77note0009"
+      },
+      {
+        "id": "at3hjq77note0010"
+      },
+      {
+        "id": "at3hjq77note0011"
+      },
+      {
+        "id": "at3hjq77note0012"
+      },
+      {
+        "id": "at3hjq77note0013"
+      },
+      {
+        "id": "at3hjq77note0014"
+      },
+      {
+        "id": "at3hjq77note0015"
+      },
+      {
+        "id": "at3hjq77note0016"
+      },
+      {
+        "id": "at3hjq77note0017"
+      },
+      {
+        "id": "at3hjq77note0018"
+      },
+      {
+        "id": "at3hjq77note0019"
+      },
+      {
+        "id": "at3hjq77note0020"
+      },
+      {
+        "id": "at3hjq77note0021"
+      }
+    ],
+    "rows55": [
+      {
+        "id": "at3hjq77note0001"
+      },
+      {
+        "id": "at3hjq77note0002"
+      },
+      {
+        "id": "at3hjq77note0003"
+      },
+      {
+        "id": "at3hjq77note0004"
+      },
+      {
+        "id": "at3hjq77note0005"
+      },
+      {
+        "id": "at3hjq77note0006"
+      },
+      {
+        "id": "at3hjq77note0007"
+      },
+      {
+        "id": "at3hjq77note0008"
+      },
+      {
+        "id": "at3hjq77note0009"
+      },
+      {
+        "id": "at3hjq77note0010"
+      },
+      {
+        "id": "at3hjq77note0011"
+      },
+      {
+        "id": "at3hjq77note0012"
+      },
+      {
+        "id": "at3hjq77note0013"
+      },
+      {
+        "id": "at3hjq77note0014"
+      },
+      {
+        "id": "at3hjq77note0015"
+      },
+      {
+        "id": "at3hjq77note0016"
+      },
+      {
+        "id": "at3hjq77note0017"
+      },
+      {
+        "id": "at3hjq77note0018"
+      },
+      {
+        "id": "at3hjq77note0019"
+      },
+      {
+        "id": "at3hjq77note0020"
+      },
+      {
+        "id": "at3hjq77note0021"
+      },
+      {
+        "id": "at3hjq77note0022"
+      },
+      {
+        "id": "at3hjq77note0023"
+      },
+      {
+        "id": "at3hjq77note0024"
+      },
+      {
+        "id": "at3hjq77note0025"
+      },
+      {
+        "id": "at3hjq77note0026"
+      },
+      {
+        "id": "at3hjq77note0027"
+      },
+      {
+        "id": "at3hjq77note0028"
+      },
+      {
+        "id": "at3hjq77note0029"
+      },
+      {
+        "id": "at3hjq77note0030",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0031",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0032",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0033",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0034",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0035",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0036",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0037",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0038",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0039",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0040",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0041",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0042",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0043",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0044",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0045",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0046",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0047",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0048",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0049",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0050",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0051",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0052",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0053",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0054",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0055",
+        "userId": "suspended"
+      }
+    ],
+    "mixed": [
+      {
+        "id": "at3hjq77note0001"
+      },
+      {
+        "id": "at3hjq77note0002",
+        "visibility": "home"
+      },
+      {
+        "id": "at3hjq77note0003",
+        "visibility": "followers"
+      },
+      {
+        "id": "at3hjq77note0004",
+        "localOnly": true
+      },
+      {
+        "id": "at3hjq77note0005",
+        "userId": "remote",
+        "userHost": "remote.test"
+      },
+      {
+        "id": "at3hjq77note0006",
+        "userId": "suspended"
+      },
+      {
+        "id": "at3hjq77note0007",
+        "renoteUserId": "blocked",
+        "renoteUserHost": "blocked.test",
+        "renoteId": "at3hjq77note0090"
+      },
+      {
+        "id": "at3hjq77note0008",
+        "replyUserId": "suspended",
+        "replyId": "at3hjq77note0091"
+      }
+    ],
+    "missing-author": [
+      {
+        "id": "at3hjq77note0001"
+      },
+      {
+        "id": "at3hjq77note0002",
+        "userId": "absent-author"
+      }
+    ],
+    "missing-tail": [
+      {
+        "id": "at3hjq77note0001"
+      },
+      {
+        "id": "at3hjq77note0002"
+      },
+      {
+        "id": "at3hjq77note0003"
+      },
+      {
+        "id": "at3hjq77note0004"
+      },
+      {
+        "id": "at3hjq77note0005"
+      },
+      {
+        "id": "at3hjq77note0006"
+      },
+      {
+        "id": "at3hjq77note0007"
+      },
+      {
+        "id": "at3hjq77note0008"
+      },
+      {
+        "id": "at3hjq77note0009"
+      },
+      {
+        "id": "at3hjq77note0010"
+      },
+      {
+        "id": "at3hjq77note0011"
+      },
+      {
+        "id": "at3hjq77note0012"
+      },
+      {
+        "id": "at3hjq77note0013"
+      },
+      {
+        "id": "at3hjq77note0014"
+      },
+      {
+        "id": "at3hjq77note0015"
+      },
+      {
+        "id": "at3hjq77note0016"
+      },
+      {
+        "id": "at3hjq77note0017"
+      },
+      {
+        "id": "at3hjq77note0018"
+      },
+      {
+        "id": "at3hjq77note0019"
+      },
+      {
+        "id": "at3hjq77note0020"
+      },
+      {
+        "id": "at3hjq77note0021"
+      },
+      {
+        "id": "at3hjq77note0018z"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "activity-public",
+      "route": "activity",
+      "note": {}
+    },
+    {
+      "id": "activity-home",
+      "route": "activity",
+      "note": {
+        "visibility": "home"
+      }
+    },
+    {
+      "id": "activity-followers",
+      "route": "activity",
+      "note": {
+        "visibility": "followers"
+      }
+    },
+    {
+      "id": "activity-specified",
+      "route": "activity",
+      "note": {
+        "visibility": "specified"
+      }
+    },
+    {
+      "id": "activity-local-only",
+      "route": "activity",
+      "note": {
+        "localOnly": true
+      }
+    },
+    {
+      "id": "activity-remote",
+      "route": "activity",
+      "note": {
+        "userHost": "remote.test",
+        "userId": "remote"
+      }
+    },
+    {
+      "id": "activity-missing",
+      "route": "activity",
+      "note": {},
+      "missing": true
+    },
+    {
+      "id": "activity-federation-none",
+      "route": "activity",
+      "federation": "none",
+      "missing": true,
+      "query": "?since_id=x&until_id=y"
+    },
+    {
+      "id": "activity-accept-html",
+      "route": "activity",
+      "accept": "text/html"
+    },
+    {
+      "id": "activity-accept-unsupported",
+      "route": "activity",
+      "accept": "image/png"
+    },
+    {
+      "id": "activity-accept-ld",
+      "route": "activity",
+      "accept": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\""
+    },
+    {
+      "id": "activity-accept-absent",
+      "route": "activity",
+      "accept": null
+    },
+    {
+      "id": "activity-HEAD",
+      "route": "activity",
+      "method": "HEAD"
+    },
+    {
+      "id": "activity-OPTIONS",
+      "route": "activity",
+      "method": "OPTIONS"
+    },
+    {
+      "id": "activity-path-percent",
+      "route": "activity",
+      "path": "/notes/%/activity"
+    },
+    {
+      "id": "activity-path-utf8",
+      "route": "activity",
+      "path": "/notes/%FF/activity"
+    },
+    {
+      "id": "activity-path-long",
+      "route": "activity",
+      "path": "/notes/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/activity"
+    },
+    {
+      "id": "outbox-federation-none",
+      "route": "outbox",
+      "federation": "none",
+      "missing": true,
+      "query": "?since_id=x&until_id=y"
+    },
+    {
+      "id": "outbox-accept-html",
+      "route": "outbox",
+      "accept": "text/html"
+    },
+    {
+      "id": "outbox-accept-unsupported",
+      "route": "outbox",
+      "accept": "image/png"
+    },
+    {
+      "id": "outbox-accept-ld",
+      "route": "outbox",
+      "accept": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\""
+    },
+    {
+      "id": "outbox-accept-absent",
+      "route": "outbox",
+      "accept": null
+    },
+    {
+      "id": "outbox-HEAD",
+      "route": "outbox",
+      "method": "HEAD"
+    },
+    {
+      "id": "outbox-OPTIONS",
+      "route": "outbox",
+      "method": "OPTIONS"
+    },
+    {
+      "id": "outbox-path-percent",
+      "route": "outbox",
+      "path": "/users/%/outbox"
+    },
+    {
+      "id": "outbox-path-utf8",
+      "route": "outbox",
+      "path": "/users/%FF/outbox"
+    },
+    {
+      "id": "outbox-path-long",
+      "route": "outbox",
+      "path": "/users/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/outbox"
+    },
+    {
+      "id": "activity-announce-local",
+      "route": "activity",
+      "note": {
+        "renoteId": "at3hjq77note0002",
+        "text": null
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002"
+        }
+      ]
+    },
+    {
+      "id": "activity-announce-remote",
+      "route": "activity",
+      "note": {
+        "renoteId": "at3hjq77note0002",
+        "text": null
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "uri": "https://remote.test/n/2",
+          "userHost": "remote.test",
+          "userId": "remote"
+        }
+      ]
+    },
+    {
+      "id": "activity-announce-home",
+      "route": "activity",
+      "note": {
+        "renoteId": "at3hjq77note0002",
+        "text": null,
+        "visibility": "home"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002"
+        }
+      ]
+    },
+    {
+      "id": "activity-announce-missing",
+      "route": "activity",
+      "note": {
+        "renoteId": "at3hjq77note0002",
+        "text": null
+      }
+    },
+    {
+      "id": "activity-quote-missing",
+      "route": "activity",
+      "note": {
+        "renoteId": "at3hjq77note0002",
+        "text": "quote"
+      }
+    },
+    {
+      "id": "activity-quote-empty-text",
+      "route": "activity",
+      "note": {
+        "renoteId": "at3hjq77note0002",
+        "text": ""
+      }
+    },
+    {
+      "id": "activity-quote-empty-cw",
+      "route": "activity",
+      "note": {
+        "renoteId": "at3hjq77note0002",
+        "text": null,
+        "cw": ""
+      }
+    },
+    {
+      "id": "activity-quote-reply",
+      "route": "activity",
+      "note": {
+        "renoteId": "at3hjq77note0002",
+        "text": null,
+        "replyId": "at3hjq77note0003"
+      }
+    },
+    {
+      "id": "activity-quote-files",
+      "route": "activity",
+      "note": {
+        "renoteId": "at3hjq77note0002",
+        "text": null,
+        "fileIds": [
+          "absent-file"
+        ]
+      }
+    },
+    {
+      "id": "activity-quote-poll",
+      "route": "activity",
+      "note": {
+        "renoteId": "at3hjq77note0002",
+        "text": null,
+        "hasPoll": true
+      },
+      "poll": {
+        "choices": [
+          "a",
+          "b"
+        ],
+        "votes": [
+          0,
+          0
+        ],
+        "multiple": false
+      }
+    },
+    {
+      "id": "outbox-index",
+      "route": "outbox",
+      "query": ""
+    },
+    {
+      "id": "outbox-page",
+      "route": "outbox",
+      "query": "?page=true"
+    },
+    {
+      "id": "outbox-false",
+      "route": "outbox",
+      "query": "?page=false"
+    },
+    {
+      "id": "outbox-one",
+      "route": "outbox",
+      "query": "?page=1"
+    },
+    {
+      "id": "outbox-upper",
+      "route": "outbox",
+      "query": "?page=True"
+    },
+    {
+      "id": "outbox-empty-page",
+      "route": "outbox",
+      "query": "?page="
+    },
+    {
+      "id": "outbox-duplicate-page",
+      "route": "outbox",
+      "query": "?page=true&page=true"
+    },
+    {
+      "id": "outbox-since-empty",
+      "route": "outbox",
+      "query": "?page=true&since_id="
+    },
+    {
+      "id": "outbox-until-empty",
+      "route": "outbox",
+      "query": "?page=true&until_id="
+    },
+    {
+      "id": "outbox-both-empty",
+      "route": "outbox",
+      "query": "?page=true&since_id=&until_id="
+    },
+    {
+      "id": "outbox-both",
+      "route": "outbox",
+      "query": "?page=true&since_id=x&until_id=y"
+    },
+    {
+      "id": "outbox-duplicate-since",
+      "route": "outbox",
+      "query": "?since_id=x&since_id=y"
+    },
+    {
+      "id": "outbox-duplicate-until",
+      "route": "outbox",
+      "query": "?until_id=&until_id="
+    },
+    {
+      "id": "outbox-invalid-since",
+      "route": "outbox",
+      "query": "?page=true&since_id=not-an-id"
+    },
+    {
+      "id": "outbox-invalid-until",
+      "route": "outbox",
+      "query": "?page=true&until_id=not-an-id"
+    },
+    {
+      "id": "outbox-cursor-encoded",
+      "route": "outbox",
+      "query": "?page=true&until_id=a%26b%3Dc"
+    },
+    {
+      "id": "outbox-unknown",
+      "route": "outbox",
+      "query": "?page=true&limit=1",
+      "dataset": "rows21"
+    },
+    {
+      "id": "outbox-missing",
+      "route": "outbox",
+      "missing": true
+    },
+    {
+      "id": "outbox-remote",
+      "route": "outbox",
+      "path": "/users/remote/outbox"
+    },
+    {
+      "id": "outbox-suspended",
+      "route": "outbox",
+      "user": {
+        "isSuspended": true
+      }
+    },
+    {
+      "id": "outbox-invalid-before-user",
+      "route": "outbox",
+      "missing": true,
+      "query": "?since_id=&until_id="
+    },
+    {
+      "id": "db-limit-0",
+      "route": "outbox",
+      "query": "?page=true",
+      "dataset": "rows0"
+    },
+    {
+      "id": "db-limit-1",
+      "route": "outbox",
+      "query": "?page=true",
+      "dataset": "rows1"
+    },
+    {
+      "id": "db-limit-20",
+      "route": "outbox",
+      "query": "?page=true",
+      "dataset": "rows20"
+    },
+    {
+      "id": "db-limit-21",
+      "route": "outbox",
+      "query": "?page=true",
+      "dataset": "rows21"
+    },
+    {
+      "id": "db-until-exclusive",
+      "route": "outbox",
+      "query": "?page=true&until_id=at3hjq77note0020",
+      "dataset": "rows21"
+    },
+    {
+      "id": "db-since-exclusive",
+      "route": "outbox",
+      "query": "?page=true&since_id=at3hjq77note0001",
+      "dataset": "rows21"
+    },
+    {
+      "id": "db-until-empty-page",
+      "route": "outbox",
+      "query": "?page=true&until_id=at3hjq77note0001",
+      "dataset": "rows21"
+    },
+    {
+      "id": "db-since-empty-page",
+      "route": "outbox",
+      "query": "?page=true&since_id=at3hjq77note0021",
+      "dataset": "rows21"
+    },
+    {
+      "id": "db-mixed-no-fanout-filters",
+      "route": "outbox",
+      "query": "?page=true",
+      "dataset": "mixed",
+      "visitor": "none",
+      "relatedNotes": [
+        {
+          "id": "at3hjq77note0090",
+          "userId": "blocked",
+          "userHost": "blocked.test",
+          "uri": "https://blocked.test/n/90"
+        },
+        {
+          "id": "at3hjq77note0091",
+          "userId": "suspended"
+        }
+      ]
+    },
+    {
+      "id": "fanout-empty-fallback",
+      "route": "outbox",
+      "query": "?page=true",
+      "fanout": true,
+      "dataset": "rows21"
+    },
+    {
+      "id": "fanout-null-fallback",
+      "route": "outbox",
+      "query": "?page=true",
+      "fanout": true,
+      "dataset": "rows21",
+      "redis": "null"
+    },
+    {
+      "id": "fanout-reject-no-fallback",
+      "route": "outbox",
+      "query": "?page=true",
+      "fanout": true,
+      "dataset": "rows21",
+      "redis": "reject"
+    },
+    {
+      "id": "fanout-command-error-no-fallback",
+      "route": "outbox",
+      "query": "?page=true",
+      "fanout": true,
+      "dataset": "rows21",
+      "redis": "command-error"
+    },
+    {
+      "id": "fanout-merge-dedup-limit20",
+      "route": "outbox",
+      "query": "?page=true",
+      "fanout": true,
+      "dataset": "rows21",
+      "lists": [
+        [
+          "at3hjq77note0001",
+          "at3hjq77note0002",
+          "at3hjq77note0003",
+          "at3hjq77note0004",
+          "at3hjq77note0005",
+          "at3hjq77note0006",
+          "at3hjq77note0007",
+          "at3hjq77note0008",
+          "at3hjq77note0009",
+          "at3hjq77note0010",
+          "at3hjq77note0011",
+          "at3hjq77note0012",
+          "at3hjq77note0013",
+          "at3hjq77note0014",
+          "at3hjq77note0015",
+          "at3hjq77note0016",
+          "at3hjq77note0017",
+          "at3hjq77note0018",
+          "at3hjq77note0019",
+          "at3hjq77note0020",
+          "at3hjq77note0021"
+        ],
+        [
+          "at3hjq77note0021",
+          "at3hjq77note0005"
+        ]
+      ]
+    },
+    {
+      "id": "fanout-mixed-refill",
+      "route": "outbox",
+      "query": "?page=true",
+      "fanout": true,
+      "dataset": "mixed",
+      "lists": [
+        [
+          "at3hjq77note0001",
+          "at3hjq77note0002",
+          "at3hjq77note0003",
+          "at3hjq77note0004",
+          "at3hjq77note0005",
+          "at3hjq77note0006",
+          "at3hjq77note0007",
+          "at3hjq77note0008",
+          "at3hjq77note0009"
+        ],
+        [
+          "at3hjq77note0002"
+        ]
+      ],
+      "relatedNotes": [
+        {
+          "id": "at3hjq77note0090",
+          "userId": "blocked",
+          "userHost": "blocked.test",
+          "uri": "https://blocked.test/n/90"
+        },
+        {
+          "id": "at3hjq77note0091",
+          "userId": "suspended"
+        }
+      ]
+    },
+    {
+      "id": "fanout-visitor-none-fallback",
+      "route": "outbox",
+      "query": "?page=true",
+      "fanout": true,
+      "dataset": "mixed",
+      "visitor": "none",
+      "lists": [
+        [
+          "at3hjq77note0008",
+          "at3hjq77note0007"
+        ],
+        []
+      ],
+      "relatedNotes": [
+        {
+          "id": "at3hjq77note0090",
+          "userId": "blocked",
+          "userHost": "blocked.test",
+          "uri": "https://blocked.test/n/90"
+        },
+        {
+          "id": "at3hjq77note0091",
+          "userId": "suspended"
+        }
+      ]
+    },
+    {
+      "id": "fanout-visitor-local",
+      "route": "outbox",
+      "query": "?page=true",
+      "fanout": true,
+      "dataset": "mixed",
+      "visitor": "local",
+      "lists": [
+        [
+          "at3hjq77note0005",
+          "at3hjq77note0002",
+          "at3hjq77note0001"
+        ],
+        []
+      ],
+      "relatedNotes": [
+        {
+          "id": "at3hjq77note0090",
+          "userId": "blocked",
+          "userHost": "blocked.test",
+          "uri": "https://blocked.test/n/90"
+        },
+        {
+          "id": "at3hjq77note0091",
+          "userId": "suspended"
+        }
+      ]
+    },
+    {
+      "id": "fanout-missing-tail-fallback-cursor",
+      "route": "outbox",
+      "query": "?page=true",
+      "fanout": true,
+      "dataset": "missing-tail",
+      "lists": [
+        [
+          "at3hjq77note0021",
+          "at3hjq77note0019",
+          "at3hjq77note0018missing"
+        ],
+        []
+      ]
+    },
+    {
+      "id": "fanout-multi-batch-refill",
+      "route": "outbox",
+      "query": "?page=true",
+      "fanout": true,
+      "dataset": "rows55",
+      "lists": [
+        [
+          "at3hjq77note0001",
+          "at3hjq77note0002",
+          "at3hjq77note0003",
+          "at3hjq77note0004",
+          "at3hjq77note0005",
+          "at3hjq77note0006",
+          "at3hjq77note0007",
+          "at3hjq77note0008",
+          "at3hjq77note0009",
+          "at3hjq77note0010",
+          "at3hjq77note0011",
+          "at3hjq77note0012",
+          "at3hjq77note0013",
+          "at3hjq77note0014",
+          "at3hjq77note0015",
+          "at3hjq77note0016",
+          "at3hjq77note0017",
+          "at3hjq77note0018",
+          "at3hjq77note0019",
+          "at3hjq77note0020",
+          "at3hjq77note0021",
+          "at3hjq77note0022",
+          "at3hjq77note0023",
+          "at3hjq77note0024",
+          "at3hjq77note0025",
+          "at3hjq77note0026",
+          "at3hjq77note0027",
+          "at3hjq77note0028",
+          "at3hjq77note0029",
+          "at3hjq77note0030",
+          "at3hjq77note0031",
+          "at3hjq77note0032",
+          "at3hjq77note0033",
+          "at3hjq77note0034",
+          "at3hjq77note0035",
+          "at3hjq77note0036",
+          "at3hjq77note0037",
+          "at3hjq77note0038",
+          "at3hjq77note0039",
+          "at3hjq77note0040",
+          "at3hjq77note0041",
+          "at3hjq77note0042",
+          "at3hjq77note0043",
+          "at3hjq77note0044",
+          "at3hjq77note0045",
+          "at3hjq77note0046",
+          "at3hjq77note0047",
+          "at3hjq77note0048",
+          "at3hjq77note0049",
+          "at3hjq77note0050",
+          "at3hjq77note0051",
+          "at3hjq77note0052",
+          "at3hjq77note0053",
+          "at3hjq77note0054",
+          "at3hjq77note0055"
+        ],
+        []
+      ],
+      "user": {
+        "isSuspended": false
+      }
+    },
+    {
+      "id": "fanout-since-coverage-fallback",
+      "route": "outbox",
+      "fanout": true,
+      "query": "?page=true&since_id=at3hjq77note0001",
+      "dataset": "rows21",
+      "lists": [
+        [
+          "at3hjq77note0019",
+          "at3hjq77note0020",
+          "at3hjq77note0021"
+        ],
+        []
+      ]
+    },
+    {
+      "id": "fanout-since-refill",
+      "route": "outbox",
+      "fanout": true,
+      "query": "?page=true&since_id=at3hjq77note0019",
+      "dataset": "rows21",
+      "lists": [
+        [
+          "at3hjq77note0019",
+          "at3hjq77note0020",
+          "at3hjq77note0021"
+        ],
+        []
+      ]
+    },
+    {
+      "id": "fanout-until-exclusive",
+      "route": "outbox",
+      "fanout": true,
+      "query": "?page=true&until_id=at3hjq77note0020",
+      "dataset": "rows21",
+      "lists": [
+        [
+          "at3hjq77note0019",
+          "at3hjq77note0020",
+          "at3hjq77note0021"
+        ],
+        []
+      ]
+    },
+    {
+      "id": "fanout-empty-since",
+      "route": "outbox",
+      "fanout": true,
+      "query": "?page=true&since_id=",
+      "dataset": "rows21",
+      "lists": [
+        [
+          "at3hjq77note0021",
+          "at3hjq77note0020"
+        ],
+        []
+      ]
+    },
+    {
+      "id": "activity-bracket-page",
+      "route": "activity",
+      "query": "?page[]=true"
+    },
+    {
+      "id": "activity-encoded-key",
+      "route": "activity",
+      "query": "?%70age=true&%73ince_id="
+    },
+    {
+      "id": "activity-malformed-query",
+      "route": "activity",
+      "query": "?page=true&until_id=%FF%"
+    },
+    {
+      "id": "activity-plus-query",
+      "route": "activity",
+      "query": "?page=true&until_id=a+b"
+    },
+    {
+      "id": "activity-q-zero",
+      "route": "activity",
+      "query": "",
+      "accept": "application/activity+json;q=0"
+    },
+    {
+      "id": "activity-failure-lookup",
+      "route": "activity",
+      "fail": "root"
+    },
+    {
+      "id": "activity-malformed-before-federation",
+      "route": "activity",
+      "federation": "none",
+      "path": "/notes/%/activity"
+    },
+    {
+      "id": "outbox-bracket-page",
+      "route": "outbox",
+      "query": "?page[]=true"
+    },
+    {
+      "id": "outbox-encoded-key",
+      "route": "outbox",
+      "query": "?%70age=true&%73ince_id="
+    },
+    {
+      "id": "outbox-malformed-query",
+      "route": "outbox",
+      "query": "?page=true&until_id=%FF%"
+    },
+    {
+      "id": "outbox-plus-query",
+      "route": "outbox",
+      "query": "?page=true&until_id=a+b"
+    },
+    {
+      "id": "outbox-q-zero",
+      "route": "outbox",
+      "query": "",
+      "accept": "application/activity+json;q=0"
+    },
+    {
+      "id": "outbox-failure-lookup",
+      "route": "outbox",
+      "fail": "user"
+    },
+    {
+      "id": "outbox-malformed-before-federation",
+      "route": "outbox",
+      "federation": "none",
+      "path": "/users/%/outbox"
+    },
+    {
+      "id": "activity-suspended-author",
+      "route": "activity",
+      "note": {},
+      "user": {
+        "isSuspended": true
+      }
+    },
+    {
+      "id": "activity-missing-poll",
+      "route": "activity",
+      "note": {
+        "text": null,
+        "renoteId": "at3hjq77note0002",
+        "hasPoll": true
+      }
+    },
+    {
+      "id": "activity-existing-quote",
+      "route": "activity",
+      "note": {
+        "renoteId": "at3hjq77note0002"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002"
+        }
+      ]
+    },
+    {
+      "id": "outbox-db-failure",
+      "route": "outbox",
+      "query": "?page=true",
+      "fail": "db"
+    },
+    {
+      "id": "outbox-mixed-activities",
+      "route": "outbox",
+      "query": "?page=true",
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "text": null,
+          "renoteId": "at3hjq77note0009"
+        },
+        {
+          "id": "at3hjq77note0003",
+          "renoteId": "at3hjq77note0008"
+        },
+        {
+          "id": "at3hjq77note0009",
+          "userId": "remote",
+          "userHost": "remote.test",
+          "uri": "https://remote.test/n/9"
+        }
+      ]
+    },
+    {
+      "id": "outbox-announce-missing",
+      "route": "outbox",
+      "query": "?page=true",
+      "note": {
+        "text": null,
+        "renoteId": "at3hjq77note0002"
+      }
+    },
+    {
+      "id": "fanout-missing-author",
+      "route": "outbox",
+      "query": "?page=true",
+      "fanout": true,
+      "dataset": "missing-author",
+      "lists": [
+        [
+          "at3hjq77note0002",
+          "at3hjq77note0001"
+        ],
+        []
+      ]
+    },
+    {
+      "id": "db-since-nearest20-of21",
+      "route": "outbox",
+      "query": "?page=true&since_id=at3hjq77note0000",
+      "dataset": "rows21"
+    },
+    {
+      "id": "fanout-index-no-read",
+      "route": "outbox",
+      "fanout": true,
+      "redis": "reject"
+    },
+    {
+      "id": "activity-reply-local",
+      "route": "activity",
+      "note": {
+        "replyId": "at3hjq77note0002"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002"
+        }
+      ]
+    },
+    {
+      "id": "activity-reply-remote",
+      "route": "activity",
+      "note": {
+        "replyId": "at3hjq77note0002"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "remote",
+          "userHost": "remote.test",
+          "uri": "https://remote.test/n/2"
+        }
+      ]
+    },
+    {
+      "id": "activity-reply-missing-author",
+      "route": "activity",
+      "note": {
+        "replyId": "at3hjq77note0002"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002",
+          "userId": "absent-author"
+        }
+      ]
+    },
+    {
+      "id": "activity-announce-malformed-mentions",
+      "route": "activity",
+      "note": {
+        "text": null,
+        "renoteId": "at3hjq77note0002",
+        "mentionedRemoteUsers": "{broken"
+      },
+      "notes": [
+        {
+          "id": "at3hjq77note0002"
+        }
+      ]
+    },
+    {
+      "id": "activity-render-media-tags",
+      "route": "activity",
+      "note": {
+        "fileIds": [
+          "file2",
+          "absent",
+          "file1"
+        ],
+        "mentions": [
+          "remote",
+          "alice"
+        ],
+        "emojis": [
+          "wave",
+          "private"
+        ],
+        "tags": [
+          "topic"
+        ],
+        "mentionedRemoteUsers": "[{\"uri\": \"https://remote.test/users/bob\"}]"
+      },
+      "files": [
+        {
+          "id": "file1",
+          "type": "image/png",
+          "url": "https://local.example/files/one.png",
+          "webpublicUrl": null,
+          "comment": "one",
+          "properties": {
+            "width": 10,
+            "height": 20
+          },
+          "isSensitive": false
+        },
+        {
+          "id": "file2",
+          "type": "image/jpeg",
+          "url": "https://local.example/files/two.jpg",
+          "webpublicUrl": null,
+          "comment": "two",
+          "properties": {
+            "width": 30,
+            "height": 40
+          },
+          "isSensitive": true
+        }
+      ],
+      "emojis": [
+        {
+          "name": "wave",
+          "type": "image/png",
+          "publicUrl": "https://local.example/emoji/wave.png",
+          "originalUrl": "",
+          "license": "test",
+          "localOnly": false,
+          "updatedAt": "2026-11-01T00:00:00.000Z"
+        },
+        {
+          "name": "private",
+          "localOnly": true
+        }
+      ]
+    },
+    {
+      "id": "HEAD-page",
+      "method": "HEAD",
+      "route": "outbox",
+      "query": "?page=true"
+    },
+    {
+      "id": "HEAD-db-failure",
+      "method": "HEAD",
+      "route": "outbox",
+      "query": "?page=true",
+      "fail": "db"
+    },
+    {
+      "id": "HEAD-user-failure",
+      "method": "HEAD",
+      "route": "outbox",
+      "fail": "user"
+    },
+    {
+      "id": "HEAD-lookup-failure",
+      "method": "HEAD",
+      "route": "activity",
+      "fail": "root"
+    },
+    {
+      "id": "HEAD-announce-missing",
+      "method": "HEAD",
+      "route": "activity",
+      "note": {
+        "text": null,
+        "renoteId": "at3hjq77note0002"
+      }
+    },
+    {
+      "id": "HEAD-federation-none",
+      "method": "HEAD",
+      "route": "outbox",
+      "federation": "none"
+    }
+  ]
+}

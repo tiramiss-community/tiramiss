@@ -42,6 +42,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 	expect([...new Set(app.routes.map(route => route.path))]).toEqual([
 		'/api/admin/roles/show', '/api/admin/roles/update', '/users/:id', '/:acct{@[^/]*}', '/users/:user{[^/]*}/publickey', '/.well-known/webfinger',
 		'/users/:id/collections/featured', '/notes/:id', '/users/:id/followers', '/users/:id/following',
+		'/users/:user/outbox', '/users//outbox', '/notes/:note/activity', '/notes//activity',
 		'/api/notes/delete', '/api/notes/show', '/api/notes/create', '/api/test-queue',
 	]);
 	for (const path of ['admin/roles/show', 'admin/roles/update', 'notes/delete', 'notes/create']) {
@@ -148,4 +149,13 @@ test.each(['production', 'test'])('ordinary alias composition uses actual NODE_E
 			process.env.NODE_ENV = previous;
 		}
 	}
+});
+
+test.each(['/users/missing/outbox?since_id=&until_id=', '/notes/missing/activity'])('new publication route %s gates federation before reads', async path => {
+	const { resources, repository } = fixture();
+	repository.find.mockResolvedValue([{ federation: 'none' }]);
+	const response = await createBackendHttpApp(resources, testConfig()).request(path);
+	expect(response.status).toBe(403);
+	expect(response.headers.get('access-control-allow-origin')).toBe('*');
+	expect(repository.findOneBy).not.toHaveBeenCalled();
 });

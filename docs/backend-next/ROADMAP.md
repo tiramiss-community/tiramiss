@@ -40,6 +40,8 @@
 
 現在のS1進捗は次のとおり。各PRの限定した実装・比較範囲と、Issue全体の完了を区別する。
 
+#323はPR #587でマージ済み・CLOSED。#324 outbox/activityは `1e75c5b2` で実装し、[PR #588](https://github.com/tiramiss-community/tiramiss/pull/588) でマージ待ち。次は#325。[親実測2113/707/source115/12・有限履歴bindingと限界](../superpowers/compatibility/remote-user/local-outbox-activity-results.md)。親#176/#127/#195のOPENと投稿partialは維持する。
+
 | 対象 | 実装済み | 残作業・完了判定 |
 | --- | --- | --- |
 | local WebFinger #195 | 通常GET/HEAD/OPTIONS `/.well-known/webfinger`、resource解決・JRD/XRD・path限定CORSを既存actor GETへ接続。[source49とR3単体235・実HTTP/PG46の結果](../superpowers/compatibility/remote-user/local-webfinger-results.md)。既存HTTP/actor55は別R1実行 | wildcard OPTIONS・他well-known/host-meta/NodeInfo/authorize-follow・collections/inbox/remote Notesは未完了。sourceはFastify inject＋doubles、error body診断文字列とMeta DB対injected cache/通知同等性は未比較。#176/#127/#195 OPEN、notes/create partial・postingComplete:false |
@@ -348,4 +350,4 @@ media/emoji #188/#195、user hashtag関係 #195、actor由来instance usersCount
 
 2026-11-14: #272の有限な投稿証跡照合で、[62 contract / 59 audit IDの個別契約・C1–C10/F1–F8・再現と限界](../superpowers/compatibility/note/n7/posting-proof-272.md)とdrift checkerを追加した。親の変更なしruntime `b4f28f6ceef458575f203c19d4ede37d7311468c` の実ログ（結合216＋通知14、process20＋削除2、単体726）を現在のconsumer/fixture hashへ結び、source-only調査とは分ける。歴史的coverage/receiptとinventory判定は保持する。未証明のutility/packer部分は明示し、全service互換と扱わない。広い副作用#277・actor比較#322と既存依存、#176/#127 OPEN、`notes/create:partial` / `postingComplete:false`、D7 64-depth/256-Note、PG通知保存の承認と強い順序保証の保留を維持する。#272の子acceptanceに限定した照合であり、正式な対応順・blocked-byや親の完了は変更しない。
 
-2026-11-14: #323のactor acct別名/公開鍵は `43e72c7b6f1394fe6685eeca2ff368a6bd641d6f` の実装と有限証跡を完了しmerge待ち。次は#324。[実測・境界](../superpowers/compatibility/remote-user/local-actor-alias-key-results.md): 単体1927、実HTTP/PG216、source-method172、構造5。旧614の回帰はed83098での別測定。親#176/#127/#195はOPEN、投稿partial・D7 64/256・PG通知保存/強い順序保留と正式な対応順を維持する。
+2026-11-14: #323のactor acct別名/公開鍵は `43e72c7b6f1394fe6685eeca2ff368a6bd641d6f` の実装と有限証跡を完了し、PR #587でマージ済み・#323 CLOSED。#324の現在地は冒頭を参照。[実測・境界](../superpowers/compatibility/remote-user/local-actor-alias-key-results.md): 単体1927、実HTTP/PG216、source-method172、構造5。旧614の回帰はed83098での別測定。親#176/#127/#195はOPEN、投稿partial・D7 64/256・PG通知保存/強い順序保留と正式な対応順を維持する。

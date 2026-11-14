@@ -102,7 +102,7 @@ export function noteAudience(visibility: NoteActivityNote['visibility'], attribu
 
 /** Source default dive=true; preparation supplies the one embedded reply without reads during conversion. */
 export function renderApNote(materials: PreparedApNoteMaterials, options: { selfUrl: string; now: number }, dive?: boolean): Record<string, unknown>;
-export function renderApNote(materials: NoteActivityMaterials, options: { selfUrl: string; now: number }, dive: false): Record<string, unknown>;
+export function renderApNote(materials: NoteActivityMaterials | PreparedApNoteMaterials, options: { selfUrl: string; now: number }, dive: false): Record<string, unknown>;
 export function renderApNote(materials: NoteActivityMaterials | PreparedApNoteMaterials, options: { selfUrl: string; now: number }, dive = true): Record<string, unknown> {
 	const { note, reply, renote, mentionedUsers, files, poll, emojis } = materials;
 	const { selfUrl } = options;
@@ -181,7 +181,7 @@ export function renderApNote(materials: NoteActivityMaterials | PreparedApNoteMa
  * 本家 NoteCreateService.renderNoteOrRenoteActivity と addContext。pure Renote は Announce、それ以外は Create にする。
  * 本家が例外を投げて配送しない投稿（specified の pure Renote、MFM の ruby の一部）は、同じく例外を投げる。
  */
-export function renderNoteActivity(materials: NoteActivityMaterials, options: { selfUrl: string; now: number }): Record<string, unknown> {
+export function renderNoteActivity(materials: NoteActivityMaterials | PreparedApNoteMaterials, options: { selfUrl: string; now: number }, withContext = true): Record<string, unknown> {
 	const { note } = materials;
 	const { selfUrl } = options;
 	const actor = localUserUri(selfUrl, note.userId);
@@ -189,11 +189,11 @@ export function renderNoteActivity(materials: NoteActivityMaterials, options: { 
 	const published = new Date(note.createdAtMs).toISOString();
 
 	if (isPureRenote(note)) {
-		return { '@context': apContext, id, actor, type: 'Announce', published, ...announceAudience(note, actor), object: announcedUri(materials, selfUrl) };
+		return { ...(withContext ? { '@context': apContext } : {}), id, actor, type: 'Announce', published, ...announceAudience(note, actor), object: announcedUri(materials, selfUrl) };
 	}
 
 	const object = renderApNote(materials, options, false);
-	return { '@context': apContext, id, actor, type: 'Create', published, object, to: object.to, cc: object.cc };
+	return { ...(withContext ? { '@context': apContext } : {}), id, actor, type: 'Create', published, object, to: object.to, cc: object.cc };
 }
 
 function announceAudience(note: NoteActivityNote, actor: string): { to: string[]; cc: string[] } {
@@ -209,7 +209,7 @@ function announceAudience(note: NoteActivityNote, actor: string): { to: string[]
 	throw new Error('renderAnnounce: cannot render non-public note');
 }
 
-function announcedUri({ note, renote }: NoteActivityMaterials, selfUrl: string): string {
+function announcedUri({ note, renote }: Pick<NoteActivityMaterials, 'note' | 'renote'>, selfUrl: string): string {
 	if (renote !== null) {
 		return renote.uri || noteUri(selfUrl, renote.id);
 	}
