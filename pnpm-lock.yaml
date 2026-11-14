@@ -804,6 +804,9 @@ importers:
       '@hono/node-server':
         specifier: 2.1.4
         version: 2.1.4(hono@4.13.13)
+      '@misskey-dev/summaly':
+        specifier: 5.5.2
+        version: 5.5.2
       '@mokurokujs/bullmq-adapter':
         specifier: 0.2.0
         version: 0.2.0(bullmq@6.3.11(ioredis@5.11.1(supports-color@10.2.2))(pg@8.23.1))(ioredis@5.11.1(supports-color@10.2.2))

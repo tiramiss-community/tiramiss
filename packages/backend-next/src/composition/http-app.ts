@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { createInstanceAdminHttp } from './instance-admin-http.js';
+import { createUrlPreviewHttp } from './url-preview-http.js';
 import { createWebfingerHttp } from './webfinger-http.js';
 import { createFollowCollectionsHttp } from './follow-collections-http.js';
 import { createOutboxHttp } from './outbox-http.js';
@@ -20,6 +21,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 	const app = createRoleHttpApp(resources, config)
 		.route('/', createActorHttp(resources, config))
 		.route('/', createInstanceAdminHttp(resources))
+		.route('/', createUrlPreviewHttp(resources))
 		.route('/', createWebfingerHttp(resources, config))
 		.route('/', createFeaturedHttp(resources, config))
 		.route('/', createFollowCollectionsHttp(resources, config))

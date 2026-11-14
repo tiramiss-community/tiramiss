@@ -1,0 +1,918 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "defaults": {
+    "url": "https://self.test",
+    "mediaProxy": "https://media.test",
+    "settings": {
+      "urlPreviewEnabled": true,
+      "urlPreviewAllowRedirect": true,
+      "urlPreviewTimeout": 10000,
+      "urlPreviewMaximumContentLength": 10485760,
+      "urlPreviewRequireContentLength": false,
+      "urlPreviewSummaryProxyUrl": null,
+      "urlPreviewUserAgent": null,
+      "urlPreviewSensitiveList": []
+    },
+    "summary": {
+      "url": "https://result.test/path",
+      "title": "summary",
+      "player": {
+        "url": null
+      },
+      "icon": null,
+      "thumbnail": null,
+      "extra": {
+        "arbitrary": true
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "missing",
+      "steps": [
+        {
+          "path": "/url"
+        }
+      ]
+    },
+    {
+      "id": "duplicate-url",
+      "steps": [
+        {
+          "path": "/url?url=a&url=b"
+        }
+      ]
+    },
+    {
+      "id": "duplicate-lang",
+      "steps": [
+        {
+          "path": "/url?url=a&lang=en&lang=ja"
+        }
+      ]
+    },
+    {
+      "id": "bracket-url",
+      "steps": [
+        {
+          "path": "/url?url[]=x"
+        }
+      ]
+    },
+    {
+      "id": "bracket-lang",
+      "steps": [
+        {
+          "path": "/url?url=x&lang[]=en"
+        }
+      ]
+    },
+    {
+      "id": "blank",
+      "steps": [
+        {
+          "path": "/url?url=&lang="
+        }
+      ]
+    },
+    {
+      "id": "malformed-input",
+      "steps": [
+        {
+          "path": "/url?url=::::"
+        }
+      ]
+    },
+    {
+      "id": "explicit-default-lang",
+      "steps": [
+        {
+          "path": "/url?url=x&lang=ja-JP"
+        }
+      ]
+    },
+    {
+      "id": "invalid-disabled",
+      "steps": [
+        {
+          "path": "/url",
+          "settings": {
+            "urlPreviewEnabled": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "disabled",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "settings": {
+            "urlPreviewEnabled": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "failed",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "fail": true
+        }
+      ]
+    },
+    {
+      "id": "head",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "method": "HEAD"
+        }
+      ]
+    },
+    {
+      "id": "empty-icon",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "result": {
+            "icon": "",
+            "thumbnail": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": "wrap-query",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "result": {
+            "icon": "https://image.test/i?a=1&b=2",
+            "thumbnail": "https://image.test/t?x=!"
+          }
+        }
+      ]
+    },
+    {
+      "id": "uppercase",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "result": {
+            "url": "HTTP://bad"
+          }
+        }
+      ]
+    },
+    {
+      "id": "javascript",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "result": {
+            "url": "javascript:bad"
+          }
+        }
+      ]
+    },
+    {
+      "id": "prefix-only",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "result": {
+            "url": "http://"
+          }
+        }
+      ]
+    },
+    {
+      "id": "https-valid",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "result": {
+            "url": "https://good.test"
+          }
+        }
+      ]
+    },
+    {
+      "id": "player-null",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "result": {
+            "player": {
+              "url": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "player-empty",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "result": {
+            "player": {
+              "url": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "player-false",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "result": {
+            "player": {
+              "url": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "player-zero",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "result": {
+            "player": {
+              "url": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "player-bad",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "result": {
+            "player": {
+              "url": "data:bad"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "player-https",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "result": {
+            "player": {
+              "url": "https://player.test"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "player-missing",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "delete": [
+            "player"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "player-container-null",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "result": {
+            "player": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "url-missing",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "delete": [
+            "url"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "url-number",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "result": {
+            "url": 5
+          }
+        }
+      ]
+    },
+    {
+      "id": "sensitive-regex",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "settings": {
+            "urlPreviewSensitiveList": [
+              "/RESULT/i"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "sensitive-bad-regex",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "settings": {
+            "urlPreviewSensitiveList": [
+              "/[/"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "sensitive-bad-flags",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "settings": {
+            "urlPreviewSensitiveList": [
+              "/result/qq"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "sensitive-unsupported-re2",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "settings": {
+            "urlPreviewSensitiveList": [
+              "/(?<=result)/"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "sensitive-and",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "settings": {
+            "urlPreviewSensitiveList": [
+              "result.test path"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "sensitive-and-fails",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "settings": {
+            "urlPreviewSensitiveList": [
+              "result.test absent"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "sensitive-case-sensitive",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "settings": {
+            "urlPreviewSensitiveList": [
+              "RESULT"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "sensitive-empty-rule",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "settings": {
+            "urlPreviewSensitiveList": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "sticky",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "result": {
+            "sensitive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "non-true",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "result": {
+            "sensitive": "truthy"
+          }
+        }
+      ]
+    },
+    {
+      "id": "proxy-default",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "settings": {
+            "urlPreviewSummaryProxyUrl": "https://proxy.test/summary"
+          }
+        }
+      ]
+    },
+    {
+      "id": "proxy-custom",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test%2Fa%3Fx%3D1%26b%3D2&lang=",
+          "settings": {
+            "urlPreviewSummaryProxyUrl": "https://proxy.test/summary?already=1",
+            "urlPreviewAllowRedirect": false,
+            "urlPreviewTimeout": 123,
+            "urlPreviewMaximumContentLength": 456,
+            "urlPreviewRequireContentLength": true,
+            "urlPreviewUserAgent": "Custom + UA"
+          }
+        }
+      ]
+    },
+    {
+      "id": "direct-empty-ua",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "settings": {
+            "urlPreviewUserAgent": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": "empty-proxy-direct",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test",
+          "settings": {
+            "urlPreviewSummaryProxyUrl": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": "cache-transform",
+      "steps": [
+        {
+          "path": "/url?url=x",
+          "result": {
+            "icon": "https://image.test/icon"
+          }
+        },
+        {
+          "path": "/url?url=x",
+          "settings": {
+            "urlPreviewSensitiveList": [
+              "result"
+            ]
+          }
+        },
+        {
+          "path": "/url?url=x",
+          "settings": {
+            "urlPreviewEnabled": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "cache-language-key",
+      "steps": [
+        {
+          "path": "/url?url=x"
+        },
+        {
+          "path": "/url?url=x&lang=_DEFAULT_"
+        },
+        {
+          "path": "/url?url=x&lang=ja-JP"
+        },
+        {
+          "path": "/url?url=x&lang="
+        }
+      ]
+    },
+    {
+      "id": "cache-get-boundary",
+      "steps": [
+        {
+          "path": "/url?url=x"
+        },
+        {
+          "path": "/url?url=x",
+          "advance": 3600000
+        },
+        {
+          "path": "/url?url=x",
+          "advance": 1
+        }
+      ]
+    },
+    {
+      "id": "cache-gc-boundary",
+      "steps": [
+        {
+          "path": "/url?url=x"
+        },
+        {
+          "path": "/url?url=y",
+          "advance": 3600000
+        },
+        {
+          "path": "/url?url=x"
+        }
+      ]
+    },
+    {
+      "id": "failures-not-cached",
+      "steps": [
+        {
+          "path": "/url?url=x",
+          "fail": true
+        },
+        {
+          "path": "/url?url=x"
+        },
+        {
+          "path": "/url?url=x"
+        }
+      ]
+    },
+    {
+      "id": "cache-lru",
+      "steps": [
+        {
+          "path": "/url?url=0"
+        },
+        {
+          "path": "/url?url=1"
+        },
+        {
+          "path": "/url?url=2"
+        },
+        {
+          "path": "/url?url=3"
+        },
+        {
+          "path": "/url?url=4"
+        },
+        {
+          "path": "/url?url=5"
+        },
+        {
+          "path": "/url?url=6"
+        },
+        {
+          "path": "/url?url=7"
+        },
+        {
+          "path": "/url?url=8"
+        },
+        {
+          "path": "/url?url=9"
+        },
+        {
+          "path": "/url?url=10"
+        },
+        {
+          "path": "/url?url=11"
+        },
+        {
+          "path": "/url?url=12"
+        },
+        {
+          "path": "/url?url=13"
+        },
+        {
+          "path": "/url?url=14"
+        },
+        {
+          "path": "/url?url=15"
+        },
+        {
+          "path": "/url?url=16"
+        },
+        {
+          "path": "/url?url=17"
+        },
+        {
+          "path": "/url?url=18"
+        },
+        {
+          "path": "/url?url=19"
+        },
+        {
+          "path": "/url?url=20"
+        },
+        {
+          "path": "/url?url=21"
+        },
+        {
+          "path": "/url?url=22"
+        },
+        {
+          "path": "/url?url=23"
+        },
+        {
+          "path": "/url?url=24"
+        },
+        {
+          "path": "/url?url=25"
+        },
+        {
+          "path": "/url?url=26"
+        },
+        {
+          "path": "/url?url=27"
+        },
+        {
+          "path": "/url?url=28"
+        },
+        {
+          "path": "/url?url=29"
+        },
+        {
+          "path": "/url?url=30"
+        },
+        {
+          "path": "/url?url=31"
+        },
+        {
+          "path": "/url?url=32"
+        },
+        {
+          "path": "/url?url=33"
+        },
+        {
+          "path": "/url?url=34"
+        },
+        {
+          "path": "/url?url=35"
+        },
+        {
+          "path": "/url?url=36"
+        },
+        {
+          "path": "/url?url=37"
+        },
+        {
+          "path": "/url?url=38"
+        },
+        {
+          "path": "/url?url=39"
+        },
+        {
+          "path": "/url?url=40"
+        },
+        {
+          "path": "/url?url=41"
+        },
+        {
+          "path": "/url?url=42"
+        },
+        {
+          "path": "/url?url=43"
+        },
+        {
+          "path": "/url?url=44"
+        },
+        {
+          "path": "/url?url=45"
+        },
+        {
+          "path": "/url?url=46"
+        },
+        {
+          "path": "/url?url=47"
+        },
+        {
+          "path": "/url?url=48"
+        },
+        {
+          "path": "/url?url=49"
+        },
+        {
+          "path": "/url?url=50"
+        },
+        {
+          "path": "/url?url=51"
+        },
+        {
+          "path": "/url?url=52"
+        },
+        {
+          "path": "/url?url=53"
+        },
+        {
+          "path": "/url?url=54"
+        },
+        {
+          "path": "/url?url=55"
+        },
+        {
+          "path": "/url?url=56"
+        },
+        {
+          "path": "/url?url=57"
+        },
+        {
+          "path": "/url?url=58"
+        },
+        {
+          "path": "/url?url=59"
+        },
+        {
+          "path": "/url?url=60"
+        },
+        {
+          "path": "/url?url=61"
+        },
+        {
+          "path": "/url?url=62"
+        },
+        {
+          "path": "/url?url=63"
+        },
+        {
+          "path": "/url?url=64"
+        },
+        {
+          "path": "/url?url=65"
+        },
+        {
+          "path": "/url?url=66"
+        },
+        {
+          "path": "/url?url=67"
+        },
+        {
+          "path": "/url?url=68"
+        },
+        {
+          "path": "/url?url=69"
+        },
+        {
+          "path": "/url?url=70"
+        },
+        {
+          "path": "/url?url=71"
+        },
+        {
+          "path": "/url?url=72"
+        },
+        {
+          "path": "/url?url=73"
+        },
+        {
+          "path": "/url?url=74"
+        },
+        {
+          "path": "/url?url=75"
+        },
+        {
+          "path": "/url?url=76"
+        },
+        {
+          "path": "/url?url=77"
+        },
+        {
+          "path": "/url?url=78"
+        },
+        {
+          "path": "/url?url=79"
+        },
+        {
+          "path": "/url?url=80"
+        },
+        {
+          "path": "/url?url=81"
+        },
+        {
+          "path": "/url?url=82"
+        },
+        {
+          "path": "/url?url=83"
+        },
+        {
+          "path": "/url?url=84"
+        },
+        {
+          "path": "/url?url=85"
+        },
+        {
+          "path": "/url?url=86"
+        },
+        {
+          "path": "/url?url=87"
+        },
+        {
+          "path": "/url?url=88"
+        },
+        {
+          "path": "/url?url=89"
+        },
+        {
+          "path": "/url?url=90"
+        },
+        {
+          "path": "/url?url=91"
+        },
+        {
+          "path": "/url?url=92"
+        },
+        {
+          "path": "/url?url=93"
+        },
+        {
+          "path": "/url?url=94"
+        },
+        {
+          "path": "/url?url=95"
+        },
+        {
+          "path": "/url?url=96"
+        },
+        {
+          "path": "/url?url=97"
+        },
+        {
+          "path": "/url?url=98"
+        },
+        {
+          "path": "/url?url=99"
+        },
+        {
+          "path": "/url?url=0"
+        },
+        {
+          "path": "/url?url=100"
+        },
+        {
+          "path": "/url?url=0"
+        },
+        {
+          "path": "/url?url=1"
+        }
+      ]
+    },
+    {
+      "id": "cache-periodic-gc-equality",
+      "steps": [
+        {
+          "path": "/url?url=x"
+        },
+        {
+          "path": "/url?url=x",
+          "advance": 3600000,
+          "gc": true
+        }
+      ]
+    }
+  ]
+}

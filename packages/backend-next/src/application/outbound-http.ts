@@ -33,7 +33,7 @@ export interface OutboundSendExtra {
 }
 
 export type OutboundSend = (url: string, options?: OutboundSendOptions, extra?: OutboundSendExtra) => Promise<OutboundResponse>;
-export type OutboundGetJson = (url: string, accept?: string, headers?: Record<string, string>) => Promise<unknown>;
+export type OutboundGetJson = (url: string, accept?: string, headers?: Record<string, string>, allowLocalAddress?: boolean) => Promise<unknown>;
 
 export interface OutboundHttp {
 	send: OutboundSend;

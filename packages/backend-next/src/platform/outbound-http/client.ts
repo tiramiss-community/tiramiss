@@ -71,12 +71,13 @@ export function createOutboundHttp(agents: OutboundAgents, userAgent: string): O
 			const response = await send(url, { method: 'GET', headers: Object.assign({ Accept: accept }, headers ?? {}), timeoutMs: 5000, allowLocalAddress });
 			return await response.text();
 		},
-		async getJson(url, accept = 'application/json, */*', headers) {
+		async getJson(url, accept = 'application/json, */*', headers, allowLocalAddress = false) {
 			const response = await send(url, {
 				method: 'GET',
 				headers: Object.assign({ Accept: accept }, headers ?? {}),
 				timeoutMs: 5000,
 				maxBytes: jsonMaxBytes,
+				allowLocalAddress,
 			});
 			return await response.json();
 		},
