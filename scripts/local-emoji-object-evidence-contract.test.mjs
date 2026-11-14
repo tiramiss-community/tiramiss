@@ -47,9 +47,9 @@ test('optional available logs and actual receipt must match; explicit offline mo
  assert.doesNotThrow(() => validateEmojiObjectSuccessor(record(), read, () => null));
 });
 
-test('terminal reader imports only builtins and never launches Git, subprocesses or ancestor readers', () => {
+test('Emoji reader imports only builtins and the finite hashtag oracle reader', () => {
  const source = read('scripts/local-emoji-object-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:')));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || match[1] === './hashtag-oracle-evidence.mjs'));
  assert(!/execFile|spawn|import\(/.test(source));
  assert.equal(readPreEmojiObject('unrelated.ts', 'utf8', () => Buffer.from('live'), () => null), 'live');
 });

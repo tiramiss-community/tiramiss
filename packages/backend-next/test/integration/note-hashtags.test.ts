@@ -313,9 +313,16 @@ test('settings SELECT rejection leaves all DB mentions and independent counts, s
 const profileSource: { id: string; input: { nowMs: number; initial: object | null; user: { id: string; host: string | null; tags: string[] }; tags: string[] }; state: { dbRows: Record<string, object>; sets: Record<string, string[]>; scores: Record<string, Record<string, number>> } }[] = JSON.parse(readFileSync(new URL('../../../../docs/superpowers/compatibility/note/hashtag/source-observations.json', import.meta.url), 'utf8')).observations.filter((c: { kind: string }) => c.kind === 'profile');
 test.each(profileSource)('$id measures the unchanged five profile oracles with real attached DB and shared Redis ranking', async fixture => {
 	// The runtime captures Date.now at construction; supply the oracle's clock explicitly.
+	const ranking = createHashtagRanking(resources.redis, () => fixture.input.nowMs);
+	let previousRanking = Promise.resolve();
 	const work = createUserHashtags({
 		change: createUserHashtagWriter(resources.dataSource.manager, id).change,
-		ranking: createHashtagRanking(resources.redis, () => fixture.input.nowMs),
+		ranking: { update(input, settings) {
+			// Select the source observation's schedule: the first SADD precedes the next SISMEMBER.
+			// The separate overlap case below retains the source's non-atomic ranking race.
+			previousRanking = previousRanking.then(() => ranking.update(input, settings));
+			return previousRanking;
+		} },
 		readSettings: async () => ({ hiddenTags: [], sensitiveWords: [] }),
 	}, createLogger('profile-test', line => logs.push(line)));
 	try {
@@ -341,6 +348,45 @@ test.each(profileSource)('$id measures the unchanged five profile oracles with r
 		}
 	} finally {
 		await work.close();
+	}
+});
+
+test('profile normalization collision retains double ranking when both membership reads miss', async () => {
+	const fixture = profileSource.find(value => value.id === 'profile-boundary-old-normalized-new-collision')!;
+	const originalMembership = resources.redis.sismember.bind(resources.redis);
+	let reads = 0;
+	let release!: () => void;
+	const barrier = new Promise<void>(resolve => {
+		release = resolve;
+	});
+	const membership = vi.spyOn(resources.redis, 'sismember').mockImplementation((async (...args: Parameters<Redis['sismember']>) => {
+		const value = await originalMembership(...args);
+		if (++reads === 2) {
+			release();
+		}
+		await barrier;
+		return value;
+	}) as Redis['sismember']);
+	const work = createUserHashtags({
+		change: createUserHashtagWriter(resources.dataSource.manager, id).change,
+		ranking: createHashtagRanking(resources.redis, () => fixture.input.nowMs),
+		readSettings: async () => ({ hiddenTags: [], sensitiveWords: [] }),
+	}, createLogger('profile-overlap-test', line => logs.push(line)));
+	try {
+		await resources.dataSource.getRepository(MiHashtag).insert({ id: id(), ...fixture.input.initial });
+		work.start(fixture.input.user, fixture.input.tags);
+		await vi.waitFor(() => expect(reads).toBe(2));
+		await work.idle();
+		expect(reads).toBe(2);
+		const { id: _id, ...actual } = (await row('a'))!;
+		expect(actual).toEqual(fixture.state.dbRows.a);
+		expect(await resources.redis.smembers('hashtagUsers:a')).toEqual(['u1']);
+		expect(await resources.redis.pfcount(chartKey('a', fixture.input.nowMs))).toBe(1);
+		expect(await resources.redis.zscore(rankingKey(fixture.input.nowMs), 'a')).toBe('2');
+	} finally {
+		release();
+		await work.close();
+		membership.mockRestore();
 	}
 });
 
