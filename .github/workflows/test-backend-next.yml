@@ -7,6 +7,7 @@ on:
       - 'docs/superpowers/compatibility/role/**'
       - 'docs/superpowers/compatibility/backend-inventory/**'
       - 'scripts/backend-contract-inventory*.mjs'
+      - 'scripts/**'
       - 'docs/superpowers/compatibility/note/**'
       - 'docs/superpowers/compatibility/remote-user/**'
       - 'scripts/*-contract*.test.mjs'
@@ -24,6 +25,7 @@ on:
       - 'docs/superpowers/compatibility/role/**'
       - 'docs/superpowers/compatibility/backend-inventory/**'
       - 'scripts/backend-contract-inventory*.mjs'
+      - 'scripts/**'
       - 'docs/superpowers/compatibility/note/**'
       - 'docs/superpowers/compatibility/remote-user/**'
       - 'scripts/*-contract*.test.mjs'
@@ -39,7 +41,45 @@ on:
   workflow_dispatch:
 
 jobs:
-  foundation:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6.0.10
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --filter backend-next...
+      - run: git diff --exit-code pnpm-lock.yaml
+      - name: Backend public contract inventory
+        run: node scripts/backend-contract-inventory.mjs --check
+      - name: Backend comparison fixture references and contracts
+        run: node --test scripts/*-contract*.test.mjs
+
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6.0.10
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --filter backend-next...
+      - run: git diff --exit-code pnpm-lock.yaml
+      - run: pnpm --filter backend-upstream sync:check
+      - run: pnpm --filter backend-next... build
+      - run: pnpm --filter backend-next... typecheck
+      - run: pnpm --filter backend-next... lint
+      - run: pnpm --filter backend-upstream test
+      - run: pnpm --filter backend-next test
+
+  integration:
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -78,17 +118,68 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile --filter backend-next...
       - run: git diff --exit-code pnpm-lock.yaml
-      - name: Backend public contract inventory
-        run: node scripts/backend-contract-inventory.mjs --check
-      - name: Backend comparison fixture references and contracts
-        run: node --test scripts/*-contract*.test.mjs
-      - run: pnpm --filter backend-upstream sync:check
       - run: pnpm --filter backend-next... build
-      - run: pnpm --filter backend-next... typecheck
-      - run: pnpm --filter backend-next... lint
-      - run: pnpm --filter backend-upstream test
-      - run: pnpm --filter backend-next test
       - run: pnpm --filter backend-next test:integration
       - name: Role HTTP compatibility and failure acceptance
         run: pnpm --filter backend-next test:acceptance
+
+  process:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: foundation-test-only
+          POSTGRES_DB: backend_next_test
+        ports: ['55432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres -d backend_next_test"
+          --health-interval 1s --health-timeout 3s --health-retries 30
+      redis:
+        image: redis:8
+        ports: ['56379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 1s --health-timeout 3s --health-retries 30
+      meilisearch:
+        image: getmeili/meilisearch:v1.3.4
+        env:
+          MEILI_NO_ANALYTICS: 'true'
+          MEILI_ENV: development
+        ports: ['57779:7700']
+        options: >-
+          --health-cmd "curl -f http://localhost:7700/health"
+          --health-interval 1s --health-timeout 3s --health-retries 30
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6.0.10
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --filter backend-next...
+      - run: git diff --exit-code pnpm-lock.yaml
+      - run: pnpm --filter backend-next... build
       - run: pnpm --filter backend-next test:process
+
+  # Keep the existing required check name and reject failed, cancelled or skipped lanes.
+  foundation:
+    needs: [contracts, checks, integration, process]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every backend-next lane to pass
+        env:
+          CHECK_RESULTS: ${{ toJSON(needs) }}
+        run: |
+          node --input-type=module <<'NODE'
+          const jobs = JSON.parse(process.env.CHECK_RESULTS);
+          const required = ['contracts', 'checks', 'integration', 'process'];
+          if (Object.keys(jobs).length !== required.length || required.some(job => jobs[job]?.result !== 'success')) {
+            console.error('backend-next checks did not all succeed', jobs);
+            process.exit(1);
+          }
+          NODE
