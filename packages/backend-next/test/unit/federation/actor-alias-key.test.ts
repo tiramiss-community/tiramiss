@@ -53,7 +53,7 @@ import { readFileSync } from 'node:fs';
 import { toSpkiPublicKeyPem } from '../../../src/modules/federation/keys.js';
 import { parseAcct, formatAcct, renderLocalKey } from '../../../src/modules/federation/public.js';
 const evidenceRoot = new URL('../../../../../docs/superpowers/compatibility/remote-user/', import.meta.url);
-const corpus = JSON.parse(readFileSync(new URL('local-actor-alias-key-corpus.json', evidenceRoot), 'utf8')) as { cases: Array<{ id: string; path: string; accept?: string; kind?: string; selfUrl?: string; federation?: string; allow?: boolean; production?: boolean; uri?: string }> };
+const corpus = JSON.parse(readFileSync(new URL('local-actor-alias-key-corpus.json', evidenceRoot), 'utf8')) as { cases: Array<{ id: string; path: string; method?: string; accept?: string; kind?: string; selfUrl?: string; federation?: string; allow?: boolean; production?: boolean; uri?: string }> };
 const observed = JSON.parse(readFileSync(new URL('local-actor-alias-key-observations.json', evidenceRoot), 'utf8'));
 const keys = JSON.parse(readFileSync(new URL('local-actor-alias-key-key.json', evidenceRoot), 'utf8'));
 
@@ -85,8 +85,11 @@ test.each(corpus.cases)('$id consumes the independent pinned route observation',
 	});
 	parts.toSpki = toSpkiPublicKeyPem;
 	const app = createActivityPubActorAliasKeyApi(parts);
-	const response = await app.request(row.path, { headers: row.accept === '' ? {} : { Accept: row.accept ?? 'application/activity+json' } });
+	const response = await app.request(row.path, { method: row.method, headers: row.accept === '' ? {} : { Accept: row.accept ?? 'application/activity+json' } });
 	expect(response.status).toBe(expected.status);
+	if (expected.status === 414) {
+		expect(parts.federationEnabled).not.toHaveBeenCalled();
+	}
 	// HTML/nonmatching route fallback is owned by #196, not the AP plugin.
 	if (expected.status === 404 && expected.calls.length === 0) {
 		expect(parts.readActorByAcct).not.toHaveBeenCalled(); return;
@@ -105,7 +108,7 @@ test.each(corpus.cases)('$id consumes the independent pinned route observation',
 	} else if (body && response.headers.get('content-type')?.startsWith('application/json')) {
 		const json = JSON.parse(body); expect({ statusCode: json.statusCode, error: json.error }).toEqual(JSON.parse(expected.body));
 	} else {
-		expect(body).toBe(expected.body);
+		expect(body).toBe(row.method === 'HEAD' ? '' : expected.body);
 	}
 	const lookup = expected.calls.find((x: unknown[]) => x[0] === 'lookup')?.[1];
 	if (lookup && 'usernameLower' in lookup) {

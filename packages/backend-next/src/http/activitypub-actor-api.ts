@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import accepts from 'accepts';
-import type { IncomingMessage } from 'node:http';
 import { Hono } from 'hono';
-import type { Context } from 'hono';
 import { apContext } from '../modules/federation/ap-context.js';
 import { renderLocalActor, renderLocalKey, actorLookupAcct } from '../modules/federation/public.js';
+import type { Context } from 'hono';
+import type { IncomingMessage } from 'node:http';
 import type { Acct, LocalActorFacts, LocalActorMaterials, LocalActorTag } from '../modules/federation/public.js';
 type Actor = LocalActorFacts & { host: string | null; uri: string | null };
 const ap = 'application/activity+json';
@@ -79,18 +79,21 @@ export function createActivityPubActorAliasKeyApi(parts: ActorParts & {
 		c.header('Content-Type', negotiation.type([activityType, ldType]) === ldType ? ldType : activityType);
 	}
 
-	function failure(c: Context, status: 400 | 500) {
-		c.header('Content-Type', status === 400 ? 'application/json' : 'application/json; charset=utf-8');
-		return c.body(JSON.stringify({ statusCode: status, error: status === 400 ? 'Bad Request' : 'Internal Server Error', message: status === 400 ? 'Bad Request' : 'Internal Server Error' }), status);
+	function failure(c: Context, status: 400 | 414 | 500) {
+		c.header('Content-Type', status !== 500 ? 'application/json' : 'application/json; charset=utf-8');
+		return c.body(JSON.stringify({ statusCode: status, error: status === 414 ? 'Bad Request' : status === 400 ? 'Bad Request' : 'Internal Server Error', message: status === 414 ? 'Bad Request' : status === 400 ? 'Bad Request' : 'Internal Server Error' }), status);
 	}
 
-	app.get('/:acct{@[^/]+}', async c => {
+	app.get('/:acct{@[^/]*}', async c => {
 		let value: string;
 		try {
 			// Decode the raw route component once, before AP hooks, as the pinned router does.
 			value = decodeURIComponent(new URL(c.req.url).pathname.slice(2));
 		} catch {
 			return failure(c, 400);
+		}
+		if (value.length > 100) {
+			return failure(c, 414);
 		}
 		const chosen = accepts({ headers: { accept: c.req.header('accept') } } as IncomingMessage).type(['html', activityType, ldType]);
 		if (!chosen || chosen === 'html') {
@@ -135,12 +138,15 @@ export function createActivityPubActorAliasKeyApi(parts: ActorParts & {
 			return failure(c, 500);
 		}
 	});
-	app.get('/users/:user/publickey', async c => {
+	app.get('/users/:user{[^/]*}/publickey', async c => {
 		let id: string;
 		try {
 			id = decodeURIComponent(new URL(c.req.url).pathname.split('/')[2]);
 		} catch {
 			return failure(c, 400);
+		}
+		if (id.length > 100) {
+			return failure(c, 414);
 		}
 		cors(c);
 		try {

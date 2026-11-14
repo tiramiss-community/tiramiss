@@ -40,7 +40,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 	expect(events).toEqual(['note', 'role']);
 	expect(legacy).toBe(createBackendHttpApp);
 	expect([...new Set(app.routes.map(route => route.path))]).toEqual([
-		'/api/admin/roles/show', '/api/admin/roles/update', '/users/:id', '/:acct{@[^/]+}', '/users/:user/publickey', '/.well-known/webfinger',
+		'/api/admin/roles/show', '/api/admin/roles/update', '/users/:id', '/:acct{@[^/]*}', '/users/:user{[^/]*}/publickey', '/.well-known/webfinger',
 		'/users/:id/collections/featured', '/notes/:id', '/users/:id/followers', '/users/:id/following',
 		'/api/notes/delete', '/api/notes/show', '/api/notes/create', '/api/test-queue',
 	]);

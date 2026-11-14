@@ -4,6 +4,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { createPrivateKey } from 'node:crypto';
+import { request, type Server } from 'node:http';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { MiMeta, MiUser, MiUserProfile, MiUserKeypair } from 'backend-upstream/entities';
 import { createTestDatabase } from '../helpers/database.js';
@@ -13,10 +14,9 @@ import { createBackendHttpApp } from '../../src/composition/http-app.js';
 import { createLogger } from '../../src/platform/logger.js';
 import { generateRsaKeyPair } from '../../src/platform/key-pair.js';
 import { listenHttp, closeHttp } from '../../src/processes/http.js';
-import type { Server } from 'node:http';
 
 const evidence = new URL('../../../../docs/superpowers/compatibility/remote-user/', import.meta.url);
-const corpus = JSON.parse(readFileSync(new URL('local-actor-alias-key-corpus.json', evidence), 'utf8')) as { cases: Array<{ id: string; path: string; accept?: string; kind?: string; federation?: string; allow?: boolean }> };
+const corpus = JSON.parse(readFileSync(new URL('local-actor-alias-key-corpus.json', evidence), 'utf8')) as { cases: Array<{ id: string; path: string; method?: string; accept?: string; kind?: string; federation?: string; allow?: boolean }> };
 const source = JSON.parse(readFileSync(new URL('local-actor-alias-key-observations.json', evidence), 'utf8'));
 const key = JSON.parse(readFileSync(new URL('local-actor-alias-key-key.json', evidence), 'utf8'));
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
@@ -165,4 +165,33 @@ test.each(['missing', 'invalid'])('actual %s stored key preserves the source exc
 	expect(response.headers.get('cache-control')).toBe(expected.headers['cache-control']);
 	expect(await response.json()).toMatchObject(JSON.parse(expected.body));
 	expect(reads.filter(sql => /^(INSERT|UPDATE|DELETE) /i.test(sql))).toEqual([]);
+});
+
+test.each(corpus.cases.filter(row => row.id.startsWith('review-')))('$id raw HTTP routing and lookup boundary', async row => {
+	const expected = source.cases.find((x: { id: string }) => x.id === row.id);
+	await seed('missing');
+	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: row.federation === 'none' ? 'none' : 'all' });
+	reads = [];
+	const response = await new Promise<{ status: number; headers: import('node:http').IncomingHttpHeaders; body: string }>((resolve, reject) => {
+		const req = request(origin, { path: row.path, method: row.method, headers: { Accept: 'application/activity+json' } }, res => {
+			let body = '';
+			res.setEncoding('utf8');
+			res.on('data', chunk => {
+				body += chunk;
+			});
+			res.on('end', () => resolve({ status: res.statusCode!, headers: res.headers, body }));
+		});
+		req.on('error', reject);
+		req.end();
+	});
+	expect(response.status).toBe(expected.status);
+	for (const [name, value] of Object.entries(expected.headers)) {
+		expect(response.headers[name] ?? null, name).toBe(value);
+	}
+	if (row.method === 'HEAD') {
+		expect(response.body).toBe('');
+	}
+	if (expected.status === 414) {
+		expect(reads).toEqual([]);
+	}
 });

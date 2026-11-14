@@ -55,3 +55,17 @@ test('source observations retain explicit empty responses, exception class, prod
 	assert.equal(get('guard-same-34').status, 406);
 	assert.equal(get('guard-29').status, 301);
 });
+
+test('review boundaries reject before lookup and preserve empty parameter hooks', () => {
+ const get = id => observed.cases.find(c => c.id === id);
+ for (const route of ['alias', 'key']) {
+  assert.equal(get(`review-${route}-empty-GET-none`).status, 403);
+  assert.equal(get(`review-${route}-empty-GET-none`).headers['access-control-allow-origin'], '*');
+  for (const name of ['ascii101', 'encoded101', 'unicode101', 'astral102', 'percent101', 'double102']) {
+   const row = get(`review-${route}-${name}-GET-none`);
+   assert.equal(row.status, 414);
+   assert.deepEqual(row.calls, []);
+   assert.equal(row.headers['access-control-allow-origin'], null);
+  }
+ }
+});

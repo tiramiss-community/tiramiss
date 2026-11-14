@@ -90,3 +90,18 @@ Normal `git add -N` could not create the linked worktree index lock under `/home
 - `packages/backend-next/test/unit/composition/http-app.test.ts`
 - `packages/backend-next/test/unit/federation/actor-alias-key.test.ts`
 - `scripts/local-actor-alias-key-contract.test.mjs`
+
+## Compatibility review correction (isolated ed83098, 2026-11-14)
+
+Both review findings are proven: empty alias/key parameters now enter AP hooks; overlength alias/key parameters return 414 before federation checks or repository lookup. Existing ID actor route is untouched. No findings were refuted. Root ServerService.launch options are now extracted literally into the probe: trustProxy/config and logger:false, no maxParamLength override. The pinned router defaults to 100; source replay confirms single-decoded UTF-16 length (including encoded BMP, surrogate pairs, percent and double-encoded percent), not raw encoded length or UTF-8 bytes. Exact 100/101 boundaries and astral 100/102 are covered for both routes, federation modes and GET/HEAD.
+
+Added 104 corpus observations; source replay now **162 routes + 7 acct + 3 key PASS**. Product RED before adapter changes: **56 failed / 113 passed**. GREEN with existing actor route regression: **178 passed / 2 files**. Contract **5 PASS**; test typecheck PASS; changed package ESLint PASS; SPDX PASS. HEAD transport suppresses response bodies; Fastify inject can retain router error bodies for HEAD, so product HEAD asserts empty body while comparing the source status/headers. Source remains Fastify plus explicit doubles, not full upstream HTTP/PG.
+
+Added **104 raw node:http integration cases**, including zero SQL on 414. These have NOT been executed here: parent must run the dedicated PG suite. No child TCP/service commands were issued. Vitest initially failed on shared dependency .vite-temp EROFS; --configLoader runner resolved it. Direct Node26 installed Vitest, tsc6 and eslint were used, no pnpm installation.
+
+Reproduction from packages/backend-next:
+- Node26 node_modules/vitest/vitest.mjs run --configLoader runner --config vitest.config.ts test/unit/federation/actor-alias-key.test.ts test/unit/federation/actor-api.test.ts
+- Node26 node_modules/typescript/bin/tsc6 -p tsconfig.test.json --noEmit
+- Parent: dedicated DB/Redis environment, Node26 node_modules/vitest/vitest.mjs run --configLoader runner --config vitest.integration.config.ts test/integration/actor-alias-key.test.ts
+
+Logs /tmp/tiramiss-s1-323-20261114/review-fix-*.log; patch review-fix.patch. No historical validators, inventory, README, key fixture or plan edited. Module boundaries, partial posting, parents OPEN, D7 and PG decisions remain unchanged. No commit or external action.

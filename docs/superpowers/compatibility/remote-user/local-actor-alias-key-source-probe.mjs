@@ -47,11 +47,13 @@ const renderer = await methods('packages/backend/src/core/activitypub/ApRenderer
 const api = await methods('packages/backend/src/server/ActivityPubServerService.ts', 'ActivityPubServerService', ['createServer','userInfo','setResponseType']);
 const server = await source('packages/backend/src/server/ServerService.ts');
 let guard;
+let rootOptions;
 function walk(node) {
+ if (ts.isCallExpression(node) && node.expression.getText(server) === 'Fastify') rootOptions = node.arguments[0].getText(server);
  if (ts.isIfStatement(node) && node.expression.getText(server) === '!this.meta.allowExternalApRedirect') guard = node;
  ts.forEachChild(node, walk);
 }
-walk(server); assert(guard);
+walk(server); assert(guard); assert(rootOptions);
 const guardLiteral = `(function(fastify){${guard.getText(server)}})`;
 const corpus = JSON.parse(readFileSync(new URL('./local-actor-alias-key-corpus.json', import.meta.url)));
 // Public fixture only; no private key is persisted or needed for renderer conversion.
@@ -77,15 +79,15 @@ for (const c of corpus.cases) {
   } },
   userKeypairService: { getUserKeypair: async id => { calls.push(['key',id]); if (c.kind === 'key-missing') throw Error('missing key'); return { publicKey: c.kind === 'key-invalid' ? 'invalid' : keyFixture.pkcs1 }; } },
  };
- const fastify = Fastify();
+ const fastify = Fastify(vm.runInNewContext('(function(){return ' + rootOptions + '})').call({ config: { trustProxy: false } }));
  const installGuard = vm.runInNewContext(ts.transpile(guardLiteral), { process: { env: { NODE_ENV: c.production === false ? 'test' : 'production' } }, encodeURI });
  installGuard.call(service, fastify);
  await fastify.register((scope, options, done) => service.createServer(scope, options, done));
- const response = await fastify.inject({ url: c.path, headers: c.accept === '' ? {} : { accept: c.accept ?? 'application/activity+json' } });
+ const response = await fastify.inject({ url: c.path, method: c.method ?? 'GET', headers: c.accept === '' ? {} : { accept: c.accept ?? 'application/activity+json' } });
  const headers = Object.fromEntries(['content-type','cache-control','vary','location','link','access-control-allow-origin','access-control-allow-methods','access-control-allow-headers','access-control-expose-headers'].map(k => [k, response.headers[k] ?? null]));
  let body = response.body;
  // Diagnostics identify framework errors, but framework/version-specific message text is outside this finite comparison.
- if (response.statusCode >= 400 && headers['content-type']?.startsWith('application/json')) { const error = JSON.parse(body); body = JSON.stringify({ statusCode: error.statusCode, error: error.error }); }
+ if (response.body && response.statusCode >= 400 && headers['content-type']?.startsWith('application/json')) { const error = JSON.parse(body); body = JSON.stringify({ statusCode: error.statusCode, error: error.error }); }
  results.push({ id: c.id, status: response.statusCode, headers, body, calls });
  await fastify.close();
 }
