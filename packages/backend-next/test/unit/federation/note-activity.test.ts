@@ -76,3 +76,12 @@ test.for<[string, Partial<RenoteColumns>]>([
 	expect(isPureRenote({ ...base, ...change })).toBe(false);
 	expect(isPureRenote({ ...base, renoteId: null })).toBe(false);
 });
+
+test('publication can reuse prepared rendering without adding nested context while delivery keeps context', () => {
+	const c = inputs.cases.find(x => x.id === 'public-mentions-db-order')!;
+	const materials = materialsFor(c);
+	const bare = renderNoteActivity(materials, options, false);
+	expect(bare).not.toHaveProperty('@context');
+	expect(bare.object).not.toHaveProperty('@context');
+	expect(renderNoteActivity(materials, options)).toEqual({ '@context': expect.any(Array), ...bare });
+});

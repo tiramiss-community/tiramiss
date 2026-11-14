@@ -64,3 +64,6 @@ export type { FollowCollectionDirection, FollowCollectionReader, FollowCollectio
 export { parseAcct, formatAcct, actorLookupAcct } from './acct.js';
 export type { Acct } from './acct.js';
 export { renderLocalKey } from './local-key.js';
+
+export { readOutboxNotes, renderOutboxCollection, outboxCandidateVisible } from './local-outbox.js';
+export type { OutboxBounds, OutboxCandidate, OutboxPolicy, OutboxReader } from './local-outbox.js';
