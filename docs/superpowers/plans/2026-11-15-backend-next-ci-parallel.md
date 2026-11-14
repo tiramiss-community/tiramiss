@@ -41,6 +41,10 @@
 
 公式 release checksum と一致する actionlint 1.7.12 で対象 workflow は指摘なし。SPDX / locale safety は成功、変更ファイル lint は対象なしで SKIPPED。lockfile 差分なし。新しい layout の GitHub Actions 実行時間は未測定。
 
-別担当の [remote-profile 証跡 reader](../../../scripts/remote-profile-evidence.mjs) の限定した最適化も、同じ contracts lane の測定対象になる。workflow 自体は suite の内容を変えない。
+[remote-profile 証跡 reader](../../../scripts/remote-profile-evidence.mjs) の重複も限定して調査した。Node26 の代表1検証で33,947回・約815MBの読取と43,168回のhash計算があり、同じ14入力のEmoji検証が992回繰り返された。既定readerだけを1回の同期検証内で共有する試作は、代表処理を1.483秒から0.473秒、読取を451回・約11MBへ削減した。
+
+一方、独自reader・optional callbackの改変検出、次の呼出しでの再読取、失敗後の再試行を守る追加6テストまで含め、contracts全体を各1回比較すると変更前49.739秒／26ファイル、試作後50.299秒／27ファイルで、いずれも成功した。変更前はcommitted helperをメモリ上で読み込み、作業ツリーは書き換えず測定した。単一ローカル環境の有限比較であり、CI全体の短縮を示さない。
+
+全体の短縮を確認できなかったため、readerの試作と追加テストは採用せず、既存reader・seal・suiteを維持する。今回はworkflowの並列化だけを変更する。計測ログとCPU profileは `/tmp/tiramiss-ci-speed-profile-20261115/` に保持した。
 
 `always()` と `needs` の失敗時の扱いは [GitHub workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idneeds) と [status expressions](https://docs.github.com/en/actions/reference/workflows-and-actions/expressions#always) に基づく。
