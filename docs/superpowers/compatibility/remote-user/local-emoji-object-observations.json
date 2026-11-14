@@ -1,0 +1,2929 @@
+{
+  "source": "8e07cf085adf7009583d234a208e30436f020e26",
+  "dependencies": {
+    "node": "v26.4.0",
+    "fastify": "5.12.5",
+    "typescript": "6.0.3",
+    "accepts": "1.3.8",
+    "typeorm": "1.1.1"
+  },
+  "probeSha256": "7dfa641904932ff57b15dd91d9eb68680ca93ae3e19db088c84dd43554dd256c",
+  "corpusSha256": "8a9f12806581ed155591da97bac82fead2b3adfc2624545546faa60f0334dfac",
+  "manifest": [
+    {
+      "path": "packages/backend/src/core/activitypub/misc/contexts.ts",
+      "gitBlob": "6611e4b7f9321f4bca2959b599573cddaddafdb2",
+      "sha256": "ad16ce93794fec1c0229745f602188ded4edf712e69d5c12e5ee3e1f68b00bd3",
+      "methods": {}
+    },
+    {
+      "path": "packages/backend/src/core/activitypub/ApRendererService.ts",
+      "gitBlob": "601edcebe931a2c98e1bf967debdbe8c91e508ad",
+      "sha256": "8e4bcdcb5d062ffb707b0e038e5e1f62f0afca2ac4ddaa44c10e1b21bcbf1098",
+      "methods": {
+        "renderEmoji": "f89fbf2c7337c944ad0f1611d49aa8dc48e9ee33a8b68a5c40c33ff9a3ce7c54",
+        "addContext": "65e6046ed1c2462a0b365240799eaecd17da1d8873aeb4164c71a4105875551b"
+      }
+    },
+    {
+      "path": "packages/backend/src/server/ActivityPubServerService.ts",
+      "gitBlob": "51b46a10c05f44a598a33938ef26ce12bbad2c59",
+      "sha256": "de7a1dfc13085039bd7f305f034c8f72bd9c2a6cdaa671941b75b6b4a76f3af5",
+      "methods": {}
+    },
+    {
+      "path": "packages/backend/src/server/ActivityPubServerService.ts",
+      "gitBlob": "51b46a10c05f44a598a33938ef26ce12bbad2c59",
+      "sha256": "de7a1dfc13085039bd7f305f034c8f72bd9c2a6cdaa671941b75b6b4a76f3af5",
+      "methods": {
+        "setResponseType": "21b281e6033295ac26cb2dd943d5d264feb5ac89d4f0924acba826d3e983ef33",
+        "createServer": "f2f3d00bf8990258b5cf02cad72aafdc7193181f2748f4af5f86ad0493f98597"
+      }
+    },
+    {
+      "path": "packages/backend/src/server/ServerService.ts",
+      "gitBlob": "e17bccb0940353fa1ebde2f1f4d2ae666916a947",
+      "sha256": "f2e254ff190067175f9015553b88ebe1faaabb55e63d26dfaf060d4669685c17",
+      "methods": {}
+    }
+  ],
+  "limits": [
+    "Literal fixed-source methods with real Fastify inject and repository doubles; no full upstream server or real upstream PostgreSQL.",
+    "Compare status, selected HTTP headers, body and semantic lookup; normalize JSON error diagnostics to statusCode/error.",
+    "Meta is injected in source and read directly by the port; stable Meta comparison only. Meta cache/notification/failure differences remain #217.",
+    "Global ServerService hooks and strict diagnostic strings are excluded. Source repository doubles cannot prove PostgreSQL predicates or collation; separate real port HTTP/PG tests cover those."
+  ],
+  "cases": [
+    {
+      "id": "public",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "missing",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": "",
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "local-only",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": "",
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "remote-only",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": "",
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "local-remote-same-name",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "case-mismatch",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": "",
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "HELLO",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "sensitive",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "role-restricted",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "alias-is-not-name",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": "",
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "alias",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "public-url-empty",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://original.test/hello.png"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "type-null",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/png",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "type-empty",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "license-null",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": null
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "license-empty",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": ""
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "license-unicode",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "作者の許諾"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "undated",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-03T12:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "invalid-date",
+      "expected": {
+        "status": 500,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "statusCode": 500,
+          "error": "Internal Server Error"
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [
+          {
+            "name": "RangeError",
+            "message": "Invalid time value"
+          }
+        ],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "db-failure",
+      "expected": {
+        "status": 500,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "statusCode": 500,
+          "error": "Internal Server Error"
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [
+          {
+            "name": "Error",
+            "message": "injected repository diagnostic"
+          }
+        ],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "none",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": "",
+        "events": [],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "none-before-db-failure",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": "",
+        "events": [],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "specified",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "HEAD",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": "",
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "HEAD-missing",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": "",
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "HEAD-none",
+      "expected": {
+        "status": 403,
+        "headers": {
+          "cache-control": null,
+          "content-type": null,
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": "",
+        "events": [],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "HEAD-db-failure",
+      "expected": {
+        "status": 500,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": "",
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [
+          {
+            "name": "Error",
+            "message": "injected repository diagnostic"
+          }
+        ],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "OPTIONS",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "body": {
+          "statusCode": 404,
+          "error": "Not Found"
+        },
+        "events": [],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "query-ignored",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "encoded",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "double-encoded",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/%68ello",
+          "type": "Emoji",
+          "name": ":%68ello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "%68ello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "encoded-slash",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/a/b",
+          "type": "Emoji",
+          "name": ":a/b:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "a/b",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "unicode",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/猫",
+          "type": "Emoji",
+          "name": ":猫:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "猫",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "empty",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/",
+          "type": "Emoji",
+          "name": "::",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "plus-literal",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/a+b",
+          "type": "Emoji",
+          "name": ":a+b:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "a+b",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "accept-absent",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "accept-html",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "accept-json",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "accept-any",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "accept-activity",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "accept-ld",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "accept-profile",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "accept-unacceptable",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "accept-weights",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/hello",
+          "type": "Emoji",
+          "name": ":hello:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "hello",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "percent-before-none",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "body": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        },
+        "events": [],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "bad-percent-before-none",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "body": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        },
+        "events": [],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "bad-utf8-before-none",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "body": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        },
+        "events": [],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "truncated-utf8-before-none",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "body": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        },
+        "events": [],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "long-before-none",
+      "expected": {
+        "status": 414,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "body": {
+          "statusCode": 414,
+          "error": "Bad Request"
+        },
+        "events": [],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "long-utf16-before-none",
+      "expected": {
+        "status": 414,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "body": {
+          "statusCode": 414,
+          "error": "Bad Request"
+        },
+        "events": [],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "max-ascii",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "type": "Emoji",
+          "name": ":xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "max-utf16",
+      "expected": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=180",
+          "content-type": "application/activity+json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": "Accept",
+          "access-control-allow-methods": "GET, OPTIONS",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "Vary"
+        },
+        "body": {
+          "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            {
+              "Key": "sec:Key",
+              "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+              "sensitive": "as:sensitive",
+              "Hashtag": "as:Hashtag",
+              "quoteUrl": "as:quoteUrl",
+              "toot": "http://joinmastodon.org/ns#",
+              "Emoji": "toot:Emoji",
+              "featured": "toot:featured",
+              "discoverable": "toot:discoverable",
+              "schema": "http://schema.org#",
+              "PropertyValue": "schema:PropertyValue",
+              "value": "schema:value",
+              "misskey": "https://misskey-hub.net/ns#",
+              "_misskey_content": "misskey:_misskey_content",
+              "_misskey_quote": "misskey:_misskey_quote",
+              "_misskey_reaction": "misskey:_misskey_reaction",
+              "_misskey_votes": "misskey:_misskey_votes",
+              "_misskey_summary": "misskey:_misskey_summary",
+              "_misskey_followedMessage": "misskey:_misskey_followedMessage",
+              "_misskey_requireSigninToViewContents": "misskey:_misskey_requireSigninToViewContents",
+              "_misskey_makeNotesFollowersOnlyBefore": "misskey:_misskey_makeNotesFollowersOnlyBefore",
+              "_misskey_makeNotesHiddenBefore": "misskey:_misskey_makeNotesHiddenBefore",
+              "_misskey_license": "misskey:_misskey_license",
+              "freeText": {
+                "@id": "misskey:freeText",
+                "@type": "schema:text"
+              },
+              "isCat": "misskey:isCat",
+              "vcard": "http://www.w3.org/2006/vcard/ns#"
+            }
+          ],
+          "id": "https://local.example/emojis/😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+          "type": "Emoji",
+          "name": ":😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀:",
+          "updated": "2026-11-01T00:00:00.000Z",
+          "icon": {
+            "type": "Image",
+            "mediaType": "image/webp",
+            "url": "https://media.test/hello.webp"
+          },
+          "_misskey_license": {
+            "freeText": "CC BY"
+          }
+        },
+        "events": [
+          [
+            "emoji",
+            {
+              "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+              "host": "isNull"
+            }
+          ]
+        ],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "OPTIONS-malformed",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "body": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        },
+        "events": [],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "OPTIONS-long",
+      "expected": {
+        "status": 404,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json; charset=utf-8",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "body": {
+          "statusCode": 404,
+          "error": "Not Found"
+        },
+        "events": [],
+        "errors": [],
+        "unchanged": true
+      }
+    },
+    {
+      "id": "HEAD-malformed",
+      "expected": {
+        "status": 400,
+        "headers": {
+          "cache-control": null,
+          "content-type": "application/json",
+          "vary": null,
+          "location": null,
+          "access-control-allow-headers": null,
+          "access-control-allow-methods": null,
+          "access-control-allow-origin": null,
+          "access-control-expose-headers": null
+        },
+        "body": {
+          "statusCode": 400,
+          "error": "Bad Request"
+        },
+        "events": [],
+        "errors": [],
+        "unchanged": true
+      }
+    }
+  ]
+}

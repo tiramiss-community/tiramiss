@@ -263,3 +263,7 @@ R3b3723/1319/65/source318 and R2/R1/Node24/EPERM are history, not amended-code p
 ## Local outbox / activity #324（2026-11-14）
 
 #324は `1e75c5b2b3be158fba8afb14a9c1c30809825127` で実装し、[PR #588](https://github.com/tiramiss-community/tiramiss/pull/588) でマージ待ち。次は#325。[契約・実測・再現と限界](local-outbox-activity-results.md): 親実測の単体2113/42 files、実HTTP/PG/Redis707/7 files（新outbox23）、literal source115、source-contract12。22入力の実バイトと6 raw logを検証し、6原文だけを#323より下で履歴投影する。旧JSON/receiptは保持。sourceの明示doubles/real Fastifyと実製品PG/Redisを区別する。親root検査491件・shipping成功、CodeRabbitの指摘1件は修正・再レビュー済み。CI状態はPRのchecksを参照。#176/#127/#195 OPEN、notes/create:partial・postingComplete:false・D7/PG通知保存/強い順序保留を維持する。
+
+## #325 local Emoji object GET（2026-11-14）
+
+上の#324段落は当時の引き継ぎ。#325はruntime `140acaf7d0283a76cc4de4a9f0227ae130a86ccd` で通常GET/HEAD `/emojis/:emoji` に接続した。[有限の契約・実測と残責任](local-emoji-object-results.md): 単体115/4 files、実HTTP/PG42/2 files（Emoji19）、literal source53、source-contract6、sync/build/typecheck/shippingがPASS。固定14入力・無drift・実log hashを保持し、既存outboxの過去入力へ新旧のroot2ファイルだけを投影する。旧receipt/sealは保持する。malformed HEADのinject本文差、stable Meta/Meta不在時の既存初期化、source-methodと実PGの境界を明記し、他caller・画像配信・管理・cache#217と親#195/#176/#127未完了、投稿partialを維持する。

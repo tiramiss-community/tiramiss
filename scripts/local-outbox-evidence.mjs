@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { readPreEmojiObject } from './local-emoji-object-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/remote-user/';
@@ -44,9 +45,10 @@ function predecessor(value, readFile) {
  return saved.files;
 }
 
-// This is the terminal finite hop: no Git, subprocess, ancestor imports or
-// recursive manifests. The unchanged host receipt is the current measurement.
-export function validateOutboxSuccessor(value = record(read), readFile = read, optional = optionalRead) {
+// The emoji leaf restores the two changed root inputs before this historical
+// measurement is checked. Existing receipt bytes, seals and optional log checks remain unchanged.
+export function validateOutboxSuccessor(value = record(read), rawRead = read, optional = optionalRead) {
+ const readFile = path => readPreEmojiObject(path, undefined, rawRead, optional);
  assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), canonicalSeal, 'outbox current receipt seal');
  assert.equal(value.runtimeRevision, '1e75c5b2b3be158fba8afb14a9c1c30809825127');
  assert.equal(value.baseRevision, '5981cce83b9243bf22102b2f0ba1b866b1ed03da');
@@ -81,11 +83,12 @@ export function validateOutboxSuccessor(value = record(read), readFile = read, o
 
 // Outside the six historical consumers bytes pass through untouched. Before
 // any projection, check all 22 measured inputs, both seals and available logs.
-export function readPreOutbox(path, encoding, readFile = read, optional = optionalRead) {
+export function readPreOutbox(path, encoding, rawRead = read, optional = optionalRead) {
+ const readFile = path => readPreEmojiObject(path, undefined, rawRead, optional);
  let bytes;
  if (successorFiles.includes(path)) {
   const value = record(readFile);
-  bytes = Buffer.from(validateOutboxSuccessor(value, readFile, optional)[path]);
+  bytes = Buffer.from(validateOutboxSuccessor(value, rawRead, optional)[path]);
  } else bytes = readFile(path);
  return encoding ? bytes.toString(encoding) : bytes;
 }

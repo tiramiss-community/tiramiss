@@ -1,0 +1,310 @@
+{
+  "source": "8e07cf085adf7009583d234a208e30436f020e26",
+  "defaults": {
+    "selfUrl": "https://local.example",
+    "now": "2026-11-03T12:00:00.000Z",
+    "emoji": {
+      "id": "emoji",
+      "name": "hello",
+      "host": null,
+      "localOnly": false,
+      "isSensitive": false,
+      "type": "image/webp",
+      "publicUrl": "https://media.test/hello.webp",
+      "originalUrl": "https://original.test/hello.png",
+      "license": "CC BY",
+      "updatedAt": "2026-11-01T00:00:00.000Z",
+      "aliases": [],
+      "roleIdsThatCanBeUsedThisEmojiAsReaction": []
+    }
+  },
+  "limits": [
+    "Literal fixed-source methods with real Fastify inject and repository doubles; no full upstream server or real upstream PostgreSQL.",
+    "Compare status, selected HTTP headers, body and semantic lookup; normalize JSON error diagnostics to statusCode/error.",
+    "Meta is injected in source and read directly by the port; stable Meta comparison only. Meta cache/notification/failure differences remain #217.",
+    "Global ServerService hooks and strict diagnostic strings are excluded. Source repository doubles cannot prove PostgreSQL predicates or collation; separate real port HTTP/PG tests cover those."
+  ],
+  "cases": [
+    {
+      "id": "public"
+    },
+    {
+      "id": "missing",
+      "rows": []
+    },
+    {
+      "id": "local-only",
+      "emoji": {
+        "localOnly": true
+      }
+    },
+    {
+      "id": "remote-only",
+      "emoji": {
+        "host": "remote.test"
+      }
+    },
+    {
+      "id": "local-remote-same-name",
+      "extraRows": [
+        {
+          "host": "remote.test",
+          "publicUrl": "https://remote.test/image"
+        }
+      ]
+    },
+    {
+      "id": "case-mismatch",
+      "path": "/emojis/HELLO"
+    },
+    {
+      "id": "sensitive",
+      "emoji": {
+        "isSensitive": true
+      }
+    },
+    {
+      "id": "role-restricted",
+      "emoji": {
+        "roleIdsThatCanBeUsedThisEmojiAsReaction": [
+          "role"
+        ]
+      }
+    },
+    {
+      "id": "alias-is-not-name",
+      "emoji": {
+        "aliases": [
+          "alias"
+        ]
+      },
+      "path": "/emojis/alias"
+    },
+    {
+      "id": "public-url-empty",
+      "emoji": {
+        "publicUrl": ""
+      }
+    },
+    {
+      "id": "type-null",
+      "emoji": {
+        "type": null
+      }
+    },
+    {
+      "id": "type-empty",
+      "emoji": {
+        "type": ""
+      }
+    },
+    {
+      "id": "license-null",
+      "emoji": {
+        "license": null
+      }
+    },
+    {
+      "id": "license-empty",
+      "emoji": {
+        "license": ""
+      }
+    },
+    {
+      "id": "license-unicode",
+      "emoji": {
+        "license": "作者の許諾"
+      }
+    },
+    {
+      "id": "undated",
+      "emoji": {
+        "updatedAt": null
+      }
+    },
+    {
+      "id": "invalid-date",
+      "emoji": {
+        "updatedAt": "invalid"
+      }
+    },
+    {
+      "id": "db-failure",
+      "fail": "db"
+    },
+    {
+      "id": "none",
+      "federation": "none"
+    },
+    {
+      "id": "none-before-db-failure",
+      "federation": "none",
+      "fail": "db"
+    },
+    {
+      "id": "specified",
+      "federation": "specified"
+    },
+    {
+      "id": "HEAD",
+      "method": "HEAD"
+    },
+    {
+      "id": "HEAD-missing",
+      "method": "HEAD",
+      "rows": []
+    },
+    {
+      "id": "HEAD-none",
+      "method": "HEAD",
+      "federation": "none"
+    },
+    {
+      "id": "HEAD-db-failure",
+      "method": "HEAD",
+      "fail": "db"
+    },
+    {
+      "id": "OPTIONS",
+      "method": "OPTIONS"
+    },
+    {
+      "id": "query-ignored",
+      "query": "?page=true&name=other&emoji=other"
+    },
+    {
+      "id": "encoded",
+      "path": "/emojis/%68ello"
+    },
+    {
+      "id": "double-encoded",
+      "path": "/emojis/%2568ello",
+      "emoji": {
+        "name": "%68ello"
+      }
+    },
+    {
+      "id": "encoded-slash",
+      "path": "/emojis/a%2Fb",
+      "emoji": {
+        "name": "a/b"
+      }
+    },
+    {
+      "id": "unicode",
+      "path": "/emojis/%E7%8C%AB",
+      "emoji": {
+        "name": "猫"
+      }
+    },
+    {
+      "id": "empty",
+      "path": "/emojis/",
+      "emoji": {
+        "name": ""
+      }
+    },
+    {
+      "id": "plus-literal",
+      "path": "/emojis/a+b",
+      "emoji": {
+        "name": "a+b"
+      }
+    },
+    {
+      "id": "accept-absent",
+      "accept": null
+    },
+    {
+      "id": "accept-html",
+      "accept": "text/html"
+    },
+    {
+      "id": "accept-json",
+      "accept": "application/json"
+    },
+    {
+      "id": "accept-any",
+      "accept": "*/*"
+    },
+    {
+      "id": "accept-activity",
+      "accept": "application/activity+json"
+    },
+    {
+      "id": "accept-ld",
+      "accept": "application/ld+json"
+    },
+    {
+      "id": "accept-profile",
+      "accept": "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\""
+    },
+    {
+      "id": "accept-unacceptable",
+      "accept": "application/activity+json;q=0"
+    },
+    {
+      "id": "accept-weights",
+      "accept": "application/activity+json;q=0.1, application/ld+json;q=0.8"
+    },
+    {
+      "id": "percent-before-none",
+      "path": "/emojis/%",
+      "federation": "none"
+    },
+    {
+      "id": "bad-percent-before-none",
+      "path": "/emojis/%ZZ",
+      "federation": "none"
+    },
+    {
+      "id": "bad-utf8-before-none",
+      "path": "/emojis/%C0%AF",
+      "federation": "none"
+    },
+    {
+      "id": "truncated-utf8-before-none",
+      "path": "/emojis/%E0%A4%A",
+      "federation": "none"
+    },
+    {
+      "id": "long-before-none",
+      "path": "/emojis/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "federation": "none"
+    },
+    {
+      "id": "long-utf16-before-none",
+      "path": "/emojis/%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80x",
+      "federation": "none"
+    },
+    {
+      "id": "max-ascii",
+      "path": "/emojis/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "emoji": {
+        "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      }
+    },
+    {
+      "id": "max-utf16",
+      "path": "/emojis/%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80%F0%9F%98%80",
+      "emoji": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+      }
+    },
+    {
+      "id": "OPTIONS-malformed",
+      "method": "OPTIONS",
+      "path": "/emojis/%ZZ"
+    },
+    {
+      "id": "OPTIONS-long",
+      "method": "OPTIONS",
+      "path": "/emojis/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    {
+      "id": "HEAD-malformed",
+      "method": "HEAD",
+      "path": "/emojis/%ZZ"
+    }
+  ]
+}
