@@ -145,6 +145,7 @@
     }
   },
   "sourceInputs": {
+    "docs/superpowers/compatibility/note/delete-failure-cases.json": "b44d57f3bb1789a4d23b6792050ba2ce0bfefa3c3985f6286d2c0e7fdc022c56",
     "packages/backend-next/package.json": "47f4ce1dee2f7bce9d4406354905f4f211b55a4714039f621d406ef516a5b191",
     "packages/backend-next/src/application/outbound-http.ts": "d73b3ce370e2edc467c469d19a19378a8c0d70b2eb72d99b6cc44355fad47809",
     "packages/backend-next/src/application/transaction.ts": "f8104aeb9b0b1fa032611b17209814f8e402b2992b01e69293d30ae1296d3655",

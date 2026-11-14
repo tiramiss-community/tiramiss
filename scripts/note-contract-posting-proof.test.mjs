@@ -91,6 +91,15 @@ test('rejects corrupted historical input bytes', () => {
   historicalSource(commit, file) + (file === 'pnpm-lock.yaml' ? '\n' : '')), /input hash/);
 });
 
+test('rejects group-only fixture value drift with an intact observation key', () => {
+	assert.throws(() => validate(load(), file => {
+		if (file !== 'docs/superpowers/compatibility/note/delete-failure-cases.json') return read(file);
+		const fixture = JSON.parse(read(file));
+		fixture.repliesCount += 1;
+		return JSON.stringify(fixture);
+	}), /group fixture hash/);
+});
+
 test('rejects live fixture content drift with intact case IDs', () => {
  assert.throws(() => validate(load(), file => read(file) +
   (file === 'docs/superpowers/compatibility/note/observations.json' ? '\n' : '')), /fixture hash/);
@@ -159,7 +168,11 @@ function validate(value, readInput = read, readHistorical = historicalSource) {
 	}
 	for (const group of value.groups) {
 		for (const id of group.evidence) assert.ok(value.evidenceBindings[id], 'group evidence');
-		for (const obs of group.observations ?? []) assert.ok(Object.hasOwn(JSON.parse(readInput(obs.file)), obs.key), 'observation key');
+		for (const obs of group.observations ?? []) {
+			const source = readInput(obs.file);
+			assert.ok(Object.hasOwn(JSON.parse(source), obs.key), 'observation key');
+			assert.equal(digest(source), value.sourceInputs[obs.file], `group fixture hash ${obs.file}`);
+		}
 	}
 	assert.deepEqual(value.groups.map(x => x.id), ['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','F1','F2','F3','F4','F5','F6','F7','F8']);
 	for (const [file, hash] of Object.entries(value.sourceInputs)) assert.equal(digest(readHistorical(value.runtimeBaseline, file)), hash, `input hash ${file}`);
@@ -175,7 +188,7 @@ const reviewed = {
   "groups": "1c4d4c9f782d27db33123ebf3a6c2345d1778004b8644c1e71dd3ab5279ed6ca",
   "deleteSourceCases": "6f96b4d8be861c69830e67c4af728f0e1de7899d97e381912eef102a921dde11",
   "measurements": "72e823fda9a60bd801cf1afbeeffadaaddf08126e5819f2d0fbb87f2bab8a6a9",
-  "sourceInputs": "fef97944b14eff89c29eecad9a1a92598692c571f252e0b216e30fddfbd9e49a",
+  "sourceInputs": "4e5e943696c4a7254bc44ee3a6fe2406d931f5e82b5214d913a1332f3abf3d73",
   "upstreamSourceHashes": "cb653d703b2bd207f5e1a1114712ccef8593dc70aac72b1d70920929eaa10ece",
   "limitations": "50fab1951d62d94a0dec4e500cc899033ada24121f96e194b8fd67668efbab78"
 };
