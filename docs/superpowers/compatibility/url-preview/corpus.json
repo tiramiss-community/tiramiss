@@ -913,6 +913,86 @@
           "gc": true
         }
       ]
+    },
+    {
+      "id": "malformed-url-percent",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Fexample.test%2F%ZZ"
+        }
+      ]
+    },
+    {
+      "id": "malformed-lang-percent",
+      "steps": [
+        {
+          "path": "/url?url=x&lang=%65n%ZZ"
+        }
+      ]
+    },
+    {
+      "id": "malformed-url-utf8",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test%2F%E3%81"
+        }
+      ]
+    },
+    {
+      "id": "malformed-lang-utf8",
+      "steps": [
+        {
+          "path": "/url?url=x&lang=%65n%FF"
+        }
+      ]
+    },
+    {
+      "id": "malformed-key",
+      "steps": [
+        {
+          "path": "/url?%75rl%ZZ=x"
+        }
+      ]
+    },
+    {
+      "id": "malformed-plus",
+      "steps": [
+        {
+          "path": "/url?url=x&lang=%65n+%ZZ"
+        }
+      ]
+    },
+    {
+      "id": "plus-space",
+      "steps": [
+        {
+          "path": "/url?url=https%3A%2F%2Finput.test%2Fa+b&lang=en+US"
+        }
+      ]
+    },
+    {
+      "id": "encoded-plus",
+      "steps": [
+        {
+          "path": "/url?url=x&lang=en%2BUS"
+        }
+      ]
+    },
+    {
+      "id": "encoded-keys",
+      "steps": [
+        {
+          "path": "/url?%75rl=x&la%6Eg=en"
+        }
+      ]
+    },
+    {
+      "id": "encoded-duplicate",
+      "steps": [
+        {
+          "path": "/url?url=x&%75rl=y"
+        }
+      ]
     }
   ]
 }

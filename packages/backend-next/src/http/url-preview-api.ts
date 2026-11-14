@@ -6,10 +6,35 @@ import { Hono } from 'hono';
 import { PreviewDisabled, PreviewFailed } from '../modules/url-preview/public.js';
 import type { PreviewSummary } from '../modules/url-preview/public.js';
 
+function decodeQueryComponent(raw: string): string {
+	const value = raw.replace(/\+/g, ' ');
+	try {
+		return decodeURIComponent(value);
+	} catch {
+		// Pinned fast-querystring retains the entire component on invalid escapes or UTF-8.
+		return value;
+	}
+}
+
+function previewQuery(url: string): { url?: string[]; lang?: string[] } {
+	const result: { url?: string[]; lang?: string[] } = {};
+	const start = url.indexOf('?');
+	if (start === -1) {
+return result;
+}
+	for (const pair of url.slice(start + 1).split('&')) {
+		const equals = pair.indexOf('=');
+		const key = decodeQueryComponent(equals === -1 ? pair : pair.slice(0, equals));
+		if (key === 'url' || key === 'lang') {
+			(result[key] ??= []).push(decodeQueryComponent(equals === -1 ? '' : pair.slice(equals + 1)));
+		}
+	}
+	return result;
+}
+
 export function createUrlPreviewApi(application: { preview(url: string, lang?: string): Promise<PreviewSummary> }) {
 	return new Hono().get('/url', async c => {
-		const urls = c.req.queries('url');
-		const langs = c.req.queries('lang');
+		const { url: urls, lang: langs } = previewQuery(c.req.url);
 		if (urls?.length !== 1 || (langs && langs.length !== 1)) {
 			return c.body(null, 400);
 		}

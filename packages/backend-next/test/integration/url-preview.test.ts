@@ -81,4 +81,8 @@ test('ordinary HEAD performs acquisition while returning empty body, malformed q
 		expect(response.headers.get('content-type')).toBeNull();
 	}
 	expect((await fetch(`${origin}/url?url=x`, { method: 'POST' })).status).toBe(404);
+	const malformed = await fetch(`${origin}/url?url=https%3A%2F%2Fexample.test%2F%ZZ&lang=%65n%ZZ`);
+	expect(malformed.status).toBe(200);
+	expect(requests.at(-1)?.searchParams.get('url')).toBe('https%3A%2F%2Fexample.test%2F%ZZ');
+	expect(requests.at(-1)?.searchParams.get('lang')).toBe('%65n%ZZ');
 });

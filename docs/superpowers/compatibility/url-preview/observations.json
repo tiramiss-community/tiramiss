@@ -1,6 +1,6 @@
 {
   "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
-  "corpusSha256": "e55779d8f094616d7d5d98a93689706f58b3dc3e88b0894d84ac11d558047cac",
+  "corpusSha256": "1bb5f5cd55c3cd4a58e1543cbf8d9838f68f16cc0136da16aeb06931126a3fd2",
   "sources": [
     {
       "path": "packages/backend/src/misc/cache.ts",
@@ -5649,6 +5649,348 @@
               }
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "malformed-url-percent",
+      "steps": [
+        {
+          "status": 200,
+          "cacheControl": "max-age=86400, immutable",
+          "body": {
+            "url": "https://result.test/path",
+            "title": "summary",
+            "player": {
+              "url": null
+            },
+            "icon": null,
+            "thumbnail": null,
+            "extra": {
+              "arbitrary": true
+            },
+            "sensitive": false
+          },
+          "calls": [
+            {
+              "mode": "direct",
+              "url": "https%3A%2F%2Fexample.test%2F%ZZ",
+              "options": {
+                "followRedirects": true,
+                "lang": "ja-JP",
+                "agent": {
+                  "http": "HTTP",
+                  "https": "HTTPS"
+                },
+                "userAgent": "SummalyBot/5.5.2 (https://self.test; +https://github.com/misskey-dev/summaly/blob/master/README.md)",
+                "operationTimeout": 10000,
+                "contentLengthLimit": 10485760,
+                "contentLengthRequired": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "malformed-lang-percent",
+      "steps": [
+        {
+          "status": 200,
+          "cacheControl": "max-age=86400, immutable",
+          "body": {
+            "url": "https://result.test/path",
+            "title": "summary",
+            "player": {
+              "url": null
+            },
+            "icon": null,
+            "thumbnail": null,
+            "extra": {
+              "arbitrary": true
+            },
+            "sensitive": false
+          },
+          "calls": [
+            {
+              "mode": "direct",
+              "url": "x",
+              "options": {
+                "followRedirects": true,
+                "lang": "%65n%ZZ",
+                "agent": {
+                  "http": "HTTP",
+                  "https": "HTTPS"
+                },
+                "userAgent": "SummalyBot/5.5.2 (https://self.test; +https://github.com/misskey-dev/summaly/blob/master/README.md)",
+                "operationTimeout": 10000,
+                "contentLengthLimit": 10485760,
+                "contentLengthRequired": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "malformed-url-utf8",
+      "steps": [
+        {
+          "status": 200,
+          "cacheControl": "max-age=86400, immutable",
+          "body": {
+            "url": "https://result.test/path",
+            "title": "summary",
+            "player": {
+              "url": null
+            },
+            "icon": null,
+            "thumbnail": null,
+            "extra": {
+              "arbitrary": true
+            },
+            "sensitive": false
+          },
+          "calls": [
+            {
+              "mode": "direct",
+              "url": "https%3A%2F%2Finput.test%2F%E3%81",
+              "options": {
+                "followRedirects": true,
+                "lang": "ja-JP",
+                "agent": {
+                  "http": "HTTP",
+                  "https": "HTTPS"
+                },
+                "userAgent": "SummalyBot/5.5.2 (https://self.test; +https://github.com/misskey-dev/summaly/blob/master/README.md)",
+                "operationTimeout": 10000,
+                "contentLengthLimit": 10485760,
+                "contentLengthRequired": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "malformed-lang-utf8",
+      "steps": [
+        {
+          "status": 200,
+          "cacheControl": "max-age=86400, immutable",
+          "body": {
+            "url": "https://result.test/path",
+            "title": "summary",
+            "player": {
+              "url": null
+            },
+            "icon": null,
+            "thumbnail": null,
+            "extra": {
+              "arbitrary": true
+            },
+            "sensitive": false
+          },
+          "calls": [
+            {
+              "mode": "direct",
+              "url": "x",
+              "options": {
+                "followRedirects": true,
+                "lang": "%65n%FF",
+                "agent": {
+                  "http": "HTTP",
+                  "https": "HTTPS"
+                },
+                "userAgent": "SummalyBot/5.5.2 (https://self.test; +https://github.com/misskey-dev/summaly/blob/master/README.md)",
+                "operationTimeout": 10000,
+                "contentLengthLimit": 10485760,
+                "contentLengthRequired": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "malformed-key",
+      "steps": [
+        {
+          "status": 400,
+          "cacheControl": null,
+          "body": "",
+          "calls": []
+        }
+      ]
+    },
+    {
+      "id": "malformed-plus",
+      "steps": [
+        {
+          "status": 200,
+          "cacheControl": "max-age=86400, immutable",
+          "body": {
+            "url": "https://result.test/path",
+            "title": "summary",
+            "player": {
+              "url": null
+            },
+            "icon": null,
+            "thumbnail": null,
+            "extra": {
+              "arbitrary": true
+            },
+            "sensitive": false
+          },
+          "calls": [
+            {
+              "mode": "direct",
+              "url": "x",
+              "options": {
+                "followRedirects": true,
+                "lang": "%65n %ZZ",
+                "agent": {
+                  "http": "HTTP",
+                  "https": "HTTPS"
+                },
+                "userAgent": "SummalyBot/5.5.2 (https://self.test; +https://github.com/misskey-dev/summaly/blob/master/README.md)",
+                "operationTimeout": 10000,
+                "contentLengthLimit": 10485760,
+                "contentLengthRequired": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "plus-space",
+      "steps": [
+        {
+          "status": 200,
+          "cacheControl": "max-age=86400, immutable",
+          "body": {
+            "url": "https://result.test/path",
+            "title": "summary",
+            "player": {
+              "url": null
+            },
+            "icon": null,
+            "thumbnail": null,
+            "extra": {
+              "arbitrary": true
+            },
+            "sensitive": false
+          },
+          "calls": [
+            {
+              "mode": "direct",
+              "url": "https://input.test/a b",
+              "options": {
+                "followRedirects": true,
+                "lang": "en US",
+                "agent": {
+                  "http": "HTTP",
+                  "https": "HTTPS"
+                },
+                "userAgent": "SummalyBot/5.5.2 (https://self.test; +https://github.com/misskey-dev/summaly/blob/master/README.md)",
+                "operationTimeout": 10000,
+                "contentLengthLimit": 10485760,
+                "contentLengthRequired": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "encoded-plus",
+      "steps": [
+        {
+          "status": 200,
+          "cacheControl": "max-age=86400, immutable",
+          "body": {
+            "url": "https://result.test/path",
+            "title": "summary",
+            "player": {
+              "url": null
+            },
+            "icon": null,
+            "thumbnail": null,
+            "extra": {
+              "arbitrary": true
+            },
+            "sensitive": false
+          },
+          "calls": [
+            {
+              "mode": "direct",
+              "url": "x",
+              "options": {
+                "followRedirects": true,
+                "lang": "en+US",
+                "agent": {
+                  "http": "HTTP",
+                  "https": "HTTPS"
+                },
+                "userAgent": "SummalyBot/5.5.2 (https://self.test; +https://github.com/misskey-dev/summaly/blob/master/README.md)",
+                "operationTimeout": 10000,
+                "contentLengthLimit": 10485760,
+                "contentLengthRequired": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "encoded-keys",
+      "steps": [
+        {
+          "status": 200,
+          "cacheControl": "max-age=86400, immutable",
+          "body": {
+            "url": "https://result.test/path",
+            "title": "summary",
+            "player": {
+              "url": null
+            },
+            "icon": null,
+            "thumbnail": null,
+            "extra": {
+              "arbitrary": true
+            },
+            "sensitive": false
+          },
+          "calls": [
+            {
+              "mode": "direct",
+              "url": "x",
+              "options": {
+                "followRedirects": true,
+                "lang": "en",
+                "agent": {
+                  "http": "HTTP",
+                  "https": "HTTPS"
+                },
+                "userAgent": "SummalyBot/5.5.2 (https://self.test; +https://github.com/misskey-dev/summaly/blob/master/README.md)",
+                "operationTimeout": 10000,
+                "contentLengthLimit": 10485760,
+                "contentLengthRequired": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "encoded-duplicate",
+      "steps": [
+        {
+          "status": 400,
+          "cacheControl": null,
+          "body": "",
+          "calls": []
         }
       ]
     }
