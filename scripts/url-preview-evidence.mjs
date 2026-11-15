@@ -47,9 +47,10 @@ function record(readFile) {
 
 // A finite terminal hop for #377/#560. Historical receipts remain byte-for-byte
 // immutable; only eight measured changed inputs are restored for their readers.
-export function validateUrlPreviewSuccessor(value, rawRead = read, optional = optionalRead) {
- const previousInternalEvents = validateInternalEventsSuccessor(undefined, rawRead, optional);
- const readFile = path => Object.hasOwn(previousInternalEvents, path) ? Buffer.from(previousInternalEvents[path]) : rawRead(path);
+export function validateUrlPreviewSuccessor(value, readFile = read, optional = optionalRead) {
+ const previousInternalEvents = validateInternalEventsSuccessor(undefined, readFile, optional);
+ const readBeforeInternalEvents = readFile;
+ readFile = path => Object.hasOwn(previousInternalEvents, path) ? Buffer.from(previousInternalEvents[path]) : readBeforeInternalEvents(path);
  if (value === undefined) value = record(readFile);
  assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'URL preview current receipt seal');
  assert.equal(value.runtimeRevision, '4047f7fc8696ee45104d0ed317722273afbcce1e');
