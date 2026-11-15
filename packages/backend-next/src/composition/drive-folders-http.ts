@@ -12,10 +12,10 @@ import { createIdCodec } from '../platform/id-codec.js';
 import { createDriveFolderPublisher } from '../platform/drive-folder-publisher.js';
 import type { RuntimeResources } from './create-runtime.js';
 import type { RuntimeConfig } from '../config/types.js';
-export function createDriveFoldersHttp(resources: Pick<RuntimeResources, 'dataSource' | 'redis' | 'logger'>, config: RuntimeConfig) {
+export function createDriveFoldersHttp(resources: Pick<RuntimeResources, 'dataSource' | 'redis' | 'postingStream' | 'logger'>, config: RuntimeConfig) {
 	const ids = createIdCodec(config.id);
 	const limit = createApiRateLimiter(resources.redis);
-	const publisher = createDriveFolderPublisher(resources.redis, config.url, resources.logger);
+	const publisher = createDriveFolderPublisher((userId, type, body) => resources.postingStream.drive(userId, type, body), resources.logger);
 	const application = createDriveFolders({
 		...createDriveFolderStore(resources.dataSource.manager, ids.createdAtFromId),
 		newId: () => ids.newId(Date.now()), createdAtFromId: ids.createdAtFromId,

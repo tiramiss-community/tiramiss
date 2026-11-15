@@ -57,6 +57,8 @@ let database: Awaited<ReturnType<typeof createTestDatabase>>;
 let resources: Awaited<ReturnType<typeof connectResources>>;
 let server: Server;
 let port: number;
+let baseSubscriber: ReturnType<Awaited<ReturnType<typeof connectResources>>['redis']['duplicate']>;
+const baseEvents: unknown[] = [];
 let subscriber: ReturnType<Awaited<ReturnType<typeof connectResources>>['redis']['duplicate']>;
 const events: unknown[] = [];
 const logs: string[] = [];
@@ -78,6 +80,7 @@ beforeAll(async () => {
 	database = await createTestDatabase();
 	await migrateDatabase(database.config.database);
 	database.config.url = 'https://folders.example:3000';
+	database.config.redisForPubsub = { ...database.config.redis, port: Number(process.env.BACKEND_NEXT_TEST_PUBSUB_REDIS_PORT ?? 56380) };
 	resources = await connectResources(database.config, createLogger('folders-test', line => logs.push(line)));
 	await resources.dataSource.getRepository(MiMeta).insert({ id: 'singleton' });
 	await resources.dataSource.getRepository(MiUser).insert([{ id: 'alice', username: 'alice', usernameLower: 'alice', token }, { id: 'bob', username: 'bob', usernameLower: 'bob' }]);
@@ -86,11 +89,16 @@ beforeAll(async () => {
 	}
 	await resources.dataSource.getRepository(MiApp).insert({ id: 'app', name: 'folder app', description: '', secret: 'test', permission: ['read:drive'] });
 	await resources.dataSource.getRepository(MiAccessToken).insert({ id: 'appToken', userId: 'alice', appId: 'app', token: 'folder-app-access-token', hash: 'folder-app-hash', permission: ['write:drive'] });
-	subscriber = resources.redis.duplicate();
+	subscriber = resources.redis.duplicate(database.config.redisForPubsub);
 	subscriber.on('message', (_topic, value) => {
 		events.push(JSON.parse(value));
 	});
 	await subscriber.subscribe('folders.example:3000');
+	baseSubscriber = resources.redis.duplicate();
+	baseSubscriber.on('message', (_topic, value) => {
+		baseEvents.push(JSON.parse(value));
+	});
+	await baseSubscriber.subscribe('folders.example:3000');
 	const env = process.env.NODE_ENV;
 	process.env.NODE_ENV = 'production';
 	try {
@@ -107,6 +115,7 @@ afterAll(async () => {
 		await closeHttp(server);
 	}
 	await subscriber?.quit();
+	await baseSubscriber?.quit();
 	await resources?.close();
 	await database?.close();
 });
@@ -120,6 +129,7 @@ beforeEach(async () => {
 	await folders().insert(corpus.rows);
 	await resources.redis.del('limit:alice:drive/folders/create');
 	events.length = 0;
+	baseEvents.length = 0;
 });
 for (const c of corpus.cases.filter(row => row.id !== 'create-max' && row.fail !== 'ancestor')) {
 	test(`real HTTP/PG/Redis matches source folder ${c.id}`, async () => {
@@ -180,6 +190,34 @@ for (const c of corpus.cases.filter(row => row.id !== 'create-max' && row.fail !
 		}
 	});
 }
+test('folder publication uses the configured pubsub server and leaves ordinary Redis silent', async () => {
+	const response = await call('create', { name: 'split-pubsub' });
+	expect(response.status).toBe(200);
+	const body = await response.json();
+	await vi.waitFor(() => expect(events).toContainEqual({ channel: 'driveStream:alice', message: { type: 'folderCreated', body } }));
+	expect(baseEvents).toEqual([]);
+});
+test('the default shared Redis configuration also delivers the source drive envelope', async () => {
+	const config = { ...database.config, redisForPubsub: database.config.redis };
+	const defaults = await connectResources(config, createLogger('folders-default', () => { }));
+	let defaultServer: Server | undefined;
+	try {
+		defaultServer = await listenHttp(createBackendHttpApp(defaults, config), { port: 0 });
+		const defaultPort = (defaultServer.address() as {
+			port: number;
+		}).port;
+		const response = await fetch(`http://127.0.0.1:${defaultPort}/api/drive/folders/create`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ name: 'default-pubsub' }) });
+		expect(response.status).toBe(200);
+		const body = await response.json();
+		await vi.waitFor(() => expect(baseEvents).toContainEqual({ channel: 'driveStream:alice', message: { type: 'folderCreated', body } }));
+		expect(events).toEqual([]);
+	} finally {
+		if (defaultServer) {
+			await closeHttp(defaultServer);
+		}
+		await defaults.close();
+	}
+});
 test('native/app/miauth permissions, suspension and credentials precede folder input', async () => {
 	expect((await call('create', {}, null)).status).toBe(401);
 	expect((await call('create', {}, 'wrong')).status).toBe(401);
@@ -252,7 +290,7 @@ test('Redis limiter failure prevents a write; post-save publication failure leav
 	} finally {
 		failedLimit.mockRestore();
 	}
-	const failedPublish = vi.spyOn(resources.redis, 'publish').mockRejectedValueOnce(Error('pubsub unavailable'));
+	const failedPublish = vi.spyOn(resources.postingStream, 'drive').mockRejectedValueOnce(Error('pubsub unavailable'));
 	try {
 		expect((await call('create', { name: 'published-failed' })).status).toBe(200);
 		expect(await folders().countBy({ name: 'published-failed' })).toBe(1);
@@ -288,10 +326,10 @@ test('folder endpoints preserve upstream schema and migration history', async ()
 });
 test('HTTP success does not await publication, and close waits for publication started by an accepted request', async () => {
 	let release!: () => void;
-	const pending = new Promise<number>(resolve => {
-		release = () => resolve(1);
+	const pending = new Promise<void>(resolve => {
+		release = () => resolve();
 	});
-	const publish = vi.spyOn(resources.redis, 'publish').mockReturnValueOnce(pending);
+	const publish = vi.spyOn(resources.postingStream, 'drive').mockReturnValueOnce(pending);
 	let accept!: () => void;
 	const accepted = new Promise<void>(resolve => {
 		accept = resolve;

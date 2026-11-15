@@ -11,6 +11,7 @@ export function createPostingStream(redis: { publish(channel: string, value: str
 		antenna: (antennaId: string, note: Record<string, unknown>) => publish(`antennaStream:${antennaId}`, { type: 'note', body: note }),
 		notes: (note: Record<string, unknown>) => publish('notesStream', note),
 		role: (roleId: string, note: Record<string, unknown>) => publish(`roleTimelineStream:${roleId}`, { type: 'note', body: note }),
+		drive: (userId: string, type: string, body: unknown) => publish(`driveStream:${userId}`, { type, body }),
 		main: (userId: string, type: string, body: unknown = null) => publish(`mainStream:${userId}`, { type, body }),
 		deleted: (note: { id: string; userId: string; visibility: string; visibleUserIds: string[] }, deletedAt: number) => publish(`noteStream:${note.id}`, {
 			type: 'deleted', body: { id: note.id, userId: note.userId, visibility: note.visibility, visibleUserIds: note.visibleUserIds, body: { deletedAt: new Date(deletedAt).toISOString() } },

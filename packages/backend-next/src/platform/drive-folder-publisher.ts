@@ -5,13 +5,10 @@
 import type { DriveFolderPorts } from '../modules/drive/folders.js';
 import type { Logger } from './logger.js';
 /** The source starts publication after the write without delaying the response. */
-export function createDriveFolderPublisher(redis: {
-	publish(topic: string, value: string): Promise<number>;
-}, selfUrl: string, logger: Logger) {
-	const host = new URL(selfUrl).host;
+export function createDriveFolderPublisher(send: (...args: Parameters<DriveFolderPorts['publish']>) => Promise<void>, logger: Logger) {
 	const pending = new Set<Promise<void>>();
 	const publish: DriveFolderPorts['publish'] = (userId, type, body) => {
-		const work = Promise.resolve().then(() => redis.publish(host, JSON.stringify({ channel: `driveStream:${userId}`, message: { type, body } }))).then(() => { }, error => {
+		const work = Promise.resolve().then(() => send(userId, type, body)).then(() => { }, error => {
 			logger.error('drive-folder-publish.failed', { userId, type, error });
 		});
 		pending.add(work);

@@ -24,6 +24,16 @@ services:
       interval: 1s
       timeout: 3s
       retries: 30
+  redis-pubsub:
+    image: redis:8
+    ports:
+      - '127.0.0.1:${BACKEND_NEXT_TEST_PUBSUB_REDIS_PORT:-56380}:6379'
+    command: ['redis-server', '--save', '', '--appendonly', 'no']
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 1s
+      timeout: 3s
+      retries: 30
   meilisearch:
     image: getmeili/meilisearch:v1.3.4
     environment:
