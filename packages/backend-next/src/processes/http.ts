@@ -96,7 +96,7 @@ export async function closeHttp(server: Server): Promise<void> {
 	}
 
 	state.draining = true;
-	await Promise.all([
+	const results = await Promise.allSettled([
 		...Array.from(state.drainers, drain => drain()),
 		new Promise<void>((resolve, reject) => {
 			server.close((error) => {
@@ -112,7 +112,19 @@ export async function closeHttp(server: Server): Promise<void> {
 		// 一件の失敗で他の処理の待機まで打ち切らないよう、all ではなく allSettled を使う。
 		Promise.allSettled([...state.active]),
 	]);
-	await state.afterRequests();
+	// A failed drainer must not release Redis while accepted handlers can still start publication.
+	const failures: unknown[] = results.flatMap(result => result.status === 'rejected' ? [result.reason] : []);
+	try {
+		await state.afterRequests();
+	} catch (error) {
+		failures.push(error);
+	}
+	if (failures.length === 1) {
+		throw failures[0];
+	}
+	if (failures.length > 1) {
+		throw new AggregateError(failures, 'HTTP_DRAIN_FAILED');
+	}
 }
 
 export function startHttp(config: RuntimeConfig) {
