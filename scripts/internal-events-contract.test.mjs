@@ -13,11 +13,16 @@ const read = path => readFileSync(new URL(path, root));
 const evidencePath = 'docs/superpowers/compatibility/internal-events/current-evidence.json';
 const predecessorPath = 'docs/superpowers/compatibility/internal-events/predecessor.json';
 const projected = 'packages/backend-next/src/platform/connect-resources.ts';
+const projectedPaths = [projected, 'packages/backend-next/src/platform/note-antennas.ts', 'packages/backend-next/src/platform/role-material-cache.ts', 'packages/backend-next/src/platform/role-materials.ts', 'packages/backend-next/src/platform/user-webhooks.ts', 'packages/backend-next/test/unit/note/antennas.test.ts', 'packages/backend-next/test/unit/user-webhooks-reconnect.test.ts', 'packages/backend-next/test/unit/user-webhooks-startup.test.ts'];
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const record = () => JSON.parse(read(evidencePath));
-test('current measured internal reception restores exactly one historical composition input', () => {
+test('current measured internal reception restores exactly eight changed historical inputs', () => {
  const result = validateInternalEventsSuccessor(undefined, read, () => null);
- assert.deepEqual(Object.keys(result), [projected]);
+ assert.deepEqual(Object.keys(result), projectedPaths);
+ for (const path of projectedPaths) {
+  assert.notEqual(sha(readPreInternalEvents(path)), sha(read(path)), path);
+  if (path !== projected) assert.equal(readPreUrlPreview(path, 'utf8'), result[path]);
+ }
  assert.notEqual(sha(readPreInternalEvents(projected)), sha(read(projected)));
  assert.equal(sha(readPreInternalEvents(projected)), JSON.parse(read('docs/superpowers/compatibility/url-preview/current-evidence.json')).inputs[projected]);
  assert.equal(readPreInternalEvents('unrelated', 'utf8', () => Buffer.from('live'), () => null), 'live');
@@ -29,6 +34,7 @@ test('every current measured source/test input rejects drift before historical p
   const changed = p => p === path ? Buffer.concat([read(p), Buffer.from('\n')]) : read(p);
   assert.throws(() => validateInternalEventsSuccessor(undefined, changed, () => null), /measured current input drift/);
   assert.throws(() => readPreUrlPreview(projected, undefined, changed, () => null), /measured current input drift/);
+  if (projectedPaths.includes(path)) assert.throws(() => readPreUrlPreview(path, undefined, changed, () => null), /measured current input drift/);
  }
 });
 test('sealed receipts and predecessor reject corruption even without host artifacts', () => {

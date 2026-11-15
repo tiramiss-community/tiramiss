@@ -14,7 +14,7 @@
 
 `source-probe.mjs` はGitから固定SHAのGlobalEventService.publish/publishInternalEvent、RoleService.onMessage、AntennaService.onRedisMessage、UserWebhookService.onMessageの**実method body**を抽出実行する。cacheとRedis publicationはdouble。`source-observations.json` の15操作を通常unit testが消費し、hook選択、antenna id/withReplies、Role id/administrator、assignmentの次操作の有限projectionを比較する。Roleは通知payloadのcache直接更新とDB正本の無効化方式の差異がある。後者には、同じ保存結果を持つDB readerの材料を与える。日時・join列、全field、実本家serverのHTTP/Redis縦断を比較した証拠ではない。policiesUpdatedは固定sourceのenvelopeと通知受信を確認し、基本policy DB参照の既存設計を保持する。
 
-実Redis比較は `test/integration/internal-events.test.ts`。1本のconnectionへの3利用者登録、受信失敗の隔離、実client kill/reconnectとheld ACK、1利用者だけ解除後の継続受信、transport close後のclient解放を測る。従来Role/antenna/webhookの実依存試験と通常process試験も実行した。`current-evidence.json` はproduct commitと実行時のsource/test SHA・log SHAを結び付ける。古いreceiptは変更しない。`predecessor.json` は履歴検査に必要な変更済み共通compositionの1ファイルだけを保持し、新しい実装を古い試験で測定済みと主張しない。
+実Redis比較は `test/integration/internal-events.test.ts`。1本のconnectionへの3利用者登録、受信失敗の隔離、実client kill/reconnectとheld ACK、1利用者だけ解除後の継続受信、transport close後のclient解放を測る。従来Role/antenna/webhookの実依存試験と通常process試験も実行した。`current-evidence.json` はproduct commitと実行時のsource/test SHA・log SHAを結び付ける。古いreceiptは変更しない。`predecessor.json` は履歴検査に必要な変更済み既存platform実装5ファイルとテスト3ファイルだけを保持し、新しい実装を古い試験で測定済みと主張しない。
 
 専用Docker projectを使い、通常CIでは固定されたsource observationを利用する。source probeの再実行は固定checkoutを指定する。
 
@@ -29,4 +29,4 @@ node --test scripts/internal-events-contract.test.mjs
 
 2026-11-15の専用環境はNode26、pnpm12.9.1、PostgreSQL18・Redis8、DB16541/Redis16542/Meili16543、project `s1-events290-20261115`。実依存試験のpg同時query非推奨警告は既存のもの。新しいmigration・Entity・REST API型・locale・CHANGELOGは変更していない。親#217と#114は継続し、#317/#291/#303などの後続は個別の利用者・writerに接続して検証する。
 
-固定product revision `00d2a724bbb082ab27b7ade6c47d5906a63cd3df` の測定はbuild・typecheck・syncと、unit 4,302件/116ファイル、integration 36件/4ファイル、process 5件/3ファイル、source projection 15操作がPASS。全21入力を各runの前後でhash比較した。独立reviewで指摘されたantenna src配列の受理とRole初期接続検査の欠落は、失敗を再現する回帰試験から修正し、この測定に含めた。対応表の16行はこのcommitを `evidenceRevision` に持つ `partial` とし、global `implementationCommit` と過去の監査判定は変更していない。
+固定product revision `00d2a724bbb082ab27b7ade6c47d5906a63cd3df` の測定はbuild・typecheck・syncと、unit 4,302件/116ファイル、integration 36件/4ファイル、process 5件/3ファイル、source projection 15操作がPASS。全21入力を検証一式の前後でhash比較した。独立reviewで指摘されたantenna src配列の受理とRole初期接続検査の欠落は、失敗を再現する回帰試験から修正し、この測定に含めた。対応表の16行はこのcommitを `evidenceRevision` に持つ `partial` とし、global `implementationCommit` と過去の監査判定は変更していない。

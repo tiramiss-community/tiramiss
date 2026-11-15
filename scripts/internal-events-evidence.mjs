@@ -11,9 +11,18 @@ const evidencePath = directory + 'current-evidence.json';
 const predecessorPath = directory + 'predecessor.json';
 const receiptPath = '/tmp/tiramiss-s1-round2-20261115/290/product-run-receipt.json';
 const seal = 'b820fb2c87bc5de6248a08f2ea0eccf8e865eea5224b0be5dbe42eeee6e2fe1f';
-const predecessorSeal = '5978577d2ce3dfe143a57e3346498c1a6207340eb5b05a16c5e20656b9ddeda9';
+const predecessorSeal = 'f13044286b6f1729cf1d80f61b4461db9a32fd2705ed873b0e2ba6098973c521';
 const runtimeRevision = '00d2a724bbb082ab27b7ade6c47d5906a63cd3df';
-const projectedPath = 'packages/backend-next/src/platform/connect-resources.ts';
+export const internalEventsSuccessorFiles = Object.freeze([
+ "packages/backend-next/src/platform/connect-resources.ts",
+ "packages/backend-next/src/platform/note-antennas.ts",
+ "packages/backend-next/src/platform/role-material-cache.ts",
+ "packages/backend-next/src/platform/role-materials.ts",
+ "packages/backend-next/src/platform/user-webhooks.ts",
+ "packages/backend-next/test/unit/note/antennas.test.ts",
+ "packages/backend-next/test/unit/user-webhooks-reconnect.test.ts",
+ "packages/backend-next/test/unit/user-webhooks-startup.test.ts"
+]);
 const read = path => readFileSync(new URL(path, root));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const parsed = new Map();
@@ -28,7 +37,7 @@ const optionalRead = path => {
   throw error;
  }
 };
-// A finite, disjoint successor for the one changed shared composition file.
+// A finite successor for the eight changed files already bound by older receipts.
 // Cached parsing never replaces reads or hashes through the caller's reader.
 export function validateInternalEventsSuccessor(value, readFile = read, optional = optionalRead) {
  if (value === undefined) value = sealed(readFile(evidencePath), seal, 'receipt');
@@ -44,8 +53,8 @@ export function validateInternalEventsSuccessor(value, readFile = read, optional
  }
  const previous = sealed(readFile(predecessorPath), predecessorSeal, 'predecessor');
  assert.equal(previous.commit, value.baseRevision);
- assert.deepEqual(Object.keys(previous.files), [projectedPath]);
- assert.notEqual(sha(Buffer.from(previous.files[projectedPath])), value.inputs[projectedPath]);
+ assert.deepEqual(Object.keys(previous.files), internalEventsSuccessorFiles);
+ for (const path of internalEventsSuccessorFiles) assert.notEqual(sha(Buffer.from(previous.files[path])), value.inputs[path]);
  assert.deepEqual(value.runs.map(run => run.name), ['build', 'typecheck', 'unit', 'integration', 'process', 'source', 'sync']);
  for (const run of value.runs) {
   assert.equal(run.exitCode, 0);
@@ -64,6 +73,6 @@ export function validateInternalEventsSuccessor(value, readFile = read, optional
  return { ...previous.files };
 }
 export function readPreInternalEvents(path, encoding, readFile = read, optional = optionalRead) {
- const bytes = path === projectedPath ? Buffer.from(validateInternalEventsSuccessor(undefined, readFile, optional)[path]) : readFile(path);
+ const bytes = internalEventsSuccessorFiles.includes(path) ? Buffer.from(validateInternalEventsSuccessor(undefined, readFile, optional)[path]) : readFile(path);
  return encoding ? bytes.toString(encoding) : bytes;
 }
