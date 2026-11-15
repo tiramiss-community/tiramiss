@@ -114,3 +114,15 @@ test('webhook update during fetch discards old snapshot; antenna retains its int
 		await hooks.close(); await antennas.close();
 	}
 });
+
+test.each(['ended publisher', 'unavailable receiver'])('Role opening rejects %s and removes its registration without closing shared reception', async mode => {
+	const t = transport();
+	const source = { readRoles: vi.fn(async () => []), readAssignments: vi.fn(async () => []) };
+	if (mode === 'unavailable receiver') {
+t.lost();
+}
+	await expect(openRoleMaterials({ events: t.events, source, publisher: { status: mode === 'ended publisher' ? 'end' : 'ready' } as Redis, subscriberConfig: redis, config: { rolesTtlMs: 1000, assignmentsTtlMs: 1000, assignmentsMaxEntries: 10 } })).rejects.toThrow('unavailable');
+	expect(t.handlers.size).toBe(0);
+	expect(source.readRoles).not.toHaveBeenCalled();
+	expect(t.events.close).not.toHaveBeenCalled();
+});

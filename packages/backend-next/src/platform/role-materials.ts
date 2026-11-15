@@ -54,6 +54,12 @@ export async function openRoleMaterials(options: {
 		return closing;
 	};
 	options.registerCleanup?.(close);
+	try {
+		assertAvailable();
+	} catch (error) {
+		await close();
+		throw error;
+	}
 
 	const read = async <T>(load: () => Promise<T>) => {
 		assertAvailable();

@@ -418,3 +418,18 @@ test.each(sourceUpdates)('fixed-source direct timeline writes and publication st
 	await run(input);
 	expect(calls).toEqual(row.calls.map(({ note: _note, ...call }) => call));
 });
+
+test.each(['antennaCreated', 'antennaUpdated'])('%s ignores non-string source values instead of broadening matching', async type => {
+	const w = cacheWorld();
+	const restricted = antenna({ src: 'users', users: ['other@remote.test'] });
+	w.active([restricted]);
+	try {
+		await w.cache.definitions();
+		w.event(type, { ...restricted, src: ['users'] });
+		const definitions = await w.cache.definitions();
+		expect(definitions).toEqual([restricted]);
+		expect(await checkHitAntenna(definitions[0], note(), author, ports())).toBe(false);
+	} finally {
+		await w.cache.close();
+	}
+});

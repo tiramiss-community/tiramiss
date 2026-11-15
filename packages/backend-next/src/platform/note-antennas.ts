@@ -78,7 +78,7 @@ export function createNoteAntennaCache(options: AntennaCacheOptions) {
 					return;
 				}
 				if (type !== 'antennaDeleted' && (typeof input.userId !== 'string'
-					|| !['home', 'all', 'users', 'list', 'users_blacklist'].includes(String(input.src))
+					|| typeof input.src !== 'string' || !['home', 'all', 'users', 'list', 'users_blacklist'].includes(input.src)
 					|| !(input.userListId === null || typeof input.userListId === 'string')
 					|| !Array.isArray(input.users) || !input.users.every(value => typeof value === 'string')
 					|| ![input.keywords, input.excludeKeywords].every(value => Array.isArray(value) && value.every(row => Array.isArray(row) && row.every(word => typeof word === 'string')))
