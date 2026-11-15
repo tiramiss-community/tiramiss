@@ -4,6 +4,10 @@
 
 source baseline は PR #271 マージ後の [`110ef5d3af7bb7263337876c2f38be1652c0a23b`](https://github.com/tiramiss-community/tiramiss/commit/110ef5d3af7bb7263337876c2f38be1652c0a23b)。固定本家は [`8e07cf085adf7009583d234a208e30436f020e26`](https://github.com/misskey-dev/misskey/commit/8e07cf085adf7009583d234a208e30436f020e26)。fork固有機能は移植せず、独自の配送保証・容量契約・汎用再構築を初期必須に加えない。
 
+**2026-11-15の選定訂正**: #361はwaiting。usersと両relation入口がUserDetailedNotMeを要求し、followingは本人followeeにも到達するため、共通詳細表示#297と本人分岐#338が必要である。[根拠と入口別の依存](instance-read-361-readiness.md)と、`backlog.json`末尾の`currentCorrections`を現在の選定では元snapshotへ重ねる。元のunits/parents/counts/nativeDependenciesは2026-11-14の履歴を保持する。この1件だけの補正ではready68/waiting248・葉依存751となるが、全Issueの現在状態の再集計ではない。
+
+S1では#272/#323/#324/#325/#362はCLOSED、PR #589（Emoji）/#590（instance管理）/#591（CI並列化）はMERGEDを確認済み。以下の表の「最初」とready件数は元棚卸し時点であり、現在の選定では閉鎖済み作業を除き、#361の補正を優先する。独立した#377/#560（URL previewとagent）は同一PRで進められる。GitHub #114/#195の本文・Relationshipsはこの文書変更では更新していない。
+
 #136で本家固定SHAを更新するときは、比較・Entity同期の基準が混在しないよう、本バックエンドの全作業セッションを止めて単独で行う。更新後は `upstream-sync.json` を正として各作業・対応表の基準を確認し、既存証跡との基準差を記録してから再開する。通常の機能開発はこの停止条件に含めない。更新前のSHAで比較した未マージPRは、新基準の差分が対象機能・生成物・検証へ与える影響を確認し、必要な比較と証跡を更新してからマージする。
 
 ## 親と作業単位
@@ -22,7 +26,7 @@ source baseline は PR #271 マージ後の [`110ef5d3af7bb7263337876c2f38be1652
 
 S/M/L/XLは相対的なレビュー規模であり日数ではない。今回の内訳はS 45・M 200・L 73・XL 0。カレンダーや完了見込み率には換算しない。
 
-## 全ストリームの入口
+## 全ストリームの入口（2026-11-14 snapshot）
 
 S1–S5は従来の領域分類を維持する。独立領域・運用も同じカタログで追跡し、担当セッションを新たに割り当てない。「最初」はready、なければ有限調査、なければ準備対象を示す。全件の順序は各単位のdepends_onで判断する。
 
@@ -58,7 +62,7 @@ flowchart LR
   Other[他領域・定期処理・通知移行・追従判定] --> Cutover
 ```
 
-図は主要経路の抜粋。全749葉依存はJSONと各作業Issueに残す。GitHub Relationships用の544辺は推移的に縮約した表現であり、要件削除ではない。親子関係は所属を示す。最終 #139 は元の契約から対象版の全機能・配布物と #135 の未対応なし判定を要するため、GitHubの依存登録50件上限に合わせて既存領域親をgateとする例外がある。通常の作業を親全体待ちに戻す規則ではない。統合グラフの機械検査は360 node・循環0であり、実機能の同等性を証明しない。
+図は主要経路の抜粋。2026-11-14 snapshotの全749葉依存はJSONと各作業Issueに残す。GitHub Relationships用の544辺は当時の推移縮約であり、要件削除ではない。現在の#361補正は冒頭と`currentCorrections`を参照し、公開済みRelationshipsへの反映とは区別する。親子関係は所属を示す。最終 #139 は元の契約から対象版の全機能・配布物と #135 の未対応なし判定を要するため、GitHubの依存登録50件上限に合わせて既存領域親をgateとする例外がある。通常の作業を親全体待ちに戻す規則ではない。当時の統合グラフの機械検査は360 node・循環0であり、実機能の同等性を証明しない。
 
 ## 同一PRで届ける12組
 
@@ -91,7 +95,7 @@ chartの未決事項は [200-chart-storage-contract · #273](https://github.com/
 
 ## 進捗の更新と証明範囲
 
-このカタログは2026-11-14の作業選定用snapshot。公開後の進捗は各IssueとRelationshipsを確認する。公開番号の結合と、Issue本文・親子・依存の公開検証は別の確認である。
+このカタログ本体は2026-11-14の作業選定用snapshot。現在の選定では日付順に`currentCorrections`の対象unitのreadiness/readiness_reason/depends_onとnative_depends_onを重ね、その他の進捗は各IssueとRelationshipsを確認する。元のcountsやparentsを現在の件数・次候補としてそのまま使わない。公開番号の結合と、Issue本文・親子・依存の公開検証は別の確認である。
 
 inventoryの `implementationCommit` 記録後のdevelop追従はmerge、PRの最終取り込みはmerge commitを使い、rebaseやsquashで記録SHAを置き換えない（2026-11-14にリポジトリのmerge commit許可を確認）。その他の共有ファイルの運用も [ROADMAP](ROADMAP.md) の継続規則に従う。
 

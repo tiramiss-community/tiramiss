@@ -186,7 +186,10 @@ test.each(['startup-run-fulfilled', 'partial-startup'] as const)('%s prevents re
 		expect(child.messages.some((m: any) => m.type === 'ready')).toBe(false);
 		expect(child.messages.filter((m: any) => m.type === 'fixture-worker-closed').length).toBeGreaterThan(0);
 		expect((await clients(f.control)).some(line => line.includes(f.config.redisForJobQueue.prefix))).toBe(false);
-		expect(await source.query('SELECT count(*)::int AS count FROM pg_stat_activity WHERE datname=current_database()')).toEqual([{ count: 1 }]);
+		// 子の終了後も、PostgreSQL側のsession統計から消えるまで短い遅れがある。
+		await vi.waitFor(async () => {
+			expect(await source.query('SELECT count(*)::int AS count FROM pg_stat_activity WHERE datname=current_database()')).toEqual([{ count: 1 }]);
+		}, { timeout: 5000, interval: 20 });
 		if (mode === 'startup-run-fulfilled') {
 			expect(child.output()).toContain('JOB_WORKER_STOPPED');
 		} else {
@@ -210,7 +213,9 @@ test.each(['deliver', 'all'])('rejected %s worker cleanup still closes all real 
 		expect(new Set(child.messages.filter((m: any) => m.type === 'fixture-worker-closed').map((m: any) => m.queue))).toEqual(new Set(['endedPollNotification', 'deliver', 'userWebhookDeliver']));
 		expect(child.output()).toContain('shutdown.failed');
 		expect((await clients(f.control)).some(line => line.includes(f.config.redisForJobQueue.prefix))).toBe(false);
-		expect(await source.query('SELECT count(*)::int AS count FROM pg_stat_activity WHERE datname=current_database()')).toEqual([{ count: 1 }]);
+		await vi.waitFor(async () => {
+			expect(await source.query('SELECT count(*)::int AS count FROM pg_stat_activity WHERE datname=current_database()')).toEqual([{ count: 1 }]);
+		}, { timeout: 5000, interval: 20 });
 	} finally {
 		await child.close(); await f.control.quit(); await f.file.close();
 	}

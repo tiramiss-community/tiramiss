@@ -49,6 +49,7 @@ import { createNotePostSaveCounts } from './database/note-post-save-counts.js';
 import { createNoteActivityReader } from './database/note-activity.js';
 import { createDeliveryRecipientReader } from './database/delivery-recipients.js';
 import { createIdCodec } from './id-codec.js';
+import { openInternalEvents, roleMaterialTopic } from './internal-events.js';
 import { openRoleMaterials } from './role-materials.js';
 import { createRoleMaterialReader } from './database/role-materials.js';
 import { ResourceScope } from './resource-scope.js';
@@ -230,7 +231,18 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 
+		const internalEvents = await openInternalEvents({
+			subscriberConfig: config.redisForPubsub, url: config.url,
+			privateRoleTopic: roleMaterialTopic(config.redisForPubsub.prefix),
+			timeoutMs: config.processes.startupTimeoutMs,
+			onError: error => logger.error('internal-events.error', { error }),
+			registerCleanup: cleanup => scope.defer(cleanup),
+		});
+		if (cancelled) {
+			throw timeout;
+		}
 		const roleMaterials = await openRoleMaterials({
+			events: internalEvents,
 			source: createRoleMaterialReader(dataSource.manager),
 			publisher: rolePublisher,
 			subscriberConfig: { ...config.redisForPubsub, connectTimeout: config.processes.startupTimeoutMs },
@@ -261,7 +273,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 		const jobs = createBusinessJobProducers(producer, definitions, jobConfig);
-		const webhooks = await openUserWebhooks({ manager: dataSource.manager, redis: config.redisForPubsub, url: config.url, timeoutMs: config.processes.startupTimeoutMs, enqueue: jobs.enqueueWebhook, registerCleanup: cleanup => scope.defer(cleanup) });
+		const webhooks = await openUserWebhooks({ events: internalEvents, manager: dataSource.manager, redis: config.redisForPubsub, url: config.url, timeoutMs: config.processes.startupTimeoutMs, enqueue: jobs.enqueueWebhook, registerCleanup: cleanup => scope.defer(cleanup) });
 		if (cancelled) {
 			await webhooks.close();
 			throw timeout;
@@ -299,6 +311,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		}, config);
 		const antennaReader = createNoteAntennaReader(dataSource.manager);
 		const antennas = await openNoteAntennas({
+			events: internalEvents,
 			reader: antennaReader, redis, subscriberConfig: config.redisForPubsub, url: config.url,
 			timeoutMs: config.processes.startupTimeoutMs, currentTime: Date.now,
 			onError: error => logger.error('note-antennas.cache-failed', { error }),

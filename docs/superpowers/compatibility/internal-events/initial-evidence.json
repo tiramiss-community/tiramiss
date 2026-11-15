@@ -1,0 +1,150 @@
+{
+  "baseRevision": "86fce3926f97d2b62d790ff1e44449a57c2d33ee",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "runtimeRevision": "00d2a724bbb082ab27b7ade6c47d5906a63cd3df",
+  "scope": "#290 three existing internal consumers; finite source projection and real Redis/PG/process tests, not whole upstream server parity",
+  "inputs": {
+    "docs/superpowers/compatibility/internal-events/source-observations.json": "f564a24229d4c29c95c0cd714bf0f501d056961e0ec858389a10c3f8e880bf6c",
+    "docs/superpowers/compatibility/internal-events/source-probe.mjs": "623cdee816f22bb5fb0a6a0be11c7f289b4bd19d3aa96ee12461d977e35c28ae",
+    "packages/backend-next/src/platform/connect-resources.ts": "9d3407be658ee4b2a40a64e4142c669b4621ef1193fb8031f22bee45df34ab0a",
+    "packages/backend-next/src/platform/internal-events.ts": "97e2617bae4f0250c622b448845aa06e88bd6bd2b518876b1c852363b7142735",
+    "packages/backend-next/src/platform/note-antennas.ts": "3802badc0600caf9f54c471d129c4a2a8692390785280459b9785830bb449469",
+    "packages/backend-next/src/platform/role-material-cache.ts": "ee50e86133edf766323e681fde4abe20a3654404258514ee2926710d4b9a31e8",
+    "packages/backend-next/src/platform/role-materials.ts": "98acc2fb196b28ade46a99f1e9d0ac1d8ac052ca059cf51f4887440bdc95c2ca",
+    "packages/backend-next/src/platform/user-webhooks.ts": "1f2b753cc494d2c17e4ada1b1c5aa81e7b1c18b4affeee9acfee8aa31a701969",
+    "packages/backend-next/test/integration/internal-events.test.ts": "698136171c20ecf1dc020f88569f68036f2c05595d70419eb73789d08a02d7cc",
+    "packages/backend-next/test/unit/internal-event-consumers.test.ts": "e57baf69e4835bf6fac3ddd6d05b08f3f7de1c344f7de4e56d8ef0abeb6f5fd6",
+    "packages/backend-next/test/unit/internal-event-source.test.ts": "71ca63fb0cbca4f2c58bc8a79e2e10fe0991ef120a6689b15ae8912c1809ac1c",
+    "packages/backend-next/test/unit/internal-events.test.ts": "5424af16cc2748628613f35f57bc611108b1614201168f74d6c525244104edfd",
+    "packages/backend-next/test/unit/note/antennas.test.ts": "72a1e280abbffd02729a3271b9ae8fe804df5b3765425d307ea98706fca7294b",
+    "packages/backend-next/test/unit/user-webhooks-reconnect.test.ts": "2bd85136e60d8a555fe3e7e10da77340c5297c03952727097dec34adc5f795c4",
+    "packages/backend-next/test/unit/user-webhooks-startup.test.ts": "735aba3746e473c091d41239736ef9c3ca4114e8a459f1f89f9fe439e334ea26",
+    "packages/backend-next/test/integration/role-materials.test.ts": "be3709d46b0ad5425b21d4ea883859e11a40f87f35675435d2ecb5288c988f0b",
+    "packages/backend-next/test/integration/note-antennas.test.ts": "40653cd6b36f56562f9ad4aeaf21ad74bd5ef3022bfbe9bc00e1cf0dfa8f9e11",
+    "packages/backend-next/test/integration/user-webhook.test.ts": "4cec2c090ace5a627e8b6e638275419a5a641e7363b0b7cd3037786536997391",
+    "packages/backend-next/test/processes/role-http.test.ts": "a327156a1f088ab5128c4fa0da7270c998eaef2efcef42eb52cafbe0a4ab2f03",
+    "packages/backend-next/test/processes/note-antennas.test.ts": "ac2db7f72d0cb45cc122067bdae9dca184d2a4b31ed224f038e6c81c0f88203a",
+    "packages/backend-next/test/processes/user-webhook.test.ts": "95b494115bfd49a96b364f65d400f04b0f173df9bb025ce6e3735d657c4c83f7"
+  },
+  "inputsAfter": {
+    "docs/superpowers/compatibility/internal-events/source-observations.json": "f564a24229d4c29c95c0cd714bf0f501d056961e0ec858389a10c3f8e880bf6c",
+    "docs/superpowers/compatibility/internal-events/source-probe.mjs": "623cdee816f22bb5fb0a6a0be11c7f289b4bd19d3aa96ee12461d977e35c28ae",
+    "packages/backend-next/src/platform/connect-resources.ts": "9d3407be658ee4b2a40a64e4142c669b4621ef1193fb8031f22bee45df34ab0a",
+    "packages/backend-next/src/platform/internal-events.ts": "97e2617bae4f0250c622b448845aa06e88bd6bd2b518876b1c852363b7142735",
+    "packages/backend-next/src/platform/note-antennas.ts": "3802badc0600caf9f54c471d129c4a2a8692390785280459b9785830bb449469",
+    "packages/backend-next/src/platform/role-material-cache.ts": "ee50e86133edf766323e681fde4abe20a3654404258514ee2926710d4b9a31e8",
+    "packages/backend-next/src/platform/role-materials.ts": "98acc2fb196b28ade46a99f1e9d0ac1d8ac052ca059cf51f4887440bdc95c2ca",
+    "packages/backend-next/src/platform/user-webhooks.ts": "1f2b753cc494d2c17e4ada1b1c5aa81e7b1c18b4affeee9acfee8aa31a701969",
+    "packages/backend-next/test/integration/internal-events.test.ts": "698136171c20ecf1dc020f88569f68036f2c05595d70419eb73789d08a02d7cc",
+    "packages/backend-next/test/unit/internal-event-consumers.test.ts": "e57baf69e4835bf6fac3ddd6d05b08f3f7de1c344f7de4e56d8ef0abeb6f5fd6",
+    "packages/backend-next/test/unit/internal-event-source.test.ts": "71ca63fb0cbca4f2c58bc8a79e2e10fe0991ef120a6689b15ae8912c1809ac1c",
+    "packages/backend-next/test/unit/internal-events.test.ts": "5424af16cc2748628613f35f57bc611108b1614201168f74d6c525244104edfd",
+    "packages/backend-next/test/unit/note/antennas.test.ts": "72a1e280abbffd02729a3271b9ae8fe804df5b3765425d307ea98706fca7294b",
+    "packages/backend-next/test/unit/user-webhooks-reconnect.test.ts": "2bd85136e60d8a555fe3e7e10da77340c5297c03952727097dec34adc5f795c4",
+    "packages/backend-next/test/unit/user-webhooks-startup.test.ts": "735aba3746e473c091d41239736ef9c3ca4114e8a459f1f89f9fe439e334ea26",
+    "packages/backend-next/test/integration/role-materials.test.ts": "be3709d46b0ad5425b21d4ea883859e11a40f87f35675435d2ecb5288c988f0b",
+    "packages/backend-next/test/integration/note-antennas.test.ts": "40653cd6b36f56562f9ad4aeaf21ad74bd5ef3022bfbe9bc00e1cf0dfa8f9e11",
+    "packages/backend-next/test/integration/user-webhook.test.ts": "4cec2c090ace5a627e8b6e638275419a5a641e7363b0b7cd3037786536997391",
+    "packages/backend-next/test/processes/role-http.test.ts": "a327156a1f088ab5128c4fa0da7270c998eaef2efcef42eb52cafbe0a4ab2f03",
+    "packages/backend-next/test/processes/note-antennas.test.ts": "ac2db7f72d0cb45cc122067bdae9dca184d2a4b31ed224f038e6c81c0f88203a",
+    "packages/backend-next/test/processes/user-webhook.test.ts": "95b494115bfd49a96b364f65d400f04b0f173df9bb025ce6e3735d657c4c83f7"
+  },
+  "noInputDrift": true,
+  "runs": [
+    {
+      "name": "build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "build"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-round2-20261115/290/build.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-round2-20261115/290/typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "name": "unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-round2-20261115/290/unit.log",
+      "logSha256": "9536a5f24e6ecae4626866cb603d11d0b49b65f23236b9896841aa733f1fbbbd",
+      "passed": 4302,
+      "files": 116
+    },
+    {
+      "name": "integration",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/internal-events.test.ts",
+        "test/integration/role-materials.test.ts",
+        "test/integration/note-antennas.test.ts",
+        "test/integration/user-webhook.test.ts"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-round2-20261115/290/integration.log",
+      "logSha256": "f7221ce8f5f3cffc72bca44102d307ff8f6af23902e458570c3d92f2e7f5f972",
+      "passed": 36,
+      "files": 4
+    },
+    {
+      "name": "process",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:process",
+        "test/processes/role-http.test.ts",
+        "test/processes/note-antennas.test.ts",
+        "test/processes/user-webhook.test.ts"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-round2-20261115/290/process.log",
+      "logSha256": "d8bbde6bdd36e987edd4728bd3cacce7f0fe8d0380a6e6ca1d353dd16846e6e8",
+      "passed": 5,
+      "files": 3
+    },
+    {
+      "name": "source",
+      "command": [
+        "node",
+        "docs/superpowers/compatibility/internal-events/source-probe.mjs"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-round2-20261115/290/source.log",
+      "logSha256": "2e57e80921a5ac26d250eef27768c1c6273a02d17ed53aad09267e21d5e58cf7"
+    },
+    {
+      "name": "sync",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-upstream",
+        "sync:check"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-round2-20261115/290/sync.log",
+      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd"
+    }
+  ]
+}
