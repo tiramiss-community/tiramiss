@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { createValidatedMetaPredecessorReader } from './meta-cache-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { readPreUrlPreview, validateUrlPreviewSuccessor } from './url-preview-evidence.mjs';
@@ -42,8 +43,9 @@ function record(readFile) {
 // The terminal hop validates the actual merged runtime measurement and restores
 // only nine predecessor files. No Git, subprocess or ancestor reader is needed.
 export function validateInstanceAdminSuccessor(value = record(read), readFile = read, optional = optionalRead) {
+ const beforeMeta = createValidatedMetaPredecessorReader(readFile, optional);
 	const previousPreview = validateUrlPreviewSuccessor(undefined, readFile, optional);
-	const beforePreview = path => path in previousPreview ? Buffer.from(previousPreview[path]) : readFile(path);
+	const beforePreview = path => path in previousPreview ? Buffer.from(previousPreview[path]) : beforeMeta(path);
  assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'instance admin current receipt seal');
  assert.equal(value.runtimeRevision, '82d47cc0bb6dd61a15b33ca0166157527a505683');
  assert.equal(value.baseRevision, 'bb735037096259712fd381d910423ffc9927e0e1');

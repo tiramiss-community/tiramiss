@@ -25,4 +25,14 @@ DB障害では温まったHTTPは値を使い、冷たいHTTPと明示noCacheは
 
 追加child-process試験は作っていない。今回変更したcacheのtimer/解除と通常runtimeのcloseは実依存の同一プロセスで観測し、保留したDB読取りをcloseが待つ点はunitで検証する。Supervisorや子プロセスIPCの仕様は変更していない。
 
-残範囲: admin/update-meta、全領域のMeta移行、他のinternal event/cache、#217/#176/#195/#114の完成。notes/createのpartial・postingComplete:falseを維持する。既存receiptの現在ソースへの投影検査は、今回のソース差分に対する限定successor整備が別途必要である。
+残範囲: admin/update-meta、全領域のMeta移行、他のinternal event/cache、#217/#176/#195/#114の完成。notes/createのpartial・postingComplete:falseを維持する。既存receiptは以下の限定successorを通じて当時の入力へ投影し、当時の実測と今回の実測を区別する。
+
+## 今回の測定と履歴投影
+
+[current-evidence.json](current-evidence.json)はruntimeの実装commit `1a7ff81026441b262d37c8171d381d39c45deddf`と、テストの空白だけを整えた測定commit `529ff21ba56e6cbd6e0c58aad980b2f854cd550f`を区別する。変更した旧27入力、新しいcache・unit・integration・source probe/observations、および既存Meta DB試験の計33入力を測定前後で照合した。単体41ファイル2182件、選択した実依存11ファイル564件、固定source9観測、build/typecheck/syncの成功logを個別SHA256へ結び付ける。以前の562成功/2失敗のrunは成功に書き換えず、今回の一括564成功は別runとして保持する。
+
+[predecessor.json](predecessor.json)は基準`1adb04b0cf4d6efdb2537891df4ca2261359f1f6`から変わった、過去の測定に現れる27入力だけを一か所に保持する。新しいhelperはsealed receipt/predecessorと今回の33入力すべてを独立したgate開始時に検証し、その呼出し内のreaderも取得対象の現在のbytesを再照合してから新しいBufferで旧入力を返す。次のgateへ検証結果をキャッシュしない。JSONのparse cacheだけを使う。これは過去のreceiptやsource結果を更新・再実測した意味ではない。
+
+既存のinternal-events・folders・pubsub・URL preview・instance-admin readerは、この限定した末端readerを通じる。既存readerの返す歴史mapのキーを増やさず、Git・subprocess・祖先readerへの逆依存は作らない。旧測定の未移植範囲や投稿partialは維持する。
+
+inventoryは#317の5行だけを更新し、全領域の起動時Meta責任とproducerを含むイベント行をpartialに保つ。残る3行のverifiedは記載したcache取得・consumer・timerの証拠を指し、親#217や更新API全体の完成を表さない。

@@ -39,8 +39,8 @@ Files: connect-resources.ts, federation composition users, meta DB converters, i
 ### Task 3: Evidence and shipping
 
 Files: compatibility/meta-cache/README.md, owned inventory rows and report.
-- [ ] Run build/typecheck, changed-file lint, source reproduction, root inventory, SPDX and locale checks.
-- [ ] Record commands/results/limits; preserve historical evidence.
+- [x] Run build/typecheck, changed-file lint, source reproduction, root inventory, SPDX and locale checks.
+- [x] Record commands/results/limits; preserve historical evidence.
 - [ ] Commit scoped implementation after shipping skill and coordinator review.
 
 Ruling: note-instance-counts keeps its existing DB reader because migrating it expands the #317 federation caller scope; changing that callback broke an unrelated direct-DB fixture. The actor-registration and delivery callbacks use the new cache.

@@ -56,14 +56,14 @@ test('unchanged Emoji receipt still validates all fourteen original measured inp
   assert.equal(sha(readPreInstanceAdmin(path)), digest);
   if (sha(read(path)) !== digest) changed.push(path);
  }
- assert.deepEqual(changed, ['packages/backend-next/src/composition/http-app.ts', 'packages/backend-next/src/modules/federation/public.ts', 'packages/backend-next/test/unit/composition/http-app.test.ts']);
+ assert.deepEqual(changed, ['packages/backend-next/src/composition/http-app.ts', 'packages/backend-next/src/composition/emoji-http.ts', 'packages/backend-next/src/modules/federation/public.ts', 'packages/backend-next/src/platform/database/meta.ts', 'packages/backend-next/test/unit/composition/http-app.test.ts', 'packages/backend-next/test/integration/local-emoji-object-http.test.ts']);
  validateEmojiObjectSuccessor(emoji, read, () => null);
  validateOutboxSuccessor(undefined, read, () => null);
 });
 
 test('reader imports only Node builtins and its finite preview successor, passes outside paths through and launches no subprocess/ancestor', () => {
  const source = read('scripts/instance-admin-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:') || m[1] === './url-preview-evidence.mjs'));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:') || ['./url-preview-evidence.mjs', './meta-cache-evidence.mjs'].includes(m[1])));
  assert(!/execFile|spawn|import\(/.test(source));
  assert.equal(readPreInstanceAdmin('unrelated.ts', 'utf8', () => Buffer.from('live'), () => null), 'live');
 });

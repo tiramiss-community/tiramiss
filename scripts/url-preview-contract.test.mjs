@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { metaCachePredecessorFiles } from './meta-cache-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
@@ -35,7 +36,13 @@ test('measured preview product validates online/offline and restores exactly eig
  assert.equal(Object.keys(snapshot.files).length, 7);
  assert.equal(snapshot.lockPatch.path, 'pnpm-lock.yaml');
  assert.equal(sha(readPreUrlPreview('pnpm-lock.yaml')), snapshot.lockPatch.previousSha256);
- for (const path of Object.keys(record().inputs).filter(path => !successorFiles.includes(path))) assert.deepEqual(readPreUrlPreview(path), read(path));
+ for (const path of Object.keys(record().inputs).filter(path => !successorFiles.includes(path))) {
+  if (metaCachePredecessorFiles.includes(path)) {
+   assert.equal(sha(readPreUrlPreview(path)), record().inputs[path]);
+  } else {
+   assert.deepEqual(readPreUrlPreview(path), read(path));
+  }
+ }
  validateInstanceAdminSuccessor(undefined, read, () => null);
  validateOutboxSuccessor(undefined, read, () => null);
 });
@@ -97,11 +104,11 @@ test('repeated validations retain every actual read and optional-artifact check'
  assert.deepEqual({ reads, artifacts }, before);
  assert.equal(reads.filter(path => path === 'pnpm-lock.yaml').length, 2);
  for (const path of Object.keys(record().inputs)) assert(reads.includes(path));
- assert.equal(artifacts.filter(path => !path.includes('/290/') && !path.includes('/278/')).length, record().runs.length + 1);
+ assert.equal(artifacts.filter(path => record().runs.some(run => run.log === path) || path === '/tmp/tiramiss-s1-377-20261115/product-run-receipt.json').length, record().runs.length + 1);
 });
 test('preview reader uses only builtins and disjoint finite successors, without subprocesses or ancestor readers', () => {
  const source = read('scripts/url-preview-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || ['./url-preview-fixture-evidence.mjs', './internal-events-evidence.mjs', './drive-folders-evidence.mjs', './drive-folder-pubsub-evidence.mjs'].includes(match[1])));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || ['./url-preview-fixture-evidence.mjs', './internal-events-evidence.mjs', './drive-folders-evidence.mjs', './drive-folder-pubsub-evidence.mjs', './meta-cache-evidence.mjs'].includes(match[1])));
  assert(!/execFile|spawn|import\(/.test(source));
  assert.equal(readPreUrlPreview('unrelated.ts', 'utf8', () => Buffer.from('live'), () => null), 'live');
 });
