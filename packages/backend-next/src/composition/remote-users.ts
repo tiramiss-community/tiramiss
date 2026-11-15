@@ -7,8 +7,9 @@ import { createLocalActorTagReader } from './local-actor-tags.js';
 import { htmlToMfm, apType, webfingerUrl, selectWebfingerSelf, createActivitySession, createHostRules, isFederationAllowedHost, toPuny, punyHost, validateActor, validateActorProfileUrl, prepareActor, collectionVisibility, insertActor, truncate } from '../modules/federation/public.js';
 import { createRemoteUserRepository, createRemoteActorTransactions } from '../platform/database/remote-users.js';
 import { createActorReader } from '../platform/database/local-actors.js';
-import { readMeta, readFederationPolicy } from '../platform/database/meta.js';
+import { toFederationPolicy } from '../platform/database/meta.js';
 import { renderLocalActor } from '../modules/federation/public.js';
+import type { MetaReader } from '../platform/meta-cache.js';
 import type { DataSource } from 'typeorm';
 import type { FederationKeys } from './federation-keys.js';
 import type { OutboundHttp, OutboundSend } from '../application/outbound-http.js';
@@ -17,6 +18,7 @@ import type { Logger } from '../platform/logger.js';
 import type { RuntimeConfig } from '../config/types.js';
 export function createRemoteUsers(parts: {
 	dataSource: DataSource;
+	meta: MetaReader;
 	logger: Logger;
 	remoteEmojis: { extract(tags: unknown, host: string): Promise<RemoteEmoji[]> };
 	userHashtags: { start: StartUserHashtags };
@@ -29,10 +31,10 @@ export function createRemoteUsers(parts: {
 	const withoutRootDot = (host: string) => host.replace(/\.$/, '');
 	const requestRules = createHostRules(withoutRootDot(new URL(config.url).hostname));
 	const readTags = createLocalActorTagReader(parts.dataSource.manager, config.url);
-	const readMaterials = createLocalActorMaterialsReader(parts.dataSource.manager, config);
+	const readMaterials = createLocalActorMaterialsReader(parts.dataSource.manager, config, parts.meta.fetch);
 	const readActor = createActorReader(parts.dataSource.manager, { includeSuspended: true });
 	const readRequestPolicy = async () => {
-		const current = await readFederationPolicy(parts.dataSource.manager);
+		const current = toFederationPolicy(await parts.meta.fetch());
 		return {
 			...current,
 			blockedHosts: current.blockedHosts.map(withoutRootDot),
@@ -82,7 +84,7 @@ export function createRemoteUsers(parts: {
 		},
 		async acquireActor(uri, existing, currentTime, newId) {
 			const session = createActivitySession({
-				http: { send: sendAllowed }, signed: (await readMeta(parts.dataSource.manager)).signToActivityPubGet, clock: Date.now,
+				http: { send: sendAllowed }, signed: (await parts.meta.fetch()).signToActivityPubGet, clock: Date.now,
 				isSelfHost: authority => authority === selfAuthority,
 				isAllowedHost: async host => isFederationAllowedHost(await readRequestPolicy(), requestRules, withoutRootDot(toPuny(host))),
 				async signer() {

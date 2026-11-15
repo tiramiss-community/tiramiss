@@ -30,6 +30,7 @@ import { createNoteHashtagWriter, readHashtagRankingSettings } from './database/
 import { createHashtagRanking } from './hashtag-ranking.js';
 import { createNoteAntennaReader } from './database/note-antennas.js';
 import { readMeta } from './database/meta.js';
+import { createMetaCache } from './meta-cache.js';
 import { createInstanceMetadata } from './instance-metadata.js';
 import { createInstanceLedger } from './instance-ledger.js';
 import { createNoteInstanceCounts } from './note-instance-counts.js';
@@ -241,6 +242,8 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		if (cancelled) {
 			throw timeout;
 		}
+		const meta = createMetaCache({ events: internalEvents, read: () => readMeta(dataSource.manager), onError: error => logger.error('meta-cache.reload-failed', { error }) });
+		scope.defer(meta.close);
 		const roleMaterials = await openRoleMaterials({
 			events: internalEvents,
 			source: createRoleMaterialReader(dataSource.manager),
@@ -327,7 +330,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		scope.defer(instanceAdministration.close);
 		const actorInstanceRegistration = createActorInstanceRegistration({
 			fetchMetadata,
-			enabled: async () => (await readMeta(dataSource.manager)).enableStatsForFederatedInstances,
+			enabled: async () => (await meta.fetch()).enableStatsForFederatedInstances,
 			fetchOrRegister: instanceLedger.fetchOrRegisterInstance,
 			increment: async id => {
 				await dataSource.getRepository(MiInstance).increment({ id }, 'usersCount', 1);
@@ -415,7 +418,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw new DiagnosticError('TIMELINES_REDIS_ENDED', {});
 		}
 		active = true;
-		return { urlPreview, instanceAdministration, dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, remoteEmojis, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
+		return { meta, urlPreview, instanceAdministration, dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, remoteEmojis, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
 	};
 
 	try {

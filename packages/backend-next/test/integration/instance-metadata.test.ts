@@ -41,6 +41,7 @@ beforeEach(async () => {
 	await resources.redis.del(lockKey, 'kvcache:federatedInstance:remote.test');
 	await resources.dataSource.getRepository(MiInstance).delete({ host: 'remote.test' });
 	await resources.dataSource.getRepository(MiMeta).upsert({ id: 'singleton', federation: 'all', enableStatsForFederatedInstances: true }, ['id']);
+	await resources.meta.fetch(true);
 	author = codec.newId(Date.now());
 	const pair = await generateRsaKeyPair();
 	await resources.dataSource.getRepository(MiUser).update({ token }, { token: null });
@@ -113,11 +114,13 @@ test('public actor create and canonical duplicate both acquire actual HTTPS fiel
 
 test('stats-disabled public actor and failed delivery do not start metadata; successful delivery starts and drains real acquisition', async () => {
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: false });
+	await resources.meta.fetch(true);
 	await post(`disabled_${author}`); await resources.actorInstanceRegistration.idle(); expect(peer.requests).toEqual([]);
 	const handler = createDeliverJobHandler(resources, database.config);
 	const job = { user: { id: author }, content: '{}', digest: '', to: 'http://remote.test/inbox', isSharedInbox: true };
 	await handler.process(job); await handler.idle(); expect(peer.requests).toEqual([]);
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: true });
+	await resources.meta.fetch(true);
 	peer.actor.respond(async () => ({ status: 503 }));
 	expect((await handler.process(job)).kind).toBe('retry'); await handler.idle(); expect(peer.requests).toEqual([]);
 	peer.actor.respond(async req => req.method === 'POST' ? { body: {} } : { status: 404 });

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { createValidatedMetaPredecessorReader } from './meta-cache-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { queueSessionObservationPath, readPreQueueSessionObservation } from './queue-session-observation-evidence.mjs';
@@ -42,7 +43,8 @@ const optionalRead = path => {
 };
 // A finite successor for the eight changed files already bound by older receipts.
 // Cached parsing never replaces reads or hashes through the caller's reader.
-export function validateInternalEventsSuccessor(value, readFile = read, optional = optionalRead) {
+export function validateInternalEventsSuccessor(value, rawRead = read, optional = optionalRead) {
+ const readFile = createValidatedMetaPredecessorReader(rawRead, optional);
  if (value === undefined) value = sealed(readFile(evidencePath), seal, 'receipt');
  assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'internal events receipt seal');
  assert.equal(value.runtimeRevision, runtimeRevision);

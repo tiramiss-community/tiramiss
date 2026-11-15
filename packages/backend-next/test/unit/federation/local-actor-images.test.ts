@@ -7,6 +7,7 @@ import { readFileSync } from 'node:fs';
 import { expect, test } from 'vitest';
 import { renderLocalActor } from '../../../src/modules/federation/public.js';
 import { MiDriveFile, MiMeta, MiUserProfile } from 'backend-upstream/entities';
+import { readMeta } from '../../../src/platform/database/meta.js';
 import { createLocalActorMaterialsReader } from '../../../src/composition/local-actor-materials.js';
 import { createActivityPubActorApi } from '../../../src/http/activitypub-actor-api.js';
 import { testConfig } from '../../helpers/database.js';
@@ -66,7 +67,7 @@ for (const c of corpus.cases) {
 		let error: unknown;
 		const app = createActivityPubActorApi({
 			selfUrl: config.url, federationEnabled: async () => true, isSelfHost: () => false,
-			readActor: async () => user, readMaterials: createLocalActorMaterialsReader(manager, config),
+			readActor: async () => user, readMaterials: createLocalActorMaterialsReader(manager, config, () => readMeta(manager)),
 			readTags: async () => {
 				events.push({ op: 'tags' });
 				if (c.fail?.tags) {
@@ -128,7 +129,7 @@ test('pending avatar and banner reads start alongside profile and gate tags/key 
 	} } as unknown as EntityManager;
 	const config = testConfig();
 	const app = createActivityPubActorApi({ selfUrl: config.url, federationEnabled: async () => true, isSelfHost: () => false,
-		readActor: async () => ({ ...emptyActorFields, ...corpus.defaults.user, avatarId: 'a', bannerId: 'b', uri: null }), readMaterials: createLocalActorMaterialsReader(manager, config),
+		readActor: async () => ({ ...emptyActorFields, ...corpus.defaults.user, avatarId: 'a', bannerId: 'b', uri: null }), readMaterials: createLocalActorMaterialsReader(manager, config, () => readMeta(manager)),
 		readTags: async () => {
 			later.push('tags'); return [];
 		}, publicKey: async () => {
@@ -163,7 +164,7 @@ test('Meta acquisition failure returns an uncached error before tags/key', async
 	} } as unknown as EntityManager;
 	const config = testConfig();
 	const app = createActivityPubActorApi({ selfUrl: config.url, federationEnabled: async () => true, isSelfHost: () => false,
-		readActor: async () => ({ ...emptyActorFields, ...defaults.user, uri: null }), readMaterials: createLocalActorMaterialsReader(manager, config),
+		readActor: async () => ({ ...emptyActorFields, ...defaults.user, uri: null }), readMaterials: createLocalActorMaterialsReader(manager, config, () => readMeta(manager)),
 		readTags: async () => {
 			laterWork = true; return [];
 		}, publicKey: async () => {

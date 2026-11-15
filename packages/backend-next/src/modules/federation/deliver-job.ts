@@ -125,7 +125,6 @@ export function createDeliverJobProcessor(ports: {
 						inBackground(job.to, () => ledger.updateInstance(instance.id, patch));
 					}
 					inBackground(job.to, async () => {
-						// Source reads its live Meta in nextTick; this DB read retains an explicit async snapshot limit.
 						if ((await ports.readSettings()).enableStatsForFederatedInstances) {
 							await ports.fetchMetadata(instance);
 						}

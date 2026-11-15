@@ -23,9 +23,10 @@ vi.mock('../../src/composition/create-runtime.js', () => ({ createRuntime: async
 	} }, outboundHttp: { send: vi.fn(async () => {
 		throw new Error('network unavailable');
 	}) },
+	meta: { fetch: async () => ({ federation: 'all', federationHosts: [], blockedHosts: [], silencedHosts: [], mediaSilencedHosts: [], deliverSuspendedSoftware: [], enableStatsForFederatedInstances: true }) },
 	redis: { get: async () => null, set: async () => {} },
-	dataSource: { manager: { getRepository: (entity: { name: string }) => ({
-		find: async () => entity.name === 'MiMeta' ? [{ federation: 'all', federationHosts: [], blockedHosts: [], silencedHosts: [], mediaSilencedHosts: [], deliverSuspendedSoftware: [], enableStatsForFederatedInstances: true }] : [],
+	dataSource: { manager: { getRepository: () => ({
+		find: async () => [],
 		findOneBy: async () => ({ id: 'instance', host: 'remote.test', isNotResponding: false, notRespondingSince: null, suspensionState: 'none', softwareName: null, softwareVersion: null }),
 		update: state.update,
 		createQueryBuilder: () => {

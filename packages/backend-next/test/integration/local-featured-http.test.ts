@@ -99,12 +99,14 @@ test('HTML remains outside AP while featured accepts HTML; source featured does 
 });
 test('disabled federation precedes missing rows and public eligibility filters Note and collection', async () => {
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'none' });
+	await resources.meta.fetch(true);
 	try {
 		for (const path of ['/users/gone/collections/featured', '/notes/gone']) {
 			expect((await get(path)).status).toBe(403);
 		}
 	} finally {
 		await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+		await resources.meta.fetch(true);
 	}
 	for (const change of [{ visibility: 'followers' as const }, { visibility: 'specified' as const }, { localOnly: true }]) {
 		await resources.dataSource.getRepository(MiNote).update(note.id, change);
@@ -140,6 +142,7 @@ test('synchronized pin Entity uses existing migrations and passes scoped schema 
 });
 test('stored redirect policy rejects external AP lookup with canonical link while bare LD remains a redirect', async () => {
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { allowExternalApRedirect: false });
+	await resources.meta.fetch(true);
 	await resources.dataSource.getRepository(MiNote).update(note.id, { userHost: 'remote.test', uri: 'https://remote.test/note' });
 	try {
 		const response = await get(`/notes/${note.id}`);
@@ -150,12 +153,14 @@ test('stored redirect policy rejects external AP lookup with canonical link whil
 		expect((await get(`/notes/${note.id}`, 'application/ld+json')).status).toBe(302);
 	} finally {
 		await resources.dataSource.getRepository(MiMeta).update('singleton', { allowExternalApRedirect: true });
+		await resources.meta.fetch(true);
 		await resources.dataSource.getRepository(MiNote).update(note.id, { userHost: null, uri: null });
 	}
 });
 test('blocked stored Unicode URI retains the source canonical link and explanatory text', async () => {
 	const uri = 'https://remote.test/日本%20x?q=%2F&name=日本';
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { allowExternalApRedirect: false });
+	await resources.meta.fetch(true);
 	await resources.dataSource.getRepository(MiNote).update(note.id, { userHost: 'remote.test', uri });
 	try {
 		const response = await get(`/notes/${note.id}`);
@@ -164,6 +169,7 @@ test('blocked stored Unicode URI retains the source canonical link and explanato
 		expect(await response.text()).toBe("Refusing to relay remote ActivityPub object lookup.\n\nPlease remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at https://remote.test/日本%20x?q=%2F&name=日本.");
 	} finally {
 		await resources.dataSource.getRepository(MiMeta).update('singleton', { allowExternalApRedirect: true });
+		await resources.meta.fetch(true);
 		await resources.dataSource.getRepository(MiNote).update(note.id, { userHost: null, uri: null });
 	}
 });

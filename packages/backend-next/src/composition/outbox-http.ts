@@ -6,7 +6,6 @@ import { createActivityPubOutboxApi } from '../http/activitypub-outbox-api.js';
 import { readOutboxNotes, renderOutboxCollection } from '../modules/federation/public.js';
 import { createNotePublicationReader } from '../platform/database/local-featured.js';
 import { createLocalActivityReader, createOutboxReader } from '../platform/database/local-outbox.js';
-import { readMeta } from '../platform/database/meta.js';
 import { createIdCodec } from '../platform/id-codec.js';
 import { preparePublishedActivity } from './published-activity.js';
 import type { RuntimeResources } from './create-runtime.js';
@@ -20,7 +19,7 @@ export function createOutboxHttp(resources: RuntimeResources, config: RuntimeCon
 	const render = (note: Parameters<typeof preparePublishedActivity>[0]) => preparePublishedActivity(note, publication, { selfUrl: config.url, now: Date.now(), createdAtFromId });
 	return createActivityPubOutboxApi({
 		logger: resources.logger,
-		federationEnabled: async () => (await readMeta(manager)).federation !== 'none',
+		federationEnabled: async () => (await resources.meta.fetch()).federation !== 'none',
 		readLocalActivityNote: createLocalActivityReader(manager), renderActivity: render,
 		async readOutbox(id, page, bounds) {
 			const user = await reader.readLocalUser(id);
@@ -30,7 +29,7 @@ export function createOutboxHttp(resources: RuntimeResources, config: RuntimeCon
 			if (!page) {
 				return renderOutboxCollection(id, user.notesCount, null, config.url);
 			}
-			const meta = await readMeta(manager);
+			const meta = await resources.meta.fetch();
 			const notes = await readOutboxNotes(user.id, bounds, meta.enableFanoutTimeline, meta, reader);
 			if (bounds.sinceId) {
 				notes.reverse();

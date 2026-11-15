@@ -5,7 +5,6 @@
 import { createActivityPubNotesApi } from '../http/activitypub-notes-api.js';
 import { createHostRules, readFeaturedNotes, renderApNote, renderFeaturedCollection } from '../modules/federation/public.js';
 import { createFeaturedReader, createNotePublicationReader, createPublicNoteReader } from '../platform/database/local-featured.js';
-import { readMeta } from '../platform/database/meta.js';
 import { createIdCodec } from '../platform/id-codec.js';
 import { preparePublishedNote } from './published-note.js';
 import type { RuntimeResources } from './create-runtime.js';
@@ -17,8 +16,8 @@ export function createFeaturedHttp(resources: RuntimeResources, config: RuntimeC
 	const featured = createFeaturedReader(manager);
 	const options = () => ({ selfUrl: config.url, now: Date.now(), createdAtFromId });
 	return createActivityPubNotesApi({
-		selfUrl: config.url, production: process.env.NODE_ENV === 'production', allowExternalApRedirect: async () => (await readMeta(manager)).allowExternalApRedirect, logger: resources.logger,
-		federationEnabled: async () => (await readMeta(manager)).federation !== 'none',
+		selfUrl: config.url, production: process.env.NODE_ENV === 'production', allowExternalApRedirect: async () => (await resources.meta.fetch()).allowExternalApRedirect, logger: resources.logger,
+		federationEnabled: async () => (await resources.meta.fetch()).federation !== 'none',
 		isSelfHost: createHostRules(new URL(config.url).host).isSelfHost,
 		readPublicNote: createPublicNoteReader(manager),
 		async readFeatured(id) {

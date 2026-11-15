@@ -168,6 +168,7 @@ test.each(['application/jrd+json', 'application/xrd+xml'])('actual HEAD retains 
 
 test('stable persisted federation none precedes malformed resource while OPTIONS bypasses it', async () => {
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'none' });
+	await resources.meta.fetch(true);
 	try {
 		for (const resource of [null, '', 'alice@foreign.test', 'alice']) {
 			headers(await request(resource), 403);
@@ -180,6 +181,7 @@ test('stable persisted federation none precedes malformed resource while OPTIONS
 		expect(await options.text()).toBe('');
 	} finally {
 		await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+		await resources.meta.fetch(true);
 	}
 });
 
@@ -194,22 +196,31 @@ test('actual User-table fault yields uncached CORS 500, while early rejection pe
 		headers(await request(null), 400);
 		headers(await request('alice@foreign.test'), 422);
 		await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'none' });
+		await resources.meta.fetch(true);
 		headers(await request(null), 403);
 		headers(await request(null, { method: 'OPTIONS' }), 204);
 	} finally {
 		await resources.dataSource.query('ALTER TABLE "webfinger_fault_user" RENAME TO "user"');
 		await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+		await resources.meta.fetch(true);
 	}
 	headers(await request('alice'), 200);
 });
 
-test('actual Meta-table fault yields uncached CORS 500 while OPTIONS still avoids Meta', async () => {
+test('warm Meta remains usable during a DB fault; a cold HTTP cache returns uncached CORS 500', async () => {
+	const cold = await connectResources(database.config, createLogger('cold-meta-test', () => {}));
+	const coldServer = await listenHttp(createBackendHttpApp(cold, database.config), { port: 0 });
+	const coldPort = (coldServer.address() as { port: number }).port;
 	await resources.dataSource.query('ALTER TABLE "meta" RENAME TO "webfinger_fault_meta"');
 	try {
-		headers(await request('alice'), 500);
+		headers(await request('alice'), 200);
+		await expect(resources.meta.fetch(true)).rejects.toThrow();
+		headers(await fetch(`http://127.0.0.1:${coldPort}/.well-known/webfinger?resource=alice`), 500);
 		headers(await request(null, { method: 'OPTIONS' }), 204);
 	} finally {
 		await resources.dataSource.query('ALTER TABLE "webfinger_fault_meta" RENAME TO "meta"');
+		await closeHttp(coldServer);
+		await cold.close();
 	}
 	headers(await request('alice'), 200);
 });

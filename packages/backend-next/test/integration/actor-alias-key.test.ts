@@ -33,6 +33,7 @@ beforeAll(async () => {
 	database.config.url = 'https://local.test';
 	resources = await connectResources(database.config, createLogger('alias-key-test', () => {}));
 	await resources.dataSource.getRepository(MiMeta).insert({ id: 'singleton', federation: 'all' });
+	await resources.meta.fetch(true);
 	privateKey = (await generateRsaKeyPair()).privateKeyPem;
 	const original = resources.dataSource.logger.logQuery.bind(resources.dataSource.logger);
 	vi.spyOn(resources.dataSource.logger, 'logQuery').mockImplementation((sql, params, runner) => {
@@ -77,6 +78,7 @@ test.each(cases)('$id real listening HTTP/PG consumes source result and preserve
 	const expected = source.cases.find((x: { id: string }) => x.id === row.id);
 	await seed(row.path.includes('remote.test') ? 'remote' : row.kind);
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: row.federation === 'none' ? 'none' : 'all', allowExternalApRedirect: row.allow ?? true });
+	await resources.meta.fetch(true);
 	const before = await state();
 	const queueKeys = await resources.redis.keys(`${database.config.redis.prefix}:queue:*`);
 	reads = [];
@@ -104,6 +106,7 @@ test.each(cases)('$id real listening HTTP/PG consumes source result and preserve
 
 test('actual repository preserves remote host case and rejects absent remote without resolution', async () => {
 	await seed('remote'); await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+	await resources.meta.fetch(true);
 	for (const acct of ['Alice@REMOTE.test', 'Alice@unknown.test', 'Alice%2540remote.test']) {
 		const response = await fetch(`${origin}/@${acct}`, { headers: { Accept: 'application/activity+json' }, redirect: 'manual' });
 		expect(response.status).toBe(404);
@@ -115,6 +118,7 @@ test('actual repository preserves remote host case and rejects absent remote wit
 
 test('local suspended key does not require profile and actual cold modern-key GET only fills Redis', async () => {
 	await seed('suspended'); await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+	await resources.meta.fetch(true);
 	await resources.dataSource.getRepository(MiUserProfile).deleteAll();
 	const id = 'keyonly'; await resources.dataSource.getRepository(MiUser).insert({ id, username: id, usernameLower: id, isSuspended: true });
 	await resources.dataSource.getRepository(MiUserKeypair).insert({ userId: id, publicKey: key.pkcs1, privateKey });
@@ -129,6 +133,7 @@ test('local suspended key does not require profile and actual cold modern-key GE
 
 test('legacy private-key upgrade finishes once and warm GET retains the upgraded row', async () => {
 	await seed(); await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+	await resources.meta.fetch(true);
 	const id = 'legacy';
 	await resources.dataSource.getRepository(MiUser).insert({ id, username: 'legacy', usernameLower: 'legacy' });
 	await resources.dataSource.getRepository(MiUserKeypair).insert({ userId: id, publicKey: key.pkcs1, privateKey: createPrivateKey(privateKey).export({ type: 'pkcs1', format: 'pem' }).toString() });
@@ -142,17 +147,31 @@ test('legacy private-key upgrade finishes once and warm GET retains the upgraded
 	expect(await state()).toEqual(before);
 });
 
-test('missing Meta retains existing initialization rather than an unconditional no-write claim', async () => {
+test('cold HTTP Meta cache retains existing missing-row initialization rather than an unconditional no-write claim', async () => {
+	const cold = await connectResources(database.config, createLogger('alias-key-cold-meta-test', () => {}));
+	const original = cold.dataSource.logger.logQuery.bind(cold.dataSource.logger);
+	const query = vi.spyOn(cold.dataSource.logger, 'logQuery').mockImplementation((sql, params, runner) => {
+		reads.push(sql); original(sql, params, runner);
+	});
+	const coldServer = await listenHttp(createBackendHttpApp(cold, database.config), { port: 0 });
+	const port = (coldServer.address() as { port: number }).port;
 	await resources.dataSource.getRepository(MiMeta).deleteAll(); reads = [];
-	const response = await fetch(`${origin}/users/local/publickey`);
-	expect(response.status).toBe(403);
-	expect(await resources.dataSource.getRepository(MiMeta).count()).toBe(1);
-	expect(reads.some(sql => /^INSERT /i.test(sql))).toBe(true);
+	try {
+		const response = await fetch(`http://127.0.0.1:${port}/users/local/publickey`);
+		expect(response.status).toBe(403);
+		expect(await resources.dataSource.getRepository(MiMeta).count()).toBe(1);
+		expect(reads.some(sql => /^INSERT /i.test(sql))).toBe(true);
+	} finally {
+		await closeHttp(coldServer);
+		await cold.close();
+		query.mockRestore();
+	}
 });
 
 test.each(['missing', 'invalid'])('actual %s stored key preserves the source exception/cache boundary', async kind => {
 	await resources.dataSource.getRepository(MiMeta).deleteAll();
 	await resources.dataSource.getRepository(MiMeta).insert({ id: 'singleton', federation: 'all' });
+	await resources.meta.fetch(true);
 	const id = `key-${kind}`;
 	await resources.dataSource.getRepository(MiUser).insert({ id, username: id, usernameLower: id });
 	if (kind === 'invalid') {
@@ -171,6 +190,7 @@ test.each(corpus.cases.filter(row => row.id.startsWith('review-')))('$id raw HTT
 	const expected = source.cases.find((x: { id: string }) => x.id === row.id);
 	await seed('missing');
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: row.federation === 'none' ? 'none' : 'all' });
+	await resources.meta.fetch(true);
 	reads = [];
 	const response = await new Promise<{ status: number; headers: import('node:http').IncomingHttpHeaders; body: string }>((resolve, reject) => {
 		const req = request(origin, { path: row.path, method: row.method, headers: { Accept: 'application/activity+json' } }, res => {

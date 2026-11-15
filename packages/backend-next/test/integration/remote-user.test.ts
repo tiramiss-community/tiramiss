@@ -49,6 +49,7 @@ beforeAll(async () => {
 	await resources.dataSource.getRepository(MiUserProfile).insert({ userId: authorId });
 	await resources.dataSource.getRepository(MiUserKeypair).insert({ userId: authorId, publicKey: pair.publicKeyPem, privateKey: pair.privateKeyPem });
 	await resources.dataSource.getRepository(MiMeta).insert({ id: 'singleton', federation: 'all' });
+	await resources.meta.fetch(true);
 	app = createBackendHttpApp(resources, database.config);
 	server = await listenHttp(app, { port: 0 }); port = (server.address() as { port: number; }).port;
 	peer.route('local.test', port);
@@ -459,12 +460,14 @@ test('real PG freshness is inclusive at 24h, stale at one millisecond more, and 
 		expect(peer.requests.slice(before).some(r => r.path === '/users/boundary')).toBe(true);
 		expect((await resources.dataSource.getRepository(MiUser).findOneByOrFail({ id: row.id })).lastFetchedAt?.getTime()).toBe(fixed + 1);
 		await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'none' });
+		await resources.meta.fetch(true);
 		const requests = peer.requests.length;
 		const blockedFresh = await post({ text: '@boundary@remote.test @author@local.test' });
 		expect((await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: blockedFresh.body.createdNote.id })).mentions).toEqual([row.id, authorId]);
 		expect(peer.requests.length).toBe(requests);
 	} finally {
 		clock.mockImplementation(realNow); await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+		await resources.meta.fetch(true);
 	}
 });
 
@@ -486,6 +489,7 @@ test('failed stale WebFinger and invalid cross-host repair retain attempt timest
 test('Meta.signToActivityPubGet=false uses the real unsigned acquisition path without signer discovery', async () => {
 	register('unsigned_meta'); peer.clearKeys();
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { signToActivityPubGet: false });
+	await resources.meta.fetch(true);
 	const discoveries = peer.discoveries.length;
 	try {
 		const result = await post({ text: '@unsigned_meta@remote.test' });
@@ -496,6 +500,7 @@ test('Meta.signToActivityPubGet=false uses the real unsigned acquisition path wi
 		expect(peer.discoveries.length).toBe(discoveries);
 	} finally {
 		await resources.dataSource.getRepository(MiMeta).update('singleton', { signToActivityPubGet: true });
+		await resources.meta.fetch(true);
 	}
 });
 
@@ -584,6 +589,7 @@ async function instanceCount() {
 test('real public actor/profile/key commit increments instance once; fresh and stale-refresh lookups do not increment; raw increment leaves registration cache stale', async () => {
 	await resources.actorInstanceRegistration.idle();
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: true });
+	await resources.meta.fetch(true);
 	// Isolate raw increment cache behavior: concurrent metadata legitimately refreshes the whole row.
 	await resources.redis.set('fetchInstanceMetadata:mutex:v2:remote.test', '1', 'EX', 30);
 	const before = await instanceCount();
@@ -609,6 +615,7 @@ test('real public actor/profile/key commit increments instance once; fresh and s
 test.each([true, false])('two public unknown aliases force canonical duplicate recovery and stats=%s counts each committed/recovered acquisition', async enabled => {
 	await resources.actorInstanceRegistration.idle();
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: enabled });
+	await resources.meta.fetch(true);
 	const before = await instanceCount();
 	const name = enabled ? 'instance_race_on' : 'instance_race_off';
 	register(name, { publicKey: { id: `${peer.origin}/users/${name}#key`, publicKeyPem: 'race-key' } }); aliases.set(name + '_alias', name);
@@ -635,10 +642,12 @@ test.each([true, false])('two public unknown aliases force canonical duplicate r
 test('disabled normal creation and rolled-back Profile/Key never change usersCount', async () => {
 	await resources.actorInstanceRegistration.idle();
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: false });
+	await resources.meta.fetch(true);
 	const before = await instanceCount();
 	register('instance_disabled'); expect((await post({ text: '@instance_disabled@remote.test', localOnly: true })).status).toBe(200);
 	expect(await instanceCount()).toBe(before);
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: true });
+	await resources.meta.fetch(true);
 	for (const table of ['user_profile', 'user_publickey']) {
 		const name = `instance_rollback_${table}`; register(name, { publicKey: { id: `${peer.origin}/users/${name}#key`, publicKeyPem: 'key' } });
 		const restore = await failWrites(table);
@@ -655,6 +664,7 @@ test('disabled normal creation and rolled-back Profile/Key never change usersCou
 test('increment failure is diagnostic and does not undo real HTTP actor/key or posting; later Note failure leaves actor and increment committed', async () => {
 	await resources.actorInstanceRegistration.idle();
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: true });
+	await resources.meta.fetch(true);
 	const before = await instanceCount(); const logBefore = hashtagLogs.length;
 	register('instance_increment_failure', { publicKey: { id: `${peer.origin}/users/instance_increment_failure#key`, publicKeyPem: 'key' } });
 	const restore = await failWrites('instance');
@@ -683,6 +693,7 @@ test('increment failure is diagnostic and does not undo real HTTP actor/key or p
 test('two real HTTP actors concurrently first-register one host, and parallel direct increments preserve cache without lost updates', async () => {
 	await resources.actorInstanceRegistration.idle();
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableStatsForFederatedInstances: true });
+	await resources.meta.fetch(true);
 	const host = 'instance-first.test'; peer.route(host);
 	await resources.redis.set(`fetchInstanceMetadata:mutex:v2:${host}`, '1', 'EX', 30);
 	for (const name of ['instance_first_a', 'instance_first_b']) {

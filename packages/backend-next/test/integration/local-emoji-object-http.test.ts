@@ -39,6 +39,7 @@ beforeEach(async () => {
 	await repository().deleteAll();
 	await resources.dataSource.getRepository(MiMeta).deleteAll();
 	await resources.dataSource.getRepository(MiMeta).insert({ id: 'singleton', federation: 'all' });
+	await resources.meta.fetch(true);
 });
 afterAll(async () => {
 	if (server) {
@@ -130,6 +131,7 @@ test('stored null/empty fallbacks and undated clock are rendered without writes'
 test('federation none gates before Emoji lookup and errors; specified remains public', async () => {
 	await seed();
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'none' });
+	await resources.meta.fetch(true);
 	const queries: string[] = [];
 	const capture = vi.spyOn(resources.dataSource.logger, 'logQuery').mockImplementation(query => {
  queries.push(query); 
@@ -146,6 +148,7 @@ test('federation none gates before Emoji lookup and errors; specified remains pu
 		capture.mockRestore();
 	}
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'specified' });
+	await resources.meta.fetch(true);
 	expect((await request()).status).toBe(200);
 });
 
@@ -167,6 +170,7 @@ test.each(['GET', 'HEAD'])('%s chooses LD only when selected, preserves public c
 
 test('OPTIONS bypasses Meta and Emoji reads; malformed paths reject before CORS and federation', async () => {
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'none' });
+	await resources.meta.fetch(true);
 	const queries: string[] = [];
 	const capture = vi.spyOn(resources.dataSource.logger, 'logQuery').mockImplementation(query => {
  queries.push(query); 
@@ -215,11 +219,13 @@ test('real Emoji relation failure yields uncached500 and leaves rows intact afte
 			}
 		}
 		await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'none' });
+		await resources.meta.fetch(true);
 		expect((await request()).status).toBe(403);
 	} finally {
 		await resources.dataSource.query('ALTER TABLE "emoji_unavailable" RENAME TO "emoji"');
 	}
 	expect(await repository().find()).toEqual(before);
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+	await resources.meta.fetch(true);
 	expect((await request()).status).toBe(200);
 });
