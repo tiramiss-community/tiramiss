@@ -22,7 +22,6 @@ export async function openUserWebhooks(options: {
 	let hooks: Hook[] = [];
 	let fetched = false;
 	let generation = 0;
-	let connectedOnce = false;
 	let closeTransport: (() => Promise<void>) | undefined;
 	let unregister = () => {};
 	let closing: Promise<void> | undefined;
@@ -41,13 +40,10 @@ export async function openUserWebhooks(options: {
 	} });
 	if (!closed) {
 		unregister = receiver.register({ onReady: () => {
-			if (connectedOnce) {
-				// 切断中の設定通知は再配信されないため、次の投稿では正本から読み直す。
-				generation++;
-				hooks = [];
-				fetched = false;
-			}
-			connectedOnce = true;
+			// 切断中に登録した場合、初回readyまでに取得した一覧も古くなり得る。
+			generation++;
+			hooks = [];
+			fetched = false;
 		}, onInternal: event => {
 			const { body } = event;
 			if (typeof body.id !== 'string') {
