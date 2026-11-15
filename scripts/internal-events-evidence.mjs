@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { queueSessionObservationPath, readPreQueueSessionObservation } from './queue-session-observation-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/internal-events/';
 const evidencePath = directory + 'current-evidence.json';
@@ -76,7 +77,11 @@ export function validateInternalEventsSuccessor(value, readFile = read, optional
  if (actual !== null) assert.equal(sha(actual), seal, 'internal events actual receipt drift');
  return { ...previous.files };
 }
+export function hasInternalEventPredecessor(path) {
+ return internalEventsSuccessorFiles.includes(path) || path === queueSessionObservationPath;
+}
 export function readPreInternalEvents(path, encoding, readFile = read, optional = optionalRead) {
+ if (path === queueSessionObservationPath) return readPreQueueSessionObservation(path, encoding, readFile, optional);
  const bytes = internalEventsSuccessorFiles.includes(path) ? Buffer.from(validateInternalEventsSuccessor(undefined, readFile, optional)[path]) : readFile(path);
  return encoding ? bytes.toString(encoding) : bytes;
 }

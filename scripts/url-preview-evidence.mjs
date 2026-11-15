@@ -5,7 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { internalEventsSuccessorFiles, readPreInternalEvents, validateInternalEventsSuccessor } from './internal-events-evidence.mjs';
+import { hasInternalEventPredecessor, readPreInternalEvents, validateInternalEventsSuccessor } from './internal-events-evidence.mjs';
 import { readPrePreviewFixture } from './url-preview-fixture-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
@@ -105,6 +105,6 @@ export function validateUrlPreviewSuccessor(value, readFile = read, optional = o
 }
 
 export function readPreUrlPreview(path, encoding, readFile = read, optional = optionalRead) {
- const bytes = successorFiles.includes(path) ? Buffer.from(validateUrlPreviewSuccessor(record(readFile), readFile, optional)[path]) : internalEventsSuccessorFiles.includes(path) ? readPreInternalEvents(path, undefined, readFile, optional) : readPrePreviewFixture(path, undefined, readFile, optional);
+ const bytes = successorFiles.includes(path) ? Buffer.from(validateUrlPreviewSuccessor(record(readFile), readFile, optional)[path]) : hasInternalEventPredecessor(path) ? readPreInternalEvents(path, undefined, readFile, optional) : readPrePreviewFixture(path, undefined, readFile, optional);
  return encoding ? bytes.toString(encoding) : bytes;
 }

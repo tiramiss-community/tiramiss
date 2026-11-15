@@ -35,3 +35,8 @@ node --test scripts/internal-events-contract.test.mjs
 PR #595の自動reviewは、切断中にWebhook consumerを登録して最初のready前に一覧を取得すると、初回readyが既取得・取得中の古い結果を無効化しない経路を指摘した。最初に観測したraw readyも常に世代更新・一覧破棄の対象とする修正をproduct `b1f285d45132b52044101fc221b54f4ae9af5a17` に実装した。WebhookのW1に限定し、Role/antennaの再接続方針は変更していない。2つの回帰試験をREDからGREENにし、cold antennaイベントも検査で受理される完全な定義に修正した。
 
 再測定は `current-evidence.json` に別のlog pathで記録した。unit 4,304件/116ファイル、integration 36件/4ファイル、process 5件/3ファイル、build/typecheck/syncとsource projection 15操作がPASS。21入力中の変更は `user-webhooks.ts` と `internal-event-consumers.test.ts` の2ファイルだけで、検証一式の前後でhashが一致する。初回のreceiptと元logは上書きせず、未検証だった初回ready経路を新しい測定で補完した。履歴用の8ファイルprojectionは既存の基準のまま維持する。
+
+
+cb99 headのCIで、既存 `queue-runtime.test.ts` が子の終了直後の `pg_stat_activity` 件数を1と比較し、2を観測して失敗した。専用PGの自分のbackendだけを一時停止する制御probeでは、childがDataSource.destroyを完了して終了しても2行が残り、backendを再開すると62msで1行になることを観測した。クライアント終了はサーバー統計の削除完了を同期する境界ではない。
+
+`c261d11765fac7452d16f45eae8986584a41fc10` では、既存2箇所のPG件数検査だけを最大5秒・20ms間隔の `vi.waitFor` にし、厳密な1行・worker/Redisの解放・readyを出さない条件は保持した。恒久的な接続残存は引き続き失敗する。対象process18件がPASSし、testファイル1件の前後hashが一致する測定を `queue-session-observation-evidence.json` に分離した。既存の本件21入力のruntime測定は更新していない。過去のqueue試験byteは独立した1ファイルのpredecessorで保持する。制御probeは一時artifactで、通常CIの全面再現を示すものではない。
