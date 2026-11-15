@@ -59,13 +59,11 @@ test.each([1, 2])('failed %s HTTP drainers still wait for accepted writes and la
 		const error = await closeResult;
 		if (failures === 1) {
 			expect(error).toBe(errors[0]);
-		}
-		else {
+		} else {
 			expect(error).toBeInstanceOf(AggregateError);
 			expect((error as AggregateError).errors).toEqual(errors);
 		}
-	}
-	finally {
+	} finally {
 		finishWrite();
 		finishPublish();
 		await closeResult;
