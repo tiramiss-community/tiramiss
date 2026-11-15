@@ -5,8 +5,8 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { validateDriveFoldersSuccessor } from './drive-folders-evidence.mjs';
 import { readPrePreviewFixture } from './url-preview-fixture-evidence.mjs';
+import { validateDriveFoldersSuccessor } from './drive-folders-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/url-preview/';
@@ -47,9 +47,7 @@ function record(readFile) {
 
 // A finite terminal hop for #377/#560. Historical receipts remain byte-for-byte
 // immutable; only eight measured changed inputs are restored for their readers.
-export function validateUrlPreviewSuccessor(value, rawRead = read, optional = optionalRead) {
- const previousFolders = validateDriveFoldersSuccessor(undefined, rawRead, optional);
- const readFile = path => path in previousFolders ? Buffer.from(previousFolders[path]) : rawRead(path);
+export function validateUrlPreviewSuccessor(value, readFile = read, optional = optionalRead) {
  if (value === undefined) value = record(readFile);
  assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'URL preview current receipt seal');
  assert.equal(value.runtimeRevision, '4047f7fc8696ee45104d0ed317722273afbcce1e');
@@ -58,6 +56,9 @@ export function validateUrlPreviewSuccessor(value, rawRead = read, optional = op
  assert.equal(Object.keys(value.inputs).length, 27);
  assert.equal(value.noInputDrift, true);
  assert.deepEqual(value.inputsAfter, value.inputs);
+ const readBeforeDriveFolders = readFile;
+ const previousFolders = validateDriveFoldersSuccessor(undefined, readBeforeDriveFolders, optional);
+ readFile = path => path in previousFolders ? Buffer.from(previousFolders[path]) : readBeforeDriveFolders(path);
  for (const [path, digest] of Object.entries(value.inputs)) {
   assert.equal(sha(readFile(path)), digest, `instance admin measured current input drift (URL preview successor): ${path}`);
  }
