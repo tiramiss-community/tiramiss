@@ -9,10 +9,12 @@ const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/internal-events/';
 const evidencePath = directory + 'current-evidence.json';
 const predecessorPath = directory + 'predecessor.json';
-const receiptPath = '/tmp/tiramiss-s1-round2-20261115/290/product-run-receipt.json';
-const seal = 'b820fb2c87bc5de6248a08f2ea0eccf8e865eea5224b0be5dbe42eeee6e2fe1f';
+const receiptPath = '/tmp/tiramiss-s1-round2-20261115/290/cr-fix/product-run-receipt.json';
+const seal = '17dfc1d80a9a9a07824456fe2265e51a2108b6c808cecbdcaf86d7961685eb70';
 const predecessorSeal = 'f13044286b6f1729cf1d80f61b4461db9a32fd2705ed873b0e2ba6098973c521';
-const runtimeRevision = '00d2a724bbb082ab27b7ade6c47d5906a63cd3df';
+const runtimeRevision = 'b1f285d45132b52044101fc221b54f4ae9af5a17';
+const initialEvidencePath = directory + 'initial-evidence.json';
+const initialSeal = 'b820fb2c87bc5de6248a08f2ea0eccf8e865eea5224b0be5dbe42eeee6e2fe1f';
 export const internalEventsSuccessorFiles = Object.freeze([
  "packages/backend-next/src/platform/connect-resources.ts",
  "packages/backend-next/src/platform/note-antennas.ts",
@@ -43,6 +45,8 @@ export function validateInternalEventsSuccessor(value, readFile = read, optional
  if (value === undefined) value = sealed(readFile(evidencePath), seal, 'receipt');
  assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'internal events receipt seal');
  assert.equal(value.runtimeRevision, runtimeRevision);
+ const initial = sealed(readFile(initialEvidencePath), initialSeal, 'initial receipt');
+ assert.equal(initial.runtimeRevision, '00d2a724bbb082ab27b7ade6c47d5906a63cd3df');
  assert.equal(value.baseRevision, '86fce3926f97d2b62d790ff1e44449a57c2d33ee');
  assert.equal(value.upstreamRevision, '8e07cf085adf7009583d234a208e30436f020e26');
  assert.equal(value.noInputDrift, true);

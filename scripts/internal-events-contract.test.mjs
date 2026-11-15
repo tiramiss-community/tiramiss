@@ -12,6 +12,7 @@ const root = new URL('../', import.meta.url);
 const read = path => readFileSync(new URL(path, root));
 const evidencePath = 'docs/superpowers/compatibility/internal-events/current-evidence.json';
 const predecessorPath = 'docs/superpowers/compatibility/internal-events/predecessor.json';
+const initialEvidencePath = 'docs/superpowers/compatibility/internal-events/initial-evidence.json';
 const projected = 'packages/backend-next/src/platform/connect-resources.ts';
 const projectedPaths = [projected, 'packages/backend-next/src/platform/note-antennas.ts', 'packages/backend-next/src/platform/role-material-cache.ts', 'packages/backend-next/src/platform/role-materials.ts', 'packages/backend-next/src/platform/user-webhooks.ts', 'packages/backend-next/test/unit/note/antennas.test.ts', 'packages/backend-next/test/unit/user-webhooks-reconnect.test.ts', 'packages/backend-next/test/unit/user-webhooks-startup.test.ts'];
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -38,7 +39,7 @@ test('every current measured source/test input rejects drift before historical p
  }
 });
 test('sealed receipts and predecessor reject corruption even without host artifacts', () => {
- for (const path of [evidencePath, predecessorPath]) {
+ for (const path of [evidencePath, predecessorPath, initialEvidencePath]) {
   const corrupt = p => p === path ? Buffer.from('{}') : read(p);
   assert.throws(() => readPreInternalEvents(projected, undefined, corrupt, () => null), /seal/);
  }
@@ -57,4 +58,12 @@ test('warm parsed records still read/hash actual inputs and return independent p
  assert.notEqual(validateInternalEventsSuccessor(undefined, changing, () => null)[projected], 'forged');
  changed = projected;
  assert.throws(() => validateInternalEventsSuccessor(undefined, changing, () => null), /measured current input drift/);
+});
+
+
+test('the prior product measurement remains an immutable historical receipt', () => {
+ assert.equal(sha(read(initialEvidencePath)), 'b820fb2c87bc5de6248a08f2ea0eccf8e865eea5224b0be5dbe42eeee6e2fe1f');
+ const initial = JSON.parse(read(initialEvidencePath));
+ assert.equal(initial.runtimeRevision, '00d2a724bbb082ab27b7ade6c47d5906a63cd3df');
+ assert.notEqual(record().runtimeRevision, initial.runtimeRevision);
 });

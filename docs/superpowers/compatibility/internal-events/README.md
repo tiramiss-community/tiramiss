@@ -7,7 +7,7 @@
 | 利用者 | 反映 | 接続・取得中更新・停止 |
 | --- | --- | --- |
 | Role材料 | roleCreated/Updated/DeletedはDB定義cacheを無効化。userRoleAssigned/Unassignedは対象userIdの割り当てを無効化。policiesUpdatedは受信し、定義を無効化するが基本policyの正本は各評価で参照するDB | 接続喪失・再購読で両cacheを破棄。subscribe ACK前と世代が変わった読み取りを拒否。既存の有限TTL・private topic通知・DB材料のみ信頼する方式を維持 |
-| user webhook | activeの作成・更新・削除を遅延一覧へ反映 | 既存差異W1: raw Redis ready時点（subscribe ACKより前）で一覧破棄、世代の古いDB取得結果を排除。shared receiver完成後の登録もinitial readyを受け、最初のreconnectを検出 |
+| user webhook | activeの作成・更新・削除を遅延一覧へ反映 | 既存差異W1: raw Redis ready時点（subscribe ACKより前）で一覧破棄、世代の古いDB取得結果を排除。shared receiver完成後の登録もinitial readyを受ける。切断中の登録では最初に観測したraw readyも破棄対象にする |
 | antenna | 作成・更新・削除とfollowに伴うfollowing cache破棄 | warmed一覧をreconnectで破棄しない。cold fetchの完了が途中のeventを上書きできる既存方式を維持。following削除の開始済み処理を停止時に待つ |
 
 各consumerのcloseは自分のhandlerを解除する。共有receiverのcloseは全consumerの解除後にResourceScopeで実行する。単独open呼出しではreceiverを所有して解放する。停止後のlate ACKで利用可能状態を復活させない。JSON null/配列/不正envelope・利用するfieldが壊れたbodyは無視し、handlerごとにpayloadを複製してthrow/rejectを隔離する。これは既存の意図しないJSON例外・cache汚染を防ぐ受信境界であり、不正payloadに対する本家の例外まで互換保証するものではない。
@@ -29,4 +29,9 @@ node --test scripts/internal-events-contract.test.mjs
 
 2026-11-15の専用環境はNode26、pnpm12.9.1、PostgreSQL18・Redis8、DB16541/Redis16542/Meili16543、project `s1-events290-20261115`。実依存試験のpg同時query非推奨警告は既存のもの。新しいmigration・Entity・REST API型・locale・CHANGELOGは変更していない。親#217と#114は継続し、#317/#291/#303などの後続は個別の利用者・writerに接続して検証する。
 
-固定product revision `00d2a724bbb082ab27b7ade6c47d5906a63cd3df` の測定はbuild・typecheck・syncと、unit 4,302件/116ファイル、integration 36件/4ファイル、process 5件/3ファイル、source projection 15操作がPASS。全21入力を検証一式の前後でhash比較した。独立reviewで指摘されたantenna src配列の受理とRole初期接続検査の欠落は、失敗を再現する回帰試験から修正し、この測定に含めた。対応表の16行はこのcommitを `evidenceRevision` に持つ `partial` とし、global `implementationCommit` と過去の監査判定は変更していない。
+初回product revision `00d2a724bbb082ab27b7ade6c47d5906a63cd3df` の測定はbuild・typecheck・syncと、unit 4,302件/116ファイル、integration 36件/4ファイル、process 5件/3ファイル、source projection 15操作がPASS。全21入力を検証一式の前後でhash比較した。独立reviewで指摘されたantenna src配列の受理とRole初期接続検査の欠落は、失敗を再現する回帰試験から修正し、この測定に含めた。この初回receiptは `initial-evidence.json` にbyte単位で保持する。対応表の16行は `partial` のまま、現在の行別revisionを下記の再測定commitへ更新した。global `implementationCommit` と過去の監査判定は変更していない。
+
+
+PR #595の自動reviewは、切断中にWebhook consumerを登録して最初のready前に一覧を取得すると、初回readyが既取得・取得中の古い結果を無効化しない経路を指摘した。最初に観測したraw readyも常に世代更新・一覧破棄の対象とする修正をproduct `b1f285d45132b52044101fc221b54f4ae9af5a17` に実装した。WebhookのW1に限定し、Role/antennaの再接続方針は変更していない。2つの回帰試験をREDからGREENにし、cold antennaイベントも検査で受理される完全な定義に修正した。
+
+再測定は `current-evidence.json` に別のlog pathで記録した。unit 4,304件/116ファイル、integration 36件/4ファイル、process 5件/3ファイル、build/typecheck/syncとsource projection 15操作がPASS。21入力中の変更は `user-webhooks.ts` と `internal-event-consumers.test.ts` の2ファイルだけで、検証一式の前後でhashが一致する。初回のreceiptと元logは上書きせず、未検証だった初回ready経路を新しい測定で補完した。履歴用の8ファイルprojectionは既存の基準のまま維持する。
