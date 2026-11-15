@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { readPreDriveFiles } from './drive-files-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { validateDriveFolderPubsubSuccessor } from './drive-folder-pubsub-evidence.mjs';
@@ -27,7 +28,7 @@ export const successorFiles = Object.freeze([
 ]);
 export function validateDriveFoldersSuccessor(value, rawRead = read, optional = optionalRead) {
  const previousPubsub = validateDriveFolderPubsubSuccessor(undefined, rawRead, optional);
- const readFile = path => path in previousPubsub ? Buffer.from(previousPubsub[path]) : rawRead(path);
+ const readFile = path => path in previousPubsub ? Buffer.from(previousPubsub[path]) : readPreDriveFiles(path, undefined, rawRead);
  if (value === undefined) {
   const bytes = readFile(evidencePath);
   assert.equal(sha(bytes), seal, 'folder current receipt seal');

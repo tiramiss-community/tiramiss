@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { driveFilePredecessorFiles, readPreDriveFiles } from './drive-files-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { hasInternalEventPredecessor, readPreInternalEvents, validateInternalEventsSuccessor } from './internal-events-evidence.mjs';
@@ -110,6 +111,7 @@ export function validateUrlPreviewSuccessor(value, readFile = read, optional = o
 }
 
 export function readPreUrlPreview(path, encoding, readFile = read, optional = optionalRead) {
+ if (driveFilePredecessorFiles.includes(path) && !successorFiles.includes(path)) return readPreDriveFiles(path, encoding, readFile);
  if (pubsubSuccessorFiles.includes(path)) return readPreDriveFolderPubsub(path, encoding, readFile, optional);
  const bytes = successorFiles.includes(path) ? Buffer.from(validateUrlPreviewSuccessor(record(readFile), readFile, optional)[path]) : hasInternalEventPredecessor(path) ? readPreInternalEvents(path, undefined, readFile, optional) : readPrePreviewFixture(path, undefined, readFile, optional);
  return encoding ? bytes.toString(encoding) : bytes;

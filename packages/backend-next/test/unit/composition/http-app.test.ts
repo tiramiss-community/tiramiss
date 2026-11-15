@@ -41,7 +41,9 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 	expect(events).toEqual(['note', 'role']);
 	expect(legacy).toBe(createBackendHttpApp);
 	expect([...new Set(app.routes.map(route => route.path))]).toEqual([
-		'/api/admin/roles/show', '/api/admin/roles/update', '/users/:id', '/:acct{@[^/]*}', '/users/:user{[^/]*}/publickey',
+		'/api/admin/roles/show', '/api/admin/roles/update',
+		'/api/drive/files/show', '/api/drive/files/find', '/api/drive/files/find-by-hash', '/api/drive/files/check-existence', '/api/admin/drive/show-file',
+		'/users/:id', '/:acct{@[^/]*}', '/users/:user{[^/]*}/publickey',
 		'/api/admin/federation/update-instance', '/api/admin/federation/refresh-remote-instance-metadata', '/url', '/.well-known/webfinger',
 		'/users/:id/collections/featured', '/notes/:id', '/users/:id/followers', '/users/:id/following',
 		'/users/:user/outbox', '/users//outbox', '/notes/:note/activity', '/notes//activity',
@@ -49,7 +51,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 		'/api/drive/folders/create', '/api/drive/folders/delete', '/api/drive/folders/find', '/api/drive/folders/show', '/api/drive/folders/update',
 		'/api/notes/delete', '/api/notes/show', '/api/notes/create', '/api/test-queue',
 	]);
-	for (const path of ['admin/roles/show', 'admin/roles/update', 'notes/delete', 'notes/create', 'drive/folders/create', 'drive/folders/delete', 'drive/folders/find', 'drive/folders/show', 'drive/folders/update']) {
+	for (const path of ['admin/roles/show', 'admin/roles/update', 'notes/delete', 'notes/create', 'drive/files/show', 'drive/files/find', 'drive/files/find-by-hash', 'drive/files/check-existence', 'admin/drive/show-file', 'drive/folders/create', 'drive/folders/delete', 'drive/folders/find', 'drive/folders/show', 'drive/folders/update']) {
 		const response = await app.request(`/api/${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
 		expect(response.status).toBe(401);
 		expect(await response.json()).toHaveProperty('error.code', 'CREDENTIAL_REQUIRED');
