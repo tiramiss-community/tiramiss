@@ -3067,6 +3067,110 @@
       ],
       "note": "#279: fixed-source135 finite handler/pack/name comparisons and real authenticated HTTP/PG82 cases; existing note-show26 and note/files11 regressions. Pure preloaded self/detail/withUser projection; DB errors preserved. Source UserLite identity and RoleService are doubles; no full upstream-server parity. docs/superpowers/compatibility/drive-files/README.md",
       "evidenceRevision": "34a415ea2ad63d86efd8d650117ef71c1e8c63fc"
+    },
+    "responsibility:drive-media-http:12": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/image-ingest.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/image-ingest.test.ts",
+        "docs/superpowers/compatibility/image-ingest/source-probe.mjs",
+        "docs/superpowers/compatibility/image-ingest/observations.json"
+      ],
+      "note": "#280: Image-only generateAlts byte branch verified; video thumbnails remain #281. Storage/API/remote fetch remain #284/#287. 28 fixed inputs / 56 alternate cases / 9 direct conversions / 3 pipeline failures. docs/superpowers/compatibility/image-ingest/README.md",
+      "evidenceRevision": "02506f132a6bffefa150f352281772944cdbb73f"
+    },
+    "responsibility:drive-media-http:14": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/image-ingest.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/image-ingest.test.ts",
+        "docs/superpowers/compatibility/image-ingest/source-probe.mjs",
+        "docs/superpowers/compatibility/image-ingest/observations.json"
+      ],
+      "note": "#280: WebP/AVIF/PNG byte conversion: source defaults, no enlargement, autorotation, metadata removal and first-frame conversion; actual output readback. 28 fixed inputs / 56 alternate cases / 9 direct conversions / 3 pipeline failures. docs/superpowers/compatibility/image-ingest/README.md",
+      "evidenceRevision": "02506f132a6bffefa150f352281772944cdbb73f"
+    },
+    "responsibility:drive-media-http:15": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/image-ingest.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/image-ingest.test.ts",
+        "docs/superpowers/compatibility/image-ingest/source-probe.mjs",
+        "docs/superpowers/compatibility/image-ingest/observations.json"
+      ],
+      "note": "#280: Image byte MIME/ext/size/MD5 and case-sensitive txt/csv/json fallback verified. Video/audio track reclassification is outside image-only #280. 28 fixed inputs / 56 alternate cases / 9 direct conversions / 3 pipeline failures. docs/superpowers/compatibility/image-ingest/README.md",
+      "evidenceRevision": "02506f132a6bffefa150f352281772944cdbb73f"
+    },
+    "responsibility:drive-media-http:16": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/image-ingest.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/image-ingest.test.ts",
+        "docs/superpowers/compatibility/image-ingest/source-probe.mjs",
+        "docs/superpowers/compatibility/image-ingest/observations.json"
+      ],
+      "note": "#280: Image dimensions/orientation, non-px SVG and >16383 retention plus octet-stream fallback verified; header-readable/pixel-corrupt MIME remains unchanged. 28 fixed inputs / 56 alternate cases / 9 direct conversions / 3 pipeline failures. docs/superpowers/compatibility/image-ingest/README.md",
+      "evidenceRevision": "02506f132a6bffefa150f352281772944cdbb73f"
+    },
+    "responsibility:drive-media-http:17": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/image-ingest.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/image-ingest.test.ts",
+        "docs/superpowers/compatibility/image-ingest/source-probe.mjs",
+        "docs/superpowers/compatibility/image-ingest/observations.json"
+      ],
+      "note": "#280: Source 5x5 blurhash from first frame, no rotation, alpha, inside64x64; original MIME inclusion/exclusion preserved. 28 fixed inputs / 56 alternate cases / 9 direct conversions / 3 pipeline failures. docs/superpowers/compatibility/image-ingest/README.md",
+      "evidenceRevision": "02506f132a6bffefa150f352281772944cdbb73f"
+    },
+    "responsibility:misc-utils:38": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/image-ingest.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/image-ingest.test.ts",
+        "docs/superpowers/compatibility/image-ingest/source-probe.mjs",
+        "docs/superpowers/compatibility/image-ingest/observations.json"
+      ],
+      "note": "#280: Only sharp-convertible-image-with-bmp is consumed here and verified. Other consumed MIME categories belong to #279/#510; unused dictionaries, langmap and emoji-regex are not mechanically copied. 28 fixed inputs / 56 alternate cases / 9 direct conversions / 3 pipeline failures. docs/superpowers/compatibility/image-ingest/README.md",
+      "evidenceRevision": "02506f132a6bffefa150f352281772944cdbb73f"
+    },
+    "service:FileInfoService": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/image-ingest.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/image-ingest.test.ts",
+        "docs/superpowers/compatibility/image-ingest/source-probe.mjs",
+        "docs/superpowers/compatibility/image-ingest/observations.json"
+      ],
+      "note": "#280: Finite image-byte inspection verified; video-track/frames and sensitivity inference remain #281/#282, no full-service parity claim. 28 fixed inputs / 56 alternate cases / 9 direct conversions / 3 pipeline failures. docs/superpowers/compatibility/image-ingest/README.md",
+      "evidenceRevision": "02506f132a6bffefa150f352281772944cdbb73f"
+    },
+    "service:ImageProcessingService": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/image-ingest.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/image-ingest.test.ts",
+        "docs/superpowers/compatibility/image-ingest/source-probe.mjs",
+        "docs/superpowers/compatibility/image-ingest/observations.json"
+      ],
+      "note": "#280: Image byte conversion verified against source methods with actual WebP/AVIF/PNG output readback. Sharp/path/stream overloads are represented by the byte boundary, not copied API wrappers. 28 fixed inputs / 56 alternate cases / 9 direct conversions / 3 pipeline failures. docs/superpowers/compatibility/image-ingest/README.md",
+      "evidenceRevision": "02506f132a6bffefa150f352281772944cdbb73f"
     }
   }
 }

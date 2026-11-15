@@ -1,0 +1,128 @@
+{
+  "runtimeRevision": "02506f132a6bffefa150f352281772944cdbb73f",
+  "baseRevision": "b13645043cfbf422faefa6a2703540d1c8414269",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "nodeVersion": "v26.4.0",
+  "inputs": {
+    "packages/backend-next/src/modules/drive/image-ingest.ts": "0c9dc6527e440fbfa42f1ee59aefc121d709f2f368dfccf6483c770d2b6b5b48",
+    "packages/backend-next/src/types/probe-image-size.d.ts": "847df063b14698ba3e2b05f7cfc08c89ac128b4fbd0eb8462803605dc9b437f5",
+    "packages/backend-next/test/unit/drive/image-ingest.test.ts": "cfed02db66b403f0e4062a560b9b0394cf2b1bb1eae899a34b21363c8aef7a58",
+    "packages/backend-next/package.json": "bee5e28cfc34c0d05812f4479113888384f32e7001a3c367b3d796bc75f573eb",
+    "pnpm-lock.yaml": "3d1d9010b8de870fd03b165f2d926f51021d175cd290d61b2df03cf30cf3da9c",
+    "docs/superpowers/compatibility/image-ingest/fixtures.json": "ef71c8772d55376db35c024392bb796e9395ece9d04163b09cf5ef8be12ba386",
+    "docs/superpowers/compatibility/image-ingest/observations.json": "425e41fe9c7c730d3b8343067ff706ab8cb673495712f861e85ada734e677d59",
+    "docs/superpowers/compatibility/image-ingest/source-probe.mjs": "8ce192c093c77100d552ea6b4b9431036e4f5233b5559c80027b92c3d58cacda",
+    "docs/superpowers/compatibility/image-ingest/dependency-predecessor.json": "31d30a5fc7b3e63087ad39e046af488bdef12c76128ec7bb6a99854e9a8e6236",
+    "scripts/image-ingest-contract.test.mjs": "52c1cc0775a4bbb4a71cd17394900a1743d5eee3bad3fc804b9f595313edbaca",
+    "scripts/image-ingest-dependency-evidence.mjs": "ec5002226f71fd01b7808ec4f1ada710560fd905fe819273b566bdeb7ce76d72",
+    "scripts/url-preview-evidence.mjs": "34b6ba95e25886f9c5f44dec43d082beb12ac9334ed28a611dfb66f2e13da615",
+    "scripts/url-preview-contract.test.mjs": "11411f093110856f50230ecb4b883cc3d676517520ed1e1befe23775aa81a633"
+  },
+  "inputsAfter": {
+    "packages/backend-next/src/modules/drive/image-ingest.ts": "0c9dc6527e440fbfa42f1ee59aefc121d709f2f368dfccf6483c770d2b6b5b48",
+    "packages/backend-next/src/types/probe-image-size.d.ts": "847df063b14698ba3e2b05f7cfc08c89ac128b4fbd0eb8462803605dc9b437f5",
+    "packages/backend-next/test/unit/drive/image-ingest.test.ts": "cfed02db66b403f0e4062a560b9b0394cf2b1bb1eae899a34b21363c8aef7a58",
+    "packages/backend-next/package.json": "bee5e28cfc34c0d05812f4479113888384f32e7001a3c367b3d796bc75f573eb",
+    "pnpm-lock.yaml": "3d1d9010b8de870fd03b165f2d926f51021d175cd290d61b2df03cf30cf3da9c",
+    "docs/superpowers/compatibility/image-ingest/fixtures.json": "ef71c8772d55376db35c024392bb796e9395ece9d04163b09cf5ef8be12ba386",
+    "docs/superpowers/compatibility/image-ingest/observations.json": "425e41fe9c7c730d3b8343067ff706ab8cb673495712f861e85ada734e677d59",
+    "docs/superpowers/compatibility/image-ingest/source-probe.mjs": "8ce192c093c77100d552ea6b4b9431036e4f5233b5559c80027b92c3d58cacda",
+    "docs/superpowers/compatibility/image-ingest/dependency-predecessor.json": "31d30a5fc7b3e63087ad39e046af488bdef12c76128ec7bb6a99854e9a8e6236",
+    "scripts/image-ingest-contract.test.mjs": "52c1cc0775a4bbb4a71cd17394900a1743d5eee3bad3fc804b9f595313edbaca",
+    "scripts/image-ingest-dependency-evidence.mjs": "ec5002226f71fd01b7808ec4f1ada710560fd905fe819273b566bdeb7ce76d72",
+    "scripts/url-preview-evidence.mjs": "34b6ba95e25886f9c5f44dec43d082beb12ac9334ed28a611dfb66f2e13da615",
+    "scripts/url-preview-contract.test.mjs": "11411f093110856f50230ecb4b883cc3d676517520ed1e1befe23775aa81a633"
+  },
+  "noInputDrift": true,
+  "runs": [
+    {
+      "name": "build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "build"
+      ],
+      "cwd": ".",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-280-final-build.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
+      "elapsedSeconds": 0.77
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "typecheck"
+      ],
+      "cwd": ".",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-280-final-typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+      "elapsedSeconds": 1.24
+    },
+    {
+      "name": "sync",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-upstream",
+        "sync:check"
+      ],
+      "cwd": ".",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-280-final-sync.log",
+      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd",
+      "elapsedSeconds": 0.91
+    },
+    {
+      "name": "source",
+      "command": [
+        "node",
+        "docs/superpowers/compatibility/image-ingest/source-probe.mjs",
+        "--check"
+      ],
+      "cwd": ".",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-280-final-source.log",
+      "logSha256": "912e88676955c61fbf70b81fba248827b8a42e551b5529a523a00178a73ee80d",
+      "elapsedSeconds": 0.71
+    },
+    {
+      "name": "unit",
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--config",
+        "vitest.config.ts"
+      ],
+      "cwd": "packages/backend-next",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-280-final-unit.log",
+      "logSha256": "4a05686d3237d228fe7faa363494fa8313b0ef5a5daa3a509d08a95b8b8d8821",
+      "elapsedSeconds": 40.06
+    },
+    {
+      "name": "contracts",
+      "command": [
+        "node",
+        "--test",
+        "scripts/image-ingest-contract.test.mjs",
+        "scripts/url-preview-contract.test.mjs"
+      ],
+      "cwd": ".",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-280-final-contracts.log",
+      "logSha256": "ed1b61d5404cb5fad019a595600fa04e9dba3d62138a237b89301c024b4b86e4",
+      "elapsedSeconds": 0.9
+    }
+  ],
+  "limits": [
+    "Source methods use real codecs and temporary source-input files, not full upstream HTTP/server/DB.",
+    "No storage/API/remote fetch/video frame/inference in this capability.",
+    "Whole-root local run was interrupted by coordinator instruction; CI owns whole-root gate."
+  ]
+}
