@@ -1,0 +1,157 @@
+{
+  "baseRevision": "1adb04b0cf4d6efdb2537891df4ca2261359f1f6",
+  "runtimeRevision": "34a415ea2ad63d86efd8d650117ef71c1e8c63fc",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "inputs": {
+    "docs/superpowers/compatibility/drive-files/README.md": "8b6dcf5b5acf215a2d6a57b4c3b13f045cb4a41c77f4b32a58ac60aad269dbc8",
+    "docs/superpowers/compatibility/drive-files/corpus.json": "0f61411b5f8a135ce867e2e49c8ca079b9ca63d937a51b28aa8243ae63853fb7",
+    "docs/superpowers/compatibility/drive-files/observations.json": "fe483a1b11e7256a6bce3d2d76baf3397aa45478621d81dbf2a64b66d76d7185",
+    "docs/superpowers/compatibility/drive-files/predecessor.json": "13e86db07c278fbdfbf9a52786e77e4ef3b042f7903b8bbc02c79b804f77b650",
+    "docs/superpowers/compatibility/drive-files/source-probe.mjs": "e05c3e6cb2f9215b81747b35356e7464f786c503cba67ca20adcbf2bd84eaaba",
+    "docs/superpowers/plans/2026-11-15-drive-file-read.md": "7a71acc60b6dc57a92765f62aa3442329dbe3b9099fa8b8d8ce20b9bdc1912ba",
+    "docs/superpowers/specs/2026-11-15-drive-file-read-design.md": "a98516e875de78326cf0072039ea182f6e8af3ce2851b8d50485cbe659e523aa",
+    "packages/backend-next/src/composition/drive-files-http.ts": "248befd37051c05b9223adcf093f062695472a82f252bb269e475bdc0c356543",
+    "packages/backend-next/src/composition/http-app.ts": "9c91ace85f18c9541646fe0c71f5c960c3adf72d6f46201667c23c070b370fa3",
+    "packages/backend-next/src/http/drive-files-api.ts": "8557a8d8ad3f7c1eb51e38e75b53d95ec95bff76f0a20432c5496380b9c3ebac",
+    "packages/backend-next/src/modules/drive/file-view.ts": "900f58f3afdb1fdd153286c55ef2cbc1a58b0f2045b7825e41d102177bfcdc7e",
+    "packages/backend-next/src/modules/drive/files-public.ts": "64b6aa63ed58b916e11f86f66fca6ba4ee681b6e9b46c316325690209ab71636",
+    "packages/backend-next/src/modules/drive/files.ts": "c24ce1f9a29c739c23d2e4952b31eacc1838d8bb9021de064f4bba1822c7aa41",
+    "packages/backend-next/src/platform/database/drive-files.ts": "9c1d311731e0b964eaab8415f71547ba7fbad25e36703fdb466325c0e12f7605",
+    "packages/backend-next/src/platform/database/note-files.ts": "02d092dca0b1785d63b890186da2c56296157c487a053ee446430f938b9c7ecc",
+    "packages/backend-next/test/integration/drive-files-source-http.test.ts": "0db066b2051c0a21615edfae1a7c3ee5d40645ed6f8a473b3109369fd0243a4a",
+    "packages/backend-next/test/integration/drive-files.test.ts": "052dbcf4ade5492e4c7809df727cd640a629932e0544e2cf979cbb3c5684d294",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "59265c3e0ad11d010536fec438524dccb1b068b240bb93d2198fa80b957f8dac",
+    "packages/backend-next/test/unit/drive/file-read.test.ts": "58e0effbbd7c2fa047435cce2b2ac1876cbcb54b958acdf20bbca2459df2ee9d",
+    "packages/backend-next/test/unit/drive/files-source.test.ts": "ba9a9a6d5d09ced4816a1744b56ccf7bc6647e9f3c7259a3cca41d3e35a5c196",
+    "packages/backend-next/test/unit/drive/files.test.ts": "ef9b100efeb8ff075187b61a67bfa9aeb5f8c202c8c78f144451b15675e45967",
+    "scripts/drive-files-contract.test.mjs": "4df7fa69b9cc94f583625982d88be2424698a474c2b6e5f79dfcda6b5976c145",
+    "scripts/drive-files-evidence.mjs": "b9a0dcff2a754ab5ddc2afe99a2da1532dad5ba98721d5df08e2c3dd43483cf1",
+    "scripts/drive-folder-pubsub-contract.test.mjs": "d692337266b204f93fc1fe177a56068354ba14d5abc2b08963f420129cba0c94",
+    "scripts/drive-folder-pubsub-evidence.mjs": "0ff96a706e62edf66c2f1cec5beced4a3e576ab07eff893f70276db05f2999f5",
+    "scripts/drive-folders-contract.test.mjs": "8a0b43ca5d2d23ed35b311254ac410122e61950caa7f9f9950b7eba4e0c02057",
+    "scripts/drive-folders-evidence.mjs": "8a42cc489c13f32ffdefa7c2d2f314ff1e1917b88fe0d3e6d24ea5aad6ac0771",
+    "scripts/url-preview-contract.test.mjs": "fd1893a654751396f01dff551328d1aba9b66ec8eccdb9f7aa131e1f021f01e4",
+    "scripts/url-preview-evidence.mjs": "cab5160f4bcb0e10409d0368b978e26d411b79f5f9ab1fa38751a7ab1be0b807"
+  },
+  "inputsAfter": {
+    "docs/superpowers/compatibility/drive-files/README.md": "8b6dcf5b5acf215a2d6a57b4c3b13f045cb4a41c77f4b32a58ac60aad269dbc8",
+    "docs/superpowers/compatibility/drive-files/corpus.json": "0f61411b5f8a135ce867e2e49c8ca079b9ca63d937a51b28aa8243ae63853fb7",
+    "docs/superpowers/compatibility/drive-files/observations.json": "fe483a1b11e7256a6bce3d2d76baf3397aa45478621d81dbf2a64b66d76d7185",
+    "docs/superpowers/compatibility/drive-files/predecessor.json": "13e86db07c278fbdfbf9a52786e77e4ef3b042f7903b8bbc02c79b804f77b650",
+    "docs/superpowers/compatibility/drive-files/source-probe.mjs": "e05c3e6cb2f9215b81747b35356e7464f786c503cba67ca20adcbf2bd84eaaba",
+    "docs/superpowers/plans/2026-11-15-drive-file-read.md": "7a71acc60b6dc57a92765f62aa3442329dbe3b9099fa8b8d8ce20b9bdc1912ba",
+    "docs/superpowers/specs/2026-11-15-drive-file-read-design.md": "a98516e875de78326cf0072039ea182f6e8af3ce2851b8d50485cbe659e523aa",
+    "packages/backend-next/src/composition/drive-files-http.ts": "248befd37051c05b9223adcf093f062695472a82f252bb269e475bdc0c356543",
+    "packages/backend-next/src/composition/http-app.ts": "9c91ace85f18c9541646fe0c71f5c960c3adf72d6f46201667c23c070b370fa3",
+    "packages/backend-next/src/http/drive-files-api.ts": "8557a8d8ad3f7c1eb51e38e75b53d95ec95bff76f0a20432c5496380b9c3ebac",
+    "packages/backend-next/src/modules/drive/file-view.ts": "900f58f3afdb1fdd153286c55ef2cbc1a58b0f2045b7825e41d102177bfcdc7e",
+    "packages/backend-next/src/modules/drive/files-public.ts": "64b6aa63ed58b916e11f86f66fca6ba4ee681b6e9b46c316325690209ab71636",
+    "packages/backend-next/src/modules/drive/files.ts": "c24ce1f9a29c739c23d2e4952b31eacc1838d8bb9021de064f4bba1822c7aa41",
+    "packages/backend-next/src/platform/database/drive-files.ts": "9c1d311731e0b964eaab8415f71547ba7fbad25e36703fdb466325c0e12f7605",
+    "packages/backend-next/src/platform/database/note-files.ts": "02d092dca0b1785d63b890186da2c56296157c487a053ee446430f938b9c7ecc",
+    "packages/backend-next/test/integration/drive-files-source-http.test.ts": "0db066b2051c0a21615edfae1a7c3ee5d40645ed6f8a473b3109369fd0243a4a",
+    "packages/backend-next/test/integration/drive-files.test.ts": "052dbcf4ade5492e4c7809df727cd640a629932e0544e2cf979cbb3c5684d294",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "59265c3e0ad11d010536fec438524dccb1b068b240bb93d2198fa80b957f8dac",
+    "packages/backend-next/test/unit/drive/file-read.test.ts": "58e0effbbd7c2fa047435cce2b2ac1876cbcb54b958acdf20bbca2459df2ee9d",
+    "packages/backend-next/test/unit/drive/files-source.test.ts": "ba9a9a6d5d09ced4816a1744b56ccf7bc6647e9f3c7259a3cca41d3e35a5c196",
+    "packages/backend-next/test/unit/drive/files.test.ts": "ef9b100efeb8ff075187b61a67bfa9aeb5f8c202c8c78f144451b15675e45967",
+    "scripts/drive-files-contract.test.mjs": "4df7fa69b9cc94f583625982d88be2424698a474c2b6e5f79dfcda6b5976c145",
+    "scripts/drive-files-evidence.mjs": "b9a0dcff2a754ab5ddc2afe99a2da1532dad5ba98721d5df08e2c3dd43483cf1",
+    "scripts/drive-folder-pubsub-contract.test.mjs": "d692337266b204f93fc1fe177a56068354ba14d5abc2b08963f420129cba0c94",
+    "scripts/drive-folder-pubsub-evidence.mjs": "0ff96a706e62edf66c2f1cec5beced4a3e576ab07eff893f70276db05f2999f5",
+    "scripts/drive-folders-contract.test.mjs": "8a0b43ca5d2d23ed35b311254ac410122e61950caa7f9f9950b7eba4e0c02057",
+    "scripts/drive-folders-evidence.mjs": "8a42cc489c13f32ffdefa7c2d2f314ff1e1917b88fe0d3e6d24ea5aad6ac0771",
+    "scripts/url-preview-contract.test.mjs": "fd1893a654751396f01dff551328d1aba9b66ec8eccdb9f7aa131e1f021f01e4",
+    "scripts/url-preview-evidence.mjs": "cab5160f4bcb0e10409d0368b978e26d411b79f5f9ab1fa38751a7ab1be0b807"
+  },
+  "noInputDrift": true,
+  "runs": [
+    {
+      "name": "build",
+      "log": "/tmp/tiramiss-279-build-final.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
+      "exitCode": 0
+    },
+    {
+      "name": "typecheck",
+      "log": "/tmp/tiramiss-279-typecheck-final.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+      "exitCode": 0
+    },
+    {
+      "name": "near-unit",
+      "log": "/tmp/tiramiss-279-near-final.log",
+      "logSha256": "3f6f83104449570ef07127d5f3e846b8af47437004b3bffc801fcaba9b838ff4",
+      "exitCode": 0,
+      "passed": 178,
+      "files": 5
+    },
+    {
+      "name": "http-pg",
+      "log": "/tmp/tiramiss-279-http-final.log",
+      "logSha256": "c694abd10c1d02400d02e7f18d7205f2fa394eddfea81e2a13ed023d1284a1f7",
+      "exitCode": 0,
+      "passed": 108,
+      "files": 3
+    },
+    {
+      "name": "full-unit",
+      "log": "/tmp/tiramiss-279-unit-final.log",
+      "logSha256": "bc8a9487164cc33f487e5d5fdd662b4439ac2c428dacfb5418aff602a53e4574",
+      "exitCode": 0,
+      "passed": 4522,
+      "files": 121
+    },
+    {
+      "name": "source",
+      "log": "/tmp/tiramiss-279-source-final.log",
+      "logSha256": "f59aae2e35abd1ac0d2909320f4fd98c81733b6988d69abe198bf925947dc787",
+      "exitCode": 0,
+      "passed": 135
+    },
+    {
+      "name": "own-contract",
+      "log": "/tmp/tiramiss-279-own-contract-final.log",
+      "logSha256": "71b99724848f0596143c2a5b242716d03594657d3b53d92c5e969786f2fc5bee",
+      "exitCode": 0,
+      "passed": 6
+    },
+    {
+      "name": "history-near",
+      "log": "/tmp/tiramiss-279-history-near.log",
+      "logSha256": "704dbca562682141dcd11e68bba429867066d3f282e100d7e6ac220679a34406",
+      "exitCode": 0,
+      "passed": 86
+    },
+    {
+      "name": "history-images",
+      "log": "/tmp/tiramiss-279-history-images.log",
+      "logSha256": "eb4a169b6a328244b6e519ae6d3abe775779275b4dfef3c389c4c2cb68803b94",
+      "exitCode": 0,
+      "passed": 29
+    },
+    {
+      "name": "inventory",
+      "log": "/tmp/tiramiss-279-inventory.log",
+      "logSha256": "e78e3d2cd6697d42aeb13b482b07c86add0f8c2af477f45b25c72f902162f8c3",
+      "exitCode": 0
+    },
+    {
+      "name": "sync",
+      "log": "/tmp/tiramiss-279-sync.log",
+      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd",
+      "exitCode": 0
+    },
+    {
+      "name": "shipping",
+      "log": "/tmp/tiramiss-279-shipping-metadata.log",
+      "logSha256": "a3d48c453b8c095951e97519ab7227d765855d3b2b2ba32b3a7acb8aff79f2a4",
+      "exitCode": 0
+    }
+  ],
+  "limits": [
+    "Fixed-source methods with declared repository/Role/UserLite doubles; not a full upstream server.",
+    "Full root contract suite pending separately; no completed claim in this receipt.",
+    "Inventory metadata pins runtimeRevision and marks broader packer responsibilities partial."
+  ]
+}

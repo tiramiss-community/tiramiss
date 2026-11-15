@@ -1,0 +1,203 @@
+{
+  "basisHeads": {
+    "driveFiles": "886cd622749a6baf125eb290f7dd16798acaa4b1",
+    "metaCache": "1e233948c7f220a72a13c96d8ad4720db19b98c0"
+  },
+  "testedSourceTree": "839ca7ba6ab34c7614d4d34b21d21d7768fafeb3",
+  "automaticMergeTree": "b70f4468156674ecde9d1a5a5149fe24b7006a4c",
+  "state": "uncommitted temporary integration; no published feature branch updates",
+  "inputs": {
+    "docs/superpowers/compatibility/joint-drive-meta/README.md": "f134580ea3ebce7d2cc59cbb08855808116ea2bbcbda8d78b18ed41e7fc03ac9",
+    "docs/superpowers/compatibility/joint-drive-meta/predecessor.json": "bd589b0d2efadff3851f04e8b3e3f63c824d7babb130fb20e338f26ac991c663",
+    "docs/superpowers/compatibility/meta-cache/ci-fixtures-current-evidence.json": "ac32204307bfd5431742de9cb58b2c08c765e5ea4ebb49323602d655e9d3b7e8",
+    "docs/superpowers/compatibility/meta-cache/ci-fixtures-predecessor.json": "9b98a89c4db145c0d9b0e1a8c0943bc21b547531f27dac6094b9201f6f9db6ed",
+    "packages/backend-next/test/integration/actor-alias-key.test.ts": "21e4c43d8e475f896e7d470c73adab6818aacd6afd7c031ac0e2cee788aa6887",
+    "packages/backend-next/test/integration/deliver-queue.test.ts": "aec7ff85ffa2aa739a299ed27f8350e263db13f20ecd02681af9e3059518f230",
+    "packages/backend-next/test/integration/instance-metadata.test.ts": "99485f6bd247dff037872800341157307a5c909b50014a85642f964fcaefe13f",
+    "packages/backend-next/test/integration/remote-user.test.ts": "e6f1e3fabc937cd2bff5d74a98042049b9661af7362f62b59c20f27b5f833126",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "6003b7a0b078d710003db9c52a6acd4c685b5e70692dae682c40b8f78e6ca7b9",
+    "packages/backend-next/test/unit/worker-startup.test.ts": "63007c0632740d8877f2bdc3f969e7e994f1c0be2c0a8086140dc5b13a3c3d9f",
+    "scripts/drive-files-contract.test.mjs": "4a255aa089ff31cc1cc3ba1ba65b2d6b1c2611c0dc501d9c592b63201c9198b4",
+    "scripts/drive-files-evidence.mjs": "52ebe5cda17ef0df4c3853e4a197c41182e2d4f2cc2945a71731eeec0c8545a6",
+    "scripts/drive-folder-pubsub-contract.test.mjs": "5fce25bd6866028c3d911044b824e636640060f49f58c5b87befd2a232d4498a",
+    "scripts/drive-folder-pubsub-evidence.mjs": "ae4a2cbcb587fef8eb688a5c4f98cf21fedd56a944b3dc8acf122c58f088f5a1",
+    "scripts/drive-folders-contract.test.mjs": "cf266d8e8fdcd528653972c494e7470b4d535aee259da7bc012f15996306a6a2",
+    "scripts/drive-folders-evidence.mjs": "712c8d8a0647070c0053ff4b14b32ab8ade72f034fc751492ccc21dc4f1b2a60",
+    "scripts/joint-drive-meta-contract.test.mjs": "78aa90c00725211a113686213ddf0a44793e10e1bf5e9232d6769a0c86b1016b",
+    "scripts/joint-drive-meta-evidence.mjs": "c62e11d049cbcc30a021c5d70734547fed3d576da29126681be09a1830ed4502",
+    "scripts/local-emoji-object-evidence-contract.test.mjs": "bd1e2a081d3950a102312a79ec324f157a0b3703eaec43c953af1e9c6f37d264",
+    "scripts/meta-cache-ci-fixtures-contract.test.mjs": "bfa65c6cc2783a94ade813b665ee0df4839fdb733c40a947ad9737d6ee50edda",
+    "scripts/meta-cache-ci-fixtures-evidence.mjs": "0700c81d0b6308863a123976083d4fabde273df8f43bd33dcc29fc0c2dc1ac49",
+    "scripts/meta-cache-contract.test.mjs": "0c08966319342f6599561494416fb35746e63547b17b6e37b73171abafbb2762",
+    "scripts/meta-cache-evidence.mjs": "64ada6b83066651786494cab100ab79bd649afc33d32539c6de5d61c8ef36f03",
+    "scripts/url-preview-contract.test.mjs": "6a649fd43cbba5d18949a246fc76c0cb65a5d839a47ad9f74239e2d38d32f674",
+    "scripts/url-preview-evidence.mjs": "75d19fec90244defe301166576630de9e4f5c569e5241c03d79e3febef455fb5"
+  },
+  "inputsAfter": {
+    "docs/superpowers/compatibility/joint-drive-meta/README.md": "f134580ea3ebce7d2cc59cbb08855808116ea2bbcbda8d78b18ed41e7fc03ac9",
+    "docs/superpowers/compatibility/joint-drive-meta/predecessor.json": "bd589b0d2efadff3851f04e8b3e3f63c824d7babb130fb20e338f26ac991c663",
+    "docs/superpowers/compatibility/meta-cache/ci-fixtures-current-evidence.json": "ac32204307bfd5431742de9cb58b2c08c765e5ea4ebb49323602d655e9d3b7e8",
+    "docs/superpowers/compatibility/meta-cache/ci-fixtures-predecessor.json": "9b98a89c4db145c0d9b0e1a8c0943bc21b547531f27dac6094b9201f6f9db6ed",
+    "packages/backend-next/test/integration/actor-alias-key.test.ts": "21e4c43d8e475f896e7d470c73adab6818aacd6afd7c031ac0e2cee788aa6887",
+    "packages/backend-next/test/integration/deliver-queue.test.ts": "aec7ff85ffa2aa739a299ed27f8350e263db13f20ecd02681af9e3059518f230",
+    "packages/backend-next/test/integration/instance-metadata.test.ts": "99485f6bd247dff037872800341157307a5c909b50014a85642f964fcaefe13f",
+    "packages/backend-next/test/integration/remote-user.test.ts": "e6f1e3fabc937cd2bff5d74a98042049b9661af7362f62b59c20f27b5f833126",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "6003b7a0b078d710003db9c52a6acd4c685b5e70692dae682c40b8f78e6ca7b9",
+    "packages/backend-next/test/unit/worker-startup.test.ts": "63007c0632740d8877f2bdc3f969e7e994f1c0be2c0a8086140dc5b13a3c3d9f",
+    "scripts/drive-files-contract.test.mjs": "4a255aa089ff31cc1cc3ba1ba65b2d6b1c2611c0dc501d9c592b63201c9198b4",
+    "scripts/drive-files-evidence.mjs": "52ebe5cda17ef0df4c3853e4a197c41182e2d4f2cc2945a71731eeec0c8545a6",
+    "scripts/drive-folder-pubsub-contract.test.mjs": "5fce25bd6866028c3d911044b824e636640060f49f58c5b87befd2a232d4498a",
+    "scripts/drive-folder-pubsub-evidence.mjs": "ae4a2cbcb587fef8eb688a5c4f98cf21fedd56a944b3dc8acf122c58f088f5a1",
+    "scripts/drive-folders-contract.test.mjs": "cf266d8e8fdcd528653972c494e7470b4d535aee259da7bc012f15996306a6a2",
+    "scripts/drive-folders-evidence.mjs": "712c8d8a0647070c0053ff4b14b32ab8ade72f034fc751492ccc21dc4f1b2a60",
+    "scripts/joint-drive-meta-contract.test.mjs": "78aa90c00725211a113686213ddf0a44793e10e1bf5e9232d6769a0c86b1016b",
+    "scripts/joint-drive-meta-evidence.mjs": "c62e11d049cbcc30a021c5d70734547fed3d576da29126681be09a1830ed4502",
+    "scripts/local-emoji-object-evidence-contract.test.mjs": "bd1e2a081d3950a102312a79ec324f157a0b3703eaec43c953af1e9c6f37d264",
+    "scripts/meta-cache-ci-fixtures-contract.test.mjs": "bfa65c6cc2783a94ade813b665ee0df4839fdb733c40a947ad9737d6ee50edda",
+    "scripts/meta-cache-ci-fixtures-evidence.mjs": "0700c81d0b6308863a123976083d4fabde273df8f43bd33dcc29fc0c2dc1ac49",
+    "scripts/meta-cache-contract.test.mjs": "0c08966319342f6599561494416fb35746e63547b17b6e37b73171abafbb2762",
+    "scripts/meta-cache-evidence.mjs": "64ada6b83066651786494cab100ab79bd649afc33d32539c6de5d61c8ef36f03",
+    "scripts/url-preview-contract.test.mjs": "6a649fd43cbba5d18949a246fc76c0cb65a5d839a47ad9f74239e2d38d32f674",
+    "scripts/url-preview-evidence.mjs": "75d19fec90244defe301166576630de9e4f5c569e5241c03d79e3febef455fb5"
+  },
+  "noInputDrift": true,
+  "runs": [
+    {
+      "name": "build",
+      "log": "/tmp/tiramiss-279-317-finalheads-build.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0
+    },
+    {
+      "name": "typecheck",
+      "log": "/tmp/tiramiss-279-317-finalheads-typecheck.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0
+    },
+    {
+      "name": "focused-unit",
+      "log": "/tmp/tiramiss-279-317-finalheads-units.log",
+      "logSha256": "c514782bfda5ccc4030628397a87a9a639fc544a74b9d933b183c2117b0d2162",
+      "exitCode": 0,
+      "passed": 194,
+      "files": 8
+    },
+    {
+      "name": "drive-source",
+      "log": "/tmp/tiramiss-279-317-finalheads-drive-source.log",
+      "logSha256": "f59aae2e35abd1ac0d2909320f4fd98c81733b6988d69abe198bf925947dc787",
+      "exitCode": 0,
+      "passed": 135
+    },
+    {
+      "name": "meta-source",
+      "log": "/tmp/tiramiss-279-317-finalheads-meta-source.log",
+      "logSha256": "85f9ebe1b63df0cc6784b9dbbc9857dd85b869200c8aa01293ad56f2ee4b0bc9",
+      "exitCode": 0,
+      "passed": 9
+    },
+    {
+      "name": "owned-joint-contracts",
+      "log": "/tmp/tiramiss-279-317-finalheads-contracts.log",
+      "logSha256": "51a47d96c3416349acab42ee9508c71e25eff81eafa7c46722cb2a1a7f2049d4",
+      "exitCode": 0,
+      "passed": 148
+    },
+    {
+      "name": "strict-leaves",
+      "log": "/tmp/tiramiss-279-317-finalheads-leaves.log",
+      "logSha256": "7db11d36e1995bc317fab51114c903b1a8c4563a996ac86d5e5a27003e17c26e",
+      "exitCode": 0,
+      "passed": 4
+    },
+    {
+      "name": "reader-graph",
+      "log": "/tmp/tiramiss-279-317-finalheads-graph.log",
+      "logSha256": "9271e843cdfe878570e509b6b7fe47157ad9b9b3c26c0d1224ceca4386da09cf",
+      "exitCode": 0,
+      "passed": 12
+    },
+    {
+      "name": "lint",
+      "log": "/tmp/tiramiss-279-317-finalheads-lint.log",
+      "logSha256": "d81a46584e4faba937cfa80c43897dd7c10101e41907037199e04cbe1992b86d",
+      "exitCode": 0,
+      "passed": 35
+    },
+    {
+      "name": "spdx",
+      "log": "/tmp/tiramiss-279-317-finalheads-spdx.log",
+      "logSha256": "27b6d849016e08e8b66b66fcf6031d150e2a171b24dfd6f8c8bbdd3a3d4fc701",
+      "exitCode": 0
+    }
+  ],
+  "preservedFeatureArtifacts": [
+    {
+      "revision": "886cd622749a6baf125eb290f7dd16798acaa4b1",
+      "path": "docs/superpowers/compatibility/drive-files/predecessor.json",
+      "sha256": "13e86db07c278fbdfbf9a52786e77e4ef3b042f7903b8bbc02c79b804f77b650",
+      "unchanged": true
+    },
+    {
+      "revision": "886cd622749a6baf125eb290f7dd16798acaa4b1",
+      "path": "docs/superpowers/compatibility/drive-files/run-results.json",
+      "sha256": "2f545ae5b6a0a457c86b560c19df9106a82b5114eced2c0f543202190a94c514",
+      "unchanged": true
+    },
+    {
+      "revision": "886cd622749a6baf125eb290f7dd16798acaa4b1",
+      "path": "docs/superpowers/compatibility/drive-files/cycle-guard-results.json",
+      "sha256": "2923d14cd67cd7de53863bc15689a8d92a1cd0501242d64cd1906da517b0c327",
+      "unchanged": true
+    },
+    {
+      "revision": "1e233948c7f220a72a13c96d8ad4720db19b98c0",
+      "path": "docs/superpowers/compatibility/meta-cache/current-evidence.json",
+      "sha256": "e8cc0d48df6e8106a613ee696c93f4ccddc618f0dfcdd01d19101b8566a46781",
+      "unchanged": true
+    },
+    {
+      "revision": "1e233948c7f220a72a13c96d8ad4720db19b98c0",
+      "path": "docs/superpowers/compatibility/meta-cache/predecessor.json",
+      "sha256": "a42857e97f501a7c489b748e4157b36e2af53803f3f82b1b1ae2eb0e58989d0b",
+      "unchanged": true
+    },
+    {
+      "revision": "1e233948c7f220a72a13c96d8ad4720db19b98c0",
+      "path": "docs/superpowers/compatibility/meta-cache/ci-fixtures-current-evidence.json",
+      "sha256": "ac32204307bfd5431742de9cb58b2c08c765e5ea4ebb49323602d655e9d3b7e8",
+      "unchanged": true
+    },
+    {
+      "revision": "1e233948c7f220a72a13c96d8ad4720db19b98c0",
+      "path": "docs/superpowers/compatibility/meta-cache/ci-fixtures-predecessor.json",
+      "sha256": "9b98a89c4db145c0d9b0e1a8c0943bc21b547531f27dac6094b9201f6f9db6ed",
+      "unchanged": true
+    }
+  ],
+  "refreshDelta": "Only fixed-head/seal update and the final Meta strict-five CI successor URL hook/import allowlist; no product edit or extra architecture.",
+  "limits": [
+    "Exactly fixed886/1e233 heads. Any later head requires delta review and renewed bounded input checks.",
+    "No combined HTTP/PostgreSQL/Redis, process, full unit or complete legacy-root graph run.",
+    "Original individual feature and CI receipts remain byte-identical; their successful counts are not renewed as combined measurements.",
+    "This record pins a temporary source tree and focused observations, not an external merge or final integration approval."
+  ],
+  "productMeasuredSourceTree": "75306a1fe2abd1b4c27eabd747e1f47555f40f14",
+  "documentationOnlyCorrection": {
+    "path": "docs/superpowers/compatibility/joint-drive-meta/README.md",
+    "line": 11,
+    "change": "183 unit/138 contract -> 194 unit/148 contract",
+    "beforeSourceTree": "75306a1fe2abd1b4c27eabd747e1f47555f40f14",
+    "afterSourceTree": "839ca7ba6ab34c7614d4d34b21d21d7768fafeb3",
+    "beforeSha256": "7e2611302ea7d5b88fb9ac44a3550cd53727ac84c7a80222fa6f08ce9aa7fb0a",
+    "afterSha256": "f134580ea3ebce7d2cc59cbb08855808116ea2bbcbda8d78b18ed41e7fc03ac9",
+    "sourceDiffOnlyContainsThisDocumentationFile": true,
+    "existingRunsNotRepeatedOrRenewed": true,
+    "additionalContractCheck": {
+      "log": "/tmp/tiramiss-279-317-readme-correction-contract.log",
+      "logSha256": "58b139104c70f0f2a7847672bf0c1c49faffb82b77ed84c4abe04a0044eb36f5",
+      "exitCode": 0,
+      "passed": 6
+    }
+  }
+}

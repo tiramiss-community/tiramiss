@@ -4,6 +4,7 @@
  */
 import assert from 'node:assert/strict';
 import { ciFixtureFiles, readPreMetaCacheCiFixtures } from './meta-cache-ci-fixtures-evidence.mjs';
+import { driveFilePredecessorFiles, readPreDriveFiles } from './drive-files-evidence.mjs';
 import { metaCachePredecessorFiles, readPreMetaCache, createValidatedMetaPredecessorReader } from './meta-cache-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -115,6 +116,7 @@ export function readPreUrlPreview(path, encoding, readFile = read, optional = op
  if (ciFixtureFiles.includes(path)) {
   return readPreMetaCacheCiFixtures(path, encoding, readFile, optional);
  }
+ if (driveFilePredecessorFiles.includes(path) && !successorFiles.includes(path)) return readPreDriveFiles(path, encoding, readFile);
  if (metaCachePredecessorFiles.includes(path) && !successorFiles.includes(path) && !hasInternalEventPredecessor(path) && !pubsubSuccessorFiles.includes(path)) {
   return readPreMetaCache(path, encoding, readFile, optional);
  }

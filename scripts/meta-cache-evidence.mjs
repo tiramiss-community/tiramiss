@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { readForMetaCacheEvidence } from './joint-drive-meta-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 const root = new URL('../', import.meta.url);
@@ -76,7 +77,7 @@ export function validateMetaCacheSuccessor(value, readFile = read, optional = op
  assert.equal(value.postingComplete, false);
  assert.equal(value.upstreamFullServerMeasured, false);
  for (const [path, digest] of Object.entries(value.inputs)) {
-  assert.equal(sha(readFile(path)), digest, `Meta cache measured current input drift: ${path}`);
+  assert.equal(sha(readForMetaCacheEvidence(path, readFile)), digest, `Meta cache measured current input drift: ${path}`);
  }
  const previous = sealed(readFile(directory + 'predecessor.json'), predecessorSeal, 'predecessor');
  assert.equal(previous.commit, value.baseRevision);
@@ -107,7 +108,7 @@ export function createValidatedMetaPredecessorReader(readFile = read, optional =
  const previous = validateMetaCacheSuccessor(undefined, readFile, optional);
  const current = sealed(readFile(directory + 'current-evidence.json'), seal, 'receipt');
  return (path, encoding) => {
-  const actual = readFile(path);
+  const actual = readForMetaCacheEvidence(path, readFile);
   if (Object.hasOwn(current.inputs, path)) {
    assert.equal(sha(actual), current.inputs[path], `Meta cache measured current input drift: ${path}`);
   }

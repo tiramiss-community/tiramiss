@@ -1,0 +1,158 @@
+{
+  "baseRevision": "b171c85a81886d35204185704832657c968f6100",
+  "runtimeRevision": "ef72630156ec2c9bc04aab3f48e4ad31f07622c0",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "review": {
+    "pullRequest": 596,
+    "commentId": 4577086929
+  },
+  "inputs": {
+    "docs/superpowers/compatibility/drive-files/README.md": "53c4b91fbf95cbfdb007a31f4686bd49012f01728a78b78c75a55345b35f2db7",
+    "docs/superpowers/compatibility/drive-files/corpus.json": "0f61411b5f8a135ce867e2e49c8ca079b9ca63d937a51b28aa8243ae63853fb7",
+    "docs/superpowers/compatibility/drive-files/cycle-guard-followup.md": "a951f8f470616fc4836f71edb9c57fc83ef86862b13aaf1edee0ee6fa231cac5",
+    "docs/superpowers/compatibility/drive-files/observations.json": "fe483a1b11e7256a6bce3d2d76baf3397aa45478621d81dbf2a64b66d76d7185",
+    "docs/superpowers/compatibility/drive-files/predecessor.json": "13e86db07c278fbdfbf9a52786e77e4ef3b042f7903b8bbc02c79b804f77b650",
+    "docs/superpowers/compatibility/drive-files/source-probe.mjs": "e05c3e6cb2f9215b81747b35356e7464f786c503cba67ca20adcbf2bd84eaaba",
+    "docs/superpowers/plans/2026-11-15-drive-file-read.md": "7a71acc60b6dc57a92765f62aa3442329dbe3b9099fa8b8d8ce20b9bdc1912ba",
+    "docs/superpowers/specs/2026-11-15-drive-file-read-design.md": "a98516e875de78326cf0072039ea182f6e8af3ce2851b8d50485cbe659e523aa",
+    "packages/backend-next/src/composition/drive-files-http.ts": "248befd37051c05b9223adcf093f062695472a82f252bb269e475bdc0c356543",
+    "packages/backend-next/src/composition/http-app.ts": "9c91ace85f18c9541646fe0c71f5c960c3adf72d6f46201667c23c070b370fa3",
+    "packages/backend-next/src/http/drive-files-api.ts": "8557a8d8ad3f7c1eb51e38e75b53d95ec95bff76f0a20432c5496380b9c3ebac",
+    "packages/backend-next/src/modules/drive/file-view.ts": "900f58f3afdb1fdd153286c55ef2cbc1a58b0f2045b7825e41d102177bfcdc7e",
+    "packages/backend-next/src/modules/drive/files-public.ts": "64b6aa63ed58b916e11f86f66fca6ba4ee681b6e9b46c316325690209ab71636",
+    "packages/backend-next/src/modules/drive/files.ts": "c24ce1f9a29c739c23d2e4952b31eacc1838d8bb9021de064f4bba1822c7aa41",
+    "packages/backend-next/src/platform/database/drive-files.ts": "7c5c54a77ae04fcf15f633f7ecc0eb6c8f662dd11cba09f614abfe19f592f03a",
+    "packages/backend-next/src/platform/database/note-files.ts": "02d092dca0b1785d63b890186da2c56296157c487a053ee446430f938b9c7ecc",
+    "packages/backend-next/test/integration/drive-files-source-http.test.ts": "0db066b2051c0a21615edfae1a7c3ee5d40645ed6f8a473b3109369fd0243a4a",
+    "packages/backend-next/test/integration/drive-files.test.ts": "c26cfa7efd77a647a76159eee939282c8552b1827ed21181687d302c8e96a6db",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "59265c3e0ad11d010536fec438524dccb1b068b240bb93d2198fa80b957f8dac",
+    "packages/backend-next/test/unit/drive/file-preload.test.ts": "f2a78ff78d61867c44842a107f5bbd09ee0634d06c94514034909c969179d769",
+    "packages/backend-next/test/unit/drive/file-read.test.ts": "58e0effbbd7c2fa047435cce2b2ac1876cbcb54b958acdf20bbca2459df2ee9d",
+    "packages/backend-next/test/unit/drive/files-source.test.ts": "ba9a9a6d5d09ced4816a1744b56ccf7bc6647e9f3c7259a3cca41d3e35a5c196",
+    "packages/backend-next/test/unit/drive/files.test.ts": "ef9b100efeb8ff075187b61a67bfa9aeb5f8c202c8c78f144451b15675e45967",
+    "scripts/drive-files-contract.test.mjs": "4df7fa69b9cc94f583625982d88be2424698a474c2b6e5f79dfcda6b5976c145",
+    "scripts/drive-files-evidence.mjs": "b9a0dcff2a754ab5ddc2afe99a2da1532dad5ba98721d5df08e2c3dd43483cf1",
+    "scripts/drive-folder-pubsub-contract.test.mjs": "d692337266b204f93fc1fe177a56068354ba14d5abc2b08963f420129cba0c94",
+    "scripts/drive-folder-pubsub-evidence.mjs": "0ff96a706e62edf66c2f1cec5beced4a3e576ab07eff893f70276db05f2999f5",
+    "scripts/drive-folders-contract.test.mjs": "8a0b43ca5d2d23ed35b311254ac410122e61950caa7f9f9950b7eba4e0c02057",
+    "scripts/drive-folders-evidence.mjs": "8a42cc489c13f32ffdefa7c2d2f314ff1e1917b88fe0d3e6d24ea5aad6ac0771",
+    "scripts/url-preview-contract.test.mjs": "fd1893a654751396f01dff551328d1aba9b66ec8eccdb9f7aa131e1f021f01e4",
+    "scripts/url-preview-evidence.mjs": "cab5160f4bcb0e10409d0368b978e26d411b79f5f9ab1fa38751a7ab1be0b807"
+  },
+  "inputsAfter": {
+    "docs/superpowers/compatibility/drive-files/README.md": "53c4b91fbf95cbfdb007a31f4686bd49012f01728a78b78c75a55345b35f2db7",
+    "docs/superpowers/compatibility/drive-files/corpus.json": "0f61411b5f8a135ce867e2e49c8ca079b9ca63d937a51b28aa8243ae63853fb7",
+    "docs/superpowers/compatibility/drive-files/cycle-guard-followup.md": "a951f8f470616fc4836f71edb9c57fc83ef86862b13aaf1edee0ee6fa231cac5",
+    "docs/superpowers/compatibility/drive-files/observations.json": "fe483a1b11e7256a6bce3d2d76baf3397aa45478621d81dbf2a64b66d76d7185",
+    "docs/superpowers/compatibility/drive-files/predecessor.json": "13e86db07c278fbdfbf9a52786e77e4ef3b042f7903b8bbc02c79b804f77b650",
+    "docs/superpowers/compatibility/drive-files/source-probe.mjs": "e05c3e6cb2f9215b81747b35356e7464f786c503cba67ca20adcbf2bd84eaaba",
+    "docs/superpowers/plans/2026-11-15-drive-file-read.md": "7a71acc60b6dc57a92765f62aa3442329dbe3b9099fa8b8d8ce20b9bdc1912ba",
+    "docs/superpowers/specs/2026-11-15-drive-file-read-design.md": "a98516e875de78326cf0072039ea182f6e8af3ce2851b8d50485cbe659e523aa",
+    "packages/backend-next/src/composition/drive-files-http.ts": "248befd37051c05b9223adcf093f062695472a82f252bb269e475bdc0c356543",
+    "packages/backend-next/src/composition/http-app.ts": "9c91ace85f18c9541646fe0c71f5c960c3adf72d6f46201667c23c070b370fa3",
+    "packages/backend-next/src/http/drive-files-api.ts": "8557a8d8ad3f7c1eb51e38e75b53d95ec95bff76f0a20432c5496380b9c3ebac",
+    "packages/backend-next/src/modules/drive/file-view.ts": "900f58f3afdb1fdd153286c55ef2cbc1a58b0f2045b7825e41d102177bfcdc7e",
+    "packages/backend-next/src/modules/drive/files-public.ts": "64b6aa63ed58b916e11f86f66fca6ba4ee681b6e9b46c316325690209ab71636",
+    "packages/backend-next/src/modules/drive/files.ts": "c24ce1f9a29c739c23d2e4952b31eacc1838d8bb9021de064f4bba1822c7aa41",
+    "packages/backend-next/src/platform/database/drive-files.ts": "7c5c54a77ae04fcf15f633f7ecc0eb6c8f662dd11cba09f614abfe19f592f03a",
+    "packages/backend-next/src/platform/database/note-files.ts": "02d092dca0b1785d63b890186da2c56296157c487a053ee446430f938b9c7ecc",
+    "packages/backend-next/test/integration/drive-files-source-http.test.ts": "0db066b2051c0a21615edfae1a7c3ee5d40645ed6f8a473b3109369fd0243a4a",
+    "packages/backend-next/test/integration/drive-files.test.ts": "c26cfa7efd77a647a76159eee939282c8552b1827ed21181687d302c8e96a6db",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "59265c3e0ad11d010536fec438524dccb1b068b240bb93d2198fa80b957f8dac",
+    "packages/backend-next/test/unit/drive/file-preload.test.ts": "f2a78ff78d61867c44842a107f5bbd09ee0634d06c94514034909c969179d769",
+    "packages/backend-next/test/unit/drive/file-read.test.ts": "58e0effbbd7c2fa047435cce2b2ac1876cbcb54b958acdf20bbca2459df2ee9d",
+    "packages/backend-next/test/unit/drive/files-source.test.ts": "ba9a9a6d5d09ced4816a1744b56ccf7bc6647e9f3c7259a3cca41d3e35a5c196",
+    "packages/backend-next/test/unit/drive/files.test.ts": "ef9b100efeb8ff075187b61a67bfa9aeb5f8c202c8c78f144451b15675e45967",
+    "scripts/drive-files-contract.test.mjs": "4df7fa69b9cc94f583625982d88be2424698a474c2b6e5f79dfcda6b5976c145",
+    "scripts/drive-files-evidence.mjs": "b9a0dcff2a754ab5ddc2afe99a2da1532dad5ba98721d5df08e2c3dd43483cf1",
+    "scripts/drive-folder-pubsub-contract.test.mjs": "d692337266b204f93fc1fe177a56068354ba14d5abc2b08963f420129cba0c94",
+    "scripts/drive-folder-pubsub-evidence.mjs": "0ff96a706e62edf66c2f1cec5beced4a3e576ab07eff893f70276db05f2999f5",
+    "scripts/drive-folders-contract.test.mjs": "8a0b43ca5d2d23ed35b311254ac410122e61950caa7f9f9950b7eba4e0c02057",
+    "scripts/drive-folders-evidence.mjs": "8a42cc489c13f32ffdefa7c2d2f314ff1e1917b88fe0d3e6d24ea5aad6ac0771",
+    "scripts/url-preview-contract.test.mjs": "fd1893a654751396f01dff551328d1aba9b66ec8eccdb9f7aa131e1f021f01e4",
+    "scripts/url-preview-evidence.mjs": "cab5160f4bcb0e10409d0368b978e26d411b79f5f9ab1fa38751a7ab1be0b807"
+  },
+  "noInputDrift": true,
+  "runs": [
+    {
+      "name": "build",
+      "log": "/tmp/tiramiss-279-cycle-build-final.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
+      "exitCode": 0
+    },
+    {
+      "name": "typecheck",
+      "log": "/tmp/tiramiss-279-cycle-typecheck-final.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+      "exitCode": 0
+    },
+    {
+      "name": "unit",
+      "log": "/tmp/tiramiss-279-cycle-unit-final.log",
+      "logSha256": "c7ee3e8d88d61ae1880d20dcbfa105525ccefd9803fbf95686dfbe33316da2d0",
+      "exitCode": 0,
+      "passed": 4524,
+      "files": 122
+    },
+    {
+      "name": "near-unit",
+      "log": "/tmp/tiramiss-279-cycle-near-final.log",
+      "logSha256": "c79c2ca9b85beae7c77201e00cf4256570d3766e448d9bfd4d1a7ab75735103c",
+      "exitCode": 0,
+      "passed": 180,
+      "files": 6
+    },
+    {
+      "name": "http-pg",
+      "log": "/tmp/tiramiss-279-cycle-http-final.log",
+      "logSha256": "0450b30b65e868746f969182cc0a3108fda068c9bbf7399059417bcc538820ca",
+      "exitCode": 0,
+      "passed": 109,
+      "files": 3
+    },
+    {
+      "name": "source",
+      "log": "/tmp/tiramiss-279-cycle-source-final.log",
+      "logSha256": "f59aae2e35abd1ac0d2909320f4fd98c81733b6988d69abe198bf925947dc787",
+      "exitCode": 0,
+      "passed": 135
+    },
+    {
+      "name": "contract",
+      "log": "/tmp/tiramiss-279-cycle-contract-final.log",
+      "logSha256": "b4923da46323f7825c4161dc5027e5fa7ee5b5aaef1927178ed93e652be92a71",
+      "exitCode": 0,
+      "passed": 6
+    },
+    {
+      "name": "shipping",
+      "log": "/tmp/tiramiss-279-cycle-shipping-final.log",
+      "logSha256": "7355f6829ea557d28f3938cc28998eace9b78adac3dff5f9c21856e925c83502",
+      "exitCode": 0
+    }
+  ],
+  "previousEvidence": {
+    "path": "docs/superpowers/compatibility/drive-files/run-results.json",
+    "sha256": "2f545ae5b6a0a457c86b560c19df9106a82b5114eced2c0f543202190a94c514",
+    "runtimeRevision": "34a415ea2ad63d86efd8d650117ef71c1e8c63fc"
+  },
+  "counterexamples": [
+    {
+      "name": "unit-same-path-cycle",
+      "log": "/tmp/tiramiss-279-cycle-red.log",
+      "logSha256": "e70441a87d6bdd37f012508525fa8e5bdf6c81a3298448ff7fa2b0470d85ddbc",
+      "exitCode": 1
+    },
+    {
+      "name": "http-mixed-parent-snapshot",
+      "log": "/tmp/tiramiss-279-cycle-http-red.log",
+      "logSha256": "d4f3885db89ad5b1a32473db31a0603ffea35d2dc1bd7ef343de3e703ce62540",
+      "exitCode": 1
+    }
+  ],
+  "limits": [
+    "Controlled internal500 replaces stack-overflow500 for cyclic captured material; concurrent mixed-snapshot behavior is not claimed identical to upstream repeated live ancestor reads.",
+    "Original runtime34a receipt and three-file historical projection stay unchanged; no historical measurement renewed.",
+    "No new broad legacy root suite run: final updated CI must prove that graph after earlier diagnostic matcher repair."
+  ]
+}

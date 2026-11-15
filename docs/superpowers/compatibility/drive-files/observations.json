@@ -1,0 +1,2966 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "manifest": [
+    {
+      "path": "packages/backend/src/misc/id/aidx.ts",
+      "sha256": "613a33f3247823856f861961a05961a8c50151133669d56b8b6441dd0d5e86f9",
+      "gitBlob": "006673a6d013e372226efcfbddf858316ed1115d"
+    },
+    {
+      "path": "packages/backend/src/core/IdService.ts",
+      "sha256": "237d9410066fb6acfe872e7e617e6f4ce7b0093989e88baad1c29066b69f4f65",
+      "gitBlob": "223a8de678382fda4ec01e771525e120b41f95ae"
+    },
+    {
+      "path": "packages/backend/src/core/entities/DriveFileEntityService.ts",
+      "sha256": "a48a07792b784a3ded4364594d346e2cd2d9a7e0a506b56b082325a8f41ca738",
+      "gitBlob": "1865d494c4ba39d84daa62501469895e7224a3fb"
+    },
+    {
+      "path": "packages/backend/src/core/entities/DriveFolderEntityService.ts",
+      "sha256": "5f32456cb7108b4d8b37eea9efc806efdd44c1f8b2aeb74aebafe81a427bb116",
+      "gitBlob": "326421e14917d06808894611c4c4c1821397299d"
+    },
+    {
+      "path": "packages/backend/src/core/VideoProcessingService.ts",
+      "sha256": "f04fdc97cfb4bcaaf8f45a64325cb14158cb3c501cbf72001b2dc95d878ffe0c",
+      "gitBlob": "747fe4fc7ee7edcbd909e3300f09844667c06100"
+    },
+    {
+      "path": "packages/backend/src/misc/prelude/url.ts",
+      "sha256": "23157930e879afe70598a81c2e2671e2ceaee6a71023afc2f7b4a15fecb58e9d",
+      "gitBlob": "270a0750754eac81c651b7090bd0a7c2d7b3c798"
+    },
+    {
+      "path": "packages/backend/src/misc/is-mime-image.ts",
+      "sha256": "eae78d9877ddfde78107e4d3833bc58238fff57c09e72beb277c3a5cabc06432",
+      "gitBlob": "8ffbc9923066ac0e83acc671559b9504fb75797e"
+    },
+    {
+      "path": "packages/backend/src/misc/unique-by-key.ts",
+      "sha256": "938749827d8abdff565ed27d32af3cdb6034b844f8ccdbd28be3b322bd7605ab",
+      "gitBlob": "4308e29d2177f30e53729d66d2499663b0963a30"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/drive/files/show.ts",
+      "sha256": "be17bed65d34ca34e94382e108f5d984526743b19b7c5728666e5f9866a046e4",
+      "gitBlob": "9a2e2c73e8bc7e4d78ecff5ba03a11697881ae09"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/drive/files/find.ts",
+      "sha256": "b20723642184146811b89ae4ddb0604f4df032dc82f586f5e1a40ad09094b178",
+      "gitBlob": "502d42f9e0b800d268e7f9cb32525eab731f1932"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/drive/files/find-by-hash.ts",
+      "sha256": "1246bca2e6b864b8794d785fd0e0453c40a74d9240bddb0633b91dd627c21a23",
+      "gitBlob": "090cff6875ffe5d2dc7e300a29bb260577f7e7e3"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/drive/files/check-existence.ts",
+      "sha256": "37bffba79e3e965fee54419dcb5ca42a2340f85a4086a9e9a3cd7077e343d22d",
+      "gitBlob": "cc7920505f97c4f303ba24d44d6adadea86511b8"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/admin/drive/show-file.ts",
+      "sha256": "54a2ca02b33eefead7d750069ebe450c6c461fddcb289190810caadb75723912",
+      "gitBlob": "e7a70d0762061b80183817d84c3cf8f4fec4c139"
+    }
+  ],
+  "corpusSha256": "0f61411b5f8a135ce867e2e49c8ca079b9ca63d937a51b28aa8243ae63853fb7",
+  "doubles": [
+    "Repository exact filters and failures; actual PostgreSQL exercised separately.",
+    "RoleService: only actor/owner named mod is a moderator. API common authorization exercised in real HTTP separately.",
+    "UserEntityService.pack returns fixture {id,username}; real UserLite preloading verified separately.",
+    "ID parser, file pack/nullable, folder pack, MIME predicate, URL query and video thumbnail methods execute pinned source."
+  ],
+  "cases": [
+    {
+      "id": "show-alice-alice",
+      "expected": {
+        "result": {
+          "id": "at3hjq76file0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "name": "test.png",
+          "type": "image/png",
+          "md5": "00000000000000000000000000000000",
+          "size": 10,
+          "isSensitive": false,
+          "blurhash": null,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "url": "https://storage/original",
+          "thumbnailUrl": "https://storage/public",
+          "comment": null,
+          "folderId": "at3hjq78child001",
+          "folder": {
+            "id": "at3hjq78child001",
+            "createdAt": "2026-11-03T00:00:01.124Z",
+            "name": "child",
+            "parentId": "at3hjq76root0001",
+            "foldersCount": 0,
+            "filesCount": 1,
+            "parent": {
+              "id": "at3hjq76root0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "root",
+              "parentId": null,
+              "foldersCount": 1,
+              "filesCount": 0
+            }
+          },
+          "userId": "alice",
+          "user": {
+            "id": "alice",
+            "username": "alice"
+          }
+        }
+      }
+    },
+    {
+      "id": "show-alice-mod",
+      "expected": {
+        "error": {
+          "code": "ACCESS_DENIED",
+          "id": "25b73c73-68b1-41d0-bad1-381cfdf6579f"
+        }
+      }
+    },
+    {
+      "id": "show-alice-bob",
+      "expected": {
+        "error": {
+          "code": "ACCESS_DENIED",
+          "id": "25b73c73-68b1-41d0-bad1-381cfdf6579f"
+        }
+      }
+    },
+    {
+      "id": "show-alice-None",
+      "expected": {
+        "error": {
+          "code": "ACCESS_DENIED",
+          "id": "25b73c73-68b1-41d0-bad1-381cfdf6579f"
+        }
+      }
+    },
+    {
+      "id": "show-bob-alice",
+      "expected": {
+        "error": {
+          "code": "ACCESS_DENIED",
+          "id": "25b73c73-68b1-41d0-bad1-381cfdf6579f"
+        }
+      }
+    },
+    {
+      "id": "show-bob-mod",
+      "expected": {
+        "error": {
+          "code": "ACCESS_DENIED",
+          "id": "25b73c73-68b1-41d0-bad1-381cfdf6579f"
+        }
+      }
+    },
+    {
+      "id": "show-bob-bob",
+      "expected": {
+        "result": {
+          "id": "at3hjq77other001",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "name": "other",
+          "type": "image/png",
+          "md5": "11111111111111111111111111111111",
+          "size": 10,
+          "isSensitive": false,
+          "blurhash": null,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "url": "https://storage/bob",
+          "thumbnailUrl": "https://storage/bob",
+          "comment": null,
+          "folderId": null,
+          "folder": null,
+          "userId": "bob",
+          "user": {
+            "id": "bob",
+            "username": "bob"
+          }
+        }
+      }
+    },
+    {
+      "id": "show-bob-None",
+      "expected": {
+        "error": {
+          "code": "ACCESS_DENIED",
+          "id": "25b73c73-68b1-41d0-bad1-381cfdf6579f"
+        }
+      }
+    },
+    {
+      "id": "show-mod-alice",
+      "expected": {
+        "result": {
+          "id": "at3hjq76file0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "name": "test.png",
+          "type": "image/png",
+          "md5": "00000000000000000000000000000000",
+          "size": 10,
+          "isSensitive": false,
+          "blurhash": null,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "url": "https://storage/original",
+          "thumbnailUrl": "https://storage/public",
+          "comment": null,
+          "folderId": "at3hjq78child001",
+          "folder": {
+            "id": "at3hjq78child001",
+            "createdAt": "2026-11-03T00:00:01.124Z",
+            "name": "child",
+            "parentId": "at3hjq76root0001",
+            "foldersCount": 0,
+            "filesCount": 1,
+            "parent": {
+              "id": "at3hjq76root0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "root",
+              "parentId": null,
+              "foldersCount": 1,
+              "filesCount": 0
+            }
+          },
+          "userId": "alice",
+          "user": {
+            "id": "alice",
+            "username": "alice"
+          }
+        }
+      }
+    },
+    {
+      "id": "show-mod-mod",
+      "expected": {
+        "result": {
+          "id": "at3hjq77mod00001",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "name": "test.png",
+          "type": "image/png",
+          "md5": "00000000000000000000000000000000",
+          "size": 10,
+          "isSensitive": false,
+          "blurhash": null,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "url": "https://storage/mod",
+          "thumbnailUrl": "https://storage/mod",
+          "comment": null,
+          "folderId": null,
+          "folder": null,
+          "userId": "mod",
+          "user": {
+            "id": "mod",
+            "username": "mod"
+          }
+        }
+      }
+    },
+    {
+      "id": "show-mod-bob",
+      "expected": {
+        "result": {
+          "id": "at3hjq77other001",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "name": "other",
+          "type": "image/png",
+          "md5": "11111111111111111111111111111111",
+          "size": 10,
+          "isSensitive": false,
+          "blurhash": null,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "url": "https://storage/bob",
+          "thumbnailUrl": "https://storage/bob",
+          "comment": null,
+          "folderId": null,
+          "folder": null,
+          "userId": "bob",
+          "user": {
+            "id": "bob",
+            "username": "bob"
+          }
+        }
+      }
+    },
+    {
+      "id": "show-mod-None",
+      "expected": {
+        "result": {
+          "id": "at3hjq77empty001",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "name": "test.png",
+          "type": "image/png",
+          "md5": "00000000000000000000000000000000",
+          "size": 10,
+          "isSensitive": false,
+          "blurhash": null,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "url": "https://storage/unowned",
+          "thumbnailUrl": "https://storage/unowned",
+          "comment": null,
+          "folderId": null,
+          "folder": null,
+          "userId": null,
+          "user": null
+        }
+      }
+    },
+    {
+      "id": "show-url-original",
+      "expected": {
+        "result": {
+          "id": "at3hjq76file0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "name": "test.png",
+          "type": "image/png",
+          "md5": "00000000000000000000000000000000",
+          "size": 10,
+          "isSensitive": false,
+          "blurhash": null,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "url": "https://storage/original",
+          "thumbnailUrl": "https://storage/public",
+          "comment": null,
+          "folderId": "at3hjq78child001",
+          "folder": {
+            "id": "at3hjq78child001",
+            "createdAt": "2026-11-03T00:00:01.124Z",
+            "name": "child",
+            "parentId": "at3hjq76root0001",
+            "foldersCount": 0,
+            "filesCount": 1,
+            "parent": {
+              "id": "at3hjq76root0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "root",
+              "parentId": null,
+              "foldersCount": 1,
+              "filesCount": 0
+            }
+          },
+          "userId": "alice",
+          "user": {
+            "id": "alice",
+            "username": "alice"
+          }
+        }
+      }
+    },
+    {
+      "id": "show-url-public",
+      "expected": {
+        "result": {
+          "id": "at3hjq76file0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "name": "test.png",
+          "type": "image/png",
+          "md5": "00000000000000000000000000000000",
+          "size": 10,
+          "isSensitive": false,
+          "blurhash": null,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "url": "https://storage/original",
+          "thumbnailUrl": "https://storage/public",
+          "comment": null,
+          "folderId": "at3hjq78child001",
+          "folder": {
+            "id": "at3hjq78child001",
+            "createdAt": "2026-11-03T00:00:01.124Z",
+            "name": "child",
+            "parentId": "at3hjq76root0001",
+            "foldersCount": 0,
+            "filesCount": 1,
+            "parent": {
+              "id": "at3hjq76root0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "root",
+              "parentId": null,
+              "foldersCount": 1,
+              "filesCount": 0
+            }
+          },
+          "userId": "alice",
+          "user": {
+            "id": "alice",
+            "username": "alice"
+          }
+        }
+      }
+    },
+    {
+      "id": "show-url-missing",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_FILE",
+          "id": "067bc436-2718-4795-b0fb-ecbe43949e31"
+        }
+      }
+    },
+    {
+      "id": "show-missing",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_FILE",
+          "id": "067bc436-2718-4795-b0fb-ecbe43949e31"
+        }
+      }
+    },
+    {
+      "id": "show-both-id-wins",
+      "expected": {
+        "result": {
+          "id": "at3hjq76file0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "name": "test.png",
+          "type": "image/png",
+          "md5": "00000000000000000000000000000000",
+          "size": 10,
+          "isSensitive": false,
+          "blurhash": null,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "url": "https://storage/original",
+          "thumbnailUrl": "https://storage/public",
+          "comment": null,
+          "folderId": "at3hjq78child001",
+          "folder": {
+            "id": "at3hjq78child001",
+            "createdAt": "2026-11-03T00:00:01.124Z",
+            "name": "child",
+            "parentId": "at3hjq76root0001",
+            "foldersCount": 0,
+            "filesCount": 1,
+            "parent": {
+              "id": "at3hjq76root0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "root",
+              "parentId": null,
+              "foldersCount": 1,
+              "filesCount": 0
+            }
+          },
+          "userId": "alice",
+          "user": {
+            "id": "alice",
+            "username": "alice"
+          }
+        }
+      }
+    },
+    {
+      "id": "show-bad-id-valid-url",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_FILE",
+          "id": "067bc436-2718-4795-b0fb-ecbe43949e31"
+        }
+      }
+    },
+    {
+      "id": "show-invalid",
+      "expected": {
+        "error": {
+          "code": "INVALID_PARAM"
+        }
+      }
+    },
+    {
+      "id": "show-read-failure",
+      "expected": {
+        "error": {
+          "message": "database unavailable"
+        }
+      }
+    },
+    {
+      "id": "adminShow-alice-alice",
+      "expected": {
+        "result": {
+          "id": "at3hjq76file0001",
+          "userId": "alice",
+          "userHost": null,
+          "isLink": false,
+          "maybePorn": false,
+          "maybeSensitive": false,
+          "isSensitive": false,
+          "folderId": "at3hjq78child001",
+          "src": null,
+          "uri": null,
+          "webpublicAccessKey": "web0",
+          "thumbnailAccessKey": "thumb0",
+          "accessKey": "original0",
+          "webpublicType": "image/webp",
+          "webpublicUrl": "https://storage/public",
+          "thumbnailUrl": null,
+          "url": "https://storage/original",
+          "storedInternal": true,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "blurhash": null,
+          "comment": null,
+          "size": 10,
+          "type": "image/png",
+          "name": "test.png",
+          "md5": "00000000000000000000000000000000",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "requestIp": null,
+          "requestHeaders": null
+        }
+      }
+    },
+    {
+      "id": "adminShow-alice-mod",
+      "expected": {
+        "result": {
+          "id": "at3hjq77mod00001",
+          "userId": "mod",
+          "userHost": null,
+          "isLink": false,
+          "maybePorn": false,
+          "maybeSensitive": false,
+          "isSensitive": false,
+          "folderId": null,
+          "src": null,
+          "uri": null,
+          "webpublicAccessKey": "web1",
+          "thumbnailAccessKey": "thumb1",
+          "accessKey": "original1",
+          "webpublicType": "image/webp",
+          "webpublicUrl": null,
+          "thumbnailUrl": null,
+          "url": "https://storage/mod",
+          "storedInternal": true,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "blurhash": null,
+          "comment": null,
+          "size": 10,
+          "type": "image/png",
+          "name": "test.png",
+          "md5": "00000000000000000000000000000000",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "requestIp": null,
+          "requestHeaders": null
+        }
+      }
+    },
+    {
+      "id": "adminShow-alice-bob",
+      "expected": {
+        "result": {
+          "id": "at3hjq77other001",
+          "userId": "bob",
+          "userHost": null,
+          "isLink": false,
+          "maybePorn": false,
+          "maybeSensitive": false,
+          "isSensitive": false,
+          "folderId": null,
+          "src": null,
+          "uri": null,
+          "webpublicAccessKey": "web2",
+          "thumbnailAccessKey": "thumb2",
+          "accessKey": "original2",
+          "webpublicType": "image/webp",
+          "webpublicUrl": null,
+          "thumbnailUrl": null,
+          "url": "https://storage/bob",
+          "storedInternal": true,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "blurhash": null,
+          "comment": null,
+          "size": 10,
+          "type": "image/png",
+          "name": "other",
+          "md5": "11111111111111111111111111111111",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "requestIp": null,
+          "requestHeaders": null
+        }
+      }
+    },
+    {
+      "id": "adminShow-alice-None",
+      "expected": {
+        "result": {
+          "id": "at3hjq77empty001",
+          "userId": null,
+          "userHost": null,
+          "isLink": false,
+          "maybePorn": false,
+          "maybeSensitive": false,
+          "isSensitive": false,
+          "folderId": null,
+          "src": null,
+          "uri": null,
+          "webpublicAccessKey": "web3",
+          "thumbnailAccessKey": "thumb3",
+          "accessKey": "original3",
+          "webpublicType": "image/webp",
+          "webpublicUrl": null,
+          "thumbnailUrl": null,
+          "url": "https://storage/unowned",
+          "storedInternal": true,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "blurhash": null,
+          "comment": null,
+          "size": 10,
+          "type": "image/png",
+          "name": "test.png",
+          "md5": "00000000000000000000000000000000",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "requestIp": null,
+          "requestHeaders": null
+        }
+      }
+    },
+    {
+      "id": "adminShow-bob-alice",
+      "expected": {
+        "result": {
+          "id": "at3hjq76file0001",
+          "userId": "alice",
+          "userHost": null,
+          "isLink": false,
+          "maybePorn": false,
+          "maybeSensitive": false,
+          "isSensitive": false,
+          "folderId": "at3hjq78child001",
+          "src": null,
+          "uri": null,
+          "webpublicAccessKey": "web0",
+          "thumbnailAccessKey": "thumb0",
+          "accessKey": "original0",
+          "webpublicType": "image/webp",
+          "webpublicUrl": "https://storage/public",
+          "thumbnailUrl": null,
+          "url": "https://storage/original",
+          "storedInternal": true,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "blurhash": null,
+          "comment": null,
+          "size": 10,
+          "type": "image/png",
+          "name": "test.png",
+          "md5": "00000000000000000000000000000000",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "requestIp": null,
+          "requestHeaders": null
+        }
+      }
+    },
+    {
+      "id": "adminShow-bob-mod",
+      "expected": {
+        "result": {
+          "id": "at3hjq77mod00001",
+          "userId": "mod",
+          "userHost": null,
+          "isLink": false,
+          "maybePorn": false,
+          "maybeSensitive": false,
+          "isSensitive": false,
+          "folderId": null,
+          "src": null,
+          "uri": null,
+          "webpublicAccessKey": "web1",
+          "thumbnailAccessKey": "thumb1",
+          "accessKey": "original1",
+          "webpublicType": "image/webp",
+          "webpublicUrl": null,
+          "thumbnailUrl": null,
+          "url": "https://storage/mod",
+          "storedInternal": true,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "blurhash": null,
+          "comment": null,
+          "size": 10,
+          "type": "image/png",
+          "name": "test.png",
+          "md5": "00000000000000000000000000000000",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "requestIp": null,
+          "requestHeaders": null
+        }
+      }
+    },
+    {
+      "id": "adminShow-bob-bob",
+      "expected": {
+        "result": {
+          "id": "at3hjq77other001",
+          "userId": "bob",
+          "userHost": null,
+          "isLink": false,
+          "maybePorn": false,
+          "maybeSensitive": false,
+          "isSensitive": false,
+          "folderId": null,
+          "src": null,
+          "uri": null,
+          "webpublicAccessKey": "web2",
+          "thumbnailAccessKey": "thumb2",
+          "accessKey": "original2",
+          "webpublicType": "image/webp",
+          "webpublicUrl": null,
+          "thumbnailUrl": null,
+          "url": "https://storage/bob",
+          "storedInternal": true,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "blurhash": null,
+          "comment": null,
+          "size": 10,
+          "type": "image/png",
+          "name": "other",
+          "md5": "11111111111111111111111111111111",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "requestIp": null,
+          "requestHeaders": null
+        }
+      }
+    },
+    {
+      "id": "adminShow-bob-None",
+      "expected": {
+        "result": {
+          "id": "at3hjq77empty001",
+          "userId": null,
+          "userHost": null,
+          "isLink": false,
+          "maybePorn": false,
+          "maybeSensitive": false,
+          "isSensitive": false,
+          "folderId": null,
+          "src": null,
+          "uri": null,
+          "webpublicAccessKey": "web3",
+          "thumbnailAccessKey": "thumb3",
+          "accessKey": "original3",
+          "webpublicType": "image/webp",
+          "webpublicUrl": null,
+          "thumbnailUrl": null,
+          "url": "https://storage/unowned",
+          "storedInternal": true,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "blurhash": null,
+          "comment": null,
+          "size": 10,
+          "type": "image/png",
+          "name": "test.png",
+          "md5": "00000000000000000000000000000000",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "requestIp": null,
+          "requestHeaders": null
+        }
+      }
+    },
+    {
+      "id": "adminShow-mod-alice",
+      "expected": {
+        "result": {
+          "id": "at3hjq76file0001",
+          "userId": "alice",
+          "userHost": null,
+          "isLink": false,
+          "maybePorn": false,
+          "maybeSensitive": false,
+          "isSensitive": false,
+          "folderId": "at3hjq78child001",
+          "src": null,
+          "uri": null,
+          "webpublicAccessKey": "web0",
+          "thumbnailAccessKey": "thumb0",
+          "accessKey": "original0",
+          "webpublicType": "image/webp",
+          "webpublicUrl": "https://storage/public",
+          "thumbnailUrl": null,
+          "url": "https://storage/original",
+          "storedInternal": true,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "blurhash": null,
+          "comment": null,
+          "size": 10,
+          "type": "image/png",
+          "name": "test.png",
+          "md5": "00000000000000000000000000000000",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "requestIp": "192.0.2.1",
+          "requestHeaders": {
+            "host": "upload.test"
+          }
+        }
+      }
+    },
+    {
+      "id": "adminShow-mod-mod",
+      "expected": {
+        "result": {
+          "id": "at3hjq77mod00001",
+          "userId": "mod",
+          "userHost": null,
+          "isLink": false,
+          "maybePorn": false,
+          "maybeSensitive": false,
+          "isSensitive": false,
+          "folderId": null,
+          "src": null,
+          "uri": null,
+          "webpublicAccessKey": "web1",
+          "thumbnailAccessKey": "thumb1",
+          "accessKey": "original1",
+          "webpublicType": "image/webp",
+          "webpublicUrl": null,
+          "thumbnailUrl": null,
+          "url": "https://storage/mod",
+          "storedInternal": true,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "blurhash": null,
+          "comment": null,
+          "size": 10,
+          "type": "image/png",
+          "name": "test.png",
+          "md5": "00000000000000000000000000000000",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "requestIp": "192.0.2.1",
+          "requestHeaders": null
+        }
+      }
+    },
+    {
+      "id": "adminShow-mod-bob",
+      "expected": {
+        "result": {
+          "id": "at3hjq77other001",
+          "userId": "bob",
+          "userHost": null,
+          "isLink": false,
+          "maybePorn": false,
+          "maybeSensitive": false,
+          "isSensitive": false,
+          "folderId": null,
+          "src": null,
+          "uri": null,
+          "webpublicAccessKey": "web2",
+          "thumbnailAccessKey": "thumb2",
+          "accessKey": "original2",
+          "webpublicType": "image/webp",
+          "webpublicUrl": null,
+          "thumbnailUrl": null,
+          "url": "https://storage/bob",
+          "storedInternal": true,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "blurhash": null,
+          "comment": null,
+          "size": 10,
+          "type": "image/png",
+          "name": "other",
+          "md5": "11111111111111111111111111111111",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "requestIp": "192.0.2.1",
+          "requestHeaders": {
+            "host": "upload.test"
+          }
+        }
+      }
+    },
+    {
+      "id": "adminShow-mod-None",
+      "expected": {
+        "result": {
+          "id": "at3hjq77empty001",
+          "userId": null,
+          "userHost": null,
+          "isLink": false,
+          "maybePorn": false,
+          "maybeSensitive": false,
+          "isSensitive": false,
+          "folderId": null,
+          "src": null,
+          "uri": null,
+          "webpublicAccessKey": "web3",
+          "thumbnailAccessKey": "thumb3",
+          "accessKey": "original3",
+          "webpublicType": "image/webp",
+          "webpublicUrl": null,
+          "thumbnailUrl": null,
+          "url": "https://storage/unowned",
+          "storedInternal": true,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "blurhash": null,
+          "comment": null,
+          "size": 10,
+          "type": "image/png",
+          "name": "test.png",
+          "md5": "00000000000000000000000000000000",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "requestIp": "192.0.2.1",
+          "requestHeaders": {
+            "host": "upload.test"
+          }
+        }
+      }
+    },
+    {
+      "id": "adminShow-url-original",
+      "expected": {
+        "result": {
+          "id": "at3hjq76file0001",
+          "userId": "alice",
+          "userHost": null,
+          "isLink": false,
+          "maybePorn": false,
+          "maybeSensitive": false,
+          "isSensitive": false,
+          "folderId": "at3hjq78child001",
+          "src": null,
+          "uri": null,
+          "webpublicAccessKey": "web0",
+          "thumbnailAccessKey": "thumb0",
+          "accessKey": "original0",
+          "webpublicType": "image/webp",
+          "webpublicUrl": "https://storage/public",
+          "thumbnailUrl": null,
+          "url": "https://storage/original",
+          "storedInternal": true,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "blurhash": null,
+          "comment": null,
+          "size": 10,
+          "type": "image/png",
+          "name": "test.png",
+          "md5": "00000000000000000000000000000000",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "requestIp": "192.0.2.1",
+          "requestHeaders": {
+            "host": "upload.test"
+          }
+        }
+      }
+    },
+    {
+      "id": "adminShow-url-public",
+      "expected": {
+        "result": {
+          "id": "at3hjq76file0001",
+          "userId": "alice",
+          "userHost": null,
+          "isLink": false,
+          "maybePorn": false,
+          "maybeSensitive": false,
+          "isSensitive": false,
+          "folderId": "at3hjq78child001",
+          "src": null,
+          "uri": null,
+          "webpublicAccessKey": "web0",
+          "thumbnailAccessKey": "thumb0",
+          "accessKey": "original0",
+          "webpublicType": "image/webp",
+          "webpublicUrl": "https://storage/public",
+          "thumbnailUrl": null,
+          "url": "https://storage/original",
+          "storedInternal": true,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "blurhash": null,
+          "comment": null,
+          "size": 10,
+          "type": "image/png",
+          "name": "test.png",
+          "md5": "00000000000000000000000000000000",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "requestIp": "192.0.2.1",
+          "requestHeaders": {
+            "host": "upload.test"
+          }
+        }
+      }
+    },
+    {
+      "id": "adminShow-url-missing",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_FILE",
+          "id": "caf3ca38-c6e5-472e-a30c-b05377dcc240"
+        }
+      }
+    },
+    {
+      "id": "adminShow-missing",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_FILE",
+          "id": "caf3ca38-c6e5-472e-a30c-b05377dcc240"
+        }
+      }
+    },
+    {
+      "id": "adminShow-both-id-wins",
+      "expected": {
+        "result": {
+          "id": "at3hjq76file0001",
+          "userId": "alice",
+          "userHost": null,
+          "isLink": false,
+          "maybePorn": false,
+          "maybeSensitive": false,
+          "isSensitive": false,
+          "folderId": "at3hjq78child001",
+          "src": null,
+          "uri": null,
+          "webpublicAccessKey": "web0",
+          "thumbnailAccessKey": "thumb0",
+          "accessKey": "original0",
+          "webpublicType": "image/webp",
+          "webpublicUrl": "https://storage/public",
+          "thumbnailUrl": null,
+          "url": "https://storage/original",
+          "storedInternal": true,
+          "properties": {
+            "width": 10,
+            "height": 20,
+            "orientation": 6,
+            "avgColor": "aabbcc"
+          },
+          "blurhash": null,
+          "comment": null,
+          "size": 10,
+          "type": "image/png",
+          "name": "test.png",
+          "md5": "00000000000000000000000000000000",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "requestIp": null,
+          "requestHeaders": null
+        }
+      }
+    },
+    {
+      "id": "adminShow-bad-id-valid-url",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_FILE",
+          "id": "caf3ca38-c6e5-472e-a30c-b05377dcc240"
+        }
+      }
+    },
+    {
+      "id": "adminShow-invalid",
+      "expected": {
+        "error": {
+          "code": "INVALID_PARAM"
+        }
+      }
+    },
+    {
+      "id": "adminShow-read-failure",
+      "expected": {
+        "error": {
+          "message": "database unavailable"
+        }
+      }
+    },
+    {
+      "id": "find-alice-match",
+      "expected": {
+        "result": [
+          {
+            "id": "at3hjq76file0001",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "test.png",
+            "type": "image/png",
+            "md5": "00000000000000000000000000000000",
+            "size": 10,
+            "isSensitive": false,
+            "blurhash": null,
+            "properties": {
+              "width": 10,
+              "height": 20,
+              "orientation": 6,
+              "avgColor": "aabbcc"
+            },
+            "url": "https://storage/original",
+            "thumbnailUrl": "https://storage/public",
+            "comment": null,
+            "folderId": "at3hjq78child001",
+            "folder": null,
+            "userId": "alice",
+            "user": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "find-alice-missing",
+      "expected": {
+        "result": []
+      }
+    },
+    {
+      "id": "find-alice-empty",
+      "expected": {
+        "result": []
+      }
+    },
+    {
+      "id": "find-bob-match",
+      "expected": {
+        "result": []
+      }
+    },
+    {
+      "id": "find-bob-missing",
+      "expected": {
+        "result": []
+      }
+    },
+    {
+      "id": "find-bob-empty",
+      "expected": {
+        "result": []
+      }
+    },
+    {
+      "id": "find-mod-match",
+      "expected": {
+        "result": []
+      }
+    },
+    {
+      "id": "find-mod-missing",
+      "expected": {
+        "result": []
+      }
+    },
+    {
+      "id": "find-mod-empty",
+      "expected": {
+        "result": []
+      }
+    },
+    {
+      "id": "find-invalid",
+      "expected": {
+        "error": {
+          "code": "INVALID_PARAM"
+        }
+      }
+    },
+    {
+      "id": "findByHash-alice-match",
+      "expected": {
+        "result": [
+          {
+            "id": "at3hjq76file0001",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "test.png",
+            "type": "image/png",
+            "md5": "00000000000000000000000000000000",
+            "size": 10,
+            "isSensitive": false,
+            "blurhash": null,
+            "properties": {
+              "width": 10,
+              "height": 20,
+              "orientation": 6,
+              "avgColor": "aabbcc"
+            },
+            "url": "https://storage/original",
+            "thumbnailUrl": "https://storage/public",
+            "comment": null,
+            "folderId": "at3hjq78child001",
+            "folder": null,
+            "userId": "alice",
+            "user": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "findByHash-alice-missing",
+      "expected": {
+        "result": []
+      }
+    },
+    {
+      "id": "findByHash-alice-empty",
+      "expected": {
+        "result": []
+      }
+    },
+    {
+      "id": "findByHash-bob-match",
+      "expected": {
+        "result": []
+      }
+    },
+    {
+      "id": "findByHash-bob-missing",
+      "expected": {
+        "result": []
+      }
+    },
+    {
+      "id": "findByHash-bob-empty",
+      "expected": {
+        "result": []
+      }
+    },
+    {
+      "id": "findByHash-mod-match",
+      "expected": {
+        "result": [
+          {
+            "id": "at3hjq77mod00001",
+            "createdAt": "2026-11-03T00:00:01.123Z",
+            "name": "test.png",
+            "type": "image/png",
+            "md5": "00000000000000000000000000000000",
+            "size": 10,
+            "isSensitive": false,
+            "blurhash": null,
+            "properties": {
+              "width": 10,
+              "height": 20,
+              "orientation": 6,
+              "avgColor": "aabbcc"
+            },
+            "url": "https://storage/mod",
+            "thumbnailUrl": "https://storage/mod",
+            "comment": null,
+            "folderId": null,
+            "folder": null,
+            "userId": "mod",
+            "user": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "findByHash-mod-missing",
+      "expected": {
+        "result": []
+      }
+    },
+    {
+      "id": "findByHash-mod-empty",
+      "expected": {
+        "result": []
+      }
+    },
+    {
+      "id": "findByHash-invalid",
+      "expected": {
+        "error": {
+          "code": "INVALID_PARAM"
+        }
+      }
+    },
+    {
+      "id": "checkExistence-alice-match",
+      "expected": {
+        "result": true
+      }
+    },
+    {
+      "id": "checkExistence-alice-missing",
+      "expected": {
+        "result": false
+      }
+    },
+    {
+      "id": "checkExistence-alice-empty",
+      "expected": {
+        "result": false
+      }
+    },
+    {
+      "id": "checkExistence-bob-match",
+      "expected": {
+        "result": false
+      }
+    },
+    {
+      "id": "checkExistence-bob-missing",
+      "expected": {
+        "result": false
+      }
+    },
+    {
+      "id": "checkExistence-bob-empty",
+      "expected": {
+        "result": false
+      }
+    },
+    {
+      "id": "checkExistence-mod-match",
+      "expected": {
+        "result": true
+      }
+    },
+    {
+      "id": "checkExistence-mod-missing",
+      "expected": {
+        "result": false
+      }
+    },
+    {
+      "id": "checkExistence-mod-empty",
+      "expected": {
+        "result": false
+      }
+    },
+    {
+      "id": "checkExistence-invalid",
+      "expected": {
+        "error": {
+          "code": "INVALID_PARAM"
+        }
+      }
+    },
+    {
+      "id": "find-default-root",
+      "expected": {
+        "result": [
+          {
+            "id": "at3hjq77mod00001",
+            "createdAt": "2026-11-03T00:00:01.123Z",
+            "name": "test.png",
+            "type": "image/png",
+            "md5": "00000000000000000000000000000000",
+            "size": 10,
+            "isSensitive": false,
+            "blurhash": null,
+            "properties": {
+              "width": 10,
+              "height": 20,
+              "orientation": 6,
+              "avgColor": "aabbcc"
+            },
+            "url": "https://storage/mod",
+            "thumbnailUrl": "https://storage/mod",
+            "comment": null,
+            "folderId": null,
+            "folder": null,
+            "userId": "mod",
+            "user": null
+          }
+        ]
+      }
+    }
+  ],
+  "packing": [
+    {
+      "id": "flags-False-False-False-False",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "flags-False-False-False-True",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": "alice",
+        "user": null
+      }
+    },
+    {
+      "id": "flags-False-False-True-False",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": "alice",
+        "user": {
+          "id": "alice",
+          "username": "alice"
+        }
+      }
+    },
+    {
+      "id": "flags-False-False-True-True",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": "alice",
+        "user": {
+          "id": "alice",
+          "username": "alice"
+        }
+      }
+    },
+    {
+      "id": "flags-False-True-False-False",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": {
+          "id": "at3hjq78child001",
+          "createdAt": "2026-11-03T00:00:01.124Z",
+          "name": "child",
+          "parentId": "at3hjq76root0001",
+          "foldersCount": 0,
+          "filesCount": 1,
+          "parent": {
+            "id": "at3hjq76root0001",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "root",
+            "parentId": null,
+            "foldersCount": 1,
+            "filesCount": 0
+          }
+        },
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "flags-False-True-False-True",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": {
+          "id": "at3hjq78child001",
+          "createdAt": "2026-11-03T00:00:01.124Z",
+          "name": "child",
+          "parentId": "at3hjq76root0001",
+          "foldersCount": 0,
+          "filesCount": 1,
+          "parent": {
+            "id": "at3hjq76root0001",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "root",
+            "parentId": null,
+            "foldersCount": 1,
+            "filesCount": 0
+          }
+        },
+        "userId": "alice",
+        "user": null
+      }
+    },
+    {
+      "id": "flags-False-True-True-False",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": {
+          "id": "at3hjq78child001",
+          "createdAt": "2026-11-03T00:00:01.124Z",
+          "name": "child",
+          "parentId": "at3hjq76root0001",
+          "foldersCount": 0,
+          "filesCount": 1,
+          "parent": {
+            "id": "at3hjq76root0001",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "root",
+            "parentId": null,
+            "foldersCount": 1,
+            "filesCount": 0
+          }
+        },
+        "userId": "alice",
+        "user": {
+          "id": "alice",
+          "username": "alice"
+        }
+      }
+    },
+    {
+      "id": "flags-False-True-True-True",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": {
+          "id": "at3hjq78child001",
+          "createdAt": "2026-11-03T00:00:01.124Z",
+          "name": "child",
+          "parentId": "at3hjq76root0001",
+          "foldersCount": 0,
+          "filesCount": 1,
+          "parent": {
+            "id": "at3hjq76root0001",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "root",
+            "parentId": null,
+            "foldersCount": 1,
+            "filesCount": 0
+          }
+        },
+        "userId": "alice",
+        "user": {
+          "id": "alice",
+          "username": "alice"
+        }
+      }
+    },
+    {
+      "id": "flags-True-False-False-False",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 10,
+          "height": 20,
+          "orientation": 6,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/original",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "flags-True-False-False-True",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 10,
+          "height": 20,
+          "orientation": 6,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/original",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": "alice",
+        "user": null
+      }
+    },
+    {
+      "id": "flags-True-False-True-False",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 10,
+          "height": 20,
+          "orientation": 6,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/original",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": "alice",
+        "user": {
+          "id": "alice",
+          "username": "alice"
+        }
+      }
+    },
+    {
+      "id": "flags-True-False-True-True",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 10,
+          "height": 20,
+          "orientation": 6,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/original",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": "alice",
+        "user": {
+          "id": "alice",
+          "username": "alice"
+        }
+      }
+    },
+    {
+      "id": "flags-True-True-False-False",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 10,
+          "height": 20,
+          "orientation": 6,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/original",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": {
+          "id": "at3hjq78child001",
+          "createdAt": "2026-11-03T00:00:01.124Z",
+          "name": "child",
+          "parentId": "at3hjq76root0001",
+          "foldersCount": 0,
+          "filesCount": 1,
+          "parent": {
+            "id": "at3hjq76root0001",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "root",
+            "parentId": null,
+            "foldersCount": 1,
+            "filesCount": 0
+          }
+        },
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "flags-True-True-False-True",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 10,
+          "height": 20,
+          "orientation": 6,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/original",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": {
+          "id": "at3hjq78child001",
+          "createdAt": "2026-11-03T00:00:01.124Z",
+          "name": "child",
+          "parentId": "at3hjq76root0001",
+          "foldersCount": 0,
+          "filesCount": 1,
+          "parent": {
+            "id": "at3hjq76root0001",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "root",
+            "parentId": null,
+            "foldersCount": 1,
+            "filesCount": 0
+          }
+        },
+        "userId": "alice",
+        "user": null
+      }
+    },
+    {
+      "id": "flags-True-True-True-False",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 10,
+          "height": 20,
+          "orientation": 6,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/original",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": {
+          "id": "at3hjq78child001",
+          "createdAt": "2026-11-03T00:00:01.124Z",
+          "name": "child",
+          "parentId": "at3hjq76root0001",
+          "foldersCount": 0,
+          "filesCount": 1,
+          "parent": {
+            "id": "at3hjq76root0001",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "root",
+            "parentId": null,
+            "foldersCount": 1,
+            "filesCount": 0
+          }
+        },
+        "userId": "alice",
+        "user": {
+          "id": "alice",
+          "username": "alice"
+        }
+      }
+    },
+    {
+      "id": "flags-True-True-True-True",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 10,
+          "height": 20,
+          "orientation": 6,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/original",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": {
+          "id": "at3hjq78child001",
+          "createdAt": "2026-11-03T00:00:01.124Z",
+          "name": "child",
+          "parentId": "at3hjq76root0001",
+          "foldersCount": 0,
+          "filesCount": 1,
+          "parent": {
+            "id": "at3hjq76root0001",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "root",
+            "parentId": null,
+            "foldersCount": 1,
+            "filesCount": 0
+          }
+        },
+        "userId": "alice",
+        "user": {
+          "id": "alice",
+          "username": "alice"
+        }
+      }
+    },
+    {
+      "id": "mime-image/jpeg",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/jpeg",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "mime-image/png",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "mime-image/webp",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/webp",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "mime-image/gif",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/gif",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "mime-image/avif",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/avif",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "mime-image/tiff",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/tiff",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "mime-image/apng",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/apng",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "mime-image/vnd.mozilla.apng",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/vnd.mozilla.apng",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "mime-image/svg+xml",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/svg+xml",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "mime-image/heic",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/heic",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": null,
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "mime-image/heif",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/heif",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": null,
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "mime-application/pdf",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "application/pdf",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": null,
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "mime-video/mp4",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "video/mp4",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://video/thumbnail.webp?thumbnail=1&url=https%3A%2F%2Fstorage%2Fpublic",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "mime-video/mp4-empty-thumb",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "video/mp4",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://video/thumbnail.webp?thumbnail=1&url=https%3A%2F%2Fstorage%2Fpublic",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "orientation-None",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 1,
+          "height": 2,
+          "orientation": null
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "orientation-0",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 1,
+          "height": 2
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "orientation-1",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 1,
+          "height": 2
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "orientation-4",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 1,
+          "height": 2
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "orientation-5",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 2,
+          "height": 1
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "orientation-6",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 2,
+          "height": 1
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "orientation-8",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 2,
+          "height": 1
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "remote-False-False-None",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "remote-False-False-key",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "remote-False-False-legacy/key",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/public",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "remote-False-True-None",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://local/proxy/static.webp?url=https%3A%2F%2Fremote%2Fa%20b%3Fx%3D1&static=1",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "remote-False-True-key",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://local/files/key",
+        "thumbnailUrl": "https://local/proxy/static.webp?url=https%3A%2F%2Fremote%2Fa%20b%3Fx%3D1&static=1",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "remote-False-True-legacy/key",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://local/proxy/static.webp?url=https%3A%2F%2Fremote%2Fa%20b%3Fx%3D1&static=1",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "remote-True-False-None",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://local/proxy/image.webp?url=https%3A%2F%2Fremote%2Fa%20b%3Fx%3D1",
+        "thumbnailUrl": "https://local/proxy/static.webp?url=https%3A%2F%2Fremote%2Fa%20b%3Fx%3D1&static=1",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "remote-True-False-key",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://local/proxy/image.webp?url=https%3A%2F%2Fremote%2Fa%20b%3Fx%3D1",
+        "thumbnailUrl": "https://local/proxy/static.webp?url=https%3A%2F%2Fremote%2Fa%20b%3Fx%3D1&static=1",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "remote-True-False-legacy/key",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://local/proxy/image.webp?url=https%3A%2F%2Fremote%2Fa%20b%3Fx%3D1",
+        "thumbnailUrl": "https://local/proxy/static.webp?url=https%3A%2F%2Fremote%2Fa%20b%3Fx%3D1&static=1",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "remote-True-True-None",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://local/proxy/image.webp?url=https%3A%2F%2Fremote%2Fa%20b%3Fx%3D1",
+        "thumbnailUrl": "https://local/proxy/static.webp?url=https%3A%2F%2Fremote%2Fa%20b%3Fx%3D1&static=1",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "remote-True-True-key",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://local/proxy/image.webp?url=https%3A%2F%2Fremote%2Fa%20b%3Fx%3D1",
+        "thumbnailUrl": "https://local/proxy/static.webp?url=https%3A%2F%2Fremote%2Fa%20b%3Fx%3D1&static=1",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "remote-True-True-legacy/key",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://local/proxy/image.webp?url=https%3A%2F%2Fremote%2Fa%20b%3Fx%3D1",
+        "thumbnailUrl": "https://local/proxy/static.webp?url=https%3A%2F%2Fremote%2Fa%20b%3Fx%3D1&static=1",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "saved-thumb-video/mp4",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "video/mp4",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/thumb",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "saved-thumb-image/png",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "image/png",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "https://storage/thumb",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    },
+    {
+      "id": "video-empty-generator",
+      "expected": {
+        "id": "at3hjq76file0001",
+        "createdAt": "2026-11-03T00:00:01.122Z",
+        "name": "test.png",
+        "type": "video/mp4",
+        "md5": "00000000000000000000000000000000",
+        "size": 10,
+        "isSensitive": false,
+        "blurhash": null,
+        "properties": {
+          "width": 20,
+          "height": 10,
+          "avgColor": "aabbcc"
+        },
+        "url": "https://storage/public",
+        "thumbnailUrl": "/thumbnail.webp?thumbnail=1&url=https%3A%2F%2Fstorage%2Fpublic",
+        "comment": null,
+        "folderId": "at3hjq78child001",
+        "folder": null,
+        "userId": null,
+        "user": null
+      }
+    }
+  ],
+  "names": [
+    {
+      "name": "a",
+      "expected": true
+    },
+    {
+      "name": " a ",
+      "expected": true
+    },
+    {
+      "name": ".png",
+      "expected": true
+    },
+    {
+      "name": "ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ",
+      "expected": true
+    },
+    {
+      "name": "",
+      "expected": false
+    },
+    {
+      "name": " \n ",
+      "expected": false
+    },
+    {
+      "name": "a/b",
+      "expected": false
+    },
+    {
+      "name": "a\\b",
+      "expected": false
+    },
+    {
+      "name": "..",
+      "expected": false
+    },
+    {
+      "name": "a..b",
+      "expected": false
+    },
+    {
+      "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "expected": false
+    },
+    {
+      "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+      "expected": false
+    }
+  ]
+}

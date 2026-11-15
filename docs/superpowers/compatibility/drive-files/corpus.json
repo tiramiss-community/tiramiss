@@ -1,0 +1,1277 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "rows": [
+    {
+      "id": "at3hjq76file0001",
+      "userId": "alice",
+      "userHost": null,
+      "folderId": "at3hjq78child001",
+      "name": "test.png",
+      "type": "image/png",
+      "md5": "00000000000000000000000000000000",
+      "size": 10,
+      "isSensitive": false,
+      "blurhash": null,
+      "properties": {
+        "width": 10,
+        "height": 20,
+        "orientation": 6,
+        "avgColor": "aabbcc"
+      },
+      "url": "https://storage/original",
+      "webpublicUrl": "https://storage/public",
+      "thumbnailUrl": null,
+      "uri": null,
+      "isLink": false,
+      "webpublicAccessKey": "web0",
+      "comment": null,
+      "maybePorn": false,
+      "maybeSensitive": false,
+      "src": null,
+      "thumbnailAccessKey": "thumb0",
+      "accessKey": "original0",
+      "webpublicType": "image/webp",
+      "storedInternal": true,
+      "requestIp": "192.0.2.1",
+      "requestHeaders": {
+        "host": "upload.test"
+      }
+    },
+    {
+      "id": "at3hjq77mod00001",
+      "userId": "mod",
+      "userHost": null,
+      "folderId": null,
+      "name": "test.png",
+      "type": "image/png",
+      "md5": "00000000000000000000000000000000",
+      "size": 10,
+      "isSensitive": false,
+      "blurhash": null,
+      "properties": {
+        "width": 10,
+        "height": 20,
+        "orientation": 6,
+        "avgColor": "aabbcc"
+      },
+      "url": "https://storage/mod",
+      "webpublicUrl": null,
+      "thumbnailUrl": null,
+      "uri": null,
+      "isLink": false,
+      "webpublicAccessKey": "web1",
+      "comment": null,
+      "maybePorn": false,
+      "maybeSensitive": false,
+      "src": null,
+      "thumbnailAccessKey": "thumb1",
+      "accessKey": "original1",
+      "webpublicType": "image/webp",
+      "storedInternal": true,
+      "requestIp": "192.0.2.1",
+      "requestHeaders": {
+        "host": "upload.test"
+      }
+    },
+    {
+      "id": "at3hjq77other001",
+      "userId": "bob",
+      "userHost": null,
+      "folderId": null,
+      "name": "other",
+      "type": "image/png",
+      "md5": "11111111111111111111111111111111",
+      "size": 10,
+      "isSensitive": false,
+      "blurhash": null,
+      "properties": {
+        "width": 10,
+        "height": 20,
+        "orientation": 6,
+        "avgColor": "aabbcc"
+      },
+      "url": "https://storage/bob",
+      "webpublicUrl": null,
+      "thumbnailUrl": null,
+      "uri": null,
+      "isLink": false,
+      "webpublicAccessKey": "web2",
+      "comment": null,
+      "maybePorn": false,
+      "maybeSensitive": false,
+      "src": null,
+      "thumbnailAccessKey": "thumb2",
+      "accessKey": "original2",
+      "webpublicType": "image/webp",
+      "storedInternal": true,
+      "requestIp": "192.0.2.1",
+      "requestHeaders": {
+        "host": "upload.test"
+      }
+    },
+    {
+      "id": "at3hjq77empty001",
+      "userId": null,
+      "userHost": null,
+      "folderId": null,
+      "name": "test.png",
+      "type": "image/png",
+      "md5": "00000000000000000000000000000000",
+      "size": 10,
+      "isSensitive": false,
+      "blurhash": null,
+      "properties": {
+        "width": 10,
+        "height": 20,
+        "orientation": 6,
+        "avgColor": "aabbcc"
+      },
+      "url": "https://storage/unowned",
+      "webpublicUrl": null,
+      "thumbnailUrl": null,
+      "uri": null,
+      "isLink": false,
+      "webpublicAccessKey": "web3",
+      "comment": null,
+      "maybePorn": false,
+      "maybeSensitive": false,
+      "src": null,
+      "thumbnailAccessKey": "thumb3",
+      "accessKey": "original3",
+      "webpublicType": "image/webp",
+      "storedInternal": true,
+      "requestIp": "192.0.2.1",
+      "requestHeaders": {
+        "host": "upload.test"
+      }
+    }
+  ],
+  "folders": [
+    {
+      "id": "at3hjq76root0001",
+      "userId": "alice",
+      "name": "root",
+      "parentId": null
+    },
+    {
+      "id": "at3hjq78child001",
+      "userId": "alice",
+      "name": "child",
+      "parentId": "at3hjq76root0001"
+    }
+  ],
+  "cases": [
+    {
+      "id": "show-alice-alice",
+      "operation": "show",
+      "actor": "alice",
+      "input": {
+        "fileId": "at3hjq76file0001"
+      }
+    },
+    {
+      "id": "show-alice-mod",
+      "operation": "show",
+      "actor": "alice",
+      "input": {
+        "fileId": "at3hjq77mod00001"
+      }
+    },
+    {
+      "id": "show-alice-bob",
+      "operation": "show",
+      "actor": "alice",
+      "input": {
+        "fileId": "at3hjq77other001"
+      }
+    },
+    {
+      "id": "show-alice-None",
+      "operation": "show",
+      "actor": "alice",
+      "input": {
+        "fileId": "at3hjq77empty001"
+      }
+    },
+    {
+      "id": "show-bob-alice",
+      "operation": "show",
+      "actor": "bob",
+      "input": {
+        "fileId": "at3hjq76file0001"
+      }
+    },
+    {
+      "id": "show-bob-mod",
+      "operation": "show",
+      "actor": "bob",
+      "input": {
+        "fileId": "at3hjq77mod00001"
+      }
+    },
+    {
+      "id": "show-bob-bob",
+      "operation": "show",
+      "actor": "bob",
+      "input": {
+        "fileId": "at3hjq77other001"
+      }
+    },
+    {
+      "id": "show-bob-None",
+      "operation": "show",
+      "actor": "bob",
+      "input": {
+        "fileId": "at3hjq77empty001"
+      }
+    },
+    {
+      "id": "show-mod-alice",
+      "operation": "show",
+      "actor": "mod",
+      "input": {
+        "fileId": "at3hjq76file0001"
+      }
+    },
+    {
+      "id": "show-mod-mod",
+      "operation": "show",
+      "actor": "mod",
+      "input": {
+        "fileId": "at3hjq77mod00001"
+      }
+    },
+    {
+      "id": "show-mod-bob",
+      "operation": "show",
+      "actor": "mod",
+      "input": {
+        "fileId": "at3hjq77other001"
+      }
+    },
+    {
+      "id": "show-mod-None",
+      "operation": "show",
+      "actor": "mod",
+      "input": {
+        "fileId": "at3hjq77empty001"
+      }
+    },
+    {
+      "id": "show-url-original",
+      "operation": "show",
+      "actor": "mod",
+      "input": {
+        "url": "https://storage/original"
+      }
+    },
+    {
+      "id": "show-url-public",
+      "operation": "show",
+      "actor": "mod",
+      "input": {
+        "url": "https://storage/public"
+      }
+    },
+    {
+      "id": "show-url-missing",
+      "operation": "show",
+      "actor": "mod",
+      "input": {
+        "url": "missing"
+      }
+    },
+    {
+      "id": "show-missing",
+      "operation": "show",
+      "actor": "mod",
+      "input": {
+        "fileId": "missing"
+      }
+    },
+    {
+      "id": "show-both-id-wins",
+      "operation": "show",
+      "actor": "alice",
+      "input": {
+        "fileId": "at3hjq76file0001",
+        "url": "missing"
+      }
+    },
+    {
+      "id": "show-bad-id-valid-url",
+      "operation": "show",
+      "actor": "mod",
+      "input": {
+        "fileId": "bad-id",
+        "url": "https://storage/original"
+      }
+    },
+    {
+      "id": "show-invalid",
+      "operation": "show",
+      "actor": "alice",
+      "input": {}
+    },
+    {
+      "id": "show-read-failure",
+      "operation": "show",
+      "actor": "alice",
+      "input": {
+        "fileId": "at3hjq76file0001"
+      },
+      "fail": true
+    },
+    {
+      "id": "adminShow-alice-alice",
+      "operation": "adminShow",
+      "actor": "alice",
+      "input": {
+        "fileId": "at3hjq76file0001"
+      }
+    },
+    {
+      "id": "adminShow-alice-mod",
+      "operation": "adminShow",
+      "actor": "alice",
+      "input": {
+        "fileId": "at3hjq77mod00001"
+      }
+    },
+    {
+      "id": "adminShow-alice-bob",
+      "operation": "adminShow",
+      "actor": "alice",
+      "input": {
+        "fileId": "at3hjq77other001"
+      }
+    },
+    {
+      "id": "adminShow-alice-None",
+      "operation": "adminShow",
+      "actor": "alice",
+      "input": {
+        "fileId": "at3hjq77empty001"
+      }
+    },
+    {
+      "id": "adminShow-bob-alice",
+      "operation": "adminShow",
+      "actor": "bob",
+      "input": {
+        "fileId": "at3hjq76file0001"
+      }
+    },
+    {
+      "id": "adminShow-bob-mod",
+      "operation": "adminShow",
+      "actor": "bob",
+      "input": {
+        "fileId": "at3hjq77mod00001"
+      }
+    },
+    {
+      "id": "adminShow-bob-bob",
+      "operation": "adminShow",
+      "actor": "bob",
+      "input": {
+        "fileId": "at3hjq77other001"
+      }
+    },
+    {
+      "id": "adminShow-bob-None",
+      "operation": "adminShow",
+      "actor": "bob",
+      "input": {
+        "fileId": "at3hjq77empty001"
+      }
+    },
+    {
+      "id": "adminShow-mod-alice",
+      "operation": "adminShow",
+      "actor": "mod",
+      "input": {
+        "fileId": "at3hjq76file0001"
+      }
+    },
+    {
+      "id": "adminShow-mod-mod",
+      "operation": "adminShow",
+      "actor": "mod",
+      "input": {
+        "fileId": "at3hjq77mod00001"
+      }
+    },
+    {
+      "id": "adminShow-mod-bob",
+      "operation": "adminShow",
+      "actor": "mod",
+      "input": {
+        "fileId": "at3hjq77other001"
+      }
+    },
+    {
+      "id": "adminShow-mod-None",
+      "operation": "adminShow",
+      "actor": "mod",
+      "input": {
+        "fileId": "at3hjq77empty001"
+      }
+    },
+    {
+      "id": "adminShow-url-original",
+      "operation": "adminShow",
+      "actor": "mod",
+      "input": {
+        "url": "https://storage/original"
+      }
+    },
+    {
+      "id": "adminShow-url-public",
+      "operation": "adminShow",
+      "actor": "mod",
+      "input": {
+        "url": "https://storage/public"
+      }
+    },
+    {
+      "id": "adminShow-url-missing",
+      "operation": "adminShow",
+      "actor": "mod",
+      "input": {
+        "url": "missing"
+      }
+    },
+    {
+      "id": "adminShow-missing",
+      "operation": "adminShow",
+      "actor": "mod",
+      "input": {
+        "fileId": "missing"
+      }
+    },
+    {
+      "id": "adminShow-both-id-wins",
+      "operation": "adminShow",
+      "actor": "alice",
+      "input": {
+        "fileId": "at3hjq76file0001",
+        "url": "missing"
+      }
+    },
+    {
+      "id": "adminShow-bad-id-valid-url",
+      "operation": "adminShow",
+      "actor": "mod",
+      "input": {
+        "fileId": "bad-id",
+        "url": "https://storage/original"
+      }
+    },
+    {
+      "id": "adminShow-invalid",
+      "operation": "adminShow",
+      "actor": "alice",
+      "input": {}
+    },
+    {
+      "id": "adminShow-read-failure",
+      "operation": "adminShow",
+      "actor": "alice",
+      "input": {
+        "fileId": "at3hjq76file0001"
+      },
+      "fail": true
+    },
+    {
+      "id": "find-alice-match",
+      "operation": "find",
+      "actor": "alice",
+      "input": {
+        "name": "test.png",
+        "folderId": "at3hjq78child001"
+      }
+    },
+    {
+      "id": "find-alice-missing",
+      "operation": "find",
+      "actor": "alice",
+      "input": {
+        "name": "missing",
+        "folderId": "at3hjq78child001"
+      }
+    },
+    {
+      "id": "find-alice-empty",
+      "operation": "find",
+      "actor": "alice",
+      "input": {
+        "name": "",
+        "folderId": "at3hjq78child001"
+      }
+    },
+    {
+      "id": "find-bob-match",
+      "operation": "find",
+      "actor": "bob",
+      "input": {
+        "name": "test.png",
+        "folderId": "at3hjq78child001"
+      }
+    },
+    {
+      "id": "find-bob-missing",
+      "operation": "find",
+      "actor": "bob",
+      "input": {
+        "name": "missing",
+        "folderId": "at3hjq78child001"
+      }
+    },
+    {
+      "id": "find-bob-empty",
+      "operation": "find",
+      "actor": "bob",
+      "input": {
+        "name": "",
+        "folderId": "at3hjq78child001"
+      }
+    },
+    {
+      "id": "find-mod-match",
+      "operation": "find",
+      "actor": "mod",
+      "input": {
+        "name": "test.png",
+        "folderId": "at3hjq78child001"
+      }
+    },
+    {
+      "id": "find-mod-missing",
+      "operation": "find",
+      "actor": "mod",
+      "input": {
+        "name": "missing",
+        "folderId": "at3hjq78child001"
+      }
+    },
+    {
+      "id": "find-mod-empty",
+      "operation": "find",
+      "actor": "mod",
+      "input": {
+        "name": "",
+        "folderId": "at3hjq78child001"
+      }
+    },
+    {
+      "id": "find-invalid",
+      "operation": "find",
+      "actor": "alice",
+      "input": {}
+    },
+    {
+      "id": "findByHash-alice-match",
+      "operation": "findByHash",
+      "actor": "alice",
+      "input": {
+        "md5": "00000000000000000000000000000000"
+      }
+    },
+    {
+      "id": "findByHash-alice-missing",
+      "operation": "findByHash",
+      "actor": "alice",
+      "input": {
+        "md5": "missing"
+      }
+    },
+    {
+      "id": "findByHash-alice-empty",
+      "operation": "findByHash",
+      "actor": "alice",
+      "input": {
+        "md5": ""
+      }
+    },
+    {
+      "id": "findByHash-bob-match",
+      "operation": "findByHash",
+      "actor": "bob",
+      "input": {
+        "md5": "00000000000000000000000000000000"
+      }
+    },
+    {
+      "id": "findByHash-bob-missing",
+      "operation": "findByHash",
+      "actor": "bob",
+      "input": {
+        "md5": "missing"
+      }
+    },
+    {
+      "id": "findByHash-bob-empty",
+      "operation": "findByHash",
+      "actor": "bob",
+      "input": {
+        "md5": ""
+      }
+    },
+    {
+      "id": "findByHash-mod-match",
+      "operation": "findByHash",
+      "actor": "mod",
+      "input": {
+        "md5": "00000000000000000000000000000000"
+      }
+    },
+    {
+      "id": "findByHash-mod-missing",
+      "operation": "findByHash",
+      "actor": "mod",
+      "input": {
+        "md5": "missing"
+      }
+    },
+    {
+      "id": "findByHash-mod-empty",
+      "operation": "findByHash",
+      "actor": "mod",
+      "input": {
+        "md5": ""
+      }
+    },
+    {
+      "id": "findByHash-invalid",
+      "operation": "findByHash",
+      "actor": "alice",
+      "input": {}
+    },
+    {
+      "id": "checkExistence-alice-match",
+      "operation": "checkExistence",
+      "actor": "alice",
+      "input": {
+        "md5": "00000000000000000000000000000000"
+      }
+    },
+    {
+      "id": "checkExistence-alice-missing",
+      "operation": "checkExistence",
+      "actor": "alice",
+      "input": {
+        "md5": "missing"
+      }
+    },
+    {
+      "id": "checkExistence-alice-empty",
+      "operation": "checkExistence",
+      "actor": "alice",
+      "input": {
+        "md5": ""
+      }
+    },
+    {
+      "id": "checkExistence-bob-match",
+      "operation": "checkExistence",
+      "actor": "bob",
+      "input": {
+        "md5": "00000000000000000000000000000000"
+      }
+    },
+    {
+      "id": "checkExistence-bob-missing",
+      "operation": "checkExistence",
+      "actor": "bob",
+      "input": {
+        "md5": "missing"
+      }
+    },
+    {
+      "id": "checkExistence-bob-empty",
+      "operation": "checkExistence",
+      "actor": "bob",
+      "input": {
+        "md5": ""
+      }
+    },
+    {
+      "id": "checkExistence-mod-match",
+      "operation": "checkExistence",
+      "actor": "mod",
+      "input": {
+        "md5": "00000000000000000000000000000000"
+      }
+    },
+    {
+      "id": "checkExistence-mod-missing",
+      "operation": "checkExistence",
+      "actor": "mod",
+      "input": {
+        "md5": "missing"
+      }
+    },
+    {
+      "id": "checkExistence-mod-empty",
+      "operation": "checkExistence",
+      "actor": "mod",
+      "input": {
+        "md5": ""
+      }
+    },
+    {
+      "id": "checkExistence-invalid",
+      "operation": "checkExistence",
+      "actor": "alice",
+      "input": {}
+    },
+    {
+      "id": "find-default-root",
+      "operation": "find",
+      "actor": "mod",
+      "input": {
+        "name": "test.png"
+      }
+    }
+  ],
+  "packing": [
+    {
+      "id": "flags-False-False-False-False",
+      "patch": {},
+      "options": {
+        "self": false,
+        "detail": false,
+        "withUser": false,
+        "nullable": false
+      }
+    },
+    {
+      "id": "flags-False-False-False-True",
+      "patch": {},
+      "options": {
+        "self": false,
+        "detail": false,
+        "withUser": false,
+        "nullable": true
+      }
+    },
+    {
+      "id": "flags-False-False-True-False",
+      "patch": {},
+      "options": {
+        "self": false,
+        "detail": false,
+        "withUser": true,
+        "nullable": false
+      }
+    },
+    {
+      "id": "flags-False-False-True-True",
+      "patch": {},
+      "options": {
+        "self": false,
+        "detail": false,
+        "withUser": true,
+        "nullable": true
+      }
+    },
+    {
+      "id": "flags-False-True-False-False",
+      "patch": {},
+      "options": {
+        "self": false,
+        "detail": true,
+        "withUser": false,
+        "nullable": false
+      }
+    },
+    {
+      "id": "flags-False-True-False-True",
+      "patch": {},
+      "options": {
+        "self": false,
+        "detail": true,
+        "withUser": false,
+        "nullable": true
+      }
+    },
+    {
+      "id": "flags-False-True-True-False",
+      "patch": {},
+      "options": {
+        "self": false,
+        "detail": true,
+        "withUser": true,
+        "nullable": false
+      }
+    },
+    {
+      "id": "flags-False-True-True-True",
+      "patch": {},
+      "options": {
+        "self": false,
+        "detail": true,
+        "withUser": true,
+        "nullable": true
+      }
+    },
+    {
+      "id": "flags-True-False-False-False",
+      "patch": {},
+      "options": {
+        "self": true,
+        "detail": false,
+        "withUser": false,
+        "nullable": false
+      }
+    },
+    {
+      "id": "flags-True-False-False-True",
+      "patch": {},
+      "options": {
+        "self": true,
+        "detail": false,
+        "withUser": false,
+        "nullable": true
+      }
+    },
+    {
+      "id": "flags-True-False-True-False",
+      "patch": {},
+      "options": {
+        "self": true,
+        "detail": false,
+        "withUser": true,
+        "nullable": false
+      }
+    },
+    {
+      "id": "flags-True-False-True-True",
+      "patch": {},
+      "options": {
+        "self": true,
+        "detail": false,
+        "withUser": true,
+        "nullable": true
+      }
+    },
+    {
+      "id": "flags-True-True-False-False",
+      "patch": {},
+      "options": {
+        "self": true,
+        "detail": true,
+        "withUser": false,
+        "nullable": false
+      }
+    },
+    {
+      "id": "flags-True-True-False-True",
+      "patch": {},
+      "options": {
+        "self": true,
+        "detail": true,
+        "withUser": false,
+        "nullable": true
+      }
+    },
+    {
+      "id": "flags-True-True-True-False",
+      "patch": {},
+      "options": {
+        "self": true,
+        "detail": true,
+        "withUser": true,
+        "nullable": false
+      }
+    },
+    {
+      "id": "flags-True-True-True-True",
+      "patch": {},
+      "options": {
+        "self": true,
+        "detail": true,
+        "withUser": true,
+        "nullable": true
+      }
+    },
+    {
+      "id": "mime-image/jpeg",
+      "patch": {
+        "type": "image/jpeg",
+        "thumbnailUrl": null
+      },
+      "options": {}
+    },
+    {
+      "id": "mime-image/png",
+      "patch": {
+        "type": "image/png",
+        "thumbnailUrl": null
+      },
+      "options": {}
+    },
+    {
+      "id": "mime-image/webp",
+      "patch": {
+        "type": "image/webp",
+        "thumbnailUrl": null
+      },
+      "options": {}
+    },
+    {
+      "id": "mime-image/gif",
+      "patch": {
+        "type": "image/gif",
+        "thumbnailUrl": null
+      },
+      "options": {}
+    },
+    {
+      "id": "mime-image/avif",
+      "patch": {
+        "type": "image/avif",
+        "thumbnailUrl": null
+      },
+      "options": {}
+    },
+    {
+      "id": "mime-image/tiff",
+      "patch": {
+        "type": "image/tiff",
+        "thumbnailUrl": null
+      },
+      "options": {}
+    },
+    {
+      "id": "mime-image/apng",
+      "patch": {
+        "type": "image/apng",
+        "thumbnailUrl": null
+      },
+      "options": {}
+    },
+    {
+      "id": "mime-image/vnd.mozilla.apng",
+      "patch": {
+        "type": "image/vnd.mozilla.apng",
+        "thumbnailUrl": null
+      },
+      "options": {}
+    },
+    {
+      "id": "mime-image/svg+xml",
+      "patch": {
+        "type": "image/svg+xml",
+        "thumbnailUrl": null
+      },
+      "options": {}
+    },
+    {
+      "id": "mime-image/heic",
+      "patch": {
+        "type": "image/heic",
+        "thumbnailUrl": null
+      },
+      "options": {}
+    },
+    {
+      "id": "mime-image/heif",
+      "patch": {
+        "type": "image/heif",
+        "thumbnailUrl": null
+      },
+      "options": {}
+    },
+    {
+      "id": "mime-application/pdf",
+      "patch": {
+        "type": "application/pdf",
+        "thumbnailUrl": null
+      },
+      "options": {}
+    },
+    {
+      "id": "mime-video/mp4",
+      "patch": {
+        "type": "video/mp4",
+        "thumbnailUrl": null
+      },
+      "options": {}
+    },
+    {
+      "id": "mime-video/mp4-empty-thumb",
+      "patch": {
+        "type": "video/mp4",
+        "thumbnailUrl": ""
+      },
+      "options": {}
+    },
+    {
+      "id": "orientation-None",
+      "patch": {
+        "properties": {
+          "width": 1,
+          "height": 2,
+          "orientation": null
+        }
+      },
+      "options": {}
+    },
+    {
+      "id": "orientation-0",
+      "patch": {
+        "properties": {
+          "width": 1,
+          "height": 2,
+          "orientation": 0
+        }
+      },
+      "options": {}
+    },
+    {
+      "id": "orientation-1",
+      "patch": {
+        "properties": {
+          "width": 1,
+          "height": 2,
+          "orientation": 1
+        }
+      },
+      "options": {}
+    },
+    {
+      "id": "orientation-4",
+      "patch": {
+        "properties": {
+          "width": 1,
+          "height": 2,
+          "orientation": 4
+        }
+      },
+      "options": {}
+    },
+    {
+      "id": "orientation-5",
+      "patch": {
+        "properties": {
+          "width": 1,
+          "height": 2,
+          "orientation": 5
+        }
+      },
+      "options": {}
+    },
+    {
+      "id": "orientation-6",
+      "patch": {
+        "properties": {
+          "width": 1,
+          "height": 2,
+          "orientation": 6
+        }
+      },
+      "options": {}
+    },
+    {
+      "id": "orientation-8",
+      "patch": {
+        "properties": {
+          "width": 1,
+          "height": 2,
+          "orientation": 8
+        }
+      },
+      "options": {}
+    },
+    {
+      "id": "remote-False-False-None",
+      "patch": {
+        "uri": "https://remote/a b?x=1",
+        "userHost": "remote",
+        "isLink": false,
+        "webpublicAccessKey": null
+      },
+      "options": {},
+      "external": false,
+      "proxy": true
+    },
+    {
+      "id": "remote-False-False-key",
+      "patch": {
+        "uri": "https://remote/a b?x=1",
+        "userHost": "remote",
+        "isLink": false,
+        "webpublicAccessKey": "key"
+      },
+      "options": {},
+      "external": false,
+      "proxy": true
+    },
+    {
+      "id": "remote-False-False-legacy/key",
+      "patch": {
+        "uri": "https://remote/a b?x=1",
+        "userHost": "remote",
+        "isLink": false,
+        "webpublicAccessKey": "legacy/key"
+      },
+      "options": {},
+      "external": false,
+      "proxy": true
+    },
+    {
+      "id": "remote-False-True-None",
+      "patch": {
+        "uri": "https://remote/a b?x=1",
+        "userHost": "remote",
+        "isLink": true,
+        "webpublicAccessKey": null
+      },
+      "options": {},
+      "external": false,
+      "proxy": true
+    },
+    {
+      "id": "remote-False-True-key",
+      "patch": {
+        "uri": "https://remote/a b?x=1",
+        "userHost": "remote",
+        "isLink": true,
+        "webpublicAccessKey": "key"
+      },
+      "options": {},
+      "external": false,
+      "proxy": true
+    },
+    {
+      "id": "remote-False-True-legacy/key",
+      "patch": {
+        "uri": "https://remote/a b?x=1",
+        "userHost": "remote",
+        "isLink": true,
+        "webpublicAccessKey": "legacy/key"
+      },
+      "options": {},
+      "external": false,
+      "proxy": true
+    },
+    {
+      "id": "remote-True-False-None",
+      "patch": {
+        "uri": "https://remote/a b?x=1",
+        "userHost": "remote",
+        "isLink": false,
+        "webpublicAccessKey": null
+      },
+      "options": {},
+      "external": true,
+      "proxy": true
+    },
+    {
+      "id": "remote-True-False-key",
+      "patch": {
+        "uri": "https://remote/a b?x=1",
+        "userHost": "remote",
+        "isLink": false,
+        "webpublicAccessKey": "key"
+      },
+      "options": {},
+      "external": true,
+      "proxy": true
+    },
+    {
+      "id": "remote-True-False-legacy/key",
+      "patch": {
+        "uri": "https://remote/a b?x=1",
+        "userHost": "remote",
+        "isLink": false,
+        "webpublicAccessKey": "legacy/key"
+      },
+      "options": {},
+      "external": true,
+      "proxy": true
+    },
+    {
+      "id": "remote-True-True-None",
+      "patch": {
+        "uri": "https://remote/a b?x=1",
+        "userHost": "remote",
+        "isLink": true,
+        "webpublicAccessKey": null
+      },
+      "options": {},
+      "external": true,
+      "proxy": true
+    },
+    {
+      "id": "remote-True-True-key",
+      "patch": {
+        "uri": "https://remote/a b?x=1",
+        "userHost": "remote",
+        "isLink": true,
+        "webpublicAccessKey": "key"
+      },
+      "options": {},
+      "external": true,
+      "proxy": true
+    },
+    {
+      "id": "remote-True-True-legacy/key",
+      "patch": {
+        "uri": "https://remote/a b?x=1",
+        "userHost": "remote",
+        "isLink": true,
+        "webpublicAccessKey": "legacy/key"
+      },
+      "options": {},
+      "external": true,
+      "proxy": true
+    },
+    {
+      "id": "saved-thumb-video/mp4",
+      "patch": {
+        "type": "video/mp4",
+        "thumbnailUrl": "https://storage/thumb"
+      },
+      "options": {}
+    },
+    {
+      "id": "saved-thumb-image/png",
+      "patch": {
+        "type": "image/png",
+        "thumbnailUrl": "https://storage/thumb"
+      },
+      "options": {}
+    },
+    {
+      "id": "video-empty-generator",
+      "patch": {
+        "type": "video/mp4"
+      },
+      "options": {},
+      "video": ""
+    }
+  ],
+  "names": [
+    "a",
+    " a ",
+    ".png",
+    "ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ",
+    "",
+    " \n ",
+    "a/b",
+    "a\\b",
+    "..",
+    "a..b",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+  ],
+  "doubles": [
+    "Repository exact filters and failures; actual PostgreSQL exercised separately.",
+    "RoleService: only actor/owner named mod is a moderator. API common authorization exercised in real HTTP separately.",
+    "UserEntityService.pack returns fixture {id,username}; real UserLite preloading verified separately.",
+    "ID parser, file pack/nullable, folder pack, MIME predicate, URL query and video thumbnail methods execute pinned source."
+  ]
+}

@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { createDriveFilesHttp } from './drive-files-http.js';
 import { createDriveFoldersHttp } from './drive-folders-http.js';
 import { registerHttpAppWork } from './http-app-work.js';
 import { createInstanceAdminHttp } from './instance-admin-http.js';
@@ -22,6 +23,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 	const note = prepareNoteRoutes(resources, config);
 	const folders = createDriveFoldersHttp(resources, config);
 	const app = createRoleHttpApp(resources, config)
+		.route('/', createDriveFilesHttp(resources, config))
 		.route('/', createActorHttp(resources, config))
 		.route('/', createInstanceAdminHttp(resources))
 		.route('/', createUrlPreviewHttp(resources))
