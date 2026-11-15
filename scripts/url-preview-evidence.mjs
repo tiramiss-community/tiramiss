@@ -7,6 +7,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { readPrePreviewFixture } from './url-preview-fixture-evidence.mjs';
 import { validateDriveFoldersSuccessor } from './drive-folders-evidence.mjs';
+import { pubsubSuccessorFiles, readPreDriveFolderPubsub } from './drive-folder-pubsub-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/url-preview/';
@@ -105,6 +106,7 @@ export function validateUrlPreviewSuccessor(value, readFile = read, optional = o
 }
 
 export function readPreUrlPreview(path, encoding, readFile = read, optional = optionalRead) {
+ if (pubsubSuccessorFiles.includes(path)) return readPreDriveFolderPubsub(path, encoding, readFile, optional);
  const bytes = successorFiles.includes(path) ? Buffer.from(validateUrlPreviewSuccessor(record(readFile), readFile, optional)[path]) : readPrePreviewFixture(path, undefined, readFile, optional);
  return encoding ? bytes.toString(encoding) : bytes;
 }

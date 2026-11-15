@@ -2881,10 +2881,11 @@
         "packages/backend-next/test/integration/drive-folders.test.ts",
         "docs/superpowers/compatibility/drive-folders/source-probe.mjs",
         "docs/superpowers/compatibility/drive-folders/observations.json",
-        "packages/backend-next/test/unit/drive/folder-drain.test.ts"
+        "packages/backend-next/test/unit/drive/folder-drain.test.ts",
+        "packages/backend-next/test/processes/drive-folder-drain.test.ts"
       ],
-      "note": "#278: owner-scoped HTTP/PG/Redis folder behavior and fixed-source finite comparison. Authenticated create10/hour/Role factor/order included. Shared anonymous-IP gate/config remains #178/#138; no universal ApiCallService/full source-server parity. docs/superpowers/compatibility/drive-folders/README.md",
-      "evidenceRevision": "c5b6b9574fbaf47340b766f9e11b69dc0b67c5c4"
+      "note": "#278: owner-scoped HTTP/PG/Redis folder behavior and fixed-source finite comparison. Authenticated create10/hour/Role factor/order included. Shared anonymous-IP gate/config remains #178/#138; no universal ApiCallService/full source-server parity. docs/superpowers/compatibility/drive-folders/README.md Pubsub review fix reuses configured publisher; real split/default Redis tests70 and process2. Separate pubsub-fix-evidence.json preserves initial c5 history.",
+      "evidenceRevision": "bf0ef2115eb202250713800c61c26e5af32f4952"
     },
     "api:drive/folders/delete": {
       "status": "verified",
@@ -2899,10 +2900,11 @@
         "packages/backend-next/test/integration/drive-folders.test.ts",
         "docs/superpowers/compatibility/drive-folders/source-probe.mjs",
         "docs/superpowers/compatibility/drive-folders/observations.json",
-        "packages/backend-next/test/unit/drive/folder-drain.test.ts"
+        "packages/backend-next/test/unit/drive/folder-drain.test.ts",
+        "packages/backend-next/test/processes/drive-folder-drain.test.ts"
       ],
-      "note": "#278: owner-scoped HTTP/PG/Redis folder behavior and fixed-source finite comparison. Authenticated create10/hour/Role factor/order included. Shared anonymous-IP gate/config remains #178/#138; no universal ApiCallService/full source-server parity. docs/superpowers/compatibility/drive-folders/README.md",
-      "evidenceRevision": "c5b6b9574fbaf47340b766f9e11b69dc0b67c5c4"
+      "note": "#278: owner-scoped HTTP/PG/Redis folder behavior and fixed-source finite comparison. Authenticated create10/hour/Role factor/order included. Shared anonymous-IP gate/config remains #178/#138; no universal ApiCallService/full source-server parity. docs/superpowers/compatibility/drive-folders/README.md Pubsub review fix reuses configured publisher; real split/default Redis tests70 and process2. Separate pubsub-fix-evidence.json preserves initial c5 history.",
+      "evidenceRevision": "bf0ef2115eb202250713800c61c26e5af32f4952"
     },
     "api:drive/folders/find": {
       "status": "verified",
@@ -2917,10 +2919,11 @@
         "packages/backend-next/test/integration/drive-folders.test.ts",
         "docs/superpowers/compatibility/drive-folders/source-probe.mjs",
         "docs/superpowers/compatibility/drive-folders/observations.json",
-        "packages/backend-next/test/unit/drive/folder-drain.test.ts"
+        "packages/backend-next/test/unit/drive/folder-drain.test.ts",
+        "packages/backend-next/test/processes/drive-folder-drain.test.ts"
       ],
-      "note": "#278: owner-scoped HTTP/PG/Redis folder behavior and fixed-source finite comparison. Authenticated create10/hour/Role factor/order included. Shared anonymous-IP gate/config remains #178/#138; no universal ApiCallService/full source-server parity. docs/superpowers/compatibility/drive-folders/README.md",
-      "evidenceRevision": "c5b6b9574fbaf47340b766f9e11b69dc0b67c5c4"
+      "note": "#278: owner-scoped HTTP/PG/Redis folder behavior and fixed-source finite comparison. Authenticated create10/hour/Role factor/order included. Shared anonymous-IP gate/config remains #178/#138; no universal ApiCallService/full source-server parity. docs/superpowers/compatibility/drive-folders/README.md Pubsub review fix reuses configured publisher; real split/default Redis tests70 and process2. Separate pubsub-fix-evidence.json preserves initial c5 history.",
+      "evidenceRevision": "bf0ef2115eb202250713800c61c26e5af32f4952"
     },
     "api:drive/folders/show": {
       "status": "verified",
@@ -2935,10 +2938,11 @@
         "packages/backend-next/test/integration/drive-folders.test.ts",
         "docs/superpowers/compatibility/drive-folders/source-probe.mjs",
         "docs/superpowers/compatibility/drive-folders/observations.json",
-        "packages/backend-next/test/unit/drive/folder-drain.test.ts"
+        "packages/backend-next/test/unit/drive/folder-drain.test.ts",
+        "packages/backend-next/test/processes/drive-folder-drain.test.ts"
       ],
-      "note": "#278: owner-scoped HTTP/PG/Redis folder behavior and fixed-source finite comparison. Authenticated create10/hour/Role factor/order included. Shared anonymous-IP gate/config remains #178/#138; no universal ApiCallService/full source-server parity. docs/superpowers/compatibility/drive-folders/README.md",
-      "evidenceRevision": "c5b6b9574fbaf47340b766f9e11b69dc0b67c5c4"
+      "note": "#278: owner-scoped HTTP/PG/Redis folder behavior and fixed-source finite comparison. Authenticated create10/hour/Role factor/order included. Shared anonymous-IP gate/config remains #178/#138; no universal ApiCallService/full source-server parity. docs/superpowers/compatibility/drive-folders/README.md Pubsub review fix reuses configured publisher; real split/default Redis tests70 and process2. Separate pubsub-fix-evidence.json preserves initial c5 history.",
+      "evidenceRevision": "bf0ef2115eb202250713800c61c26e5af32f4952"
     },
     "api:drive/folders/update": {
       "status": "verified",
@@ -2953,10 +2957,11 @@
         "packages/backend-next/test/integration/drive-folders.test.ts",
         "docs/superpowers/compatibility/drive-folders/source-probe.mjs",
         "docs/superpowers/compatibility/drive-folders/observations.json",
-        "packages/backend-next/test/unit/drive/folder-drain.test.ts"
+        "packages/backend-next/test/unit/drive/folder-drain.test.ts",
+        "packages/backend-next/test/processes/drive-folder-drain.test.ts"
       ],
-      "note": "#278: owner-scoped HTTP/PG/Redis folder behavior and fixed-source finite comparison. Authenticated create10/hour/Role factor/order included. Shared anonymous-IP gate/config remains #178/#138; no universal ApiCallService/full source-server parity. docs/superpowers/compatibility/drive-folders/README.md",
-      "evidenceRevision": "c5b6b9574fbaf47340b766f9e11b69dc0b67c5c4"
+      "note": "#278: owner-scoped HTTP/PG/Redis folder behavior and fixed-source finite comparison. Authenticated create10/hour/Role factor/order included. Shared anonymous-IP gate/config remains #178/#138; no universal ApiCallService/full source-server parity. docs/superpowers/compatibility/drive-folders/README.md Pubsub review fix reuses configured publisher; real split/default Redis tests70 and process2. Separate pubsub-fix-evidence.json preserves initial c5 history.",
+      "evidenceRevision": "bf0ef2115eb202250713800c61c26e5af32f4952"
     }
   }
 }

@@ -51,8 +51,8 @@ test('source observations bind the exact corpus, fixed source files and literal 
   ['quota-before-suspended-and-scope', 'RATE_LIMIT_EXCEEDED'], ['redis-before-suspended-and-scope', 'Redis unavailable'], ['factor-zero', undefined],
  ]);
 });
-test('finite folder reader uses builtins only and cannot spawn source/Git subprocesses', () => {
+test('finite folder reader uses builtins and its narrow pubsub successor only and cannot spawn source/Git subprocesses', () => {
  const source = read('scripts/drive-folders-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:')));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || match[1] === './drive-folder-pubsub-evidence.mjs'));
  assert(!/execFile|spawn|import\(/.test(source));
 });

@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { validateDriveFolderPubsubSuccessor } from './drive-folder-pubsub-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/drive-folders/';
 const evidencePath = directory + 'current-evidence.json';
@@ -24,7 +25,9 @@ export const successorFiles = Object.freeze([
  'packages/backend-next/src/composition/http-app.ts',
  'packages/backend-next/test/unit/composition/http-app.test.ts',
 ]);
-export function validateDriveFoldersSuccessor(value, readFile = read, optional = optionalRead) {
+export function validateDriveFoldersSuccessor(value, rawRead = read, optional = optionalRead) {
+ const previousPubsub = validateDriveFolderPubsubSuccessor(undefined, rawRead, optional);
+ const readFile = path => path in previousPubsub ? Buffer.from(previousPubsub[path]) : rawRead(path);
  if (value === undefined) {
   const bytes = readFile(evidencePath);
   assert.equal(sha(bytes), seal, 'folder current receipt seal');
