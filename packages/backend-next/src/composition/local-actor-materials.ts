@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { createActorFileReader, createActorProfileReader } from '../platform/database/local-actors.js';
-import { readMeta } from '../platform/database/meta.js';
+import type { MetaReader } from '../platform/meta-cache.js';
 import type { LocalActorFacts, LocalActorMaterials } from '../modules/federation/public.js';
 import type { RuntimeConfig } from '../config/types.js';
 import type { EntityManager } from 'typeorm';
 
-export function createLocalActorMaterialsReader(manager: EntityManager, config: RuntimeConfig): (user: LocalActorFacts) => Promise<LocalActorMaterials> {
+export function createLocalActorMaterialsReader(manager: EntityManager, config: RuntimeConfig, readMeta: MetaReader['fetch']): (user: LocalActorFacts) => Promise<LocalActorMaterials> {
 	const readFile = createActorFileReader(manager);
 	const readProfile = createActorProfileReader(manager);
 	const mediaProxy = config.noteMedia?.mediaProxy ?? `${new URL(config.url).origin}/proxy`;
@@ -19,8 +19,7 @@ export function createLocalActorMaterialsReader(manager: EntityManager, config: 
 			user.bannerId ? readFile(user.bannerId) : null,
 			readProfile(user.id),
 		]);
-		// Upstream injects in-memory Meta; this composition reads its current DB state.
-		const { iconUrl, bannerUrl, proxyRemoteFiles } = await readMeta(manager);
+		const { iconUrl, bannerUrl, proxyRemoteFiles } = await readMeta();
 		return { profile, media: { avatar, banner, iconUrl, bannerUrl, proxyRemoteFiles, mediaProxy, externalMediaProxyEnabled } };
 	};
 }

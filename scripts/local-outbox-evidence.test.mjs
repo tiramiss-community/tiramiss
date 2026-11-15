@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { metaCachePredecessorFiles } from './meta-cache-evidence.mjs';
+import { ciFixtureFiles } from './meta-cache-ci-fixtures-evidence.mjs';
 import { createHash } from 'node:crypto';
 import fs, { readFileSync } from 'node:fs';
 import { syncBuiltinESMExports } from 'node:module';
@@ -72,9 +74,13 @@ test('each actual raw log and original host receipt must agree when available', 
  assert.throws(() => validateOutboxSuccessor(record(), read, p => p === path ? Buffer.from('{}') : null), /actual receipt drift/);
 });
 
-test('outside six is exact passthrough, including corpora, receipts and new files', () => {
+test('outside six preserves declared Meta predecessors and otherwise passes current bytes through', () => {
  for (const path of Object.keys(record().inputs).filter(p => !successorFiles.includes(p))) {
-  assert.deepEqual(readPreOutbox(path), read(path));
+  if (metaCachePredecessorFiles.includes(path) || ciFixtureFiles.includes(path)) {
+   assert.equal(sha(readPreOutbox(path)), record().inputs[path]);
+  } else {
+   assert.deepEqual(readPreOutbox(path), read(path));
+  }
  }
  assert.equal(readPreOutbox('arbitrary.ts', 'utf8', () => Buffer.from('live')), 'live');
 });

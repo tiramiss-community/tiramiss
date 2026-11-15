@@ -13,6 +13,7 @@ function fixture() {
 	const events: string[] = [];
 	const repository = { find: vi.fn(async () => [{ federation: 'all' }]), findOne: vi.fn(async () => null), findOneBy: vi.fn(async () => null), findOneByOrFail: vi.fn(async () => ({ federation: 'all' })), findBy: vi.fn(async () => []) };
 	const resources = {
+		meta: { fetch: async () => (await repository.find())[0] },
 		instanceAdministration: { updateInstance: vi.fn(), refreshMetadata: vi.fn() },
 		dataSource: { manager: { getRepository: () => repository } },
 		logger: { error: vi.fn() },

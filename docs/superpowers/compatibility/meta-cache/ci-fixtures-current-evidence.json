@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "issue": 317,
+  "pullRequest": 597,
+  "scope": "CI-only fixture seam and explicit cached-Meta preparation; no production change",
+  "baseRevision": "0081b37c6eec96225f25ca6502b25cdbc199c0db",
+  "runtimeRevision": "1a7ff81026441b262d37c8171d381d39c45deddf",
+  "measuredWorkingTree": true,
+  "nodeVersion": "26.4.0",
+  "inputs": {
+    "packages/backend-next/test/integration/actor-alias-key.test.ts": "21e4c43d8e475f896e7d470c73adab6818aacd6afd7c031ac0e2cee788aa6887",
+    "packages/backend-next/test/integration/deliver-queue.test.ts": "aec7ff85ffa2aa739a299ed27f8350e263db13f20ecd02681af9e3059518f230",
+    "packages/backend-next/test/integration/instance-metadata.test.ts": "99485f6bd247dff037872800341157307a5c909b50014a85642f964fcaefe13f",
+    "packages/backend-next/test/integration/remote-user.test.ts": "e6f1e3fabc937cd2bff5d74a98042049b9661af7362f62b59c20f27b5f833126",
+    "packages/backend-next/test/unit/worker-startup.test.ts": "63007c0632740d8877f2bdc3f969e7e994f1c0be2c0a8086140dc5b13a3c3d9f"
+  },
+  "inputsAfter": {
+    "packages/backend-next/test/integration/actor-alias-key.test.ts": "21e4c43d8e475f896e7d470c73adab6818aacd6afd7c031ac0e2cee788aa6887",
+    "packages/backend-next/test/integration/deliver-queue.test.ts": "aec7ff85ffa2aa739a299ed27f8350e263db13f20ecd02681af9e3059518f230",
+    "packages/backend-next/test/integration/instance-metadata.test.ts": "99485f6bd247dff037872800341157307a5c909b50014a85642f964fcaefe13f",
+    "packages/backend-next/test/integration/remote-user.test.ts": "e6f1e3fabc937cd2bff5d74a98042049b9661af7362f62b59c20f27b5f833126",
+    "packages/backend-next/test/unit/worker-startup.test.ts": "63007c0632740d8877f2bdc3f969e7e994f1c0be2c0a8086140dc5b13a3c3d9f"
+  },
+  "noInputDrift": true,
+  "validatedBy": {
+    "packages/backend-next/test/integration/actor-alias-key.test.ts": [
+      "near-integration",
+      "integration",
+      "typecheck"
+    ],
+    "packages/backend-next/test/integration/deliver-queue.test.ts": [
+      "near-integration",
+      "integration",
+      "typecheck"
+    ],
+    "packages/backend-next/test/integration/instance-metadata.test.ts": [
+      "near-integration",
+      "integration",
+      "typecheck"
+    ],
+    "packages/backend-next/test/integration/remote-user.test.ts": [
+      "near-integration",
+      "integration",
+      "typecheck"
+    ],
+    "packages/backend-next/test/unit/worker-startup.test.ts": [
+      "worker-startup",
+      "unit",
+      "typecheck"
+    ]
+  },
+  "runs": [
+    {
+      "name": "worker-startup",
+      "command": "PATH=/tmp/tiramiss-s1-node26/bin:$PATH pnpm --filter backend-next test test/unit/worker-startup.test.ts",
+      "nodeVersion": "26.4.0",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-317-worker-startup-green.log",
+      "logSha256": "3d9963b7f51af7f5b4d9ba50dbb965240aa075c6d0c50fc7795eb5ca9495394f",
+      "passed": 11,
+      "files": 1
+    },
+    {
+      "name": "unit",
+      "command": "PATH=/tmp/tiramiss-s1-node26/bin:$PATH pnpm --filter backend-next test",
+      "nodeVersion": "26.4.0",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-317-ci-followup-full-unit-node26.log",
+      "logSha256": "e9c1bcbd4a66cdfe08004866fc4f2232d1013677519e9bcff15c9d55225eeefc",
+      "passed": 4371,
+      "files": 119
+    },
+    {
+      "name": "near-integration",
+      "command": "PATH=/tmp/tiramiss-s1-node26/bin:$PATH BACKEND_NEXT_TEST_DB_PORT=55437 BACKEND_NEXT_TEST_REDIS_PORT=56397 BACKEND_NEXT_TEST_PUBSUB_REDIS_PORT=56398 BACKEND_NEXT_TEST_MEILI_PORT=57797 pnpm --filter backend-next test:integration test/integration/actor-alias-key.test.ts test/integration/deliver-queue.test.ts test/integration/instance-metadata.test.ts test/integration/remote-user.test.ts",
+      "nodeVersion": "26.4.0",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-317-ci-integration-near-green.log",
+      "logSha256": "7b0a92de4df51a1a205aac39d7663f62b23d224aa2243b7eb1aaabfa1ccf4a51",
+      "passed": 271,
+      "files": 4
+    },
+    {
+      "name": "integration",
+      "command": "PATH=/tmp/tiramiss-s1-node26/bin:$PATH BACKEND_NEXT_TEST_DB_PORT=55437 BACKEND_NEXT_TEST_REDIS_PORT=56397 BACKEND_NEXT_TEST_PUBSUB_REDIS_PORT=56398 BACKEND_NEXT_TEST_MEILI_PORT=57797 pnpm --filter backend-next test:integration",
+      "nodeVersion": "26.4.0",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-317-ci-followup-full-integration-node26.log",
+      "logSha256": "ad3774741d984b8f58574984128c7c24273492b163e2c6806f2156343659c6ab",
+      "passed": 1611,
+      "files": 56
+    },
+    {
+      "name": "typecheck",
+      "command": "PATH=/tmp/tiramiss-s1-node26/bin:$PATH pnpm --filter backend-next... typecheck",
+      "nodeVersion": "26.4.0",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-317-ci-fixture-typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    }
+  ],
+  "postingComplete": false,
+  "upstreamFullServerMeasured": false,
+  "unitScopeNote": "The unit run validates the changed worker fixture; later integration-only edits are not imported by the unit test configuration."
+}

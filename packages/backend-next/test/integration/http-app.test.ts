@@ -25,6 +25,7 @@ beforeAll(async () => {
 	remoteId = createIdCodec(database.config.id).newId(Date.now());
 	seed = await seedRoleHttp(resources.dataSource);
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+	await resources.meta.fetch(true);
 	await resources.dataSource.getRepository(MiUser).insert({ id: remoteId, username: 'remote', usernameLower: 'remote', host: 'remote.test', uri: 'https://remote.test/users/remote' });
 	app = createBackendHttpApp(resources, database.config);
 });

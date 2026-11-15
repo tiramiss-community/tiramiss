@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { readForDriveFileEvidence } from './joint-drive-meta-evidence.mjs';
 import { driveFilePredecessorFiles, readPreDriveFiles } from './drive-files-evidence.mjs';
 import { validateDriveFolderPubsubSuccessor } from './drive-folder-pubsub-evidence.mjs';
 import { validateDriveFoldersSuccessor } from './drive-folders-evidence.mjs';
@@ -35,7 +36,7 @@ test('bounded file-read transition preserves three exact historical inputs witho
  assert.deepEqual(Object.keys(saved.files), driveFilePredecessorFiles);
  for (const path of driveFilePredecessorFiles) {
   assert.equal(readPreDriveFiles(path, 'utf8'), saved.files[path]);
-  assert.equal(sha(read(path)), saved.currentInputs[path]);
+  assert.equal(sha(readForDriveFileEvidence(path, read)), saved.currentInputs[path]);
   assert.notEqual(sha(Buffer.from(saved.files[path])), saved.currentInputs[path]);
  }
  assert.doesNotThrow(() => validateDriveFolderPubsubSuccessor(undefined, read, () => null));
@@ -57,6 +58,6 @@ test('file transition rejects forged preimages and every fresh second read; unre
  assert.throws(() => readPreDriveFiles(path, undefined, changing), /measured current input drift/);
  assert.equal(readPreDriveFiles('unrelated', 'utf8', () => Buffer.from('live')), 'live');
  const source = read('scripts/drive-files-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:')));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => (match[1].startsWith('node:') || match[1] === './joint-drive-meta-evidence.mjs')));
  assert(!/execFile|spawn|import\(/.test(source));
 });

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { readForDriveFileEvidence } from './joint-drive-meta-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 const root = new URL('../', import.meta.url);
@@ -28,7 +29,7 @@ export function readPreDriveFiles(file, encoding, readFile = read) {
  assert.deepEqual(Object.keys(previous.files), driveFilePredecessorFiles);
  assert.deepEqual(Object.keys(previous.currentInputs), driveFilePredecessorFiles);
  for (const input of driveFilePredecessorFiles) {
-  assert.equal(sha(readFile(input)), previous.currentInputs[input], `drive file measured current input drift: ${input}`);
+  assert.equal(sha(readForDriveFileEvidence(input, readFile)), previous.currentInputs[input], `drive file measured current input drift: ${input}`);
   assert.notEqual(sha(Buffer.from(previous.files[input])), previous.currentInputs[input]);
  }
  const prior = Buffer.from(previous.files[file]);

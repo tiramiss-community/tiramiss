@@ -30,6 +30,7 @@ beforeAll(async () => {
 	resources = await connectResources(database.config, createLogger('local-follow-collections-test', () => {}));
 	await resources.dataSource.getRepository(MiMeta).deleteAll();
 	await resources.dataSource.getRepository(MiMeta).insert({ id: 'singleton', federation: 'all' });
+	await resources.meta.fetch(true);
 	server = await listenHttp(createBackendHttpApp(resources, database.config), { port: 0 });
 	port = (server.address() as { port: number }).port;
 });
@@ -48,6 +49,7 @@ async function seed(c: FollowCollectionCase) {
 	await manager.query('TRUNCATE TABLE "user" CASCADE');
 	await manager.getRepository(MiMeta).deleteAll();
 	await manager.getRepository(MiMeta).insert({ id: 'singleton', federation: c.federation === 'none' ? 'none' : 'all' });
+	await resources.meta.fetch(true);
 	const size = c.size ?? followCorpus.defaults.size;
 	await manager.getRepository(MiUser).insert({ id: 'alice', username: 'alice', usernameLower: 'alice', host: c.ownerHost ?? null, followersCount: 123, followingCount: 456, isSuspended: c.suspended ?? false });
 	if (!c.missingProfile) {
@@ -92,7 +94,7 @@ test.each(followCorpus.cases)('$id through normal listening HTTP and PostgreSQL 
 		profile: vi.spyOn(manager.getRepository(MiUserProfile), 'findOneByOrFail'),
 		relations: vi.spyOn(manager.getRepository(MiFollowing), 'find'),
 		member: vi.spyOn(manager.getRepository(MiUser), 'findOneByOrFail'),
-		meta: vi.spyOn(manager.getRepository(MiMeta), 'find'),
+		meta: vi.spyOn(resources.meta, 'fetch'),
 	};
 	if (pathReads) {
 		for (const spy of Object.values(pathReads)) {
@@ -213,7 +215,7 @@ test.each(['followers', 'following'] as const)('%s follows every next link with 
 	expect(await snapshot()).toEqual(before);
 });
 
-test('fresh profile and Meta reads change the next response; cached HTTP success is not held in process', async () => {
+test('fresh profile reads and explicitly reloaded Meta change the next response', async () => {
 	await seed({ id: 'fresh', direction: 'followers' });
 	const manager = resources.dataSource.manager;
 	expect((await request('/users/alice/followers')).headers.get('cache-control')).toBe('public, max-age=180');
@@ -222,29 +224,34 @@ test('fresh profile and Meta reads change the next response; cached HTTP success
 	expect(denied.status).toBe(403);
 	expect(denied.headers.get('cache-control')).toBe('public, max-age=30');
 	await manager.getRepository(MiMeta).update('singleton', { federation: 'none' });
+	await resources.meta.fetch(true);
 	const disabled = await request('/users/alice/followers?cursor=a&cursor=b');
 	expect(disabled.status).toBe(403);
 	expect(disabled.headers.get('cache-control')).toBeNull();
 	await manager.getRepository(MiMeta).update('singleton', { federation: 'all' });
+	await resources.meta.fetch(true);
 	await manager.getRepository(MiUserProfile).update('alice', { followersVisibility: 'public' });
 	await manager.getRepository(MiUser).update('alice', { followersCount: 987 });
 	expect(await (await request('/users/alice/followers')).json()).toMatchObject({ totalItems: 987 });
 });
 
-test('Meta initialization is the existing permitted write; read failure returns an uncached 500 and recovers', async () => {
+test('Meta cache retains warm state; noCache initializes an empty DB and reports read failure', async () => {
 	await seed({ id: 'meta', direction: 'following' });
 	const repo = resources.dataSource.getRepository(MiMeta);
 	await repo.delete('singleton');
+	expect((await request('/users/alice/following')).status).toBe(200);
+	await resources.meta.fetch(true);
 	expect((await request('/users/alice/following')).status).toBe(403);
 	expect((await repo.find()).map(row => row.id)).toEqual(['x']);
 	await repo.delete('x');
 	await repo.insert({ id: 'singleton', federation: 'all' });
+	await resources.meta.fetch(true);
 	const fault = vi.spyOn(repo, 'find').mockRejectedValue(Error('Meta unavailable'));
 	try {
+		await expect(resources.meta.fetch(true)).rejects.toThrow('Meta unavailable');
 		const response = await request('/users/alice/following');
-		expect(response.status).toBe(500);
-		expect(response.headers.get('cache-control')).toBeNull();
-		expect(await response.json()).toMatchObject({ error: 'Internal Server Error' });
+		expect(response.status).toBe(200);
+		expect(response.headers.get('cache-control')).toBe('public, max-age=180');
 	} finally {
 		fault.mockRestore();
 	}

@@ -1,0 +1,92 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "input": {
+    "path": "packages/backend/src/core/MetaService.ts",
+    "sha256": "f787e51b0ace8f230f2f9e908739e5e2b08251ff02e6ac86749bd02cf27de7eb"
+  },
+  "methodExtraction": "literal constructor/fetch/onMessage/dispose with transactional repository, pubsub and timer doubles; not full upstream server or PostgreSQL",
+  "observations": [
+    {
+      "id": "newest-id",
+      "cache": {
+        "id": "z",
+        "name": "new"
+      },
+      "reads": 1
+    },
+    {
+      "id": "cache-hit",
+      "cache": {
+        "id": "z",
+        "name": "new"
+      },
+      "reads": 1
+    },
+    {
+      "id": "no-cache",
+      "cache": {
+        "id": "z",
+        "name": "database"
+      },
+      "reads": 2
+    },
+    {
+      "id": "notification-after",
+      "cache": {
+        "id": "z",
+        "name": "event",
+        "rootUser": null
+      },
+      "reads": 2
+    },
+    {
+      "id": "unrelated-event",
+      "cache": {
+        "id": "z",
+        "name": "event",
+        "rootUser": null
+      },
+      "reads": 2
+    },
+    {
+      "id": "fetch-overwrites-notification",
+      "cache": {
+        "id": "z",
+        "name": "database"
+      },
+      "reads": 3
+    },
+    {
+      "id": "failed-read-retains-cache",
+      "cache": {
+        "id": "z",
+        "name": "database"
+      },
+      "reads": 4
+    },
+    {
+      "id": "periodic-reload",
+      "cache": {
+        "id": "z",
+        "name": "periodic"
+      },
+      "reads": 5
+    },
+    {
+      "id": "empty-initialization",
+      "cache": {
+        "id": "x"
+      },
+      "reads": 6
+    }
+  ],
+  "stop": {
+    "timerCleared": true,
+    "listenerRemoved": true
+  },
+  "limitations": [
+    "in-flight fetch can overwrite a newer event",
+    "source periodic rejection is unhandled; new implementation reports it",
+    "source dispose does not wait for in-flight reads; new process shutdown drains them"
+  ]
+}

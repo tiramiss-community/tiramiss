@@ -5,6 +5,7 @@
 import { generateKeyPairSync } from 'node:crypto';
 import { MiMeta } from 'backend-upstream/entities';
 import { afterAll, afterEach, beforeAll, expect, test, vi } from 'vitest';
+import { readMeta } from '../../../src/platform/database/meta.js';
 import { createRemoteUsers } from '../../../src/composition/remote-users.js';
 import { createOutboundHttpClient } from '../../../src/composition/outbound-http.js';
 import { createDataSource } from '../../../src/platform/database/data-source.js';
@@ -44,6 +45,7 @@ function ports(meta: Partial<MiMeta> = {}, selfUrl = 'http://local.test') {
 	const outboundHttp = createOutboundHttpClient(config);
 	clients.push(outboundHttp);
 	return createRemoteUsers({
+		meta: { fetch: () => readMeta(dataSource.manager) },
 		logger: { info() { }, error() { } }, remoteEmojis: { extract: async () => [] }, actorInstanceRegistration: { start: () => { } }, userHashtags: {
 			start: () => {
 				throw Error('unexpected actor mutation');
