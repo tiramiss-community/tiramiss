@@ -1,0 +1,529 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "methodExtraction": "literal method bodies with cache and Redis publication doubles; finite warm-cache projection, not live upstream server",
+  "inputs": {
+    "packages/backend/src/core/GlobalEventService.ts": "4cca6fcbc95dcc3b61c5ca8ab440ae6a0a302776f8ea44fef33dfdb43245bae8",
+    "packages/backend/src/core/UserWebhookService.ts": "068fbc86c881a5a8beb13402597fdd5ac29007368a3110808ed4b5a741ea4462",
+    "packages/backend/src/core/AntennaService.ts": "590586f1aa251369b6d20f43bc7d4b2f9dce12f1967a886f987653201946ec44",
+    "packages/backend/src/core/RoleService.ts": "d92aab8651aa6682176998e34cbf95552e9863a98e240373ef518f7eecff93b3"
+  },
+  "observations": [
+    {
+      "type": "webhookCreated",
+      "envelope": {
+        "topic": "source.test:444",
+        "payload": {
+          "channel": "internal",
+          "message": {
+            "type": "webhookCreated",
+            "body": {
+              "id": "hook",
+              "userId": "owner",
+              "url": "https://hook.test",
+              "secret": "",
+              "active": true,
+              "on": [
+                "note"
+              ]
+            }
+          }
+        }
+      },
+      "expected": {
+        "hooks": [
+          {
+            "id": "hook",
+            "secret": "",
+            "on": [
+              "note"
+            ]
+          }
+        ],
+        "antennas": [],
+        "roles": [],
+        "assignments": []
+      }
+    },
+    {
+      "type": "webhookUpdated",
+      "envelope": {
+        "topic": "source.test:444",
+        "payload": {
+          "channel": "internal",
+          "message": {
+            "type": "webhookUpdated",
+            "body": {
+              "id": "hook",
+              "userId": "owner",
+              "url": "https://hook.test",
+              "secret": "updated",
+              "active": true,
+              "on": [
+                "note"
+              ]
+            }
+          }
+        }
+      },
+      "expected": {
+        "hooks": [
+          {
+            "id": "hook",
+            "secret": "updated",
+            "on": [
+              "note"
+            ]
+          }
+        ],
+        "antennas": [],
+        "roles": [],
+        "assignments": []
+      }
+    },
+    {
+      "type": "webhookUpdated",
+      "envelope": {
+        "topic": "source.test:444",
+        "payload": {
+          "channel": "internal",
+          "message": {
+            "type": "webhookUpdated",
+            "body": {
+              "id": "hook",
+              "userId": "owner",
+              "url": "https://hook.test",
+              "secret": "",
+              "active": false,
+              "on": [
+                "note"
+              ]
+            }
+          }
+        }
+      },
+      "expected": {
+        "hooks": [],
+        "antennas": [],
+        "roles": [],
+        "assignments": []
+      }
+    },
+    {
+      "type": "webhookUpdated",
+      "envelope": {
+        "topic": "source.test:444",
+        "payload": {
+          "channel": "internal",
+          "message": {
+            "type": "webhookUpdated",
+            "body": {
+              "id": "hook",
+              "userId": "owner",
+              "url": "https://hook.test",
+              "secret": "",
+              "active": true,
+              "on": [
+                "note"
+              ]
+            }
+          }
+        }
+      },
+      "expected": {
+        "hooks": [
+          {
+            "id": "hook",
+            "secret": "",
+            "on": [
+              "note"
+            ]
+          }
+        ],
+        "antennas": [],
+        "roles": [],
+        "assignments": []
+      }
+    },
+    {
+      "type": "webhookDeleted",
+      "envelope": {
+        "topic": "source.test:444",
+        "payload": {
+          "channel": "internal",
+          "message": {
+            "type": "webhookDeleted",
+            "body": {
+              "id": "hook",
+              "userId": "owner",
+              "url": "https://hook.test",
+              "secret": "",
+              "active": true,
+              "on": [
+                "note"
+              ]
+            }
+          }
+        }
+      },
+      "expected": {
+        "hooks": [],
+        "antennas": [],
+        "roles": [],
+        "assignments": []
+      }
+    },
+    {
+      "type": "antennaCreated",
+      "envelope": {
+        "topic": "source.test:444",
+        "payload": {
+          "channel": "internal",
+          "message": {
+            "type": "antennaCreated",
+            "body": {
+              "id": "antenna",
+              "userId": "owner",
+              "src": "all",
+              "userListId": null,
+              "users": [],
+              "keywords": [],
+              "excludeKeywords": [],
+              "caseSensitive": false,
+              "excludeBots": false,
+              "withReplies": true,
+              "withFile": false,
+              "isActive": true,
+              "localOnly": false,
+              "excludeNotesInSensitiveChannel": false
+            }
+          }
+        }
+      },
+      "expected": {
+        "hooks": [],
+        "antennas": [
+          {
+            "id": "antenna",
+            "withReplies": true
+          }
+        ],
+        "roles": [],
+        "assignments": []
+      }
+    },
+    {
+      "type": "antennaUpdated",
+      "envelope": {
+        "topic": "source.test:444",
+        "payload": {
+          "channel": "internal",
+          "message": {
+            "type": "antennaUpdated",
+            "body": {
+              "id": "antenna",
+              "userId": "owner",
+              "src": "all",
+              "userListId": null,
+              "users": [],
+              "keywords": [],
+              "excludeKeywords": [],
+              "caseSensitive": false,
+              "excludeBots": false,
+              "withReplies": false,
+              "withFile": false,
+              "isActive": true,
+              "localOnly": false,
+              "excludeNotesInSensitiveChannel": false
+            }
+          }
+        }
+      },
+      "expected": {
+        "hooks": [],
+        "antennas": [
+          {
+            "id": "antenna",
+            "withReplies": false
+          }
+        ],
+        "roles": [],
+        "assignments": []
+      }
+    },
+    {
+      "type": "antennaUpdated",
+      "envelope": {
+        "topic": "source.test:444",
+        "payload": {
+          "channel": "internal",
+          "message": {
+            "type": "antennaUpdated",
+            "body": {
+              "id": "another",
+              "userId": "owner",
+              "src": "all",
+              "userListId": null,
+              "users": [],
+              "keywords": [],
+              "excludeKeywords": [],
+              "caseSensitive": false,
+              "excludeBots": false,
+              "withReplies": true,
+              "withFile": false,
+              "isActive": true,
+              "localOnly": false,
+              "excludeNotesInSensitiveChannel": false
+            }
+          }
+        }
+      },
+      "expected": {
+        "hooks": [],
+        "antennas": [
+          {
+            "id": "antenna",
+            "withReplies": false
+          },
+          {
+            "id": "another",
+            "withReplies": true
+          }
+        ],
+        "roles": [],
+        "assignments": []
+      }
+    },
+    {
+      "type": "antennaDeleted",
+      "envelope": {
+        "topic": "source.test:444",
+        "payload": {
+          "channel": "internal",
+          "message": {
+            "type": "antennaDeleted",
+            "body": {
+              "id": "antenna",
+              "userId": "owner",
+              "src": "all",
+              "userListId": null,
+              "users": [],
+              "keywords": [],
+              "excludeKeywords": [],
+              "caseSensitive": false,
+              "excludeBots": false,
+              "withReplies": true,
+              "withFile": false,
+              "isActive": true,
+              "localOnly": false,
+              "excludeNotesInSensitiveChannel": false
+            }
+          }
+        }
+      },
+      "expected": {
+        "hooks": [],
+        "antennas": [
+          {
+            "id": "another",
+            "withReplies": true
+          }
+        ],
+        "roles": [],
+        "assignments": []
+      }
+    },
+    {
+      "type": "roleCreated",
+      "envelope": {
+        "topic": "source.test:444",
+        "payload": {
+          "channel": "internal",
+          "message": {
+            "type": "roleCreated",
+            "body": {
+              "id": "role",
+              "target": "manual",
+              "condFormula": {},
+              "policies": {},
+              "isAdministrator": false,
+              "isModerator": false
+            }
+          }
+        }
+      },
+      "expected": {
+        "hooks": [],
+        "antennas": [
+          {
+            "id": "another",
+            "withReplies": true
+          }
+        ],
+        "roles": [
+          {
+            "id": "role",
+            "isAdministrator": false
+          }
+        ],
+        "assignments": []
+      }
+    },
+    {
+      "type": "roleUpdated",
+      "envelope": {
+        "topic": "source.test:444",
+        "payload": {
+          "channel": "internal",
+          "message": {
+            "type": "roleUpdated",
+            "body": {
+              "id": "role",
+              "target": "manual",
+              "condFormula": {},
+              "policies": {},
+              "isAdministrator": true,
+              "isModerator": false
+            }
+          }
+        }
+      },
+      "expected": {
+        "hooks": [],
+        "antennas": [
+          {
+            "id": "another",
+            "withReplies": true
+          }
+        ],
+        "roles": [
+          {
+            "id": "role",
+            "isAdministrator": true
+          }
+        ],
+        "assignments": []
+      }
+    },
+    {
+      "type": "roleDeleted",
+      "envelope": {
+        "topic": "source.test:444",
+        "payload": {
+          "channel": "internal",
+          "message": {
+            "type": "roleDeleted",
+            "body": {
+              "id": "role",
+              "target": "manual",
+              "condFormula": {},
+              "policies": {},
+              "isAdministrator": false,
+              "isModerator": false
+            }
+          }
+        }
+      },
+      "expected": {
+        "hooks": [],
+        "antennas": [
+          {
+            "id": "another",
+            "withReplies": true
+          }
+        ],
+        "roles": [],
+        "assignments": []
+      }
+    },
+    {
+      "type": "userRoleAssigned",
+      "envelope": {
+        "topic": "source.test:444",
+        "payload": {
+          "channel": "internal",
+          "message": {
+            "type": "userRoleAssigned",
+            "body": {
+              "id": "assignment",
+              "userId": "owner",
+              "roleId": "role",
+              "expiresAt": null
+            }
+          }
+        }
+      },
+      "expected": {
+        "hooks": [],
+        "antennas": [
+          {
+            "id": "another",
+            "withReplies": true
+          }
+        ],
+        "roles": [],
+        "assignments": [
+          {
+            "id": "assignment",
+            "userId": "owner",
+            "roleId": "role"
+          }
+        ]
+      }
+    },
+    {
+      "type": "userRoleUnassigned",
+      "envelope": {
+        "topic": "source.test:444",
+        "payload": {
+          "channel": "internal",
+          "message": {
+            "type": "userRoleUnassigned",
+            "body": {
+              "id": "assignment",
+              "userId": "owner",
+              "roleId": "role",
+              "expiresAt": null
+            }
+          }
+        }
+      },
+      "expected": {
+        "hooks": [],
+        "antennas": [
+          {
+            "id": "another",
+            "withReplies": true
+          }
+        ],
+        "roles": [],
+        "assignments": []
+      }
+    },
+    {
+      "type": "policiesUpdated",
+      "envelope": {
+        "topic": "source.test:444",
+        "payload": {
+          "channel": "internal",
+          "message": {
+            "type": "policiesUpdated",
+            "body": {
+              "canInvite": false
+            }
+          }
+        }
+      },
+      "expected": {
+        "hooks": [],
+        "antennas": [
+          {
+            "id": "another",
+            "withReplies": true
+          }
+        ],
+        "roles": [],
+        "assignments": []
+      }
+    }
+  ]
+}

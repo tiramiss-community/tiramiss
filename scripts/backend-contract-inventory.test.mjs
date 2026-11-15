@@ -128,3 +128,29 @@ test('audit rows keep their verdict and cannot pose as enumerated contracts', ()
 	row.kind = 'api';
 	assert.throws(() => validateCatalog(f.catalog, f.domains, f), /enumerated/);
 });
+
+
+test('explicit contract evidence uses only its immutable tree while legacy rows retain the global baseline', () => {
+	const f = fixture();
+	const revision = 'a'.repeat(40);
+	const contract = f.catalog.contracts[0];
+	contract.status = 'partial';
+	contract.implementation = ['slice-new.ts'];
+	contract.verification = ['slice-test.ts'];
+	assert.throws(() => validateCatalog(f.catalog, f.domains, f), /Missing implementation\/test reference/);
+	contract.evidenceRevision = revision;
+	assert.throws(() => validateCatalog(f.catalog, f.domains, f), /Unknown contract evidence revision/);
+	f.implementationFilesByRevision = new Map([[revision, new Set(['slice-new.ts', 'slice-test.ts'])]]);
+	assert.doesNotThrow(() => validateCatalog(f.catalog, f.domains, f));
+	contract.verification = ['test.ts'];
+	assert.throws(() => validateCatalog(f.catalog, f.domains, f), /Missing implementation\/test reference/);
+	contract.verification = ['slice-test.ts'];
+	for (const forged of ['HEAD', 'a'.repeat(39), 'G'.repeat(40), null, 42]) {
+		contract.evidenceRevision = forged;
+		assert.throws(() => validateCatalog(f.catalog, f.domains, f), /full immutable SHA/);
+	}
+	delete contract.evidenceRevision;
+	contract.implementation = ['new.ts'];
+	contract.verification = ['test.ts'];
+	assert.doesNotThrow(() => validateCatalog(f.catalog, f.domains, f));
+});

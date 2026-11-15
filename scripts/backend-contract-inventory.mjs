@@ -200,12 +200,22 @@ export function assignDomain(name, domains) {
 	return best[0].id;
 }
 
-export function validateCatalog(catalog, domains, { upstreamFiles, implementationFiles }) {
+export function validateCatalog(catalog, domains, { upstreamFiles, implementationFiles, implementationFilesByRevision = new Map() }) {
 	const ids = new Set();
 	const domainIds = new Set();
-	const references = (paths = []) => {
+	const references = (paths = [], revision) => {
+		let files = implementationFiles;
+		if (revision !== undefined) {
+			if (typeof revision !== 'string' || !/^[a-f0-9]{40}$/.test(revision)) {
+				throw new Error('Contract evidence revision must be a full immutable SHA');
+			}
+			files = implementationFilesByRevision.get(revision);
+			if (!files) {
+				throw new Error(`Unknown contract evidence revision: ${revision}`);
+			}
+		}
 		for (const path of paths) {
-			if (!implementationFiles.has(path)) {
+			if (!files.has(path)) {
 				throw new Error(`Missing implementation/test reference: ${path}`);
 			}
 		}
@@ -259,8 +269,8 @@ export function validateCatalog(catalog, domains, { upstreamFiles, implementatio
 		if (contract.status !== 'not_implemented' && (!contract.implementation?.length || !contract.verification?.length)) {
 			throw new Error(`Missing implementation/test evidence: ${contract.id}`);
 		}
-		references(contract.implementation);
-		references(contract.verification);
+		references(contract.implementation, contract.evidenceRevision);
+		references(contract.verification, contract.evidenceRevision);
 	}
 }
 
@@ -349,7 +359,26 @@ export function buildCatalog(configuration) {
 	}
 	contracts.sort((a, b) => a.id.localeCompare(b.id, 'en'));
 	const catalog = { schemaVersion: 1, upstreamCommit, implementationCommit, contracts };
-	validateCatalog(catalog, domains, { upstreamFiles: files, implementationFiles });
+	// Domain references retain their global baseline. Only explicit contract evidence
+	// pins select another immutable tree; old implementationCommit metadata is unchanged.
+	const implementationFilesByRevision = new Map([[implementationCommit, implementationFiles]]);
+	for (const contract of contracts) {
+		const revision = contract.evidenceRevision;
+		if (revision === undefined) {
+			continue;
+		}
+		if (typeof revision !== 'string' || !/^[a-f0-9]{40}$/.test(revision)) {
+			throw new Error('Contract evidence revision must be a full immutable SHA');
+		}
+		if (!implementationFilesByRevision.has(revision)) {
+			try {
+				implementationFilesByRevision.set(revision, new Set(git('ls-tree', '-r', '--name-only', revision).trim().split('\n')));
+			} catch (error) {
+				throw new Error(`Unknown contract evidence revision: ${revision}`, { cause: error });
+			}
+		}
+	}
+	validateCatalog(catalog, domains, { upstreamFiles: files, implementationFiles, implementationFilesByRevision });
 	return catalog;
 }
 
@@ -367,7 +396,8 @@ function renderTable(catalog, domains) {
 			const domain = byId.get(contract.domain);
 			const source = `[source](https://github.com/misskey-dev/misskey/blob/${catalog.upstreamCommit}/${contract.source}#L${contract.line})`;
 			const refs = (contract.references ?? []).map(p => `[handler](https://github.com/misskey-dev/misskey/blob/${catalog.upstreamCommit}/${p})`).join(' ');
-			const evidence = [...(contract.implementation ?? []), ...(contract.verification ?? [])].map(p => `[${posix.basename(p)}](../../../../${p})`).join(' / ') || '—';
+			const evidence = ([...(contract.implementation ?? []), ...(contract.verification ?? [])].map(p => `[${posix.basename(p)}](../../../../${p})`).join(' / ') || '—')
+				+ (contract.evidenceRevision ? ` / 証跡参照revision: \`${contract.evidenceRevision}\`` : '');
 			const audit = contract.audit && contract.audit.A !== '計画あり' ? `（監査: ${contract.audit.A}）` : '';
 			output.push(`| ${escape(contract.name)}${audit} | [${escape(domain.title)}](README.md#domain-${domain.id}) / [#${domain.issue}](https://github.com/tiramiss-community/tiramiss/issues/${domain.issue}) | ${status[contract.status]} | ${source} ${refs} | ${evidence} |`);
 		}

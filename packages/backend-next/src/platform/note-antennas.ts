@@ -2,7 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Redis } from 'ioredis';
+import { openInternalEvents } from './internal-events.js';
+import type { InternalEvent, InternalEvents } from './internal-events.js';
 import type { RedisConfig } from '../config/types.js';
 import type { AntennaDefinition } from '../modules/note/public.js';
 type Followings = Record<string, {
@@ -71,25 +72,21 @@ export function createNoteAntennaCache(options: AntennaCacheOptions) {
 			await options.redis.set(key, JSON.stringify(value), 'EX', 1800);
 			return new Set(Object.keys(value));
 		},
-		onMessage(data: string): void {
-			let event: {
-				channel?: string;
-				message?: {
-					type?: string;
-					body?: AntennaDefinition & {
-						followerId?: string;
-					};
-				};
-			};
-			try {
-				event = JSON.parse(data);
-			} catch {
-				return;
+		onInternal({ type, body: input }: InternalEvent): void {
+			if (type.startsWith('antenna')) {
+				if (typeof input.id !== 'string') {
+					return;
+				}
+				if (type !== 'antennaDeleted' && (typeof input.userId !== 'string'
+					|| typeof input.src !== 'string' || !['home', 'all', 'users', 'list', 'users_blacklist'].includes(input.src)
+					|| !(input.userListId === null || typeof input.userListId === 'string')
+					|| !Array.isArray(input.users) || !input.users.every(value => typeof value === 'string')
+					|| ![input.keywords, input.excludeKeywords].every(value => Array.isArray(value) && value.every(row => Array.isArray(row) && row.every(word => typeof word === 'string')))
+					|| !['caseSensitive', 'excludeBots', 'withReplies', 'withFile', 'isActive', 'localOnly', 'excludeNotesInSensitiveChannel'].every(key => typeof input[key] === 'boolean'))) {
+					return;
+				}
 			}
-			if (event.channel !== 'internal' || !event.message?.body) {
-				return;
-			}
-			const { type, body } = event.message;
+			const body = input as unknown as AntennaDefinition & { followerId?: string };
 			if (type === 'antennaCreated') {
 				antennas.push(body);
 			}
@@ -123,34 +120,34 @@ export function createNoteAntennaCache(options: AntennaCacheOptions) {
 	};
 }
 export async function openNoteAntennas(options: AntennaCacheOptions & {
+	events?: InternalEvents;
 	subscriberConfig: RedisConfig;
 	url: string;
 	timeoutMs: number;
 	registerCleanup?(cleanup: () => Promise<void>): void;
 }) {
 	const cache = createNoteAntennaCache(options);
-	const subscriber = new Redis({
-		...options.subscriberConfig, connectTimeout: options.timeoutMs, lazyConnect: true, enableOfflineQueue: false, maxRetriesPerRequest: 0
-	});
-	subscriber.on('error', options.onError);
-	const receive = (_channel: string, data: string) => cache.onMessage(data);
-	subscriber.on('message', receive);
+	let receiver: InternalEvents | undefined;
+	let unregister = () => {};
+	let closeTransport: (() => Promise<void>) | undefined;
 	let closing: Promise<void> | undefined;
 	const close = () => {
-		closing ??= (async () => {
-			subscriber.off('message', receive);
-			const disconnected = subscriber.status === 'end' ? Promise.resolve() : new Promise<void>(resolve => {
-				subscriber.once('end', resolve);
-				subscriber.disconnect();
-			});
-			await Promise.all([cache.close(), disconnected]);
-		})();
+		unregister();
+		closing ??= Promise.all([cache.close(), options.events ? Promise.resolve() : closeTransport?.()]).then(() => {});
 		return closing;
 	};
 	options.registerCleanup?.(close);
 	try {
-		await subscriber.connect();
-		await subscriber.subscribe(new URL(options.url).host);
+		receiver = options.events ?? await openInternalEvents({ subscriberConfig: options.subscriberConfig, url: options.url, timeoutMs: options.timeoutMs, onError: options.onError, registerCleanup: close => {
+			closeTransport = close;
+		} });
+		if (closing) {
+			if (!options.events) {
+				await receiver.close();
+			}
+		} else {
+			unregister = receiver.register({ onInternal: cache.onInternal });
+		}
 	} catch (error) {
 		await close();
 		throw error;

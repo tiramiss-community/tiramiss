@@ -1,0 +1,35 @@
+{
+  "baseRevision": "cb99ebcda1c7486bd0e6172c400bb59fd99bbf33",
+  "fixtureRevision": "c261d11765fac7452d16f45eae8986584a41fc10",
+  "scope": "Test-only bounded observation of PostgreSQL session cleanup after owned child exit; exact count and cleanup requirements retained",
+  "inputs": {
+    "packages/backend-next/test/processes/queue-runtime.test.ts": "b3eccb8e969b33af534bc7b2eb79667ae0d645f36a605d3b1f1b5e1e7d81048b"
+  },
+  "inputsAfter": {
+    "packages/backend-next/test/processes/queue-runtime.test.ts": "b3eccb8e969b33af534bc7b2eb79667ae0d645f36a605d3b1f1b5e1e7d81048b"
+  },
+  "noInputDrift": true,
+  "run": {
+    "command": [
+      "pnpm",
+      "--filter",
+      "backend-next",
+      "test:process",
+      "test/processes/queue-runtime.test.ts"
+    ],
+    "exitCode": 0,
+    "passed": 18,
+    "files": 1,
+    "log": "/tmp/tiramiss-s1-round2-20261115/290/ci-process/queue-runtime-measured.log",
+    "logSha256": "dee05187a2abc54f3c9ef8d316ff81fa295f0fafca2f424faba0cf94cb54ed17"
+  },
+  "controlledCounterexample": {
+    "boundary": "Deliberately descheduled owned PostgreSQL backend; ephemeral probe and log, not replayed by normal CI",
+    "log": "/tmp/tiramiss-s1-round2-20261115/290/ci-process/pg-close-counterexample.log",
+    "logSha256": "c245cebc29fcc575e55299ca92e50d4edaafb8f593c5e51adf3c5d89bb593213",
+    "childExit": 1,
+    "immediateSessionCount": 2,
+    "afterBackendResumedCount": 1,
+    "observedMs": 62
+  }
+}

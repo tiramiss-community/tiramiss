@@ -4,6 +4,8 @@
 
 この表は固定版の入口を漏れなく担当へ割り当てるための資料。個々の入力・出力・エラー・永続化・副作用を本家と実行比較した結果の代用ではない。詳細仕様と比較 fixture は各担当 Issue で追加する。
 
+契約行に明示した `evidenceRevision` は、その行の `implementation` / `verification` の存在検査だけを別の40桁固定Git SHAへ結び付ける。省略行とdomain参照は従来のglobal `implementationCommit` を使い、過去の同名metadataの意味は変更しない。生成表にも行別revisionを表示する。独立した作業で全行の基準を一括で進める必要はなく、未取得commit・可変ref・その木にないpathは拒否する。この検査はファイルの存在だけを確認するもので、実行結果・測定した入力の一致は各行の比較資料とreceiptが示す。
+
 ## 監査基準
 
 - 本家: `8e07cf085adf7009583d234a208e30436f020e26`。`backend-upstream/upstream-sync.json` と同じ SHA。fork の現在の `packages/backend` からは列挙しない。

@@ -2,7 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Redis } from 'ioredis';
+import { openInternalEvents } from './internal-events.js';
+import type { InternalEvents } from './internal-events.js';
 import { MiWebhook } from 'backend-upstream/entities';
 import type { EntityManager } from 'typeorm';
 import type { RedisConfig } from '../config/types.js';
@@ -12,76 +13,86 @@ type Hook = UserWebhookTarget & { active: boolean; on: string[] };
 
 /** 本家 UserWebhookService の遅延取得キャッシュと internal イベント。 */
 export async function openUserWebhooks(options: {
+	events?: InternalEvents;
 	manager: EntityManager; redis: RedisConfig; url: string; timeoutMs: number;
 	enqueue(hook: UserWebhookTarget, type: UserWebhookEvent, note: Record<string, unknown>): Promise<void>;
 	registerCleanup?(cleanup: () => Promise<void>): void;
 }) {
-	const subscriber = new Redis({ ...options.redis, connectTimeout: options.timeoutMs, lazyConnect: true, enableOfflineQueue: false, maxRetriesPerRequest: 0 });
+	let closed = false;
 	let hooks: Hook[] = [];
 	let fetched = false;
 	let generation = 0;
-	let connectedOnce = false;
-	subscriber.on('error', () => { /* Redis の再接続は ioredis が行う。 */ });
-	subscriber.on('ready', () => {
-		if (connectedOnce) {
-			// 切断中の設定通知は再配信されないため、次の投稿では正本から読み直す。
+	let closeTransport: (() => Promise<void>) | undefined;
+	let unregister = () => {};
+	let closing: Promise<void> | undefined;
+	const close = () => {
+		closed = true;
+		generation++;
+		unregister();
+		hooks = [];
+		fetched = false;
+		closing ??= options.events ? Promise.resolve() : closeTransport?.() ?? Promise.resolve();
+		return closing;
+	};
+	options.registerCleanup?.(close);
+	const receiver = options.events ?? await openInternalEvents({ subscriberConfig: options.redis, url: options.url, timeoutMs: options.timeoutMs, onError: () => {}, registerCleanup: close => {
+		closeTransport = close;
+	} });
+	if (!closed) {
+		unregister = receiver.register({ onReady: () => {
+			// 切断中に登録した場合、初回readyまでに取得した一覧も古くなり得る。
 			generation++;
 			hooks = [];
 			fetched = false;
-		}
-		connectedOnce = true;
-	});
-	subscriber.on('message', (_channel, data) => {
-		let event: { channel?: string; message?: { type?: string; body?: Hook } };
-		try {
-			event = JSON.parse(data);
-		} catch {
-			return;
-		}
-		const body = event.message?.body;
-		if (event.channel !== 'internal' || !body) {
-			return;
-		}
-		switch (event.message?.type) {
-			case 'webhookCreated':
-				if (body.active) {
-					generation++;
-					hooks.push(body);
-				}
-				break;
-			case 'webhookUpdated': {
-				generation++;
-				const index = hooks.findIndex(hook => hook.id === body.id);
-				if (!body.active) {
-					hooks = hooks.filter(hook => hook.id !== body.id);
-				} else if (index < 0) {
-					hooks.push(body);
-				} else {
-					hooks[index] = body;
-				}
-				break;
+		}, onInternal: event => {
+			const { body } = event;
+			if (typeof body.id !== 'string') {
+				return;
 			}
-			case 'webhookDeleted':
-				generation++;
-				hooks = hooks.filter(hook => hook.id !== body.id);
-				break;
-		}
-	});
-	const close = async () => {
-		subscriber.disconnect();
-	};
-	options.registerCleanup?.(close);
-	try {
-		await subscriber.connect();
-		await subscriber.subscribe(new URL(options.url).host);
-	} catch (error) {
-		subscriber.disconnect(); throw error;
+			if (event.type !== 'webhookDeleted' && (typeof body.active !== 'boolean'
+			|| typeof body.userId !== 'string' || typeof body.url !== 'string' || typeof body.secret !== 'string'
+			|| !Array.isArray(body.on) || !body.on.every(value => typeof value === 'string'))) {
+				return;
+			}
+			const hook = body as unknown as Hook;
+			switch (event.type) {
+				case 'webhookCreated':
+					if (hook.active) {
+						generation++;
+						hooks.push(hook);
+					}
+					break;
+				case 'webhookUpdated': {
+					generation++;
+					const index = hooks.findIndex(hook => hook.id === body.id);
+					if (!hook.active) {
+						hooks = hooks.filter(hook => hook.id !== body.id);
+					} else if (index < 0) {
+						hooks.push(hook);
+					} else {
+						hooks[index] = hook;
+					}
+					break;
+				}
+				case 'webhookDeleted':
+					generation++;
+					hooks = hooks.filter(hook => hook.id !== body.id);
+					break;
+			}
+		} });
 	}
+
 	return {
 		async enqueue(userId: string, type: UserWebhookEvent, note: Record<string, unknown>) {
+			if (closed) {
+				throw new Error('User webhook cache is closed');
+			}
 			while (!fetched) {
 				const readGeneration = generation;
 				const active = await options.manager.getRepository(MiWebhook).findBy({ active: true });
+				if (closed) {
+					throw new Error('User webhook cache is closed');
+				}
 				if (readGeneration !== generation) {
 					continue;
 				}

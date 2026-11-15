@@ -47,6 +47,10 @@ class MaterialCache<T> {
 		return structuredClone(await entry.promise);
 	}
 
+	delete(key: string): void {
+		this.entries.delete(key);
+	}
+
 	clear(): void {
 		this.entries.clear();
 	}
@@ -76,6 +80,10 @@ export class RoleMaterialCache implements RoleMaterialReader {
 
 	invalidateRoles(): void {
 		this.roles.clear();
+	}
+
+	invalidateAssignments(userId: string): void {
+		this.assignments.delete(userId);
 	}
 
 	clear(): void {

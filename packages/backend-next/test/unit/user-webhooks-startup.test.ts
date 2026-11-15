@@ -2,23 +2,24 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { EventEmitter } from 'node:events';
 import { expect, test, vi } from 'vitest';
 import { testConfig } from '../helpers/database.js';
 import type { EntityManager } from 'typeorm';
 
 const state = vi.hoisted(() => ({ disconnected: false, release: undefined as (() => void) | undefined }));
-vi.mock('ioredis', () => ({ Redis: class {
-	on() {
-		return this;
+vi.mock('ioredis', () => ({ Redis: class extends EventEmitter {
+	status = 'wait';
+	async connect() {
+		this.status = 'ready'; this.emit('ready');
 	}
-	async connect() { }
 	async subscribe() {
 		await new Promise<void>(resolve => {
 			state.release = resolve;
 		});
 	}
 	disconnect() {
-		state.disconnected = true;
+		state.disconnected = true; this.status = 'end'; this.emit('end');
 	}
 } }));
 
@@ -33,5 +34,6 @@ test('subscriber cleanup is registered before the pending subscribe completes', 
 	await cleanup!();
 	expect(state.disconnected).toBe(true);
 	state.release!();
-	await pending;
+	const hooks = await pending;
+	await expect(hooks.enqueue('owner', 'note', {})).rejects.toThrow('closed');
 });
