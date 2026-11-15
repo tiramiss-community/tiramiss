@@ -36,7 +36,7 @@ beforeAll(async () => {
 });
 afterAll(async () => {
 	if (server) {
-		await closeHttp(server); 
+		await closeHttp(server);
 	}
 	publisher?.disconnect(); await resources?.close(); await database?.close();
 });
@@ -72,7 +72,7 @@ test('warm real HTTP actor/WebFinger and delivery use after notifications instea
 		await resources.meta.fetch(true); expect((await discovery()).status).toBe(403);
 		await resources.dataSource.getRepository(MiMeta).update('z', { federation: 'all' }); await resources.meta.fetch(true);
 	} finally {
-		await handler.idle(); send.mockRestore(); 
+		await handler.idle(); send.mockRestore();
 	}
 });
 
@@ -87,7 +87,7 @@ test('actor registration follows changing cached stats and does not register whi
 		expect(await resources.dataSource.getRepository(MiInstance).findOneByOrFail({ host: 'enabled.test' })).toMatchObject({ usersCount: 1 });
 		expect((await readMeta(resources.dataSource.manager)).enableStatsForFederatedInstances).toBe(false);
 	} finally {
-		getJson.mockRestore(); await resources.meta.fetch(true); 
+		getJson.mockRestore(); await resources.meta.fetch(true);
 	}
 });
 
@@ -109,7 +109,7 @@ test('production periodic reload changes ordinary HTTP after a missed notificati
 			await vi.waitFor(() => expect(logger.error).toHaveBeenCalledWith('meta-cache.reload-failed', expect.anything()));
 			expect(await live.meta.fetch()).toEqual(initial);
 		} finally {
-			await resources.dataSource.query('ALTER TABLE "meta_cache_fault" RENAME TO "meta"'); 
+			await resources.dataSource.query('ALTER TABLE "meta_cache_fault" RENAME TO "meta"');
 		}
 		await resources.dataSource.getRepository(MiMeta).update('z', { federation: 'none' });
 		expect((await request()).status).toBe(200);
@@ -117,13 +117,13 @@ test('production periodic reload changes ordinary HTTP after a missed notificati
 		await closeHttp(liveServer); await live.close(); logger.error.mockClear();
 		await resources.dataSource.query('ALTER TABLE "meta" RENAME TO "meta_cache_fault"');
 		try {
-			await vi.advanceTimersByTimeAsync(600000); expect(logger.error).not.toHaveBeenCalled(); 
+			await vi.advanceTimersByTimeAsync(600000); expect(logger.error).not.toHaveBeenCalled();
 		} finally {
-			await resources.dataSource.query('ALTER TABLE "meta_cache_fault" RENAME TO "meta"'); 
+			await resources.dataSource.query('ALTER TABLE "meta_cache_fault" RENAME TO "meta"');
 		}
 	} finally {
 		if (liveServer.listening) {
-			await closeHttp(liveServer); 
-		} await live.close(); vi.unstubAllEnvs(); vi.useRealTimers(); 
+			await closeHttp(liveServer);
+		} await live.close(); vi.unstubAllEnvs(); vi.useRealTimers();
 	}
 });

@@ -15,28 +15,28 @@ function harness(periodic = false) {
 	const onError = vi.fn();
 	const cache = createMetaCache({ events: { register: handler => {
 		handlers.add(handler); return () => {
-			handlers.delete(handler); 
-		}; 
+			handlers.delete(handler);
+		};
 	} }, periodic, onError, read: async () => {
 		reads++; const snapshot = structuredClone(rows).sort((a, b) => b.id.localeCompare(a.id));
 		await gate;
 		if (failure) {
-			throw new Error('database unavailable'); 
+			throw new Error('database unavailable');
 		}
 		if (!snapshot.length) {
-			rows = [{ id: 'x' } as typeof rows[number]]; 
+			rows = [{ id: 'x' } as typeof rows[number]];
 		}
 		return (snapshot[0] ?? rows[0]) as MiMeta;
 	} });
 	return { cache, onError, reads: () => reads, rows: (next: typeof rows) => {
-		rows = next; 
+		rows = next;
 	}, failure: (value: boolean) => {
-		failure = value; 
+		failure = value;
 	}, gate: (value?: Promise<void>) => {
-		gate = value; 
+		gate = value;
 	}, notify: async (after: unknown, type = 'metaUpdated') => {
 		for (const handler of handlers) {
-			await handler.onInternal?.({ type, body: { before: { name: 'before' }, after } }); 
+			await handler.onInternal?.({ type, body: { before: { name: 'before' }, after } });
 		}
 	}, handlers };
 }
@@ -50,7 +50,7 @@ test('finite source fetch/hit/noCache/after/race/failure/periodic/empty projecti
 	await h.notify({ id: 'z', name: 'event', rootUser: { id: 'joined' } }); await observe('notification-after');
 	await h.notify({ name: 'ignored' }, 'other'); await observe('unrelated-event');
 	let release!: () => void; h.gate(new Promise(resolve => {
-		release = resolve; 
+		release = resolve;
 	})); const pending = h.cache.fetch(true);
 	await h.notify({ id: 'z', name: 'racing-event' }); release(); await pending; h.gate(); await observe('fetch-overwrites-notification');
 	h.failure(true); await expect(h.cache.fetch(true)).rejects.toThrow('database unavailable'); h.failure(false); await observe('failed-read-retains-cache');
@@ -67,10 +67,10 @@ test('timer DB failure is reported, retains the value and permits a later reload
 test('close cancels future work, unregisters and waits for an accepted fetch', async () => {
 	vi.useFakeTimers(); const h = harness(true); let release!: () => void;
 	h.gate(new Promise(resolve => {
-		release = resolve; 
+		release = resolve;
 	})); const pending = h.cache.fetch(); let done = false;
 	const close = h.cache.close().then(() => {
-		done = true; 
+		done = true;
 	}); await Promise.resolve(); expect(done).toBe(false); expect(h.handlers.size).toBe(0);
 	release(); await pending; await close; await vi.advanceTimersByTimeAsync(600000); expect(h.reads()).toBe(1);
 	await expect(h.cache.fetch(true)).rejects.toThrow('Meta cache is closed'); await h.cache.close();
