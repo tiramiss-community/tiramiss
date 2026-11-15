@@ -49,3 +49,4 @@
 | [UF-005](packages/backend/src/server/api/endpoints/admin/queue/promote-jobs.md#uf-005-遅延ジョブの前倒しを待たずに成功を返しログを書く) | `server/api/endpoints/admin/queue/promote-jobs.ts` | 遅延ジョブの前倒しを待たずに成功を返し、ログを書く | 引き継いだ（失敗は診断） | 未報告 |
 | [UF-006](packages/backend/src/server/api/endpoints/admin/queue/retry-job.md#uf-006-ジョブの再試行を待たずに成功を返す) | `server/api/endpoints/admin/queue/retry-job.ts` | ジョブの再試行を待たずに成功を返す | 引き継いだ（失敗は診断） | 未報告 |
 | [UF-007](packages/backend/src/server/api/endpoints/admin/queue/remove-job.md#uf-007-ジョブの削除を待たずに成功を返す) | `server/api/endpoints/admin/queue/remove-job.ts` | ジョブの削除を待たずに成功を返す | 引き継いだ（失敗は診断） | 未報告 |
+| [UF-010](packages/backend/src/server/api/endpoints/drive/folders/create.md#uf-010-フォルダー名の入力上限と保存先の長さが異なる) | `server/api/endpoints/drive/folders/create.ts`・`update.ts`・`models/DriveFolder.ts` | 入力は200文字、保存先は128文字で保存時に失敗する | 引き継いだ（#278） | 未報告 |

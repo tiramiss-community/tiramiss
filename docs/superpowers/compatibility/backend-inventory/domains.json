@@ -2867,6 +2867,96 @@
       ],
       "note": "#377/#560のGET/HEAD /url。固定source59ケース/174リクエスト（Fastify parser・RE2・取得double）と、実Summaly5.5.2/HTTP/TLS/CONNECT、PG設定・Redis runtime・終了待機を別に検証。8設定、proxy/bypass/private/outgoingAddress、結果検証・1h/100件cache・画像URL/sensitive変換。Meta DB直読と本家injected cacheの鮮度差は#217、画像バイト配信とweb全体は未完了。",
       "implementationCommit": "4047f7fc8696ee45104d0ed317722273afbcce1e"
+    },
+    "api:drive/folders/create": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/folders.ts",
+        "packages/backend-next/src/platform/database/drive-folders.ts",
+        "packages/backend-next/src/composition/drive-folders-http.ts",
+        "packages/backend-next/src/http/drive-folders-api.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/folders.test.ts",
+        "packages/backend-next/test/integration/drive-folders.test.ts",
+        "docs/superpowers/compatibility/drive-folders/source-probe.mjs",
+        "docs/superpowers/compatibility/drive-folders/observations.json",
+        "packages/backend-next/test/unit/drive/folder-drain.test.ts"
+      ],
+      "note": "#278: owner-scoped HTTP/PG/Redis folder behavior and fixed-source finite comparison. Authenticated create10/hour/Role factor/order included. Shared anonymous-IP gate/config remains #178/#138; no universal ApiCallService/full source-server parity. docs/superpowers/compatibility/drive-folders/README.md",
+      "evidenceRevision": "c5b6b9574fbaf47340b766f9e11b69dc0b67c5c4"
+    },
+    "api:drive/folders/delete": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/folders.ts",
+        "packages/backend-next/src/platform/database/drive-folders.ts",
+        "packages/backend-next/src/composition/drive-folders-http.ts",
+        "packages/backend-next/src/http/drive-folders-api.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/folders.test.ts",
+        "packages/backend-next/test/integration/drive-folders.test.ts",
+        "docs/superpowers/compatibility/drive-folders/source-probe.mjs",
+        "docs/superpowers/compatibility/drive-folders/observations.json",
+        "packages/backend-next/test/unit/drive/folder-drain.test.ts"
+      ],
+      "note": "#278: owner-scoped HTTP/PG/Redis folder behavior and fixed-source finite comparison. Authenticated create10/hour/Role factor/order included. Shared anonymous-IP gate/config remains #178/#138; no universal ApiCallService/full source-server parity. docs/superpowers/compatibility/drive-folders/README.md",
+      "evidenceRevision": "c5b6b9574fbaf47340b766f9e11b69dc0b67c5c4"
+    },
+    "api:drive/folders/find": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/folders.ts",
+        "packages/backend-next/src/platform/database/drive-folders.ts",
+        "packages/backend-next/src/composition/drive-folders-http.ts",
+        "packages/backend-next/src/http/drive-folders-api.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/folders.test.ts",
+        "packages/backend-next/test/integration/drive-folders.test.ts",
+        "docs/superpowers/compatibility/drive-folders/source-probe.mjs",
+        "docs/superpowers/compatibility/drive-folders/observations.json",
+        "packages/backend-next/test/unit/drive/folder-drain.test.ts"
+      ],
+      "note": "#278: owner-scoped HTTP/PG/Redis folder behavior and fixed-source finite comparison. Authenticated create10/hour/Role factor/order included. Shared anonymous-IP gate/config remains #178/#138; no universal ApiCallService/full source-server parity. docs/superpowers/compatibility/drive-folders/README.md",
+      "evidenceRevision": "c5b6b9574fbaf47340b766f9e11b69dc0b67c5c4"
+    },
+    "api:drive/folders/show": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/folders.ts",
+        "packages/backend-next/src/platform/database/drive-folders.ts",
+        "packages/backend-next/src/composition/drive-folders-http.ts",
+        "packages/backend-next/src/http/drive-folders-api.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/folders.test.ts",
+        "packages/backend-next/test/integration/drive-folders.test.ts",
+        "docs/superpowers/compatibility/drive-folders/source-probe.mjs",
+        "docs/superpowers/compatibility/drive-folders/observations.json",
+        "packages/backend-next/test/unit/drive/folder-drain.test.ts"
+      ],
+      "note": "#278: owner-scoped HTTP/PG/Redis folder behavior and fixed-source finite comparison. Authenticated create10/hour/Role factor/order included. Shared anonymous-IP gate/config remains #178/#138; no universal ApiCallService/full source-server parity. docs/superpowers/compatibility/drive-folders/README.md",
+      "evidenceRevision": "c5b6b9574fbaf47340b766f9e11b69dc0b67c5c4"
+    },
+    "api:drive/folders/update": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/folders.ts",
+        "packages/backend-next/src/platform/database/drive-folders.ts",
+        "packages/backend-next/src/composition/drive-folders-http.ts",
+        "packages/backend-next/src/http/drive-folders-api.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/folders.test.ts",
+        "packages/backend-next/test/integration/drive-folders.test.ts",
+        "docs/superpowers/compatibility/drive-folders/source-probe.mjs",
+        "docs/superpowers/compatibility/drive-folders/observations.json",
+        "packages/backend-next/test/unit/drive/folder-drain.test.ts"
+      ],
+      "note": "#278: owner-scoped HTTP/PG/Redis folder behavior and fixed-source finite comparison. Authenticated create10/hour/Role factor/order included. Shared anonymous-IP gate/config remains #178/#138; no universal ApiCallService/full source-server parity. docs/superpowers/compatibility/drive-folders/README.md",
+      "evidenceRevision": "c5b6b9574fbaf47340b766f9e11b69dc0b67c5c4"
     }
   }
 }
