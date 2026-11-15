@@ -33,6 +33,8 @@ The review fix reuses `postingStream.drive`, which is already backed by the conn
 
 A finite seven-file preimage restores the measured initial folder inputs and changed shared publication/test-infrastructure bytes before historical readers use them. The original two-file initial projection then restores older composition inputs. This adds bounded validation of24 current inputs per initial folder-receipt validation; historical measurements are neither rewritten nor promoted. Drive channel subscription is still excluded.
 
+The test-only observation correction at `2dc6d817e2122d48f5aa25c82f02104bfaab1d92` drains accepted folder publication, then fences both Redis subscription connections before comparing or clearing events. A controlled delayed-send regression failed with the former 15ms guess. [The separate fixture receipt](observation-sync-evidence.json) records the corrected folder file's69 actual HTTP/PG/two Redis cases and unchanged before/after bytes; it does not renew the earlier70-case product run. Its [one-file predecessor](observation-sync-predecessor.json) restores exactly the pre-correction integration fixture for the existing pubsub reader. Both published product receipts and their predecessors remain unchanged.
+
 ## Limits and remaining owners
 
 - The shared gate/config has no `enableIpRateLimit`, `trustProxy` or client-IP model yet. Anonymous create returns credential-required without the source's optional/default-enabled IP window. This existing shared limitation belongs to API common #178 and boot/config #138; the authenticated folder limit is implemented here. Full ApiCallService parity is unproved.

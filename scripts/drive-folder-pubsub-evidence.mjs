@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { validateFolderObservation } from './drive-folder-observation-evidence.mjs';
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/drive-folders/';
 const evidencePath = directory + 'pubsub-fix-evidence.json';
@@ -30,7 +31,9 @@ export const pubsubSuccessorFiles = Object.freeze([
  'packages/backend-next/test/integration/drive-folders.test.ts',
  'packages/backend-next/test/unit/drive/folder-drain.test.ts',
 ]);
-export function validateDriveFolderPubsubSuccessor(value, readFile = read, optional = optionalRead) {
+export function validateDriveFolderPubsubSuccessor(value, rawRead = read, optional = optionalRead) {
+ const previousObservation = validateFolderObservation(undefined, rawRead, optional);
+ const readFile = path => Object.hasOwn(previousObservation, path) ? Buffer.from(previousObservation[path]) : rawRead(path);
  if (value === undefined) {
   const bytes = readFile(evidencePath);
   assert.equal(sha(bytes), seal, 'folder pubsub current receipt seal');
