@@ -25285,5 +25285,48 @@
         "[packages/backend/src/queue/processors/DeleteDriveFilesProcessorService.ts:70](https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/queue/processors/DeleteDriveFilesProcessorService.ts#L70)"
       ]
     }
+  ],
+  "currentCorrections": [
+    {
+      "date": "2026-11-15",
+      "kind": "readiness-and-dependency-correction",
+      "key": "195-instance-read",
+      "issueNumber": 361,
+      "stateObserved": "OPEN",
+      "sourceRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+      "implementationBaseline": "fa57cedcd7923e02144eedc4fbec50bbda8b333d",
+      "application": "For current selection, overlay readiness/readiness_reason/depends_on onto the matching snapshot unit and native_depends_on onto its nativeDependencies.edges entry. Preserve the dated snapshot, provenance, counts and parents. This corrects one unit; it is not a refresh of all live issue states or publication of GitHub Relationships.",
+      "readiness": "waiting",
+      "readiness_reason": "usersとfollowers/followingのpopulateFolloweeはUserDetailedNotMeを要求する。既存UserLiteだけでは完了できず、共通詳細表示#297とfollowingで到達する本人分岐#338の材料が必要。Instanceのみの4入口は独立準備可能だが、#361全体は未完了。",
+      "depends_on": [
+        {
+          "key": "180-user-detail",
+          "issueNumber": 297,
+          "url": "https://github.com/tiramiss-community/tiramiss/issues/297"
+        },
+        {
+          "key": "180-self-view",
+          "issueNumber": 338,
+          "url": "https://github.com/tiramiss-community/tiramiss/issues/338"
+        }
+      ],
+      "native_depends_on": [
+        {
+          "key": "180-self-view",
+          "issueNumber": 338,
+          "url": "https://github.com/tiramiss-community/tiramiss/issues/338"
+        }
+      ],
+      "dependency_note": "Full consumer requirements retain297+338; native reduction needs only338 because338 already depends on297. Do not add dependencies on the whole180/182/191/195 domains or on HTTP inbox.",
+      "audit": "docs/backend-next/instance-read-361-readiness.md",
+      "evidence": [
+        "https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/server/api/endpoints/federation/users.ts#L59",
+        "https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/server/api/endpoints/federation/followers.ts#L65",
+        "https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/server/api/endpoints/federation/following.ts#L65",
+        "https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/entities/FollowingEntityService.ts#L95",
+        "https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/entities/UserEntityService.ts#L424",
+        "https://github.com/misskey-dev/misskey/blob/8e07cf085adf7009583d234a208e30436f020e26/packages/backend/src/core/entities/UserEntityService.ts#L585"
+      ]
+    }
   ]
 }

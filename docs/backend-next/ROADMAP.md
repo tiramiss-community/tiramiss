@@ -1,11 +1,13 @@
 # 新バックエンドの全体計画
 
-更新: 2026-11-14。判断基準は [GOALS](GOALS.md)。全体Issueは [#114](https://github.com/tiramiss-community/tiramiss/issues/114)。本書は工程と現在地、Issueは個別作業と依存、各PRは実装・検証結果を持つ。
+更新: 2026-11-15（#361の選定訂正）。判断基準は [GOALS](GOALS.md)。全体Issueは [#114](https://github.com/tiramiss-community/tiramiss/issues/114)。本書は工程と現在地、Issueは個別作業と依存、各PRは実装・検証結果を持つ。
 
 
-## 現在の作業入口（2026-11-14、全工程再編）
+## 現在の作業入口（2026-11-15補正、2026-11-14全工程再編を継承）
 
 [BACKLOG](BACKLOG.md) と [全318単位のカタログ](backlog.json) を #114 全工程の現在の作業選定・完了条件・依存の入口とする。S1だけでなく既存S1–S5、独立領域、運用・追従・配布・切替を含む。親は領域を取りまとめ、有限の子が実装・比較を閉じる。件数は公開完了数や機能完成率ではない。
+
+2026-11-15にPR #589（Emoji GET、merge `8a791b003313d9178bede0af0a234a9b1f67521e`）/#590（instance管理、merge `fa57cedcd7923e02144eedc4fbec50bbda8b333d`）/#591（CI並列化、merge `7f54d231d19a332f96e662369cdaa58ae652d048`）のMERGEDと、#272/#323/#324/#325/#362のCLOSEDを確認した。S1の#361はUserDetailedNotMeの共通材料#297・本人分岐#338が必要なためwaitingへ訂正する。[入口別の根拠](instance-read-361-readiness.md)と`backlog.json`の`currentCorrections`を現在の選定で優先し、独立した#377/#560（URL previewとagent）を同一PRで進められる。GitHub #114/#195の冒頭更新やRelationships公開は本変更で行っていない。#361/#176/#127/#195は未完了、notes/create partial・postingComplete:falseと正式な移植順を維持する。
 
 基準は PR #271 マージ後の `110ef5d3af7bb7263337876c2f38be1652c0a23b`。followers/following GETはマージ済み、#271最終headは `ee0da1cd23770aa99774b4c6359fb0542aebf422`。R4 runtime `10c0d76c3724cd4e52a0a17c24ed92accaa10f75` と後続metadata更新（49bf系・ee0系）は区別する。ここでは新たなCI確認・runtime再測定を主張しない。R1/R2/R3b/R4の既存receipt・件数・入力とraw JSONは当時の記録として維持する。
 
@@ -40,7 +42,7 @@
 
 現在のS1進捗は次のとおり。各PRの限定した実装・比較範囲と、Issue全体の完了を区別する。
 
-#323はPR #587でマージ済み・CLOSED。#324 outbox/activityは `1e75c5b2` で実装し、[PR #588](https://github.com/tiramiss-community/tiramiss/pull/588) でマージ待ち。次は#325。[親実測2113/707/source115/12・有限履歴bindingと限界](../superpowers/compatibility/remote-user/local-outbox-activity-results.md)。親#176/#127/#195のOPENと投稿partialは維持する。
+#323はPR #587でマージ済み・CLOSED。#324 outbox/activityのPR #588と#325 Emoji GETのPR #589はマージ済み・両IssueはCLOSED。#362 instance管理のPR #590もマージ済み・CLOSED。#361は冒頭の先行条件訂正に従う。[outboxの親実測2113/707/source115/12・有限履歴bindingと限界](../superpowers/compatibility/remote-user/local-outbox-activity-results.md)は当時の記録として保持し、今回のruntime再測定を意味しない。親#176/#127/#195のOPENと投稿partialは維持する。
 
 | 対象 | 実装済み | 残作業・完了判定 |
 | --- | --- | --- |
