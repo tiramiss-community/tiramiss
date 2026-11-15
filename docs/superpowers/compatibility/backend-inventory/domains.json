@@ -2962,6 +2962,111 @@
       ],
       "note": "#278: owner-scoped HTTP/PG/Redis folder behavior and fixed-source finite comparison. Authenticated create10/hour/Role factor/order included. Shared anonymous-IP gate/config remains #178/#138; no universal ApiCallService/full source-server parity. docs/superpowers/compatibility/drive-folders/README.md Pubsub review fix reuses configured publisher; real split/default Redis tests70 and process2. Separate pubsub-fix-evidence.json preserves initial c5 history.",
       "evidenceRevision": "bf0ef2115eb202250713800c61c26e5af32f4952"
+    },
+    "api:drive/files/show": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/files.ts",
+        "packages/backend-next/src/modules/drive/file-view.ts",
+        "packages/backend-next/src/platform/database/drive-files.ts",
+        "packages/backend-next/src/composition/drive-files-http.ts",
+        "packages/backend-next/src/http/drive-files-api.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/files-source.test.ts",
+        "packages/backend-next/test/unit/drive/files.test.ts",
+        "packages/backend-next/test/unit/drive/file-read.test.ts",
+        "packages/backend-next/test/integration/drive-files.test.ts",
+        "packages/backend-next/test/integration/drive-files-source-http.test.ts",
+        "docs/superpowers/compatibility/drive-files/source-probe.mjs",
+        "docs/superpowers/compatibility/drive-files/observations.json"
+      ],
+      "note": "#279: fixed-source135 finite handler/pack/name comparisons and real authenticated HTTP/PG82 cases; existing note-show26 and note/files11 regressions. Pure preloaded self/detail/withUser projection; DB errors preserved. Source UserLite identity and RoleService are doubles; no full upstream-server parity. docs/superpowers/compatibility/drive-files/README.md",
+      "evidenceRevision": "34a415ea2ad63d86efd8d650117ef71c1e8c63fc"
+    },
+    "api:drive/files/find": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/files.ts",
+        "packages/backend-next/src/modules/drive/file-view.ts",
+        "packages/backend-next/src/platform/database/drive-files.ts",
+        "packages/backend-next/src/composition/drive-files-http.ts",
+        "packages/backend-next/src/http/drive-files-api.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/files-source.test.ts",
+        "packages/backend-next/test/unit/drive/files.test.ts",
+        "packages/backend-next/test/unit/drive/file-read.test.ts",
+        "packages/backend-next/test/integration/drive-files.test.ts",
+        "packages/backend-next/test/integration/drive-files-source-http.test.ts",
+        "docs/superpowers/compatibility/drive-files/source-probe.mjs",
+        "docs/superpowers/compatibility/drive-files/observations.json"
+      ],
+      "note": "#279: fixed-source135 finite handler/pack/name comparisons and real authenticated HTTP/PG82 cases; existing note-show26 and note/files11 regressions. Pure preloaded self/detail/withUser projection; DB errors preserved. Source UserLite identity and RoleService are doubles; no full upstream-server parity. docs/superpowers/compatibility/drive-files/README.md",
+      "evidenceRevision": "34a415ea2ad63d86efd8d650117ef71c1e8c63fc"
+    },
+    "api:drive/files/find-by-hash": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/files.ts",
+        "packages/backend-next/src/modules/drive/file-view.ts",
+        "packages/backend-next/src/platform/database/drive-files.ts",
+        "packages/backend-next/src/composition/drive-files-http.ts",
+        "packages/backend-next/src/http/drive-files-api.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/files-source.test.ts",
+        "packages/backend-next/test/unit/drive/files.test.ts",
+        "packages/backend-next/test/unit/drive/file-read.test.ts",
+        "packages/backend-next/test/integration/drive-files.test.ts",
+        "packages/backend-next/test/integration/drive-files-source-http.test.ts",
+        "docs/superpowers/compatibility/drive-files/source-probe.mjs",
+        "docs/superpowers/compatibility/drive-files/observations.json"
+      ],
+      "note": "#279: fixed-source135 finite handler/pack/name comparisons and real authenticated HTTP/PG82 cases; existing note-show26 and note/files11 regressions. Pure preloaded self/detail/withUser projection; DB errors preserved. Source UserLite identity and RoleService are doubles; no full upstream-server parity. docs/superpowers/compatibility/drive-files/README.md",
+      "evidenceRevision": "34a415ea2ad63d86efd8d650117ef71c1e8c63fc"
+    },
+    "api:drive/files/check-existence": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/files.ts",
+        "packages/backend-next/src/modules/drive/file-view.ts",
+        "packages/backend-next/src/platform/database/drive-files.ts",
+        "packages/backend-next/src/composition/drive-files-http.ts",
+        "packages/backend-next/src/http/drive-files-api.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/files-source.test.ts",
+        "packages/backend-next/test/unit/drive/files.test.ts",
+        "packages/backend-next/test/unit/drive/file-read.test.ts",
+        "packages/backend-next/test/integration/drive-files.test.ts",
+        "packages/backend-next/test/integration/drive-files-source-http.test.ts",
+        "docs/superpowers/compatibility/drive-files/source-probe.mjs",
+        "docs/superpowers/compatibility/drive-files/observations.json"
+      ],
+      "note": "#279: fixed-source135 finite handler/pack/name comparisons and real authenticated HTTP/PG82 cases; existing note-show26 and note/files11 regressions. Pure preloaded self/detail/withUser projection; DB errors preserved. Source UserLite identity and RoleService are doubles; no full upstream-server parity. docs/superpowers/compatibility/drive-files/README.md",
+      "evidenceRevision": "34a415ea2ad63d86efd8d650117ef71c1e8c63fc"
+    },
+    "api:admin/drive/show-file": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/files.ts",
+        "packages/backend-next/src/modules/drive/file-view.ts",
+        "packages/backend-next/src/platform/database/drive-files.ts",
+        "packages/backend-next/src/composition/drive-files-http.ts",
+        "packages/backend-next/src/http/drive-files-api.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/files-source.test.ts",
+        "packages/backend-next/test/unit/drive/files.test.ts",
+        "packages/backend-next/test/unit/drive/file-read.test.ts",
+        "packages/backend-next/test/integration/drive-files.test.ts",
+        "packages/backend-next/test/integration/drive-files-source-http.test.ts",
+        "docs/superpowers/compatibility/drive-files/source-probe.mjs",
+        "docs/superpowers/compatibility/drive-files/observations.json"
+      ],
+      "note": "#279: fixed-source135 finite handler/pack/name comparisons and real authenticated HTTP/PG82 cases; existing note-show26 and note/files11 regressions. Pure preloaded self/detail/withUser projection; DB errors preserved. Source UserLite identity and RoleService are doubles; no full upstream-server parity. docs/superpowers/compatibility/drive-files/README.md",
+      "evidenceRevision": "34a415ea2ad63d86efd8d650117ef71c1e8c63fc"
     }
   }
 }
