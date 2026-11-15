@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { createDriveFoldersHttp } from './drive-folders-http.js';
+import { registerHttpAppWork } from './http-app-work.js';
 import { createInstanceAdminHttp } from './instance-admin-http.js';
 import { createUrlPreviewHttp } from './url-preview-http.js';
 import { createWebfingerHttp } from './webfinger-http.js';
@@ -18,6 +20,7 @@ import type { Hono } from 'hono';
 
 export function createBackendHttpApp(resources: RuntimeResources, config: RuntimeConfig, queueApi?: Hono) {
 	const note = prepareNoteRoutes(resources, config);
+	const folders = createDriveFoldersHttp(resources, config);
 	const app = createRoleHttpApp(resources, config)
 		.route('/', createActorHttp(resources, config))
 		.route('/', createInstanceAdminHttp(resources))
@@ -26,7 +29,9 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		.route('/', createFeaturedHttp(resources, config))
 		.route('/', createFollowCollectionsHttp(resources, config))
 		.route('/', createOutboxHttp(resources, config))
-		.route('/', createEmojiHttp(resources, config));
+		.route('/', createEmojiHttp(resources, config))
+		.route('/', folders.app);
+	registerHttpAppWork(app, folders.idle);
 	registerNoteRoutes(app, resources, note);
 	if (queueApi) {
 		app.route('/', queueApi);
