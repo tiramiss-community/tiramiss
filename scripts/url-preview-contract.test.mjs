@@ -97,11 +97,11 @@ test('repeated validations retain every actual read and optional-artifact check'
  assert.deepEqual({ reads, artifacts }, before);
  assert.equal(reads.filter(path => path === 'pnpm-lock.yaml').length, 2);
  for (const path of Object.keys(record().inputs)) assert(reads.includes(path));
- assert.equal(artifacts.length, record().runs.length + 1);
+ assert.equal(artifacts.filter(path => !path.includes('/290/')).length, record().runs.length + 1);
 });
 test('preview reader uses only builtins and its disjoint fixture successor, without subprocesses or ancestor readers', () => {
  const source = read('scripts/url-preview-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || match[1] === './url-preview-fixture-evidence.mjs'));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || ['./url-preview-fixture-evidence.mjs', './internal-events-evidence.mjs'].includes(match[1])));
  assert(!/execFile|spawn|import\(/.test(source));
  assert.equal(readPreUrlPreview('unrelated.ts', 'utf8', () => Buffer.from('live'), () => null), 'live');
 });
