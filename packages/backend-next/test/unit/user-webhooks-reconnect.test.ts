@@ -9,15 +9,25 @@ import type { EntityManager } from 'typeorm';
 
 const state = vi.hoisted(() => ({ listeners: new Map<string, (...args: unknown[]) => void>() }));
 vi.mock('ioredis', () => ({ Redis: class {
+	status = 'wait';
+	off(event: string) {
+		state.listeners.delete(event); return this;
+	}
+	once(event: string, listener: (...args: unknown[]) => void) {
+		return this.on(event, listener);
+	}
 	on(event: string, listener: (...args: unknown[]) => void) {
 		state.listeners.set(event, listener);
 		return this;
 	}
 	async connect() {
+		this.status = 'ready';
 		state.listeners.get('ready')?.();
 	}
 	async subscribe() { }
-	disconnect() { }
+	disconnect() {
+		this.status = 'end'; state.listeners.get('end')?.();
+	}
 } }));
 
 beforeEach(() => {

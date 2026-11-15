@@ -2,7 +2,9 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Redis } from 'ioredis';
+import type { Redis } from 'ioredis';
+import { openInternalEvents, roleMaterialTopic } from './internal-events.js';
+import type { InternalEvents } from './internal-events.js';
 import type { RedisConfig, RoleCacheConfig } from '../config/types.js';
 import type { RoleChanges, RoleDefinitionsChanged } from '../modules/role/public.js';
 import { RoleMaterialCache } from './role-material-cache.js';
@@ -10,6 +12,8 @@ import type { RoleMaterialReader } from './role-material-cache.js';
 
 export async function openRoleMaterials(options: {
 	source: RoleMaterialReader;
+	events?: InternalEvents;
+	url?: string;
 	publisher: Redis;
 	subscriberConfig: RedisConfig;
 	config: RoleCacheConfig;
@@ -17,90 +21,46 @@ export async function openRoleMaterials(options: {
 	registerCleanup?: (cleanup: () => Promise<void>) => void;
 }) {
 	const cache = new RoleMaterialCache(options.source, options.config, options.clock);
-	// keyPrefixはpub/subのchannelには適用されない。
-	const channel = `${options.subscriberConfig.prefix}:backend-next:role-materials:v1`;
-	const subscriber = new Redis({
-		...options.subscriberConfig,
-		lazyConnect: true,
-		enableOfflineQueue: false,
-		autoResubscribe: false,
-		disconnectTimeout: 0,
-		maxRetriesPerRequest: 0,
-		retryStrategy: attempt => Math.min(attempt * 100, 1000),
-	});
+	const channel = roleMaterialTopic(options.subscriberConfig.prefix);
 	let closed = false;
-	let subscribed = false;
-	let generation = 0;
-	let initial = true;
-
-	const reset = () => {
-		generation++;
-		subscribed = false;
-		cache.clear();
-	};
-	const subscribe = async () => {
-		reset();
-		const current = generation;
-		await subscriber.subscribe(channel);
-		if (!closed && current === generation && subscriber.status === 'ready') {
-			subscribed = true;
-		}
-	};
-	subscriber.on('close', reset);
-	// 再接続時はsubscribe応答を受け取るまで通常参照を許可しない。
-	subscriber.on('ready', () => {
-		if (!initial && !closed) {
-			void subscribe().catch(() => { /* 次の再接続か終了まで参照を拒否する。 */ });
-		}
+	const receiver = options.events ?? await openInternalEvents({
+		subscriberConfig: options.subscriberConfig, url: options.url, privateRoleTopic: channel,
+		onError: () => {}, registerCleanup: options.registerCleanup,
 	});
-	subscriber.on('error', () => { /* 接続状態で参照を拒否し、起動失敗は呼出側へ返す。 */ });
-	subscriber.on('message', (receivedChannel, payload) => {
-		if (receivedChannel !== channel || closed) {
-			return;
-		}
-		let value: unknown;
-		try {
-			value = JSON.parse(payload);
-		} catch {
-			return;
-		}
-		if (value && typeof value === 'object' && 'kind' in value && value.kind === 'role-definitions-changed') {
-			cache.invalidateRoles();
-		}
+	const unregister = receiver.register({
+		onLost: () => cache.clear(),
+		onRoleChange: () => cache.invalidateRoles(),
+		onInternal: ({ type, body }) => {
+			if (type === 'policiesUpdated' || (['roleCreated', 'roleUpdated', 'roleDeleted'].includes(type) && typeof body.id === 'string')) {
+				// Base policies are read from DB per evaluation; notification payloads are never authority.
+				cache.invalidateRoles();
+			}
+			if (['userRoleAssigned', 'userRoleUnassigned'].includes(type) && typeof body.id === 'string' && typeof body.userId === 'string') {
+				cache.invalidateAssignments(body.userId);
+			}
+		},
 	});
-
 	const assertAvailable = () => {
-		if (closed || !subscribed || subscriber.status !== 'ready' || options.publisher.status !== 'ready') {
+		if (closed || !receiver.available() || options.publisher.status !== 'ready') {
 			throw new Error('Role material Redis connection is unavailable');
 		}
 	};
 	let closing: Promise<void> | undefined;
 	const close = () => {
 		closed = true;
-		reset();
-		closing ??= subscriber.status === 'end' ? Promise.resolve() : new Promise<void>(resolve => {
-			subscriber.once('end', resolve);
-			subscriber.disconnect();
-		});
+		unregister();
+		cache.clear();
+		closing ??= options.events ? Promise.resolve() : receiver.close();
 		return closing;
 	};
 	options.registerCleanup?.(close);
-	try {
-		await subscriber.connect();
-		await subscribe();
-		initial = false;
-		assertAvailable();
-	} catch (error) {
-		await close();
-		throw error;
-	}
 
 	const read = async <T>(load: () => Promise<T>) => {
 		assertAvailable();
-		const current = generation;
+		const current = receiver.generation();
 		const value = await load();
 		assertAvailable();
-		if (current !== generation) {
+		if (current !== receiver.generation()) {
 			throw new Error('Role material subscription changed during the read');
 		}
 		return value;

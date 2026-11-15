@@ -86,11 +86,11 @@ test('withFile rejects only a present empty file array; pure renote target and e
 function producer(definitions: AntennaDefinition[], extra: Partial<Parameters<typeof createPostingAntennas>[0]> = {}) {
 	const calls: unknown[] = [];
 	const cache = createTimelineCache({ pipeline: () => ({
-			lpush: (...args: unknown[]) => calls.push(['push', ...args]), ltrim: (...args: unknown[]) => calls.push(['trim', ...args]), exec: async () => {
-				calls.push(['exec']);
-				return [];
-			}
-		}), lindex: async () => null, lpush: async () => 1 }, { createdAtFromId: () => 1, currentTime: () => 1, random: () => 1 });
+		lpush: (...args: unknown[]) => calls.push(['push', ...args]), ltrim: (...args: unknown[]) => calls.push(['trim', ...args]), exec: async () => {
+			calls.push(['exec']);
+			return [];
+		}
+	}), lindex: async () => null, lpush: async () => 1 }, { createdAtFromId: () => 1, currentTime: () => 1, random: () => 1 });
 	const run = createPostingAntennas({
 		definitions: async () => definitions, ...ports(), cache, publish: async (id, body) => {
 			calls.push(['publish', id, body]);
@@ -194,8 +194,8 @@ test('no matches still executes the empty pipeline and raw body is published wit
 	const q = producer([antenna()]);
 	await q.run();
 	expect(q.calls[1]).toEqual(['publish', 'a', {
-			id: 'note', mentionedRemoteUsers: '[]', reply: null, renote: null, channel: null
-		}]);
+		id: 'note', mentionedRemoteUsers: '[]', reply: null, renote: null, channel: null
+	}]);
 });
 
 function cacheWorld() {
@@ -206,19 +206,19 @@ function cacheWorld() {
 	const errors: unknown[] = [];
 	const reader = { active: vi.fn(async () => active), followings: vi.fn(async () => [{ followeeId: 'author', withReplies: true }]) };
 	const redis = { get: vi.fn(async (key: string) => storage.get(key) ?? null), set: vi.fn(async (key: string, value: string, ...args: unknown[]) => {
-			writes.push([key, value, ...args]);
-			storage.set(key, value);
-			return 'OK';
-		}), del: vi.fn(async (key: string) => {
-			storage.delete(key);
-			return 1;
-		}) };
+		writes.push([key, value, ...args]);
+		storage.set(key, value);
+		return 'OK';
+	}), del: vi.fn(async (key: string) => {
+		storage.delete(key);
+		return 1;
+	}) };
 	const cache = createNoteAntennaCache({
 		reader, redis, currentTime: () => now, onError: (error: unknown) => {
 			errors.push(error);
 		}
 	});
-	const event = (type: string, body: unknown) => cache.onMessage(JSON.stringify({ channel: 'internal', message: { type, body } }));
+	const event = (type: string, body: unknown) => cache.onInternal({ type, body: body as Record<string, unknown> });
 	return {
 		cache, event, reader, redis, storage, writes, errors, time: (value: number) => {
 			now = value;
