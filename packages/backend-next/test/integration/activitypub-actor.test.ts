@@ -63,6 +63,7 @@ afterAll(async () => {
 
 test.each(remoteSource.cases.filter((c: { area: string; }) => c.area === 'publication'))('$id measures real HTTP negotiation, source row filtering and signer publication', async fixture => {
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: fixture.input.federation ?? 'all' });
+	await resources.meta.fetch(true);
 	const response = await fetch(`http://127.0.0.1:${port}/users/${ids.get(fixture.id)}`, { headers: { Accept: fixture.input.accept ?? 'application/activity+json' }, redirect: 'manual' });
 	const events = fixture.expected.events;
 	const status = events.find((e: { op: string; }) => e.op === 'status')?.args;
@@ -100,6 +101,7 @@ function session(signed: boolean, http = resources.outboundHttp) {
 test.each(actorFieldsCorpus.cases.filter(row => !row.fail))('$id retains stored actor fields through HTTP and internal document acquisition', async c => {
 	const { createRemoteUsers } = await import('../../src/composition/remote-users.js');
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+	await resources.meta.fetch(true);
 	const id = codec.newId(Date.now());
 	const pair = await generateRsaKeyPair();
 	const user = { ...actorFieldsCorpus.defaults.user, ...c.user, id };
@@ -147,6 +149,7 @@ function activity(url: string, patch: Record<string, unknown> = {}) {
 
 test('real signed GET discovers cold PEM; one same-host HTML alternate is parsed and re-signed', async () => {
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+	await resources.meta.fetch(true);
 	peer.clearKeys();
 	peer.respond(async req => req.path === '/html' ? { type: 'text/html', body: '<html><head><link rel="alternate" type="application/activity+json" href="http://remote.test/ap"></head></html>' } : { body: activity(`http://remote.test${req.path}`) });
 	expect(await session(true).resolve('http://remote.test/html')).toEqual(activity('http://remote.test/ap'));
@@ -192,6 +195,7 @@ test('real 5000ms acquisition timeout cancels the response and normal direct SSR
 test('real Profile row reaches HTTP and actual createRemoteUsers local acquireActor', async () => {
 	const { createRemoteUsers } = await import('../../src/composition/remote-users.js');
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+	await resources.meta.fetch(true);
 	const profile = { description: '**profile**', followedMessage: 'hello', fields: [{ name: 'site', value: 'https://example.com tail' }], birthday: '2000-01-02', location: 'Tokyo' };
 	await resources.dataSource.getRepository(MiUserProfile).update(signerId, profile);
 	await resources.dataSource.getRepository(MiUser).update(signerId, { name: 'Alice' });
@@ -220,6 +224,7 @@ test('real Profile row reaches HTTP and actual createRemoteUsers local acquireAc
 test('stored local actor tags reach actual HTTP and acquireActor without remote-name contamination', async () => {
 	const { createRemoteUsers } = await import('../../src/composition/remote-users.js');
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+	await resources.meta.fetch(true);
 	await resources.dataSource.getRepository(MiUser).update(signerId, { emojis: ['tag_beta', 'absent', 'tag_alpha', 'tag_beta', 'tag_private'], tags: ['MiXeD', '日本 語/#', 'MiXeD'] });
 	const repository = resources.dataSource.getRepository(MiEmoji);
 	for (const row of [
@@ -334,6 +339,7 @@ for (const c of imageCorpus.cases.filter((row: { fail?: unknown; id: string }) =
 			: { mediaProxy: 'https://local.test:8443/proxy', externalMediaProxyEnabled: false });
 		const { id, fileIds } = await seedImageActor(c);
 		await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all', ...imageCorpus.defaults.meta, ...c.meta });
+		await resources.meta.fetch(true);
 		const retained = await imageActorState(id, fileIds);
 		const expected = imageSource.cases.find((row: { id: string }) => row.id === c.id).expected.json;
 		const imageServer = await listenHttp(createBackendHttpApp(resources, config), { port: 0 });
@@ -368,6 +374,7 @@ test('actor image eligibility preserves suspended public/internal distinction an
 	const c = imageCorpus.cases.find((row: { id: string }) => row.id === 'avatar-sensitive-null');
 	const { id, fileIds } = await seedImageActor(c);
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all', iconUrl: null, bannerUrl: null });
+	await resources.meta.fetch(true);
 	await resources.dataSource.getRepository(MiUser).update(id, { isSuspended: true });
 	const retained = await imageActorState(id, fileIds);
 	const originalValidate = federation.validateActor;
@@ -392,8 +399,10 @@ test('actor image eligibility preserves suspended public/internal distinction an
 		expect((await get(id, 'text/html')).status).toBe(404);
 		expect((await get(id, 'image/png')).status).toBe(404);
 		await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'none' });
+		await resources.meta.fetch(true);
 		expect((await get()).status).toBe(403);
 		await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+		await resources.meta.fetch(true);
 		expect((await get('missing')).status).toBe(404);
 		await resources.dataSource.getRepository(MiUser).update(id, { host: 'remote.test', uri: 'https://remote.test/actor' });
 		const redirect = await get();
@@ -416,6 +425,7 @@ test('Drive DB rejection precedes tags/key in both callers and leaves User/Drive
 	const { id, fileIds } = await seedImageActor(c);
 	await resources.dataSource.getRepository(MiUser).update(id, { emojis: ['tag_alpha'] });
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all' });
+	await resources.meta.fetch(true);
 	const retained = await imageActorState(id, fileIds);
 	const failedConnection = resources.dataSource.createQueryRunner();
 	await failedConnection.connect();
@@ -446,6 +456,7 @@ test('absent optional noteMedia uses local effective defaults for both stored-fi
 	const { id, fileIds } = await seedImageActor(c);
 	const config = { ...database.config, url: imageCorpus.defaults.config.url, noteMedia: undefined };
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'all', ...imageCorpus.defaults.meta });
+	await resources.meta.fetch(true);
 	const retained = await imageActorState(id, fileIds);
 	const imageServer = await listenHttp(createBackendHttpApp(resources, config), { port: 0 });
 	const originalValidate = federation.validateActor;

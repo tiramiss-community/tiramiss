@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { createDeliverJobProcessor, createHostRules } from '../modules/federation/public.js';
-import { readDeliverJobSettings } from '../platform/database/meta.js';
+import { toDeliverJobSettings } from '../platform/database/meta.js';
 import { createIdCodec } from '../platform/id-codec.js';
 import { createInstanceMetadata } from '../platform/instance-metadata.js';
 import { createInstanceLedger } from '../platform/instance-ledger.js';
@@ -24,7 +24,7 @@ export function createDeliverJobHandler(resources: RuntimeResources, config: Run
 	const fetchMetadata = createInstanceMetadata({ ledger, redis: resources.redis, http: resources.outboundHttp, clock: Date.now, reportFailure: (error, context) => resources.logger.error('instance-metadata.failed', { ...context, error }) });
 	return createDeliverJobProcessor({
 		fetchMetadata,
-		readSettings: () => readDeliverJobSettings(manager),
+		readSettings: async () => toDeliverJobSettings(await resources.meta.fetch()),
 		hostRules: createHostRules(new URL(config.url).host),
 		ledger,
 		signedPost,

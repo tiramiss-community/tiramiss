@@ -62,6 +62,7 @@ beforeEach(async () => {
 	await resources.dataSource.query('TRUNCATE TABLE "user" CASCADE');
 	await resources.dataSource.getRepository(MiMeta).deleteAll();
 	await resources.dataSource.getRepository(MiMeta).insert({ id: 'singleton', federation: 'all', enableFanoutTimeline: false, enableFanoutTimelineDbFallback: false, ugcVisibilityForVisitor: 'all' });
+	await resources.meta.fetch(true);
 	await resources.dataSource.getRepository(MiUser).insert([
 		{ id: 'alice', username: 'alice', usernameLower: 'alice', token: 'outboxalice00000', notesCount: 123 },
 		{ id: 'bob', username: 'bob', usernameLower: 'bob', token: 'outboxbob0000000' },
@@ -100,6 +101,7 @@ test.each([0, 1, 20, 21, 45])('DB page with %i rows uses stored count, twenty li
 test('index uses actor stored count and fixed-zero last without reading Note/cache or writing DB', async () => {
 	await seed(2);
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableFanoutTimeline: true });
+	await resources.meta.fetch(true);
 	await timeline.set(key(), 'WRONGTYPE');
 	const queries: string[] = [];
 	const capture = vi.spyOn(resources.dataSource.logger, 'logQuery').mockImplementation(query => {
@@ -131,6 +133,7 @@ test('DB-only pages and activity permit suspended authors and ignore cache-only 
 	await seed(2);
 	await resources.dataSource.getRepository(MiUser).update('alice', { isSuspended: true });
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { ugcVisibilityForVisitor: 'none', blockedHosts: ['remote.test'] });
+	await resources.meta.fetch(true);
 	expect(numbers(await page())).toEqual([2, 1]);
 	expect((await request(`/notes/${id(1)}/activity`)).status).toBe(200);
 });
@@ -189,6 +192,7 @@ test('duplicate/empty query validation precedes missing user, federation takes p
 		expect((await request(`/users/missing/outbox${suffix}`)).status).toBe(400);
 	}
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { federation: 'none' });
+	await resources.meta.fetch(true);
 	for (const path of ['/users/missing/outbox?since_id=&until_id=', '/notes/missing/activity']) {
 		expect((await request(path)).status).toBe(403);
 		const options = await request(path, 'OPTIONS');
@@ -204,6 +208,7 @@ test('duplicate/empty query validation precedes missing user, federation takes p
 test('real Redis merges duplicates and replies and rehydrates missing/stale/private IDs before returning twenty', async () => {
 	await seed(50);
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableFanoutTimeline: true });
+	await resources.meta.fetch(true);
 	await resources.dataSource.getRepository(MiNote).update(id(49), { visibility: 'followers' });
 	await resources.dataSource.getRepository(MiNote).update(id(48), { localOnly: true });
 	await resources.dataSource.getRepository(MiNote).update(id(47), { replyId: id(1), replyUserId: 'alice' });
@@ -216,6 +221,7 @@ test('real Redis merges duplicates and replies and rehydrates missing/stale/priv
 test('more than twenty rejected candidates refill, then partial fallback starts after last consumed stale ID', async () => {
 	await seed(70);
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableFanoutTimeline: true, enableFanoutTimelineDbFallback: false });
+	await resources.meta.fetch(true);
 	for (let n = 40; n <= 69; n++) {
 		await resources.dataSource.getRepository(MiNote).update(id(n), { localOnly: true });
 	}
@@ -227,6 +233,7 @@ test('more than twenty rejected candidates refill, then partial fallback starts 
 test('since coverage forces nearest twenty DB fallback even with cache-only visitor rejection and disabled config fallback', async () => {
 	await seed(45);
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableFanoutTimeline: true, enableFanoutTimelineDbFallback: false, ugcVisibilityForVisitor: 'none' });
+	await resources.meta.fetch(true);
 	await caches(Array.from({ length: 30 }, (_, i) => id(45 - i)));
 	expect(numbers(await page(`&since_id=${id(2)}`))).toEqual(Array.from({ length: 20 }, (_, i) => 22 - i));
 	expect(numbers(await page('&since_id='))).toEqual(Array.from({ length: 20 }, (_, i) => 45 - i));
@@ -234,6 +241,7 @@ test('since coverage forces nearest twenty DB fallback even with cache-only visi
 test.each(['suspended-author', 'suspended-reply', 'suspended-renote', 'blocked-reply', 'blocked-renote', 'visitor-none'] as const)('cache-only %s filtering differs from fallback without filtering fallback rows again', async mode => {
 	await seed(25);
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableFanoutTimeline: true, blockedHosts: ['blocked.test'] });
+	await resources.meta.fetch(true);
 	await resources.dataSource.getRepository(MiNote).insert({ id: id(100), userId: 'bob', userHost: 'blocked.test', visibility: 'public', text: 'related' });
 	if (mode === 'suspended-author') {
 		await resources.dataSource.getRepository(MiUser).update('alice', { isSuspended: true });
@@ -249,6 +257,7 @@ test.each(['suspended-author', 'suspended-reply', 'suspended-renote', 'blocked-r
 	}
 	if (mode === 'visitor-none') {
 		await resources.dataSource.getRepository(MiMeta).update('singleton', { ugcVisibilityForVisitor: 'none' });
+		await resources.meta.fetch(true);
 	}
 	await caches([id(25)]);
 	expect(numbers(await page())).toEqual(Array.from({ length: 20 }, (_, i) => 24 - i));
@@ -259,6 +268,7 @@ test.each(['suspended-author', 'suspended-reply', 'suspended-renote', 'blocked-r
 test('WRONGTYPE returns 500 and cannot trigger DB fallback even when fallback would succeed', async () => {
 	await seed(3);
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableFanoutTimeline: true });
+	await resources.meta.fetch(true);
 	await timeline.set(key(), 'WRONGTYPE');
 	const queries: string[] = [];
 	const capture = vi.spyOn(resources.dataSource.logger, 'logQuery').mockImplementation(query => {
@@ -276,6 +286,7 @@ test('WRONGTYPE returns 500 and cannot trigger DB fallback even when fallback wo
 });
 test('existing listening ordinary/reply posting producer feeds both timelines; GETs write no DB DML', async () => {
 	await resources.dataSource.getRepository(MiMeta).update('singleton', { enableFanoutTimeline: true });
+	await resources.meta.fetch(true);
 	const post = async (input: object, token = 'outboxalice00000') => {
 		const response = await fetch(`http://127.0.0.1:${port}/api/notes/create`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ i: token, text: 'producer', ...input }) });
 		expect(response.status).toBe(200);

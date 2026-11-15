@@ -4,6 +4,7 @@
  */
 import { expect, test } from 'vitest';
 import { createCreateNote } from '../../../src/modules/note/create-note.js';
+import { readMeta } from '../../../src/platform/database/meta.js';
 import { createRemoteUsers } from '../../../src/composition/remote-users.js';
 import { createDataSource } from '../../../src/platform/database/data-source.js';
 import { testConfig } from '../../helpers/database.js';
@@ -27,8 +28,10 @@ test.each([
 ])('local user URI $path resolves the source user ID without treating rest as another object family', ({ path, id }) => {
 	const config = testConfig();
 	config.url = 'http://local.test';
+	const dataSource = createDataSource(config.database);
 	const ports = createRemoteUsers({
-		logger: { info() { }, error() { } }, remoteEmojis: { extract: async () => [] }, dataSource: createDataSource(config.database), actorInstanceRegistration: { start: () => { } }, userHashtags: {
+		meta: { fetch: () => readMeta(dataSource.manager) },
+		logger: { info() { }, error() { } }, remoteEmojis: { extract: async () => [] }, dataSource, actorInstanceRegistration: { start: () => { } }, userHashtags: {
 			start: () => {
 				throw Error('unexpected actor mutation');
 			}

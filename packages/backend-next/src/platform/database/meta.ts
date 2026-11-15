@@ -23,16 +23,15 @@ export async function readFederationPolicy(manager: EntityManager): Promise<Fede
 	return toFederationPolicy(await readMeta(manager));
 }
 
-/**
- * 本家 DeliverProcessorService が参照する meta。
- * 本家は更新の通知で保つメモリ上の meta を使う。プロセス間の通知（#217）がまだないため、メモリに持たずジョブごとに読む。
- */
 export async function readDeliverJobSettings(manager: EntityManager): Promise<DeliverJobSettings> {
-	const meta = await readMeta(manager);
+	return toDeliverJobSettings(await readMeta(manager));
+}
+
+export function toDeliverJobSettings(meta: MiMeta): DeliverJobSettings {
 	return { policy: toFederationPolicy(meta), enableStatsForFederatedInstances: meta.enableStatsForFederatedInstances };
 }
 
-function toFederationPolicy(meta: MiMeta): FederationPolicy {
+export function toFederationPolicy(meta: MiMeta): FederationPolicy {
 	return {
 		federation: meta.federation,
 		federationHosts: meta.federationHosts,

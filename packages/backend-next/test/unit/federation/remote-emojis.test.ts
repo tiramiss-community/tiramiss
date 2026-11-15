@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 import { expect, test, vi } from 'vitest';
 import { MiMeta } from 'backend-upstream/entities';
 import { createRemoteEmojis } from '../../../src/composition/remote-emojis.js';
+import { readMeta } from '../../../src/platform/database/meta.js';
 import { createRemoteUsers } from '../../../src/composition/remote-users.js';
 import { createDataSource } from '../../../src/platform/database/data-source.js';
 import { testConfig } from '../../helpers/database.js';
@@ -220,6 +221,7 @@ function acquisition(patch: Record<string, unknown> = {}, fail = false, extracto
 	const dataSource = createDataSource(config.database);
 	vi.spyOn(dataSource.getRepository(MiMeta), 'find').mockResolvedValue([Object.assign(new MiMeta(), { federation: 'all', signToActivityPubGet: false, blockedHosts: [], federationHosts: [], silencedHosts: [], mediaSilencedHosts: [], deliverSuspendedSoftware: [] })]);
 	const ports = createRemoteUsers({
+		meta: { fetch: () => readMeta(dataSource.manager) },
 		logger: { info() { }, error() { } }, dataSource, userHashtags: { start() { } }, actorInstanceRegistration: { start() { } },
 		remoteEmojis: {
 			async extract(_tags, host) {

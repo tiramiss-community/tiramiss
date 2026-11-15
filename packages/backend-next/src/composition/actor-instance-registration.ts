@@ -24,7 +24,6 @@ export function createActorInstanceRegistration(ports: {
 	async function run(host: string): Promise<void> {
 		let stage = 'settings';
 		try {
-			// Unlike source's synchronous Meta snapshot, this read is a real async failure/timing boundary.
 			if (!await ports.enabled()) {
 				return;
 			}
