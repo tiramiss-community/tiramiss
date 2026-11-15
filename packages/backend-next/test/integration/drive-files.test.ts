@@ -155,3 +155,22 @@ test('actual PostgreSQL read denial and preloading failure stay INTERNAL_ERROR, 
 	expect(response.status).toBe(500); expect(await response.json()).toHaveProperty('error.code', 'INTERNAL_ERROR');
 	expect(logs.some(line => line.includes('api.failed'))).toBe(true);
 });
+
+test('mixed folder snapshots fail with a controlled internal error before recursive rendering', async () => {
+	const repository = resources.dataSource.getRepository(MiDriveFolder);
+	const original = repository.findOneBy.bind(repository);
+	const mixed = vi.spyOn(repository, 'findOneBy').mockImplementation(async where => {
+		const row = await original(where);
+		return row?.id === parentId ? { ...row, parentId: folderId } : row;
+	});
+	try {
+		const response = await call('show', { fileId });
+		expect(response.status).toBe(500);
+		expect(await response.json()).toMatchObject({ error: { code: 'INTERNAL_ERROR', info: { e: { message: 'Drive folder hierarchy contains a cycle.' } } } });
+	} finally {
+		mixed.mockRestore();
+	}
+	const next = await call('show', { fileId });
+	expect(next.status).toBe(200);
+	expect(await next.json()).toMatchObject({ folder: { id: folderId, parent: { id: parentId } } });
+});

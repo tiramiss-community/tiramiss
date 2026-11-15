@@ -44,13 +44,19 @@ export function createDriveFileStore(manager: EntityManager, media: DriveFileMed
 			if (packing.detail) {
 				for (const id of new Set(rows.flatMap(file => file.folderId ? [file.folderId] : []))) {
 					let current: string | null = id;
+					const path = new Set<string>();
 					while (current && !details.has(current)) {
+						path.add(current);
 						const folder = await folders.readFolder(current);
 						if (!folder) {
 							throw Error('folder missing');
 						}
 						details.set(current, { row: folder, counts: await folders.readCounts(current) });
 						current = folder.parentId;
+					}
+					// Concurrent moves can make separately read rows cyclic; stop before recursive projection.
+					if (current && path.has(current)) {
+						throw Error('Drive folder hierarchy contains a cycle.');
 					}
 					folderViews.set(id, renderDriveFolder(details.get(id)!.row, media.createdAtFromId, details));
 				}
