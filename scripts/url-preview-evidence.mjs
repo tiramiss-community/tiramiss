@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { createPreImageIngestDependencyReader } from './image-ingest-dependency-evidence.mjs';
 import { ciFixtureFiles, readPreMetaCacheCiFixtures } from './meta-cache-ci-fixtures-evidence.mjs';
 import { driveFilePredecessorFiles, readPreDriveFiles } from './drive-files-evidence.mjs';
 import { metaCachePredecessorFiles, readPreMetaCache, createValidatedMetaPredecessorReader } from './meta-cache-evidence.mjs';
@@ -53,6 +54,7 @@ function record(readFile) {
 // A finite terminal hop for #377/#560. Historical receipts remain byte-for-byte
 // immutable; only eight measured changed inputs are restored for their readers.
 export function validateUrlPreviewSuccessor(value, readFile = read, optional = optionalRead) {
+ readFile = createPreImageIngestDependencyReader(readFile);
  const beforeMeta = createValidatedMetaPredecessorReader(readFile, optional);
  const previousInternalEvents = validateInternalEventsSuccessor(undefined, readFile, optional);
  const readBeforeInternalEvents = readFile;
