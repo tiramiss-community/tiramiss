@@ -1,0 +1,32 @@
+{
+  "baseRevision": "12447720b784d4470ef567087e0b5b137cbc010d",
+  "fixtureRevision": "2dc6d817e2122d48f5aa25c82f02104bfaab1d92",
+  "scope": "Test-only publication drain and Redis subscriber observation fences; no product behavior change or renewal of historical product receipts",
+  "inputs": {
+    "packages/backend-next/test/integration/drive-folders.test.ts": "72a2400ba6f881b70ed7e593aa65a27d810d7e178f0db1a59f90a1b5acedce5e"
+  },
+  "inputsAfter": {
+    "packages/backend-next/test/integration/drive-folders.test.ts": "72a2400ba6f881b70ed7e593aa65a27d810d7e178f0db1a59f90a1b5acedce5e"
+  },
+  "noInputDrift": true,
+  "run": {
+    "command": [
+      "pnpm",
+      "--filter",
+      "backend-next",
+      "test:integration",
+      "test/integration/drive-folders.test.ts"
+    ],
+    "exitCode": 0,
+    "passed": 69,
+    "files": 1,
+    "log": "/tmp/tiramiss-s1-round2-20261115/278/observation-sync/integration.log",
+    "logSha256": "0c4bc0435d33c2963b230efdcf64f1b9a4f9149d0fa9eb1d4dc25a2470a33f09"
+  },
+  "controlledCounterexample": {
+    "boundary": "Hold postingStream.drive before sending for 50ms; the old 15ms settled helper completes before publication is released",
+    "exitCode": 1,
+    "log": "/tmp/tiramiss-s1-round2-20261115/278/observation-sync/counterexample.log",
+    "logSha256": "803283a97a5f39b24c058d21d3447bb07f658af6b3c777b02288508159887096"
+  }
+}

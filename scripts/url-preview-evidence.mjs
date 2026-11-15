@@ -7,6 +7,8 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { hasInternalEventPredecessor, readPreInternalEvents, validateInternalEventsSuccessor } from './internal-events-evidence.mjs';
 import { readPrePreviewFixture } from './url-preview-fixture-evidence.mjs';
+import { validateDriveFoldersSuccessor } from './drive-folders-evidence.mjs';
+import { pubsubSuccessorFiles, readPreDriveFolderPubsub } from './drive-folder-pubsub-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
 const directory = 'docs/superpowers/compatibility/url-preview/';
@@ -59,6 +61,9 @@ export function validateUrlPreviewSuccessor(value, readFile = read, optional = o
  assert.equal(Object.keys(value.inputs).length, 27);
  assert.equal(value.noInputDrift, true);
  assert.deepEqual(value.inputsAfter, value.inputs);
+ const readBeforeDriveFolders = readFile;
+ const previousFolders = validateDriveFoldersSuccessor(undefined, readBeforeDriveFolders, optional);
+ readFile = path => path in previousFolders ? Buffer.from(previousFolders[path]) : readBeforeDriveFolders(path);
  for (const [path, digest] of Object.entries(value.inputs)) {
   assert.equal(sha(readFile(path)), digest, `instance admin measured current input drift (URL preview successor): ${path}`);
  }
@@ -105,6 +110,7 @@ export function validateUrlPreviewSuccessor(value, readFile = read, optional = o
 }
 
 export function readPreUrlPreview(path, encoding, readFile = read, optional = optionalRead) {
+ if (pubsubSuccessorFiles.includes(path)) return readPreDriveFolderPubsub(path, encoding, readFile, optional);
  const bytes = successorFiles.includes(path) ? Buffer.from(validateUrlPreviewSuccessor(record(readFile), readFile, optional)[path]) : hasInternalEventPredecessor(path) ? readPreInternalEvents(path, undefined, readFile, optional) : readPrePreviewFixture(path, undefined, readFile, optional);
  return encoding ? bytes.toString(encoding) : bytes;
 }

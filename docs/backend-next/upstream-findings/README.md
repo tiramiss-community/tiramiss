@@ -50,3 +50,5 @@
 | [UF-006](packages/backend/src/server/api/endpoints/admin/queue/retry-job.md#uf-006-ジョブの再試行を待たずに成功を返す) | `server/api/endpoints/admin/queue/retry-job.ts` | ジョブの再試行を待たずに成功を返す | 引き継いだ（失敗は診断） | 未報告 |
 | [UF-007](packages/backend/src/server/api/endpoints/admin/queue/remove-job.md#uf-007-ジョブの削除を待たずに成功を返す) | `server/api/endpoints/admin/queue/remove-job.ts` | ジョブの削除を待たずに成功を返す | 引き継いだ（失敗は診断） | 未報告 |
 | [UF-009](packages/backend/src/server/web/UrlPreviewService.md#uf-009-summalyの共有optionsが並行取得の言語を上書きする) | `server/web/UrlPreviewService.ts`、`package.json`、Summaly `src/index.ts`（配布物 `built/index.js`） | Summaly 5.5.2の共有optionsで並行previewの言語が変わる | 引き継いだ（#377/#560） | 未報告 |
+| [UF-010](packages/backend/src/server/api/endpoints/drive/folders/create.md#uf-010-フォルダー名の入力上限と保存先の長さが異なる) | `server/api/endpoints/drive/folders/create.ts`・`update.ts`・`models/DriveFolder.ts` | 入力は200文字、保存先は128文字で保存時に失敗する | 引き継いだ（#278） | 未報告 |
+| [UF-011](packages/backend/src/server/api/endpoints/drive/folders/update.md#uf-011-フォルダーの同時更新で別の列の変更を古い値に戻す) | `server/api/endpoints/drive/folders/update.ts` | 名前・親の同時更新で先の別列変更を古い値に戻す | 引き継いだ（#278） | 未報告 |

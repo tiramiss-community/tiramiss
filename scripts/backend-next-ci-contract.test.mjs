@@ -71,9 +71,10 @@ test('four independent lanes preserve each validation once, plus explicit per-ru
  assert.equal(allCommands.filter(c => c === build).length, 3);
 });
 
-test('only runtime lanes get the complete existing services on isolated hosted runners', () => {
+test('runtime lanes retain existing services and only integration gets split-server Pub/Sub Redis', () => {
  for (const id of ['contracts', 'checks', 'foundation']) assert.equal(workflow.jobs[id].services, undefined);
- for (const id of ['integration', 'process']) assert.deepEqual(workflow.jobs[id].services, services);
+ assert.deepEqual(workflow.jobs.process.services, services);
+ assert.deepEqual(workflow.jobs.integration.services, { ...services, 'redis-pubsub': { image: 'redis:8', ports: ['56380:6379'], options: '--health-cmd "redis-cli ping" --health-interval 1s --health-timeout 3s --health-retries 30' } });
 });
 
 test('the required foundation check always examines every lane and cannot be silently skipped', () => {

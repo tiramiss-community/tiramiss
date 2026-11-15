@@ -46,9 +46,10 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 		'/users/:id/collections/featured', '/notes/:id', '/users/:id/followers', '/users/:id/following',
 		'/users/:user/outbox', '/users//outbox', '/notes/:note/activity', '/notes//activity',
 		'/emojis/:emoji', '/emojis/',
+		'/api/drive/folders/create', '/api/drive/folders/delete', '/api/drive/folders/find', '/api/drive/folders/show', '/api/drive/folders/update',
 		'/api/notes/delete', '/api/notes/show', '/api/notes/create', '/api/test-queue',
 	]);
-	for (const path of ['admin/roles/show', 'admin/roles/update', 'notes/delete', 'notes/create']) {
+	for (const path of ['admin/roles/show', 'admin/roles/update', 'notes/delete', 'notes/create', 'drive/folders/create', 'drive/folders/delete', 'drive/folders/find', 'drive/folders/show', 'drive/folders/update']) {
 		const response = await app.request(`/api/${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
 		expect(response.status).toBe(401);
 		expect(await response.json()).toHaveProperty('error.code', 'CREDENTIAL_REQUIRED');

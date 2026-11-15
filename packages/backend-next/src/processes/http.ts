@@ -5,6 +5,7 @@
 import { createServer, type Server } from 'node:http';
 import { chmod } from 'node:fs/promises';
 import { getRequestListener } from '@hono/node-server';
+import { drainHttpAppWork } from '../composition/http-app-work.js';
 import { createBackendHttpApp } from '../composition/http-app.js';
 import { openPostingWebSocket } from '../composition/posting-websocket.js';
 import { openQueueHttp } from '../composition/queue-http.js';
@@ -16,12 +17,13 @@ interface HttpState {
 	draining: boolean;
 	active: Set<Promise<void>>;
 	drainers: Set<() => Promise<void>>;
+	afterRequests(): Promise<void>;
 }
 
 const states = new WeakMap<Server, HttpState>();
 
 export async function listenHttp(app: Hono, config: RuntimeConfig['http']): Promise<Server> {
-	const state: HttpState = { draining: false, active: new Set(), drainers: new Set() };
+	const state: HttpState = { draining: false, active: new Set(), drainers: new Set(), afterRequests: () => drainHttpAppWork(app) };
 	const listener = getRequestListener(app.fetch);
 
 	const server: Server = createServer((request, response) => {
@@ -94,7 +96,7 @@ export async function closeHttp(server: Server): Promise<void> {
 	}
 
 	state.draining = true;
-	await Promise.all([
+	const results = await Promise.allSettled([
 		...Array.from(state.drainers, drain => drain()),
 		new Promise<void>((resolve, reject) => {
 			server.close((error) => {
@@ -110,6 +112,19 @@ export async function closeHttp(server: Server): Promise<void> {
 		// 一件の失敗で他の処理の待機まで打ち切らないよう、all ではなく allSettled を使う。
 		Promise.allSettled([...state.active]),
 	]);
+	// A failed drainer must not release Redis while accepted handlers can still start publication.
+	const failures: unknown[] = results.flatMap(result => result.status === 'rejected' ? [result.reason] : []);
+	try {
+		await state.afterRequests();
+	} catch (error) {
+		failures.push(error);
+	}
+	if (failures.length === 1) {
+		throw failures[0];
+	}
+	if (failures.length > 1) {
+		throw new AggregateError(failures, 'HTTP_DRAIN_FAILED');
+	}
 }
 
 export function startHttp(config: RuntimeConfig) {

@@ -1,0 +1,2828 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "manifest": [
+    {
+      "path": "packages/backend/src/misc/id/aidx.ts",
+      "gitBlob": "006673a6d013e372226efcfbddf858316ed1115d",
+      "sha256": "613a33f3247823856f861961a05961a8c50151133669d56b8b6441dd0d5e86f9"
+    },
+    {
+      "path": "packages/backend/src/core/IdService.ts",
+      "gitBlob": "223a8de678382fda4ec01e771525e120b41f95ae",
+      "sha256": "237d9410066fb6acfe872e7e617e6f4ce7b0093989e88baad1c29066b69f4f65"
+    },
+    {
+      "path": "packages/backend/src/core/entities/DriveFolderEntityService.ts",
+      "gitBlob": "326421e14917d06808894611c4c4c1821397299d",
+      "sha256": "5f32456cb7108b4d8b37eea9efc806efdd44c1f8b2aeb74aebafe81a427bb116"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/drive/folders/create.ts",
+      "gitBlob": "08d9d9cdc3404b43fe43a047edb63f4ba4015bd1",
+      "sha256": "10de1142e19cbc35c8d245576098bf84090ebe5311e35db936fe5bb46263e0f7"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/drive/folders/delete.ts",
+      "gitBlob": "85d63873a4ca9d23ea49c6cfdc81d3f20e751542",
+      "sha256": "fa8c27a45e68cb24e980f55d619d35d5f77a7e2eaf98e1bccc5900283785f405"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/drive/folders/find.ts",
+      "gitBlob": "eb45a30bc0c60bafe096228cf07a91dd6cee3de2",
+      "sha256": "a7c0ce55edba67c076de9706fa1c88aa580030b5cacd2a5b1ebfc17f1a8a3c7e"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/drive/folders/show.ts",
+      "gitBlob": "a1c0df6697dfbf30fa0c8f4788e7666de8e96c8b",
+      "sha256": "c81969c44252216c2b7f9cecf108d4900b0aaebfb1d940d4e84efa3ca5ec8406"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/drive/folders/update.ts",
+      "gitBlob": "58610c76b4c563bb07f6e669f8f3aa395cf8d3ef",
+      "sha256": "0cb5e9eb1f135f5bb6e39541c61934264a3099153c1dbdd6c95a9e12e11f919f"
+    },
+    {
+      "path": "packages/backend/src/server/api/ApiCallService.ts",
+      "gitBlob": "986949f1f21b0ee12eeaf609a3079f12016466a8",
+      "sha256": "da6431575d066d3b71633bead6e5d26130482d8b2a57a01179a1ab82a3032283"
+    },
+    {
+      "path": "packages/backend/src/server/api/RateLimiterService.ts",
+      "gitBlob": "a730d8c60ee3951c6a55876c0cd493ca6de0ed37",
+      "sha256": "d89c4a899187e947914bb2e415c57f6b594a6eeab7ec43f1741c41721d352cfb"
+    },
+    {
+      "path": "packages/backend/src/core/GlobalEventService.ts",
+      "gitBlob": "5221b2e532ec8a4310eb10226789ac1ce8ef0183",
+      "sha256": "4cca6fcbc95dcc3b61c5ca8ab440ae6a0a302776f8ea44fef33dfdb43245bae8"
+    }
+  ],
+  "corpusSha256": "3b9100aa0949b06a46d86151768294996d5be967104916b916c55965cd161888",
+  "doubles": [
+    "Repository filtering/count/insert/update/delete over bounded rows; DB-failure injection",
+    "Deterministic generated ID; real pinned aidx parser",
+    "Captured synchronous publication call; no source Redis/server/process execution"
+  ],
+  "gateCases": [
+    {
+      "id": "scope-before-input",
+      "calls": [
+        "policy",
+        "limit"
+      ],
+      "error": "PERMISSION_DENIED"
+    },
+    {
+      "id": "suspended-before-scope",
+      "calls": [
+        "policy",
+        "limit"
+      ],
+      "error": "YOUR_ACCOUNT_SUSPENDED"
+    },
+    {
+      "id": "quota-before-suspended-and-scope",
+      "calls": [
+        "policy",
+        "limit"
+      ],
+      "error": "RATE_LIMIT_EXCEEDED"
+    },
+    {
+      "id": "redis-before-suspended-and-scope",
+      "calls": [
+        "policy",
+        "limit"
+      ],
+      "error": "Redis unavailable"
+    },
+    {
+      "id": "factor-zero",
+      "calls": [
+        "policy"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "create-default",
+      "expected": {
+        "result": {
+          "id": "at3hjq77new00001",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "name": "Untitled",
+          "parentId": null
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77new00001",
+            "name": "Untitled",
+            "parentId": null,
+            "userId": "alice"
+          }
+        ],
+        "events": [
+          {
+            "userId": "alice",
+            "type": "folderCreated",
+            "body": {
+              "id": "at3hjq77new00001",
+              "createdAt": "2026-11-03T00:00:01.123Z",
+              "name": "Untitled",
+              "parentId": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-empty-name",
+      "expected": {
+        "result": {
+          "id": "at3hjq77new00001",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "name": "",
+          "parentId": null
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77new00001",
+            "name": "",
+            "parentId": null,
+            "userId": "alice"
+          }
+        ],
+        "events": [
+          {
+            "userId": "alice",
+            "type": "folderCreated",
+            "body": {
+              "id": "at3hjq77new00001",
+              "createdAt": "2026-11-03T00:00:01.123Z",
+              "name": "",
+              "parentId": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-parent",
+      "expected": {
+        "result": {
+          "id": "at3hjq77new00001",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "name": "nested",
+          "parentId": "at3hjq78child001"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77new00001",
+            "name": "nested",
+            "parentId": "at3hjq78child001",
+            "userId": "alice"
+          }
+        ],
+        "events": [
+          {
+            "userId": "alice",
+            "type": "folderCreated",
+            "body": {
+              "id": "at3hjq77new00001",
+              "createdAt": "2026-11-03T00:00:01.123Z",
+              "name": "nested",
+              "parentId": "at3hjq78child001"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-null-parent",
+      "expected": {
+        "result": {
+          "id": "at3hjq77new00001",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "name": "Untitled",
+          "parentId": null
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77new00001",
+            "name": "Untitled",
+            "parentId": null,
+            "userId": "alice"
+          }
+        ],
+        "events": [
+          {
+            "userId": "alice",
+            "type": "folderCreated",
+            "body": {
+              "id": "at3hjq77new00001",
+              "createdAt": "2026-11-03T00:00:01.123Z",
+              "name": "Untitled",
+              "parentId": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-parent-at3hjq77foreign1",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_FOLDER",
+          "id": "53326628-a00d-40a6-a3cd-8975105c0f95"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "create-parent-missing",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_FOLDER",
+          "id": "53326628-a00d-40a6-a3cd-8975105c0f95"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "create-max",
+      "expected": {
+        "result": {
+          "id": "at3hjq77new00001",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "parentId": null
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77new00001",
+            "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "parentId": null,
+            "userId": "alice"
+          }
+        ],
+        "events": [
+          {
+            "userId": "alice",
+            "type": "folderCreated",
+            "body": {
+              "id": "at3hjq77new00001",
+              "createdAt": "2026-11-03T00:00:01.123Z",
+              "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+              "parentId": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "create-too-long",
+      "expected": {
+        "error": {
+          "code": "INVALID_PARAM"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "create-bad-parent",
+      "expected": {
+        "error": {
+          "code": "INVALID_PARAM"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "create-fail-insert",
+      "expected": {
+        "error": {
+          "message": "insert unavailable"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "show-at3hjq76root0001",
+      "expected": {
+        "result": {
+          "id": "at3hjq76root0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "name": "root",
+          "parentId": null,
+          "foldersCount": 1,
+          "filesCount": 0
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "show-at3hjq78child001",
+      "expected": {
+        "result": {
+          "id": "at3hjq78child001",
+          "createdAt": "2026-11-03T00:00:01.124Z",
+          "name": "child",
+          "parentId": "at3hjq76root0001",
+          "foldersCount": 1,
+          "filesCount": 0,
+          "parent": {
+            "id": "at3hjq76root0001",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "root",
+            "parentId": null,
+            "foldersCount": 1,
+            "filesCount": 0
+          }
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "show-at3hjq79leaf0001",
+      "expected": {
+        "result": {
+          "id": "at3hjq79leaf0001",
+          "createdAt": "2026-11-03T00:00:01.125Z",
+          "name": "leaf",
+          "parentId": "at3hjq78child001",
+          "foldersCount": 0,
+          "filesCount": 0,
+          "parent": {
+            "id": "at3hjq78child001",
+            "createdAt": "2026-11-03T00:00:01.124Z",
+            "name": "child",
+            "parentId": "at3hjq76root0001",
+            "foldersCount": 1,
+            "filesCount": 0,
+            "parent": {
+              "id": "at3hjq76root0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "root",
+              "parentId": null,
+              "foldersCount": 1,
+              "filesCount": 0
+            }
+          }
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "show-at3hjq77foreign1",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_FOLDER",
+          "id": "d74ab9eb-bb09-4bba-bf24-fb58f761e1e9"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "show-at3hjq77empty001",
+      "expected": {
+        "result": {
+          "id": "at3hjq77empty001",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "name": "empty",
+          "parentId": null,
+          "foldersCount": 0,
+          "filesCount": 0
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "show-missing",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_FOLDER",
+          "id": "d74ab9eb-bb09-4bba-bf24-fb58f761e1e9"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "show-files",
+      "expected": {
+        "result": {
+          "id": "at3hjq79leaf0001",
+          "createdAt": "2026-11-03T00:00:01.125Z",
+          "name": "leaf",
+          "parentId": "at3hjq78child001",
+          "foldersCount": 0,
+          "filesCount": 1,
+          "parent": {
+            "id": "at3hjq78child001",
+            "createdAt": "2026-11-03T00:00:01.124Z",
+            "name": "child",
+            "parentId": "at3hjq76root0001",
+            "foldersCount": 1,
+            "filesCount": 0,
+            "parent": {
+              "id": "at3hjq76root0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "root",
+              "parentId": null,
+              "foldersCount": 1,
+              "filesCount": 1
+            }
+          }
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "show-invalid",
+      "expected": {
+        "error": {
+          "code": "INVALID_PARAM"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "find-omit",
+      "expected": {
+        "result": [
+          {
+            "id": "at3hjq76root0001",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "root",
+            "parentId": null
+          }
+        ],
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "find-None",
+      "expected": {
+        "result": [
+          {
+            "id": "at3hjq76root0001",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "root",
+            "parentId": null
+          }
+        ],
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "find-at3hjq76root0001",
+      "expected": {
+        "result": [
+          {
+            "id": "at3hjq78child001",
+            "createdAt": "2026-11-03T00:00:01.124Z",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          }
+        ],
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "find-at3hjq77foreign1",
+      "expected": {
+        "result": [],
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "find-duplicates",
+      "expected": {
+        "result": [
+          {
+            "id": "at3hjq77empty001",
+            "createdAt": "2026-11-03T00:00:01.123Z",
+            "name": "empty",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty002",
+            "createdAt": "2026-11-03T00:00:01.123Z",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty002",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "find-missing-name",
+      "expected": {
+        "error": {
+          "code": "INVALID_PARAM"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "update-24",
+      "expected": {
+        "result": {
+          "id": "at3hjq76root0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "name": "renamed",
+          "parentId": null
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "renamed",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": [
+          {
+            "userId": "alice",
+            "type": "folderUpdated",
+            "body": {
+              "id": "at3hjq76root0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "renamed",
+              "parentId": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "update-25",
+      "expected": {
+        "result": {
+          "id": "at3hjq76root0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "name": "root",
+          "parentId": null
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": [
+          {
+            "userId": "alice",
+            "type": "folderUpdated",
+            "body": {
+              "id": "at3hjq76root0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "root",
+              "parentId": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "update-26",
+      "expected": {
+        "result": {
+          "id": "at3hjq76root0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "name": "root",
+          "parentId": null
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": [
+          {
+            "userId": "alice",
+            "type": "folderUpdated",
+            "body": {
+              "id": "at3hjq76root0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "root",
+              "parentId": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "update-27",
+      "expected": {
+        "result": {
+          "id": "at3hjq76root0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "name": "root",
+          "parentId": "at3hjq77empty001"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": "at3hjq77empty001"
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": [
+          {
+            "userId": "alice",
+            "type": "folderUpdated",
+            "body": {
+              "id": "at3hjq76root0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "root",
+              "parentId": "at3hjq77empty001"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "update-28",
+      "expected": {
+        "error": {
+          "code": "RECURSIVE_NESTING",
+          "id": "dbeb024837894013aed44279f9199740"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "update-29",
+      "expected": {
+        "error": {
+          "code": "RECURSIVE_NESTING",
+          "id": "dbeb024837894013aed44279f9199740"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "update-30",
+      "expected": {
+        "error": {
+          "code": "RECURSIVE_NESTING",
+          "id": "dbeb024837894013aed44279f9199740"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "update-31",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_PARENT_FOLDER",
+          "id": "ce104e3a-faaf-49d5-b459-10ff0cbbcaa1"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "update-32",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_PARENT_FOLDER",
+          "id": "ce104e3a-faaf-49d5-b459-10ff0cbbcaa1"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "update-33",
+      "expected": {
+        "result": {
+          "id": "at3hjq76root0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "name": "root",
+          "parentId": null
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": [
+          {
+            "userId": "alice",
+            "type": "folderUpdated",
+            "body": {
+              "id": "at3hjq76root0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "root",
+              "parentId": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "update-omitted-parent",
+      "expected": {
+        "result": {
+          "id": "at3hjq78child001",
+          "createdAt": "2026-11-03T00:00:01.124Z",
+          "name": "new",
+          "parentId": "at3hjq76root0001"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "new",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": [
+          {
+            "userId": "alice",
+            "type": "folderUpdated",
+            "body": {
+              "id": "at3hjq78child001",
+              "createdAt": "2026-11-03T00:00:01.124Z",
+              "name": "new",
+              "parentId": "at3hjq76root0001"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "update-empty-parent",
+      "expected": {
+        "error": {
+          "code": "INVALID_PARAM"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "update-foreign",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_FOLDER",
+          "id": "f7974dac-2c0d-4a27-926e-23583b28e98e"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "update-missing",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_FOLDER",
+          "id": "f7974dac-2c0d-4a27-926e-23583b28e98e"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "update-failed",
+      "expected": {
+        "error": {
+          "message": "update unavailable"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "delete-at3hjq76root0001",
+      "expected": {
+        "error": {
+          "code": "HAS_CHILD_FILES_OR_FOLDERS",
+          "id": "b0fc8a17-963c-405d-bfbc-859a487295e1"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "delete-at3hjq78child001",
+      "expected": {
+        "error": {
+          "code": "HAS_CHILD_FILES_OR_FOLDERS",
+          "id": "b0fc8a17-963c-405d-bfbc-859a487295e1"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "delete-at3hjq79leaf0001",
+      "expected": {
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": [
+          {
+            "userId": "alice",
+            "type": "folderDeleted",
+            "body": "at3hjq79leaf0001"
+          }
+        ]
+      }
+    },
+    {
+      "id": "delete-at3hjq77foreign1",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_FOLDER",
+          "id": "1069098f-c281-440f-b085-f9932edbe091"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "delete-at3hjq77empty001",
+      "expected": {
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          }
+        ],
+        "events": [
+          {
+            "userId": "alice",
+            "type": "folderDeleted",
+            "body": "at3hjq77empty001"
+          }
+        ]
+      }
+    },
+    {
+      "id": "delete-missing",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_FOLDER",
+          "id": "1069098f-c281-440f-b085-f9932edbe091"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "delete-files",
+      "expected": {
+        "error": {
+          "code": "HAS_CHILD_FILES_OR_FOLDERS",
+          "id": "b0fc8a17-963c-405d-bfbc-859a487295e1"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "delete-failed",
+      "expected": {
+        "error": {
+          "message": "delete unavailable"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "update-detach-nested",
+      "expected": {
+        "result": {
+          "id": "at3hjq78child001",
+          "createdAt": "2026-11-03T00:00:01.124Z",
+          "name": "child",
+          "parentId": null
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": [
+          {
+            "userId": "alice",
+            "type": "folderUpdated",
+            "body": {
+              "id": "at3hjq78child001",
+              "createdAt": "2026-11-03T00:00:01.124Z",
+              "name": "child",
+              "parentId": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "find-same-name-root-parent-owner",
+      "expected": {
+        "result": [
+          {
+            "id": "at3hjq76root0001",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "root",
+            "parentId": null
+          }
+        ],
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77same0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq77same0002",
+            "userId": "bob",
+            "name": "root",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "find-same-name-nested-parent-owner",
+      "expected": {
+        "result": [
+          {
+            "id": "at3hjq77same0001",
+            "createdAt": "2026-11-03T00:00:01.123Z",
+            "name": "root",
+            "parentId": "at3hjq76root0001"
+          }
+        ],
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77same0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq77same0002",
+            "userId": "bob",
+            "name": "root",
+            "parentId": "at3hjq76root0001"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "show-foreign-child-count",
+      "expected": {
+        "result": {
+          "id": "at3hjq76root0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "name": "root",
+          "parentId": null,
+          "foldersCount": 2,
+          "filesCount": 1
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77other001",
+            "userId": "bob",
+            "name": "other",
+            "parentId": "at3hjq76root0001"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "show-foreign-ancestor",
+      "expected": {
+        "result": {
+          "id": "at3hjq77other001",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "name": "nested",
+          "parentId": "at3hjq77foreign1",
+          "foldersCount": 0,
+          "filesCount": 0,
+          "parent": {
+            "id": "at3hjq77foreign1",
+            "createdAt": "2026-11-03T00:00:01.123Z",
+            "name": "foreign",
+            "parentId": null,
+            "foldersCount": 1,
+            "filesCount": 0
+          }
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77other001",
+            "userId": "alice",
+            "name": "nested",
+            "parentId": "at3hjq77foreign1"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "show-missing-ancestor",
+      "expected": {
+        "error": {
+          "message": "folder missing"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "update-missing-ancestor",
+      "expected": {
+        "error": {
+          "message": "folder missing"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "find-empty-name",
+      "expected": {
+        "result": [],
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "find-long-name",
+      "expected": {
+        "result": [],
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": null
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "update-foreign-ancestor",
+      "expected": {
+        "result": {
+          "id": "at3hjq77empty001",
+          "createdAt": "2026-11-03T00:00:01.123Z",
+          "name": "empty",
+          "parentId": "at3hjq77other001"
+        },
+        "rows": [
+          {
+            "id": "at3hjq76root0001",
+            "userId": "alice",
+            "name": "root",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq78child001",
+            "userId": "alice",
+            "name": "child",
+            "parentId": "at3hjq76root0001"
+          },
+          {
+            "id": "at3hjq79leaf0001",
+            "userId": "alice",
+            "name": "leaf",
+            "parentId": "at3hjq78child001"
+          },
+          {
+            "id": "at3hjq77foreign1",
+            "userId": "bob",
+            "name": "foreign",
+            "parentId": null
+          },
+          {
+            "id": "at3hjq77empty001",
+            "userId": "alice",
+            "name": "empty",
+            "parentId": "at3hjq77other001"
+          },
+          {
+            "id": "at3hjq77other001",
+            "userId": "alice",
+            "name": "nested",
+            "parentId": "at3hjq77foreign1"
+          }
+        ],
+        "events": [
+          {
+            "userId": "alice",
+            "type": "folderUpdated",
+            "body": {
+              "id": "at3hjq77empty001",
+              "createdAt": "2026-11-03T00:00:01.123Z",
+              "name": "empty",
+              "parentId": "at3hjq77other001"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

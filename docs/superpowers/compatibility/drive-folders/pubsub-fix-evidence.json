@@ -1,0 +1,203 @@
+{
+  "baseRevision": "c1f09e2a093bd2182e489386da53e99e2b7a69c0",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "runtimeRevision": "bf0ef2115eb202250713800c61c26e5af32f4952",
+  "inputs": {
+    "docs/superpowers/compatibility/drive-folders/corpus.json": "3b9100aa0949b06a46d86151768294996d5be967104916b916c55965cd161888",
+    "docs/superpowers/compatibility/drive-folders/observations.json": "7d3b4a44cc23719db6f4883d9443ed03906fa9c731a6c51e7a05ec95d0068d0a",
+    "docs/superpowers/compatibility/drive-folders/source-probe.mjs": "f6017ba35fe894cbd94f9cc9d2fdf0bc1dc1d85a6e9da0c076923be934be2fe0",
+    "packages/backend-next/src/composition/drive-folders-http.ts": "e05f8c089c93787ec1a308c7f125612601a218eb0c1c463aa8c19b3d0877b466",
+    "packages/backend-next/src/composition/http-app-work.ts": "9d6128f60bff705a4f97cdef2e31d50e6151edf522d8c9008902f70c17144e8e",
+    "packages/backend-next/src/composition/http-app.ts": "a03be0220078e81db6a12cae741372fa7116e861aa454e8694437a8d6bb2dfff",
+    "packages/backend-next/src/http/drive-folders-api.ts": "4502b8ef8d55dfcf0232463cf6f1adc126c89389fdd9d0b11bf7a23787c1acb6",
+    "packages/backend-next/src/modules/drive/folders.ts": "5336598cfc059a353bf7c64889f97cefba5fcf8a87bc6d3233fcab6e0c391c50",
+    "packages/backend-next/src/platform/database/drive-folders.ts": "01dfc785d219b2c8c71b9a7a426b0446cabb477d09ff046320b9b8cd00d4a68a",
+    "packages/backend-next/src/platform/drive-folder-publisher.ts": "a1eebde468638d207a278f2a6604fd5c66890f7fe5b740bb3c45a3add42ca383",
+    "packages/backend-next/src/processes/http.ts": "3cf3cf269f7dc2e46debacd38308123c7301f4f704ea67c7e269175df01c06df",
+    "packages/backend-next/test/integration/drive-folders.test.ts": "a12b2d79a2e0e0093a1870d4237f36777e58958f0b1de6bf65c20a33f32e81c4",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "603f35abe89be9572d4a0c389b393c833a68e8e72cde99951b74f81675a69b86",
+    "packages/backend-next/test/unit/drive/folder-drain.test.ts": "de6b987f30d39898d4e18ca3d2a4fbe651986997f8513876db4568b47937b6ba",
+    "packages/backend-next/test/unit/drive/folders.test.ts": "afc6720a576e15fee096b99da06a1b1e89440f047516e00bee01d12f26773fc9",
+    "packages/backend-next/src/platform/api-rate-limit.ts": "fb0e6a5d3680724d686d66a28ae3bca355967a59a135ba97a96d3c1116d79bd1",
+    "packages/backend-next/src/platform/database/role-authorization-facts.ts": "492e7620d6c59024a79acd451526bcc56046878ba10fcd46e861b21087448fd1",
+    "packages/backend-next/src/modules/access/authorize.ts": "88ddaae296231983e71461486cd3e9d6ed3703b0e5e8d0e4c4f79d69d2a953f3",
+    "packages/backend-next/src/platform/id-codec.ts": "db0c48b61495e5d80e6c6a7434d69a635e6f338a15bc4b951c995285ccd5125f",
+    "packages/backend-next/test/unit/http-drain.test.ts": "19dbc189b4fc3e8460552824647335fc7b95a6552f5766435342de1d507910c6",
+    "packages/backend-next/src/platform/posting-stream.ts": "c66f14f9c3454a51404d7c02e72e53c9bce97801ba01ea9f2ee3acf04983f9d5",
+    "packages/backend-next/test/processes/drive-folder-drain.test.ts": "6aca0a57df7e90e9d1924cd95cdb9dab34961fa9117180ccd6e9bacd7317bc6f",
+    "packages/backend-next/compose.test.yml": "1ee593ab233b8193b0515d3e35d35444c4c7206844441448edc61365e7c5b2dd",
+    ".github/workflows/test-backend-next.yml": "ec6a28293c8168387f5247a91b666b10a1ff98d816b7e55b58f8c4a98bb74426"
+  },
+  "runs": [
+    {
+      "name": "build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "build"
+      ],
+      "environment": {},
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-round2-20261115/278/pubsub-final-build.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "typecheck"
+      ],
+      "environment": {},
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-round2-20261115/278/pubsub-final-typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "name": "near-unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/drive/folder-drain.test.ts",
+        "test/unit/drive/folders.test.ts",
+        "test/unit/composition/http-app.test.ts",
+        "test/unit/http-drain.test.ts"
+      ],
+      "environment": {},
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-round2-20261115/278/pubsub-final-near-unit.log",
+      "logSha256": "326b75417512dc2f1a31056d2ad570dba8bb7ac4980ac72d47661b74c177275c",
+      "passed": 78,
+      "files": 4
+    },
+    {
+      "name": "integration",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/drive-folders.test.ts",
+        "test/integration/http-app.test.ts"
+      ],
+      "environment": {
+        "BACKEND_NEXT_TEST_DB_PORT": "16551",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "16552",
+        "BACKEND_NEXT_TEST_MEILI_PORT": "16553",
+        "BACKEND_NEXT_TEST_PUBSUB_REDIS_PORT": "16554"
+      },
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-round2-20261115/278/pubsub-final-integration.log",
+      "logSha256": "dfa5285c717863dac12da454498936dd2025f8b11bef6e4a323d33612293383a",
+      "passed": 70,
+      "files": 2
+    },
+    {
+      "name": "process",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:process",
+        "test/processes/drive-folder-drain.test.ts"
+      ],
+      "environment": {},
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-round2-20261115/278/pubsub-final-process.log",
+      "logSha256": "38bdb188d8f76408e204af56690869c0713d54bf8be143323479c7ae2b76771d",
+      "passed": 2,
+      "files": 1
+    },
+    {
+      "name": "source",
+      "command": [
+        "node",
+        "docs/superpowers/compatibility/drive-folders/source-probe.mjs",
+        "--check"
+      ],
+      "environment": {
+        "UPSTREAM_ROOT": "/tmp/tiramiss-relay171-upstream"
+      },
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-round2-20261115/278/pubsub-final-source.log",
+      "logSha256": "42c5d505b9e7e83fb65e02ad64191925f1ef5c19237fbd16fe2474354fea61bf"
+    },
+    {
+      "name": "sync",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-upstream",
+        "sync:check"
+      ],
+      "environment": {},
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-round2-20261115/278/pubsub-final-sync.log",
+      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd"
+    },
+    {
+      "name": "shipping",
+      "command": [
+        "node",
+        "scripts/check-shipping.mjs",
+        "--base",
+        "86fce3926f97d2b62d790ff1e44449a57c2d33ee"
+      ],
+      "environment": {},
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-round2-20261115/278/pubsub-final-shipping.log",
+      "logSha256": "0f1199a8418b1f53afcb1ba029aefb3ad4d3e1b1f2eba4098ba312aa963db741"
+    },
+    {
+      "name": "full-unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test"
+      ],
+      "environment": {},
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-s1-round2-20261115/278/pubsub-final-full-unit.log",
+      "logSha256": "159ebfb50f6e23131100a6f3019e1b5e50a8ca3977b8efdb50d6621aaee1a8c5",
+      "passed": 4353,
+      "files": 115
+    }
+  ],
+  "inputsAfter": {
+    "docs/superpowers/compatibility/drive-folders/corpus.json": "3b9100aa0949b06a46d86151768294996d5be967104916b916c55965cd161888",
+    "docs/superpowers/compatibility/drive-folders/observations.json": "7d3b4a44cc23719db6f4883d9443ed03906fa9c731a6c51e7a05ec95d0068d0a",
+    "docs/superpowers/compatibility/drive-folders/source-probe.mjs": "f6017ba35fe894cbd94f9cc9d2fdf0bc1dc1d85a6e9da0c076923be934be2fe0",
+    "packages/backend-next/src/composition/drive-folders-http.ts": "e05f8c089c93787ec1a308c7f125612601a218eb0c1c463aa8c19b3d0877b466",
+    "packages/backend-next/src/composition/http-app-work.ts": "9d6128f60bff705a4f97cdef2e31d50e6151edf522d8c9008902f70c17144e8e",
+    "packages/backend-next/src/composition/http-app.ts": "a03be0220078e81db6a12cae741372fa7116e861aa454e8694437a8d6bb2dfff",
+    "packages/backend-next/src/http/drive-folders-api.ts": "4502b8ef8d55dfcf0232463cf6f1adc126c89389fdd9d0b11bf7a23787c1acb6",
+    "packages/backend-next/src/modules/drive/folders.ts": "5336598cfc059a353bf7c64889f97cefba5fcf8a87bc6d3233fcab6e0c391c50",
+    "packages/backend-next/src/platform/database/drive-folders.ts": "01dfc785d219b2c8c71b9a7a426b0446cabb477d09ff046320b9b8cd00d4a68a",
+    "packages/backend-next/src/platform/drive-folder-publisher.ts": "a1eebde468638d207a278f2a6604fd5c66890f7fe5b740bb3c45a3add42ca383",
+    "packages/backend-next/src/processes/http.ts": "3cf3cf269f7dc2e46debacd38308123c7301f4f704ea67c7e269175df01c06df",
+    "packages/backend-next/test/integration/drive-folders.test.ts": "a12b2d79a2e0e0093a1870d4237f36777e58958f0b1de6bf65c20a33f32e81c4",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "603f35abe89be9572d4a0c389b393c833a68e8e72cde99951b74f81675a69b86",
+    "packages/backend-next/test/unit/drive/folder-drain.test.ts": "de6b987f30d39898d4e18ca3d2a4fbe651986997f8513876db4568b47937b6ba",
+    "packages/backend-next/test/unit/drive/folders.test.ts": "afc6720a576e15fee096b99da06a1b1e89440f047516e00bee01d12f26773fc9",
+    "packages/backend-next/src/platform/api-rate-limit.ts": "fb0e6a5d3680724d686d66a28ae3bca355967a59a135ba97a96d3c1116d79bd1",
+    "packages/backend-next/src/platform/database/role-authorization-facts.ts": "492e7620d6c59024a79acd451526bcc56046878ba10fcd46e861b21087448fd1",
+    "packages/backend-next/src/modules/access/authorize.ts": "88ddaae296231983e71461486cd3e9d6ed3703b0e5e8d0e4c4f79d69d2a953f3",
+    "packages/backend-next/src/platform/id-codec.ts": "db0c48b61495e5d80e6c6a7434d69a635e6f338a15bc4b951c995285ccd5125f",
+    "packages/backend-next/test/unit/http-drain.test.ts": "19dbc189b4fc3e8460552824647335fc7b95a6552f5766435342de1d507910c6",
+    "packages/backend-next/src/platform/posting-stream.ts": "c66f14f9c3454a51404d7c02e72e53c9bce97801ba01ea9f2ee3acf04983f9d5",
+    "packages/backend-next/test/processes/drive-folder-drain.test.ts": "6aca0a57df7e90e9d1924cd95cdb9dab34961fa9117180ccd6e9bacd7317bc6f",
+    "packages/backend-next/compose.test.yml": "1ee593ab233b8193b0515d3e35d35444c4c7206844441448edc61365e7c5b2dd",
+    ".github/workflows/test-backend-next.yml": "ec6a28293c8168387f5247a91b666b10a1ff98d816b7e55b58f8c4a98bb74426"
+  },
+  "noInputDrift": true,
+  "scope": [
+    "Existing configured Pub/Sub publisher is reused for Drive folder events; ordinary Redis remains the authenticated quota store.",
+    "Actual HTTP/PG/two distinct Redis servers and default shared-server regression; no Drive channel subscription implementation.",
+    "Two HTTP lifetime tests moved to process lane; unit lane retains pure publisher pending/failure tests."
+  ]
+}

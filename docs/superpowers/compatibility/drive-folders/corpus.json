@@ -1,0 +1,539 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "rows": [
+    {
+      "id": "at3hjq76root0001",
+      "userId": "alice",
+      "name": "root",
+      "parentId": null
+    },
+    {
+      "id": "at3hjq78child001",
+      "userId": "alice",
+      "name": "child",
+      "parentId": "at3hjq76root0001"
+    },
+    {
+      "id": "at3hjq79leaf0001",
+      "userId": "alice",
+      "name": "leaf",
+      "parentId": "at3hjq78child001"
+    },
+    {
+      "id": "at3hjq77foreign1",
+      "userId": "bob",
+      "name": "foreign",
+      "parentId": null
+    },
+    {
+      "id": "at3hjq77empty001",
+      "userId": "alice",
+      "name": "empty",
+      "parentId": null
+    }
+  ],
+  "newId": "at3hjq77new00001",
+  "actorId": "alice",
+  "cases": [
+    {
+      "id": "create-default",
+      "operation": "create",
+      "input": {}
+    },
+    {
+      "id": "create-empty-name",
+      "operation": "create",
+      "input": {
+        "name": ""
+      }
+    },
+    {
+      "id": "create-parent",
+      "operation": "create",
+      "input": {
+        "name": "nested",
+        "parentId": "at3hjq78child001"
+      }
+    },
+    {
+      "id": "create-null-parent",
+      "operation": "create",
+      "input": {
+        "parentId": null
+      }
+    },
+    {
+      "id": "create-parent-at3hjq77foreign1",
+      "operation": "create",
+      "input": {
+        "parentId": "at3hjq77foreign1"
+      }
+    },
+    {
+      "id": "create-parent-missing",
+      "operation": "create",
+      "input": {
+        "parentId": "missing"
+      }
+    },
+    {
+      "id": "create-max",
+      "operation": "create",
+      "input": {
+        "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      }
+    },
+    {
+      "id": "create-too-long",
+      "operation": "create",
+      "input": {
+        "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      }
+    },
+    {
+      "id": "create-bad-parent",
+      "operation": "create",
+      "input": {
+        "parentId": "bad-id"
+      }
+    },
+    {
+      "id": "create-fail-insert",
+      "operation": "create",
+      "input": {},
+      "fail": "insert"
+    },
+    {
+      "id": "show-at3hjq76root0001",
+      "operation": "show",
+      "input": {
+        "folderId": "at3hjq76root0001"
+      }
+    },
+    {
+      "id": "show-at3hjq78child001",
+      "operation": "show",
+      "input": {
+        "folderId": "at3hjq78child001"
+      }
+    },
+    {
+      "id": "show-at3hjq79leaf0001",
+      "operation": "show",
+      "input": {
+        "folderId": "at3hjq79leaf0001"
+      }
+    },
+    {
+      "id": "show-at3hjq77foreign1",
+      "operation": "show",
+      "input": {
+        "folderId": "at3hjq77foreign1"
+      }
+    },
+    {
+      "id": "show-at3hjq77empty001",
+      "operation": "show",
+      "input": {
+        "folderId": "at3hjq77empty001"
+      }
+    },
+    {
+      "id": "show-missing",
+      "operation": "show",
+      "input": {
+        "folderId": "missing"
+      }
+    },
+    {
+      "id": "show-files",
+      "operation": "show",
+      "input": {
+        "folderId": "at3hjq79leaf0001"
+      },
+      "files": [
+        {
+          "folderId": "at3hjq79leaf0001"
+        },
+        {
+          "folderId": "at3hjq76root0001"
+        }
+      ]
+    },
+    {
+      "id": "show-invalid",
+      "operation": "show",
+      "input": {}
+    },
+    {
+      "id": "find-omit",
+      "operation": "find",
+      "input": {
+        "name": "root"
+      }
+    },
+    {
+      "id": "find-None",
+      "operation": "find",
+      "input": {
+        "name": "root",
+        "parentId": null
+      }
+    },
+    {
+      "id": "find-at3hjq76root0001",
+      "operation": "find",
+      "input": {
+        "name": "child",
+        "parentId": "at3hjq76root0001"
+      }
+    },
+    {
+      "id": "find-at3hjq77foreign1",
+      "operation": "find",
+      "input": {
+        "name": "root",
+        "parentId": "at3hjq77foreign1"
+      }
+    },
+    {
+      "id": "find-duplicates",
+      "operation": "find",
+      "input": {
+        "name": "empty"
+      },
+      "extra": [
+        {
+          "id": "at3hjq77empty002",
+          "userId": "alice",
+          "name": "empty",
+          "parentId": null
+        }
+      ]
+    },
+    {
+      "id": "find-missing-name",
+      "operation": "find",
+      "input": {}
+    },
+    {
+      "id": "update-24",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq76root0001",
+        "name": "renamed"
+      }
+    },
+    {
+      "id": "update-25",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq76root0001",
+        "name": ""
+      }
+    },
+    {
+      "id": "update-26",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq76root0001",
+        "parentId": null
+      }
+    },
+    {
+      "id": "update-27",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq76root0001",
+        "parentId": "at3hjq77empty001"
+      }
+    },
+    {
+      "id": "update-28",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq76root0001",
+        "parentId": "at3hjq76root0001"
+      }
+    },
+    {
+      "id": "update-29",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq76root0001",
+        "parentId": "at3hjq78child001"
+      }
+    },
+    {
+      "id": "update-30",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq76root0001",
+        "parentId": "at3hjq79leaf0001"
+      }
+    },
+    {
+      "id": "update-31",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq76root0001",
+        "parentId": "at3hjq77foreign1"
+      }
+    },
+    {
+      "id": "update-32",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq76root0001",
+        "parentId": "missing"
+      }
+    },
+    {
+      "id": "update-33",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq76root0001"
+      }
+    },
+    {
+      "id": "update-omitted-parent",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq78child001",
+        "name": "new"
+      }
+    },
+    {
+      "id": "update-empty-parent",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq78child001",
+        "parentId": ""
+      }
+    },
+    {
+      "id": "update-foreign",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq77foreign1"
+      }
+    },
+    {
+      "id": "update-missing",
+      "operation": "update",
+      "input": {
+        "folderId": "missing"
+      }
+    },
+    {
+      "id": "update-failed",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq77empty001",
+        "name": "new"
+      },
+      "fail": "update"
+    },
+    {
+      "id": "delete-at3hjq76root0001",
+      "operation": "delete",
+      "input": {
+        "folderId": "at3hjq76root0001"
+      }
+    },
+    {
+      "id": "delete-at3hjq78child001",
+      "operation": "delete",
+      "input": {
+        "folderId": "at3hjq78child001"
+      }
+    },
+    {
+      "id": "delete-at3hjq79leaf0001",
+      "operation": "delete",
+      "input": {
+        "folderId": "at3hjq79leaf0001"
+      }
+    },
+    {
+      "id": "delete-at3hjq77foreign1",
+      "operation": "delete",
+      "input": {
+        "folderId": "at3hjq77foreign1"
+      }
+    },
+    {
+      "id": "delete-at3hjq77empty001",
+      "operation": "delete",
+      "input": {
+        "folderId": "at3hjq77empty001"
+      }
+    },
+    {
+      "id": "delete-missing",
+      "operation": "delete",
+      "input": {
+        "folderId": "missing"
+      }
+    },
+    {
+      "id": "delete-files",
+      "operation": "delete",
+      "input": {
+        "folderId": "at3hjq77empty001"
+      },
+      "files": [
+        {
+          "folderId": "at3hjq77empty001"
+        }
+      ]
+    },
+    {
+      "id": "delete-failed",
+      "operation": "delete",
+      "input": {
+        "folderId": "at3hjq77empty001"
+      },
+      "fail": "delete"
+    },
+    {
+      "id": "update-detach-nested",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq78child001",
+        "parentId": null
+      }
+    },
+    {
+      "id": "find-same-name-root-parent-owner",
+      "operation": "find",
+      "input": {
+        "name": "root"
+      },
+      "extra": [
+        {
+          "id": "at3hjq77same0001",
+          "userId": "alice",
+          "name": "root",
+          "parentId": "at3hjq76root0001"
+        },
+        {
+          "id": "at3hjq77same0002",
+          "userId": "bob",
+          "name": "root",
+          "parentId": null
+        }
+      ]
+    },
+    {
+      "id": "find-same-name-nested-parent-owner",
+      "operation": "find",
+      "input": {
+        "name": "root",
+        "parentId": "at3hjq76root0001"
+      },
+      "extra": [
+        {
+          "id": "at3hjq77same0001",
+          "userId": "alice",
+          "name": "root",
+          "parentId": "at3hjq76root0001"
+        },
+        {
+          "id": "at3hjq77same0002",
+          "userId": "bob",
+          "name": "root",
+          "parentId": "at3hjq76root0001"
+        }
+      ]
+    },
+    {
+      "id": "show-foreign-child-count",
+      "operation": "show",
+      "input": {
+        "folderId": "at3hjq76root0001"
+      },
+      "extra": [
+        {
+          "id": "at3hjq77other001",
+          "userId": "bob",
+          "name": "other",
+          "parentId": "at3hjq76root0001"
+        }
+      ],
+      "files": [
+        {
+          "folderId": "at3hjq76root0001",
+          "userId": "bob"
+        }
+      ]
+    },
+    {
+      "id": "show-foreign-ancestor",
+      "operation": "show",
+      "input": {
+        "folderId": "at3hjq77other001"
+      },
+      "extra": [
+        {
+          "id": "at3hjq77other001",
+          "userId": "alice",
+          "name": "nested",
+          "parentId": "at3hjq77foreign1"
+        }
+      ]
+    },
+    {
+      "id": "show-missing-ancestor",
+      "operation": "show",
+      "input": {
+        "folderId": "at3hjq78child001"
+      },
+      "fail": "ancestor"
+    },
+    {
+      "id": "update-missing-ancestor",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq77empty001",
+        "parentId": "at3hjq79leaf0001"
+      },
+      "fail": "ancestor"
+    },
+    {
+      "id": "find-empty-name",
+      "operation": "find",
+      "input": {
+        "name": ""
+      }
+    },
+    {
+      "id": "find-long-name",
+      "operation": "find",
+      "input": {
+        "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      }
+    },
+    {
+      "id": "update-foreign-ancestor",
+      "operation": "update",
+      "input": {
+        "folderId": "at3hjq77empty001",
+        "parentId": "at3hjq77other001"
+      },
+      "extra": [
+        {
+          "id": "at3hjq77other001",
+          "userId": "alice",
+          "name": "nested",
+          "parentId": "at3hjq77foreign1"
+        }
+      ]
+    }
+  ],
+  "doubles": [
+    "Repository filtering/count/insert/update/delete over bounded rows; DB-failure injection",
+    "Deterministic generated ID; real pinned aidx parser",
+    "Captured synchronous publication call; no source Redis/server/process execution"
+  ]
+}
