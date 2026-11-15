@@ -30,8 +30,8 @@ test('actual measured 140ac input set validates online and offline; only two his
 });
 for (const path of Object.keys(record().inputs)) test(`new input drift rejects before projecting roots: ${path}`, () => {
  const drifted = p => p === path ? Buffer.concat([read(p), Buffer.from('\n')]) : read(p);
- assert.throws(() => readPreEmojiObject(successorFiles[0], undefined, drifted, () => null), /(?:emoji|instance admin|folder|internal events) measured current input drift/);
- assert.throws(() => validateOutboxSuccessor(undefined, drifted, () => null), /(?:emoji|instance admin|folder|internal events) measured current input drift/);
+ assert.throws(() => readPreEmojiObject(successorFiles[0], undefined, drifted, () => null), /(?:emoji|instance admin|folder|internal events|Meta cache) measured current input drift/);
+ assert.throws(() => validateOutboxSuccessor(undefined, drifted, () => null), /(?:emoji|instance admin|folder|internal events|Meta cache) measured current input drift/);
 });
 
 test('receipt mutation and predecessor corruption reject without host logs', () => {
