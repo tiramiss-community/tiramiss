@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 import { MiAccessToken, MiApp, MiDriveFile, MiDriveFolder, MiMeta, MiRole, MiRoleAssignment, MiUser } from 'backend-upstream/entities';
 import { createBackendHttpApp } from '../../src/composition/http-app.js';
+import { drainHttpAppWork } from '../../src/composition/http-app-work.js';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { assertMigrationsApplied } from '../../src/platform/database/check-migrations.js';
 import { assertSchemaMatches } from '../../src/platform/database/check-schema.js';
@@ -56,6 +57,7 @@ const source = JSON.parse(readFileSync(new URL('observations.json', directory), 
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 let resources: Awaited<ReturnType<typeof connectResources>>;
 let server: Server;
+let httpApp: ReturnType<typeof createBackendHttpApp>;
 let port: number;
 let baseSubscriber: ReturnType<Awaited<ReturnType<typeof connectResources>>['redis']['duplicate']>;
 const baseEvents: unknown[] = [];
@@ -70,10 +72,9 @@ function call(operation: string, input: unknown, auth: string | null = token) {
 }
 
 async function settled() {
-	await vi.waitFor(async () => {
-		await resources.redis.ping();
-	}, { interval: 5 });
-	await new Promise(resolve => setTimeout(resolve, 15));
+	await drainHttpAppWork(httpApp);
+	// Once publication has finished, each PONG follows its prior subscription messages.
+	await Promise.all([subscriber.ping(), baseSubscriber.ping()]);
 }
 
 beforeAll(async () => {
@@ -102,7 +103,8 @@ beforeAll(async () => {
 	const env = process.env.NODE_ENV;
 	process.env.NODE_ENV = 'production';
 	try {
-		server = await listenHttp(createBackendHttpApp(resources, database.config), { port: 0 });
+		httpApp = createBackendHttpApp(resources, database.config);
+		server = await listenHttp(httpApp, { port: 0 });
 	} finally {
 		process.env.NODE_ENV = env;
 	}
@@ -120,6 +122,7 @@ afterAll(async () => {
 	await database?.close();
 });
 beforeEach(async () => {
+	await settled();
 	await resources.dataSource.query('DELETE FROM drive_file');
 	await resources.dataSource.query('DELETE FROM drive_folder');
 	await resources.dataSource.query('DELETE FROM role_assignment');
@@ -184,7 +187,7 @@ for (const c of corpus.cases.filter(row => row.id !== 'create-max' && row.fail !
 			const expectedDate = created ? (expected.result as {
 				createdAt: string;
 			}).createdAt : null;
-			expect(normalize(events)).toEqual(expectedDate ? JSON.parse(JSON.stringify(expectedEvents).replaceAll(expectedDate, '2000-01-01T00:00:00.000Z')) : expectedEvents);
+			await vi.waitFor(() => expect(normalize(events)).toEqual(expectedDate ? JSON.parse(JSON.stringify(expectedEvents).replaceAll(expectedDate, '2000-01-01T00:00:00.000Z')) : expectedEvents));
 		} finally {
 			fault?.mockRestore();
 		}
@@ -195,14 +198,48 @@ test('folder publication uses the configured pubsub server and leaves ordinary R
 	expect(response.status).toBe(200);
 	const body = await response.json();
 	await vi.waitFor(() => expect(events).toContainEqual({ channel: 'driveStream:alice', message: { type: 'folderCreated', body } }));
+	await settled();
 	expect(baseEvents).toEqual([]);
+});
+test('settling waits for a delayed publication before asserting that no event arrived', async () => {
+	const send = resources.postingStream.drive.bind(resources.postingStream);
+	let release!: () => void;
+	const pending = new Promise<void>(resolve => {
+		release = resolve;
+	});
+	const publish = vi.spyOn(resources.postingStream, 'drive').mockImplementationOnce(async (...args) => {
+		await pending;
+		await send(...args);
+	});
+	let complete = false;
+	let settling: Promise<void> | undefined;
+	try {
+		const response = await call('create', { name: 'delayed-publication' });
+		expect(response.status).toBe(200);
+		const body = await response.json();
+		settling = settled().then(() => {
+			complete = true;
+		});
+		// Hold publication beyond the former 15ms guess; it must remain pending.
+		await new Promise(resolve => setTimeout(resolve, 50));
+		expect(complete).toBe(false);
+		expect(events).toEqual([]);
+		release();
+		await settling;
+		expect(events).toEqual([{ channel: 'driveStream:alice', message: { type: 'folderCreated', body } }]);
+	} finally {
+		release();
+		await settling;
+		publish.mockRestore();
+	}
 });
 test('the default shared Redis configuration also delivers the source drive envelope', async () => {
 	const config = { ...database.config, redisForPubsub: database.config.redis };
 	const defaults = await connectResources(config, createLogger('folders-default', () => { }));
+	const defaultApp = createBackendHttpApp(defaults, config);
 	let defaultServer: Server | undefined;
 	try {
-		defaultServer = await listenHttp(createBackendHttpApp(defaults, config), { port: 0 });
+		defaultServer = await listenHttp(defaultApp, { port: 0 });
 		const defaultPort = (defaultServer.address() as {
 			port: number;
 		}).port;
@@ -210,6 +247,8 @@ test('the default shared Redis configuration also delivers the source drive enve
 		expect(response.status).toBe(200);
 		const body = await response.json();
 		await vi.waitFor(() => expect(baseEvents).toContainEqual({ channel: 'driveStream:alice', message: { type: 'folderCreated', body } }));
+		await drainHttpAppWork(defaultApp);
+		await settled();
 		expect(events).toEqual([]);
 	} finally {
 		if (defaultServer) {
@@ -239,6 +278,7 @@ test('create production rate uses 10/hour, preserves invalid-input consumption a
 	expect(exceeded.status).toBe(429);
 	expect(Number(exceeded.headers.get('Retry-After'))).toBeGreaterThan(3500);
 	expect(await exceeded.json()).toMatchObject({ error: { code: 'RATE_LIMIT_EXCEEDED', id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef', info: { remaining: 0 } } });
+	await settled();
 	expect(events).toEqual([]);
 });
 test.each([false, true])('rate precedes scope and input even for suspended=%s', async (suspended) => {
@@ -250,6 +290,7 @@ test.each([false, true])('rate precedes scope and input even for suspended=%s', 
 	}
 	expect((await call('create', {}, 'folder-scope-0')).status).toBe(429);
 	expect(await folders().count()).toBe(corpus.rows.length);
+	await settled();
 	expect(events).toEqual([]);
 });
 test('Redis limiter failure precedes suspension and missing scope', async () => {
@@ -258,6 +299,7 @@ test('Redis limiter failure precedes suspension and missing scope', async () => 
 	try {
 		expect((await call('create', {}, 'folder-scope-0')).status).toBe(500);
 		expect(await folders().count()).toBe(corpus.rows.length);
+		await settled();
 		expect(events).toEqual([]);
 	} finally {
 		fault.mockRestore();
@@ -268,6 +310,7 @@ test('nonproduction create does not consume Redis quota', async () => {
 	for (let i = 0; i < 12; i++) {
 		expect((await app.request('/api/drive/folders/create', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: '{}' })).status).toBe(200);
 	}
+	await drainHttpAppWork(app);
 	expect(await resources.redis.exists('limit:alice:drive/folders/create')).toBe(0);
 });
 test('role factor halves quota, factor zero exempts and moderator alone does not exempt', async () => {
@@ -312,6 +355,7 @@ test('missing ancestor during read is an internal error without a partial detail
 	const lookup = vi.spyOn(folders(), 'findOneBy').mockImplementation(async (where) => 'id' in where && where.id === corpus.rows[0].id && !('userId' in where) ? null : original(where));
 	try {
 		expect((await call('show', { folderId: corpus.rows[1].id })).status).toBe(500);
+		await settled();
 		expect(events).toEqual([]);
 	} finally {
 		lookup.mockRestore();
