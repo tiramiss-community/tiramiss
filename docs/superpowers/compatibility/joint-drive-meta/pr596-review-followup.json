@@ -1,0 +1,128 @@
+{
+  "baseRevision": "4b7095c2c7380ebb4ed56edc04c0bd375b957936",
+  "state": "test-only follow-up measured uncommitted, waiting for independent record review and commit authorization",
+  "productionChanges": false,
+  "changes": {
+    "packages/backend-next/test/integration/drive-files.test.ts": {
+      "beforeSha256": "c26cfa7efd77a647a76159eee939282c8552b1827ed21181687d302c8e96a6db",
+      "beforeGitBlob": "3f89216bc78c6b30fc5c56c577b9dec463d17ab6",
+      "afterSha256": "20dbe3543049d66edec7c13d4d33409834e9cbcc63119c23460bbf889728c562"
+    },
+    "scripts/local-emoji-object-evidence-contract.test.mjs": {
+      "beforeSha256": "bd1e2a081d3950a102312a79ec324f157a0b3703eaec43c953af1e9c6f37d264",
+      "beforeGitBlob": "3bc72de00c1ff2550b0cec298810c83c6e869b87",
+      "afterSha256": "75d3bfbdf3d525317f0a02187cf2f6088f84e465738eb317775364fec6bd0d4f"
+    }
+  },
+  "runs": [
+    {
+      "name": "drive-http",
+      "log": "/tmp/tiramiss-pr596-review2-http.log",
+      "logSha256": "ce0d6a2d1369ad1874cbbddd2b6193bf4e7700043efbc885c3ec34c6977388d3",
+      "exitCode": 0,
+      "passed": 12,
+      "files": 1
+    },
+    {
+      "name": "emoji-and-outbox-contract",
+      "log": "/tmp/tiramiss-pr596-review2-contract.log",
+      "logSha256": "e73e73adfcca3a8b91f8be468e282e5aad8718ce09204053f6de4fa9b0b621ab",
+      "exitCode": 0,
+      "passed": 19
+    },
+    {
+      "name": "strict-closure",
+      "log": "/tmp/tiramiss-pr596-review2-closure.log",
+      "logSha256": "dbe328cd87e0b9a5f41c837cf09e0487ba02ef72000e6436f3d90b69786a4097",
+      "exitCode": 0,
+      "passed": 3
+    },
+    {
+      "name": "shipping",
+      "log": "/tmp/tiramiss-pr596-review2-shipping.log",
+      "logSha256": "b1fc2db2f716ac1d90bbbdebef576a082cf0ecf3c7bb729d26b3994c516dd0f6",
+      "exitCode": 0
+    }
+  ],
+  "controlledAliasCounterexample": {
+    "log": "/tmp/tiramiss-pr596-review2-alias-red.log",
+    "logSha256": "83cc45d63b8f070215ad55b967607604aee0071940bd33372727f35f507fc4ba",
+    "exitCode": 1,
+    "result": "old fixture has5 distinct aliases instead of9"
+  },
+  "fixtureBehavior": "Primary, moderator-owned and unowned rows each have distinct original/webpublic/thumbnail URLs; the original owner HTTP projection remains asserted.",
+  "outboxNegative": "An input owned by outbox22 but absent from Emoji14 is passed through the Emoji reader, then must fail with the exact outbox guard and path. Existing Emoji-origin regexes are unchanged.",
+  "preservedRecords": [
+    {
+      "path": "docs/superpowers/compatibility/drive-files/run-results.json",
+      "sha256": "2f545ae5b6a0a457c86b560c19df9106a82b5114eced2c0f543202190a94c514",
+      "unchangedFromCommit": "4b7095c2c7380ebb4ed56edc04c0bd375b957936"
+    },
+    {
+      "path": "docs/superpowers/compatibility/drive-files/cycle-guard-results.json",
+      "sha256": "2923d14cd67cd7de53863bc15689a8d92a1cd0501242d64cd1906da517b0c327",
+      "unchangedFromCommit": "4b7095c2c7380ebb4ed56edc04c0bd375b957936"
+    },
+    {
+      "path": "docs/superpowers/compatibility/joint-drive-meta/focused-results.json",
+      "sha256": "1c4f4a4f96b76aa9b8118fdba76c7537d44b79d9b30dbd8f1b9de81ef19d1717",
+      "unchangedFromCommit": "4b7095c2c7380ebb4ed56edc04c0bd375b957936"
+    },
+    {
+      "path": "docs/superpowers/compatibility/joint-drive-meta/pr596-develop-merge-evidence.json",
+      "sha256": "4198cc3318e48119e126bb8e7033f5088402b11dc1319ba2299aabdf9097ce36",
+      "unchangedFromCommit": "4b7095c2c7380ebb4ed56edc04c0bd375b957936"
+    }
+  ],
+  "historicalInputLinks": [
+    {
+      "record": "docs/superpowers/compatibility/drive-files/run-results.json",
+      "input": "packages/backend-next/test/integration/drive-files.test.ts",
+      "historicalExpectedSha256": "052dbcf4ade5492e4c7809df727cd640a629932e0544e2cf979cbb3c5684d294",
+      "matchesBaseCommit": false
+    },
+    {
+      "record": "docs/superpowers/compatibility/drive-files/cycle-guard-results.json",
+      "input": "packages/backend-next/test/integration/drive-files.test.ts",
+      "historicalExpectedSha256": "c26cfa7efd77a647a76159eee939282c8552b1827ed21181687d302c8e96a6db",
+      "matchesBaseCommit": true
+    },
+    {
+      "record": "docs/superpowers/compatibility/joint-drive-meta/focused-results.json",
+      "input": "scripts/local-emoji-object-evidence-contract.test.mjs",
+      "historicalExpectedSha256": "bd1e2a081d3950a102312a79ec324f157a0b3703eaec43c953af1e9c6f37d264",
+      "matchesBaseCommit": true
+    },
+    {
+      "record": "docs/superpowers/compatibility/joint-drive-meta/pr596-develop-merge-evidence.json",
+      "input": "packages/backend-next/test/integration/drive-files.test.ts",
+      "historicalExpectedSha256": "c26cfa7efd77a647a76159eee939282c8552b1827ed21181687d302c8e96a6db",
+      "matchesBaseCommit": true
+    },
+    {
+      "record": "docs/superpowers/compatibility/joint-drive-meta/pr596-develop-merge-evidence.json",
+      "input": "scripts/local-emoji-object-evidence-contract.test.mjs",
+      "historicalExpectedSha256": "bd1e2a081d3950a102312a79ec324f157a0b3703eaec43c953af1e9c6f37d264",
+      "matchesBaseCommit": true
+    }
+  ],
+  "strictClosure": {
+    "Drive3": {
+      "inputCount": 3,
+      "changedTestFilesOwned": false
+    },
+    "Meta33": {
+      "inputCount": 33,
+      "changedTestFilesOwned": false
+    },
+    "CI5": {
+      "inputCount": 5,
+      "changedTestFilesOwned": false
+    }
+  },
+  "historyPolicy": "Prior record bytes and counters remain historical at their recorded source or base commit. Updated test bytes are represented only by this new follow-up; no old record is claimed to match them. No new runtime helper/projection is needed because these tests are outside executable strict3/33/5 input ownership.",
+  "limits": [
+    "Focused12 real HTTP/PG/Redis cases and19 evidence cases only; no full-unit/integration/root rerun or new upstream comparison.",
+    "No product structure or Meta integration change."
+  ]
+}

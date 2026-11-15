@@ -46,8 +46,8 @@ beforeAll(async () => {
 	const base = { storedInternal: true, name: 'same.png', type: 'image/png', md5: '0'.repeat(32), size: 1, url: 'https://storage/original', webpublicUrl: 'https://storage/public', thumbnailUrl: 'https://storage/thumb', properties: { width: 10, height: 20, orientation: 6 }, requestIp: '192.0.2.1', requestHeaders: { host: 'upload.test' } };
 	await files().insert([
 		{ ...base, id: fileId, userId: seed.actors.ordinary.id, folderId },
-		{ ...base, id: otherId, userId: seed.actors.moderator.id, url: 'https://storage/mod' },
-		{ ...base, id: unownedId, userId: null, url: 'https://storage/unowned' },
+		{ ...base, id: otherId, userId: seed.actors.moderator.id, url: 'https://storage/mod', webpublicUrl: 'https://storage/mod-public', thumbnailUrl: 'https://storage/mod-thumb' },
+		{ ...base, id: unownedId, userId: null, url: 'https://storage/unowned', webpublicUrl: 'https://storage/unowned-public', thumbnailUrl: 'https://storage/unowned-thumb' },
 	]);
 	for (const [token, userId, permission] of [
 		['drive-read-token', seed.actors.ordinary.id, ['read:drive']],
@@ -68,6 +68,7 @@ afterAll(async () => {
 });
 test('ID and three URL variants show owner self/detail/UserLite; no database writes', async () => {
 	const before = await files().find();
+	expect(new Set(before.flatMap(row => [row.url, row.webpublicUrl, row.thumbnailUrl])).size).toBe(before.length * 3);
 	for (const input of [{ fileId }, { url: 'https://storage/original' }, { url: 'https://storage/public' }, { url: 'https://storage/thumb' }, { fileId, url: 'missing' }]) {
 		const response = await call('show', input);
 		expect(response.status, await response.clone().text()).toBe(200);

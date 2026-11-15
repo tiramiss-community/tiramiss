@@ -34,6 +34,18 @@ for (const path of Object.keys(record().inputs)) test(`new input drift rejects b
  assert.throws(() => validateOutboxSuccessor(undefined, drifted, () => null), /(?:emoji|instance admin|folder|internal events|drive file|Meta cache) measured current input drift/);
 });
 
+
+test('outbox-owned input drift reaches its guard after the Emoji reader passes it through', () => {
+ const path = 'packages/backend-next/src/http/activitypub-outbox-api.ts';
+ const outbox = JSON.parse(read(directory + 'local-outbox-current-evidence.json'));
+ assert(Object.hasOwn(outbox.inputs, path));
+ assert(!Object.hasOwn(record().inputs, path));
+ const changed = file => file === path ? Buffer.concat([read(file), Buffer.from('\n')]) : read(file);
+ assert.deepEqual(readPreEmojiObject(path, undefined, changed, () => null), changed(path));
+ assert.throws(() => validateOutboxSuccessor(undefined, changed, () => null), error =>
+  error instanceof assert.AssertionError && error.message.startsWith(`outbox measured current input drift: ${path}`));
+});
+
 test('receipt mutation and predecessor corruption reject without host logs', () => {
  for (const mutate of [value => { value.noInputDrift = false; }, value => { value.runs[3].passed--; }, value => { value.runs[4].exitCode = 1; }, value => { value.inputsAfter = {}; }]) {
   const value = record(); mutate(value);
