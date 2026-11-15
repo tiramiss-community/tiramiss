@@ -36,3 +36,13 @@ DB障害では温まったHTTPは値を使い、冷たいHTTPと明示noCacheは
 既存のinternal-events・folders・pubsub・URL preview・instance-admin readerは、この限定した末端readerを通じる。既存readerの返す歴史mapのキーを増やさず、Git・subprocess・祖先readerへの逆依存は作らない。旧測定の未移植範囲や投稿partialは維持する。
 
 inventoryは#317の5行だけを更新し、全領域の起動時Meta責任とproducerを含むイベント行をpartialに保つ。残る3行のverifiedは記載したcache取得・consumer・timerの証拠を指し、親#217や更新API全体の完成を表さない。
+
+## CI fixture の追補（#597）
+
+CIで旧fixtureの依存口と準備不足を検出した。workerのruntime mockは従来のMeta DB検索から`meta.fetch()`へ同じ材料を移し、配送前に例外で止まっていた3件と、その失敗の後続影響1件を解消した。終了順・保留した書込み・cleanup失敗の既存assertionは変更していない。
+
+actor alias/key・配送queue・instance metadata・remote userの4結合テストは、直接DBへ書くMeta fixtureを操作前に明示再取得する。missing-Meta試験は独立したcold runtimeの実HTTPから初期化させ、403・1行・INSERTという検証を保持する。これらは通知のE2E証拠ではなく、前節の専用試験が通知/周期反映を担う。
+
+[ci-fixtures-current-evidence.json](ci-fixtures-current-evidence.json)は、この5ファイルだけのNode26.4.0追補を持つ。worker11件、単体全119ファイル4371件、近傍結合4ファイル271件、結合全56ファイル1611件、型検査が成功した。各変更は適用対象のrunへ結び付け、unitはworker fixture、integrationは4結合fixtureを検証したと区別する。5入力は元の33入力へ追加せず、元のreceipt・27-file predecessor・source結果を保持したまま、[ci-fixtures-predecessor.json](ci-fixtures-predecessor.json)で基準`0081b37c6eec96225f25ca6502b25cdbc199c0db`の5旧入力へ別途投影する。
+
+追補readerは5現在入力・sealed receipt/predecessor・存在する各logを照合し、取得対象も返却直前に再確認する。次回呼出しの検証を省略するcacheや祖先へのimportを作らない。履歴への投影は新しい実測への置換や、本家full server・親領域の完了を意味しない。

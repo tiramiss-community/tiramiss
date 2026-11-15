@@ -66,6 +66,7 @@ beforeEach(async () => {
 	}
 	await resources.dataSource.getRepository(MiMeta).clear();
 	await resources.dataSource.getRepository(MiMeta).insert({ id: 'x', federation: 'all' });
+	await resources.meta.fetch(true);
 	inbox.deliveries.length = 0;
 	logs.length = 0;
 
@@ -161,6 +162,7 @@ test('a 410 from a shared inbox stops the job and suspends the host as gone', as
 
 test('blocked and suspended destinations complete with the upstream skip results and are not sent', async () => {
 	await resources.dataSource.getRepository(MiMeta).update({ id: 'x' }, { federation: 'none' });
+	await resources.meta.fetch(true);
 	await deliverTo(['/inbox/blocked', true]);
 	const [blocked] = await settled('completed', 1);
 	expect(blocked.returnvalue).toBe('skip (blocked)');
@@ -168,6 +170,7 @@ test('blocked and suspended destinations complete with the upstream skip results
 	// 停止ホストの一覧はプロセス内に 1 時間保たれるため、別の Worker で確かめる。
 	await stopWorker!();
 	await resources.dataSource.getRepository(MiMeta).update({ id: 'x' }, { federation: 'all' });
+	await resources.meta.fetch(true);
 	await resources.dataSource.getRepository(MiInstance).insert({ id: 'suspended', host: '', firstRetrievedAt: new Date(), suspensionState: 'manuallySuspended' });
 	const handler = createDeliverJobHandler(resources, config);
 	const stop = await openDeliverWorker({ redis: config.redisForJobQueue, connectTimeoutMs: 5000, logger: resources.logger, config: {}, process: handler.process, reportFailure: () => {} });
