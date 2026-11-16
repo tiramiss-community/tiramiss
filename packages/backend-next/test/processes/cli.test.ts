@@ -21,15 +21,24 @@ afterAll(async () => {
 	await rm(directory, { recursive: true, force: true });
 });
 
-function run(args: string[], config = configPath) {
+function execute(file: string, args: string[], config = configPath) {
 	return new Promise<{ stdout: string; stderr: string; code: number | string; }>((done) => {
-		execFile(process.execPath, ['--import', resolve('test/fixtures/cli-no-network.mjs'), resolve('built/entrypoints/cli.js'), ...args], {
+		execFile(file, args, {
 			env: { ...process.env, MISSKEY_CONFIG_YML: config }, timeout: 5000,
 		}, (error, stdout, stderr) => {
-			done({ stdout, stderr, code: error?.code ?? 0 });
+			done({ stdout, stderr, code: error ? (error.code ?? error.signal ?? 'PROCESS_FAILED') : 0 });
 		});
 	});
 }
+
+function run(args: string[], config = configPath) {
+	return execute(process.execPath, ['--import', resolve('test/fixtures/cli-no-network.mjs'), resolve('built/entrypoints/cli.js'), ...args], config);
+}
+
+test('does not treat signal termination after expected stdout as success', async () => {
+	const result = await execute(process.execPath, ['--eval', "process.stdout.write('pong\\n', () => process.kill(process.pid, 'SIGTERM'))"]);
+	expect(result).toEqual({ stdout: 'pong\n', stderr: '', code: 'SIGTERM' });
+});
 
 test.each([{ args: [] }, { args: ['help'] }])('offers implemented commands and exits naturally: $args', async ({ args }) => {
 	const result = await run(args);
@@ -37,13 +46,7 @@ test.each([{ args: [] }, { args: ['help'] }])('offers implemented commands and e
 });
 
 test('runs ping through the distribution package script', async () => {
-	const result = await new Promise<{ stdout: string; stderr: string; code: number | string; }>((done) => {
-		execFile('pnpm', ['--silent', 'cli', 'ping'], {
-			env: { ...process.env, MISSKEY_CONFIG_YML: configPath }, timeout: 5000,
-		}, (error, stdout, stderr) => {
-			done({ stdout, stderr, code: error?.code ?? 0 });
-		});
-	});
+	const result = await execute('pnpm', ['--silent', 'cli', 'ping']);
 	expect(result).toEqual({ stdout: 'pong\n', stderr: '', code: 0 });
 });
 
