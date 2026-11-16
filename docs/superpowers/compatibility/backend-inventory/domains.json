@@ -3293,6 +3293,66 @@
       ],
       "note": "#304: 固定本家のliteral endpoint/packer/handleRequest＋実PG/listening Fastifyの16caseを通常compositionの実HTTP/PGと比較。local DB直読・category/name順・localOnly/sensitive/role制限行公開・後方互換URL・省略項目・GET/POST/HEAD/PUT・private/public cache・実tokenを確認。認証とerror serializerはsource側明示wrapper、full本家serverではない。管理更新と他の公開情報は対象外。",
       "evidenceRevision": "830cdcce059e6e6471a441f92b6f563c75a3ef66"
+    },
+    "http:packages/backend/src/server/web/ClientServerService.ts:299": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/http/emoji-images-api.ts",
+        "packages/backend-next/src/platform/images/emoji-image-assets.ts",
+        "packages/backend-next/src/platform/images/twemoji-badge.ts",
+        "packages/backend-next/src/composition/emoji-images-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/emoji-images.test.ts",
+        "packages/backend-next/test/unit/composition/http-app.test.ts",
+        "docs/superpowers/compatibility/emoji-images/README.md",
+        "docs/superpowers/compatibility/emoji-images/corpus.json",
+        "docs/superpowers/compatibility/emoji-images/observations.json",
+        "docs/superpowers/compatibility/emoji-images/source-probe.mjs"
+      ],
+      "evidenceRevision": "397be2c9f3dfb30025f3a97c6fc2efa50d51fccc",
+      "note": "#555: 固定本家8e07cf0のliteral3routeを実Fastify/static/Sharpで45 HTTP観測し、新Honoの固定画像バイト・status・本文・CSP/cache・HEAD・304/412/206/416・不正名/URL/欠落/変換失敗と比較。新実装59近傍test。Sharp0.35.5の96px指定パイプラインは固定画像で512pxを出力し、新旧PNG hashまで一致（UF-014）。full upstream boot、カスタム絵文字管理、他asset、#196/#114全体は対象外。"
+    },
+    "http:packages/backend/src/server/web/ClientServerService.ts:314": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/http/emoji-images-api.ts",
+        "packages/backend-next/src/platform/images/emoji-image-assets.ts",
+        "packages/backend-next/src/platform/images/twemoji-badge.ts",
+        "packages/backend-next/src/composition/emoji-images-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/emoji-images.test.ts",
+        "packages/backend-next/test/unit/composition/http-app.test.ts",
+        "docs/superpowers/compatibility/emoji-images/README.md",
+        "docs/superpowers/compatibility/emoji-images/corpus.json",
+        "docs/superpowers/compatibility/emoji-images/observations.json",
+        "docs/superpowers/compatibility/emoji-images/source-probe.mjs"
+      ],
+      "evidenceRevision": "397be2c9f3dfb30025f3a97c6fc2efa50d51fccc",
+      "note": "#555: 固定本家8e07cf0のliteral3routeを実Fastify/static/Sharpで45 HTTP観測し、新Honoの固定画像バイト・status・本文・CSP/cache・HEAD・304/412/206/416・不正名/URL/欠落/変換失敗と比較。新実装59近傍test。Sharp0.35.5の96px指定パイプラインは固定画像で512pxを出力し、新旧PNG hashまで一致（UF-014）。full upstream boot、カスタム絵文字管理、他asset、#196/#114全体は対象外。"
+    },
+    "http:packages/backend/src/server/web/ClientServerService.ts:329": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/http/emoji-images-api.ts",
+        "packages/backend-next/src/platform/images/emoji-image-assets.ts",
+        "packages/backend-next/src/platform/images/twemoji-badge.ts",
+        "packages/backend-next/src/composition/emoji-images-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/emoji-images.test.ts",
+        "packages/backend-next/test/unit/composition/http-app.test.ts",
+        "docs/superpowers/compatibility/emoji-images/README.md",
+        "docs/superpowers/compatibility/emoji-images/corpus.json",
+        "docs/superpowers/compatibility/emoji-images/observations.json",
+        "docs/superpowers/compatibility/emoji-images/source-probe.mjs"
+      ],
+      "evidenceRevision": "397be2c9f3dfb30025f3a97c6fc2efa50d51fccc",
+      "note": "#555: 固定本家8e07cf0のliteral3routeを実Fastify/static/Sharpで45 HTTP観測し、新Honoの固定画像バイト・status・本文・CSP/cache・HEAD・304/412/206/416・不正名/URL/欠落/変換失敗と比較。新実装59近傍test。Sharp0.35.5の96px指定パイプラインは固定画像で512pxを出力し、新旧PNG hashまで一致（UF-014）。full upstream boot、カスタム絵文字管理、他asset、#196/#114全体は対象外。"
     }
   }
 }

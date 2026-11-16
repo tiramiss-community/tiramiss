@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { readPreEmojiImages } from './emoji-images-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
@@ -143,5 +144,5 @@ export function validatePublicEmojiQueryEvidence(value, rawRead = read, optional
 export function readBeforePublicEmojiQuery(path, rawRead = read, optional = optionalRead) {
 	return withEvidenceRequestedPath(path, () => path === queryPath
 		? Buffer.from(validatePublicEmojiQueryEvidence(undefined, rawRead, optional))
-		: rawRead(path));
+		: (path === 'packages/backend-next/src/composition/http-app.ts' || path === 'packages/backend-next/test/unit/composition/http-app.test.ts') ? readPreEmojiImages(path, rawRead, optional) : rawRead(path));
 }

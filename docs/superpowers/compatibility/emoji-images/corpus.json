@@ -1,0 +1,212 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "assetVersion": "17.0.3",
+  "cases": [
+    {
+      "id": "fluent",
+      "path": "/fluent-emoji/1f600.png"
+    },
+    {
+      "id": "twemoji",
+      "path": "/twemoji/1f600.svg"
+    },
+    {
+      "id": "badge",
+      "path": "/twemoji-badge/1f600.png"
+    },
+    {
+      "id": "fluent-head",
+      "path": "/fluent-emoji/1f600.png",
+      "method": "HEAD"
+    },
+    {
+      "id": "twemoji-head",
+      "path": "/twemoji/1f600.svg",
+      "method": "HEAD"
+    },
+    {
+      "id": "badge-head",
+      "path": "/twemoji-badge/1f600.png",
+      "method": "HEAD"
+    },
+    {
+      "id": "missing-fluent",
+      "path": "/fluent-emoji/ffff.png"
+    },
+    {
+      "id": "missing-twemoji",
+      "path": "/twemoji/ffff.svg"
+    },
+    {
+      "id": "missing-badge",
+      "path": "/twemoji-badge/ffff.png"
+    },
+    {
+      "id": "corrupt-badge",
+      "path": "/twemoji-badge/1f601.png"
+    },
+    {
+      "id": "missing-head",
+      "path": "/twemoji/ffff.svg",
+      "method": "HEAD"
+    },
+    {
+      "id": "badge-error-head",
+      "path": "/twemoji-badge/ffff.png",
+      "method": "HEAD"
+    },
+    {
+      "id": "uppercase",
+      "path": "/twemoji/1F600.svg"
+    },
+    {
+      "id": "wrong-extension",
+      "path": "/twemoji/1f600.png"
+    },
+    {
+      "id": "badge-wrong-extension",
+      "path": "/twemoji-badge/1f600.svg"
+    },
+    {
+      "id": "slash",
+      "path": "/twemoji/a/1f600.svg"
+    },
+    {
+      "id": "encoded-slash",
+      "path": "/twemoji/a%2f1f600.svg"
+    },
+    {
+      "id": "encoded-name",
+      "path": "/twemoji/%31f600.svg"
+    },
+    {
+      "id": "double-encoded",
+      "path": "/twemoji/%2531f600.svg"
+    },
+    {
+      "id": "bad-escape",
+      "path": "/twemoji/%ZZ.svg"
+    },
+    {
+      "id": "bad-codepoint",
+      "path": "/twemoji/%ED%A0%80.svg"
+    },
+    {
+      "id": "encoded-traversal",
+      "path": "/twemoji/%2e%2e%2f1f600.svg"
+    },
+    {
+      "id": "empty",
+      "path": "/twemoji/"
+    },
+    {
+      "id": "range",
+      "path": "/twemoji/1f600.svg",
+      "headers": {
+        "Range": "bytes=0-15"
+      }
+    },
+    {
+      "id": "range-invalid",
+      "path": "/twemoji/1f600.svg",
+      "headers": {
+        "Range": "bytes=999999-"
+      }
+    },
+    {
+      "id": "not-modified",
+      "path": "/twemoji/1f600.svg",
+      "headers": {
+        "If-Modified-Since": "Sat, 01 Jan 2000 00:00:00 GMT"
+      }
+    },
+    {
+      "id": "if-none-match",
+      "path": "/twemoji/1f600.svg",
+      "headers": {
+        "If-None-Match": "*"
+      }
+    },
+    {
+      "id": "precondition",
+      "path": "/twemoji/1f600.svg",
+      "headers": {
+        "If-Match": "\"wrong\""
+      }
+    },
+    {
+      "id": "badge-ignores-conditional",
+      "path": "/twemoji-badge/1f600.png",
+      "headers": {
+        "If-None-Match": "*"
+      }
+    },
+    {
+      "id": "fluent-emoji-bare",
+      "path": "/fluent-emoji"
+    },
+    {
+      "id": "fluent-emoji-encoded-prefix",
+      "path": "/%66luent-emoji/1f600.png"
+    },
+    {
+      "id": "fluent-emoji-bad-nested",
+      "path": "/fluent-emoji/a/%ZZ.png"
+    },
+    {
+      "id": "twemoji-bare",
+      "path": "/twemoji"
+    },
+    {
+      "id": "twemoji-encoded-prefix",
+      "path": "/tw%65moji/1f600.svg"
+    },
+    {
+      "id": "twemoji-bad-nested",
+      "path": "/twemoji/a/%ZZ.svg"
+    },
+    {
+      "id": "twemoji-badge-bare",
+      "path": "/twemoji-badge"
+    },
+    {
+      "id": "twemoji-badge-encoded-prefix",
+      "path": "/tw%65moji-badge/1f600.png"
+    },
+    {
+      "id": "twemoji-badge-bad-nested",
+      "path": "/twemoji-badge/a/%ZZ.png"
+    },
+    {
+      "id": "double-encoded-slash",
+      "path": "/twemoji/%252F1f600.svg"
+    },
+    {
+      "id": "fluent-emoji-bare-head",
+      "path": "/fluent-emoji",
+      "method": "HEAD"
+    },
+    {
+      "id": "fluent-emoji-bad-codepoint-nested",
+      "path": "/fluent-emoji/%ED%A0%80/a.png"
+    },
+    {
+      "id": "twemoji-bare-head",
+      "path": "/twemoji",
+      "method": "HEAD"
+    },
+    {
+      "id": "twemoji-bad-codepoint-nested",
+      "path": "/twemoji/%ED%A0%80/a.svg"
+    },
+    {
+      "id": "twemoji-badge-bare-head",
+      "path": "/twemoji-badge",
+      "method": "HEAD"
+    },
+    {
+      "id": "twemoji-badge-bad-codepoint-nested",
+      "path": "/twemoji-badge/%ED%A0%80/a.png"
+    }
+  ]
+}

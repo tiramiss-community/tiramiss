@@ -50,6 +50,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 		'/users/:user/outbox', '/users//outbox', '/notes/:note/activity', '/notes//activity',
 		'/emojis/:emoji', '/emojis/', '/api/emoji', '/api/emojis',
 		'/manifest.json', '/robots.txt', '/opensearch.xml',
+		'/fluent-emoji/*', '/twemoji/*', '/twemoji-badge/*',
 		'/api/drive/folders/create', '/api/drive/folders/delete', '/api/drive/folders/find', '/api/drive/folders/show', '/api/drive/folders/update',
 		'/api/notes/delete', '/api/notes/show', '/api/notes/create', '/api/test-queue',
 	]);

@@ -20,7 +20,7 @@ test('rejects live package drift, proof drift, and drift through a reused reader
 	const reader = createPreCliPackageReader(path => mutations.get(path) ?? read(path));
 	reader(packagePath);
 	mutations.set(packagePath, Buffer.concat([read(packagePath), Buffer.from('\n')]));
-	assert.throws(() => reader(packagePath), /(?:CLI|video ingest) measured current input drift/);
+	assert.throws(() => reader(packagePath), /measured current input drift/);
 	mutations.clear();
 	const proof = 'docs/superpowers/compatibility/cli/package-predecessor.json';
 	mutations.set(proof, Buffer.concat([read(proof), Buffer.from('\n')]));

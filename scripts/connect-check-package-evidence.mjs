@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { readPreEmojiImages } from './emoji-images-evidence.mjs';
 import { createHash } from 'node:crypto';
 const packagePath = 'packages/backend-next/package.json';
 const proofPath = 'docs/superpowers/compatibility/connect-check/package-predecessor.json';
@@ -11,7 +12,7 @@ const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 
 export function createPreConnectCheckPackageReader(readFile) {
 	return path => {
-		const bytes = readFile(path);
+		const bytes = path === packagePath || path === 'pnpm-lock.yaml' ? readPreEmojiImages(path, readFile) : readFile(path);
 		if (path !== packagePath) {
 			return bytes;
 		}
