@@ -1,0 +1,73 @@
+{
+  "baseRevision": "f588ccbfb538d5ef79a78f37cbe4a39e2e52dda2",
+  "path": "packages/backend-next/src/http/api-request.ts",
+  "currentSha256": "d3d76bd84e7d96a7ee16137e8993b14f24a4620d6ed66f6895788781a635621a",
+  "previousSha256": "7c4a83c21a75610f58ce6275f667d548305e46d8a5cd780191731c30eff0b7b5",
+  "patches": [
+    {
+      "offset": 1674,
+      "before": "if",
+      "after": "result[key]"
+    },
+    {
+      "offset": 1677,
+      "before": "(",
+      "after": "= "
+    },
+    {
+      "offset": 1700,
+      "before": ")",
+      "after": ""
+    },
+    {
+      "offset": 1702,
+      "before": "{\n\t\t\tresult[key] =",
+      "after": "?"
+    },
+    {
+      "offset": 1726,
+      "before": ";\n\t\t}",
+      "after": ""
+    },
+    {
+      "offset": 1732,
+      "before": "else",
+      "after": ":"
+    },
+    {
+      "offset": 1737,
+      "before": "if (",
+      "after": ""
+    },
+    {
+      "offset": 1764,
+      "before": ")",
+      "after": ""
+    },
+    {
+      "offset": 1766,
+      "before": "{\n\t\t\t",
+      "after": "? [..."
+    },
+    {
+      "offset": 1779,
+      "before": ".push(",
+      "after": ", "
+    },
+    {
+      "offset": 1790,
+      "before": ");\n\t\t} else {\n\t\t\tresult[key",
+      "after": ""
+    },
+    {
+      "offset": 1819,
+      "before": "=",
+      "after": ":"
+    },
+    {
+      "offset": 1839,
+      "before": "\n\t\t}",
+      "after": ""
+    }
+  ]
+}

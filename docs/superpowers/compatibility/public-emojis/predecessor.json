@@ -1,0 +1,89 @@
+{
+  "baseRevision": "8c3f6d51e17a2a2f73c2f2156a384c2519ca21c5",
+  "files": {
+    "packages/backend-next/src/composition/http-app.ts": {
+      "currentSha256": "8104cc1f5af96c11dfbfdd59d11fb453162386b683312bc6db3db8017ca42634",
+      "previousSha256": "f0ed59965ccd0a7e5a7bf5e5fec03e44d2e861ee7ec9bf9df44798917a7beaf2",
+      "patches": [
+        {
+          "offset": 102,
+          "before": "\nimport { createPublicEmojisHttp } from './public-emojis-http.js';",
+          "after": ""
+        },
+        {
+          "offset": 1951,
+          "before": "EmojisHttp(resources))\n\t\t.route('/', createPublic",
+          "after": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/http/api-endpoint.ts": {
+      "currentSha256": "262172fbd09ef769607b079e59f862c2f386098b5720a4835df26514b2b73bc2",
+      "previousSha256": "be144348a148712500dfceda575ccf79786723d93bf69dbbe441945a7c30ce74",
+      "patches": [
+        {
+          "offset": 833,
+          "before": "readonly allowGet?: boolean;\n\treadonly cacheSec?: number;\n\t",
+          "after": ""
+        },
+        {
+          "offset": 1623,
+          "before": "t, endpoint.allowGe",
+          "after": ""
+        },
+        {
+          "offset": 2606,
+          "before": "if (context.req.method === 'GET' && endpoint.cacheSec && !request.token && credential === null) {\n\t\t\t\t\tcontext.header('Cache-Control', `public, max-age=${endpoint.cacheSec}`);\n\t\t\t\t}\n\t\t\t\t",
+          "after": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/http/api-request.ts": {
+      "currentSha256": "7c4a83c21a75610f58ce6275f667d548305e46d8a5cd780191731c30eff0b7b5",
+      "previousSha256": "3542f4f8532cca93a2ce47ada88e51faea8ceede5265aca5db49e662b64c2461",
+      "patches": [
+        {
+          "offset": 945,
+          "before": "function readGetQuery(url: string): Record<string, unknown> {\n\tconst result: Record<string, unknown> = Object.create(null);\n\tconst start = url.indexOf('?');\n\tif (start === -1) {\n\t\treturn result;\n\t}\n\tconst decode = (raw: string) => {\n\t\tconst value = raw.replace(/\\+/g, ' ');\n\t\ttry {\n\t\t\treturn decodeURIComponent(value);\n\t\t} catch {\n\t\t\t// Fastify's fast-querystring retains the entire malformed component.\n\t\t\treturn value;\n\t\t}\n\t};\n\tfor (const pair of url.slice(start + 1).split('&')) {\n\t\tif (pair === '') {\n\t\t\tcontinue;\n\t\t}\n\t\tconst equals = pair.indexOf('=');\n\t\tconst key = decode(equals === -1 ? pair : pair.slice(0, equals));\n\t\tconst value = decode(equals === -1 ? '' : pair.slice(equals + 1));\n\t\tconst previous = result[key];\n\t\tresult[key] = previous === undefined ? value : Array.isArray(previous) ? [...previous, value] : [previous, value];\n\t}\n\treturn result;\n}\n\n",
+          "after": ""
+        },
+        {
+          "offset": 1981,
+          "before": ", allowGet = false",
+          "after": ""
+        },
+        {
+          "offset": 2068,
+          "before": " && !allowGet",
+          "after": ""
+        },
+        {
+          "offset": 2153,
+          "before": "if (context.req.method === 'GET') {\n\t\t\tinput = readGetQuery(context.req.url);\n\t\t} else {\n\t\t\t",
+          "after": ""
+        },
+        {
+          "offset": 2284,
+          "before": "\t",
+          "after": ""
+        },
+        {
+          "offset": 2338,
+          "before": "\n\t\t}",
+          "after": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "currentSha256": "1afbcdadadbb7090f88f3449fc04e1f9e8a1b06e0ff2d1e7898d2cc20e314a4c",
+      "previousSha256": "5eef16b3330f3b6e2ea093048a80e1835fc1cfbaf8ce0ee2abebc0d54c2bd4de",
+      "patches": [
+        {
+          "offset": 2589,
+          "before": "', '/api/emoji', '/api/emojis",
+          "after": ""
+        }
+      ]
+    }
+  }
+}

@@ -16,6 +16,8 @@ export interface ApiEndpoint {
 	readonly name: string;
 	/** 本家endpoint metaの認可要件。 */
 	readonly access: AccessRequirement;
+	readonly allowGet?: boolean;
+	readonly cacheSec?: number;
 	/**
 	 * `access.authorize`を事実の取得後に必ず呼ぶ。成功しても呼ばれていなければ内部エラーにする。
 	 * `undefined`・`null`は204、それ以外はJSONとして返す。
@@ -35,7 +37,7 @@ export function createApiEndpoints(options: ApiEndpointsOptions): Hono {
 	const app = new Hono();
 	for (const endpoint of options.endpoints) {
 		registerApiRoute(app, `/api/${endpoint.name}`, async context => {
-			const request = await readApiRequest(context);
+			const request = await readApiRequest(context, endpoint.allowGet);
 			if (request instanceof Response) {
 				return request;
 			}
@@ -62,6 +64,9 @@ export function createApiEndpoints(options: ApiEndpointsOptions): Hono {
 				const result = await endpoint.handle(access, request.input);
 				if (!access.authorized) {
 					throw new Error(`Endpoint ${endpoint.name} completed without authorization`);
+				}
+				if (context.req.method === 'GET' && endpoint.cacheSec && !request.token && credential === null) {
+					context.header('Cache-Control', `public, max-age=${endpoint.cacheSec}`);
 				}
 				return result == null ? context.body(null, 204) : context.json(result);
 			} catch (error) {

@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { createPublicEmojisHttp } from './public-emojis-http.js';
 import { createDriveFilesHttp } from './drive-files-http.js';
 import { createDriveFoldersHttp } from './drive-folders-http.js';
 import { registerHttpAppWork } from './http-app-work.js';
@@ -33,6 +34,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		.route('/', createFollowCollectionsHttp(resources, config))
 		.route('/', createOutboxHttp(resources, config))
 		.route('/', createEmojiHttp(resources, config))
+		.route('/', createPublicEmojisHttp(resources))
 		.route('/', createPublicDocumentsHttp(resources, config))
 		.route('/', folders.app);
 	registerHttpAppWork(app, folders.idle);

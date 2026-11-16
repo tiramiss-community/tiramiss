@@ -1,0 +1,42 @@
+{
+  "scope": "public-emojis-304-query-append",
+  "baseRevision": "f588ccbfb538d5ef79a78f37cbe4a39e2e52dda2",
+  "noInputDrift": true,
+  "inputs": {
+    "packages/backend-next/src/http/api-request.ts": "d3d76bd84e7d96a7ee16137e8993b14f24a4620d6ed66f6895788781a635621a",
+    "packages/backend-next/test/unit/http/api-endpoint.test.ts": "66962b8d8a32f5f8c3736d14d8fc6267f8f3cc08e2b1a895597f01d83b9063b7"
+  },
+  "inputsAfter": {
+    "packages/backend-next/src/http/api-request.ts": "d3d76bd84e7d96a7ee16137e8993b14f24a4620d6ed66f6895788781a635621a",
+    "packages/backend-next/test/unit/http/api-endpoint.test.ts": "66962b8d8a32f5f8c3736d14d8fc6267f8f3cc08e2b1a895597f01d83b9063b7"
+  },
+  "runs": [
+    {
+      "name": "query-unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/http/api-endpoint.test.ts",
+        "test/unit/http/public-emojis-api.test.ts"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-304-logs/query-unit.log",
+      "logSha256": "3f836b85db5d602b0204b98f9f028a8175190e0d451f853f9d612e8fc586b5ec",
+      "passed": 30
+    },
+    {
+      "name": "query-typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-304-logs/query-typecheck.log",
+      "logSha256": "7f96aaabe6df7a354a3e4d7514375171e219ae2de91268b52d91875e0a026aa4"
+    }
+  ]
+}
