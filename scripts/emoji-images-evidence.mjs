@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { readPreAvatarImages } from './avatar-images-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { scopedEvidenceValidation, withEvidenceRequestedPath, getEvidenceCurrentReader, registerEvidenceObserver } from './evidence-validation-scope.mjs';
@@ -34,6 +35,8 @@ export const emojiImagesPredecessorFiles = Object.freeze([
 export function validateEmojiImagesEvidence(value, rawRead = read, optional = optionalRead) {
 	rawRead = getEvidenceCurrentReader(rawRead);
 	return scopedEvidenceValidation(validateEmojiImagesEvidence, value, rawRead, optional, (rawRead, optional) => {
+		const currentRead = rawRead;
+		rawRead = path => readPreAvatarImages(path, currentRead, optional);
 		const receipt = rawRead(directory + 'current-evidence.json');
 		assert.equal(sha(receipt), receiptSeal, 'emoji images receipt seal');
 		value ??= JSON.parse(receipt);
@@ -93,6 +96,8 @@ export function readPreEmojiImages(path, rawRead = read, optional = optionalRead
 		// Ancestor validators must observe their requested live view as well as
 		// the original source checked below, so their own cache detects drift.
 		rawRead(path);
+		// Keep successor metadata visible to ancestors even when this leaf is cached.
+		readPreAvatarImages(path, rawRead, optional);
 		registerEvidenceObserver(observerRegistration, rawRead, () => {
 			const receipt = rawRead(directory + 'current-evidence.json');
 			assert.equal(sha(receipt), receiptSeal, 'emoji images receipt seal');

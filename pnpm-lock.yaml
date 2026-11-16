@@ -831,6 +831,12 @@ importers:
       ajv:
         specifier: 8.20.0
         version: 8.20.0
+      '@napi-rs/canvas':
+        specifier: 1.0.10
+        version: 1.0.10
+      random-seed:
+        specifier: 0.3.0
+        version: 0.3.0
       backend-upstream:
         specifier: workspace:*
         version: link:../backend-upstream
@@ -955,6 +961,9 @@ importers:
       eslint:
         specifier: 9.39.5
         version: 9.39.5(supports-color@10.2.2)
+      '@types/random-seed':
+        specifier: 0.3.5
+        version: 0.3.5
       typescript:
         specifier: npm:@typescript/typescript6@6.0.2
         version: '@typescript/typescript6@6.0.2'

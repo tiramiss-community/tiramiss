@@ -1,0 +1,98 @@
+{
+  "scope": "avatar-images-556",
+  "baseRevision": "fec2ca0f3c012a8d4491ec2327906b7d34a68b35",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "measuredWorkingTree": true,
+  "upstreamFullServerMeasured": false,
+  "noInputDrift": true,
+  "inputs": {
+    "packages/backend-next/package.json": "5f630013c7328d447e9b433a5f77fd28ec0138548906508f123b2ba01ad66182",
+    "packages/backend-next/src/composition/http-app.ts": "e8851b4ec5bba14758c315e98368105051463cb7cba8d26b3c18ad332ff381cc",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "742be594f57ff832ccc0568b06720f9677d4a1519d0a6f17b88e24a19e6f9e49",
+    "packages/backend-next/src/composition/avatar-images-http.ts": "57dcfe526d321cadcf5f07829f16b9f3f5ded090307f15c15092c7d970a1719b",
+    "packages/backend-next/src/http/avatar-images-api.ts": "24d151e0366f7613f0190399aae8c8f19d7718e85b568a6757e62b2a51b4c39f",
+    "packages/backend-next/src/modules/avatar-images/public.ts": "889e549f43e5514e0a65ae1d05f0d772157f7349882578349111580e757f228c",
+    "packages/backend-next/src/platform/database/avatar-images.ts": "9a9ff34019e5c0782ed1192249a3034e0c880fca0a8fcb471fcb65561303713d",
+    "packages/backend-next/src/platform/images/identicon.ts": "a14cc3a6092853956453adc6ac9f5a4ada90e5e527978723d42e70fa27f46dd1",
+    "packages/backend-next/test/helpers/avatar-images.ts": "7e84e81d4417450758d70e030dcd57d65b5737d00426264ec136a6fc8cdecc50",
+    "packages/backend-next/test/unit/avatar-images.test.ts": "4e90481db7a2a6f2b21c0b40de760efa4007fa7ba347ebf054de7b430fb046a9",
+    "packages/backend-next/test/integration/avatar-images.test.ts": "56086ac17b425d59cc6851d2083b2b7e10d36a7c85785b66984897501d769e16",
+    "docs/superpowers/compatibility/avatar-images/corpus.json": "c0dfb0a2e554b918e92b7661099d9bf8c9aa2f41518aede1fdf7227a11784eb3",
+    "docs/superpowers/compatibility/avatar-images/observations.json": "6e7bef197f0f80121cda55ba9ebacf7e0349cc7a634d9aa301d8a72eaace3620",
+    "docs/superpowers/compatibility/avatar-images/source-probe.mjs": "40d8e4608b717f5b60c1c8339f6550417182679fd312ef6d05384bc5b1833877"
+  },
+  "inputsAfter": {
+    "packages/backend-next/package.json": "5f630013c7328d447e9b433a5f77fd28ec0138548906508f123b2ba01ad66182",
+    "packages/backend-next/src/composition/http-app.ts": "e8851b4ec5bba14758c315e98368105051463cb7cba8d26b3c18ad332ff381cc",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "742be594f57ff832ccc0568b06720f9677d4a1519d0a6f17b88e24a19e6f9e49",
+    "packages/backend-next/src/composition/avatar-images-http.ts": "57dcfe526d321cadcf5f07829f16b9f3f5ded090307f15c15092c7d970a1719b",
+    "packages/backend-next/src/http/avatar-images-api.ts": "24d151e0366f7613f0190399aae8c8f19d7718e85b568a6757e62b2a51b4c39f",
+    "packages/backend-next/src/modules/avatar-images/public.ts": "889e549f43e5514e0a65ae1d05f0d772157f7349882578349111580e757f228c",
+    "packages/backend-next/src/platform/database/avatar-images.ts": "9a9ff34019e5c0782ed1192249a3034e0c880fca0a8fcb471fcb65561303713d",
+    "packages/backend-next/src/platform/images/identicon.ts": "a14cc3a6092853956453adc6ac9f5a4ada90e5e527978723d42e70fa27f46dd1",
+    "packages/backend-next/test/helpers/avatar-images.ts": "7e84e81d4417450758d70e030dcd57d65b5737d00426264ec136a6fc8cdecc50",
+    "packages/backend-next/test/unit/avatar-images.test.ts": "4e90481db7a2a6f2b21c0b40de760efa4007fa7ba347ebf054de7b430fb046a9",
+    "packages/backend-next/test/integration/avatar-images.test.ts": "56086ac17b425d59cc6851d2083b2b7e10d36a7c85785b66984897501d769e16",
+    "docs/superpowers/compatibility/avatar-images/corpus.json": "c0dfb0a2e554b918e92b7661099d9bf8c9aa2f41518aede1fdf7227a11784eb3",
+    "docs/superpowers/compatibility/avatar-images/observations.json": "6e7bef197f0f80121cda55ba9ebacf7e0349cc7a634d9aa301d8a72eaace3620",
+    "docs/superpowers/compatibility/avatar-images/source-probe.mjs": "40d8e4608b717f5b60c1c8339f6550417182679fd312ef6d05384bc5b1833877"
+  },
+  "runs": [
+    {
+      "name": "build",
+      "log": "/tmp/tiramiss-556-r3-final-build.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "commands": [
+        "node packages/backend-upstream/node_modules/typescript/bin/tsc6 -p packages/backend-upstream/tsconfig.json",
+        "node packages/backend-upstream/node_modules/tsc-alias/dist/bin/index.js -p packages/backend-upstream/tsconfig.json",
+        "node packages/backend-next/node_modules/typescript/bin/tsc6 -p packages/backend-next/tsconfig.json"
+      ]
+    },
+    {
+      "name": "typecheck",
+      "log": "/tmp/tiramiss-556-r3-final-typecheck.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "commands": [
+        "node node_modules/typescript/bin/tsc6 -p tsconfig.json --noEmit",
+        "node node_modules/typescript/bin/tsc6 -p tsconfig.test.json --noEmit"
+      ]
+    },
+    {
+      "name": "unit",
+      "log": "/tmp/tiramiss-556-r3-final-unit.log",
+      "logSha256": "62280208b8b325a78a960de442fc19ee97ec0901956fd14c1dae692c584db7f7",
+      "exitCode": 0,
+      "commands": [
+        "node node_modules/vitest/vitest.mjs run --config vitest.config.ts test/unit/avatar-images.test.ts test/unit/emoji-images.test.ts test/unit/composition/http-app.test.ts"
+      ],
+      "passed": 244
+    },
+    {
+      "name": "integration",
+      "log": "/tmp/tiramiss-556-r3-final-integration.log",
+      "logSha256": "0ec38d78972503fbdb9566ae58ea5009e8c4e5a18f5df3762747eccf76778e91",
+      "exitCode": 0,
+      "commands": [
+        "node node_modules/vitest/vitest.mjs run --config vitest.integration.config.ts test/integration/avatar-images.test.ts"
+      ],
+      "passed": 174
+    },
+    {
+      "name": "source",
+      "log": "/tmp/tiramiss-556-r3-final-source.log",
+      "logSha256": "4bfe4468164beddf7b3fc860bbb9b83c8bbfabf714b6ff0df2d4cab0c3825e39",
+      "exitCode": 0,
+      "commands": [
+        "node docs/superpowers/compatibility/avatar-images/source-probe.mjs --check"
+      ]
+    }
+  ],
+  "inputCapture": "R3 runtime freeze; proof metadata outside measured product inputs",
+  "lockProofSha256": "7802badea4fb65c63c13c8678020a2e651f148c8b9c46289342082068c5f99aa",
+  "previousEvidence": {
+    "path": "docs/superpowers/compatibility/avatar-images/r2-current-evidence.json",
+    "sha256": "def91376d85e900194a83ffbd9fab5588136bb8fd0a1709e550013e224a8e7f9"
+  }
+}

@@ -1,0 +1,923 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "config": {
+    "url": "https://local.test",
+    "host": "local.test",
+    "mediaProxy": "https://media.test/proxy"
+  },
+  "meta": {
+    "iconUrl": "https://local.test/system.png",
+    "enableIdenticonGeneration": true
+  },
+  "emojis": [
+    {
+      "name": "wave",
+      "host": null,
+      "publicUrl": "https://images.test/wave.webp?x=1&y=2",
+      "originalUrl": "https://original.test/wave.gif"
+    },
+    {
+      "name": "wave",
+      "host": "remote.test",
+      "publicUrl": "https://remote.test/wave.gif",
+      "originalUrl": "https://original.test/remote.gif"
+    },
+    {
+      "name": "legacy",
+      "host": null,
+      "publicUrl": "",
+      "originalUrl": "https://original.test/legacy.gif"
+    }
+  ],
+  "users": [
+    {
+      "username": "Alice",
+      "host": null,
+      "avatarId": "a",
+      "avatarUrl": "https://images.test/alice.webp"
+    },
+    {
+      "username": "Bob",
+      "host": "remote.test",
+      "avatarId": "b",
+      "avatarUrl": "https://images.test/bob.webp"
+    },
+    {
+      "username": "NoId",
+      "host": null,
+      "avatarId": null,
+      "avatarUrl": "https://ignored.test/avatar.png"
+    },
+    {
+      "username": "NoUrl",
+      "host": null,
+      "avatarId": "a",
+      "avatarUrl": null
+    },
+    {
+      "username": "Empty",
+      "host": null,
+      "avatarId": "a",
+      "avatarUrl": ""
+    },
+    {
+      "username": "System.Bot",
+      "host": null,
+      "avatarId": null,
+      "avatarUrl": null
+    },
+    {
+      "username": "System.Bot",
+      "host": "remote.test",
+      "avatarId": null,
+      "avatarUrl": null
+    },
+    {
+      "username": "suspended",
+      "host": null,
+      "avatarId": "a",
+      "avatarUrl": "https://images.test/suspended.webp",
+      "isSuspended": true
+    }
+  ],
+  "cases": [
+    {
+      "id": "local",
+      "path": "/emoji/wave.webp"
+    },
+    {
+      "id": "dot-local",
+      "path": "/emoji/wave@..webp"
+    },
+    {
+      "id": "remote",
+      "path": "/emoji/wave@remote.test.webp"
+    },
+    {
+      "id": "original",
+      "path": "/emoji/legacy.webp"
+    },
+    {
+      "id": "unknown",
+      "path": "/emoji/missing.webp"
+    },
+    {
+      "id": "unknown-fallback",
+      "path": "/emoji/missing.webp?fallback=0"
+    },
+    {
+      "id": "bad-extension",
+      "path": "/emoji/wave.png?fallback"
+    },
+    {
+      "id": "upper-extension",
+      "path": "/emoji/wave.WEBP"
+    },
+    {
+      "id": "too-many-at",
+      "path": "/emoji/a@b@c.webp"
+    },
+    {
+      "id": "empty-name",
+      "path": "/emoji/@remote.test.webp"
+    },
+    {
+      "id": "empty-host",
+      "path": "/emoji/wave@.webp"
+    },
+    {
+      "id": "invalid-char",
+      "path": "/emoji/a!.webp"
+    },
+    {
+      "id": "nested",
+      "path": "/emoji/a/wave.webp"
+    },
+    {
+      "id": "encoded-slash",
+      "path": "/emoji/a%2Fwave.webp"
+    },
+    {
+      "id": "double-encoded",
+      "path": "/emoji/wave%252Ewebp"
+    },
+    {
+      "id": "empty-emoji-path",
+      "path": "/emoji/"
+    },
+    {
+      "id": "encoded-emoji-prefix",
+      "path": "/%65moji/wave.webp"
+    },
+    {
+      "id": "encoded-dot",
+      "path": "/emoji/wave%2Ewebp"
+    },
+    {
+      "id": "encoded-query-name",
+      "path": "/emoji/wave.webp?%73tatic=0"
+    },
+    {
+      "id": "database-failure",
+      "path": "/emoji/fail.webp"
+    },
+    {
+      "id": "bad-proxy",
+      "path": "/emoji/wave.webp",
+      "mediaProxy": "bad url"
+    },
+    {
+      "id": "query-static",
+      "path": "/emoji/wave.webp?static"
+    },
+    {
+      "id": "query-static=0",
+      "path": "/emoji/wave.webp?static=0"
+    },
+    {
+      "id": "query-static=false",
+      "path": "/emoji/wave.webp?static=false"
+    },
+    {
+      "id": "query-badge",
+      "path": "/emoji/wave.webp?badge"
+    },
+    {
+      "id": "query-badge=0",
+      "path": "/emoji/wave.webp?badge=0"
+    },
+    {
+      "id": "query-badge&static",
+      "path": "/emoji/wave.webp?badge&static"
+    },
+    {
+      "id": "query-static&static=0",
+      "path": "/emoji/wave.webp?static&static=0"
+    },
+    {
+      "id": "query-fallback=0",
+      "path": "/emoji/wave.webp?fallback=0"
+    },
+    {
+      "id": "avatar",
+      "path": "/avatar/@Alice"
+    },
+    {
+      "id": "local-host",
+      "path": "/avatar/@ALICE@local.test"
+    },
+    {
+      "id": "remote-avatar",
+      "path": "/avatar/@Bob@remote.test"
+    },
+    {
+      "id": "missing-avatar-id",
+      "path": "/avatar/@NoId"
+    },
+    {
+      "id": "missing-avatar-url",
+      "path": "/avatar/@NoUrl"
+    },
+    {
+      "id": "empty-avatar-url",
+      "path": "/avatar/@Empty"
+    },
+    {
+      "id": "system",
+      "path": "/avatar/@System.Bot"
+    },
+    {
+      "id": "system-no-icon",
+      "path": "/avatar/@System.Bot",
+      "meta": {
+        "iconUrl": null
+      }
+    },
+    {
+      "id": "remote-system",
+      "path": "/avatar/@System.Bot@remote.test"
+    },
+    {
+      "id": "unknown-avatar",
+      "path": "/avatar/@missing"
+    },
+    {
+      "id": "suspended-avatar",
+      "path": "/avatar/@suspended"
+    },
+    {
+      "id": "extra-at",
+      "path": "/avatar/@Bob@remote.test@ignored"
+    },
+    {
+      "id": "leading-at",
+      "path": "/avatar/@@Alice"
+    },
+    {
+      "id": "no-at",
+      "path": "/avatar/Alice"
+    },
+    {
+      "id": "empty-acct",
+      "path": "/avatar/@"
+    },
+    {
+      "id": "encoded-acct",
+      "path": "/avatar/@%41lice"
+    },
+    {
+      "id": "encoded-at-prefix",
+      "path": "/avatar/%40Alice"
+    },
+    {
+      "id": "encoded-avatar-prefix",
+      "path": "/%61vatar/@Alice"
+    },
+    {
+      "id": "case-host",
+      "path": "/avatar/@Alice@LOCAL.TEST"
+    },
+    {
+      "id": "port-host",
+      "path": "/avatar/@Alice@local.test:80"
+    },
+    {
+      "id": "avatar-slash",
+      "path": "/avatar/@Ali%2Fce"
+    },
+    {
+      "id": "avatar-nested",
+      "path": "/avatar/@Alice/more"
+    },
+    {
+      "id": "avatar-db-failure",
+      "path": "/avatar/@fail"
+    },
+    {
+      "id": "seed-alice@local.test",
+      "path": "/identicon/alice@local.test"
+    },
+    {
+      "id": "seed-other",
+      "path": "/identicon/other"
+    },
+    {
+      "id": "seed-%E6%97%A5%E6%9C%AC%E8%AA%9E",
+      "path": "/identicon/%E6%97%A5%E6%9C%AC%E8%AA%9E"
+    },
+    {
+      "id": "seed-%2F",
+      "path": "/identicon/%2F"
+    },
+    {
+      "id": "seed-%252F",
+      "path": "/identicon/%252F"
+    },
+    {
+      "id": "disabled",
+      "path": "/identicon/alice@local.test",
+      "meta": {
+        "enableIdenticonGeneration": false
+      }
+    },
+    {
+      "id": "encoded-identicon-prefix",
+      "path": "/%69denticon/alice@local.test"
+    },
+    {
+      "id": "empty-seed",
+      "path": "/identicon/"
+    },
+    {
+      "id": "nested-seed",
+      "path": "/identicon/a/b"
+    },
+    {
+      "id": "malformed-61",
+      "path": "/emoji/%"
+    },
+    {
+      "id": "malformed-62",
+      "path": "/emoji/%FF"
+    },
+    {
+      "id": "malformed-63",
+      "path": "/emoji/a/b%"
+    },
+    {
+      "id": "malformed-64",
+      "path": "/avatar/@%"
+    },
+    {
+      "id": "malformed-65",
+      "path": "/avatar/@%FF"
+    },
+    {
+      "id": "malformed-66",
+      "path": "/avatar/@a/b%"
+    },
+    {
+      "id": "malformed-67",
+      "path": "/identicon/%"
+    },
+    {
+      "id": "malformed-68",
+      "path": "/identicon/%FF"
+    },
+    {
+      "id": "malformed-69",
+      "path": "/identicon/a/b%"
+    },
+    {
+      "id": "local-head",
+      "path": "/emoji/wave.webp",
+      "method": "HEAD"
+    },
+    {
+      "id": "dot-local-head",
+      "path": "/emoji/wave@..webp",
+      "method": "HEAD"
+    },
+    {
+      "id": "remote-head",
+      "path": "/emoji/wave@remote.test.webp",
+      "method": "HEAD"
+    },
+    {
+      "id": "original-head",
+      "path": "/emoji/legacy.webp",
+      "method": "HEAD"
+    },
+    {
+      "id": "unknown-head",
+      "path": "/emoji/missing.webp",
+      "method": "HEAD"
+    },
+    {
+      "id": "unknown-fallback-head",
+      "path": "/emoji/missing.webp?fallback=0",
+      "method": "HEAD"
+    },
+    {
+      "id": "bad-extension-head",
+      "path": "/emoji/wave.png?fallback",
+      "method": "HEAD"
+    },
+    {
+      "id": "upper-extension-head",
+      "path": "/emoji/wave.WEBP",
+      "method": "HEAD"
+    },
+    {
+      "id": "too-many-at-head",
+      "path": "/emoji/a@b@c.webp",
+      "method": "HEAD"
+    },
+    {
+      "id": "empty-name-head",
+      "path": "/emoji/@remote.test.webp",
+      "method": "HEAD"
+    },
+    {
+      "id": "empty-host-head",
+      "path": "/emoji/wave@.webp",
+      "method": "HEAD"
+    },
+    {
+      "id": "invalid-char-head",
+      "path": "/emoji/a!.webp",
+      "method": "HEAD"
+    },
+    {
+      "id": "nested-head",
+      "path": "/emoji/a/wave.webp",
+      "method": "HEAD"
+    },
+    {
+      "id": "encoded-slash-head",
+      "path": "/emoji/a%2Fwave.webp",
+      "method": "HEAD"
+    },
+    {
+      "id": "double-encoded-head",
+      "path": "/emoji/wave%252Ewebp",
+      "method": "HEAD"
+    },
+    {
+      "id": "empty-emoji-path-head",
+      "path": "/emoji/",
+      "method": "HEAD"
+    },
+    {
+      "id": "encoded-emoji-prefix-head",
+      "path": "/%65moji/wave.webp",
+      "method": "HEAD"
+    },
+    {
+      "id": "encoded-dot-head",
+      "path": "/emoji/wave%2Ewebp",
+      "method": "HEAD"
+    },
+    {
+      "id": "encoded-query-name-head",
+      "path": "/emoji/wave.webp?%73tatic=0",
+      "method": "HEAD"
+    },
+    {
+      "id": "database-failure-head",
+      "path": "/emoji/fail.webp",
+      "method": "HEAD"
+    },
+    {
+      "id": "bad-proxy-head",
+      "path": "/emoji/wave.webp",
+      "mediaProxy": "bad url",
+      "method": "HEAD"
+    },
+    {
+      "id": "query-static-head",
+      "path": "/emoji/wave.webp?static",
+      "method": "HEAD"
+    },
+    {
+      "id": "query-static=0-head",
+      "path": "/emoji/wave.webp?static=0",
+      "method": "HEAD"
+    },
+    {
+      "id": "query-static=false-head",
+      "path": "/emoji/wave.webp?static=false",
+      "method": "HEAD"
+    },
+    {
+      "id": "query-badge-head",
+      "path": "/emoji/wave.webp?badge",
+      "method": "HEAD"
+    },
+    {
+      "id": "query-badge=0-head",
+      "path": "/emoji/wave.webp?badge=0",
+      "method": "HEAD"
+    },
+    {
+      "id": "query-badge&static-head",
+      "path": "/emoji/wave.webp?badge&static",
+      "method": "HEAD"
+    },
+    {
+      "id": "query-static&static=0-head",
+      "path": "/emoji/wave.webp?static&static=0",
+      "method": "HEAD"
+    },
+    {
+      "id": "query-fallback=0-head",
+      "path": "/emoji/wave.webp?fallback=0",
+      "method": "HEAD"
+    },
+    {
+      "id": "avatar-head",
+      "path": "/avatar/@Alice",
+      "method": "HEAD"
+    },
+    {
+      "id": "local-host-head",
+      "path": "/avatar/@ALICE@local.test",
+      "method": "HEAD"
+    },
+    {
+      "id": "remote-avatar-head",
+      "path": "/avatar/@Bob@remote.test",
+      "method": "HEAD"
+    },
+    {
+      "id": "missing-avatar-id-head",
+      "path": "/avatar/@NoId",
+      "method": "HEAD"
+    },
+    {
+      "id": "missing-avatar-url-head",
+      "path": "/avatar/@NoUrl",
+      "method": "HEAD"
+    },
+    {
+      "id": "empty-avatar-url-head",
+      "path": "/avatar/@Empty",
+      "method": "HEAD"
+    },
+    {
+      "id": "system-head",
+      "path": "/avatar/@System.Bot",
+      "method": "HEAD"
+    },
+    {
+      "id": "system-no-icon-head",
+      "path": "/avatar/@System.Bot",
+      "meta": {
+        "iconUrl": null
+      },
+      "method": "HEAD"
+    },
+    {
+      "id": "remote-system-head",
+      "path": "/avatar/@System.Bot@remote.test",
+      "method": "HEAD"
+    },
+    {
+      "id": "unknown-avatar-head",
+      "path": "/avatar/@missing",
+      "method": "HEAD"
+    },
+    {
+      "id": "suspended-avatar-head",
+      "path": "/avatar/@suspended",
+      "method": "HEAD"
+    },
+    {
+      "id": "extra-at-head",
+      "path": "/avatar/@Bob@remote.test@ignored",
+      "method": "HEAD"
+    },
+    {
+      "id": "leading-at-head",
+      "path": "/avatar/@@Alice",
+      "method": "HEAD"
+    },
+    {
+      "id": "no-at-head",
+      "path": "/avatar/Alice",
+      "method": "HEAD"
+    },
+    {
+      "id": "empty-acct-head",
+      "path": "/avatar/@",
+      "method": "HEAD"
+    },
+    {
+      "id": "encoded-acct-head",
+      "path": "/avatar/@%41lice",
+      "method": "HEAD"
+    },
+    {
+      "id": "encoded-at-prefix-head",
+      "path": "/avatar/%40Alice",
+      "method": "HEAD"
+    },
+    {
+      "id": "encoded-avatar-prefix-head",
+      "path": "/%61vatar/@Alice",
+      "method": "HEAD"
+    },
+    {
+      "id": "case-host-head",
+      "path": "/avatar/@Alice@LOCAL.TEST",
+      "method": "HEAD"
+    },
+    {
+      "id": "port-host-head",
+      "path": "/avatar/@Alice@local.test:80",
+      "method": "HEAD"
+    },
+    {
+      "id": "avatar-slash-head",
+      "path": "/avatar/@Ali%2Fce",
+      "method": "HEAD"
+    },
+    {
+      "id": "avatar-nested-head",
+      "path": "/avatar/@Alice/more",
+      "method": "HEAD"
+    },
+    {
+      "id": "avatar-db-failure-head",
+      "path": "/avatar/@fail",
+      "method": "HEAD"
+    },
+    {
+      "id": "seed-alice@local.test-head",
+      "path": "/identicon/alice@local.test",
+      "method": "HEAD"
+    },
+    {
+      "id": "seed-other-head",
+      "path": "/identicon/other",
+      "method": "HEAD"
+    },
+    {
+      "id": "seed-%E6%97%A5%E6%9C%AC%E8%AA%9E-head",
+      "path": "/identicon/%E6%97%A5%E6%9C%AC%E8%AA%9E",
+      "method": "HEAD"
+    },
+    {
+      "id": "seed-%2F-head",
+      "path": "/identicon/%2F",
+      "method": "HEAD"
+    },
+    {
+      "id": "seed-%252F-head",
+      "path": "/identicon/%252F",
+      "method": "HEAD"
+    },
+    {
+      "id": "disabled-head",
+      "path": "/identicon/alice@local.test",
+      "meta": {
+        "enableIdenticonGeneration": false
+      },
+      "method": "HEAD"
+    },
+    {
+      "id": "encoded-identicon-prefix-head",
+      "path": "/%69denticon/alice@local.test",
+      "method": "HEAD"
+    },
+    {
+      "id": "empty-seed-head",
+      "path": "/identicon/",
+      "method": "HEAD"
+    },
+    {
+      "id": "nested-seed-head",
+      "path": "/identicon/a/b",
+      "method": "HEAD"
+    },
+    {
+      "id": "malformed-61-head",
+      "path": "/emoji/%",
+      "method": "HEAD"
+    },
+    {
+      "id": "malformed-62-head",
+      "path": "/emoji/%FF",
+      "method": "HEAD"
+    },
+    {
+      "id": "malformed-63-head",
+      "path": "/emoji/a/b%",
+      "method": "HEAD"
+    },
+    {
+      "id": "malformed-64-head",
+      "path": "/avatar/@%",
+      "method": "HEAD"
+    },
+    {
+      "id": "malformed-65-head",
+      "path": "/avatar/@%FF",
+      "method": "HEAD"
+    },
+    {
+      "id": "malformed-66-head",
+      "path": "/avatar/@a/b%",
+      "method": "HEAD"
+    },
+    {
+      "id": "malformed-67-head",
+      "path": "/identicon/%",
+      "method": "HEAD"
+    },
+    {
+      "id": "malformed-68-head",
+      "path": "/identicon/%FF",
+      "method": "HEAD"
+    },
+    {
+      "id": "malformed-69-head",
+      "path": "/identicon/a/b%",
+      "method": "HEAD"
+    },
+    {
+      "id": "generation-failure",
+      "path": "/identicon/failure"
+    },
+    {
+      "id": "generation-failure-head",
+      "path": "/identicon/failure",
+      "method": "HEAD"
+    },
+    {
+      "id": "system-empty-icon",
+      "path": "/avatar/@System.Bot",
+      "meta": {
+        "iconUrl": ""
+      }
+    },
+    {
+      "id": "system-empty-icon-head",
+      "path": "/avatar/@System.Bot",
+      "meta": {
+        "iconUrl": ""
+      },
+      "method": "HEAD"
+    },
+    {
+      "id": "long-emoji",
+      "path": "/emoji/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.webp"
+    },
+    {
+      "id": "long-emoji-head",
+      "path": "/emoji/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.webp",
+      "method": "HEAD"
+    },
+    {
+      "id": "long-avatar",
+      "path": "/avatar/@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "id": "long-avatar-head",
+      "path": "/avatar/@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "method": "HEAD"
+    },
+    {
+      "id": "long-identicon",
+      "path": "/identicon/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "id": "long-identicon-head",
+      "path": "/identicon/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "method": "HEAD"
+    },
+    {
+      "id": "bare-emoji",
+      "path": "/emoji"
+    },
+    {
+      "id": "bare-emoji-head",
+      "path": "/emoji",
+      "method": "HEAD"
+    },
+    {
+      "id": "bare-avatar",
+      "path": "/avatar"
+    },
+    {
+      "id": "bare-avatar-head",
+      "path": "/avatar",
+      "method": "HEAD"
+    },
+    {
+      "id": "bare-identicon",
+      "path": "/identicon"
+    },
+    {
+      "id": "bare-identicon-head",
+      "path": "/identicon",
+      "method": "HEAD"
+    },
+    {
+      "id": "limit-emoji",
+      "path": "/emoji/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.webp"
+    },
+    {
+      "id": "limit-emoji-head",
+      "path": "/emoji/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.webp",
+      "method": "HEAD"
+    },
+    {
+      "id": "limit-avatar",
+      "path": "/avatar/@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "id": "limit-avatar-head",
+      "path": "/avatar/@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "method": "HEAD"
+    },
+    {
+      "id": "limit-identicon",
+      "path": "/identicon/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "id": "limit-identicon-head",
+      "path": "/identicon/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "method": "HEAD"
+    },
+    {
+      "id": "unicode-limit-seed",
+      "path": "/identicon/%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5"
+    },
+    {
+      "id": "unicode-limit-seed-head",
+      "path": "/identicon/%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5",
+      "method": "HEAD"
+    },
+    {
+      "id": "raw-target-0-get",
+      "path": "/identicon/%2E",
+      "method": "GET"
+    },
+    {
+      "id": "raw-target-0-head",
+      "path": "/identicon/%2E",
+      "method": "HEAD"
+    },
+    {
+      "id": "raw-target-1-get",
+      "path": "/identicon/%2E%2E",
+      "method": "GET"
+    },
+    {
+      "id": "raw-target-1-head",
+      "path": "/identicon/%2E%2E",
+      "method": "HEAD"
+    },
+    {
+      "id": "raw-target-2-get",
+      "path": "/identicon/.",
+      "method": "GET"
+    },
+    {
+      "id": "raw-target-2-head",
+      "path": "/identicon/.",
+      "method": "HEAD"
+    },
+    {
+      "id": "raw-target-3-get",
+      "path": "/identicon/..",
+      "method": "GET"
+    },
+    {
+      "id": "raw-target-3-head",
+      "path": "/identicon/..",
+      "method": "HEAD"
+    },
+    {
+      "id": "raw-target-4-get",
+      "path": "/identicon/a\\b",
+      "method": "GET"
+    },
+    {
+      "id": "raw-target-4-head",
+      "path": "/identicon/a\\b",
+      "method": "HEAD"
+    },
+    {
+      "id": "raw-target-5-get",
+      "path": "/avatar/@Alice\\x",
+      "method": "GET"
+    },
+    {
+      "id": "raw-target-5-head",
+      "path": "/avatar/@Alice\\x",
+      "method": "HEAD"
+    },
+    {
+      "id": "raw-target-6-get",
+      "path": "/identicon/%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5",
+      "method": "GET"
+    },
+    {
+      "id": "raw-target-6-head",
+      "path": "/identicon/%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5",
+      "method": "HEAD"
+    },
+    {
+      "id": "avatar-empty-host-get",
+      "path": "/avatar/@Alice@",
+      "method": "GET"
+    },
+    {
+      "id": "avatar-empty-host-head",
+      "path": "/avatar/@Alice@",
+      "method": "HEAD"
+    }
+  ]
+}

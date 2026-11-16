@@ -1,0 +1,2259 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "observationKind": "literal pinned ServerService callbacks, UserEntityService.getIdenticonUrl, Acct.parse and genIdenticon; controlled repository/Meta doubles and injected generation failure, real listening Fastify/native canvas; not full upstream application or upstream PostgreSQL",
+  "corpusSha256": "c0dfb0a2e554b918e92b7661099d9bf8c9aa2f41518aede1fdf7227a11784eb3",
+  "nodeVersion": "v26.4.0",
+  "fastifyVersion": "5.12.5",
+  "canvasVersion": "1.0.10",
+  "randomSeedVersion": "0.3.0",
+  "inputs": [
+    {
+      "path": "packages/backend/src/misc/gen-identicon.ts",
+      "sha256": "365e11c7b4855bfb9118323cfa7117ae8e8617788248662e4d8028cbf539dd86"
+    },
+    {
+      "path": "packages/backend/src/misc/acct.ts",
+      "sha256": "c1ceb56ab1f159d2a8261ac57c0c5f8b20330505a16dc08e572f30a15140e49d"
+    },
+    {
+      "path": "packages/backend/src/core/entities/UserEntityService.ts",
+      "sha256": "c986907bacb822863fe19214b7ec1443c02ebb028820f33932e7cde7f47f6464"
+    },
+    {
+      "path": "packages/backend/src/server/ServerService.ts",
+      "sha256": "f2e254ff190067175f9015553b88ebe1faaabb55e63d26dfaf060d4669685c17"
+    }
+  ],
+  "cases": [
+    {
+      "id": "local",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "dot-local",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "remote",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fremote.test%2Fwave.gif&emoji=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "original",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Foriginal.test%2Flegacy.gif&emoji=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "unknown",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "unknown-fallback",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "/static-assets/emoji-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "bad-extension",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "upper-extension",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "too-many-at",
+      "status": 400,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "empty-name",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "empty-host",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "invalid-char",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "nested",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "89"
+      },
+      "body": "{\"message\":\"Route GET:/emoji/a/wave.webp not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+    },
+    {
+      "id": "encoded-slash",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "double-encoded",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "empty-emoji-path",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "encoded-emoji-prefix",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "encoded-dot",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "encoded-query-name",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1&static=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "database-failure",
+      "status": 500,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "82"
+      },
+      "body": "{\"statusCode\":500,\"error\":\"Internal Server Error\",\"message\":\"emoji lookup failed\"}"
+    },
+    {
+      "id": "bad-proxy",
+      "status": 500,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": null,
+        "content-length": "99"
+      },
+      "body": "{\"statusCode\":500,\"code\":\"ERR_INVALID_URL\",\"error\":\"Internal Server Error\",\"message\":\"Invalid URL\"}"
+    },
+    {
+      "id": "query-static",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1&static=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "query-static=0",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1&static=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "query-static=false",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1&static=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "query-badge",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.png?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&badge=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "query-badge=0",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.png?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&badge=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "query-badge&static",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.png?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&badge=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "query-static&static=0",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1&static=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "query-fallback=0",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "avatar",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://images.test/alice.webp",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "local-host",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://images.test/alice.webp",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "remote-avatar",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://images.test/bob.webp",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "missing-avatar-id",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://local.test/identicon/noid@local.test",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "missing-avatar-url",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://local.test/identicon/nourl@local.test",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "empty-avatar-url",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "system",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://local.test/system.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "system-no-icon",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://local.test/identicon/system.bot@local.test",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "remote-system",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://local.test/identicon/system.bot@remote.test",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "unknown-avatar",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "suspended-avatar",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "extra-at",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://images.test/bob.webp",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "leading-at",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://images.test/alice.webp",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "no-at",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "84"
+      },
+      "body": "{\"message\":\"Route GET:/avatar/Alice not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+    },
+    {
+      "id": "empty-acct",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "encoded-acct",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://images.test/alice.webp",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "encoded-at-prefix",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "87"
+      },
+      "body": "{\"message\":\"Route GET:/avatar/%40Alice not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+    },
+    {
+      "id": "encoded-avatar-prefix",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://images.test/alice.webp",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "case-host",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "port-host",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "avatar-slash",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "avatar-nested",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "90"
+      },
+      "body": "{\"message\":\"Route GET:/avatar/@Alice/more not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+    },
+    {
+      "id": "avatar-db-failure",
+      "status": 500,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "83"
+      },
+      "body": "{\"statusCode\":500,\"error\":\"Internal Server Error\",\"message\":\"avatar lookup failed\"}"
+    },
+    {
+      "id": "seed-alice@local.test",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1738"
+      },
+      "bodySha256": "c58987defc94d7ef31f4211d24be05e26c2437f014fc2b4da392006c5c3c2b9b",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "seed-other",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1763"
+      },
+      "bodySha256": "3c40a774673bd6aceb7e4bb952c44391e932e1ba07a40e3913917ed201f2a5cc",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "seed-%E6%97%A5%E6%9C%AC%E8%AA%9E",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1821"
+      },
+      "bodySha256": "6e8b34459331482346b3399cc6603860ebcf2ddfc49001a7587877337dbb7417",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "seed-%2F",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "2098"
+      },
+      "bodySha256": "137d15a916b653b69b4ee8b9b2d8319c4e390c062ee0a0ccb58420a0d1c9a813",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "seed-%252F",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1709"
+      },
+      "bodySha256": "f7489786428230f18f9504a359c59c61fef37a31355de8c4c7310e214906ab3f",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "disabled",
+      "status": 302,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/avatar.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "encoded-identicon-prefix",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1738"
+      },
+      "bodySha256": "c58987defc94d7ef31f4211d24be05e26c2437f014fc2b4da392006c5c3c2b9b",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "empty-seed",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1699"
+      },
+      "bodySha256": "1ec12c4231e89f71f955c6fa0b6e5b098463cf2be88bb97adc7c46a53d07aefe",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "nested-seed",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "85"
+      },
+      "body": "{\"message\":\"Route GET:/identicon/a/b not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+    },
+    {
+      "id": "malformed-61",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "117"
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/emoji/%' is not a valid url component\",\"statusCode\":400}"
+    },
+    {
+      "id": "malformed-62",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "119"
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/emoji/%FF' is not a valid url component\",\"statusCode\":400}"
+    },
+    {
+      "id": "malformed-63",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "120"
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/emoji/a/b%' is not a valid url component\",\"statusCode\":400}"
+    },
+    {
+      "id": "malformed-64",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "119"
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/avatar/@%' is not a valid url component\",\"statusCode\":400}"
+    },
+    {
+      "id": "malformed-65",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "121"
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/avatar/@%FF' is not a valid url component\",\"statusCode\":400}"
+    },
+    {
+      "id": "malformed-66",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "122"
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/avatar/@a/b%' is not a valid url component\",\"statusCode\":400}"
+    },
+    {
+      "id": "malformed-67",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "121"
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/identicon/%' is not a valid url component\",\"statusCode\":400}"
+    },
+    {
+      "id": "malformed-68",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "123"
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/identicon/%FF' is not a valid url component\",\"statusCode\":400}"
+    },
+    {
+      "id": "malformed-69",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "124"
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/identicon/a/b%' is not a valid url component\",\"statusCode\":400}"
+    },
+    {
+      "id": "local-head",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "dot-local-head",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "remote-head",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fremote.test%2Fwave.gif&emoji=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "original-head",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Foriginal.test%2Flegacy.gif&emoji=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "unknown-head",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "unknown-fallback-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "/static-assets/emoji-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "bad-extension-head",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "upper-extension-head",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "too-many-at-head",
+      "status": 400,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "empty-name-head",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "empty-host-head",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "invalid-char-head",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "nested-head",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "90"
+      },
+      "body": ""
+    },
+    {
+      "id": "encoded-slash-head",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "double-encoded-head",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "empty-emoji-path-head",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "encoded-emoji-prefix-head",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "encoded-dot-head",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "encoded-query-name-head",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1&static=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "database-failure-head",
+      "status": 500,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "82"
+      },
+      "body": ""
+    },
+    {
+      "id": "bad-proxy-head",
+      "status": 500,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": null,
+        "content-length": "99"
+      },
+      "body": ""
+    },
+    {
+      "id": "query-static-head",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1&static=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "query-static=0-head",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1&static=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "query-static=false-head",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1&static=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "query-badge-head",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.png?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&badge=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "query-badge=0-head",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.png?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&badge=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "query-badge&static-head",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.png?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&badge=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "query-static&static=0-head",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1&static=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "query-fallback=0-head",
+      "status": 301,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": "https://media.test/proxy/emoji.webp?url=https%3A%2F%2Fimages.test%2Fwave.webp%3Fx%3D1%26y%3D2&emoji=1",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "avatar-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://images.test/alice.webp",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "local-host-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://images.test/alice.webp",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "remote-avatar-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://images.test/bob.webp",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "missing-avatar-id-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://local.test/identicon/noid@local.test",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "missing-avatar-url-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://local.test/identicon/nourl@local.test",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "empty-avatar-url-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "system-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://local.test/system.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "system-no-icon-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://local.test/identicon/system.bot@local.test",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "remote-system-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://local.test/identicon/system.bot@remote.test",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "unknown-avatar-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "suspended-avatar-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "extra-at-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://images.test/bob.webp",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "leading-at-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://images.test/alice.webp",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "no-at-head",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "85"
+      },
+      "body": ""
+    },
+    {
+      "id": "empty-acct-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "encoded-acct-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://images.test/alice.webp",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "encoded-at-prefix-head",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "88"
+      },
+      "body": ""
+    },
+    {
+      "id": "encoded-avatar-prefix-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://images.test/alice.webp",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "case-host-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "port-host-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "avatar-slash-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "avatar-nested-head",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "91"
+      },
+      "body": ""
+    },
+    {
+      "id": "avatar-db-failure-head",
+      "status": 500,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "83"
+      },
+      "body": ""
+    },
+    {
+      "id": "seed-alice@local.test-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1738"
+      },
+      "body": ""
+    },
+    {
+      "id": "seed-other-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1763"
+      },
+      "body": ""
+    },
+    {
+      "id": "seed-%E6%97%A5%E6%9C%AC%E8%AA%9E-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1821"
+      },
+      "body": ""
+    },
+    {
+      "id": "seed-%2F-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "2098"
+      },
+      "body": ""
+    },
+    {
+      "id": "seed-%252F-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1709"
+      },
+      "body": ""
+    },
+    {
+      "id": "disabled-head",
+      "status": 302,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/avatar.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "encoded-identicon-prefix-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1738"
+      },
+      "body": ""
+    },
+    {
+      "id": "empty-seed-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1699"
+      },
+      "body": ""
+    },
+    {
+      "id": "nested-seed-head",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "86"
+      },
+      "body": ""
+    },
+    {
+      "id": "malformed-61-head",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "117"
+      },
+      "body": ""
+    },
+    {
+      "id": "malformed-62-head",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "119"
+      },
+      "body": ""
+    },
+    {
+      "id": "malformed-63-head",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "120"
+      },
+      "body": ""
+    },
+    {
+      "id": "malformed-64-head",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "119"
+      },
+      "body": ""
+    },
+    {
+      "id": "malformed-65-head",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "121"
+      },
+      "body": ""
+    },
+    {
+      "id": "malformed-66-head",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "122"
+      },
+      "body": ""
+    },
+    {
+      "id": "malformed-67-head",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "121"
+      },
+      "body": ""
+    },
+    {
+      "id": "malformed-68-head",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "123"
+      },
+      "body": ""
+    },
+    {
+      "id": "malformed-69-head",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "124"
+      },
+      "body": ""
+    },
+    {
+      "id": "generation-failure",
+      "status": 500,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "90"
+      },
+      "body": "{\"statusCode\":500,\"error\":\"Internal Server Error\",\"message\":\"identicon generation failed\"}"
+    },
+    {
+      "id": "generation-failure-head",
+      "status": 500,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "90"
+      },
+      "body": ""
+    },
+    {
+      "id": "system-empty-icon",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://local.test/identicon/system.bot@local.test",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "system-empty-icon-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "https://local.test/identicon/system.bot@local.test",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "long-emoji",
+      "status": 414,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "236"
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_MAX_PARAM_LENGTH\",\"message\":\"'/emoji/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.webp' is exceeding the max param length\",\"statusCode\":414}"
+    },
+    {
+      "id": "long-emoji-head",
+      "status": 414,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "236"
+      },
+      "body": ""
+    },
+    {
+      "id": "long-avatar",
+      "status": 414,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "233"
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_MAX_PARAM_LENGTH\",\"message\":\"'/avatar/@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' is exceeding the max param length\",\"statusCode\":414}"
+    },
+    {
+      "id": "long-avatar-head",
+      "status": 414,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "233"
+      },
+      "body": ""
+    },
+    {
+      "id": "long-identicon",
+      "status": 414,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "235"
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_MAX_PARAM_LENGTH\",\"message\":\"'/identicon/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' is exceeding the max param length\",\"statusCode\":414}"
+    },
+    {
+      "id": "long-identicon-head",
+      "status": 414,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "235"
+      },
+      "body": ""
+    },
+    {
+      "id": "bare-emoji",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "77"
+      },
+      "body": "{\"message\":\"Route GET:/emoji not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+    },
+    {
+      "id": "bare-emoji-head",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "78"
+      },
+      "body": ""
+    },
+    {
+      "id": "bare-avatar",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "78"
+      },
+      "body": "{\"message\":\"Route GET:/avatar not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+    },
+    {
+      "id": "bare-avatar-head",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "79"
+      },
+      "body": ""
+    },
+    {
+      "id": "bare-identicon",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "81"
+      },
+      "body": "{\"message\":\"Route GET:/identicon not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+    },
+    {
+      "id": "bare-identicon-head",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "82"
+      },
+      "body": ""
+    },
+    {
+      "id": "limit-emoji",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "limit-emoji-head",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "location": null,
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "limit-avatar",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "limit-avatar-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "limit-identicon",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1849"
+      },
+      "bodySha256": "a816d60f53eb0a89de302d6e44bc83b1b6c76c99248a0ac0249d21e2b5667b4a",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "limit-identicon-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1849"
+      },
+      "body": ""
+    },
+    {
+      "id": "unicode-limit-seed",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "2189"
+      },
+      "bodySha256": "998aec580436258e022915d43a8c935822dc210c2ad7b8910d621be69db78267",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "unicode-limit-seed-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "2189"
+      },
+      "body": ""
+    },
+    {
+      "id": "raw-target-0-get",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1911"
+      },
+      "bodySha256": "3fe1094bfbb0345cd93cee53f86438ee0d2ffe3dd6b319afa65b60c23b03a15c",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "raw-target-0-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1911"
+      },
+      "body": ""
+    },
+    {
+      "id": "raw-target-1-get",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1955"
+      },
+      "bodySha256": "3cfe906166f6f2160def63c0175f5a42d4ecde25c8fe9185f970257ff2ee7de1",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "raw-target-1-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1955"
+      },
+      "body": ""
+    },
+    {
+      "id": "raw-target-2-get",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1911"
+      },
+      "bodySha256": "3fe1094bfbb0345cd93cee53f86438ee0d2ffe3dd6b319afa65b60c23b03a15c",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "raw-target-2-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1911"
+      },
+      "body": ""
+    },
+    {
+      "id": "raw-target-3-get",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1955"
+      },
+      "bodySha256": "3cfe906166f6f2160def63c0175f5a42d4ecde25c8fe9185f970257ff2ee7de1",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "raw-target-3-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1955"
+      },
+      "body": ""
+    },
+    {
+      "id": "raw-target-4-get",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1849"
+      },
+      "bodySha256": "79d693138ab21f484c071bccc1d47700aa6ed34319daca0d290f55d1843430ad",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "raw-target-4-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1849"
+      },
+      "body": ""
+    },
+    {
+      "id": "raw-target-5-get",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "raw-target-5-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "raw-target-6-get",
+      "status": 414,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "437"
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_MAX_PARAM_LENGTH\",\"message\":\"'/identicon/日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日' is exceeding the max param length\",\"statusCode\":414}"
+    },
+    {
+      "id": "raw-target-6-head",
+      "status": 414,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "437"
+      },
+      "body": ""
+    },
+    {
+      "id": "avatar-empty-host-get",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "avatar-empty-host-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    }
+  ]
+}

@@ -26,6 +26,8 @@
 	"dependencies": {
 		"@fastify/send": "4.1.1",
 		"@misskey-dev/emoji-assets": "17.0.3",
+		"@napi-rs/canvas": "1.0.10",
+		"random-seed": "0.3.0",
 		"@misskey-dev/summaly": "5.5.2",
 		"backend-upstream": "workspace:*",
 		"typeorm": "1.1.1",
@@ -67,6 +69,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "26.6.4",
+		"@types/random-seed": "0.3.5",
 		"typescript": "npm:@typescript/typescript6@6.0.2",
 		"eslint": "9.39.5",
 		"@typescript-eslint/parser": "8.71.0",

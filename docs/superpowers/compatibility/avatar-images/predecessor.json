@@ -1,0 +1,89 @@
+{
+  "baseRevision": "fec2ca0f3c012a8d4491ec2327906b7d34a68b35",
+  "files": {
+    "packages/backend-next/package.json": {
+      "currentSha256": "5f630013c7328d447e9b433a5f77fd28ec0138548906508f123b2ba01ad66182",
+      "previousSha256": "a8aa9d06eab77419405f0b120621a27cc91cb028c573022dfc4654dbf95aaab0",
+      "patches": [
+        {
+          "offset": 1167,
+          "insert": "\t\t\"@napi-rs/canvas\": \"1.0.10\",\n\t\t\"random-seed\": \"0.3.0\",\n",
+          "previous": ""
+        },
+        {
+          "offset": 2243,
+          "insert": "\t\t\"@types/random-seed\": \"0.3.5\",\n",
+          "previous": ""
+        }
+      ]
+    },
+    "pnpm-lock.yaml": {
+      "currentSha256": "7802badea4fb65c63c13c8678020a2e651f148c8b9c46289342082068c5f99aa",
+      "previousSha256": "fc5e64baa8f9b5fab959fe7cebd30a0136a2f9c336d8f9f40b43b397be549b1a",
+      "patches": [
+        {
+          "offset": 25466,
+          "insert": "      '@napi-rs/canvas':\n        specifier: 1.0.10\n        version: 1.0.10\n      random-seed:\n        specifier: 0.3.0\n        version: 0.3.0\n",
+          "previous": ""
+        },
+        {
+          "offset": 28805,
+          "insert": "      '@types/random-seed':\n        specifier: 0.3.5\n        version: 0.3.5\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/composition/http-app.ts": {
+      "currentSha256": "e8851b4ec5bba14758c315e98368105051463cb7cba8d26b3c18ad332ff381cc",
+      "previousSha256": "2ad5bfced2118a1578b553e61e0c0e567e10da5990b69c63c9b605ca5bee3ee4",
+      "patches": [
+        {
+          "offset": 103,
+          "insert": "import { Hono } from 'hono';\nimport { getAvatarImagesPath } from '../http/avatar-images-api.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 718,
+          "insert": "import { createAvatarImagesHttp } from './avatar-images-http.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 1375,
+          "insert": "",
+          "previous": "import type { Hono } from 'hono';\n"
+        },
+        {
+          "offset": 1596,
+          "insert": "\tconst app = new Hono({ getPath: getAvatarImagesPath })\n\t\t.route('/', createRoleHttpApp(resources, config))\n",
+          "previous": "\tconst app = createRoleHttpApp(resources, config)\n"
+        },
+        {
+          "offset": 2324,
+          "insert": "\t\t.route('/', createAvatarImagesHttp(resources, config))\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "currentSha256": "742be594f57ff832ccc0568b06720f9677d4a1519d0a6f17b88e24a19e6f9e49",
+      "previousSha256": "e31e4b6cb21dd4f8ea9ce3a176ee79537c64eab979ed50a46c8c68a076a42b49",
+      "patches": [
+        {
+          "offset": 252,
+          "insert": "import { createRoleHttpApp } from '../../../src/composition/role-http.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 2805,
+          "insert": "\t\t'/emoji/*', '/avatar/*', '/identicon/*',\n",
+          "previous": ""
+        },
+        {
+          "offset": 10494,
+          "insert": "\ntest('ordinary composition exposes custom emoji fallback, unknown avatar and disabled identicon redirects', async () => {\n\tconst { resources } = fixture();\n\tconst app = createBackendHttpApp(resources, testConfig());\n\tfor (const [path, location] of [\n\t\t['/emoji/missing.webp?fallback=0', '/static-assets/emoji-unknown.png'],\n\t\t['/avatar/@missing', '/static-assets/user-unknown.png'],\n\t\t['/identicon/seed', '/static-assets/avatar.png'],\n\t]) {\n\t\tconst response = await app.request(path);\n\t\texpect(response.status).toBe(302);\n\t\texpect(response.headers.get('location')).toBe(location);\n\t\texpect(response.headers.get('cache-control')).toBe('public, max-age=86400');\n\t}\n});\n\ntest('image path dispatch preserves existing Role GET/HEAD/OPTIONS and unknown route responses', async () => {\n\tconst { resources } = fixture();\n\tconst config = testConfig();\n\tconst baseline = createRoleHttpApp(resources, config);\n\tconst app = createBackendHttpApp(resources, config);\n\tfor (const path of ['/api/admin/roles/show', '/unknown']) {\n\t\tfor (const method of ['GET', 'HEAD', 'OPTIONS']) {\n\t\t\tconst before = await baseline.request(path, { method });\n\t\t\tconst after = await app.request(path, { method });\n\t\t\texpect({ status: after.status, headers: Object.fromEntries(after.headers), body: await after.text() }).toEqual({ status: before.status, headers: Object.fromEntries(before.headers), body: await before.text() });\n\t\t}\n\t}\n});\n",
+          "previous": ""
+        }
+      ]
+    }
+  }
+}
