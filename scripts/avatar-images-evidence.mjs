@@ -8,9 +8,13 @@ import { readFileSync } from 'node:fs';
 import { scopedEvidenceValidation, withEvidenceRequestedPath, getEvidenceCurrentReader, registerEvidenceObserver } from './evidence-validation-scope.mjs';
 
 const directory = 'docs/superpowers/compatibility/avatar-images/';
-const receiptSeal = 'fdff3890d970fdf3cd4287781e808301bca56d46f51dcc532a14000df2aa868f';
+const receiptSeal = 'def91376d85e900194a83ffbd9fab5588136bb8fd0a1709e550013e224a8e7f9';
+const historySeals = {
+  "r1-current-evidence.json": "fdff3890d970fdf3cd4287781e808301bca56d46f51dcc532a14000df2aa868f",
+  "r1-predecessor.json": "bb3ff4c436f4bd16e310a42dea1be634c136694bbd4cbc932e70c6ed744ba680"
+};
 const observerRegistration = {};
-const predecessorSeal = 'bb3ff4c436f4bd16e310a42dea1be634c136694bbd4cbc932e70c6ed744ba680';
+const predecessorSeal = '27a4d13467e7b648ed49cc86a9f70ebe1834d7b8a221b21ebb48a944889c7bfb';
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const read = path => readFileSync(new URL('../' + path, import.meta.url));
 const optionalRead = path => {
@@ -33,6 +37,7 @@ export const avatarImagesPredecessorFiles = Object.freeze([
 export function validateAvatarImagesEvidence(value, rawRead = read, optional = optionalRead) {
 	rawRead = getEvidenceCurrentReader(rawRead);
 	return scopedEvidenceValidation(validateAvatarImagesEvidence, value, rawRead, optional, (rawRead, optional) => {
+		for (const [name, seal] of Object.entries(historySeals)) assert.equal(sha(rawRead(directory + name)), seal, 'avatar images historical seal');
 		const receipt = rawRead(directory + 'current-evidence.json');
 		assert.equal(sha(receipt), receiptSeal, 'avatar images receipt seal');
 		value ??= JSON.parse(receipt);
@@ -63,7 +68,7 @@ export function validateAvatarImagesEvidence(value, rawRead = read, optional = o
 			for (const patch of [...binding.patches].reverse()) {
 				const insert = Buffer.from(patch.insert);
 				assert.deepEqual(before.subarray(patch.offset, patch.offset + insert.length), insert, 'avatar images exact predecessor anchor');
-				before = Buffer.concat([before.subarray(0, patch.offset), before.subarray(patch.offset + insert.length)]);
+				before = Buffer.concat([before.subarray(0, patch.offset), Buffer.from(patch.previous ?? ''), before.subarray(patch.offset + insert.length)]);
 			}
 			assert.equal(sha(before), binding.previousSha256, 'avatar images exact predecessor identity');
 			result[path] = before.toString();
@@ -94,6 +99,7 @@ export function readPreAvatarImages(path, rawRead = read, optional = optionalRea
 		// the original source checked below, so their own cache detects drift.
 		rawRead(path);
 		registerEvidenceObserver(observerRegistration, rawRead, () => {
+			for (const [name, seal] of Object.entries(historySeals)) assert.equal(sha(rawRead(directory + name)), seal, 'avatar images historical seal');
 			const receipt = rawRead(directory + 'current-evidence.json');
 			assert.equal(sha(receipt), receiptSeal, 'avatar images receipt seal');
 			assert.equal(sha(rawRead(directory + 'predecessor.json')), predecessorSeal, 'avatar images predecessor seal');
