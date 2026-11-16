@@ -1,0 +1,60 @@
+{
+  "scope": "public-documents-552",
+  "baseRevision": "0927918fe987cae2fcbf2b69bdb58ee6c5ca734a",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "measuredWorkingTree": true,
+  "upstreamFullServerMeasured": false,
+  "inputCapture": "at-final-freeze",
+  "inputs": {
+    "packages/backend-next/src/composition/http-app.ts": "f0ed59965ccd0a7e5a7bf5e5fec03e44d2e861ee7ec9bf9df44798917a7beaf2",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "5eef16b3330f3b6e2ea093048a80e1835fc1cfbaf8ce0ee2abebc0d54c2bd4de",
+    "packages/backend-next/src/modules/public-documents/public.ts": "ae6d01491c2b55b8c7a56f7c48144e7fbfbff146fd813055fe8734971ae07e48",
+    "packages/backend-next/src/http/public-documents-api.ts": "1dcac0986598975aa856b4093f03f31c87980ece755f686ed3ed1d3830e2fdb9",
+    "packages/backend-next/src/composition/public-documents-http.ts": "dfa7acc4a331344a507bbb7b0b57c16728d583ae3990c97ea8e58b15f753eaa8",
+    "packages/backend-next/test/unit/public-documents.test.ts": "f4bb5fbd30a9848870bb4c04660768b9c69c4e8032c4b1825fd2927ec2f770ad",
+    "packages/backend-next/test/integration/public-documents.test.ts": "6ecb29a26bb1885fe39f353e2e6e8674fafe15a94e2b4e30dd906c74ef393e96",
+    "docs/superpowers/compatibility/public-documents/corpus.json": "f821d6507e97e67ce5add5c4c5dce515c1824f4c2d52a80b80eb2e9d6ed754f2",
+    "docs/superpowers/compatibility/public-documents/observations.json": "bf1d2ec5e9ce5ee0d012a3ee37bfb8871e5b16030bc817a57c753cbf15e381d3",
+    "docs/superpowers/compatibility/public-documents/source-probe.mjs": "7aaa5fba9e28befb5bbf790652112562bd808c4abd448c2448b3efaaf50f6c54"
+  },
+  "runs": [
+    {
+      "name": "sync",
+      "log": "/tmp/tiramiss-552-sync.log",
+      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd",
+      "exitCode": 0
+    },
+    {
+      "name": "build",
+      "log": "/tmp/tiramiss-552-build.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
+      "exitCode": 0
+    },
+    {
+      "name": "typecheck",
+      "log": "/tmp/tiramiss-552-typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+      "exitCode": 0
+    },
+    {
+      "name": "unit",
+      "log": "/tmp/tiramiss-552-unit.log",
+      "logSha256": "d12bf94172adc7e1eeaaacf954ec1938f9ce2dd42e7f93a1e3dca44d93533bd9",
+      "exitCode": 0,
+      "passed": 31
+    },
+    {
+      "name": "integration",
+      "log": "/tmp/tiramiss-552-integration.log",
+      "logSha256": "488b513de19fa0bd3c8bde615e2f97cc530dcdc5f6d5a17c846844042c2dc8b8",
+      "exitCode": 0,
+      "passed": 19
+    },
+    {
+      "name": "source",
+      "log": "/tmp/tiramiss-552-source.log",
+      "logSha256": "6546ee847f6fd84dd5c43ebb592886566eab4aa90a1779602f3c17a82aeb928b",
+      "exitCode": 0
+    }
+  ]
+}
