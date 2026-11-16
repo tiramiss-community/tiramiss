@@ -4,6 +4,7 @@
  */
 import assert from 'node:assert/strict';
 import { readForActorEmojiCacheEvidence } from './actor-emoji-cache-evidence.mjs';
+import { readBeforeNotesPagination } from './notes-pagination-evidence.mjs';
 import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 import { createPreImageIngestDependencyReader } from './image-ingest-dependency-evidence.mjs';
 import { ciFixtureFiles, readPreMetaCacheCiFixtures } from './meta-cache-ci-fixtures-evidence.mjs';
@@ -57,6 +58,7 @@ function record(readFile) {
 // immutable; only eight measured changed inputs are restored for their readers.
 export function validateUrlPreviewSuccessor(value, readFile = read, optional = optionalRead) {
  return scopedEvidenceValidation(validateUrlPreviewSuccessor, value, readFile, optional, (readFile, optional) => {
+ const liveRead = readFile;
  readFile = createPreImageIngestDependencyReader(readFile);
  const beforeMeta = createValidatedMetaPredecessorReader(readFile, optional);
  const previousInternalEvents = validateInternalEventsSuccessor(undefined, readFile, optional);
@@ -73,7 +75,8 @@ export function validateUrlPreviewSuccessor(value, readFile = read, optional = o
  const previousFolders = validateDriveFoldersSuccessor(undefined, readBeforeInternalEvents, optional);
  readFile = path => path in previousFolders ? Buffer.from(previousFolders[path]) : Object.hasOwn(previousInternalEvents, path) ? Buffer.from(previousInternalEvents[path]) : beforeMeta(path);
  for (const [path, digest] of Object.entries(value.inputs)) {
-  assert.equal(sha(readFile(path)), digest, `instance admin measured current input drift (URL preview successor): ${path}`);
+  const bytes = path === 'packages/backend-next/src/modules/note/public.ts' ? readBeforeNotesPagination(path, liveRead, optional) : readFile(path);
+  assert.equal(sha(bytes), digest, `instance admin measured current input drift (URL preview successor): ${path}`);
  }
  const bytes = readFile(predecessorPath);
  assert.equal(sha(bytes), predecessorSeal, 'URL preview predecessor seal');

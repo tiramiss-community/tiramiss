@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { scopedEvidenceValidation, withEvidenceRequestedPath, getEvidenceCurrentReader, registerEvidenceObserver } from './evidence-validation-scope.mjs';
+import { readBeforeNotesPagination } from './notes-pagination-evidence.mjs';
 
 const directory = 'docs/superpowers/compatibility/avatar-images/';
 const receiptSeal = '490de47cfab1432a900fa3f322ea97e8f858754a35558ea18f0d752cf22e3839';
@@ -39,6 +40,8 @@ export const avatarImagesPredecessorFiles = Object.freeze([
 export function validateAvatarImagesEvidence(value, rawRead = read, optional = optionalRead) {
 	rawRead = getEvidenceCurrentReader(rawRead);
 	return scopedEvidenceValidation(validateAvatarImagesEvidence, value, rawRead, optional, (rawRead, optional) => {
+		const liveRead = rawRead;
+		rawRead = path => readBeforeNotesPagination(path, liveRead, optional);
 		for (const [name, seal] of Object.entries(historySeals)) assert.equal(sha(rawRead(directory + name)), seal, 'avatar images historical seal');
 		const receipt = rawRead(directory + 'current-evidence.json');
 		assert.equal(sha(receipt), receiptSeal, 'avatar images receipt seal');

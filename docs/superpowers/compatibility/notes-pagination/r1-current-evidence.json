@@ -1,0 +1,132 @@
+{
+  "scope": "notes-pagination-305",
+  "baseRevision": "2fb256cd889200912cf68258e757f5e39429e495",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "measuredWorkingTree": true,
+  "postingComplete": false,
+  "upstreamFullServerMeasured": false,
+  "inputs": {
+    "packages/backend-next/src/composition/note-routes.ts": "9183d8a472db6ab0f6fb5eb18f454c88da9b2edc6151c5971d06eacc92fcaacf",
+    "packages/backend-next/src/modules/note/public.ts": "e2a810519faf1d6ec025d7f7817776a86795c6e07bbfdbddcc120e8203a507f1",
+    "packages/backend-next/src/http/notes-list-api.ts": "a37b796911c90f38ccf13f9520749e6dfd8d176080794ac1cff4ade55380ab0e",
+    "packages/backend-next/src/modules/note/list-notes.ts": "550dd1554cfdaf694ed2923732f57014af4767a727d26f1e3bb8fead47f03f4f",
+    "packages/backend-next/src/modules/shared/pagination.ts": "5b85637091faa4b2be68b70a754214b22b7918ac2fdaf1898df9a222ae72973c",
+    "packages/backend-next/src/platform/database/note-list.ts": "6cebf223fca88410d8cc05d22b8d3d625bb0e6833d63e18ffddbadde8535f789",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "a2f030dbfecfa3644a09d1d1aca81a8693ffec7dbad1bc3ceac9894fb46be5eb",
+    "packages/backend-next/test/unit/shared/pagination.test.ts": "1a04caaa3b6d208e66a8d4f12835b0cf8cc070148558c9ba951b1efdbb338512",
+    "packages/backend-next/test/unit/note/list-notes.test.ts": "4eaa6eb4302e8475fb0b35f697f61e6541a78eed714308c173c17442803a22bd",
+    "packages/backend-next/test/integration/notes-list.test.ts": "a775ae1147ad5b93d584c2d24de804ed175327181497475d0fcdc4622a71963c",
+    "packages/backend-next/test/helpers/notes-list-source-database.mjs": "0f33684bc668173feb9a99835e12fac9eeb1174e1fe77f1a432cc53edd67c7be",
+    "docs/superpowers/compatibility/notes-pagination/observations.json": "7aeed7b67209f27a43ceb1c01032c285c7eb0b2bfefc67dcca370ca3bcf9e2fa",
+    "docs/superpowers/compatibility/notes-pagination/source-probe.mjs": "b2d3fcc69a1bf42ae218242d43133e6ef3c97da03e856740625e5339dad11e9b"
+  },
+  "startedAt": "2026-11-16T22:58:08.405137+00:00",
+  "runs": [
+    {
+      "name": "build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "build"
+      ],
+      "environment": {
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "BACKEND_NEXT_TEST_DB_PORT": "55505",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56505"
+      },
+      "exitCode": 0,
+      "log": "/tmp/notes305-final/build.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "typecheck"
+      ],
+      "environment": {
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "BACKEND_NEXT_TEST_DB_PORT": "55505",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56505"
+      },
+      "exitCode": 0,
+      "log": "/tmp/notes305-final/typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "name": "unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test"
+      ],
+      "environment": {
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "BACKEND_NEXT_TEST_DB_PORT": "55505",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56505"
+      },
+      "exitCode": 0,
+      "log": "/tmp/notes305-final/unit.log",
+      "logSha256": "5e98de835a92c300fd2be1f30430dd4a323fe42ac79392f1d5d7b46333bd0b91",
+      "passed": 4944
+    },
+    {
+      "name": "integration",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/notes-list.test.ts",
+        "test/integration/note-show.test.ts",
+        "test/integration/http-app.test.ts"
+      ],
+      "environment": {
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "BACKEND_NEXT_TEST_DB_PORT": "55505",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56505"
+      },
+      "exitCode": 0,
+      "log": "/tmp/notes305-final/integration.log",
+      "logSha256": "acd01d9a69f8f3fbfc9bc8bc57cf811b48abe39c35e7f3f2b27bd4d06a1bab7f",
+      "passed": 40
+    },
+    {
+      "name": "source",
+      "command": [
+        "node",
+        "docs/superpowers/compatibility/notes-pagination/source-probe.mjs",
+        "--check"
+      ],
+      "environment": {
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "BACKEND_NEXT_TEST_DB_PORT": "55505",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56505"
+      },
+      "exitCode": 0,
+      "log": "/tmp/notes305-final/source.log",
+      "logSha256": "e497c3ff64d8e07e433134ea321ed2d6745acddcc94fac6e40ba08d0f2138341"
+    }
+  ],
+  "inputsAfter": {
+    "packages/backend-next/src/composition/note-routes.ts": "9183d8a472db6ab0f6fb5eb18f454c88da9b2edc6151c5971d06eacc92fcaacf",
+    "packages/backend-next/src/modules/note/public.ts": "e2a810519faf1d6ec025d7f7817776a86795c6e07bbfdbddcc120e8203a507f1",
+    "packages/backend-next/src/http/notes-list-api.ts": "a37b796911c90f38ccf13f9520749e6dfd8d176080794ac1cff4ade55380ab0e",
+    "packages/backend-next/src/modules/note/list-notes.ts": "550dd1554cfdaf694ed2923732f57014af4767a727d26f1e3bb8fead47f03f4f",
+    "packages/backend-next/src/modules/shared/pagination.ts": "5b85637091faa4b2be68b70a754214b22b7918ac2fdaf1898df9a222ae72973c",
+    "packages/backend-next/src/platform/database/note-list.ts": "6cebf223fca88410d8cc05d22b8d3d625bb0e6833d63e18ffddbadde8535f789",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "a2f030dbfecfa3644a09d1d1aca81a8693ffec7dbad1bc3ceac9894fb46be5eb",
+    "packages/backend-next/test/unit/shared/pagination.test.ts": "1a04caaa3b6d208e66a8d4f12835b0cf8cc070148558c9ba951b1efdbb338512",
+    "packages/backend-next/test/unit/note/list-notes.test.ts": "4eaa6eb4302e8475fb0b35f697f61e6541a78eed714308c173c17442803a22bd",
+    "packages/backend-next/test/integration/notes-list.test.ts": "a775ae1147ad5b93d584c2d24de804ed175327181497475d0fcdc4622a71963c",
+    "packages/backend-next/test/helpers/notes-list-source-database.mjs": "0f33684bc668173feb9a99835e12fac9eeb1174e1fe77f1a432cc53edd67c7be",
+    "docs/superpowers/compatibility/notes-pagination/observations.json": "7aeed7b67209f27a43ceb1c01032c285c7eb0b2bfefc67dcca370ca3bcf9e2fa",
+    "docs/superpowers/compatibility/notes-pagination/source-probe.mjs": "b2d3fcc69a1bf42ae218242d43133e6ef3c97da03e856740625e5339dad11e9b"
+  },
+  "noInputDrift": true,
+  "finishedAt": "2026-11-16T22:59:01.879942+00:00"
+}

@@ -1,0 +1,531 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "inputs": [
+    {
+      "path": "packages/backend/src/core/QueryService.ts",
+      "sha256": "6eb0324d8f7d96bee6a0317bd77224051135dd49283a7f8b8c258c8ae5ae9357"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/notes.ts",
+      "sha256": "896e1a5eea006da697cda4f3618062479a0f93530a91445f90dcc0ba166a9d4d"
+    },
+    {
+      "path": "packages/backend/src/core/entities/UserEntityService.ts",
+      "sha256": "c986907bacb822863fe19214b7ec1443c02ebb028820f33932e7cde7f47f6464"
+    }
+  ],
+  "scope": "Literal QueryService pagination/guest-UGC methods and notes endpoint callback/schema; query recorder and packMany double, not upstream server or packer.",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "local": {
+        "type": "boolean",
+        "default": false
+      },
+      "reply": {
+        "type": "boolean"
+      },
+      "renote": {
+        "type": "boolean"
+      },
+      "withFiles": {
+        "type": "boolean"
+      },
+      "poll": {
+        "type": "boolean"
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10
+      },
+      "sinceId": {
+        "type": "string",
+        "format": "misskey:id"
+      },
+      "untilId": {
+        "type": "string",
+        "format": "misskey:id"
+      },
+      "sinceDate": {
+        "type": "integer"
+      },
+      "untilDate": {
+        "type": "integer"
+      }
+    },
+    "required": []
+  },
+  "cursors": [
+    {
+      "input": {},
+      "plan": {
+        "order": "DESC"
+      }
+    },
+    {
+      "input": {
+        "sinceId": "b"
+      },
+      "plan": {
+        "sinceId": "b",
+        "order": "ASC"
+      }
+    },
+    {
+      "input": {
+        "untilId": "d"
+      },
+      "plan": {
+        "untilId": "d",
+        "order": "DESC"
+      }
+    },
+    {
+      "input": {
+        "sinceId": "b",
+        "untilId": "d"
+      },
+      "plan": {
+        "sinceId": "b",
+        "untilId": "d",
+        "order": "DESC"
+      }
+    },
+    {
+      "input": {
+        "sinceId": "b",
+        "untilDate": 20
+      },
+      "plan": {
+        "sinceId": "b",
+        "order": "ASC"
+      }
+    },
+    {
+      "input": {
+        "untilId": "d",
+        "sinceDate": 10
+      },
+      "plan": {
+        "untilId": "d",
+        "order": "DESC"
+      }
+    },
+    {
+      "input": {
+        "sinceId": "b",
+        "untilId": "d",
+        "sinceDate": 10,
+        "untilDate": 20
+      },
+      "plan": {
+        "sinceId": "b",
+        "untilId": "d",
+        "order": "DESC"
+      }
+    },
+    {
+      "input": {
+        "sinceDate": 10
+      },
+      "plan": {
+        "sinceId": "date10",
+        "order": "ASC"
+      }
+    },
+    {
+      "input": {
+        "untilDate": 20
+      },
+      "plan": {
+        "untilId": "date20",
+        "order": "DESC"
+      }
+    },
+    {
+      "input": {
+        "sinceDate": 10,
+        "untilDate": 20
+      },
+      "plan": {
+        "sinceId": "date10",
+        "untilId": "date20",
+        "order": "DESC"
+      }
+    },
+    {
+      "input": {
+        "sinceDate": 0,
+        "untilDate": 0
+      },
+      "plan": {
+        "order": "DESC"
+      }
+    },
+    {
+      "input": {
+        "sinceDate": -1
+      },
+      "plan": {
+        "sinceId": "date-1",
+        "order": "ASC"
+      }
+    },
+    {
+      "input": {
+        "sinceDate": null,
+        "untilDate": 20
+      },
+      "plan": {
+        "untilId": "date20",
+        "order": "DESC"
+      }
+    }
+  ],
+  "conditions": [
+    {
+      "guest": false,
+      "visibility": "all",
+      "input": {
+        "local": false,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": false,
+      "visibility": "all",
+      "input": {
+        "local": false,
+        "reply": false,
+        "renote": false,
+        "withFiles": false,
+        "poll": false,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE",
+        "note.replyId IS NULL",
+        "note.renoteId IS NULL",
+        "note.fileIds = '{}'",
+        "note.hasPoll = FALSE"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": false,
+      "visibility": "all",
+      "input": {
+        "local": true,
+        "reply": true,
+        "renote": true,
+        "withFiles": true,
+        "poll": true,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE",
+        "note.userHost IS NULL",
+        "note.replyId IS NOT NULL",
+        "note.renoteId IS NOT NULL",
+        "note.fileIds != '{}'",
+        "note.hasPoll = TRUE"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": false,
+      "visibility": "local",
+      "input": {
+        "local": false,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": false,
+      "visibility": "local",
+      "input": {
+        "local": false,
+        "reply": false,
+        "renote": false,
+        "withFiles": false,
+        "poll": false,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE",
+        "note.replyId IS NULL",
+        "note.renoteId IS NULL",
+        "note.fileIds = '{}'",
+        "note.hasPoll = FALSE"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": false,
+      "visibility": "local",
+      "input": {
+        "local": true,
+        "reply": true,
+        "renote": true,
+        "withFiles": true,
+        "poll": true,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE",
+        "note.userHost IS NULL",
+        "note.replyId IS NOT NULL",
+        "note.renoteId IS NOT NULL",
+        "note.fileIds != '{}'",
+        "note.hasPoll = TRUE"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": false,
+      "visibility": "none",
+      "input": {
+        "local": false,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": false,
+      "visibility": "none",
+      "input": {
+        "local": false,
+        "reply": false,
+        "renote": false,
+        "withFiles": false,
+        "poll": false,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE",
+        "note.replyId IS NULL",
+        "note.renoteId IS NULL",
+        "note.fileIds = '{}'",
+        "note.hasPoll = FALSE"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": false,
+      "visibility": "none",
+      "input": {
+        "local": true,
+        "reply": true,
+        "renote": true,
+        "withFiles": true,
+        "poll": true,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE",
+        "note.userHost IS NULL",
+        "note.replyId IS NOT NULL",
+        "note.renoteId IS NOT NULL",
+        "note.fileIds != '{}'",
+        "note.hasPoll = TRUE"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": true,
+      "visibility": "all",
+      "input": {
+        "local": false,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": true,
+      "visibility": "all",
+      "input": {
+        "local": false,
+        "reply": false,
+        "renote": false,
+        "withFiles": false,
+        "poll": false,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE",
+        "note.replyId IS NULL",
+        "note.renoteId IS NULL",
+        "note.fileIds = '{}'",
+        "note.hasPoll = FALSE"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": true,
+      "visibility": "all",
+      "input": {
+        "local": true,
+        "reply": true,
+        "renote": true,
+        "withFiles": true,
+        "poll": true,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE",
+        "note.userHost IS NULL",
+        "note.replyId IS NOT NULL",
+        "note.renoteId IS NOT NULL",
+        "note.fileIds != '{}'",
+        "note.hasPoll = TRUE"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": true,
+      "visibility": "local",
+      "input": {
+        "local": false,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE",
+        "note.userHost IS NULL"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": true,
+      "visibility": "local",
+      "input": {
+        "local": false,
+        "reply": false,
+        "renote": false,
+        "withFiles": false,
+        "poll": false,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE",
+        "note.userHost IS NULL",
+        "note.replyId IS NULL",
+        "note.renoteId IS NULL",
+        "note.fileIds = '{}'",
+        "note.hasPoll = FALSE"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": true,
+      "visibility": "local",
+      "input": {
+        "local": true,
+        "reply": true,
+        "renote": true,
+        "withFiles": true,
+        "poll": true,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE",
+        "note.userHost IS NULL",
+        "note.userHost IS NULL",
+        "note.replyId IS NOT NULL",
+        "note.renoteId IS NOT NULL",
+        "note.fileIds != '{}'",
+        "note.hasPoll = TRUE"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": true,
+      "visibility": "none",
+      "input": {
+        "local": false,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE",
+        "1=0"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": true,
+      "visibility": "none",
+      "input": {
+        "local": false,
+        "reply": false,
+        "renote": false,
+        "withFiles": false,
+        "poll": false,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE",
+        "1=0",
+        "note.replyId IS NULL",
+        "note.renoteId IS NULL",
+        "note.fileIds = '{}'",
+        "note.hasPoll = FALSE"
+      ],
+      "packedArguments": 1
+    },
+    {
+      "guest": true,
+      "visibility": "none",
+      "input": {
+        "local": true,
+        "reply": true,
+        "renote": true,
+        "withFiles": true,
+        "poll": true,
+        "limit": 10
+      },
+      "where": [
+        "note.visibility = 'public'",
+        "note.localOnly = FALSE",
+        "note.userHost IS NULL",
+        "1=0",
+        "note.replyId IS NOT NULL",
+        "note.renoteId IS NOT NULL",
+        "note.fileIds != '{}'",
+        "note.hasPoll = TRUE"
+      ],
+      "packedArguments": 1
+    }
+  ]
+}

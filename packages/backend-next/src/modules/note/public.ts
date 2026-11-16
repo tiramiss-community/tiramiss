@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 export { createShowNote, NoteReadError } from './show-note.js';
+export { createListNotes } from './list-notes.js';
+export type { NotesListInput, NotesListReader } from './list-notes.js';
 export { readNotePlan } from './read-plan.js';
 export { renderNote, populateEmojis } from './render-note.js';
 export { isVisibleForViewer, hiddenByTime } from './visibility.js';

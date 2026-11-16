@@ -110,7 +110,7 @@ test('repeated validations retain every actual read and optional-artifact check'
 });
 test('preview reader uses only builtins and disjoint finite successors, without subprocesses or ancestor readers', () => {
  const source = read('scripts/url-preview-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || match[1] === './evidence-validation-scope.mjs' || ['./meta-cache-ci-fixtures-evidence.mjs', './meta-cache-evidence.mjs', './drive-files-evidence.mjs', './url-preview-fixture-evidence.mjs', './internal-events-evidence.mjs', './drive-folders-evidence.mjs', './drive-folder-pubsub-evidence.mjs', './image-ingest-dependency-evidence.mjs', './actor-emoji-cache-evidence.mjs'].includes(match[1])));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || match[1] === './evidence-validation-scope.mjs' || ['./meta-cache-ci-fixtures-evidence.mjs', './meta-cache-evidence.mjs', './drive-files-evidence.mjs', './url-preview-fixture-evidence.mjs', './internal-events-evidence.mjs', './drive-folders-evidence.mjs', './drive-folder-pubsub-evidence.mjs', './image-ingest-dependency-evidence.mjs', './actor-emoji-cache-evidence.mjs', './notes-pagination-evidence.mjs'].includes(match[1])));
  assert(!/execFile|spawn|import\(/.test(source));
  assert.equal(readPreUrlPreview('unrelated.ts', 'utf8', () => Buffer.from('live'), () => null), 'live');
 });

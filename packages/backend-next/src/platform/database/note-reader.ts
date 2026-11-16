@@ -15,7 +15,7 @@ import type { EntityManager } from 'typeorm';
 import type { Redis } from 'ioredis';
 import type { NoteFacts, NoteFactsReader, NoteViewMaterials } from '../../modules/note/public.js';
 
-export function createNoteReader(manager: EntityManager, redis: Redis, options: NoteMediaOptions, actorEmojis?: Pick<ActorEmojiCache, 'remote'>): NoteFactsReader {
+export function createNoteReader(manager: EntityManager, redis: Redis, options: NoteMediaOptions, actorEmojis?: Pick<ActorEmojiCache, 'remote'>, selectedUsers: readonly MiUser[] = [], refreshUserIds: readonly string[] = []): NoteFactsReader {
 	return {
 		async readNotes(ids) {
 			if (ids.length === 0) {
@@ -59,7 +59,9 @@ export function createNoteReader(manager: EntityManager, redis: Redis, options: 
 				viewerId && userIds.length ? manager.getRepository(MiFollowing).findBy({ followeeId: In(userIds), followerId: viewerId }) : [],
 			]);
 			// 作者の絵文字材料も全authorを集めて一度に取得する。
-			const emojiUsers = userIds.length ? await manager.getRepository(MiUser).find({ where: { id: In(userIds) }, select: { id: true, host: true, emojis: true } }) : [];
+			const selected = new Map(selectedUsers.map(user => [user.id, user]));
+			const missingUsers = userIds.filter(id => !selected.has(id) || refreshUserIds.includes(id));
+			const emojiUsers = [...new Map([...selectedUsers.filter(user => userIds.includes(user.id)), ...(missingUsers.length ? await manager.getRepository(MiUser).find({ where: { id: In(missingUsers) }, select: { id: true, host: true, emojis: true } }) : [])].map(user => [user.id, user])).values()];
 			const emojiNames = new Set<string>();
 			const hosts = [...new Set([...rows.flatMap(n => n.userHost ? [n.userHost] : []), ...emojiUsers.flatMap(u => u.host ? [u.host] : [])])];
 			for (const name of [...rows.flatMap(n => [...n.emojis, ...Object.keys(n.reactions)]), ...[...buffered.values()].flatMap(b => Object.keys(b.deltas)), ...(actorEmojis ? [] : emojiUsers.flatMap(u => u.emojis))]) {
@@ -76,7 +78,7 @@ export function createNoteReader(manager: EntityManager, redis: Redis, options: 
 			const emojiUrls = new Map((hosts.length && emojiNames.size ? await manager.getRepository(MiEmoji).findBy({ host: In([...new Set(hosts)]), name: In([...emojiNames]) }) : []).map(e => [`${e.name}@${e.host}`, e.publicUrl || e.originalUrl]));
 			const authorEmojiUrls = actorEmojis ? await actorEmojis.remote(emojiUsers, new URL(options.url).host) : emojiUrls;
 			return {
-				notes, authors: await readNoteAuthors(manager, userIds, viewerId, meta, options, now, authorEmojiUrls, actorEmojis !== undefined),
+				notes, authors: await readNoteAuthors(manager, userIds, viewerId, meta, options, now, authorEmojiUrls, actorEmojis !== undefined, selectedUsers, refreshUserIds),
 				files: new Map(files.map(file => [file.id, noteFileView(file, meta.proxyRemoteFiles, options)])),
 				channels: new Map(channels.map(c => [c.id, { id: c.id, name: c.name, color: c.color, isSensitive: c.isSensitive, allowRenoteToExternal: c.allowRenoteToExternal, userId: c.userId }])),
 				polls: new Map(polls.map(p => [p.noteId, { multiple: p.multiple, expiresAt: p.expiresAt?.toISOString() ?? null, choices: p.choices, votes: p.votes, myChoices: votes.filter(v => v.noteId === p.noteId).map(v => v.choice) }])),
