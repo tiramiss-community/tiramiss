@@ -17,7 +17,7 @@
 
 [source-probe.mjs](source-probe.mjs) は4つの固定本家ソースを Git object と照合し、AST で VideoProcessingService、ImageProcessingService、DriveService のメソッドと URL 関数を抽出して実行する。実 fluent-ffmpeg 2.1.3 / FFmpeg / sharp 0.35.5 と filesystem を使用する。tmp.dir の窓口だけを native mkdtemp/rm に置き換え、本番と同じ cleanup を有効にする。logger は no-op、NestJS/HTTP/DB は起動しない。5入力の直接生成・Drive local/external分岐、5種の generator URL、実際に exit 17 する子プロセスの失敗と cleanup を [observations.json](observations.json) に記録する。
 
-新実装テストは固定観測値と WebP の format、寸法、平均 RGB、metadata 有無を比較する。codec 出力の圧縮 bytes 完全一致は要求しない。一時ディレクトリは成功・動画 track なし・破損・子プロセス異常・WebP 変換異常で解放を検証する。新実装では frame bytes を読み終えた時点で削除を待つため、その後の画像変換失敗でも資源が残らない。本家の development 用 cleanup 無効化は引き継がない。
+新実装テストは固定観測値と WebP の format、寸法、平均 RGB（FFmpeg の変換丸めを考慮し各 channel 差3まで）、metadata 有無を比較する。codec 出力の圧縮 bytes 完全一致は要求しない。一時ディレクトリは成功・動画 track なし・破損・子プロセス異常・WebP 変換異常で解放を検証する。新実装では frame bytes を読み終えた時点で削除を待つため、その後の画像変換失敗でも資源が残らない。本家の development 用 cleanup 無効化は引き継がない。
 
 ## 依存と履歴証跡
 

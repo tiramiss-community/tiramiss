@@ -31,6 +31,20 @@ async function describe(image: DerivedImage | null) {
 	return { type: image.type, ext: image.ext, format: metadata.format, width: metadata.width, height: metadata.height, rgb: [...data], hasMetadata: !!(metadata.exif || metadata.iptc || metadata.xmp) };
 }
 
+function expectImage(actual: Awaited<ReturnType<typeof describe>>, expected: Awaited<ReturnType<typeof describe>>) {
+	if (!expected || !actual) {
+		expect(actual).toEqual(expected);
+		return;
+	}
+	const { rgb, ...metadata } = actual;
+	const { rgb: expectedRgb, ...expectedMetadata } = expected;
+	expect(metadata).toEqual(expectedMetadata);
+	// FFmpeg distributions can round YUV-to-RGB channels differently.
+	for (const [index, channel] of rgb.entries()) {
+		expect(Math.abs(channel - expectedRgb[index])).toBeLessThanOrEqual(3);
+	}
+}
+
 for (const fixture of fixtures) {
 	const expected = observations.cases.find((c: { id: string }) => c.id === fixture.id);
 	test(`real ${fixture.id} bytes match pinned video thumbnail and clean temporary files`, async () => {
@@ -38,14 +52,15 @@ for (const fixture of fixtures) {
 		if (expected.rejects) {
 			await expect(generateVideoThumbnail(bytes(fixture.id), extractVideoFrame)).rejects.toThrow();
 		} else {
-			expect(await describe(await generateVideoThumbnail(bytes(fixture.id), extractVideoFrame))).toEqual(expected.thumbnail);
+			expectImage(await describe(await generateVideoThumbnail(bytes(fixture.id), extractVideoFrame)), expected.thumbnail);
 		}
 		expect(await pending()).toEqual(before);
 	});
 
 	test(`Drive local/external video branches match pinned ${fixture.id}`, async () => {
 		const result = await generateVideoAlts(bytes(fixture.id), undefined, extractVideoFrame);
-		expect({ webpublic: result.webpublic, thumbnail: await describe(result.thumbnail) }).toEqual(expected.local);
+		expect(result.webpublic).toBe(expected.local.webpublic);
+		expectImage(await describe(result.thumbnail), expected.local.thumbnail);
 		for (const generator of ['', 'https://video.test']) {
 			const unexpected = () => {
 				throw Error('external generator must skip local work');
