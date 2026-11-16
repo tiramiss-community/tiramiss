@@ -10,6 +10,7 @@ import { createInstanceAdminHttp } from './instance-admin-http.js';
 import { createUrlPreviewHttp } from './url-preview-http.js';
 import { createPublicDocumentsHttp } from './public-documents-http.js';
 import { createEmojiImagesHttp } from './emoji-images-http.js';
+import { createAvatarImagesHttp } from './avatar-images-http.js';
 import { createWebfingerHttp } from './webfinger-http.js';
 import { createFollowCollectionsHttp } from './follow-collections-http.js';
 import { createOutboxHttp } from './outbox-http.js';
@@ -38,6 +39,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		.route('/', createPublicEmojisHttp(resources))
 		.route('/', createPublicDocumentsHttp(resources, config))
 		.route('/', createEmojiImagesHttp())
+		.route('/', createAvatarImagesHttp(resources, config))
 		.route('/', folders.app);
 	registerHttpAppWork(app, folders.idle);
 	registerNoteRoutes(app, resources, note);

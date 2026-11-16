@@ -51,6 +51,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 		'/emojis/:emoji', '/emojis/', '/api/emoji', '/api/emojis',
 		'/manifest.json', '/robots.txt', '/opensearch.xml',
 		'/fluent-emoji/*', '/twemoji/*', '/twemoji-badge/*',
+		'/emoji/*', '/avatar/*', '/identicon/*',
 		'/api/drive/folders/create', '/api/drive/folders/delete', '/api/drive/folders/find', '/api/drive/folders/show', '/api/drive/folders/update',
 		'/api/notes/delete', '/api/notes/show', '/api/notes/create', '/api/test-queue',
 	]);
@@ -175,4 +176,19 @@ test('ordinary composition publishes a local Emoji object', async () => {
 	const response = await createBackendHttpApp(resources, testConfig()).request('/emojis/hello');
 	expect(response.status).toBe(200);
 	expect(await response.json()).toMatchObject({ type: 'Emoji', name: ':hello:', icon: { url: 'https://media.test/hello.png' } });
+});
+
+test('ordinary composition exposes custom emoji fallback, unknown avatar and disabled identicon redirects', async () => {
+	const { resources } = fixture();
+	const app = createBackendHttpApp(resources, testConfig());
+	for (const [path, location] of [
+		['/emoji/missing.webp?fallback=0', '/static-assets/emoji-unknown.png'],
+		['/avatar/@missing', '/static-assets/user-unknown.png'],
+		['/identicon/seed', '/static-assets/avatar.png'],
+	]) {
+		const response = await app.request(path);
+		expect(response.status).toBe(302);
+		expect(response.headers.get('location')).toBe(location);
+		expect(response.headers.get('cache-control')).toBe('public, max-age=86400');
+	}
 });
