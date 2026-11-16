@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { getExternalVideoThumbnailUrl } from './video-thumbnail-url.js';
 import { publicFileUrl } from './public-file-url.js';
 import type { PublicFileFacts } from './public-file-url.js';
 import type { DriveFolderView } from './folders.js';
@@ -46,8 +47,7 @@ export function renderDriveFile(file: DriveFileFacts, proxyRemoteFiles: boolean,
 		delete properties.orientation;
 	}
 	const baseUrl = file.webpublicUrl ?? file.url;
-	const thumbnailUrl = file.type.startsWith('video') ? file.thumbnailUrl || (options.videoThumbnailGenerator != null
-		? `${options.videoThumbnailGenerator}/thumbnail.webp?${query({ thumbnail: '1', url: baseUrl })}` : null)
+	const thumbnailUrl = file.type.startsWith('video') ? file.thumbnailUrl || getExternalVideoThumbnailUrl(baseUrl, options.videoThumbnailGenerator)
 		: (isExternal || isExpired) ? proxied(file.uri!)
 		: file.thumbnailUrl ?? (/^image\/(jpeg|png|webp|gif|avif|tiff|apng|vnd\.mozilla\.apng|svg\+xml)$/.test(file.type) ? baseUrl : null);
 	return {
