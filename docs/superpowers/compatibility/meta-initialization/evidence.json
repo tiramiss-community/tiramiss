@@ -41,9 +41,11 @@
     "scripts/meta-initialization-proof.test.mjs": "1a6c5b149a4cf200519cf1664e08fa0f5b1de3d33390a1e71db3693d879482f7",
     "packages/backend-next/test/unit/lifecycle.test.ts": "89a4e6a3e4fdae7fb38ec45e53eb66b640b52f03c559ec2dbd014cf4ffcaebf0",
     "packages/backend-next/test/unit/worker-startup.test.ts": "63007c0632740d8877f2bdc3f969e7e994f1c0be2c0a8086140dc5b13a3c3d9f",
-    "scripts/meta-initialization-evidence.mjs": "924f8a446b2efc5e41c8a6b821d49b0d434fd33579d95939f85fbaae351b68a6",
+    "scripts/meta-initialization-evidence.mjs": "c52f475313b03018db382abfb76b4cfd211f1e16b6532e16e13018316b9449d8",
     "docs/superpowers/compatibility/meta-initialization/r2-inputs.json": "82f78900c034a9158c70affeb18e4cd6edb7349e72085adfa01d92c63b0356fb",
-    "docs/superpowers/compatibility/meta-initialization/lifecycle-predecessor.json": "0641520662e895603b39dad557c97978c24c19aa081bec9b182924a544a76f99"
+    "docs/superpowers/compatibility/meta-initialization/lifecycle-predecessor.json": "2d9e9dce0ff74ac15acea6420276655ae5746d9765dcf09abd13dbe4febd3dd6",
+    "scripts/meta-initialization-history-contract.test.mjs": "b7f9e9f31085930b92720335ddf1db1e7e628d19370c3da558e94ce7d8e4617c",
+    "scripts/actor-emoji-cache-evidence.mjs": "dd23369c70ce917e6c08a3b9a73695855ed0b91a6985ee0ea6b1845d5c441ab8"
   },
   "noInputDrift": true,
   "contractRowIds": [
@@ -126,7 +128,7 @@
     "normal HTTP/worker initialize Meta after migration guard; direct connectResources and light CLI remain unchanged",
     "management update producer observed only through pinned name-update method; admin/update-meta remains issue448",
     "existing issue317 real Redis/listening HTTP and delivery tests prove cache notification consumer",
-    "one historical lifecycle path projected; old source snapshots/receipts are not renewed",
+    "two historical lifecycle/source-test paths projected; old source snapshots/receipts are not renewed",
     "existing pg client.query deprecation warning remains",
     "CodeRabbit prerequisite blocked by EROFS ~/.coderabbit/logs; independent coordinator review remains separate"
   ],
@@ -137,12 +139,13 @@
   },
   "proofIntegrity": {
     "bindingInputs": 24,
-    "currentInputs": 27,
+    "currentInputs": 29,
     "bindingSealExcludesItsOwnLeaf": true,
     "leafAndBindingCoveredByCurrentInputs": true,
     "sharedEmojiReaderExcludedForIndependentComposition": true,
     "historicalProjectionPaths": [
-      "packages/backend-next/src/processes/lifecycle.ts"
+      "packages/backend-next/src/processes/lifecycle.ts",
+      "packages/backend-next/test/unit/lifecycle.test.ts"
     ],
     "rootValidation": {
       "command": "node --test scripts/meta-initialization-proof.test.mjs scripts/emoji-images-evidence.test.mjs scripts/evidence-validation-scope-contract.test.mjs scripts/remote-profile-contract.test.mjs scripts/local-webfinger-contract.test.mjs scripts/local-follow-collections-contract.test.mjs scripts/local-follow-collections-history-contract.test.mjs",
@@ -152,6 +155,33 @@
       "exitCode": 0,
       "log": "/tmp/tiramiss-574-r2-proof-root.log",
       "logSha256": "f7cef653f04f21d463c82abdf1bc919bdcf55678e78730cc0c2140e1f9279741"
+    },
+    "followupR3": {
+      "scope": "proof-only lifecycle-unit predecessor omission",
+      "runtimeInputsUnchanged": true,
+      "sealedR2BindingUnchanged": true,
+      "previousEvidence": {
+        "path": "docs/superpowers/compatibility/meta-initialization/evidence-r2.json",
+        "sha256": "4ac76c2884f0d1c413198648ecbe6b95d12b4f372182bf6f11d73f02d2ebd80a"
+      },
+      "currentProofArtifactInputs": {
+        "scripts/meta-initialization-evidence.mjs": "c52f475313b03018db382abfb76b4cfd211f1e16b6532e16e13018316b9449d8",
+        "docs/superpowers/compatibility/meta-initialization/lifecycle-predecessor.json": "2d9e9dce0ff74ac15acea6420276655ae5746d9765dcf09abd13dbe4febd3dd6",
+        "scripts/meta-initialization-history-contract.test.mjs": "b7f9e9f31085930b92720335ddf1db1e7e628d19370c3da558e94ce7d8e4617c",
+        "scripts/actor-emoji-cache-evidence.mjs": "dd23369c70ce917e6c08a3b9a73695855ed0b91a6985ee0ea6b1845d5c441ab8"
+      },
+      "rootValidation": {
+        "command": "node --test scripts/*.test.mjs",
+        "files": 53,
+        "tests": 863,
+        "passed": 862,
+        "failed": 0,
+        "skipped": 1,
+        "skipReason": "existing optional upstream checkout migration/config comparison",
+        "exitCode": 0,
+        "log": "/tmp/tiramiss-574-r3-full-root.log",
+        "logSha256": "c8a485258cb7625517ee8aafd2f56939fe9ee4cec21497e92c4e885602426ac3"
+      }
     }
   }
 }

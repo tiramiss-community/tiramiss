@@ -16,7 +16,9 @@
 
 本家GlobalModuleは起動時にMetaを確保する。R2では通常HTTP/workerも既存migration guardの後にMetaを取得し、成功前に役割開始・ready通知へ進まない。失敗時は既に登録したresources cleanupへ戻る。通常のstartup timeoutとrunChildを通し、初期化中の独自transactionや特別なready経路は追加しない。通常2役割の実PG同時起動で空DBのid=x一行と既存行不変、欠損Meta表で両役割のexit1/no-ready・実PG/Redis接続消失を確認する。R1の人工fixtureは削除し、当時のfixture-only測定と未達条件は `evidence-r1.json` に原本のまま保持する。boot責任14は、この起動時確保とレース安全な既存upsertの範囲でverifiedとする。
 
-#317のcacheは温まった値をDB更新のみでは変更せず、通知の `body.after` を使用する。noCache/5分周期はDBを読む。既存のsource9観測と実PG/Redis/HTTP試験がこの差を示す。#574の新sourceは本家update producerのenvelopeを確認し、新しい管理APIは実装しない。admin/update-meta全体は #448、producer/他cacheは各担当に残る。boot責任35も管理更新全体の完成とはせずpartial、空Meta作成のinstance責任02だけをverifiedとする。
+#317のcacheは温まった値をDB更新のみでは変更せず、通知の `body.after` を使用する。noCache/5分周期はDBを読む。既存のsource9観測と実PG/Redis/HTTP試験がこの差を示す。#574の新sourceは本家update producerのenvelopeを確認し、新しい管理APIは実装しない。admin/update-meta全体は #448、producer/他cacheは各担当に残る。boot責任35は管理更新全体の完成とはせずpartialとし、R2で通常起動時確保を確認したboot責任14と空Meta作成のinstance責任02をverifiedとする。
+
+先行 [#317](https://github.com/tiramiss-community/tiramiss/issues/317) は親 [#217](https://github.com/tiramiss-community/tiramiss/issues/217) のMeta-cache作業単位である。#574が再利用する#317の証拠は、実Redisの `metaUpdated.body.after` 受信で既存actor/WebFinger・配送判定・actor登録callerの参照が更新され、noCache/周期再取得・失敗・停止へ接続する範囲を満たす。これは#217のMeta consumer側の完了根拠であり、全cacheの同期や全追加writerの発行・別プロセス反映・TTL比較を完了した意味ではない。管理更新producerの完成は#448、#217の他cacheと追加writer比較は各作業単位に残る。
 
 本家disposeのtracker待機と新runtimeのcache pending drainは異なる所有境界である。終了の順序を実依存で比較したのであって、あらゆるDB操作の追跡、全プロセスIPC、期限超過、管理API全体の完成は主張しない。既存 `children.test.ts` を同じ測定で再実行し、通常entrypointのready/依存障害/期限付き停止を別の根拠として保持する。
 
@@ -37,7 +39,7 @@ node scripts/check-shipping.mjs --base fec2ca0f3c012a8d4491ec2327906b7d34a68b35
 docker compose -p backend-next-574 -f packages/backend-next/compose.test.yml down
 ```
 
-[evidence.json](evidence.json)へ今回の有限入力と実行logのhash・件数を記録する。入力はそのファイル単位で照合するが、inventoryは所有する3契約/3監査IDだけを検査する。他Issue行のlive hashを固定しない。R2のruntime変更で影響する旧receiptには `lifecycle-predecessor.json` の1pathだけを新しい末端readerから投影する。既存emoji leafの非所有path fallbackだけへ接続し、lifecycle以外は通常のlive readを返す。固定した有限入力・旧bytesを検査し、599のraw provenanceと同一scope内JSON再検査を維持する。旧receiptのhash/件数/測定成功を変更しない。#317の実測は[元の資料](../meta-cache/README.md)に保持する。
+[evidence.json](evidence.json)へ今回の有限入力と実行logのhash・件数を記録する。入力はそのファイル単位で照合するが、inventoryは所有する3契約/3監査IDだけを検査する。他Issue行のlive hashを固定しない。R2のruntime変更で影響する旧receiptには `lifecycle-predecessor.json` のlifecycleと対応unit fixtureの2pathだけを新しい末端readerから投影する。既存emoji leafとURL preview経由のactor-emoji末端readerの非所有path fallbackへ接続し、この2path以外は通常のlive readを返す。固定した有限入力・旧bytesを検査し、599のraw provenanceと同一scope内JSON再検査を維持する。旧receiptのhash/件数/測定成功を変更しない。#317の実測は[元の資料](../meta-cache/README.md)に保持する。
 
 ## R1 実測（2026-11-16、履歴）
 
@@ -54,3 +56,11 @@ Node26.4.0、専用Compose `backend-next-574`（PG55574/Redis56574）。製品�
 R1原本receiptを `evidence-r1.json` に保持する。R2の成功でR1の失敗条件・fixture-only範囲や旧receiptを上書きしない。管理API #448、全backendの配布・起動責任 #138 と親 #114 は未完了。ユーザー影響候補: 通常HTTP/workerはMeta初期化に失敗した場合にreadyを通知せず起動を終了する。
 
 R2の有限proof・既存emoji/599 scope・影響するprofile/WebFinger/follow-collectionsの対象root検査は7files/149件がPASS。変更4ファイルのquiet lint・SPDX・locale safetyとinventory生成整合もPASS。これらの後続proof検査を製品runtimeの実測件数へ加算しない。
+
+## R3 証跡入口の修正（2026-11-16）
+
+PR #608のCIで、旧receiptが測定した `test/unit/lifecycle.test.ts` の旧identityを復元していないことによる3失敗を確認した。対象2ファイルのローカルREDでも再現した。変更済み既存runtime/testを全履歴JSONへ機械的に照合し、対象はruntime lifecycleとそのunit fixtureの2pathだけだった。同じ末端readerの有限対象にunit fixtureを加え、raw readerの入口・既存599 scope・正常なcurrent-input gateは維持する。URL previewの一般fallbackがemoji leafを通らない入口にも、既存actor-emoji末端readerの非所有path fallbackから同じleafを接続する。新しいCI対象history contractが2pathの祖先reader接続と同一scope内の注入されたlive-byte/JSON driftを検査する。
+
+R2原本receiptを `evidence-r2.json` に保存する。24の封印済み製品測定入力と全R2 runtime run/logはそのままで、current proof integrityだけをhelper/predecessorと新しいhistory contract/末端接続の29入力へ更新する。R3のproof-only修正でR2の製品試験を再実測したとは扱わない。
+
+R3の全root検査 `node --test scripts/*.test.mjs` は53files・863件中862成功、0失敗、1skip（任意の本家checkoutを用いる既存migration/config照合）だった。CIで失敗したactor-instance-registrationとremote-userの直接validatorを含む。新history contract5件もこのrunに含め、R2の製品試験件数へ加算しない。proof-only差分のSPDX・locale safety・inventory生成整合とdiff検査はPASS、package lintは対象ファイルがなくSKIPPED。

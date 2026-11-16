@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { readPreMetaInitialization } from './meta-initialization-evidence.mjs';
 import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 const directory = 'docs/superpowers/compatibility/actor-emoji-cache/';
 const seal = '20fcbc11ed50287c915ec771c6bcc50149ba6ec18b4453ca888aa500249ead2d';
@@ -79,7 +80,7 @@ export function validateActorEmojiCacheEvidence(value, rawRead = read, optional 
 // never fed back as current input. Every fresh call retains full drift checks.
 export function readForActorEmojiCacheEvidence(path, rawRead = read, optional = optionalRead) {
  return withEvidenceRequestedPath(path, () => {
-  if (!actorEmojiCacheFiles.includes(path)) return rawRead(path);
+  if (!actorEmojiCacheFiles.includes(path)) return readPreMetaInitialization(path, rawRead, optional);
   return Buffer.from(validateActorEmojiCacheEvidence(undefined, rawRead, optional)[path]);
  });
 }

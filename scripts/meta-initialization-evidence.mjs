@@ -8,8 +8,12 @@ import { readFileSync } from 'node:fs';
 import { getEvidenceCurrentReader, registerEvidenceObserver, scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 
 export const metaInitializationLifecyclePath = 'packages/backend-next/src/processes/lifecycle.ts';
+export const metaInitializationPredecessorPaths = Object.freeze([
+	metaInitializationLifecyclePath,
+	'packages/backend-next/test/unit/lifecycle.test.ts',
+]);
 const directory = 'docs/superpowers/compatibility/meta-initialization/';
-const previousSeal = '0641520662e895603b39dad557c97978c24c19aa081bec9b182924a544a76f99';
+const previousSeal = '2d9e9dce0ff74ac15acea6420276655ae5746d9765dcf09abd13dbe4febd3dd6';
 const inputsSeal = '82f78900c034a9158c70affeb18e4cd6edb7349e72085adfa01d92c63b0356fb';
 const observer = {};
 const read = path => readFileSync(new URL('../' + path, import.meta.url));
@@ -46,19 +50,19 @@ export function validateMetaInitializationEvidence(rawRead = read, optional = op
 		assert.equal(sha(previousBytes), previousSeal, 'Meta startup lifecycle predecessor seal');
 		const previous = JSON.parse(previousBytes);
 		assert.equal(previous.baseRevision, '4e7cda80560da3c9c46f5b02b29c5f6459e2b785');
-		assert.deepEqual(Object.keys(previous.files), [metaInitializationLifecyclePath]);
-		return previous.files[metaInitializationLifecyclePath];
+		assert.deepEqual(Object.keys(previous.files), metaInitializationPredecessorPaths);
+		return previous.files;
 	});
 }
 
-// Only the changed lifecycle path invokes this gate. Other requests remain live reads.
+// Only the lifecycle and its changed unit fixture invoke this gate.
 export function readPreMetaInitialization(path, rawRead = read, optional = optionalRead) {
 	return withEvidenceRequestedPath(path, () => {
-		if (path !== metaInitializationLifecyclePath) return rawRead(path);
+		if (!metaInitializationPredecessorPaths.includes(path)) return rawRead(path);
 		rawRead(path);
 		registerEvidenceObserver(observer, rawRead, () => {
 			for (const file of ['r2-inputs.json', 'lifecycle-predecessor.json', 'evidence.json']) rawRead(directory + file);
 		});
-		return Buffer.from(validateMetaInitializationEvidence(rawRead, optional));
+		return Buffer.from(validateMetaInitializationEvidence(rawRead, optional)[path]);
 	});
 }
