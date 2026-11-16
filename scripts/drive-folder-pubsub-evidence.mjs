@@ -36,8 +36,20 @@ export const pubsubSuccessorFiles = Object.freeze([
 ]);
 const workflowPath = '.github/workflows/test-backend-next.yml';
 const videoFfmpegStep = '      - name: Install FFmpeg\n        run: |\n          sudo apt update\n          sudo apt install -y ffmpeg\n';
-// This runner-only addition does not renew the historical Pub/Sub measurement.
+const processRedisService = '      redis-pubsub:\n        image: redis:8\n        ports: [\'56380:6379\']\n        options: >-\n          --health-cmd "redis-cli ping"\n          --health-interval 1s --health-timeout 3s --health-retries 30\n';
+// Restore only the process lane addition; the identical integration service is historical.
+function workflowBeforeCheckConnectRedis(bytes) {
+ assert.equal(sha(bytes), '522b45f35703a65febb1d1471e601a74914570b364a2e0f205ddb9e895702178', 'folder measured current input drift (process Redis workflow)');
+ const sections = bytes.toString().split('  process:\n');
+ assert.equal(sections.length, 2, 'folder exact process section');
+ assert.equal(sections[1].split(processRedisService).length, 2, 'folder exact process Redis service');
+ const previous = Buffer.from(sections[0] + '  process:\n' + sections[1].replace(processRedisService, ''));
+ assert.equal(sha(previous), '41bf145751d3c3b6825e54abb9018e7dc706e0d757d08c6f2568ee3a8bd26184', 'folder exact workflow before process Redis');
+ return previous;
+}
+// These runner-only additions do not renew the historical Pub/Sub measurement.
 function workflowBeforeVideoFfmpeg(bytes) {
+ bytes = workflowBeforeCheckConnectRedis(bytes);
  assert.equal(sha(bytes), '41bf145751d3c3b6825e54abb9018e7dc706e0d757d08c6f2568ee3a8bd26184', 'folder measured current input drift (video FFmpeg workflow)');
  const current = bytes.toString();
  assert.equal(current.split(videoFfmpegStep).length, 2, 'folder exact video FFmpeg step');

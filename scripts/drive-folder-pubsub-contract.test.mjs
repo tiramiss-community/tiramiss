@@ -47,15 +47,24 @@ test('finite pubsub reader uses builtins and its observation successor and passe
  assert.equal(readPreDriveFolderPubsub('unrelated', 'utf8', () => Buffer.from('live'), () => null), 'live');
 });
 
-test('video runner setup preserves the exact historical workflow and rejects old bytes supplied as current', () => {
+test('process Redis and video runner setup preserve exact historical workflows and reject old bytes supplied as current', () => {
  const path = '.github/workflows/test-backend-next.yml';
  const addition = '      - name: Install FFmpeg\n        run: |\n          sudo apt update\n          sudo apt install -y ffmpeg\n';
- const before = Buffer.from(read(path).toString().replace(addition, ''));
+ const service = '      redis-pubsub:\n        image: redis:8\n        ports: [\'56380:6379\']\n        options: >-\n          --health-cmd "redis-cli ping"\n          --health-interval 1s --health-timeout 3s --health-retries 30\n';
+ const current = read(path).toString();
+ const sections = current.split('  process:\n');
+ assert.equal(sections.length, 2);
+ assert.equal(sections[0].split(service).length, 2, 'integration service stays present');
+ assert.equal(sections[1].split(service).length, 2, 'process has one dedicated service');
+ const beforeRedis = Buffer.from(sections[0] + '  process:\n' + sections[1].replace(service, ''));
+ assert.equal(sha(beforeRedis), '41bf145751d3c3b6825e54abb9018e7dc706e0d757d08c6f2568ee3a8bd26184');
+ const before = Buffer.from(beforeRedis.toString().replace(addition, ''));
  assert.equal(sha(before), record().inputs[path]);
+ assert.throws(() => validateDriveFolderPubsubSuccessor(undefined, file => file === path ? beforeRedis : read(file), () => null), /measured current input drift/);
  assert.doesNotThrow(() => validateDriveFolderPubsubSuccessor(undefined, read, () => null));
  assert.throws(() => validateDriveFolderPubsubSuccessor(undefined, file => file === path ? before : read(file), () => null), /measured current input drift/);
 });
-test('video workflow raw drift rejects after warming its requested path within one validation scope', () => {
+test('current process Redis workflow drift rejects after warming its requested path within one validation scope', () => {
  const path = '.github/workflows/test-backend-next.yml';
  let changed = false;
  const reader = file => changed && file === path ? Buffer.concat([read(file), Buffer.from('\n')]) : read(file);

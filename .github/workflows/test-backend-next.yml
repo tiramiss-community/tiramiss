@@ -152,6 +152,12 @@ jobs:
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 1s --health-timeout 3s --health-retries 30
+      redis-pubsub:
+        image: redis:8
+        ports: ['56380:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 1s --health-timeout 3s --health-retries 30
       meilisearch:
         image: getmeili/meilisearch:v1.3.4
         env:
