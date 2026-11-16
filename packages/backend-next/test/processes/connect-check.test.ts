@@ -145,13 +145,27 @@ test.each([
 	{ mode: 'error', ready: false },
 	{ mode: 'silent', ready: false },
 	{ mode: 'disabled', ready: true },
+	{ mode: 'auth-valid', ready: true },
+	{ mode: 'auth-invalid', ready: false },
+	{ mode: 'auth-password-valid', ready: true },
+	{ mode: 'auth-password-invalid', ready: false },
 ])('bounds Redis readiness and drains every accepted connection: $mode', async ({ mode, ready }) => {
 	const sockets = new Set<Socket>();
 	let infos = 0;
+	let authResponses = 0;
+	const commands: string[] = [];
+	const authenticationArguments: string[][] = [];
+	const authentication = mode.startsWith('auth-');
 	const server = createServer(socket => {
 		sockets.add(socket);
 		socket.on('error', () => {});
-		socket.on('close', () => sockets.delete(socket));
+		const replies = new Set<NodeJS.Timeout>();
+		socket.on('close', () => {
+			sockets.delete(socket);
+			for (const timer of replies) {
+				clearTimeout(timer);
+			}
+		});
 		let pending = Buffer.alloc(0);
 		socket.on('data', data => {
 			pending = Buffer.concat([pending, Buffer.isBuffer(data) ? data : Buffer.from(data)]);
@@ -172,6 +186,17 @@ test.each([
 					offset += Number(bulk[1]) + 2;
 				}
 				pending = pending.subarray(offset);
+				commands.push(parts[0].toLowerCase());
+				if (authentication) {
+					authenticationArguments.push(parts.slice(1));
+					const timer = setTimeout(() => {
+						replies.delete(timer);
+						authResponses++;
+						socket.write(parts[0].toLowerCase() === 'auth' && parts.at(-1) === 'fixture-password' ? '+OK\r\n' : '-WRONGPASS fixture-authentication-failed\r\n');
+					}, 50);
+					replies.add(timer);
+					continue;
+				}
 				if (mode === 'silent') {
 					continue;
 				}
@@ -194,7 +219,7 @@ test.each([
 	try {
 		const value = configuration();
 		value.backendNext.startupTimeoutMs = 150;
-		Object.assign(value, { redisForJobQueue: { host: '127.0.0.1', port: (server.address() as { port: number }).port, maxLoadingRetryTime: mode === 'waiting' ? 10000 : 10, ...(mode === 'disabled' ? { enableReadyCheck: false } : {}) } });
+		Object.assign(value, { redisForJobQueue: { host: '127.0.0.1', port: (server.address() as { port: number }).port, maxLoadingRetryTime: mode === 'waiting' ? 10000 : 10, ...(mode === 'disabled' ? { enableReadyCheck: false } : {}), ...(authentication ? { enableReadyCheck: false, disableClientInfo: true, ...(mode.startsWith('auth-password') ? {} : { username: 'fixture-user' }), pass: mode.endsWith('-valid') ? 'fixture-password' : 'fixture-invalid-password' } : {}) } });
 		const before = await snapshot();
 		const start = Date.now();
 		const result = await run(value, false, 1500);
@@ -203,10 +228,21 @@ test.each([
 		expect(result.stderr).toBe('');
 		expect(JSON.parse(result.stdout).checks.filter((row: { ready: boolean }) => !row.ready)).toEqual(ready ? [] : [{ target: 'redisForJobQueue', ready: false }]);
 		expect(sockets.size).toBe(0);
+		if (authentication) {
+			expect(authResponses).toBeGreaterThan(0);
+			expect(commands.length).toBeGreaterThan(0);
+			expect(commands.every(command => command === 'auth')).toBe(true);
+			for (const args of authenticationArguments) {
+				expect(args).toEqual([...(mode.startsWith('auth-password') ? [] : ['fixture-user']), mode.endsWith('-valid') ? 'fixture-password' : 'fixture-invalid-password']);
+			}
+		}
+		if (mode === 'disabled') {
+			expect(commands).not.toContain('auth');
+		}
 		if (mode === 'loading') {
 			expect(infos).toBeGreaterThan(1);
 		} else {
-			expect(infos).toBe(mode === 'disabled' || mode === 'silent' ? 0 : mode === 'recovering' ? 2 : 1);
+			expect(infos).toBe(mode === 'disabled' || mode === 'silent' || authentication ? 0 : mode === 'recovering' ? 2 : 1);
 		}
 		await assertPreserved(before);
 	} finally {

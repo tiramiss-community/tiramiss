@@ -36,6 +36,13 @@ export async function checkConnections(config: RuntimeConfig) {
 		const ready = async () => {
 			await client.connect();
 			if (options.enableReadyCheck === false) {
+				// connect() can resolve before automatic AUTH when no client
+				// metadata command is queued. Await the same credential check.
+				if (client.options.username) {
+					await client.auth(client.options.username, client.options.password ?? '');
+				} else if (client.options.password) {
+					await client.auth(client.options.password);
+				}
 				return;
 			}
 			// The library's INFO loop logs raw NOPERM text and retains retry
