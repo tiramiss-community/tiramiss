@@ -1,0 +1,8 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "migrationCount": 349,
+  "migrationManifestSha256": "dff144e91b02d57a00c3356a52506234619049568dc6a056925abe7d15f1f511",
+  "manifestFormat": "sorted filename + NUL + sha256(file bytes), newline after each entry",
+  "ormconfigSource": "import { DataSource } from 'typeorm';\nimport { loadConfig } from './built/config.js';\nimport { entities } from './built/postgres.js';\n\nconst isConcurrentIndexMigrationEnabled = process.env.MISSKEY_MIGRATION_CREATE_INDEX_CONCURRENTLY === '1';\n\nconst config = loadConfig();\n\nexport default new DataSource({\n\ttype: 'postgres',\n\thost: config.db.host,\n\tport: config.db.port,\n\tusername: config.db.user,\n\tpassword: config.db.pass,\n\tdatabase: config.db.db,\n\textra: config.db.extra,\n\tentities: entities,\n\tmigrations: ['migration/*.js'],\n\tmigrationsTransactionMode: isConcurrentIndexMigrationEnabled ? 'each' : 'all',\n});\n",
+  "comparison": "All 349 migration files compared byte-for-byte with git show at the pinned source; ormconfig compared as literal source. No upstream server execution."
+}
