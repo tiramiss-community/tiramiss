@@ -1,0 +1,433 @@
+{
+  "scope": "post-save-idle-ci-fixture",
+  "baseRevision": "bb41a9d36bd17261df666e6813cc6029fef2618b",
+  "frozenAt": "2026-11-16T04:25:55.740950+00:00",
+  "measuredWorkingTree": true,
+  "noInputDrift": true,
+  "productionChanged": false,
+  "inputs": {
+    "packages/backend-next/test/unit/note/post-save.test.ts": "49900c0832071cf49f8ddad76ee4cf022d1221fe1c61acad193101356986c914",
+    "packages/backend-next/src/platform/note-post-save.ts": "af4b441de6527947089c2b701a6b851b356e6bc2e5e1a144638fa305e86771b2"
+  },
+  "inputsAfter": {
+    "packages/backend-next/test/unit/note/post-save.test.ts": "49900c0832071cf49f8ddad76ee4cf022d1221fe1c61acad193101356986c914",
+    "packages/backend-next/src/platform/note-post-save.ts": "af4b441de6527947089c2b701a6b851b356e6bc2e5e1a144638fa305e86771b2"
+  },
+  "predecessor": {
+    "path": "packages/backend-next/test/unit/note/post-save.test.ts",
+    "previousSha256": "4e529c8dd7508a5a862cdb7f3c0c820a5fda093dfc52da050c92200382a9c42b",
+    "currentSha256": "49900c0832071cf49f8ddad76ee4cf022d1221fe1c61acad193101356986c914",
+    "patches": [
+      {
+        "offset": 1788,
+        "before": "const deferred = () => {\n\t\t",
+        "after": ""
+      },
+      {
+        "offset": 1821,
+        "before": "so",
+        "after": ""
+      },
+      {
+        "offset": 1824,
+        "before": "v",
+        "after": ""
+      },
+      {
+        "offset": 1826,
+        "before": "",
+        "after": "aseSecond"
+      },
+      {
+        "offset": 1842,
+        "before": "\t",
+        "after": ""
+      },
+      {
+        "offset": 1849,
+        "before": "promi",
+        "after": ""
+      },
+      {
+        "offset": 1856,
+        "before": "",
+        "after": "cond"
+      },
+      {
+        "offset": 1877,
+        "before": "done => {\n\t\t\t",
+        "after": ""
+      },
+      {
+        "offset": 1899,
+        "before": "",
+        "after": ">"
+      },
+      {
+        "offset": 1900,
+        "before": "done;\n\t\t});",
+        "after": "{"
+      },
+      {
+        "offset": 1916,
+        "before": "turn { promi",
+        "after": "lea"
+      },
+      {
+        "offset": 1930,
+        "before": ",",
+        "after": "Second ="
+      },
+      {
+        "offset": 1939,
+        "before": " }",
+        "after": ""
+      },
+      {
+        "offset": 1945,
+        "before": ";\n\tconst firstStarted = deferred(), firstCompleted = deferred(), secondStarted = deferred();\n\tconst firstGate = deferred(), secondGate = deferred(",
+        "after": ""
+      },
+      {
+        "offset": 2213,
+        "before": "\n\t\t\tfirstStarted.resolve();\n\t\t\tawait firstGate.promise;",
+        "after": ""
+      },
+      {
+        "offset": 2419,
+        "before": "secondStarted.resolve();\n\t\t\t",
+        "after": ""
+      },
+      {
+        "offset": 2459,
+        "before": "Gate.promise",
+        "after": ""
+      },
+      {
+        "offset": 2501,
+        "before": "\n\t\tif (userId === 'first') {\n\t\t\tfirstCompleted.resolve();\n\t\t}",
+        "after": ""
+      },
+      {
+        "offset": 2734,
+        "before": "await firstStarted.promise;\n\t",
+        "after": ""
+      },
+      {
+        "offset": 2847,
+        "before": "try {\n\t\tfirstGate.resolve();\n\t\t",
+        "after": ""
+      },
+      {
+        "offset": 2883,
+        "before": "",
+        "after": " new"
+      },
+      {
+        "offset": 2891,
+        "before": ".all([firstC",
+        "after": "<v"
+      },
+      {
+        "offset": 2904,
+        "before": "mpleted.prom",
+        "after": ""
+      },
+      {
+        "offset": 2917,
+        "before": "s",
+        "after": "d>(r"
+      },
+      {
+        "offset": 2919,
+        "before": ",",
+        "after": "solve =>"
+      },
+      {
+        "offset": 2923,
+        "before": "condS",
+        "after": ""
+      },
+      {
+        "offset": 2929,
+        "before": "arted.prom",
+        "after": "T"
+      },
+      {
+        "offset": 2940,
+        "before": "s",
+        "after": "m"
+      },
+      {
+        "offset": 2942,
+        "before": "]",
+        "after": "out(resolve, 0)"
+      },
+      {
+        "offset": 2946,
+        "before": "\t",
+        "after": ""
+      },
+      {
+        "offset": 2986,
+        "before": "\t",
+        "after": ""
+      },
+      {
+        "offset": 3014,
+        "before": "\t",
+        "after": "relea"
+      },
+      {
+        "offset": 3016,
+        "before": "",
+        "after": "eS"
+      },
+      {
+        "offset": 3021,
+        "before": "Gate.resolve",
+        "after": ""
+      },
+      {
+        "offset": 3037,
+        "before": "\t",
+        "after": ""
+      },
+      {
+        "offset": 3054,
+        "before": "\t",
+        "after": ""
+      },
+      {
+        "offset": 3102,
+        "before": "\n\t} finally {\n\t\tfirstGate.resolve(); secondGate.resolve();\n\t\tawait effects.close();\n\t}",
+        "after": ""
+      }
+    ]
+  },
+  "failedCi": {
+    "log": "/tmp/tiramiss-601-checks-failed.log",
+    "logSha256": "c42e2934f14eb3df3061d2a9d3971b8a4f1f6a9fb0ddf701c0482cc05209036a",
+    "failedTest": "idle waits for post-save work started while it is waiting"
+  },
+  "mutant": {
+    "name": "post-save-mutant-red",
+    "command": [
+      "pnpm",
+      "--filter",
+      "backend-next",
+      "test",
+      "test/unit/note/post-save.test.ts",
+      "-t",
+      "idle waits for post-save work started while it is waiting"
+    ],
+    "startedAt": "2026-11-16T04:20:53.804908+00:00",
+    "finishedAt": "2026-11-16T04:20:54.386209+00:00",
+    "durationSeconds": 0.581,
+    "exitCode": 1,
+    "log": "/tmp/tiramiss-303-logs/post-save-mutant-red.log",
+    "logSha256": "0c05148362a53b2a0cb3c91be6ebcc84986c96b172f1b8a427152a263a9c706a"
+  },
+  "runs": [
+    {
+      "name": "post-save-focused",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/note/post-save.test.ts"
+      ],
+      "startedAt": "2026-11-16T04:25:55.758194+00:00",
+      "finishedAt": "2026-11-16T04:25:56.314979+00:00",
+      "durationSeconds": 0.557,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/post-save-focused.log",
+      "logSha256": "f7ef658eb8566f897afdc969b265cdc175f92a4f064617db6be7c2715c40d4bd",
+      "passed": 14,
+      "files": 1
+    },
+    {
+      "name": "post-save-repeat-01",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/note/post-save.test.ts"
+      ],
+      "startedAt": "2026-11-16T04:25:56.343182+00:00",
+      "finishedAt": "2026-11-16T04:25:56.895679+00:00",
+      "durationSeconds": 0.552,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/post-save-repeat-01.log",
+      "logSha256": "059614446aca69492864d575c8fa2b6a7b3870efb426565cecd189d9aad8863e",
+      "passed": 14,
+      "files": 1
+    },
+    {
+      "name": "post-save-repeat-02",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/note/post-save.test.ts"
+      ],
+      "startedAt": "2026-11-16T04:25:56.914707+00:00",
+      "finishedAt": "2026-11-16T04:25:57.467159+00:00",
+      "durationSeconds": 0.552,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/post-save-repeat-02.log",
+      "logSha256": "d7a963aa47c759a5f2887a8bab49baa0999634ec77688d2c71555f79b888a5eb",
+      "passed": 14,
+      "files": 1
+    },
+    {
+      "name": "post-save-repeat-03",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/note/post-save.test.ts"
+      ],
+      "startedAt": "2026-11-16T04:25:57.486335+00:00",
+      "finishedAt": "2026-11-16T04:25:58.032102+00:00",
+      "durationSeconds": 0.546,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/post-save-repeat-03.log",
+      "logSha256": "d276d8aa647069b2f739f092558d1c5abc19a7681e093101ecd714cdc6b1ceb0",
+      "passed": 14,
+      "files": 1
+    },
+    {
+      "name": "post-save-repeat-04",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/note/post-save.test.ts"
+      ],
+      "startedAt": "2026-11-16T04:25:58.050164+00:00",
+      "finishedAt": "2026-11-16T04:25:58.607259+00:00",
+      "durationSeconds": 0.557,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/post-save-repeat-04.log",
+      "logSha256": "a64101effcace99bbec474f026dcd733ec32e24098c5af968edd10ff786c3f72",
+      "passed": 14,
+      "files": 1
+    },
+    {
+      "name": "post-save-repeat-05",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/note/post-save.test.ts"
+      ],
+      "startedAt": "2026-11-16T04:25:58.625848+00:00",
+      "finishedAt": "2026-11-16T04:25:59.158843+00:00",
+      "durationSeconds": 0.533,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/post-save-repeat-05.log",
+      "logSha256": "7ecebae5eb659b46350c41a0985d64b12e50fb1995e01eab0aa3c9a923540e54",
+      "passed": 14,
+      "files": 1
+    },
+    {
+      "name": "post-save-repeat-06",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/note/post-save.test.ts"
+      ],
+      "startedAt": "2026-11-16T04:25:59.178109+00:00",
+      "finishedAt": "2026-11-16T04:25:59.705287+00:00",
+      "durationSeconds": 0.527,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/post-save-repeat-06.log",
+      "logSha256": "6b3354183b246431218c39abdd9edae41a304a5088a3562b848724eaf7912784",
+      "passed": 14,
+      "files": 1
+    },
+    {
+      "name": "post-save-repeat-07",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/note/post-save.test.ts"
+      ],
+      "startedAt": "2026-11-16T04:25:59.723716+00:00",
+      "finishedAt": "2026-11-16T04:26:00.291610+00:00",
+      "durationSeconds": 0.568,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/post-save-repeat-07.log",
+      "logSha256": "ed47c92f936060b1146e259947b07ae71f79ede2ec4effac89c3a6fd787e7a04",
+      "passed": 14,
+      "files": 1
+    },
+    {
+      "name": "post-save-repeat-08",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/note/post-save.test.ts"
+      ],
+      "startedAt": "2026-11-16T04:26:00.310675+00:00",
+      "finishedAt": "2026-11-16T04:26:00.869681+00:00",
+      "durationSeconds": 0.559,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/post-save-repeat-08.log",
+      "logSha256": "3bb970dc551ae7f7cf635e1af435344871bf3a7ad78c28c7803539d5a7ded15c",
+      "passed": 14,
+      "files": 1
+    },
+    {
+      "name": "post-save-repeat-09",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/note/post-save.test.ts"
+      ],
+      "startedAt": "2026-11-16T04:26:00.889106+00:00",
+      "finishedAt": "2026-11-16T04:26:01.458790+00:00",
+      "durationSeconds": 0.57,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/post-save-repeat-09.log",
+      "logSha256": "623279c139dc2f0cdde128fd25f4c0a772d7fb88596d847e6318f4107d145c0e",
+      "passed": 14,
+      "files": 1
+    },
+    {
+      "name": "post-save-repeat-10",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/note/post-save.test.ts"
+      ],
+      "startedAt": "2026-11-16T04:26:01.478350+00:00",
+      "finishedAt": "2026-11-16T04:26:02.026018+00:00",
+      "durationSeconds": 0.548,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/post-save-repeat-10.log",
+      "logSha256": "98440840de58a82cf21afbb05b424b8a8eabf686c3743a550a53b3683faf8da2",
+      "passed": 14,
+      "files": 1
+    }
+  ],
+  "postingComplete": false,
+  "ciSuccessMeasured": false
+}

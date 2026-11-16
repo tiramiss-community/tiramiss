@@ -7,6 +7,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { readFileSync, existsSync } from 'node:fs';
 import test from 'node:test';
+import { postSaveFixturePath, readPrePreviewFixture } from './url-preview-fixture-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
 const artifact = new URL('docs/superpowers/compatibility/note/n7/posting-proof-272.json', root);
@@ -14,7 +15,7 @@ test('finite #272 posting proof artifact exists', () => {
 	assert.ok(existsSync(artifact), 'missing current posting-proof-272.json artifact');
 });
 
-const read = file => readFileSync(new URL(file, root), 'utf8');
+const read = file => file === postSaveFixturePath ? readPrePreviewFixture(file, 'utf8') : readFileSync(new URL(file, root), 'utf8');
 const digest = value => createHash('sha256').update(value).digest('hex');
 const historicalSource = (commit, file) => execFileSync('git', ['show', `${commit}:${file}`], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 16 * 1024 * 1024 });
 const load = () => JSON.parse(readFileSync(artifact, 'utf8'));

@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { fixturePath, readPrePreviewFixture, validatePreviewFixture } from './url-preview-fixture-evidence.mjs';
+import { fixturePath, readPrePreviewFixture, validatePreviewFixture, postSaveFixturePath, validatePostSaveIdleFixture } from './url-preview-fixture-evidence.mjs';
 import { readPreUrlPreview } from './url-preview-evidence.mjs';
 import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 const root = new URL('../', import.meta.url);
@@ -46,4 +46,24 @@ test('one-file leaf uses only builtins, launches no subprocess and passes outsid
  assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:')));
  assert(!/execFile|spawn|import\(/.test(source));
  assert.equal(readPrePreviewFixture('unrelated', 'utf8', () => Buffer.from('live'), () => null), 'live');
+});
+
+
+test('post-save idle correction restores one historical fixture through the terminal reader', () => {
+ const previous = validatePostSaveIdleFixture(undefined, read, () => null);
+ assert.equal(sha(previous), '4e529c8dd7508a5a862cdb7f3c0c820a5fda093dfc52da050c92200382a9c42b');
+ assert.equal(readPrePreviewFixture(postSaveFixturePath, 'utf8', read, () => null), previous);
+ assert.equal(readPreAliasKey(postSaveFixturePath, 'utf8', read), previous);
+});
+test('post-save idle correction rejects changed fixture, production, receipt and historical bytes', () => {
+ const receiptPath = 'docs/superpowers/compatibility/actor-emoji-cache/post-save-idle-fixture-evidence.json';
+ const value = JSON.parse(read(receiptPath));
+ for (const path of Object.keys(value.inputs)) {
+  const changed = file => file === path ? Buffer.concat([read(file), Buffer.from('\n')]) : read(file);
+  assert.throws(() => validatePostSaveIdleFixture(undefined, changed, () => null), /measured input drift/);
+ }
+ const previous = validatePostSaveIdleFixture(undefined, read, () => null);
+ assert.throws(() => validatePostSaveIdleFixture(undefined, path => path === postSaveFixturePath ? Buffer.from(previous) : read(path), () => null), /measured input drift/);
+ assert.throws(() => validatePostSaveIdleFixture(undefined, path => path === receiptPath ? Buffer.from('{}') : read(path), () => null), /seal/);
+ for (const run of [...value.runs, value.failedCi, value.mutant]) assert.throws(() => validatePostSaveIdleFixture(undefined, read, path => path === run.log ? Buffer.from('forged') : null), /actual log drift/);
 });
