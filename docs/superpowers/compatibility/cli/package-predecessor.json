@@ -1,0 +1,7 @@
+{
+  "baseRevision": "5f0549ad96af7ce85e12fdcc4bf26f23b029d29d",
+  "path": "packages/backend-next/package.json",
+  "currentSha256": "bc7c984010063b75f50f28b59a01e84175ff550f374cceadba7d52fac87b2126",
+  "previousSha256": "bee5e28cfc34c0d05812f4479113888384f32e7001a3c367b3d796bc75f573eb",
+  "remove": "\t\t\"cli\": \"node built/entrypoints/cli.js\",\n"
+}

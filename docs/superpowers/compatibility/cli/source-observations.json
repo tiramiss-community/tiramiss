@@ -1,0 +1,93 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "mode": "source subprocess; Nest context doubled; real boot dispatch and ping body",
+  "manifest": [
+    {
+      "path": "packages/backend/src/boot/cli.ts",
+      "sha256": "4eb207e71a9a4e1e3c557bbea1a3a4e2c8e09800ae93f143dea5cf770e07a933",
+      "gitBlob": "a5618f815255cced2639859a54c14ec5a9b85c65"
+    },
+    {
+      "path": "packages/backend/src/cli/CommandService.ts",
+      "sha256": "7d9f24aa84c7639d921a92fadd56f4ca747b16fdcec6060a41fcc08b21717210",
+      "gitBlob": "cdb2a9f3826faa60e1884aeeeeedecc8824a8d78"
+    },
+    {
+      "path": "packages/backend/src/cli/CommandModule.ts",
+      "sha256": "49d35d9810d8e26a296e8b1c8690f36658ee5f13f358a119a5e37389cd1fc9ba",
+      "gitBlob": "f4b1d25c180eba284edcd0470bc58e9b187c42f6"
+    },
+    {
+      "path": "packages/backend/src/GlobalModule.ts",
+      "sha256": "1b44d0fe1221bc110acea893a293a29d61c14f136911b4f6627920d142e3bcf0",
+      "gitBlob": "adccb4dc3ee273d4389de53ce01c2fcc2ab3449f"
+    },
+    {
+      "path": "packages/backend/src/core/CoreModule.ts",
+      "sha256": "ead88b9eebd7ae84b2d5d16048b14b1ec8afef3dea7e15a5e7dbbae11fd9006e",
+      "gitBlob": "b93fcaacb372018667a52c890b1ad78c6a8744a1"
+    }
+  ],
+  "cases": [
+    {
+      "args": [],
+      "stdout": "Available commands:\n  help - Displays this help message\n  reset-captcha - Resets the captcha\n",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "args": [
+        "help"
+      ],
+      "stdout": "Available commands:\n  help - Displays this help message\n  reset-captcha - Resets the captcha\n",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "args": [
+        "ping"
+      ],
+      "stdout": "pong\n",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "args": [
+        "ping",
+        "ignored"
+      ],
+      "stdout": "pong\n",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "args": [
+        "unknown"
+      ],
+      "stdout": "",
+      "stderr": "Unrecognized command: unknown\nUse \"help\" to see available commands.\n",
+      "exitCode": 1
+    },
+    {
+      "args": [
+        "--help"
+      ],
+      "stdout": "",
+      "stderr": "Unrecognized command: --help\nUse \"help\" to see available commands.\n",
+      "exitCode": 1
+    },
+    {
+      "args": [
+        ""
+      ],
+      "stdout": "",
+      "stderr": "Unrecognized command: \nUse \"help\" to see available commands.\n",
+      "exitCode": 1
+    }
+  ],
+  "initializationFailure": {
+    "stdout": "",
+    "exitCode": 1,
+    "stderrIncludes": "CLI_INITIALIZATION_FAILED"
+  }
+}

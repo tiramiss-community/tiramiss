@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "issue": 572,
+  "baseRevision": "be907d95e61f9a0268fef6602e6e302fe8b7ebc4",
+  "reason": "CodeRabbit minor finding: execFile signal errors with code:null were coalesced to success by error?.code ?? 0 in both test callbacks.",
+  "scope": "Test harness only; no product/config/package/dependency/source-probe changes.",
+  "changedInput": {
+    "path": "packages/backend-next/test/processes/cli.test.ts",
+    "previousSha256": "a7f4d55a93292129ca477cf319e7d13d41ec5d082a4dc7c24b3a1c67c95f0f8f",
+    "currentSha256": "722e0c19c58d7232e50e8ba791514ce9018d9732259b15f3bf083084532e82b5"
+  },
+  "fix": "Both built-entrypoint and package-script checks share execute(); only absence of an error returns success. Error codes, signals and an explicit fallback preserve failures.",
+  "regression": "A real Node child flushes pong to stdout then sends SIGTERM to itself. RED returned 0; GREEN returns SIGTERM.",
+  "runs": [
+    {
+      "name": "red",
+      "log": "/tmp/tiramiss-572-signal-red.log",
+      "logSha256": "c1b0378034785cae88126d8f1189390047457631b48a8db6bd678ad7e4290114",
+      "exitCode": 1,
+      "passed": 19,
+      "failed": 1
+    },
+    {
+      "name": "green",
+      "log": "/tmp/tiramiss-572-signal-green.log",
+      "logSha256": "42edcdec70459362c87bb9a96220c0b8ae3e5d6d3db682a1e86229d57c84ba43",
+      "exitCode": 0,
+      "passed": 20,
+      "failed": 0
+    },
+    {
+      "name": "typecheck",
+      "log": "/tmp/tiramiss-572-signal-typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+      "exitCode": 0
+    }
+  ],
+  "sourceProbeAudit": "spawnSync statuses remain uncoalesced and each dispatch asserts signal === null; no analogous success conversion.",
+  "history": "validation-results.json remains the earlier 19-case measurement. The test input intentionally changed here; its old noProductInputDrift statement describes that prior run. Other 13 product-diff inputs were checked unchanged. No full-root or source replay is claimed by this test-only follow-up."
+}

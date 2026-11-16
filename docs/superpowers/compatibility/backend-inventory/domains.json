@@ -3171,6 +3171,38 @@
       ],
       "note": "#280: Image byte conversion verified against source methods with actual WebP/AVIF/PNG output readback. Sharp/path/stream overloads are represented by the byte boundary, not copied API wrappers. 28 fixed inputs / 56 alternate cases / 9 direct conversions / 3 pipeline failures. docs/superpowers/compatibility/image-ingest/README.md",
       "evidenceRevision": "02506f132a6bffefa150f352281772944cdbb73f"
+    },
+    "cli:packages/backend/src/boot/cli.ts:27": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/entrypoints/cli.ts",
+        "packages/backend-next/src/composition/cli.ts",
+        "packages/backend-next/package.json"
+      ],
+      "verification": [
+        "packages/backend-next/test/processes/cli.test.ts",
+        "docs/superpowers/compatibility/cli/source-probe.mjs",
+        "docs/superpowers/compatibility/cli/source-observations.json",
+        "docs/superpowers/compatibility/cli/README.md"
+      ],
+      "note": "#572: No-argument/help, literal ping/pong and unknown-command stdout/stderr/exit verified through built entrypoint/package script. Config-only initialization opens no connections. Intentional help difference: advertise implemented help/ping, not unsupported reset-captcha. Fixed-source Nest initialization is doubled; full Nest/DB/Redis startup diagnostics are not measured. docs/superpowers/compatibility/cli/README.md",
+      "evidenceRevision": "294a63ebec86c865f28b9b6cf1b6975a0c301705"
+    },
+    "cli:packages/backend/src/boot/cli.ts:33": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/entrypoints/cli.ts",
+        "packages/backend-next/src/composition/cli.ts",
+        "packages/backend-next/package.json"
+      ],
+      "verification": [
+        "packages/backend-next/test/processes/cli.test.ts",
+        "docs/superpowers/compatibility/cli/source-probe.mjs",
+        "docs/superpowers/compatibility/cli/source-observations.json",
+        "docs/superpowers/compatibility/cli/README.md"
+      ],
+      "note": "#572: No-argument/help, literal ping/pong and unknown-command stdout/stderr/exit verified through built entrypoint/package script. Config-only initialization opens no connections. Intentional help difference: advertise implemented help/ping, not unsupported reset-captcha. Fixed-source Nest initialization is doubled; full Nest/DB/Redis startup diagnostics are not measured. docs/superpowers/compatibility/cli/README.md",
+      "evidenceRevision": "294a63ebec86c865f28b9b6cf1b6975a0c301705"
     }
   }
 }

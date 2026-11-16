@@ -66,6 +66,12 @@ SupervisorはHTTP×1、worker×指定数を起動し、全子のreadyを待つ�
 プロセスを外部管理する場合は`start:http`、`start:worker`を使う。
 各子は独自のDB・Redis接続を持つ。Redisなしの縮退運転はしない。
 
+CLI はビルド後に `pnpm --filter backend-next cli`（引数なし、または `help`）で案内、
+`pnpm --filter backend-next cli ping` で `pong` を出して成功終了する。不明コマンドは案内と終了コード1を返す。
+既存の設定検証は行うが、DB・Redis・HTTP・workerは起動せず、pingは依存先のhealth判定ではない。
+設定の読込・検証失敗はstderrへ案内して終了コード1となる。`reset-captcha`は未実装のため案内に載せず、実行も成功しない。
+[固定本家とのCLI比較と軽量化の差異](../../docs/superpowers/compatibility/cli/README.md)を参照。
+
 既存3業務queue（`endedPollNotification` / `deliver` / `userWebhookDeliver`）は mokuroku-js core/adapter `0.2.0` を通して BullMQ `6.3.11` / ioredis `5.11.1` を使う。`redisForJobQueue`（未指定なら`redis`）と `<prefix>:queue:<queue名>` を維持する。
 定義・投入能力は `src/platform/job-queue/business-jobs.ts`、runtime所有は `runtime.ts`、worker登録は `src/composition/queue-workers.ts:startQueueWorkers` にある。各子が投入専用runtimeを持ち、worker子だけが別runtimeへ3 handlerを登録する。HTTPは業務workerを開始しない。
 本家と違い再接続せず、稼働中の切断・予期しない取得ループ終了は子の異常終了とする。停止時はworker runtimeの停止→正常にcloseしたdelivery/webhookの開始済み後続処理の待機→共有接続の解放を行う。既存の全体停止期限を超えると異常終了する（止めたジョブはBullMQのstalled検査で戻る）。投入runtimeは先行するfeatureの終了待機後に解放する。

@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "issue": 572,
+  "parentIssue": 138,
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "productRevision": "294a63ebec86c865f28b9b6cf1b6975a0c301705",
+  "nodeVersion": "v26.4.0",
+  "measuredProductInputs": {
+    "docs/superpowers/compatibility/cli/README.md": "36a415e87c05c7cadf7d405173abd5bb15165bc7a8b05b6047c6aef97a769668",
+    "docs/superpowers/compatibility/cli/package-predecessor.json": "8b73c439e2e508d9a7a5bf91a7f3452759dd867abe0c7d28363941800eff4922",
+    "docs/superpowers/compatibility/cli/source-observations.json": "4c14bfb07ff3aee4696003bfecdc3c37ad175943bbc6bdf0bbeb06669d678993",
+    "docs/superpowers/compatibility/cli/source-probe.mjs": "b9ab48d370c39ae236e8e7068dfccb25a86f8620fc6a2d526e9601961c5bd70e",
+    "docs/superpowers/plans/2026-11-16-cli-basics-572.md": "017e62ea9295854625f04058cb68dceccd053daffd348948b504773daaec429e",
+    "packages/backend-next/README.md": "69c0b4261f7aab32929713ae6f3cda4c6c754b0bc645559382b6d5b66f5f65ad",
+    "packages/backend-next/package.json": "bc7c984010063b75f50f28b59a01e84175ff550f374cceadba7d52fac87b2126",
+    "packages/backend-next/src/composition/cli.ts": "472f661429528f9c3465cfed869697d222daafc56aee4532793422a30fcc3ed4",
+    "packages/backend-next/src/entrypoints/cli.ts": "998937bcc6beffb8dd2b10fd672abbc6345fc5103c11ff731ec803a7a643f097",
+    "packages/backend-next/test/fixtures/cli-no-network.mjs": "64d3f5d745e1ce65be585578ae420291661908a02b3af8d0e78594b555064826",
+    "packages/backend-next/test/processes/cli.test.ts": "a7f4d55a93292129ca477cf319e7d13d41ec5d082a4dc7c24b3a1c67c95f0f8f",
+    "scripts/cli-package-evidence.mjs": "31a90dd64f7b83c57da86fde0b12aae7cfb5306bc3b1f352a61d977e681ee12d",
+    "scripts/cli-package-evidence.test.mjs": "b102ea58c80b3850c8c098e1cdb3d93c4ba45f22a59650e3a374ba45e63707d6",
+    "scripts/image-ingest-dependency-evidence.mjs": "f3cdf288b23b054775644cce0e43354ba868d5e428a278432df7d90f6ddfcc98"
+  },
+  "measuredProductInputsAfter": {
+    "docs/superpowers/compatibility/cli/README.md": "36a415e87c05c7cadf7d405173abd5bb15165bc7a8b05b6047c6aef97a769668",
+    "docs/superpowers/compatibility/cli/package-predecessor.json": "8b73c439e2e508d9a7a5bf91a7f3452759dd867abe0c7d28363941800eff4922",
+    "docs/superpowers/compatibility/cli/source-observations.json": "4c14bfb07ff3aee4696003bfecdc3c37ad175943bbc6bdf0bbeb06669d678993",
+    "docs/superpowers/compatibility/cli/source-probe.mjs": "b9ab48d370c39ae236e8e7068dfccb25a86f8620fc6a2d526e9601961c5bd70e",
+    "docs/superpowers/plans/2026-11-16-cli-basics-572.md": "017e62ea9295854625f04058cb68dceccd053daffd348948b504773daaec429e",
+    "packages/backend-next/README.md": "69c0b4261f7aab32929713ae6f3cda4c6c754b0bc645559382b6d5b66f5f65ad",
+    "packages/backend-next/package.json": "bc7c984010063b75f50f28b59a01e84175ff550f374cceadba7d52fac87b2126",
+    "packages/backend-next/src/composition/cli.ts": "472f661429528f9c3465cfed869697d222daafc56aee4532793422a30fcc3ed4",
+    "packages/backend-next/src/entrypoints/cli.ts": "998937bcc6beffb8dd2b10fd672abbc6345fc5103c11ff731ec803a7a643f097",
+    "packages/backend-next/test/fixtures/cli-no-network.mjs": "64d3f5d745e1ce65be585578ae420291661908a02b3af8d0e78594b555064826",
+    "packages/backend-next/test/processes/cli.test.ts": "a7f4d55a93292129ca477cf319e7d13d41ec5d082a4dc7c24b3a1c67c95f0f8f",
+    "scripts/cli-package-evidence.mjs": "31a90dd64f7b83c57da86fde0b12aae7cfb5306bc3b1f352a61d977e681ee12d",
+    "scripts/cli-package-evidence.test.mjs": "b102ea58c80b3850c8c098e1cdb3d93c4ba45f22a59650e3a374ba45e63707d6",
+    "scripts/image-ingest-dependency-evidence.mjs": "f3cdf288b23b054775644cce0e43354ba868d5e428a278432df7d90f6ddfcc98"
+  },
+  "noProductInputDrift": true,
+  "productInputScope": "All 14 files in the reviewed product commit diff. These are not a freeze of every transitive repository/toolchain input.",
+  "runs": [
+    {
+      "name": "process",
+      "command": "pnpm --filter backend-next test:process test/processes/cli.test.ts",
+      "log": "/tmp/tiramiss-572-metadata-process.log",
+      "logSha256": "3cfe18a2eadb23675af38d9589e48ecaf695409e45d783800d35cb1a40acf9e1",
+      "exitCode": 0,
+      "passed": 19
+    },
+    {
+      "name": "source",
+      "command": "UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/cli/source-probe.mjs --check",
+      "log": "/tmp/tiramiss-572-metadata-source.log",
+      "logSha256": "47eb210b5b89b2589e97a326de8057410bf9eb899cb8f4749d91cddc0851c1e7",
+      "exitCode": 0,
+      "passed": 8
+    },
+    {
+      "name": "contract",
+      "command": "node --test scripts/cli-package-evidence.test.mjs scripts/url-preview-contract.test.mjs scripts/drive-files-contract.test.mjs scripts/backend-contract-inventory.test.mjs",
+      "log": "/tmp/tiramiss-572-metadata-contract.log",
+      "logSha256": "ec876e5813617642d6b6a40bccd70da30b7c31c594f391fd1c69823b6c52a78e",
+      "exitCode": 0,
+      "passed": 54
+    }
+  ],
+  "inventoryChangedIds": [
+    "cli:packages/backend/src/boot/cli.ts:27",
+    "cli:packages/backend/src/boot/cli.ts:33",
+    "responsibility:boot-logging-config-telemetry:13",
+    "service:CommandService"
+  ],
+  "inventoryFileSha256": {
+    "docs/superpowers/compatibility/backend-inventory/domains.json": "6a612b2caf6c767a6596ca620df7bbca457ec8a1992a103ca3f8b18bf19b2bd3",
+    "docs/superpowers/compatibility/backend-inventory/audit-items.json": "d6d9e690e59867611f43c2ab738de24bf0566b4a59965ab2208cf47e50c83db0",
+    "docs/superpowers/compatibility/backend-inventory/contracts.json": "0b1ab28a413d69f797ff7b0e6116f957ed92b3018b1a6d2ab6ce8c9113921229",
+    "docs/superpowers/compatibility/backend-inventory/contracts.md": "d42f670e6783b2dda743b3155cf5ea7ab8adb2e2de357bd03e7d7a81e30abc53"
+  },
+  "historicalWorkerRootRun": {
+    "command": "node --test scripts/*.test.mjs",
+    "passed": 760,
+    "log": "/tmp/tiramiss-572-root-all.log",
+    "logSha256": "c0586c2586d4876ff365d260f0932ad694762bbe9073349ff9b1ed25d8a087cb",
+    "scope": "Earlier precommit worker run, not repeated by metadata phase. Full transitive root inputs were not frozen by this finite record."
+  },
+  "limits": [
+    "Source subprocess doubles Nest context creation; full Nest/DB/Redis startup diagnostics are not runtime measured.",
+    "reset-captcha mutation remains unimplemented.",
+    "No DB/Redis lifecycle guarantee follows from config-only commands opening no connections.",
+    "Logs are local optional artifacts; this descriptive record adds no runtime validator or offline artifact requirement."
+  ]
+}
