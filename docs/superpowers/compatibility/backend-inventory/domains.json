@@ -3353,6 +3353,69 @@
       ],
       "evidenceRevision": "397be2c9f3dfb30025f3a97c6fc2efa50d51fccc",
       "note": "#555: 固定本家8e07cf0のliteral3routeを実Fastify/static/Sharpで45 HTTP観測し、新Honoの固定画像バイト・status・本文・CSP/cache・HEAD・304/412/206/416・不正名/URL/欠落/変換失敗と比較。新実装59近傍test。Sharp0.35.5の96px指定パイプラインは固定画像で512pxを出力し、新旧PNG hashまで一致（UF-014）。full upstream boot、カスタム絵文字管理、他asset、#196/#114全体は対象外。"
+    },
+    "http:packages/backend/src/server/ServerService.ts:165": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/http/avatar-images-api.ts",
+        "packages/backend-next/src/modules/avatar-images/public.ts",
+        "packages/backend-next/src/platform/database/avatar-images.ts",
+        "packages/backend-next/src/platform/images/identicon.ts",
+        "packages/backend-next/src/composition/avatar-images-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-images.test.ts",
+        "packages/backend-next/test/integration/avatar-images.test.ts",
+        "packages/backend-next/test/unit/composition/http-app.test.ts",
+        "docs/superpowers/compatibility/avatar-images/corpus.json",
+        "docs/superpowers/compatibility/avatar-images/observations.json",
+        "docs/superpowers/compatibility/avatar-images/source-probe.mjs"
+      ],
+      "evidenceRevision": "3f59a6e9a58974ddfc537ea663de3bc7d3be228e",
+      "note": "#556: 固定本家8e07cf0のliteral3route/getIdenticonUrl/Acct.parse/genIdenticonを実Fastify/canvasとrepository/Meta doubleで164 HTTP観測。新通常HTTP/PG158 test、近傍単体225、build/typecheck成功。redirect/static/badge/fallback/cache/CSP、ID/URL null・空、128px PNG hash、無効設定、HEAD、不正encoding/100文字境界と取得失敗を比較。Meta通知は新実装の実Redis検証。full upstream起動/PG、global AP redirect hook(#563)、Drive/proxy/static画像配信とactor URL再実装は対象外。#196/#114は未完了。"
+    },
+    "http:packages/backend/src/server/ServerService.ts:223": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/http/avatar-images-api.ts",
+        "packages/backend-next/src/modules/avatar-images/public.ts",
+        "packages/backend-next/src/platform/database/avatar-images.ts",
+        "packages/backend-next/src/platform/images/identicon.ts",
+        "packages/backend-next/src/composition/avatar-images-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-images.test.ts",
+        "packages/backend-next/test/integration/avatar-images.test.ts",
+        "packages/backend-next/test/unit/composition/http-app.test.ts",
+        "docs/superpowers/compatibility/avatar-images/corpus.json",
+        "docs/superpowers/compatibility/avatar-images/observations.json",
+        "docs/superpowers/compatibility/avatar-images/source-probe.mjs"
+      ],
+      "evidenceRevision": "3f59a6e9a58974ddfc537ea663de3bc7d3be228e",
+      "note": "#556: 固定本家8e07cf0のliteral3route/getIdenticonUrl/Acct.parse/genIdenticonを実Fastify/canvasとrepository/Meta doubleで164 HTTP観測。新通常HTTP/PG158 test、近傍単体225、build/typecheck成功。redirect/static/badge/fallback/cache/CSP、ID/URL null・空、128px PNG hash、無効設定、HEAD、不正encoding/100文字境界と取得失敗を比較。Meta通知は新実装の実Redis検証。full upstream起動/PG、global AP redirect hook(#563)、Drive/proxy/static画像配信とactor URL再実装は対象外。#196/#114は未完了。"
+    },
+    "http:packages/backend/src/server/ServerService.ts:242": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/http/avatar-images-api.ts",
+        "packages/backend-next/src/modules/avatar-images/public.ts",
+        "packages/backend-next/src/platform/database/avatar-images.ts",
+        "packages/backend-next/src/platform/images/identicon.ts",
+        "packages/backend-next/src/composition/avatar-images-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-images.test.ts",
+        "packages/backend-next/test/integration/avatar-images.test.ts",
+        "packages/backend-next/test/unit/composition/http-app.test.ts",
+        "docs/superpowers/compatibility/avatar-images/corpus.json",
+        "docs/superpowers/compatibility/avatar-images/observations.json",
+        "docs/superpowers/compatibility/avatar-images/source-probe.mjs"
+      ],
+      "evidenceRevision": "3f59a6e9a58974ddfc537ea663de3bc7d3be228e",
+      "note": "#556: 固定本家8e07cf0のliteral3route/getIdenticonUrl/Acct.parse/genIdenticonを実Fastify/canvasとrepository/Meta doubleで164 HTTP観測。新通常HTTP/PG158 test、近傍単体225、build/typecheck成功。redirect/static/badge/fallback/cache/CSP、ID/URL null・空、128px PNG hash、無効設定、HEAD、不正encoding/100文字境界と取得失敗を比較。Meta通知は新実装の実Redis検証。full upstream起動/PG、global AP redirect hook(#563)、Drive/proxy/static画像配信とactor URL再実装は対象外。#196/#114は未完了。"
     }
   }
 }
