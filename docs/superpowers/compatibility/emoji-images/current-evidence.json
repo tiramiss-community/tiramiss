@@ -1,0 +1,77 @@
+{
+  "scope": "emoji-images-555",
+  "baseRevision": "a3245b602e36a24c3f87b2944ccf5c70d8436cc9",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "measuredWorkingTree": true,
+  "upstreamFullServerMeasured": false,
+  "noInputDrift": true,
+  "inputs": {
+    "packages/backend-next/package.json": "a8aa9d06eab77419405f0b120621a27cc91cb028c573022dfc4654dbf95aaab0",
+    "packages/backend-next/src/composition/http-app.ts": "2ad5bfced2118a1578b553e61e0c0e567e10da5990b69c63c9b605ca5bee3ee4",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "e31e4b6cb21dd4f8ea9ce3a176ee79537c64eab979ed50a46c8c68a076a42b49",
+    "packages/backend-next/src/composition/emoji-images-http.ts": "da30680ad656fd1501e71a9df4d53932cc849ab8fafd2a6995f007d91c1fc085",
+    "packages/backend-next/src/http/emoji-images-api.ts": "7b33a67bd37c50039125f53bf8315d9f986fb828d4ed65e3de94eddf0220b47c",
+    "packages/backend-next/src/platform/images/emoji-image-assets.ts": "520fbaf06c56029ed35fae81914ce0bf1f8f2002d5df37d3e0785b8caaddfe38",
+    "packages/backend-next/src/platform/images/twemoji-badge.ts": "69590a999d568c2cc2f108968590b4ba66029e48646c9a7c637fc243aebe4bcc",
+    "packages/backend-next/test/unit/emoji-images.test.ts": "bb14afc208815f59110038de61533965f06634ac7c3c3ba2bed80180e3be96d3",
+    "docs/superpowers/compatibility/emoji-images/corpus.json": "bd202dcb510d43db2b5e3b3e3e910470a4627782403c0a0a8c662feffca78de9",
+    "docs/superpowers/compatibility/emoji-images/observations.json": "56e0751903d1bd654220e5f922c8425d63ffb44a9f891ff7ed746bf8353809a3",
+    "docs/superpowers/compatibility/emoji-images/source-probe.mjs": "62b271c9afcda6d53c3892651c08490483c9971152e2df652b65fafe93138bd0"
+  },
+  "inputsAfter": {
+    "packages/backend-next/package.json": "a8aa9d06eab77419405f0b120621a27cc91cb028c573022dfc4654dbf95aaab0",
+    "packages/backend-next/src/composition/http-app.ts": "2ad5bfced2118a1578b553e61e0c0e567e10da5990b69c63c9b605ca5bee3ee4",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "e31e4b6cb21dd4f8ea9ce3a176ee79537c64eab979ed50a46c8c68a076a42b49",
+    "packages/backend-next/src/composition/emoji-images-http.ts": "da30680ad656fd1501e71a9df4d53932cc849ab8fafd2a6995f007d91c1fc085",
+    "packages/backend-next/src/http/emoji-images-api.ts": "7b33a67bd37c50039125f53bf8315d9f986fb828d4ed65e3de94eddf0220b47c",
+    "packages/backend-next/src/platform/images/emoji-image-assets.ts": "520fbaf06c56029ed35fae81914ce0bf1f8f2002d5df37d3e0785b8caaddfe38",
+    "packages/backend-next/src/platform/images/twemoji-badge.ts": "69590a999d568c2cc2f108968590b4ba66029e48646c9a7c637fc243aebe4bcc",
+    "packages/backend-next/test/unit/emoji-images.test.ts": "bb14afc208815f59110038de61533965f06634ac7c3c3ba2bed80180e3be96d3",
+    "docs/superpowers/compatibility/emoji-images/corpus.json": "bd202dcb510d43db2b5e3b3e3e910470a4627782403c0a0a8c662feffca78de9",
+    "docs/superpowers/compatibility/emoji-images/observations.json": "56e0751903d1bd654220e5f922c8425d63ffb44a9f891ff7ed746bf8353809a3",
+    "docs/superpowers/compatibility/emoji-images/source-probe.mjs": "62b271c9afcda6d53c3892651c08490483c9971152e2df652b65fafe93138bd0"
+  },
+  "runs": [
+    {
+      "name": "build",
+      "log": "/tmp/tiramiss-555-build.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "commands": [
+        "node packages/backend-upstream/node_modules/typescript/bin/tsc6 -p packages/backend-upstream/tsconfig.json",
+        "node packages/backend-upstream/node_modules/tsc-alias/dist/bin/index.js -p packages/backend-upstream/tsconfig.json",
+        "node packages/backend-next/node_modules/typescript/bin/tsc6 -p packages/backend-next/tsconfig.json"
+      ]
+    },
+    {
+      "name": "typecheck",
+      "log": "/tmp/tiramiss-555-typecheck.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "commands": [
+        "node node_modules/typescript/bin/tsc6 -p tsconfig.json --noEmit",
+        "node node_modules/typescript/bin/tsc6 -p tsconfig.test.json --noEmit"
+      ]
+    },
+    {
+      "name": "unit",
+      "log": "/tmp/tiramiss-555-unit.log",
+      "logSha256": "8f089416489b8e0f422d7ae870cd46b93b8ca941d607ebdd71bff19e2315e47c",
+      "exitCode": 0,
+      "passed": 59,
+      "commands": [
+        "node node_modules/vitest/vitest.mjs run --config vitest.config.ts test/unit/emoji-images.test.ts test/unit/composition/http-app.test.ts"
+      ]
+    },
+    {
+      "name": "source",
+      "log": "/tmp/tiramiss-555-source.log",
+      "logSha256": "d8b77f94bf0bee56582b5f48f432c6c730d08897cbe65fb64ec6c8fa62a58c54",
+      "exitCode": 0,
+      "commands": [
+        "BACKEND_NEXT_SOURCE_DEPENDENCIES=/tmp/emoji-images-555-source-deps/package.json node docs/superpowers/compatibility/emoji-images/source-probe.mjs --check"
+      ]
+    }
+  ],
+  "inputCapture": "at-final-freeze"
+}

@@ -6,6 +6,31 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 
 let activeScope;
+const currentReaders = new WeakMap();
+
+// A projected reader may declare its original live source. Unknown injected
+// functions keep their own identity; no ambient reader can replace them.
+export function bindEvidenceCurrentReader(view, current) {
+ currentReaders.set(view, getEvidenceCurrentReader(current));
+ return view;
+}
+
+export function getEvidenceCurrentReader(view) {
+ return currentReaders.get(view) ?? view;
+}
+// Registration only records which observer has already seen a leaf's metadata.
+// Validation and requested-path reads still run on every public invocation.
+export function registerEvidenceObserver(identity, observer, register) {
+ return inEvidenceValidationScope(() => {
+  activeScope.observers ??= new Map();
+  if (!activeScope.observers.has(identity)) activeScope.observers.set(identity, new WeakSet());
+  const registered = activeScope.observers.get(identity);
+  if (registered.has(observer)) return;
+  registered.add(observer);
+  try { register(); } catch (error) { registered.delete(observer); throw error; }
+ });
+}
+
 const digest = bytes => bytes === null ? null : createHash('sha256').update(bytes).digest('hex');
 
 // Only synchronous work shares a scope. Public calls always start with empty state.
@@ -47,6 +72,7 @@ export function scopedEvidenceValidation(identity, value, readFile, optional, va
    else artifacts.set(path, current);
    return bytes;
   };
+  bindEvidenceCurrentReader(observe, readFile);
   const result = validate(observe, observeOptional);
   records.set(metadata, { files, artifacts, result: structuredClone(result) });
   return result;

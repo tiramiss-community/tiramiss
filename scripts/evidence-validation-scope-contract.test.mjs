@@ -84,7 +84,9 @@ test('work queued during a synchronous scope starts a fresh scope', async () => 
 test('the complete image validation stays within a bounded number of live reads', () => {
  let reads = 0;
  const raw = path => {
-  assert(++reads <= 20000, 'image validation exceeded the live read budget');
+  // #555 adds four successor JSON inputs whose live reads propagate through
+  // the historical observers; the measured complete view uses 21,439 reads.
+  assert(++reads <= 24000, 'image validation exceeded the live read budget');
   return readFileSync(new URL(path, root));
  };
  const beforeAlias = path => readPreAliasKey(path, undefined, raw);

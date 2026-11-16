@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { bindEvidenceCurrentReader } from './evidence-validation-scope.mjs';
 import { createHash } from 'node:crypto';
 import { createPreVideoIngestDependencyReader } from './video-ingest-dependency-evidence.mjs';
 import { createPreCliPackageReader } from './cli-package-evidence.mjs';
@@ -16,8 +17,8 @@ const affected = new Set(['packages/backend-next/package.json', 'pnpm-lock.yaml'
 export function createPreImageIngestDependencyReader(readFile) {
 	const beforeVideo = createPreVideoIngestDependencyReader(readFile);
 	const rawRead = readFile;
-	readFile = createPreCliPackageReader(input => input === 'pnpm-lock.yaml' ? beforeVideo(input) : rawRead(input));
-	return input => {
+	readFile = createPreCliPackageReader(bindEvidenceCurrentReader(input => input === 'pnpm-lock.yaml' ? beforeVideo(input) : rawRead(input), rawRead));
+	return bindEvidenceCurrentReader(input => {
 		const bytes = readFile(input);
 		if (!affected.has(input)) return bytes;
 		const proof = readFile(path);
@@ -37,5 +38,5 @@ export function createPreImageIngestDependencyReader(readFile) {
 		}
 		assert.equal(sha(Buffer.from(previous)), predecessor.previousSha256, 'image ingest exact historical lock identity');
 		return Buffer.from(previous);
-	};
+	}, rawRead);
 }

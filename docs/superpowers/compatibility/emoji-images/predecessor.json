@@ -1,0 +1,34 @@
+{
+  "baseRevision": "a3245b602e36a24c3f87b2944ccf5c70d8436cc9",
+  "files": {
+    "packages/backend-next/package.json": {
+      "currentSha256": "a8aa9d06eab77419405f0b120621a27cc91cb028c573022dfc4654dbf95aaab0",
+      "previousSha256": "68ad8750a1b118f683188c44b979baeacf75b272fac9917739a8efb7ed468eae",
+      "remove": [
+        "\t\t\"@fastify/send\": \"4.1.1\",\n\t\t\"@misskey-dev/emoji-assets\": \"17.0.3\",\n"
+      ]
+    },
+    "pnpm-lock.yaml": {
+      "currentSha256": "fc5e64baa8f9b5fab959fe7cebd30a0136a2f9c336d8f9f40b43b397be549b1a",
+      "previousSha256": "99310316507984158e2af521c1de0035230961dd496fbff60b32d461b85b2396",
+      "remove": [
+        "      '@fastify/send':\n        specifier: 4.1.1\n        version: 4.1.1\n      '@misskey-dev/emoji-assets':\n        specifier: 17.0.3\n        version: 17.0.3\n"
+      ]
+    },
+    "packages/backend-next/src/composition/http-app.ts": {
+      "currentSha256": "2ad5bfced2118a1578b553e61e0c0e567e10da5990b69c63c9b605ca5bee3ee4",
+      "previousSha256": "8104cc1f5af96c11dfbfdd59d11fb453162386b683312bc6db3db8017ca42634",
+      "remove": [
+        "import { createEmojiImagesHttp } from './emoji-images-http.js';\n",
+        "\t\t.route('/', createEmojiImagesHttp())\n"
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "currentSha256": "e31e4b6cb21dd4f8ea9ce3a176ee79537c64eab979ed50a46c8c68a076a42b49",
+      "previousSha256": "1afbcdadadbb7090f88f3449fc04e1f9e8a1b06e0ff2d1e7898d2cc20e314a4c",
+      "remove": [
+        "\t\t'/fluent-emoji/*', '/twemoji/*', '/twemoji-badge/*',\n"
+      ]
+    }
+  }
+}

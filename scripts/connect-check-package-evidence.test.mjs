@@ -15,7 +15,7 @@ const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 test('connect check projects exactly one script into the existing measured video package and passes unrelated inputs through', () => {
 	const reader = createPreConnectCheckPackageReader(read);
 	assert.equal(sha(reader(packagePath)), '8eae5596313821fb81aeaf01d7e5ae93be9204a48f9323621f23390710746ad8');
-	assert.deepEqual(reader('pnpm-lock.yaml'), read('pnpm-lock.yaml'));
+	assert.deepEqual(reader('AGENTS.md'), read('AGENTS.md'));
 });
 for (const path of [packagePath, proofPath]) {
 	test(`connect check refuses live input and subsequent drift: ${path}`, () => {
