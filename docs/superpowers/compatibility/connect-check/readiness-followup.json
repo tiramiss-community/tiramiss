@@ -1,0 +1,104 @@
+{
+  "issue": 577,
+  "previousHead": "86b3dccad730070ef9e039ce865bd33e7f9e4cfc",
+  "runtimeRevision": "bfe0e8e99046397ad944bfb32938e50a3431f451",
+  "previousEvidence": {
+    "path": "docs/superpowers/compatibility/connect-check/current-evidence.json",
+    "sha256": "a58808ea19033d974f40973c393c75841b967445dfad411229ac0999bd6d1e76",
+    "evidenceRevision": "86bdaeaef0fbcb889b22e647da7c128521d40efb",
+    "disposition": "Immutable R1 history. R1 product hashes describe R1; transition below declares exactly four changed inputs."
+  },
+  "inputScope": "12 checkpoint-diff files plus config loader, DataSource builder and lockfile; finite set, not every transitive/toolchain input.",
+  "changedInputs": {
+    "docs/superpowers/compatibility/connect-check/README.md": {
+      "before": "602d1969c3a7bea4026d4ad91318ded70d0d2fd6afa01c12610eb5f5d586d7a0",
+      "after": "d5c50a34ae8ac8ba52ac8dccfdae58682b3d1b15c58772409348e446ba742f5a"
+    },
+    "packages/backend-next/README.md": {
+      "before": "9022356a2dcd4b86b0559a472420d52a458948eccda78b47c36f49ca2b6faedc",
+      "after": "f2a70567ed578fb524b7e7c914a9c36d548ecaf8b1405624d18b1b0efb1490c6"
+    },
+    "packages/backend-next/src/platform/connect-check.ts": {
+      "before": "d23ff7dc0f9c02f7ea161c62f2c452757bd15e5ab13e2ebb8fa942109ce28d18",
+      "after": "7fc2a7c6caca1d30e020e2e45996854e950c744121b9a4bff4b90f043ed0bc9c"
+    },
+    "packages/backend-next/test/processes/connect-check.test.ts": {
+      "before": "fa0f68d27414e1476ea4af86248720d90b536a637d67d8cc23dc2e7566df12d5",
+      "after": "42a8963a7413373fded307612664220d4bc96268e3af11269c53cfcb565ad1b8"
+    }
+  },
+  "unchangedInputs": [
+    "docs/superpowers/compatibility/connect-check/package-predecessor.json",
+    "docs/superpowers/compatibility/connect-check/source-observations.json",
+    "docs/superpowers/compatibility/connect-check/source-probe.mjs",
+    "packages/backend-next/package.json",
+    "packages/backend-next/src/config/load-config.ts",
+    "packages/backend-next/src/entrypoints/check-connect.ts",
+    "packages/backend-next/src/platform/database/data-source.ts",
+    "pnpm-lock.yaml",
+    "scripts/connect-check-package-evidence.mjs",
+    "scripts/connect-check-package-evidence.test.mjs",
+    "scripts/video-ingest-dependency-evidence.mjs"
+  ],
+  "inputs": {
+    "docs/superpowers/compatibility/connect-check/README.md": "d5c50a34ae8ac8ba52ac8dccfdae58682b3d1b15c58772409348e446ba742f5a",
+    "docs/superpowers/compatibility/connect-check/package-predecessor.json": "f2a56c988c6e075abc439947ccefa50fb20cee09d41b06cbad0030eb18dff5a1",
+    "docs/superpowers/compatibility/connect-check/source-observations.json": "deeeb5c221cbd1399eb057e06b6b61e8d962eee69118b2683bf3af300098bca7",
+    "docs/superpowers/compatibility/connect-check/source-probe.mjs": "fa81d4a5987f7f32bda624ffc809e59631f988a9434bec1ee1a671a193b4c092",
+    "packages/backend-next/README.md": "f2a70567ed578fb524b7e7c914a9c36d548ecaf8b1405624d18b1b0efb1490c6",
+    "packages/backend-next/package.json": "68ad8750a1b118f683188c44b979baeacf75b272fac9917739a8efb7ed468eae",
+    "packages/backend-next/src/config/load-config.ts": "6771450cf0ae420bff37bbbf677f6dc46b2e40d214f31b575b90688abc8d4213",
+    "packages/backend-next/src/entrypoints/check-connect.ts": "69885e72f3ab79c761edc43d845585732d3e011c91508eb24a38172b8245a598",
+    "packages/backend-next/src/platform/connect-check.ts": "7fc2a7c6caca1d30e020e2e45996854e950c744121b9a4bff4b90f043ed0bc9c",
+    "packages/backend-next/src/platform/database/data-source.ts": "ffced6c8a1f3994cae8424ae4aae594aefdb52846461caadecad03cc9e1c8f90",
+    "packages/backend-next/test/processes/connect-check.test.ts": "42a8963a7413373fded307612664220d4bc96268e3af11269c53cfcb565ad1b8",
+    "pnpm-lock.yaml": "99310316507984158e2af521c1de0035230961dd496fbff60b32d461b85b2396",
+    "scripts/connect-check-package-evidence.mjs": "09771af33e15e9bc396402c540dc566d407215f4c6899bc1db7abf9140ecacb7",
+    "scripts/connect-check-package-evidence.test.mjs": "2d8e7dd26af86f700f16337f3342eb7448833c13cf38f3b9dd3ac6686a4b5416",
+    "scripts/video-ingest-dependency-evidence.mjs": "9f7b520782d0839ac40ba602193d821f23082ebf0e7743208945db47211d54a1"
+  },
+  "logs": {
+    "docs/superpowers/compatibility/connect-check/logs/readiness-build.log": "29c5ee0f6b0b20dbb259b99d01276198c3d28190090706394608d4deda6d2c0b",
+    "docs/superpowers/compatibility/connect-check/logs/readiness-package.log": "2d5d470ba1fc3f8d152703d39ec4413dd8fa1c74cf4dd2808234cce4a1d63862",
+    "docs/superpowers/compatibility/connect-check/logs/readiness-process.log": "70a262aa30278f8ad62635f121a886dec2d0048171a8d37ea368ecadb56d12d7",
+    "docs/superpowers/compatibility/connect-check/logs/readiness-shipping.log": "ed0a4f4a4f530ca68343df5b11fa0a5da06e31c64c9a6d7f792b123046838388",
+    "docs/superpowers/compatibility/connect-check/logs/readiness-typecheck.log": "7f96aaabe6df7a354a3e4d7514375171e219ae2de91268b52d91875e0a026aa4"
+  },
+  "results": {
+    "build": "PASS",
+    "typecheck": "PASS",
+    "process": {
+      "tests": 43,
+      "files": 2,
+      "checkConnectTests": 23,
+      "existingCliTests": 20,
+      "failures": 0,
+      "skipped": 0,
+      "newCases": [
+        "continuous loading",
+        "long readiness retry cancellation",
+        "loading recovery",
+        "INFO restricted",
+        "INFO failure",
+        "no response",
+        "explicit ready check disabled",
+        "zero deadline configuration rejected"
+      ]
+    },
+    "packageProjection": {
+      "tests": 10,
+      "failures": 0
+    },
+    "shipping": {
+      "lint": "PASS",
+      "SPDX": "PASS",
+      "localeSafety": "PASS"
+    }
+  },
+  "contract": "One Redis deadline covers connection and the explicit INFO loading loop; cancel owned delay/deadline and await end on every path. Retain NOPERM success and explicit enableReadyCheck:false skip, without printing INFO diagnostics or adding a PING permission. No global console/process handler changes.",
+  "history": [
+    "R1 root809/source8/sync remain earlier measurements with unchanged logs; not rerun or counted as R2.",
+    "Source probe/observations and package proof/readers are byte-identical. R2 RESP cases exercise the real ioredis new entrypoint, not the full upstream server.",
+    "Independent focused re-review is pending; no full-diff CodeRabbit claim."
+  ]
+}
