@@ -141,22 +141,38 @@ test('leaf rechecks metadata changed after registration while its first ancestor
 	}
 });
 
-test('inventory changes only the five assigned contracts and two audit rows with the immutable product pin', () => {
+test('inventory retains the five assigned contracts and two audit rows while other work can progress', () => {
 	const record = JSON.parse(read(directory + 'inventory-evidence.json'));
 	assert.equal(record.productRevision, '397be2c9f3dfb30025f3a97c6fc2efa50d51fccc');
-	assert.equal(record.contractRowIds.length, 5);
-	assert.equal(record.auditRowIds.length, 2);
+	assert.deepEqual(record.contractRowIds, [
+		'http:packages/backend/src/server/web/ClientServerService.ts:299',
+		'http:packages/backend/src/server/web/ClientServerService.ts:314',
+		'http:packages/backend/src/server/web/ClientServerService.ts:329',
+		'responsibility:web-wellknown-nodeinfo:23',
+		'responsibility:web-wellknown-nodeinfo:24',
+	]);
+	assert.deepEqual(record.auditRowIds, record.contractRowIds.slice(3));
 	for (const [path, binding] of Object.entries(record.files)) {
 		const value = JSON.parse(read(path));
 		const rows = value.contracts ?? value.items;
 		const ids = path.endsWith('/contracts.json') ? record.contractRowIds : record.auditRowIds;
 		assert.deepEqual(Object.keys(binding.changedRows), ids);
-		for (const id of ids) {
-			const row = rows.find(item => item.id === id);
-			assert.equal(row.status, 'verified');
-			assert.equal(row.evidenceRevision, record.productRevision);
-			assert.equal(sha(Buffer.from(JSON.stringify(row))), binding.changedRows[id].currentSha256);
-		}
-		assert.equal(sha(Buffer.from(JSON.stringify(rows.filter(row => !ids.includes(row.id))))), binding.unrelatedRowsSha256);
+		const check = currentRows => {
+			for (const id of ids) {
+				const row = currentRows.find(item => item.id === id);
+				assert.equal(row.status, 'verified');
+				assert.equal(row.evidenceRevision, record.productRevision);
+				assert.equal(sha(Buffer.from(JSON.stringify(row))), binding.changedRows[id].currentSha256);
+			}
+		};
+		check(rows);
+		// The unrelated-row hash attests the original PR's scope. Later work
+		// can advance its own rows without renewing this historical record.
+		const independent = structuredClone(rows);
+		independent.find(row => !ids.includes(row.id)).note = 'independent follow-up';
+		assert.doesNotThrow(() => check(independent));
+		const changedOwnRow = structuredClone(rows);
+		changedOwnRow.find(row => row.id === ids[0]).status = 'not_implemented';
+		assert.throws(() => check(changedOwnRow));
 	}
 });
