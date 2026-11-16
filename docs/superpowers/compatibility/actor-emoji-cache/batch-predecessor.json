@@ -1,0 +1,803 @@
+{
+  "baseRevision": "4821531ad53285c26a294387318c4decc82a0757",
+  "files": {
+    "packages/backend-next/src/platform/actor-emoji-cache.ts": {
+      "previousSha256": "34fc0fa74cbc111ab9378a6e8930448a1cb001fe9d8906a5d07e1dbf05793c65",
+      "currentSha256": "89f41257685b8a28ab8f5bfd971a60f6d40e11955e6b373f256257e67cff74cb",
+      "patches": [
+        {
+          "offset": 111,
+          "before": " In,",
+          "after": ""
+        },
+        {
+          "offset": 2475,
+          "before": "users: reado",
+          "after": ""
+        },
+        {
+          "offset": 2488,
+          "before": "ly { e",
+          "after": "a"
+        },
+        {
+          "offset": 2495,
+          "before": "oji",
+          "after": "e"
+        },
+        {
+          "offset": 2518,
+          "before": ";",
+          "after": ","
+        },
+        {
+          "offset": 2539,
+          "before": " }[]",
+          "after": ""
+        },
+        {
+          "offset": 2671,
+          "before": "r",
+          "after": ""
+        },
+        {
+          "offset": 2673,
+          "before": "quested = ",
+          "after": ""
+        },
+        {
+          "offset": 2684,
+          "before": "ew Map<s",
+          "after": ""
+        },
+        {
+          "offset": 2695,
+          "before": "ng,",
+          "after": "es"
+        },
+        {
+          "offset": 2699,
+          "before": "{",
+          "after": "="
+        },
+        {
+          "offset": 2701,
+          "before": "",
+          "after": "await Promise.all("
+        },
+        {
+          "offset": 2705,
+          "before": ": ",
+          "after": ""
+        },
+        {
+          "offset": 2708,
+          "before": "tring; host: string }>",
+          "after": ".map"
+        },
+        {
+          "offset": 2731,
+          "before": ");\n\t\t\tfor (const user of users) {\n\t\t\t\tfor (const ",
+          "after": ""
+        },
+        {
+          "offset": 2786,
+          "before": "of",
+          "after": "=>"
+        },
+        {
+          "offset": 2789,
+          "before": "use",
+          "after": "t"
+        },
+        {
+          "offset": 2793,
+          "before": ".",
+          "after": "ack"
+        },
+        {
+          "offset": 2795,
+          "before": "moji",
+          "after": "d(a"
+        },
+        {
+          "offset": 2800,
+          "before": "",
+          "after": "ync ("
+        },
+        {
+          "offset": 2801,
+          "before": "",
+          "after": " =>"
+        },
+        {
+          "offset": 2804,
+          "before": "\t",
+          "after": ""
+        },
+        {
+          "offset": 2869,
+          "before": "\t",
+          "after": ""
+        },
+        {
+          "offset": 2889,
+          "before": "\tcontinu",
+          "after": "r"
+        },
+        {
+          "offset": 2898,
+          "before": "",
+          "after": "turn []"
+        },
+        {
+          "offset": 2900,
+          "before": "\t",
+          "after": ""
+        },
+        {
+          "offset": 2911,
+          "before": "\t",
+          "after": ""
+        },
+        {
+          "offset": 2918,
+          "before": "hos",
+          "after": "targe"
+        },
+        {
+          "offset": 2951,
+          "before": "user.",
+          "after": ""
+        },
+        {
+          "offset": 2967,
+          "before": "\t",
+          "after": ""
+        },
+        {
+          "offset": 2972,
+          "before": "hos",
+          "after": "targe"
+        },
+        {
+          "offset": 2977,
+          "before": "!",
+          "after": "="
+        },
+        {
+          "offset": 2994,
+          "before": "\t",
+          "after": ""
+        },
+        {
+          "offset": 2997,
+          "before": "q",
+          "after": "t"
+        },
+        {
+          "offset": 2999,
+          "before": "e",
+          "after": "rn [];\n\t\t\t\t}\n\t\t\t\tcon"
+        },
+        {
+          "offset": 3002,
+          "before": "",
+          "after": " k"
+        },
+        {
+          "offset": 3003,
+          "before": "d.set(",
+          "after": "y = "
+        },
+        {
+          "offset": 3024,
+          "before": "hos",
+          "after": "targe"
+        },
+        {
+          "offset": 3030,
+          "before": ", { name: match[1], host })",
+          "after": ""
+        },
+        {
+          "offset": 3063,
+          "before": "\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\tconst va",
+          "after": ""
+        },
+        {
+          "offset": 3089,
+          "before": "u",
+          "after": ""
+        },
+        {
+          "offset": 3091,
+          "before": "s = new Map<string, MiEmoji | null>();\n\t\t\tconst missing = new Map<string, { name: string; host: string }>();\n\t\t\tfor (const [key, query] of requested) {\n\t\t\t\tcons",
+          "after": ""
+        },
+        {
+          "offset": 3315,
+          "before": "<=",
+          "after": ">"
+        },
+        {
+          "offset": 3327,
+          "before": " {\n\t\t\t\t\tvalues.set(key, cached.value);\n\t\t\t\t} else",
+          "after": ""
+        },
+        {
+          "offset": 3404,
+          "before": "miss",
+          "after": "cached = undef"
+        },
+        {
+          "offset": 3410,
+          "before": "g.s",
+          "after": ""
+        },
+        {
+          "offset": 3414,
+          "before": "t(key, query)",
+          "after": "d"
+        },
+        {
+          "offset": 3434,
+          "before": "\n\t\t\t}\n\t\t\tif (missing.size > 0) {\n\t\t\t\tconst hosts = new Map<string, string[]>();\n\t\t\t\tfor (const { name, host } of missing.values()) {\n\t\t\t\t\tconst names = hosts.get(host) ?? [];\n\t\t\t\t\tnames.push(name); hosts.set(host, names);\n\t\t\t\t}\n\t\t\t\t// Keep the Note reader's collection query without refreshing positive or null hits.",
+          "after": ""
+        },
+        {
+          "offset": 3764,
+          "before": "s",
+          "after": ""
+        },
+        {
+          "offset": 3768,
+          "before": "",
+          "after": "cached ? cached.value : ("
+        },
+        {
+          "offset": 3789,
+          "before": "",
+          "after": "One"
+        },
+        {
+          "offset": 3792,
+          "before": "[...hosts].map(([host, names]) => (",
+          "after": ""
+        },
+        {
+          "offset": 3828,
+          "before": " host,",
+          "after": ""
+        },
+        {
+          "offset": 3841,
+          "before": "In(names) })));\n\t\t\t\tconst found = new Map(rows.",
+          "after": ""
+        },
+        {
+          "offset": 3890,
+          "before": "p(row => ",
+          "after": "tch"
+        },
+        {
+          "offset": 3900,
+          "before": "`${row.name}",
+          "after": "1],"
+        },
+        {
+          "offset": 3913,
+          "before": "${row.",
+          "after": ""
+        },
+        {
+          "offset": 3923,
+          "before": "}`,",
+          "after": ":"
+        },
+        {
+          "offset": 3927,
+          "before": "row]));\n\t\t\t\tfor (cons",
+          "after": ""
+        },
+        {
+          "offset": 3949,
+          "before": " [key] of missing) {\n\t\t\t\t\tconst v",
+          "after": ""
+        },
+        {
+          "offset": 3983,
+          "before": "lue = found.",
+          "after": "r"
+        },
+        {
+          "offset": 3998,
+          "before": "(key",
+          "after": " })"
+        },
+        {
+          "offset": 4012,
+          "before": "",
+          "after": "\n\t\t\t\tif (!cached) {"
+        },
+        {
+          "offset": 4052,
+          "before": "",
+          "after": ": row"
+        },
+        {
+          "offset": 4054,
+          "before": "); values.set(key, value",
+          "after": ""
+        },
+        {
+          "offset": 4086,
+          "before": "\n\t\t\t}\n\t\t\treturn new Map([...requested].flatMap(([key, { name, host }]) => {\n\t\t\t\tconst row = values.get(key);",
+          "after": ""
+        },
+        {
+          "offset": 4210,
+          "before": "",
+          "after": "="
+        },
+        {
+          "offset": 4230,
+          "before": "na",
+          "after": ""
+        },
+        {
+          "offset": 4233,
+          "before": "e",
+          "after": "atch[1]"
+        },
+        {
+          "offset": 4238,
+          "before": "hos",
+          "after": "targe"
+        },
+        {
+          "offset": 4295,
+          "before": "",
+          "after": ")));\n\t\t\treturn new Map(entries.flat("
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/note-reader.ts": {
+      "previousSha256": "d3a7d587bc11a198ac7db0f86635aeea82a69b2f0e5241039fa41625281e43d2",
+      "currentSha256": "3e68faa46639ae6de3997454ae404036b2583e5edfbca94d8a2244b8ffc709d2",
+      "patches": [
+        {
+          "offset": 102,
+          "before": "",
+          "after": "\nimport { settleAll } from '../settle-all.js';"
+        },
+        {
+          "offset": 284,
+          "before": "settleAll } from '../settle-all.js';\nimport { toPuny } from '../../modules/federation/public.js';\nimport { ",
+          "after": ""
+        },
+        {
+          "offset": 515,
+          "before": "",
+          "after": ".js';\nimport { toPuny } from '../../modules/federation/public"
+        },
+        {
+          "offset": 3458,
+          "before": "\u4f5c\u8005\u306e",
+          "after": "User"
+        },
+        {
+          "offset": 3464,
+          "before": "\u6750\u6599",
+          "after": ""
+        },
+        {
+          "offset": 3467,
+          "before": "\u5168author\u3092",
+          "after": "\u540c\u3058"
+        },
+        {
+          "offset": 3476,
+          "before": "\u3081\u3066\u4e00\u5ea6\u306b",
+          "after": "\u5408\u554f\u3044\u5408\u308f\u305b\u3067"
+        },
+        {
+          "offset": 3483,
+          "before": "\u3059",
+          "after": "\u3057\u3001\u4f5c\u8005\u3054\u3068\u306eDB\u30a2\u30af\u30bb\u30b9\u3092\u907f\u3051"
+        },
+        {
+          "offset": 4616,
+          "before": "",
+          "after": "new Map(("
+        },
+        {
+          "offset": 4621,
+          "before": "",
+          "after": " Promise.all(emojiUsers.map(user =>"
+        },
+        {
+          "offset": 4641,
+          "before": "",
+          "after": "user."
+        },
+        {
+          "offset": 4646,
+          "before": "U",
+          "after": "s, u"
+        },
+        {
+          "offset": 4650,
+          "before": "",
+          "after": ".ho"
+        },
+        {
+          "offset": 4651,
+          "before": "",
+          "after": "t"
+        },
+        {
+          "offset": 4678,
+          "before": "",
+          "after": ")))).flatMap(map => [...map])"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/actor-emoji-cache.test.ts": {
+      "previousSha256": "c2648fead2d30c2907781c1a224e8205401caf5f649ec2948ce328959233b040",
+      "currentSha256": "2353b78e72914ce617407b7a7f3e98a72ce720fb63282c982638a73662c78c82",
+      "patches": [
+        {
+          "offset": 309,
+          "before": ";\n\nconst remote = (cache: ReturnType<typeof createActorEmojiCache>, emojis: readonly string[], host: string | null, selfHost: string) => cache.remote([{ emojis, host }], selfHost)",
+          "after": ""
+        },
+        {
+          "offset": 2677,
+          "before": "remote(",
+          "after": ""
+        },
+        {
+          "offset": 2691,
+          "before": ", ",
+          "after": ".remote("
+        },
+        {
+          "offset": 2988,
+          "before": "remote(",
+          "after": ""
+        },
+        {
+          "offset": 3002,
+          "before": ", ",
+          "after": ".remote("
+        },
+        {
+          "offset": 3150,
+          "before": "remote(",
+          "after": ""
+        },
+        {
+          "offset": 3164,
+          "before": ", ",
+          "after": ".remote("
+        },
+        {
+          "offset": 3625,
+          "before": "remote(",
+          "after": ""
+        },
+        {
+          "offset": 3639,
+          "before": ", ",
+          "after": ".remote("
+        },
+        {
+          "offset": 3774,
+          "before": "remote(",
+          "after": ""
+        },
+        {
+          "offset": 3788,
+          "before": ", ",
+          "after": ".remote("
+        },
+        {
+          "offset": 4807,
+          "before": "",
+          "after": "cache."
+        },
+        {
+          "offset": 4814,
+          "before": "cache, ",
+          "after": ""
+        },
+        {
+          "offset": 6142,
+          "before": "remote(",
+          "after": ""
+        },
+        {
+          "offset": 6156,
+          "before": ", ",
+          "after": ".remote("
+        },
+        {
+          "offset": 6820,
+          "before": "failed ",
+          "after": ""
+        },
+        {
+          "offset": 6828,
+          "before": "o",
+          "after": ""
+        },
+        {
+          "offset": 6830,
+          "before": "d batch pre",
+          "after": "o"
+        },
+        {
+          "offset": 6843,
+          "before": "rves",
+          "after": ""
+        },
+        {
+          "offset": 6850,
+          "before": "rm h",
+          "after": ""
+        },
+        {
+          "offset": 6858,
+          "before": "and is retried with",
+          "after": "f"
+        },
+        {
+          "offset": 6878,
+          "before": "ut",
+          "after": "r"
+        },
+        {
+          "offset": 6881,
+          "before": "cach",
+          "after": "sibl"
+        },
+        {
+          "offset": 6889,
+          "before": "failu",
+          "after": "URL "
+        },
+        {
+          "offset": 6896,
+          "before": "",
+          "after": "ads after Promise.all has already rejected"
+        },
+        {
+          "offset": 6918,
+          "before": "fai",
+          "after": "re"
+        },
+        {
+          "offset": 6922,
+          "before": " = f",
+          "after": "e"
+        },
+        {
+          "offset": 6927,
+          "before": "l",
+          "after": ""
+        },
+        {
+          "offset": 6930,
+          "before": ",",
+          "after": "!:"
+        },
+        {
+          "offset": 6932,
+          "before": "calls",
+          "after": "()"
+        },
+        {
+          "offset": 6939,
+          "before": "",
+          "after": ">"
+        },
+        {
+          "offset": 6940,
+          "before": "0",
+          "after": "void"
+        },
+        {
+          "offset": 6950,
+          "before": "rows",
+          "after": "gate"
+        },
+        {
+          "offset": 6957,
+          "before": "[{",
+          "after": "new"
+        },
+        {
+          "offset": 6960,
+          "before": "...",
+          "after": "P"
+        },
+        {
+          "offset": 6965,
+          "before": "w, ho",
+          "after": "mi"
+        },
+        {
+          "offset": 6971,
+          "before": "t: '",
+          "after": "e<void>("
+        },
+        {
+          "offset": 6977,
+          "before": "m",
+          "after": "s"
+        },
+        {
+          "offset": 6979,
+          "before": "t",
+          "after": "lv"
+        },
+        {
+          "offset": 6981,
+          "before": ".t",
+          "after": " => {\n\t\trelease = r"
+        },
+        {
+          "offset": 6985,
+          "before": "t' ",
+          "after": "olve;\n\t"
+        },
+        {
+          "offset": 6989,
+          "before": "]",
+          "after": ")"
+        },
+        {
+          "offset": 7045,
+          "before": "",
+          "after": "One"
+        },
+        {
+          "offset": 7048,
+          "before": "",
+          "after": "{ name }: { name: string }"
+        },
+        {
+          "offset": 7054,
+          "before": "calls++; ",
+          "after": ""
+        },
+        {
+          "offset": 7067,
+          "before": "f",
+          "after": "n"
+        },
+        {
+          "offset": 7069,
+          "before": "il",
+          "after": "me === 'broken'"
+        },
+        {
+          "offset": 7092,
+          "before": "atch unavailabl",
+          "after": "rok"
+        },
+        {
+          "offset": 7108,
+          "before": "",
+          "after": "n lookup"
+        },
+        {
+          "offset": 7115,
+          "before": "",
+          "after": "\n\t\tawait gate;"
+        },
+        {
+          "offset": 7123,
+          "before": "",
+          "after": "{ ..."
+        },
+        {
+          "offset": 7126,
+          "before": "",
+          "after": ", ho"
+        },
+        {
+          "offset": 7127,
+          "before": "",
+          "after": "t: 'remote.test' }"
+        },
+        {
+          "offset": 7236,
+          "before": "try {\n\t\texpect(await remote(cache, ['wave'], 'remote.test', 'local.test')).toEqual(new Map([['wave@remote.test', row.publicUrl]]));\n\t\tfail = true;\n\t\t",
+          "after": ""
+        },
+        {
+          "offset": 7398,
+          "before": "",
+          "after": "cache."
+        },
+        {
+          "offset": 7405,
+          "before": "cach",
+          "after": "['brok"
+        },
+        {
+          "offset": 7410,
+          "before": "",
+          "after": "n'"
+        },
+        {
+          "offset": 7412,
+          "before": "[",
+          "after": ""
+        },
+        {
+          "offset": 7418,
+          "before": "', 'missing",
+          "after": ""
+        },
+        {
+          "offset": 7481,
+          "before": "atch unavailable');\n\t\texpect(await remote(cache, ['wave'], 'remote.test', 'local.test')).toEqual(new Map([['wave@remote.test', ",
+          "after": ""
+        },
+        {
+          "offset": 7610,
+          "before": "w.publicUrl]]));\n\t\texpect(calls).toBe(2);\n\t\tfail = false; rows.l",
+          "after": "k"
+        },
+        {
+          "offset": 7676,
+          "before": "gth = 0;\n\t\texpect(await remote(cache, ['wave', 'missing'], 'remote.test', 'local.test')).toEqual(new Map([['wave@remote.test', row.publicUrl]]));\n\t\texpect(calls).toBe(3);\n\t\tfail = true;\n\t\texpect(await remote(cache, ['missing'], 'remote.test', 'local.test')).toEqual(new Map());\n\t\texpect(calls).toBe(3);\n\t} finally {\n\t\tawait cache.close();\n\t}\n});\n\ntest('close waits for the accepted remote batch and rejects",
+          "after": ""
+        },
+        {
+          "offset": 8084,
+          "before": "ater reads', async () => {\n\tlet release!: () => v",
+          "after": ""
+        },
+        {
+          "offset": 8134,
+          "before": "id, started!: () => v",
+          "after": ""
+        },
+        {
+          "offset": 8156,
+          "before": "id;\n\tconst gate = new Promise<void>(resolve => {\n\t\trelease = resolve;\n\t});\n\tconst entered = new Promise<void>(resolve => {\n\t\tstarted = resolve;\n\t});\n\tconst manager = { getRepository: () => ({ async findBy() {\n\t\tstarted(); await gate; return [{ ...row, host: 'remote.test' }];\n\t} }) } as un",
+          "after": ""
+        },
+        {
+          "offset": 8446,
+          "before": "nown as EntityManager;\n\tconst cache = createActorEmojiCache(manager, {} as Redis, () => 0);\n\tconst reading = remote(cache, ['wave'], 'remote.test', 'local.test",
+          "after": "up"
+        },
+        {
+          "offset": 8607,
+          "before": "; await entered",
+          "after": ""
+        },
+        {
+          "offset": 8765,
+          "before": "await expect(remote(cache, ['wave'], 'remote.test', 'local.test')).rejects.toThrow('closed');\n\t",
+          "after": ""
+        },
+        {
+          "offset": 8871,
+          "before": "expect(await reading).toEqual(new Map([['wave@remote.test', row.publicUrl]]));\n\t",
+          "after": ""
+        },
+        {
+          "offset": 8997,
+          "before": "\ntest('one batch normalizes and deduplicates host/name pairs without fetching invalid or local names', async () => {\n\tconst queries: { host: string; names: string[] }[][] = [];\n\tconst manager = { getRepository: () => ({ async findBy(where: { host: string; name: { value: string[] } }[]) {\n\t\tqueries.push(where.map(clause => ({ host: clause.host, names: clause.name.value })));\n\t\treturn [{ ...row, host: 'remote.test' }, { ...row, host: 'other.test', publicUrl: 'https://other.test/wave' }];\n\t} }) } as unknown as EntityManager;\n\tconst cache = createActorEmojiCache(manager, {} as Redis, () => 0);\n\ttry {\n\t\texpect(await cache.remote([\n\t\t\t{ host: 'REMOTE.TEST', emojis: ['wave', 'wave', 'wave@.', 'bad name', 'wave@local.test'] },\n\t\t\t{ host: 'remote.test', emojis: ['wave', 'missing'] },\n\t\t\t{ host: 'other.test', emojis: ['wave'] },\n\t\t\t{ host: null, emojis: ['wave', 'wave@remote.test'] },\n\t\t], 'local.test')).toEqual(new Map([['wave@remote.test', row.publicUrl], ['wave@other.test', 'https://other.test/wave']]));\n\t\texpect(queries).toEqual([[{ host: 'remote.test', names: ['wave', 'missing'] }, { host: 'other.test', names: ['wave'] }]]);\n\t\texpect(await cache.remote([], 'local.test')).toEqual(new Map());\n\t\texpect(queries).toHaveLength(1);\n\t} finally {\n\t\tawait cache.close();\n\t}\n});\n",
+          "after": ""
+        }
+      ]
+    }
+  }
+}

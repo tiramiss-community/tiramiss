@@ -7,6 +7,8 @@ import { createActorEmojiCache } from '../../src/platform/actor-emoji-cache.js';
 import type { EntityManager } from 'typeorm';
 import type { Redis } from 'ioredis';
 
+const remote = (cache: ReturnType<typeof createActorEmojiCache>, emojis: readonly string[], host: string | null, selfHost: string) => cache.remote([{ emojis, host }], selfHost);
+
 const row = { name: 'wave', host: null, type: null, publicUrl: 'https://old.test/wave', originalUrl: 'https://original.test/wave', updatedAt: new Date(1000), license: null, localOnly: false };
 
 function setup() {
@@ -55,12 +57,12 @@ test('local memory lasts through the exact three minute boundary and Redis reviv
 test('remote positive and negative results stay stale for twelve hours without import invalidation', async () => {
 	const h = setup(); h.rows([{ ...row, host: 'remote.test' as never }]);
 	try {
-		expect(await h.cache.remote(['wave', 'missing'], 'remote.test', 'local.test')).toEqual(new Map([['wave@remote.test', row.publicUrl]]));
+		expect(await remote(h.cache, ['wave', 'missing'], 'remote.test', 'local.test')).toEqual(new Map([['wave@remote.test', row.publicUrl]]));
 		h.rows([{ ...row, host: 'remote.test' as never, publicUrl: 'https://new.test/wave' }, { ...row, name: 'missing', host: 'remote.test' as never }]);
 		h.setTime(43200000);
-		expect(await h.cache.remote(['wave', 'missing'], 'remote.test', 'local.test')).toEqual(new Map([['wave@remote.test', row.publicUrl]]));
+		expect(await remote(h.cache, ['wave', 'missing'], 'remote.test', 'local.test')).toEqual(new Map([['wave@remote.test', row.publicUrl]]));
 		h.setTime(43200001);
-		expect(await h.cache.remote(['wave', 'missing'], 'remote.test', 'local.test')).toEqual(new Map([['wave@remote.test', 'https://new.test/wave'], ['missing@remote.test', row.publicUrl]]));
+		expect(await remote(h.cache, ['wave', 'missing'], 'remote.test', 'local.test')).toEqual(new Map([['wave@remote.test', 'https://new.test/wave'], ['missing@remote.test', row.publicUrl]]));
 	} finally {
 		await h.cache.close();
 	}
@@ -70,9 +72,9 @@ test('remote source GC expires entries at the exact boundary and close stops its
 	vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval'] });
 	const h = setup(); h.rows([{ ...row, host: 'remote.test' as never }]);
 	try {
-		await h.cache.remote(['wave'], 'remote.test', 'local.test'); h.rows([]); h.setTime(43200000);
+		await remote(h.cache, ['wave'], 'remote.test', 'local.test'); h.rows([]); h.setTime(43200000);
 		await vi.advanceTimersByTimeAsync(180000);
-		expect(await h.cache.remote(['wave'], 'remote.test', 'local.test')).toEqual(new Map());
+		expect(await remote(h.cache, ['wave'], 'remote.test', 'local.test')).toEqual(new Map());
 		await h.cache.close(); expect(vi.getTimerCount()).toBe(0);
 		await expect(h.cache.local(['wave'])).rejects.toThrow('closed');
 	} finally {
@@ -98,7 +100,7 @@ test('closing drains a pending lookup and rejects new reads', async () => {
 		closed = true;
 	});
 	await Promise.resolve(); expect(closed).toBe(false);
-	await expect(cache.remote(['wave'], 'remote.test', 'local.test')).rejects.toThrow('closed');
+	await expect(remote(cache, ['wave'], 'remote.test', 'local.test')).rejects.toThrow('closed');
 	release(); expect(await reading).toMatchObject([{ name: 'wave' }]); await closing; expect(closed).toBe(true);
 });
 
@@ -125,7 +127,7 @@ test('source observations pin remote positive, null, fallback and exact expiry r
 	const h = setup(); h.rows([{ ...row, host: 'remote.test' as never }]);
 	const names = ['wave', 'missing', 'wave@.', 'invalid:name'];
 	const observe = async (id: string) => {
-		const urls = await h.cache.remote(names, 'remote.test', 'local.test');
+		const urls = await remote(h.cache, names, 'remote.test', 'local.test');
 		expect([urls.get('wave@remote.test') ?? null, urls.get('missing@remote.test') ?? null, null, null]).toEqual(source.observations.find(o => o.id === id)!.values);
 	};
 	try {
@@ -138,22 +140,72 @@ test('source observations pin remote positive, null, fallback and exact expiry r
 	}
 });
 
-test('close waits for sibling URL reads after Promise.all has already rejected', async () => {
-	let release!: () => void;
+test('failed cold batch preserves warm hits and is retried without caching failure', async () => {
+	let fail = false, calls = 0;
+	const rows = [{ ...row, host: 'remote.test' }];
+	const manager = { getRepository: () => ({ async findBy() {
+		calls++; if (fail) {
+			throw Error('batch unavailable');
+		} return rows;
+	} }) } as unknown as EntityManager;
+	const cache = createActorEmojiCache(manager, {} as Redis, () => 0);
+	try {
+		expect(await remote(cache, ['wave'], 'remote.test', 'local.test')).toEqual(new Map([['wave@remote.test', row.publicUrl]]));
+		fail = true;
+		await expect(remote(cache, ['wave', 'missing'], 'remote.test', 'local.test')).rejects.toThrow('batch unavailable');
+		expect(await remote(cache, ['wave'], 'remote.test', 'local.test')).toEqual(new Map([['wave@remote.test', row.publicUrl]]));
+		expect(calls).toBe(2);
+		fail = false; rows.length = 0;
+		expect(await remote(cache, ['wave', 'missing'], 'remote.test', 'local.test')).toEqual(new Map([['wave@remote.test', row.publicUrl]]));
+		expect(calls).toBe(3);
+		fail = true;
+		expect(await remote(cache, ['missing'], 'remote.test', 'local.test')).toEqual(new Map());
+		expect(calls).toBe(3);
+	} finally {
+		await cache.close();
+	}
+});
+
+test('close waits for the accepted remote batch and rejects later reads', async () => {
+	let release!: () => void, started!: () => void;
 	const gate = new Promise<void>(resolve => {
 		release = resolve;
 	});
-	const manager = { getRepository: () => ({ async findOneBy({ name }: { name: string }) {
-		if (name === 'broken') {
-			throw Error('broken lookup');
-		}
-		await gate; return { ...row, host: 'remote.test' };
+	const entered = new Promise<void>(resolve => {
+		started = resolve;
+	});
+	const manager = { getRepository: () => ({ async findBy() {
+		started(); await gate; return [{ ...row, host: 'remote.test' }];
 	} }) } as unknown as EntityManager;
 	const cache = createActorEmojiCache(manager, {} as Redis, () => 0);
-	await expect(cache.remote(['broken', 'wave'], 'remote.test', 'local.test')).rejects.toThrow('broken lookup');
+	const reading = remote(cache, ['wave'], 'remote.test', 'local.test'); await entered;
 	let closed = false; const closing = cache.close().then(() => {
 		closed = true;
 	});
 	await Promise.resolve(); expect(closed).toBe(false);
-	release(); await closing; expect(closed).toBe(true);
+	await expect(remote(cache, ['wave'], 'remote.test', 'local.test')).rejects.toThrow('closed');
+	release(); expect(await reading).toEqual(new Map([['wave@remote.test', row.publicUrl]]));
+	await closing; expect(closed).toBe(true);
+});
+
+test('one batch normalizes and deduplicates host/name pairs without fetching invalid or local names', async () => {
+	const queries: { host: string; names: string[] }[][] = [];
+	const manager = { getRepository: () => ({ async findBy(where: { host: string; name: { value: string[] } }[]) {
+		queries.push(where.map(clause => ({ host: clause.host, names: clause.name.value })));
+		return [{ ...row, host: 'remote.test' }, { ...row, host: 'other.test', publicUrl: 'https://other.test/wave' }];
+	} }) } as unknown as EntityManager;
+	const cache = createActorEmojiCache(manager, {} as Redis, () => 0);
+	try {
+		expect(await cache.remote([
+			{ host: 'REMOTE.TEST', emojis: ['wave', 'wave', 'wave@.', 'bad name', 'wave@local.test'] },
+			{ host: 'remote.test', emojis: ['wave', 'missing'] },
+			{ host: 'other.test', emojis: ['wave'] },
+			{ host: null, emojis: ['wave', 'wave@remote.test'] },
+		], 'local.test')).toEqual(new Map([['wave@remote.test', row.publicUrl], ['wave@other.test', 'https://other.test/wave']]));
+		expect(queries).toEqual([[{ host: 'remote.test', names: ['wave', 'missing'] }, { host: 'other.test', names: ['wave'] }]]);
+		expect(await cache.remote([], 'local.test')).toEqual(new Map());
+		expect(queries).toHaveLength(1);
+	} finally {
+		await cache.close();
+	}
 });

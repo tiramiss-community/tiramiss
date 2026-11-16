@@ -2,13 +2,13 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { settleAll } from '../settle-all.js';
 import { In } from 'typeorm';
 import { MiNote, MiUser, MiPoll, MiPollVote, MiNoteReaction, MiFollowing, MiDriveFile, MiChannel, MiEmoji } from 'backend-upstream/entities';
+import { settleAll } from '../settle-all.js';
+import { toPuny } from '../../modules/federation/public.js';
 import { readNoteAuthors } from './note-authors.js';
 import { noteFileView } from './note-files.js';
 import { readMeta } from './meta.js';
-import { toPuny } from '../../modules/federation/public.js';
 import type { ActorEmojiCache } from '../actor-emoji-cache.js';
 import type { NoteMediaOptions } from './note-files.js';
 import type { EntityManager } from 'typeorm';
@@ -58,7 +58,7 @@ export function createNoteReader(manager: EntityManager, redis: Redis, options: 
 				viewerId && ids.length ? manager.getRepository(MiNoteReaction).findBy({ noteId: In(ids), userId: viewerId }) : [],
 				viewerId && userIds.length ? manager.getRepository(MiFollowing).findBy({ followeeId: In(userIds), followerId: viewerId }) : [],
 			]);
-			// User絵文字も同じ集合問い合わせで取得し、作者ごとのDBアクセスを避ける。
+			// 作者の絵文字材料も全authorを集めて一度に取得する。
 			const emojiUsers = userIds.length ? await manager.getRepository(MiUser).find({ where: { id: In(userIds) }, select: { id: true, host: true, emojis: true } }) : [];
 			const emojiNames = new Set<string>();
 			const hosts = [...new Set([...rows.flatMap(n => n.userHost ? [n.userHost] : []), ...emojiUsers.flatMap(u => u.host ? [u.host] : [])])];
@@ -74,7 +74,7 @@ export function createNoteReader(manager: EntityManager, redis: Redis, options: 
 				}
 			}
 			const emojiUrls = new Map((hosts.length && emojiNames.size ? await manager.getRepository(MiEmoji).findBy({ host: In([...new Set(hosts)]), name: In([...emojiNames]) }) : []).map(e => [`${e.name}@${e.host}`, e.publicUrl || e.originalUrl]));
-			const authorEmojiUrls = actorEmojis ? new Map((await Promise.all(emojiUsers.map(user => actorEmojis.remote(user.emojis, user.host, new URL(options.url).host)))).flatMap(map => [...map])) : emojiUrls;
+			const authorEmojiUrls = actorEmojis ? await actorEmojis.remote(emojiUsers, new URL(options.url).host) : emojiUrls;
 			return {
 				notes, authors: await readNoteAuthors(manager, userIds, viewerId, meta, options, now, authorEmojiUrls, actorEmojis !== undefined),
 				files: new Map(files.map(file => [file.id, noteFileView(file, meta.proxyRemoteFiles, options)])),

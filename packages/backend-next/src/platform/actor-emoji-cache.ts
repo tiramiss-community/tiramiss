@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { IsNull } from 'typeorm';
+import { In, IsNull } from 'typeorm';
 import { MiEmoji } from 'backend-upstream/entities';
 import { createHostRules } from '../modules/federation/public.js';
 import type { EntityManager } from 'typeorm';
@@ -64,29 +64,49 @@ export function createActorEmojiCache(manager: EntityManager, redis: Redis, now:
 				return row ? [{ name: row.name, type: row.type, publicUrl: row.publicUrl, originalUrl: row.originalUrl, license: row.license, localOnly: row.localOnly, updatedAtMs: row.updatedAt?.getTime() ?? null }] : [];
 			});
 		}),
-		remote: (names: readonly string[], host: string | null, selfHost: string): Promise<Map<string, string>> => tracked(async () => {
+		remote: (users: readonly { emojis: readonly string[]; host: string | null }[], selfHost: string): Promise<Map<string, string>> => tracked(async () => {
 			const rules = createHostRules(selfHost);
-			const entries = await Promise.all(names.map(value => tracked(async () => {
-				const match = value.match(/^([-\w]+)(?:@([\w.-]+))?$/);
-				if (!match) {
-					return [];
+			const requested = new Map<string, { name: string; host: string }>();
+			for (const user of users) {
+				for (const value of user.emojis) {
+					const match = value.match(/^([-\w]+)(?:@([\w.-]+))?$/);
+					if (!match) {
+						continue;
+					}
+					const host = rules.emojiHost(match[2], user.host);
+					if (host !== null) {
+						requested.set(`${match[1]} ${host}`, { name: match[1], host });
+					}
 				}
-				const target = rules.emojiHost(match[2], host);
-				if (target === null) {
-					return [];
+			}
+			const values = new Map<string, MiEmoji | null>();
+			const missing = new Map<string, { name: string; host: string }>();
+			for (const [key, query] of requested) {
+				const cached = remote.get(key);
+				if (cached && now() - cached.at <= 43200000) {
+					values.set(key, cached.value);
+				} else {
+					remote.delete(key); missing.set(key, query);
 				}
-				const key = `${match[1]} ${target}`;
-				let cached = remote.get(key);
-				if (cached && now() - cached.at > 43200000) {
-					remote.delete(key); cached = undefined;
+			}
+			if (missing.size > 0) {
+				const hosts = new Map<string, string[]>();
+				for (const { name, host } of missing.values()) {
+					const names = hosts.get(host) ?? [];
+					names.push(name); hosts.set(host, names);
 				}
-				const row = cached ? cached.value : (await repository.findOneBy({ name: match[1], host: target })) ?? null;
-				if (!cached) {
-					remote.set(key, { at: now(), value: row });
+				// Keep the Note reader's collection query without refreshing positive or null hits.
+				const rows = await repository.findBy([...hosts].map(([host, names]) => ({ host, name: In(names) })));
+				const found = new Map(rows.map(row => [`${row.name} ${row.host}`, row]));
+				for (const [key] of missing) {
+					const value = found.get(key) ?? null;
+					remote.set(key, { at: now(), value }); values.set(key, value);
 				}
-				return row === null ? [] : [[`${match[1]}@${target}`, row.publicUrl || row.originalUrl] as const];
-			})));
-			return new Map(entries.flat());
+			}
+			return new Map([...requested].flatMap(([key, { name, host }]) => {
+				const row = values.get(key);
+				return row == null ? [] : [[`${name}@${host}`, row.publicUrl || row.originalUrl] as const];
+			}));
 		}),
 		async close() {
 			closed = true; clearInterval(timer);

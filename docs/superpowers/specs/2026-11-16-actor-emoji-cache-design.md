@@ -9,3 +9,10 @@ Chosen approach is a narrow platform adapter composed into actual consumers. Cop
 Pending lookups drain before resource release; the remote GC timer stops on close. No emoji management CRUD, new dependency, migration, API schema, package/entrypoint change, or whole user cache. Preserve historical receipt bytes with one finite source/current projection and scope-aware validation; package dependency projection is owned by #572. #176/#127/#195 and posting partial remain unchanged.
 
 Test source literal cache/CustomEmoji methods with explicit clock and repository/Redis doubles, then compare runtime values. Real Redis/PG/listening HTTP cover warm hits under an unavailable emoji table, memory/Redis expiry, updates/deletion/negative entries, and stale URLs after actual extraction. Process tests prove active read drain and timer release. Validate nearby suites, build/typecheck, required root contracts and shipping; record actual logs and hashes without renewing old measurements.
+
+
+## Approved request batch correction
+
+CLI review identified a cold-query regression in Note's existing collection reader: three authors sharing ten names initiated30queries. Restore one collection query per readMaterials request by passing all authors once, normalizing/deduplicating pairs, and querying only non-cached misses. Keep positive/null hits and twelve-hour expiry; do not copy source prefetch's null re-read behavior. No global in-flight coalescing or Note emoji/Drive scope expansion. A failed batch retains existing hits and does not cache misses as successful null results. Shutdown drains its single accepted statement. The statement snapshot/partial-cache-fill boundary follows the collection operation, with no claim that independent per-key query schedules remain identical.
+
+The coordinator approved this narrow correction on2026-11-16 after read-only reproduction. Original receipts remain immutable; use the finite batch successor and new measurements for the correction.

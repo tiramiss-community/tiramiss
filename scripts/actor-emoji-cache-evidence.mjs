@@ -33,6 +33,8 @@ function record(readFile) {
 }
 export function validateActorEmojiCacheEvidence(value, rawRead = read, optional = optionalRead) {
  return scopedEvidenceValidation(validateActorEmojiCacheEvidence, value, rawRead, optional, (rawRead, optional) => {
+  const currentRead = rawRead;
+  rawRead = path => readBeforeActorEmojiBatch(path, currentRead, optional);
   if (value === undefined) value = record(rawRead);
   assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'actor emoji cache receipt seal');
   assert.equal(value.scope, 'actor-emoji-cache-303');
@@ -80,4 +82,68 @@ export function readForActorEmojiCacheEvidence(path, rawRead = read, optional = 
   if (!actorEmojiCacheFiles.includes(path)) return rawRead(path);
   return Buffer.from(validateActorEmojiCacheEvidence(undefined, rawRead, optional)[path]);
  });
+}
+
+const batchSeal = '399d640e557c197e0da9c68287f59774dcac06a23e055dac1cb4d01ec3efa44a';
+const batchPredecessorSeal = 'd7d35b2e3946fc27b8468fda4a7ffdab3218f7fad462d62b0f186b1519199761';
+export const actorEmojiBatchFiles = Object.freeze([
+ 'packages/backend-next/src/platform/actor-emoji-cache.ts',
+ 'packages/backend-next/src/platform/database/note-reader.ts',
+ 'packages/backend-next/test/unit/actor-emoji-cache.test.ts',
+]);
+// This bounded follow-up restores only three changed inputs for the original
+// actor receipt. The original18-input measurement and every historical seal stay unchanged.
+export function validateActorEmojiBatchEvidence(value, rawRead = read, optional = optionalRead) {
+ return scopedEvidenceValidation(validateActorEmojiBatchEvidence, value, rawRead, optional, (rawRead, optional) => {
+  if (value === undefined) {
+   const bytes = rawRead(directory + 'batch-current-evidence.json');
+   assert.equal(sha(bytes), batchSeal, 'actor emoji batch receipt seal');
+   value = JSON.parse(bytes);
+  }
+  assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), batchSeal, 'actor emoji batch receipt seal');
+  assert.equal(value.scope, 'actor-emoji-cache-303-batch');
+  assert.equal(value.upstreamRevision, '8e07cf085adf7009583d234a208e30436f020e26');
+  assert.equal(value.baseRevision, '4821531ad53285c26a294387318c4decc82a0757');
+  assert.equal(value.noInputDrift, true); assert.equal(value.postingComplete, false);
+  assert.equal(value.upstreamFullServerMeasured, false);
+  assert.deepEqual(value.inputsAfter, value.inputs);
+  assert.equal(Object.keys(value.inputs).length, 7);
+  for (const [path, hash] of Object.entries(value.inputs)) {
+   assert.equal(sha(rawRead(path)), hash, `Meta cache measured current input drift (actor emoji batch): ${path}`);
+  }
+  const bytes = rawRead(directory + 'batch-predecessor.json');
+  assert.equal(sha(bytes), batchPredecessorSeal, 'actor emoji batch predecessor seal');
+  const previous = JSON.parse(bytes);
+  assert.equal(previous.baseRevision, value.baseRevision);
+  assert.deepEqual(Object.keys(previous.files), actorEmojiBatchFiles);
+  const result = {};
+  for (const [path, binding] of Object.entries(previous.files)) {
+   assert.equal(binding.currentSha256, value.inputs[path]);
+   let current = rawRead(path).toString();
+   assert.equal(sha(Buffer.from(current)), binding.currentSha256, `Meta cache measured current input drift (actor emoji batch): ${path}`);
+   for (const patch of [...binding.patches].reverse()) {
+    assert.equal(current.slice(patch.offset, patch.offset + patch.before.length), patch.before, 'actor emoji batch exact predecessor patch');
+    current = current.slice(0, patch.offset) + patch.after + current.slice(patch.offset + patch.before.length);
+   }
+   assert.equal(sha(Buffer.from(current)), binding.previousSha256, 'actor emoji batch exact predecessor identity'); result[path] = current;
+  }
+  assert.deepEqual(value.runs.map(run => run.name), ['batch-build', 'batch-typecheck', 'batch-full-unit', 'batch-integration', 'batch-process', 'batch-source']);
+  assert.equal(value.regression.red.exitCode, 1); assert.equal(value.regression.green.exitCode, 0);
+  for (const run of [value.regression.red, value.regression.green]) {
+   const bytes = optional(run.log);
+   if (bytes !== null) assert.equal(sha(bytes), run.logSha256, 'actor emoji batch actual log drift');
+  }
+  for (const run of value.runs) {
+   assert.equal(run.exitCode, 0);
+   const bytes = optional(run.log);
+   if (bytes !== null) {
+    assert.equal(sha(bytes), run.logSha256, 'actor emoji batch actual log drift');
+    if (run.passed !== undefined) assert(bytes.toString().includes(`Tests  ${run.passed} passed (${run.passed})`));
+   }
+  }
+  return result;
+ });
+}
+function readBeforeActorEmojiBatch(path, rawRead, optional) {
+ return withEvidenceRequestedPath(path, () => actorEmojiBatchFiles.includes(path) ? Buffer.from(validateActorEmojiBatchEvidence(undefined, rawRead, optional)[path]) : rawRead(path));
 }
