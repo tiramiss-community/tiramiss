@@ -7,6 +7,7 @@ import { createDriveFoldersHttp } from './drive-folders-http.js';
 import { registerHttpAppWork } from './http-app-work.js';
 import { createInstanceAdminHttp } from './instance-admin-http.js';
 import { createUrlPreviewHttp } from './url-preview-http.js';
+import { createPublicDocumentsHttp } from './public-documents-http.js';
 import { createWebfingerHttp } from './webfinger-http.js';
 import { createFollowCollectionsHttp } from './follow-collections-http.js';
 import { createOutboxHttp } from './outbox-http.js';
@@ -32,6 +33,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		.route('/', createFollowCollectionsHttp(resources, config))
 		.route('/', createOutboxHttp(resources, config))
 		.route('/', createEmojiHttp(resources, config))
+		.route('/', createPublicDocumentsHttp(resources, config))
 		.route('/', folders.app);
 	registerHttpAppWork(app, folders.idle);
 	registerNoteRoutes(app, resources, note);

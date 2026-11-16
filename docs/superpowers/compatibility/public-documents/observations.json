@@ -1,0 +1,455 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "corpusSha256": "f821d6507e97e67ce5add5c4c5dce515c1824f4c2d52a80b80eb2e9d6ed754f2",
+  "source": {
+    "path": "packages/backend/src/server/web/ClientServerService.ts",
+    "sha256": "8915cc056efcf97f930bd538c84bed253a25b2042d22cb259167fb4f686575c4"
+  },
+  "nodeVersion": "v26.4.0",
+  "fastifyVersion": "5.12.5",
+  "observationKind": "literal pinned manifest method and three route callbacks / real listening Fastify HTTP / explicit Meta snapshot; not full upstream application",
+  "cases": [
+    {
+      "id": "defaults",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": "max-age=300",
+          "body": "{\"short_name\":\"documents.example.test:8443\",\"name\":\"documents.example.test:8443\",\"start_url\":\"/\",\"display\":\"standalone\",\"background_color\":\"#313a42\",\"theme_color\":\"#86b300\",\"icons\":[{\"src\":\"/static-assets/icons/192.png\",\"sizes\":\"192x192\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/icons/512.png\",\"sizes\":\"512x512\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/splash.png\",\"sizes\":\"300x300\",\"type\":\"image/png\",\"purpose\":\"any\"}],\"share_target\":{\"action\":\"/share/\",\"method\":\"GET\",\"enctype\":\"application/x-www-form-urlencoded\",\"params\":{\"title\":\"title\",\"text\":\"text\",\"url\":\"url\"}},\"shortcuts\":[{\"name\":\"Safemode\",\"url\":\"/?safemode=true\"}]}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName>Misskey</ShortName><Description>Misskey Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    },
+    {
+      "id": "empty",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": "max-age=300",
+          "body": "{\"short_name\":\"documents.example.test:8443\",\"name\":\"documents.example.test:8443\",\"start_url\":\"/\",\"display\":\"standalone\",\"background_color\":\"#313a42\",\"theme_color\":\"#86b300\",\"icons\":[{\"src\":\"/static-assets/icons/192.png\",\"sizes\":\"192x192\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/icons/512.png\",\"sizes\":\"512x512\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/splash.png\",\"sizes\":\"300x300\",\"type\":\"image/png\",\"purpose\":\"any\"}],\"share_target\":{\"action\":\"/share/\",\"method\":\"GET\",\"enctype\":\"application/x-www-form-urlencoded\",\"params\":{\"title\":\"title\",\"text\":\"text\",\"url\":\"url\"}},\"shortcuts\":[{\"name\":\"Safemode\",\"url\":\"/?safemode=true\"}]}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName></ShortName><Description> Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    },
+    {
+      "id": "configured",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": "max-age=300",
+          "body": "{\"short_name\":\"Ex\",\"name\":\"Example\",\"start_url\":\"/\",\"display\":\"standalone\",\"background_color\":\"#313a42\",\"theme_color\":\"#abc123\",\"icons\":[{\"src\":\"https://icons.test/192.png\",\"sizes\":\"192x192\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"https://icons.test/512.png\",\"sizes\":\"512x512\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/splash.png\",\"sizes\":\"300x300\",\"type\":\"image/png\",\"purpose\":\"any\"}],\"share_target\":{\"action\":\"/share/\",\"method\":\"GET\",\"enctype\":\"application/x-www-form-urlencoded\",\"params\":{\"title\":\"title\",\"text\":\"text\",\"url\":\"url\"}},\"shortcuts\":[{\"name\":\"Safemode\",\"url\":\"/?safemode=true\"}]}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName>Example</ShortName><Description>Example Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    },
+    {
+      "id": "special-characters",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": "max-age=300",
+          "body": "{\"short_name\":\"短い\\\\名\",\"name\":\"A & <B> \\\"日本語\\\"\\nnext\",\"start_url\":\"/\",\"display\":\"standalone\",\"background_color\":\"#313a42\",\"theme_color\":\"#86b300\",\"icons\":[{\"src\":\"https://icons.test/?a=1&b=\\\"2\\\"\",\"sizes\":\"192x192\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/icons/512.png\",\"sizes\":\"512x512\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/splash.png\",\"sizes\":\"300x300\",\"type\":\"image/png\",\"purpose\":\"any\"}],\"share_target\":{\"action\":\"/share/\",\"method\":\"GET\",\"enctype\":\"application/x-www-form-urlencoded\",\"params\":{\"title\":\"title\",\"text\":\"text\",\"url\":\"url\"}},\"shortcuts\":[{\"name\":\"Safemode\",\"url\":\"/?safemode=true\"}]}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName>A & <B> \"日本語\"\nnext</ShortName><Description>A & <B> \"日本語\"\nnext Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    },
+    {
+      "id": "short-name-only",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": "max-age=300",
+          "body": "{\"short_name\":\"Short\",\"name\":\"documents.example.test:8443\",\"start_url\":\"/\",\"display\":\"standalone\",\"background_color\":\"#313a42\",\"theme_color\":\"#86b300\",\"icons\":[{\"src\":\"/static-assets/icons/192.png\",\"sizes\":\"192x192\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/icons/512.png\",\"sizes\":\"512x512\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/splash.png\",\"sizes\":\"300x300\",\"type\":\"image/png\",\"purpose\":\"any\"}],\"share_target\":{\"action\":\"/share/\",\"method\":\"GET\",\"enctype\":\"application/x-www-form-urlencoded\",\"params\":{\"title\":\"title\",\"text\":\"text\",\"url\":\"url\"}},\"shortcuts\":[{\"name\":\"Safemode\",\"url\":\"/?safemode=true\"}]}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName>Misskey</ShortName><Description>Misskey Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    },
+    {
+      "id": "visitors-none",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": "max-age=300",
+          "body": "{\"short_name\":\"documents.example.test:8443\",\"name\":\"documents.example.test:8443\",\"start_url\":\"/\",\"display\":\"standalone\",\"background_color\":\"#313a42\",\"theme_color\":\"#86b300\",\"icons\":[{\"src\":\"/static-assets/icons/192.png\",\"sizes\":\"192x192\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/icons/512.png\",\"sizes\":\"512x512\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/splash.png\",\"sizes\":\"300x300\",\"type\":\"image/png\",\"purpose\":\"any\"}],\"share_target\":{\"action\":\"/share/\",\"method\":\"GET\",\"enctype\":\"application/x-www-form-urlencoded\",\"params\":{\"title\":\"title\",\"text\":\"text\",\"url\":\"url\"}},\"shortcuts\":[{\"name\":\"Safemode\",\"url\":\"/?safemode=true\"}]}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nDisallow: /@\nDisallow: /notes\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName>Misskey</ShortName><Description>Misskey Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    },
+    {
+      "id": "visitors-local",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": "max-age=300",
+          "body": "{\"short_name\":\"documents.example.test:8443\",\"name\":\"documents.example.test:8443\",\"start_url\":\"/\",\"display\":\"standalone\",\"background_color\":\"#313a42\",\"theme_color\":\"#86b300\",\"icons\":[{\"src\":\"/static-assets/icons/192.png\",\"sizes\":\"192x192\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/icons/512.png\",\"sizes\":\"512x512\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/splash.png\",\"sizes\":\"300x300\",\"type\":\"image/png\",\"purpose\":\"any\"}],\"share_target\":{\"action\":\"/share/\",\"method\":\"GET\",\"enctype\":\"application/x-www-form-urlencoded\",\"params\":{\"title\":\"title\",\"text\":\"text\",\"url\":\"url\"}},\"shortcuts\":[{\"name\":\"Safemode\",\"url\":\"/?safemode=true\"}]}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName>Misskey</ShortName><Description>Misskey Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    },
+    {
+      "id": "override-object",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": "max-age=300",
+          "body": "{\"short_name\":\"documents.example.test:8443\",\"name\":\"Override\",\"start_url\":\"/\",\"display\":\"standalone\",\"background_color\":\"#313a42\",\"theme_color\":\"#86b300\",\"icons\":[{\"src\":\"custom.svg\"}],\"share_target\":{\"action\":\"/changed\"},\"shortcuts\":[{\"name\":\"Safemode\",\"url\":\"/?safemode=true\"}],\"custom\":true}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName>Misskey</ShortName><Description>Misskey Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    },
+    {
+      "id": "override-empty-object",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": "max-age=300",
+          "body": "{\"short_name\":\"documents.example.test:8443\",\"name\":\"documents.example.test:8443\",\"start_url\":\"/\",\"display\":\"standalone\",\"background_color\":\"#313a42\",\"theme_color\":\"#86b300\",\"icons\":[{\"src\":\"/static-assets/icons/192.png\",\"sizes\":\"192x192\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/icons/512.png\",\"sizes\":\"512x512\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/splash.png\",\"sizes\":\"300x300\",\"type\":\"image/png\",\"purpose\":\"any\"}],\"share_target\":{\"action\":\"/share/\",\"method\":\"GET\",\"enctype\":\"application/x-www-form-urlencoded\",\"params\":{\"title\":\"title\",\"text\":\"text\",\"url\":\"url\"}},\"shortcuts\":[{\"name\":\"Safemode\",\"url\":\"/?safemode=true\"}]}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName>Misskey</ShortName><Description>Misskey Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    },
+    {
+      "id": "override-null",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": "max-age=300",
+          "body": "{\"short_name\":\"documents.example.test:8443\",\"name\":\"documents.example.test:8443\",\"start_url\":\"/\",\"display\":\"standalone\",\"background_color\":\"#313a42\",\"theme_color\":\"#86b300\",\"icons\":[{\"src\":\"/static-assets/icons/192.png\",\"sizes\":\"192x192\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/icons/512.png\",\"sizes\":\"512x512\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/splash.png\",\"sizes\":\"300x300\",\"type\":\"image/png\",\"purpose\":\"any\"}],\"share_target\":{\"action\":\"/share/\",\"method\":\"GET\",\"enctype\":\"application/x-www-form-urlencoded\",\"params\":{\"title\":\"title\",\"text\":\"text\",\"url\":\"url\"}},\"shortcuts\":[{\"name\":\"Safemode\",\"url\":\"/?safemode=true\"}]}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName>Misskey</ShortName><Description>Misskey Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    },
+    {
+      "id": "override-number",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": "max-age=300",
+          "body": "{\"short_name\":\"documents.example.test:8443\",\"name\":\"documents.example.test:8443\",\"start_url\":\"/\",\"display\":\"standalone\",\"background_color\":\"#313a42\",\"theme_color\":\"#86b300\",\"icons\":[{\"src\":\"/static-assets/icons/192.png\",\"sizes\":\"192x192\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/icons/512.png\",\"sizes\":\"512x512\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/splash.png\",\"sizes\":\"300x300\",\"type\":\"image/png\",\"purpose\":\"any\"}],\"share_target\":{\"action\":\"/share/\",\"method\":\"GET\",\"enctype\":\"application/x-www-form-urlencoded\",\"params\":{\"title\":\"title\",\"text\":\"text\",\"url\":\"url\"}},\"shortcuts\":[{\"name\":\"Safemode\",\"url\":\"/?safemode=true\"}]}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName>Misskey</ShortName><Description>Misskey Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    },
+    {
+      "id": "override-boolean",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": "max-age=300",
+          "body": "{\"short_name\":\"documents.example.test:8443\",\"name\":\"documents.example.test:8443\",\"start_url\":\"/\",\"display\":\"standalone\",\"background_color\":\"#313a42\",\"theme_color\":\"#86b300\",\"icons\":[{\"src\":\"/static-assets/icons/192.png\",\"sizes\":\"192x192\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/icons/512.png\",\"sizes\":\"512x512\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/splash.png\",\"sizes\":\"300x300\",\"type\":\"image/png\",\"purpose\":\"any\"}],\"share_target\":{\"action\":\"/share/\",\"method\":\"GET\",\"enctype\":\"application/x-www-form-urlencoded\",\"params\":{\"title\":\"title\",\"text\":\"text\",\"url\":\"url\"}},\"shortcuts\":[{\"name\":\"Safemode\",\"url\":\"/?safemode=true\"}]}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName>Misskey</ShortName><Description>Misskey Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    },
+    {
+      "id": "override-string",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": "max-age=300",
+          "body": "{\"0\":\"a\",\"1\":\"b\",\"2\":\"c\",\"short_name\":\"documents.example.test:8443\",\"name\":\"documents.example.test:8443\",\"start_url\":\"/\",\"display\":\"standalone\",\"background_color\":\"#313a42\",\"theme_color\":\"#86b300\",\"icons\":[{\"src\":\"/static-assets/icons/192.png\",\"sizes\":\"192x192\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/icons/512.png\",\"sizes\":\"512x512\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/splash.png\",\"sizes\":\"300x300\",\"type\":\"image/png\",\"purpose\":\"any\"}],\"share_target\":{\"action\":\"/share/\",\"method\":\"GET\",\"enctype\":\"application/x-www-form-urlencoded\",\"params\":{\"title\":\"title\",\"text\":\"text\",\"url\":\"url\"}},\"shortcuts\":[{\"name\":\"Safemode\",\"url\":\"/?safemode=true\"}]}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName>Misskey</ShortName><Description>Misskey Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    },
+    {
+      "id": "override-array",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": "max-age=300",
+          "body": "{\"0\":\"first\",\"1\":{\"nested\":true},\"short_name\":\"documents.example.test:8443\",\"name\":\"documents.example.test:8443\",\"start_url\":\"/\",\"display\":\"standalone\",\"background_color\":\"#313a42\",\"theme_color\":\"#86b300\",\"icons\":[{\"src\":\"/static-assets/icons/192.png\",\"sizes\":\"192x192\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/icons/512.png\",\"sizes\":\"512x512\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/splash.png\",\"sizes\":\"300x300\",\"type\":\"image/png\",\"purpose\":\"any\"}],\"share_target\":{\"action\":\"/share/\",\"method\":\"GET\",\"enctype\":\"application/x-www-form-urlencoded\",\"params\":{\"title\":\"title\",\"text\":\"text\",\"url\":\"url\"}},\"shortcuts\":[{\"name\":\"Safemode\",\"url\":\"/?safemode=true\"}]}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName>Misskey</ShortName><Description>Misskey Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    },
+    {
+      "id": "override-invalid",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 500,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": null,
+          "body": "{\"statusCode\":500,\"error\":\"Internal Server Error\",\"message\":\"Expected property name or '}' in JSON at position 1 (line 1 column 2)\"}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName>Misskey</ShortName><Description>Misskey Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    },
+    {
+      "id": "override-whitespace",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 500,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": null,
+          "body": "{\"statusCode\":500,\"error\":\"Internal Server Error\",\"message\":\"Unexpected end of JSON input\"}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName>Misskey</ShortName><Description>Misskey Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    },
+    {
+      "id": "override-reserved-key",
+      "responses": [
+        {
+          "path": "/manifest.json",
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": "max-age=300",
+          "body": "{\"short_name\":\"documents.example.test:8443\",\"name\":null,\"start_url\":\"/\",\"display\":\"standalone\",\"background_color\":\"#313a42\",\"theme_color\":\"#86b300\",\"icons\":[{\"src\":\"/static-assets/icons/192.png\",\"sizes\":\"192x192\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/icons/512.png\",\"sizes\":\"512x512\",\"type\":\"image/png\",\"purpose\":\"maskable\"},{\"src\":\"/static-assets/splash.png\",\"sizes\":\"300x300\",\"type\":\"image/png\",\"purpose\":\"any\"}],\"share_target\":{\"action\":\"/share/\",\"method\":\"GET\",\"enctype\":\"application/x-www-form-urlencoded\",\"params\":{\"title\":\"title\",\"text\":\"text\",\"url\":\"url\"}},\"shortcuts\":[{\"name\":\"Safemode\",\"url\":\"/?safemode=true\"}],\"__proto__\":{\"polluted\":true},\"constructor\":\"literal\"}"
+        },
+        {
+          "path": "/robots.txt",
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "cacheControl": null,
+          "body": "User-agent: *\nDisallow: /settings\nDisallow: /admin\nDisallow: /custom-emojis-manager\nDisallow: /avatar-decorations\nDisallow: /share\nDisallow: /my\nDisallow: /api\nDisallow: /inbox\nDisallow: /oauth\nDisallow: /proxy\nDisallow: /url\nAllow: /\n\n# todo: sitemap\n"
+        },
+        {
+          "path": "/opensearch.xml",
+          "status": 200,
+          "contentType": "application/opensearchdescription+xml",
+          "cacheControl": null,
+          "body": "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\"><ShortName>Misskey</ShortName><Description>Misskey Search</Description><InputEncoding>UTF-8</InputEncoding><Image width=\"16\" height=\"16\" type=\"image/x-icon\">https://documents.example.test:8443/favicon.ico</Image><Url type=\"text/html\" template=\"https://documents.example.test:8443/search?q={searchTerms}\"/></OpenSearchDescription>"
+        }
+      ]
+    }
+  ]
+}

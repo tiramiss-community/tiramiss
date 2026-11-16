@@ -1,0 +1,128 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "config": {
+    "url": "https://documents.example.test:8443",
+    "host": "documents.example.test:8443"
+  },
+  "defaults": {
+    "name": null,
+    "shortName": null,
+    "themeColor": null,
+    "app192IconUrl": null,
+    "app512IconUrl": null,
+    "manifestJsonOverride": "",
+    "ugcVisibilityForVisitor": "all"
+  },
+  "cases": [
+    {
+      "id": "defaults",
+      "meta": {}
+    },
+    {
+      "id": "empty",
+      "meta": {
+        "name": "",
+        "shortName": "",
+        "themeColor": "",
+        "app192IconUrl": "",
+        "app512IconUrl": ""
+      }
+    },
+    {
+      "id": "configured",
+      "meta": {
+        "name": "Example",
+        "shortName": "Ex",
+        "themeColor": "#abc123",
+        "app192IconUrl": "https://icons.test/192.png",
+        "app512IconUrl": "https://icons.test/512.png"
+      }
+    },
+    {
+      "id": "special-characters",
+      "meta": {
+        "name": "A & <B> \"日本語\"\nnext",
+        "shortName": "短い\\名",
+        "app192IconUrl": "https://icons.test/?a=1&b=\"2\""
+      }
+    },
+    {
+      "id": "short-name-only",
+      "meta": {
+        "shortName": "Short"
+      }
+    },
+    {
+      "id": "visitors-none",
+      "meta": {
+        "ugcVisibilityForVisitor": "none"
+      }
+    },
+    {
+      "id": "visitors-local",
+      "meta": {
+        "ugcVisibilityForVisitor": "local"
+      }
+    },
+    {
+      "id": "override-object",
+      "meta": {
+        "manifestJsonOverride": "{\"name\": \"Override\", \"icons\": [{\"src\": \"custom.svg\"}], \"share_target\": {\"action\": \"/changed\"}, \"custom\": true}"
+      }
+    },
+    {
+      "id": "override-empty-object",
+      "meta": {
+        "manifestJsonOverride": "{}"
+      }
+    },
+    {
+      "id": "override-null",
+      "meta": {
+        "manifestJsonOverride": "null"
+      }
+    },
+    {
+      "id": "override-number",
+      "meta": {
+        "manifestJsonOverride": "42"
+      }
+    },
+    {
+      "id": "override-boolean",
+      "meta": {
+        "manifestJsonOverride": "false"
+      }
+    },
+    {
+      "id": "override-string",
+      "meta": {
+        "manifestJsonOverride": "\"abc\""
+      }
+    },
+    {
+      "id": "override-array",
+      "meta": {
+        "manifestJsonOverride": "[\"first\",{\"nested\":true}]"
+      }
+    },
+    {
+      "id": "override-invalid",
+      "meta": {
+        "manifestJsonOverride": "{"
+      }
+    },
+    {
+      "id": "override-whitespace",
+      "meta": {
+        "manifestJsonOverride": "   "
+      }
+    },
+    {
+      "id": "override-reserved-key",
+      "meta": {
+        "manifestJsonOverride": "{\"__proto__\":{\"polluted\":true},\"constructor\":\"literal\",\"name\":null}"
+      }
+    }
+  ]
+}
