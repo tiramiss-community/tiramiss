@@ -1,0 +1,4 @@
+interface:
+  display_name: "並行PR作業の取りまとめ"
+  short_description: "独立した作業を並行実装し、重複調整を抑えてレビューとCIまで完了する"
+  default_prompt: "$parallel-pr-delivery を使って、独立した作業を選び、レビューとCI確認を含めてPRまで進めてください。"
