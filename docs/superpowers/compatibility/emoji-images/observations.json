@@ -1,6 +1,6 @@
 {
   "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
-  "corpusSha256": "d3a54c083dc659e9ad6b526d00ac6bc33f3d2ae758ae1119dfaf60ac1c546561",
+  "corpusSha256": "bd202dcb510d43db2b5e3b3e3e910470a4627782403c0a0a8c662feffca78de9",
   "source": {
     "path": "packages/backend/src/server/web/ClientServerService.ts",
     "sha256": "8915cc056efcf97f930bd538c84bed253a25b2042d22cb259167fb4f686575c4"
@@ -462,6 +462,246 @@
         "content-range": null
       },
       "bodySha256": "5d59fe1b621b6b143dcc7359793c49b3e2a4e8736f3712e0899e78c5c32952cd"
+    },
+    {
+      "id": "fluent-emoji-bare",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "84",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"message\":\"Route GET:/fluent-emoji not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+    },
+    {
+      "id": "fluent-emoji-encoded-prefix",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=2592000",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "8322",
+        "etag": "W/\"2082-dc6acfac00\"",
+        "last-modified": "Sat, 01 Jan 2000 00:00:00 GMT",
+        "accept-ranges": "bytes",
+        "content-range": null
+      },
+      "bodySha256": "4d494331c8435b187e2aeb6ca831d38b457c9cfc09eeb67641a87362e873b38e"
+    },
+    {
+      "id": "fluent-emoji-bad-nested",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "132",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/fluent-emoji/a/%ZZ.png' is not a valid url component\",\"statusCode\":400}"
+    },
+    {
+      "id": "twemoji-bare",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "79",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"message\":\"Route GET:/twemoji not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+    },
+    {
+      "id": "twemoji-encoded-prefix",
+      "status": 200,
+      "headers": {
+        "content-type": "image/svg+xml",
+        "cache-control": "public, max-age=2592000",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "450",
+        "etag": "W/\"1c2-dc6acfac00\"",
+        "last-modified": "Sat, 01 Jan 2000 00:00:00 GMT",
+        "accept-ranges": "bytes",
+        "content-range": null
+      },
+      "bodySha256": "41478e547c5b6ad66bfcf91ead5350fa0bc247956c3ff912020327e3e9ad0d2b"
+    },
+    {
+      "id": "twemoji-bad-nested",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "127",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/twemoji/a/%ZZ.svg' is not a valid url component\",\"statusCode\":400}"
+    },
+    {
+      "id": "twemoji-badge-bare",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "85",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"message\":\"Route GET:/twemoji-badge not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+    },
+    {
+      "id": "twemoji-badge-encoded-prefix",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "max-age=2592000",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "14551",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "bodySha256": "5d59fe1b621b6b143dcc7359793c49b3e2a4e8736f3712e0899e78c5c32952cd"
+    },
+    {
+      "id": "twemoji-badge-bad-nested",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "133",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/twemoji-badge/a/%ZZ.png' is not a valid url component\",\"statusCode\":400}"
+    },
+    {
+      "id": "double-encoded-slash",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "0",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": ""
+    },
+    {
+      "id": "fluent-emoji-bare-head",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "85",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": ""
+    },
+    {
+      "id": "fluent-emoji-bad-codepoint-nested",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "138",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/fluent-emoji/%ED%A0%80/a.png' is not a valid url component\",\"statusCode\":400}"
+    },
+    {
+      "id": "twemoji-bare-head",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "80",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": ""
+    },
+    {
+      "id": "twemoji-bad-codepoint-nested",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "133",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/twemoji/%ED%A0%80/a.svg' is not a valid url component\",\"statusCode\":400}"
+    },
+    {
+      "id": "twemoji-badge-bare-head",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "86",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": ""
+    },
+    {
+      "id": "twemoji-badge-bad-codepoint-nested",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "139",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/twemoji-badge/%ED%A0%80/a.png' is not a valid url component\",\"statusCode\":400}"
     }
   ]
 }

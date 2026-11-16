@@ -85,7 +85,7 @@ try {
  await app.close();
  await rm(assets, { recursive: true, force: true });
 }
-for (const [id, status] of Object.entries({ fluent: 200, twemoji: 200, badge: 200, 'missing-fluent': 404, 'missing-twemoji': 404, 'missing-badge': 500, 'corrupt-badge': 500, range: 206, 'range-invalid': 416, 'not-modified': 304, 'if-none-match': 304, precondition: 412 })) {
+for (const [id, status] of Object.entries({ fluent: 200, twemoji: 200, badge: 200, 'missing-fluent': 404, 'missing-twemoji': 404, 'missing-badge': 500, 'corrupt-badge': 500, range: 206, 'range-invalid': 416, 'not-modified': 304, 'if-none-match': 304, precondition: 412, 'fluent-emoji-bare': 404, 'twemoji-bare': 404, 'twemoji-badge-bare': 404, 'fluent-emoji-encoded-prefix': 200, 'twemoji-encoded-prefix': 200, 'twemoji-badge-encoded-prefix': 200, 'fluent-emoji-bad-nested': 400, 'twemoji-bad-nested': 400, 'twemoji-badge-bad-nested': 400 })) {
  assert.equal(cases.find(item => item.id === id).status, status, `source harness smoke: ${id}`);
 }
 assert.deepEqual(badgeMetadata, { width: 512, height: 512, format: 'png' });

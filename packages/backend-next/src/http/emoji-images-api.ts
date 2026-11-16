@@ -36,16 +36,20 @@ export function createEmojiImagesApi(assets: EmojiImageAssets) {
 	] as const) {
 		app.get(`${prefix}*`, async c => {
 			const url = new URL(c.req.url);
-			const rawName = url.pathname.slice(prefix.length);
-			if (rawName.includes('/')) {
-				return notFound(c.req.method, url.pathname + url.search);
-			}
-			let name: string;
+			let decodedPath: string;
 			try {
-				name = decodeURIComponent(rawName);
+				decodedPath = decodeURIComponent(url.pathname);
 			} catch {
 				return json({ error: 'Bad Request', code: 'FST_ERR_BAD_URL', message: `'${url.pathname}' is not a valid url component`, statusCode: 400 }, 400, { 'Content-Type': 'application/json' });
 			}
+			const boundary = url.pathname.indexOf('/', 1);
+			if (boundary === -1 || url.pathname.slice(boundary + 1).includes('/')) {
+				return notFound(c.req.method, url.pathname + url.search);
+			}
+			// Static route segments may be encoded too; retain the raw separator
+			// boundary while taking the filename from the once-decoded path.
+			const decodedPrefix = decodeURIComponent(url.pathname.slice(0, boundary + 1));
+			const name = decodedPath.slice(decodedPrefix.length);
 			if (!pattern.test(name)) {
 				return new Response(null, { status: 404, headers: { 'Content-Length': '0' } });
 			}
