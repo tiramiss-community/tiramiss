@@ -1,0 +1,183 @@
+{
+  "issue": 568,
+  "runtimeCommit": "1fe7ef48e00b16b91fc38665d5efc9897c548b30",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "recordedAt": "2026-11-16T10:22:39.583975+00:00",
+  "environment": {
+    "node": "26.4.0",
+    "postgres": "18.6 (Debian 18.6-1.pgdg13+2)",
+    "typeorm": "1.1.1",
+    "pg": "8.23.1",
+    "composeProject": "backend-next-568",
+    "postgresPort": 55568,
+    "databaseScope": "fresh backend_next_<UUID> databases only; no user infrastructure"
+  },
+  "inputsSha256": {
+    "packages/backend-next/test/helpers/migration-proof-child.mjs": "d6eed745a89d527439fdddb237348f678635fa025425075986a5b50517665559",
+    "packages/backend-next/test/integration/migration-proof.test.ts": "e24402924caa8f3d12ab4b4a0983f454e40cb4e5fe1d16aec28052116c166e5f",
+    "scripts/migration-proof-contract.test.mjs": "75f9b86dc2621783310ed0a0838be550531eaad73ffd486a75256898afae0c89",
+    "docs/superpowers/compatibility/migration-proof/source.json": "1e528349ab174745ae6e3d1d631f4525d6b798082bf9cf4af2b12e46e677f4b6"
+  },
+  "checks": {
+    "integration": {
+      "status": "PASS",
+      "files": 2,
+      "tests": 13,
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55568 MIGRATION_PROOF_OBSERVATIONS=/tmp/migration-proof-568-1fe7ef48-observations.jsonl pnpm --filter backend-next test:integration test/integration/migrations.test.ts test/integration/migration-proof.test.ts",
+      "execution": "Equivalent package-local vitest binary run after dependency-order build; no runtime edits during measurement"
+    },
+    "source": {
+      "status": "PASS",
+      "tests": 3,
+      "skipped": 0,
+      "command": "BACKEND_NEXT_UPSTREAM_PATH=/tmp/tiramiss-relay171-upstream node --test scripts/migration-proof-contract.test.mjs"
+    }
+  },
+  "observations": [
+    {
+      "scenario": "transaction",
+      "mode": "all",
+      "result": {
+        "mode": "all",
+        "transaction": [
+          null,
+          null
+        ],
+        "incompatibleAllRejected": false
+      }
+    },
+    {
+      "scenario": "transaction",
+      "mode": "each",
+      "result": {
+        "mode": "each",
+        "transaction": [
+          false,
+          false
+        ],
+        "incompatibleAllRejected": true
+      }
+    },
+    {
+      "scenario": "history",
+      "mode": "each",
+      "result": {
+        "before": 348,
+        "after": 349,
+        "preserved": true,
+        "repeated": true,
+        "checks": [
+          0,
+          0
+        ],
+        "missing": {
+          "name": "DiagnosticError",
+          "code": "MIGRATION_HISTORY_MISSING",
+          "details": {
+            "scope": "upstream",
+            "table": "public.migrations"
+          }
+        },
+        "pending": {
+          "name": "DiagnosticError",
+          "code": "PENDING_MIGRATIONS",
+          "details": {
+            "scope": "upstream",
+            "count": 1,
+            "migrations": [
+              "Init1000000000000"
+            ]
+          }
+        },
+        "drift": "SCHEMA_DRIFT",
+        "internalCount": 8,
+        "indexes": [
+          {
+            "name": "IDX_0e00498f180193423c992bc437",
+            "oid": 103963,
+            "valid": true,
+            "unique": false,
+            "definition": "CREATE INDEX \"IDX_0e00498f180193423c992bc437\" ON public.note_favorite USING btree (\"noteId\")"
+          },
+          {
+            "name": "IDX_68881008f7c3588ad7ecae471c",
+            "oid": 103964,
+            "valid": true,
+            "unique": false,
+            "definition": "CREATE INDEX \"IDX_68881008f7c3588ad7ecae471c\" ON public.user_note_pining USING btree (\"noteId\")"
+          },
+          {
+            "name": "IDX_a6f649630f55af3888e5a42919",
+            "oid": 103767,
+            "valid": true,
+            "unique": false,
+            "definition": "CREATE INDEX \"IDX_a6f649630f55af3888e5a42919\" ON public.note USING btree (\"userId\", id DESC)"
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "failure",
+      "mode": "all",
+      "result": {
+        "before": 342,
+        "after": 349,
+        "firstIndexRemained": false,
+        "secondIndexRemained": false,
+        "internalAbsentOnFailure": true,
+        "pending": 7,
+        "recoveredValid": true,
+        "validIndexesReused": true
+      }
+    },
+    {
+      "scenario": "failure",
+      "mode": "each",
+      "result": {
+        "before": 342,
+        "after": 349,
+        "firstIndexRemained": true,
+        "secondIndexRemained": false,
+        "internalAbsentOnFailure": true,
+        "pending": 7,
+        "recoveredValid": true,
+        "validIndexesReused": true
+      }
+    },
+    {
+      "scenario": "composite",
+      "mode": "each",
+      "result": {
+        "invalidBefore": true,
+        "validAfter": true,
+        "invalidReplaced": true,
+        "validReused": true,
+        "oldIndexDropped": true,
+        "definition": "CREATE INDEX \"IDX_724b311e6f883751f261ebe378\" ON public.note USING btree (\"userId\", id DESC)"
+      }
+    },
+    {
+      "scenario": "invalid-pin",
+      "mode": "each",
+      "result": {
+        "invalidBefore": 2,
+        "validNonUniqueAfter": 2,
+        "invalidReplaced": true,
+        "definitions": [
+          "CREATE INDEX \"IDX_0e00498f180193423c992bc437\" ON public.note_favorite USING btree (\"noteId\")",
+          "CREATE INDEX \"IDX_68881008f7c3588ad7ecae471c\" ON public.user_note_pining USING btree (\"noteId\")"
+        ]
+      }
+    }
+  ],
+  "logs": {
+    "integration": "\n RUN  v5.0.3 /home/osamu/develop/tiramiss/.claude/worktrees/migration-proof-568/packages/backend-next\n\n(node:272) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\n Test Files  2 passed (2)\n      Tests  13 passed (13)\n   Start at  19:21:47\n   Duration  12.00s (tests 89%, transform 8%, import 3%)\n\n",
+    "source": "✔ all 349 migration file names and bytes retain the pinned-source identity (4.958767ms)\n✔ fixed upstream source uses the same each/all environment contract exercised by the real PG cases (0.15908ms)\n✔ optional source checkout verifies every copied migration and the recorded config literal (722.412854ms)\nℹ tests 3\nℹ suites 0\nℹ pass 3\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 764.615803\n"
+  },
+  "limitations": [
+    "Pinned upstream comparison is literal ormconfig source and all349 migration byte equality, not an upstream full-server execution.",
+    "Observed TypeORM/PG behavior is bounded by the checked fixtures; no unconditional rollback or arbitrary retry guarantee.",
+    "Invalid indexes were produced by failed unique concurrent fixture DDL, not by cancelling the product nonunique migration.",
+    "Migrations and schema checkers cover history identity and registered entity metadata respectively; #138/#114 and production cutover remain incomplete."
+  ]
+}
