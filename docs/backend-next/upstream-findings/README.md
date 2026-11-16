@@ -54,3 +54,4 @@
 | [UF-011](packages/backend/src/server/api/endpoints/drive/folders/update.md#uf-011-フォルダーの同時更新で別の列の変更を古い値に戻す) | `server/api/endpoints/drive/folders/update.ts` | 名前・親の同時更新で先の別列変更を古い値に戻す | 引き継いだ（#278） | 未報告 |
 | [UF-012](packages/backend/src/core/MetaService.md#uf-012-取得中の古いmetaが通知済みの値を上書きする) | `core/MetaService.ts` | 取得中の古いMetaが通知後にcacheを上書きする | 引き継いだ（#317） | 未報告 |
 | [UF-013](packages/backend/src/core/MetaService.md#uf-013-周期再取得のdbエラーにrejection-handlerがない) | `core/MetaService.ts` | 周期再取得のDB失敗が未処理rejectionになる | loggerへ報告（#317） | 未報告 |
+| [UF-014](packages/backend/src/server/web/ClientServerService.md#uf-014-twemojiバッジの96px指定に対して512pxが出力される) | `server/web/ClientServerService.ts` | Sharp 0.35.5の固定画像バッジが96px指定に対して512pxになる | 引き継いだ（#555） | 未報告 |

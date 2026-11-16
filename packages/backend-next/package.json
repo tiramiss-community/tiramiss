@@ -24,6 +24,8 @@
 		"start": "node built/entrypoints/supervisor.js"
 	},
 	"dependencies": {
+		"@fastify/send": "4.1.1",
+		"@misskey-dev/emoji-assets": "17.0.3",
 		"@misskey-dev/summaly": "5.5.2",
 		"backend-upstream": "workspace:*",
 		"typeorm": "1.1.1",

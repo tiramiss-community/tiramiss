@@ -1,0 +1,467 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "corpusSha256": "d3a54c083dc659e9ad6b526d00ac6bc33f3d2ae758ae1119dfaf60ac1c546561",
+  "source": {
+    "path": "packages/backend/src/server/web/ClientServerService.ts",
+    "sha256": "8915cc056efcf97f930bd538c84bed253a25b2042d22cb259167fb4f686575c4"
+  },
+  "nodeVersion": "v26.4.0",
+  "fastifyVersion": "5.12.5",
+  "sharpVersion": "0.35.5",
+  "staticVersion": "10.1.5",
+  "assetVersion": "17.0.3",
+  "sendVersion": "4.1.1",
+  "badgeMetadata": {
+    "width": 512,
+    "height": 512,
+    "format": "png"
+  },
+  "observationKind": "literal three pinned route callbacks; real listening Fastify/static/Sharp; controlled actual package images and corrupt/missing file; not full upstream application",
+  "inputs": [
+    {
+      "path": "fluent-emoji/1f600.png",
+      "sha256": "4d494331c8435b187e2aeb6ca831d38b457c9cfc09eeb67641a87362e873b38e"
+    },
+    {
+      "path": "twemoji/1f600.svg",
+      "sha256": "41478e547c5b6ad66bfcf91ead5350fa0bc247956c3ff912020327e3e9ad0d2b"
+    }
+  ],
+  "cases": [
+    {
+      "id": "fluent",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=2592000",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "8322",
+        "etag": "W/\"2082-dc6acfac00\"",
+        "last-modified": "Sat, 01 Jan 2000 00:00:00 GMT",
+        "accept-ranges": "bytes",
+        "content-range": null
+      },
+      "bodySha256": "4d494331c8435b187e2aeb6ca831d38b457c9cfc09eeb67641a87362e873b38e"
+    },
+    {
+      "id": "twemoji",
+      "status": 200,
+      "headers": {
+        "content-type": "image/svg+xml",
+        "cache-control": "public, max-age=2592000",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "450",
+        "etag": "W/\"1c2-dc6acfac00\"",
+        "last-modified": "Sat, 01 Jan 2000 00:00:00 GMT",
+        "accept-ranges": "bytes",
+        "content-range": null
+      },
+      "bodySha256": "41478e547c5b6ad66bfcf91ead5350fa0bc247956c3ff912020327e3e9ad0d2b"
+    },
+    {
+      "id": "badge",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "max-age=2592000",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "14551",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "bodySha256": "5d59fe1b621b6b143dcc7359793c49b3e2a4e8736f3712e0899e78c5c32952cd"
+    },
+    {
+      "id": "fluent-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=2592000",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "8322",
+        "etag": "W/\"2082-dc6acfac00\"",
+        "last-modified": "Sat, 01 Jan 2000 00:00:00 GMT",
+        "accept-ranges": "bytes",
+        "content-range": null
+      },
+      "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "twemoji-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/svg+xml",
+        "cache-control": "public, max-age=2592000",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "450",
+        "etag": "W/\"1c2-dc6acfac00\"",
+        "last-modified": "Sat, 01 Jan 2000 00:00:00 GMT",
+        "accept-ranges": "bytes",
+        "content-range": null
+      },
+      "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "badge-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "max-age=2592000",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "14551",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "missing-fluent",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "93",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"message\":\"Route GET:/fluent-emoji/ffff.png not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+    },
+    {
+      "id": "missing-twemoji",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "88",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"message\":\"Route GET:/twemoji/ffff.svg not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+    },
+    {
+      "id": "missing-badge",
+      "status": 500,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "111",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"statusCode\":500,\"error\":\"Internal Server Error\",\"message\":\"Input file is missing: <assets>/twemoji/ffff.svg\"}"
+    },
+    {
+      "id": "corrupt-badge",
+      "status": 500,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "107",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"statusCode\":500,\"error\":\"Internal Server Error\",\"message\":\"Input file contains unsupported image format\"}"
+    },
+    {
+      "id": "missing-head",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "89",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": ""
+    },
+    {
+      "id": "badge-error-head",
+      "status": 500,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "111",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": ""
+    },
+    {
+      "id": "uppercase",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "0",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": ""
+    },
+    {
+      "id": "wrong-extension",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "0",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": ""
+    },
+    {
+      "id": "badge-wrong-extension",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "0",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": ""
+    },
+    {
+      "id": "slash",
+      "status": 404,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "91",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"message\":\"Route GET:/twemoji/a/1f600.svg not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+    },
+    {
+      "id": "encoded-slash",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "0",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": ""
+    },
+    {
+      "id": "encoded-name",
+      "status": 200,
+      "headers": {
+        "content-type": "image/svg+xml",
+        "cache-control": "public, max-age=2592000",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "450",
+        "etag": "W/\"1c2-dc6acfac00\"",
+        "last-modified": "Sat, 01 Jan 2000 00:00:00 GMT",
+        "accept-ranges": "bytes",
+        "content-range": null
+      },
+      "bodySha256": "41478e547c5b6ad66bfcf91ead5350fa0bc247956c3ff912020327e3e9ad0d2b"
+    },
+    {
+      "id": "double-encoded",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "0",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": ""
+    },
+    {
+      "id": "bad-escape",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "125",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/twemoji/%ZZ.svg' is not a valid url component\",\"statusCode\":400}"
+    },
+    {
+      "id": "bad-codepoint",
+      "status": 400,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "131",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_BAD_URL\",\"message\":\"'/twemoji/%ED%A0%80.svg' is not a valid url component\",\"statusCode\":400}"
+    },
+    {
+      "id": "encoded-traversal",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "0",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": ""
+    },
+    {
+      "id": "empty",
+      "status": 404,
+      "headers": {
+        "content-type": null,
+        "cache-control": null,
+        "content-security-policy": null,
+        "content-length": "0",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": ""
+    },
+    {
+      "id": "range",
+      "status": 206,
+      "headers": {
+        "content-type": "image/svg+xml",
+        "cache-control": "public, max-age=2592000",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "16",
+        "etag": "W/\"1c2-dc6acfac00\"",
+        "last-modified": "Sat, 01 Jan 2000 00:00:00 GMT",
+        "accept-ranges": "bytes",
+        "content-range": "bytes 0-15/450"
+      },
+      "bodySha256": "813f82cd6f47aba56f412ef54b742d977603bed24940af5794ec668b21a074bd"
+    },
+    {
+      "id": "range-invalid",
+      "status": 416,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "84",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": "bytes */450"
+      },
+      "body": "{\"statusCode\":416,\"error\":\"Range Not Satisfiable\",\"message\":\"Range Not Satisfiable\"}"
+    },
+    {
+      "id": "not-modified",
+      "status": 304,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=2592000",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": null,
+        "etag": "W/\"1c2-dc6acfac00\"",
+        "last-modified": "Sat, 01 Jan 2000 00:00:00 GMT",
+        "accept-ranges": "bytes",
+        "content-range": null
+      },
+      "body": ""
+    },
+    {
+      "id": "if-none-match",
+      "status": 304,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=2592000",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": null,
+        "etag": "W/\"1c2-dc6acfac00\"",
+        "last-modified": "Sat, 01 Jan 2000 00:00:00 GMT",
+        "accept-ranges": "bytes",
+        "content-range": null
+      },
+      "body": ""
+    },
+    {
+      "id": "precondition",
+      "status": 412,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "80",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "body": "{\"statusCode\":412,\"error\":\"Precondition Failed\",\"message\":\"Precondition Failed\"}"
+    },
+    {
+      "id": "badge-ignores-conditional",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "max-age=2592000",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'",
+        "content-length": "14551",
+        "etag": null,
+        "last-modified": null,
+        "accept-ranges": null,
+        "content-range": null
+      },
+      "bodySha256": "5d59fe1b621b6b143dcc7359793c49b3e2a4e8736f3712e0899e78c5c32952cd"
+    }
+  ]
+}

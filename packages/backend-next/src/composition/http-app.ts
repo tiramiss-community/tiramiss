@@ -9,6 +9,7 @@ import { registerHttpAppWork } from './http-app-work.js';
 import { createInstanceAdminHttp } from './instance-admin-http.js';
 import { createUrlPreviewHttp } from './url-preview-http.js';
 import { createPublicDocumentsHttp } from './public-documents-http.js';
+import { createEmojiImagesHttp } from './emoji-images-http.js';
 import { createWebfingerHttp } from './webfinger-http.js';
 import { createFollowCollectionsHttp } from './follow-collections-http.js';
 import { createOutboxHttp } from './outbox-http.js';
@@ -36,6 +37,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		.route('/', createEmojiHttp(resources, config))
 		.route('/', createPublicEmojisHttp(resources))
 		.route('/', createPublicDocumentsHttp(resources, config))
+		.route('/', createEmojiImagesHttp())
 		.route('/', folders.app);
 	registerHttpAppWork(app, folders.idle);
 	registerNoteRoutes(app, resources, note);
