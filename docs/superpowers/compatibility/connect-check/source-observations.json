@@ -1,0 +1,62 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "manifest": {
+    "path": "packages/backend/scripts/check_connect.js",
+    "sha256": "2146bcd2b02d7d919fd5e122b4c5c7406273dd03b2f7553be09f3ef279f95e48"
+  },
+  "mode": "literal-script-body-real-redis-pg-explicit-db-config-bindings",
+  "limitations": [
+    "Not full upstream config loader, Entity graph, query cache or full server.",
+    "Failure cleanup observed after accepted operations settle; upstream Promise.all returns early."
+  ],
+  "cases": [
+    {
+      "id": "success",
+      "rejects": false,
+      "redisConnections": 5,
+      "released": true
+    },
+    {
+      "id": "database",
+      "rejects": true,
+      "redisConnections": 5,
+      "released": true
+    },
+    {
+      "id": "redis",
+      "rejects": true,
+      "redisConnections": 5,
+      "released": true
+    },
+    {
+      "id": "redisForPubsub",
+      "rejects": true,
+      "redisConnections": 5,
+      "released": true
+    },
+    {
+      "id": "redisForJobQueue",
+      "rejects": true,
+      "redisConnections": 5,
+      "released": true
+    },
+    {
+      "id": "redisForTimelines",
+      "rejects": true,
+      "redisConnections": 5,
+      "released": true
+    },
+    {
+      "id": "redisForReactions",
+      "rejects": true,
+      "redisConnections": 5,
+      "released": true
+    },
+    {
+      "id": "fallback",
+      "rejects": false,
+      "redisConnections": 1,
+      "released": true
+    }
+  ]
+}

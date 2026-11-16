@@ -1,0 +1,7 @@
+{
+  "baseRevision": "8c3f6d51e17a2a2f73c2f2156a384c2519ca21c5",
+  "path": "packages/backend-next/package.json",
+  "currentSha256": "68ad8750a1b118f683188c44b979baeacf75b272fac9917739a8efb7ed468eae",
+  "previousSha256": "8eae5596313821fb81aeaf01d7e5ae93be9204a48f9323621f23390710746ad8",
+  "remove": "\t\t\"check:connect\": \"node built/entrypoints/check-connect.js\",\n"
+}

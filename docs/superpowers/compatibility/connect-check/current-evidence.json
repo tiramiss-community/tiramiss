@@ -1,0 +1,95 @@
+{
+  "issue": 577,
+  "baseRevision": "8c3f6d51e17a2a2f73c2f2156a384c2519ca21c5",
+  "runtimeRevision": "4fd6cb1060aa372dee220a4dc74919c368b43905",
+  "inputScope": "12 checkpoint-diff files plus config loader, DataSource builder and lockfile; finite set, not every transitive/toolchain input.",
+  "inputs": {
+    "docs/superpowers/compatibility/connect-check/README.md": "602d1969c3a7bea4026d4ad91318ded70d0d2fd6afa01c12610eb5f5d586d7a0",
+    "docs/superpowers/compatibility/connect-check/package-predecessor.json": "f2a56c988c6e075abc439947ccefa50fb20cee09d41b06cbad0030eb18dff5a1",
+    "docs/superpowers/compatibility/connect-check/source-observations.json": "deeeb5c221cbd1399eb057e06b6b61e8d962eee69118b2683bf3af300098bca7",
+    "docs/superpowers/compatibility/connect-check/source-probe.mjs": "fa81d4a5987f7f32bda624ffc809e59631f988a9434bec1ee1a671a193b4c092",
+    "packages/backend-next/README.md": "9022356a2dcd4b86b0559a472420d52a458948eccda78b47c36f49ca2b6faedc",
+    "packages/backend-next/package.json": "68ad8750a1b118f683188c44b979baeacf75b272fac9917739a8efb7ed468eae",
+    "packages/backend-next/src/config/load-config.ts": "6771450cf0ae420bff37bbbf677f6dc46b2e40d214f31b575b90688abc8d4213",
+    "packages/backend-next/src/entrypoints/check-connect.ts": "69885e72f3ab79c761edc43d845585732d3e011c91508eb24a38172b8245a598",
+    "packages/backend-next/src/platform/connect-check.ts": "d23ff7dc0f9c02f7ea161c62f2c452757bd15e5ab13e2ebb8fa942109ce28d18",
+    "packages/backend-next/src/platform/database/data-source.ts": "ffced6c8a1f3994cae8424ae4aae594aefdb52846461caadecad03cc9e1c8f90",
+    "packages/backend-next/test/processes/connect-check.test.ts": "fa0f68d27414e1476ea4af86248720d90b536a637d67d8cc23dc2e7566df12d5",
+    "pnpm-lock.yaml": "99310316507984158e2af521c1de0035230961dd496fbff60b32d461b85b2396",
+    "scripts/connect-check-package-evidence.mjs": "09771af33e15e9bc396402c540dc566d407215f4c6899bc1db7abf9140ecacb7",
+    "scripts/connect-check-package-evidence.test.mjs": "2d8e7dd26af86f700f16337f3342eb7448833c13cf38f3b9dd3ac6686a4b5416",
+    "scripts/video-ingest-dependency-evidence.mjs": "9f7b520782d0839ac40ba602193d821f23082ebf0e7743208945db47211d54a1"
+  },
+  "logs": {
+    "docs/superpowers/compatibility/connect-check/logs/build.log": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
+    "docs/superpowers/compatibility/connect-check/logs/package.log": "c1e1799da504b85081e7c67ef532a6d5cf1de409732a15f63fd6545b09f291a7",
+    "docs/superpowers/compatibility/connect-check/logs/process.log": "e68e5245e1bfab27b86ccdab730d7e48a494d0ef8ae8eea905e24d11c99d6a02",
+    "docs/superpowers/compatibility/connect-check/logs/root-near.log": "e1f8f67abd43bb2f4d727664d9ddb71845970d8406074d6384fcc485c8a7d791",
+    "docs/superpowers/compatibility/connect-check/logs/root.log": "a07f14d94c703b0f9350a8ca92fb6428b2f4c41b4c75ada3c8ec30193b42baec",
+    "docs/superpowers/compatibility/connect-check/logs/shipping.log": "25fd7bd5694057eff99f127fcaf63f72dd6cc5ff578ff4ccfaec78588d11c319",
+    "docs/superpowers/compatibility/connect-check/logs/source.log": "3856a9831bc52ac9667d525432ad326e261ee36aa97bae6e29caf4d47c9dabdc",
+    "docs/superpowers/compatibility/connect-check/logs/sync.log": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd",
+    "docs/superpowers/compatibility/connect-check/logs/typecheck.log": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+  },
+  "results": {
+    "build": "PASS",
+    "typecheck": "PASS",
+    "sync": "PASS",
+    "process": {
+      "files": 2,
+      "tests": 35,
+      "newConnectCheckTests": 15,
+      "existingCliTests": 20,
+      "failed": 0,
+      "skipped": 0
+    },
+    "source": {
+      "cases": 8,
+      "mode": "literal-script-body-real-redis-pg-explicit-db-config-bindings"
+    },
+    "packageProjection": {
+      "tests": 10,
+      "failed": 0
+    },
+    "inventoryImageNear": {
+      "tests": 17,
+      "failed": 0
+    },
+    "rootContracts": {
+      "tests": 809,
+      "failed": 0,
+      "skipped": 0
+    },
+    "shipping": {
+      "lint": "PASS",
+      "SPDX": "PASS",
+      "localeSafety": "PASS"
+    }
+  },
+  "environment": {
+    "node": "26.4.0",
+    "pnpm": "12.9.1",
+    "composeProject": "backend-next-connect-577",
+    "postgresPort": 55577,
+    "redisPort": 56577,
+    "jobQueueRedisPort": 56578
+  },
+  "limits": [
+    "No full upstream config/Entity/cache/server comparison; source binding uses real drivers and fixed literal script body.",
+    "No migration, healthz, Meilisearch or ordinary server readiness claim.",
+    "R2 red2 log proved missing CLI/script; earlier red1 environment setup failed authentication before cases and is not a product failure.",
+    "Redis-password-only fault on unauthenticated default user is only an ioredis warning; corrected authentication faults use a nonexistent ACL username.",
+    "Earlier dedup attempt used global total_connections_received and observed Compose healthchecks; final test counts only the dedicated client name with MONITOR.",
+    "No broad backend-next unit/integration run; CLI process is the nearest executable boundary."
+  ],
+  "review": {
+    "tool": "CodeRabbit CLI 0.9.5",
+    "reviewedFiles": [
+      "packages/backend-next/README.md",
+      "packages/backend-next/package.json",
+      "scripts/video-ingest-dependency-evidence.mjs"
+    ],
+    "findings": 1,
+    "disposition": "The reported missing new reader exists in runtimeRevision. This review omitted all new files; no full review claim. Final independent review and GitHub review tracked separately."
+  }
+}

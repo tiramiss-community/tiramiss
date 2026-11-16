@@ -1,0 +1,25 @@
+✔ API registry uses exported names and ignores nearby tests and comments (3.449245ms)
+✔ registry coverage rejects two aliases for one handler leaving another unregistered (0.280763ms)
+✔ HTTP inventory keeps generic, dynamic, empty-token and constrained routes distinct (3.30303ms)
+✔ switch inventory includes stream command aliases and relationship actions (0.524562ms)
+✔ HTTP route constants resolve only explicit string declarations (0.793ms)
+✔ AP and scheduled job discovery includes dispatch boundaries without executing source (0.930077ms)
+✔ domain assignment uses the most specific explicit rule and rejects gaps or ties (0.219298ms)
+✔ catalog rejects duplicate contracts, unowned domains and broken source references (0.335734ms)
+✔ verified or partial status requires existing implementation and test evidence (0.205806ms)
+✔ audit rows keep their verdict and cannot pose as enumerated contracts (0.533837ms)
+✔ explicit contract evidence uses only its immutable tree while legacy rows retain the global baseline (0.28718ms)
+✔ image ingest dependency successor restores exactly two sealed historical inputs (12.409358ms)
+✔ dependency projection rejects live drift: packages/backend-next/package.json (0.853762ms)
+✔ dependency projection rejects live drift: pnpm-lock.yaml (0.87905ms)
+✔ dependency projection rejects live drift: docs/superpowers/compatibility/image-ingest/dependency-predecessor.json (1.345752ms)
+✔ dependency reader rechecks a changed second input without retaining stale bytes (4.828874ms)
+✔ source observations bind fixed bytes and four pinned upstream sources (0.37628ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 175.902918

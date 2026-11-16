@@ -1,0 +1,47 @@
+✔ existing triggers remain and every script helper change triggers the checks (1.145101ms)
+✔ four independent lanes preserve each validation once, plus explicit per-runner preparation (0.380049ms)
+✔ runtime lanes provide separate Redis for Pub/Sub and jobQueue checks (0.19192ms)
+✔ the required foundation check always examines every lane and cannot be silently skipped (0.129949ms)
+✔ actual YAML gate succeeds only with all four successful results (21.694198ms)
+✔ actual YAML gate rejects contracts failure (20.395618ms)
+✔ actual YAML gate rejects contracts cancelled (16.187107ms)
+✔ actual YAML gate rejects contracts skipped (16.754787ms)
+✔ actual YAML gate rejects contracts unknown (16.707741ms)
+✔ actual YAML gate rejects missing contracts (16.729195ms)
+✔ actual YAML gate rejects checks failure (17.609179ms)
+✔ actual YAML gate rejects checks cancelled (16.738746ms)
+✔ actual YAML gate rejects checks skipped (18.156318ms)
+✔ actual YAML gate rejects checks unknown (16.509531ms)
+✔ actual YAML gate rejects missing checks (18.743983ms)
+✔ actual YAML gate rejects integration failure (18.506975ms)
+✔ actual YAML gate rejects integration cancelled (16.433116ms)
+✔ actual YAML gate rejects integration skipped (16.044937ms)
+✔ actual YAML gate rejects integration unknown (18.107401ms)
+✔ actual YAML gate rejects missing integration (18.851254ms)
+✔ actual YAML gate rejects process failure (18.815669ms)
+✔ actual YAML gate rejects process cancelled (18.123467ms)
+✔ actual YAML gate rejects process skipped (17.801494ms)
+✔ actual YAML gate rejects process unknown (16.574201ms)
+✔ actual YAML gate rejects missing process (16.798325ms)
+✔ actual YAML gate rejects extra dependency (15.758243ms)
+✔ actual YAML gate rejects malformed JSON (16.930697ms)
+✔ actual YAML gate rejects null (16.187915ms)
+✔ actual YAML gate rejects empty results (16.350162ms)
+✔ restores only the measured pre-CLI package and passes unrelated inputs through (2.063739ms)
+✔ rejects live package drift, proof drift, and drift through a reused reader (1.719897ms)
+✔ connect check projects exactly one script into the existing measured video package and passes unrelated inputs through (1.848391ms)
+✔ connect check refuses live input and subsequent drift: packages/backend-next/package.json (0.929083ms)
+✔ connect check refuses live input and subsequent drift: docs/superpowers/compatibility/connect-check/package-predecessor.json (0.292421ms)
+✔ video dependency successor restores exactly two sealed inputs and passes unrelated bytes through (6.947039ms)
+✔ video dependency projection rejects live drift and drift after an earlier read: packages/backend-next/package.json (2.254018ms)
+✔ video dependency projection rejects live drift and drift after an earlier read: pnpm-lock.yaml (2.299182ms)
+✔ video dependency projection rejects live drift and drift after an earlier read: docs/superpowers/compatibility/video-ingest/dependency-predecessor.json (2.966991ms)
+✔ video source observations bind fixed bytes, four pinned sources, actual frames, failures and cleanup (0.914646ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 493.473914

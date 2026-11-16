@@ -1,0 +1,18 @@
+✔ restores only the measured pre-CLI package and passes unrelated inputs through (1.908105ms)
+✔ rejects live package drift, proof drift, and drift through a reused reader (1.591328ms)
+✔ connect check projects exactly one script into the existing measured video package and passes unrelated inputs through (1.574461ms)
+✔ connect check refuses live input and subsequent drift: packages/backend-next/package.json (0.923116ms)
+✔ connect check refuses live input and subsequent drift: docs/superpowers/compatibility/connect-check/package-predecessor.json (0.279908ms)
+✔ video dependency successor restores exactly two sealed inputs and passes unrelated bytes through (6.336645ms)
+✔ video dependency projection rejects live drift and drift after an earlier read: packages/backend-next/package.json (2.097373ms)
+✔ video dependency projection rejects live drift and drift after an earlier read: pnpm-lock.yaml (1.796468ms)
+✔ video dependency projection rejects live drift and drift after an earlier read: docs/superpowers/compatibility/video-ingest/dependency-predecessor.json (1.90256ms)
+✔ video source observations bind fixed bytes, four pinned sources, actual frames, failures and cleanup (0.333974ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 60.227346
