@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { inEvidenceValidationScope, scopedEvidenceValidation } from './evidence-validation-scope.mjs';
 import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -39,6 +40,7 @@ const sourceProbePreviousSha256 = '758b3e79c87329ffabe33e0ba1976506885f16f3739bf
 const reviewedRecordSha256 = '5cfc3683614178b90531901018bca75e0c67e3e3faca8421becbc11cc5c7e175';
 
 export function validateLocalWebfingerEvidence(value, readFile = read, optional = optionalRead) {
+ return scopedEvidenceValidation(validateLocalWebfingerEvidence, value, readFile, optional, (readFile, optional) => {
 	assert.equal(value.schemaVersion, 1);
 	assert.equal(value.scope, 'local-webfinger-single-identity-hop');
 	assert.equal(value.notesCreateStatus, 'partial');
@@ -191,9 +193,11 @@ export function validateLocalWebfingerEvidence(value, readFile = read, optional 
 		}
 	}
 	assert.equal(sha(JSON.stringify(value)), reviewedRecordSha256, 'WebFinger reviewed record');
+ });
 }
 
 export function localWebfingerDigest(path, previousDigest, readFile = read, optional = optionalRead) {
+ return inEvidenceValidationScope(() => {
 	if (path !== file && path !== consumerFile) return localActorFieldsDigest(path, previousDigest, readFile, optional);
 	const value = JSON.parse(readFile(evidencePath));
 	const binding = path === file ? value : value.consumerRenewal;
@@ -201,9 +205,12 @@ export function localWebfingerDigest(path, previousDigest, readFile = read, opti
 	assert(previousDigest === previous || previousDigest === binding.sha256, 'WebFinger previous identity');
 	validateLocalWebfingerEvidence(value, readFile, optional);
 	return localActorFieldsDigest(path, binding.sha256, readFile, optional);
+ });
 }
 
 // Existing WebFinger callers retain their R3 identity projection.
 export function currentLocalWebfingerDigest(path, previousDigest, readFile = read, optional = optionalRead) {
+ return inEvidenceValidationScope(() => {
 	return currentLocalActorFieldsDigest(path, localWebfingerDigest(path, previousDigest, readFile, optional), readFile, optional);
+ });
 }

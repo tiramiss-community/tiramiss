@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { inEvidenceValidationScope } from './evidence-validation-scope.mjs';
 import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import { remoteProfileDigest } from './remote-profile-evidence.mjs';
 import { createHash } from 'node:crypto';
@@ -31,14 +32,17 @@ function measuredFile(value, file) {
 
 // Extend the existing identity chain; never replace a historical receipt or its run counts.
 export function localActorTagDigest(file, previousDigest, label = 'local actor tags previous identity', readFile = read, optional) {
+ return inEvidenceValidationScope(() => {
 	const value = receipt(readFile);
 	if (!value.files[file]) return remoteProfileDigest(file, previousDigest, label, readFile, optional);
 	const binding = measuredFile(value, file);
 	assert(binding.previousSha256.includes(previousDigest) || binding.sha256 === previousDigest, label);
 	return remoteProfileDigest(file, binding.sha256, label, readFile, optional);
+ });
 }
 
 export function validateLocalActorTagEvidence(value, readFile = read, optional) {
+ return inEvidenceValidationScope(() => {
 	assert.equal(value.scope, 'local-actor-tag-publication');
 	assert.equal(value.notesCreateStatus, 'partial');
 	assert.equal(value.postingComplete, false);
@@ -64,4 +68,5 @@ export function validateLocalActorTagEvidence(value, readFile = read, optional) 
 	}
 	assert.match(value.brokerReceiptSha256, /^[a-f0-9]{64}$/);
 	assert.match(value.frozenInputMapSha256, /^[a-f0-9]{64}$/);
+ });
 }

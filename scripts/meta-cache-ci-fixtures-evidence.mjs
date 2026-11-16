@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 const root = new URL('../', import.meta.url);
@@ -39,6 +40,7 @@ export const ciFixtureFiles = Object.freeze([
 
 // A separate CI-only transition leaves the measured27/33 product proof unchanged.
 export function validateMetaCacheCiFixtures(value, readFile = read, optional = optionalRead) {
+ return scopedEvidenceValidation(validateMetaCacheCiFixtures, value, readFile, optional, (readFile, optional) => {
  if (value === undefined) {
   value = sealed(readFile(directory + 'ci-fixtures-current-evidence.json'), seal, 'receipt');
  }
@@ -76,8 +78,10 @@ export function validateMetaCacheCiFixtures(value, readFile = read, optional = o
   }
  }
  return { ...previous.files };
+ });
 }
 export function readPreMetaCacheCiFixtures(path, encoding, readFile = read, optional = optionalRead) {
+ return withEvidenceRequestedPath(path, () => {
  if (!ciFixtureFiles.includes(path)) {
   const bytes = readFile(path);
   return encoding ? bytes.toString(encoding) : bytes;
@@ -87,4 +91,5 @@ export function readPreMetaCacheCiFixtures(path, encoding, readFile = read, opti
  assert.equal(sha(readFile(path)), current.inputs[path], `Meta cache measured current input drift (CI fixtures): ${path}`);
  const bytes = Buffer.from(previous[path]);
  return encoding ? bytes.toString(encoding) : bytes;
+ });
 }

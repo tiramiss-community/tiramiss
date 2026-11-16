@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { inEvidenceValidationScope, scopedEvidenceValidation } from './evidence-validation-scope.mjs';
 import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -47,6 +48,7 @@ function applicableRuns(file) {
 }
 
 export function validateLocalActorFieldsEvidence(value, readFile = read, optional = optionalRead) {
+ return scopedEvidenceValidation(validateLocalActorFieldsEvidence, value, readFile, optional, (readFile, optional) => {
 	assert.equal(value.schemaVersion, 1);
 	assert.equal(value.scope, 'local-actor-fields-finite-identity-renewal');
 	assert.equal(value.notesCreateStatus, 'partial');
@@ -132,20 +134,25 @@ export function validateLocalActorFieldsEvidence(value, readFile = read, optiona
 		}
 	}
 	assert.equal(sha(JSON.stringify(value)), canonicalRecordSha256, 'fields canonical record');
+ });
 }
 
 // This leaf deliberately imports no earlier evidence helper. Historical callers
 // keep their projections; current-byte callers append this finite hop explicitly.
 export function localActorFieldsDigest(file, previousDigest, readFile = read, optional = optionalRead) {
+ return inEvidenceValidationScope(() => {
 	if (!renewedFiles.includes(file)) return previousDigest;
 	const value = JSON.parse(readFile(evidencePath));
 	const binding = value.files[file];
 	assert(previousDigest === binding.previousSha256 || previousDigest === binding.sha256, 'fields previous identity');
 	validateLocalActorFieldsEvidence(value, readFile, optional);
 	return binding.sha256;
+ });
 }
 
 // Preserve the fields projection; current consumers append featured then follow collections.
 export function currentLocalActorFieldsDigest(file, previousDigest, readFile = read, optional = optionalRead, driftLabel) {
+ return inEvidenceValidationScope(() => {
 	return localFollowCollectionsDigest(file, localFeaturedDigest(file, localActorFieldsDigest(file, previousDigest, readFile, optional), readFile, optional, driftLabel), readFile, optional, driftLabel);
+ });
 }

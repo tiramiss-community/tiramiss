@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { scopedEvidenceValidation } from './evidence-validation-scope.mjs';
 import { driveFilePredecessorFiles, readPreDriveFiles } from './drive-files-evidence.mjs';
 import { createValidatedMetaPredecessorReader } from './meta-cache-evidence.mjs';
 import { createHash } from 'node:crypto';
@@ -28,6 +29,7 @@ export const successorFiles = Object.freeze([
  'packages/backend-next/test/unit/composition/http-app.test.ts',
 ]);
 export function validateDriveFoldersSuccessor(value, rawRead = read, optional = optionalRead) {
+ return scopedEvidenceValidation(validateDriveFoldersSuccessor, value, rawRead, optional, (rawRead, optional) => {
  const beforeMeta = createValidatedMetaPredecessorReader(rawRead, optional);
  const previousPubsub = validateDriveFolderPubsubSuccessor(undefined, rawRead, optional);
  const readFile = path => path in previousPubsub ? Buffer.from(previousPubsub[path]) : driveFilePredecessorFiles.includes(path) ? readPreDriveFiles(path, undefined, rawRead) : beforeMeta(path);
@@ -66,4 +68,5 @@ export function validateDriveFoldersSuccessor(value, rawRead = read, optional = 
  const actual = optional(receiptPath);
  if (actual !== null) assert.equal(sha(actual), seal, 'folder actual receipt drift');
  return previous.files;
+ });
 }

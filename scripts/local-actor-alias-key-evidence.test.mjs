@@ -64,6 +64,6 @@ test('optional actual logs and receipt cannot disagree with saved measurements',
 
 test('successor reader has no ancestor helpers or subprocess fallback', () => {
  const source = read('scripts/local-actor-alias-key-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:') || m[1] === './local-outbox-evidence.mjs'));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:') || m[1] === './evidence-validation-scope.mjs' || m[1] === './local-outbox-evidence.mjs'));
  assert(!/execFile|spawn|import\(/.test(source));
 });

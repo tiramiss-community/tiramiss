@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { readPreEmojiObject } from './local-emoji-object-evidence.mjs';
@@ -48,6 +49,7 @@ function predecessor(value, readFile) {
 // The emoji leaf restores the two changed root inputs before this historical
 // measurement is checked. Existing receipt bytes, seals and optional log checks remain unchanged.
 export function validateOutboxSuccessor(value = record(read), rawRead = read, optional = optionalRead) {
+ return scopedEvidenceValidation(validateOutboxSuccessor, value, rawRead, optional, (rawRead, optional) => {
  const readFile = path => readPreEmojiObject(path, undefined, rawRead, optional);
  assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), canonicalSeal, 'outbox current receipt seal');
  assert.equal(value.runtimeRevision, '1e75c5b2b3be158fba8afb14a9c1c30809825127');
@@ -79,11 +81,13 @@ export function validateOutboxSuccessor(value = record(read), rawRead = read, op
  const receipt = optional(receiptPath);
  if (receipt !== null) assert.equal(sha(receipt), seal, 'outbox actual receipt drift');
  return previous;
+ });
 }
 
 // Outside the six historical consumers bytes pass through untouched. Before
 // any projection, check all 22 measured inputs, both seals and available logs.
 export function readPreOutbox(path, encoding, rawRead = read, optional = optionalRead) {
+ return withEvidenceRequestedPath(path, () => {
  const readFile = path => readPreEmojiObject(path, undefined, rawRead, optional);
  let bytes;
  if (successorFiles.includes(path)) {
@@ -91,4 +95,5 @@ export function readPreOutbox(path, encoding, rawRead = read, optional = optiona
   bytes = Buffer.from(validateOutboxSuccessor(value, rawRead, optional)[path]);
  } else bytes = readFile(path);
  return encoding ? bytes.toString(encoding) : bytes;
+ });
 }

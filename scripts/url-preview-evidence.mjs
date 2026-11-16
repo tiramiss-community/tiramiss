@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 import { createPreImageIngestDependencyReader } from './image-ingest-dependency-evidence.mjs';
 import { ciFixtureFiles, readPreMetaCacheCiFixtures } from './meta-cache-ci-fixtures-evidence.mjs';
 import { driveFilePredecessorFiles, readPreDriveFiles } from './drive-files-evidence.mjs';
@@ -54,6 +55,7 @@ function record(readFile) {
 // A finite terminal hop for #377/#560. Historical receipts remain byte-for-byte
 // immutable; only eight measured changed inputs are restored for their readers.
 export function validateUrlPreviewSuccessor(value, readFile = read, optional = optionalRead) {
+ return scopedEvidenceValidation(validateUrlPreviewSuccessor, value, readFile, optional, (readFile, optional) => {
  readFile = createPreImageIngestDependencyReader(readFile);
  const beforeMeta = createValidatedMetaPredecessorReader(readFile, optional);
  const previousInternalEvents = validateInternalEventsSuccessor(undefined, readFile, optional);
@@ -112,9 +114,11 @@ export function validateUrlPreviewSuccessor(value, readFile = read, optional = o
  const actual = optional(receiptPath);
  if (actual !== null) assert.equal(sha(actual), seal, 'URL preview actual receipt drift');
  return projected;
+ });
 }
 
 export function readPreUrlPreview(path, encoding, readFile = read, optional = optionalRead) {
+ return withEvidenceRequestedPath(path, () => {
  if (ciFixtureFiles.includes(path)) {
   return readPreMetaCacheCiFixtures(path, encoding, readFile, optional);
  }
@@ -125,4 +129,5 @@ export function readPreUrlPreview(path, encoding, readFile = read, optional = op
  if (pubsubSuccessorFiles.includes(path)) return readPreDriveFolderPubsub(path, encoding, readFile, optional);
  const bytes = successorFiles.includes(path) ? Buffer.from(validateUrlPreviewSuccessor(record(readFile), readFile, optional)[path]) : hasInternalEventPredecessor(path) ? readPreInternalEvents(path, undefined, readFile, optional) : readPrePreviewFixture(path, undefined, readFile, optional);
  return encoding ? bytes.toString(encoding) : bytes;
+ });
 }

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { inEvidenceValidationScope, scopedEvidenceValidation } from './evidence-validation-scope.mjs';
 import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import { localFollowCollectionsDigest } from './local-follow-collections-evidence.mjs';
 import { createHash } from 'node:crypto';
@@ -47,6 +48,7 @@ const canonicalRecordSha256 = 'f6f6ec9a456cf358bd78f3a725f32ccc54df1ded53784d976
 const recordBytesSha256 = '18e684d5c1ec212f6e3dff481764ab74385a3df7cf423f85108c99112c6a791f';
 
 export function validateLocalFeaturedEvidence(value, readFile = read, optional = optionalRead, driftLabel = 'featured current input drift') {
+ return scopedEvidenceValidation(validateLocalFeaturedEvidence, value, readFile, optional, (readFile, optional) => {
 	assert.equal(value.schemaVersion, 1);
 	assert.equal(value.scope, 'local-featured-finite-identity-hop');
 	assert.equal(value.notesCreateStatus, 'partial');
@@ -127,10 +129,12 @@ export function validateLocalFeaturedEvidence(value, readFile = read, optional =
 			} else if (run.id === 'source-probe') assert.equal(bytes.toString(), 'local-featured source: 100 cases --check\n', 'featured actual source count');
 		}
 	}
+ });
 }
 
 // Only the explicit successor leaf is imported; no ancestor recursion or global traversal. New files have no invented predecessor.
 export function localFeaturedDigest(file, previousDigest, readFile = read, optional = optionalRead, driftLabel) {
+ return inEvidenceValidationScope(() => {
 	if (!renewedFiles.includes(file)) return previousDigest;
 	const bytes = readFile(evidencePath);
 	const value = JSON.parse(bytes);
@@ -140,4 +144,5 @@ export function localFeaturedDigest(file, previousDigest, readFile = read, optio
 	assert.equal(sha(bytes), recordBytesSha256, 'featured record bytes');
 	validateLocalFeaturedEvidence(value, readFile, optional, driftLabel);
 	return binding.sha256;
+ });
 }

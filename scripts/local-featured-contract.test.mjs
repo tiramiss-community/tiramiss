@@ -131,9 +131,9 @@ test('optional host request, receipt, command logs and artifacts verify exact by
 test('featured imports only Node and its explicit successor leaf, without ancestor helpers', () => {
 	const source = read('scripts/local-featured-evidence.mjs').toString();
 	const imports = [...source.matchAll(/from ['"]([^'"]+)['"]/g)].map(m => m[1]);
-	assert.deepEqual(imports.filter(p => !p.startsWith('node:')), ['./local-actor-alias-key-evidence.mjs', './local-follow-collections-evidence.mjs']);
+	assert.deepEqual(imports.filter(p => !p.startsWith('node:') && p !== './evidence-validation-scope.mjs'), ['./local-actor-alias-key-evidence.mjs', './local-follow-collections-evidence.mjs']);
 	const successor = read('scripts/local-follow-collections-evidence.mjs').toString();
-	assert([...successor.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:') || m[1] === './local-actor-alias-key-evidence.mjs'));
+	assert([...successor.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:') || m[1] === './evidence-validation-scope.mjs' || m[1] === './local-actor-alias-key-evidence.mjs'));
 	assert(!/import\(|execFile|spawn|validateLocalFeatured|localFeaturedDigest|localActor.*Digest|validateLocalActor/.test(successor));
 	assert(!/import\(|execFile|spawn|validateLocalActor|localActor.*Digest/.test(source));
 	assert.equal(sha(read(directory + 'local-featured-corpus.json')), record().sourceOracle.corpusSha256);
