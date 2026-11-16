@@ -1,0 +1,122 @@
+{
+  "scope": "actor-emoji-cache-303-batch-inventory",
+  "productRevision": "66178667f69da1c1c0af9b2b39d7d16f4a4898a2",
+  "metadataBaseRevision": "66178667f69da1c1c0af9b2b39d7d16f4a4898a2",
+  "measuredAt": "2026-11-16T04:13:27.578227+00:00",
+  "changedRowIds": [
+    "responsibility:misc-utils:01",
+    "responsibility:misc-utils:02",
+    "responsibility:notifications-events-misc-domains:13",
+    "responsibility:notifications-events-misc-domains:14",
+    "service:CustomEmojiService"
+  ],
+  "rows": {
+    "responsibility:misc-utils:01": {
+      "previousSha256": "15a71cf595c6978c7e296cd0c3d4e8340cd247e8713fabbf5a05eb54e0b0d71e",
+      "currentSha256": "4650277b180f39c64647d7c28f6ca6ba9ceac7b727ff54d4f30a5ea32f78a8ad",
+      "status": "partial",
+      "evidenceRevision": "66178667f69da1c1c0af9b2b39d7d16f4a4898a2"
+    },
+    "responsibility:misc-utils:02": {
+      "previousSha256": "54da28aadd1d9af5b05b2012d848abb97a7c63954a865bc5a75a44ad49e4ff1c",
+      "currentSha256": "256f581f498f273cd28015b914646c6fb7299d1988337a5889f15468ec5e0cc4",
+      "status": "partial",
+      "evidenceRevision": "66178667f69da1c1c0af9b2b39d7d16f4a4898a2"
+    },
+    "responsibility:notifications-events-misc-domains:13": {
+      "previousSha256": "8934ff45fcee18b812386e69f8293befcf5ed63f0affa3e000fcc38739671f53",
+      "currentSha256": "abc70531397944ad71e743fc596fab31ebaacc64be970045f13dfd8533a11056",
+      "status": "partial",
+      "evidenceRevision": "66178667f69da1c1c0af9b2b39d7d16f4a4898a2"
+    },
+    "responsibility:notifications-events-misc-domains:14": {
+      "previousSha256": "0a002fb187d0e031b68de71069d381300d223e68982cc56cbb629c81446a36b8",
+      "currentSha256": "7ae6738b7d80c63ad41b5a9a2bb85ce220d515cfa61f411296a057694fdb7d9f",
+      "status": "partial",
+      "evidenceRevision": "66178667f69da1c1c0af9b2b39d7d16f4a4898a2"
+    },
+    "service:CustomEmojiService": {
+      "previousSha256": "6519e8c9ede0397f5fe0ce27a706c7968ce962ea13d62c1bcd4c5aecb49fd1bf",
+      "currentSha256": "f310fefafff9c92594eba1a8dcc9c4b0538690ab70fd65a1a630195ade4abf5c",
+      "status": "partial",
+      "evidenceRevision": "66178667f69da1c1c0af9b2b39d7d16f4a4898a2"
+    }
+  },
+  "unrelatedRowsSha256": "79458c3b2631d9984d0cad2caf8a9be11a8c11a9bdac4c18cef5bc4c8b868a4c",
+  "unrelatedRowsUnchanged": true,
+  "inputsBefore": {
+    "docs/superpowers/compatibility/backend-inventory/audit-items.json": "f66031ca26c26e3f17ba5ba5b12661fe0222c44fba26e23abf291b4753af1eb1",
+    "docs/superpowers/compatibility/backend-inventory/contracts.json": "1f697506fce38982eed1a500de3c57691c2783cb27059b982cba88429224e3c9",
+    "docs/superpowers/compatibility/backend-inventory/contracts.md": "95e4bfff3246906ccd0491b45eddcbacf99216d311a5e19061bbed96fbc12601"
+  },
+  "inputsAfter": {
+    "docs/superpowers/compatibility/backend-inventory/audit-items.json": "9f5531d1533e6ad1a6ddeea713c15b08819c7e70952ffb89d877f4bc7e8aaf92",
+    "docs/superpowers/compatibility/backend-inventory/contracts.json": "5dbe74b169b41b48b5d58cd7d37572050ccd1f90f9524ab630048c7bd3db910d",
+    "docs/superpowers/compatibility/backend-inventory/contracts.md": "1c1cf40a30c00cf6f53838dd0f69b7fbaa7845f25cbc050f86a1b8c3c83cd639"
+  },
+  "batchEvidenceSha256": "399d640e557c197e0da9c68287f59774dcac06a23e055dac1cb4d01ec3efa44a",
+  "originalEvidenceSha256": "20fcbc11ed50287c915ec771c6bcc50149ba6ec18b4453ca888aa500249ead2d",
+  "productInputDrift": 0,
+  "runs": [
+    {
+      "name": "batch-metadata-generate",
+      "command": [
+        "node",
+        "scripts/backend-contract-inventory.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-11-16T04:12:52.492987+00:00",
+      "finishedAt": "2026-11-16T04:12:54.166120+00:00",
+      "durationSeconds": 1.673,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/batch-metadata-generate.log",
+      "logSha256": "9506ac89cde2b4c62b8c5dc1c5149e9424db0f4e35b248aa94a8ad3ab8d719d4"
+    },
+    {
+      "name": "batch-metadata-check",
+      "command": [
+        "node",
+        "scripts/backend-contract-inventory.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-11-16T04:13:25.623714+00:00",
+      "finishedAt": "2026-11-16T04:13:27.320735+00:00",
+      "durationSeconds": 1.697,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/batch-metadata-check.log",
+      "logSha256": "9506ac89cde2b4c62b8c5dc1c5149e9424db0f4e35b248aa94a8ad3ab8d719d4"
+    },
+    {
+      "name": "batch-metadata-tests",
+      "command": [
+        "node",
+        "--test",
+        "scripts/backend-contract-inventory.test.mjs"
+      ],
+      "startedAt": "2026-11-16T04:13:27.339098+00:00",
+      "finishedAt": "2026-11-16T04:13:27.533691+00:00",
+      "durationSeconds": 0.195,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/batch-metadata-tests.log",
+      "logSha256": "52ce9f1372212d1b3690dcdfd72d9c95262c07f9236352ed94a0acbd976cbb1c"
+    },
+    {
+      "name": "batch-metadata-shipping",
+      "command": [
+        "node",
+        "scripts/check-shipping.mjs",
+        "--base",
+        "HEAD"
+      ],
+      "startedAt": "2026-11-16T04:13:27.606056+00:00",
+      "finishedAt": "2026-11-16T04:13:27.734689+00:00",
+      "durationSeconds": 0.129,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/batch-metadata-shipping.log",
+      "logSha256": "ee30a0c2d054149eb75501909d57c17a66eec6e83700e046db8394a3a9d66fb0"
+    }
+  ],
+  "independentMetadataReviewComplete": false,
+  "ciMeasured": false,
+  "postingComplete": false
+}
