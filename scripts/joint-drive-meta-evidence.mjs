@@ -5,7 +5,6 @@
 import assert from 'node:assert/strict';
 import { readPrePublicDocuments } from './public-documents-evidence.mjs';
 import { readForActorEmojiCacheEvidence } from './actor-emoji-cache-evidence.mjs';
-import { bindEvidenceCurrentReader } from './evidence-validation-scope.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 const sharedPath = 'packages/backend-next/test/unit/composition/http-app.test.ts';
@@ -17,7 +16,7 @@ const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 // its own original current-input checks; neither old receipt is renewed here.
 function project(file, readFile, feature, label) {
  const currentRead = readFile;
- readFile = bindEvidenceCurrentReader(path => readPrePublicDocuments(path, currentRead), currentRead);
+ readFile = path => readPrePublicDocuments(path, currentRead);
  if (file !== sharedPath) return readForActorEmojiCacheEvidence(file, readFile);
  const bytes = readFile(predecessorPath);
  assert.equal(hash(bytes), seal, 'joint drive/meta predecessor seal');

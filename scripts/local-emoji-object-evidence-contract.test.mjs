@@ -30,8 +30,9 @@ test('actual measured 140ac input set validates online and offline; only two his
 });
 for (const path of Object.keys(record().inputs)) test(`new input drift rejects before projecting roots: ${path}`, () => {
  const drifted = p => p === path ? Buffer.concat([read(p), Buffer.from('\n')]) : read(p);
- assert.throws(() => readPreEmojiObject(successorFiles[0], undefined, drifted, () => null), /(?:emoji|instance admin|folder|internal events|drive file|Meta cache) measured current input drift/);
- assert.throws(() => validateOutboxSuccessor(undefined, drifted, () => null), /(?:emoji|instance admin|folder|internal events|drive file|Meta cache) measured current input drift/);
+ const expected = path === 'packages/backend-next/test/unit/composition/http-app.test.ts' ? /(?:(?:emoji|instance admin|folder|internal events|drive file|Meta cache) measured current input drift|measured current input drift \(notes pagination(?: requested)?\))/ : /(?:emoji|instance admin|folder|internal events|drive file|Meta cache) measured current input drift/;
+ assert.throws(() => readPreEmojiObject(successorFiles[0], undefined, drifted, () => null), expected);
+ assert.throws(() => validateOutboxSuccessor(undefined, drifted, () => null), expected);
 });
 
 

@@ -5,12 +5,68 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { scopedEvidenceValidation, withEvidenceRequestedPath, getEvidenceCurrentReader, registerEvidenceObserver } from './evidence-validation-scope.mjs';
+import { scopedEvidenceValidation } from './evidence-validation-scope.mjs';
 const directory = 'docs/superpowers/compatibility/notes-pagination/';
-const receiptSeal = '7f0c730a8ef247ff244f5994150ece5c61671492734537b8805f134d86937aee';
+const receiptSeal = 'a1cc05dfaa86eab26c661a39717fa5a49f0f68b6d75ccdd3f38a8f26aa5a0368';
 const predecessorSeal = '3ecbc05f908b71d8e5750e70d8f3384fa7866ebaaeffda421d1bf3433c545e3a';
-const historicalSeals = {"r1-current-evidence.json": "ffc91999009233ae9da8b05c589ca08854dc249f6e7d8647eff5acc1ea84312a", "r1-predecessor.json": "51074136dcd387e79ce49cb38079d7363a240caf03c50d6da237e6e6de838808"};
-const observerRegistration = {};
+const historicalSeals = {"r1-current-evidence.json": "ffc91999009233ae9da8b05c589ca08854dc249f6e7d8647eff5acc1ea84312a", "r1-predecessor.json": "51074136dcd387e79ce49cb38079d7363a240caf03c50d6da237e6e6de838808", "r2-current-evidence.json": "7f0c730a8ef247ff244f5994150ece5c61671492734537b8805f134d86937aee"};
+const projection = {
+  "packages/backend-next/src/composition/note-routes.ts": {
+    "currentSha256": "ccac3cb13d5dbe5908f869cd1de788fff20ba877e00f722ec25f47507fca76e0",
+    "previousSha256": "13b7a773654f30a3ebd81c2d1797148ecfe16f77c42247ad5390af4062ac9122",
+    "patches": [
+      {
+        "offset": 442,
+        "insert": "sListApi } from '../http/notes-list-api.js';\nimport { createListNotes } from '../modules/note/public.js';\nimport { createNotesListReader } from '../platform/database/note-list.js';\nimport { createNoteCreateApi } from '../http/note-create-api.js';\nimport { createNoteRateLimiter } from '../platform/note-rate-limit.js';\nimport { createDeleteNote, createShowNote, readNotePlan, renderNote } from '../modules/note/public.js';\nimport { createHostRules, renderDeletedNoteActivity } from '../modules/federation/public.js';\nimport { createNoteReader } from '../platform/database/note-reader.js';\nimport { createTokenAuthenticator } from '../platform/database/authenticate.js';\nimport { createIdCodec } from '../platform/id-codec.js';\nimport { createNoteApplication } from './note.js';\nimport { createRemoteUsers } from './remote-users.js';\nimport type { RuntimeResources } from './create-runtime.js';\nimport type { RuntimeConfig } from '../config/types.js';\nimport type { Hono } from 'hono';\n\nexport function prepareNoteRoutes(resources: RuntimeResources, config: RuntimeConfig) {\n\tconst manager = resources.dataSource.manager;\n\tconst codec = createIdCodec(config.id);\n\tconst reader = createNoteReader(manager, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId }, resources.actorEmojis);\n\tconst show = createShowNote(reader);\n\tconst list = createListNotes(createNotesListReader(manager, resources.reactionsRedis,\n\t\t{ ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId }, resources.actorEmojis), codec.newId);\n\tconst create = createNoteApplication({\n\t\tdataSource: resources.dataSource, roleMaterials: resources.roleMaterials, ids: codec, clock: Date.now,\n\t\tremoteUsers: createRemoteUsers(resources, config),\n\t\tlimit: createNoteRateLimiter(resources.redis),\n\t\tafterSaved: input => resources.notePostSave.start(input),\n\t});\n\tconst deletion = createDeleteNote({\n\t\t...createNoteDeleter(manager, codec.createdAtFromId),\n\t\tlimit: createNoteDeleteRateLimiter(resources.redis),\n\t\trenderActivity: (snapshot, now) => renderDeletedNoteActivity(snapshot, {\n\t\t\tselfUrl: config.url, now, randomId: randomUUID(), isLocalUri: createHostRules(new URL(config.url).host).isUriLocal,\n\t\t}),\n\t\tstart: resources.notePostDelete.start,\n\t\tpublishDeleted: (snapshot, occurredAtMs) => resources.notePostDelete.start({ kind: 'stream', snapshot, occurredAtMs }),\n\t});\n\tconst authenticate = createTokenAuthenticator(manager, resources.logger);\n\treturn { authenticate, deletion, show, list, create, reader };\n}\n\nexport function registerNoteRoutes(app: Hono, resources: RuntimeResources, prepared: ReturnType<typeof prepareNoteRoutes>) {\n\tconst { authenticate, deletion, show, list, create, reader } = prepared;\n\treturn app\n\t\t.route('/', createNotesListApi({ authenticate, listNotes: list.listNotes, logger: resources.logger }))",
+        "previous": "CreateApi } from '../http/note-create-api.js';\nimport { createNoteRateLimiter } from '../platform/note-rate-limit.js';\nimport { createDeleteNote, createShowNote, readNotePlan, renderNote } from '../modules/note/public.js';\nimport { createHostRules, renderDeletedNoteActivity } from '../modules/federation/public.js';\nimport { createNoteReader } from '../platform/database/note-reader.js';\nimport { createTokenAuthenticator } from '../platform/database/authenticate.js';\nimport { createIdCodec } from '../platform/id-codec.js';\nimport { createNoteApplication } from './note.js';\nimport { createRemoteUsers } from './remote-users.js';\nimport type { RuntimeResources } from './create-runtime.js';\nimport type { RuntimeConfig } from '../config/types.js';\nimport type { Hono } from 'hono';\n\nexport function prepareNoteRoutes(resources: RuntimeResources, config: RuntimeConfig) {\n\tconst manager = resources.dataSource.manager;\n\tconst codec = createIdCodec(config.id);\n\tconst reader = createNoteReader(manager, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId }, resources.actorEmojis);\n\tconst show = createShowNote(reader);\n\tconst create = createNoteApplication({\n\t\tdataSource: resources.dataSource, roleMaterials: resources.roleMaterials, ids: codec, clock: Date.now,\n\t\tremoteUsers: createRemoteUsers(resources, config),\n\t\tlimit: createNoteRateLimiter(resources.redis),\n\t\tafterSaved: input => resources.notePostSave.start(input),\n\t});\n\tconst deletion = createDeleteNote({\n\t\t...createNoteDeleter(manager, codec.createdAtFromId),\n\t\tlimit: createNoteDeleteRateLimiter(resources.redis),\n\t\trenderActivity: (snapshot, now) => renderDeletedNoteActivity(snapshot, {\n\t\t\tselfUrl: config.url, now, randomId: randomUUID(), isLocalUri: createHostRules(new URL(config.url).host).isUriLocal,\n\t\t}),\n\t\tstart: resources.notePostDelete.start,\n\t\tpublishDeleted: (snapshot, occurredAtMs) => resources.notePostDelete.start({ kind: 'stream', snapshot, occurredAtMs }),\n\t});\n\tconst authenticate = createTokenAuthenticator(manager, resources.logger);\n\treturn { authenticate, deletion, show, create, reader };\n}\n\nexport function registerNoteRoutes(app: Hono, resources: RuntimeResources, prepared: ReturnType<typeof prepareNoteRoutes>) {\n\tconst { authenticate, deletion, show, create, reader } = prepared;\n\treturn app"
+      }
+    ]
+  },
+  "packages/backend-next/src/modules/note/public.ts": {
+    "currentSha256": "e2a810519faf1d6ec025d7f7817776a86795c6e07bbfdbddcc120e8203a507f1",
+    "previousSha256": "6ba915caac0c26b9be0a2679b548eb5966492ce4a39333d7d9b8ed7f83f930cd",
+    "patches": [
+      {
+        "offset": 176,
+        "insert": "createListNotes } from './list-notes.js';\nexport type { NotesListInput, NotesListReader } from './list-notes.js';\nexport { ",
+        "previous": ""
+      }
+    ]
+  },
+  "packages/backend-next/src/platform/database/note-reader.ts": {
+    "currentSha256": "989af51a138f31ea6b5075bb18abb4ce9221ad92d33cf7a8b1de88b8de8fce9e",
+    "previousSha256": "3e68faa46639ae6de3997454ae404036b2583e5edfbca94d8a2244b8ffc709d2",
+    "patches": [
+      {
+        "offset": 969,
+        "insert": ", selectedUsers: readonly MiUser[] = [], refreshUserIds: readonly string[] = []): NoteFactsReader {\n\treturn {\n\t\tasync readNotes(ids) {\n\t\t\tif (ids.length === 0) {\n\t\t\t\treturn [];\n\t\t\t}\n\t\t\treturn (await manager.getRepository(MiNote).findBy({ id: In([...ids]) })).map(row => noteFactsFromRow(row, options.createdAtFromId));\n\t\t},\n\t\tasync readGuestAccess(note) {\n\t\t\tconst author = await manager.getRepository(MiUser).findOneByOrFail({ id: note.userId });\n\t\t\tconst meta = await readMeta(manager);\n\t\t\treturn { authorRequiresSignin: author.requireSigninToViewContents, ugcVisibilityForVisitor: meta.ugcVisibilityForVisitor };\n\t\t},\n\t\tasync readMaterials(notes, viewerId, now): Promise<NoteViewMaterials> {\n\t\t\tconst rows = [...notes.values()];\n\t\t\tconst ids = [...notes.keys()];\n\t\t\tconst userIds = [...new Set(rows.map(n => n.userId))];\n\t\t\tconst fileIds = [...new Set(rows.flatMap(n => n.fileIds))];\n\t\t\tconst channelIds = [...new Set(rows.flatMap(n => n.channelId ? [n.channelId] : []))];\n\t\t\tconst pollIds = rows.filter(n => n.hasPoll).map(n => n.id);\n\t\t\tconst meta = await readMeta(manager);\n\t\t\tconst buffered = new Map<string, { deltas: Record<string, number>; pairs: string[] }>();\n\t\t\tif (meta.enableReactionsBuffering && ids.length > 0) {\n\t\t\t\tconst pipeline = redis.pipeline();\n\t\t\t\tfor (const id of ids) {\n\t\t\t\t\tpipeline.hgetall(`reactionsBufferDeltas:${id}`).zrange(`reactionsBufferPairs:${id}`, 0, -1);\n\t\t\t\t}\n\t\t\t\tconst result = await pipeline.exec();\n\t\t\t\tif (!result || result.some(([error]) => error !== null)) {\n\t\t\t\t\tthrow new Error('NOTE_REACTIONS_UNAVAILABLE');\n\t\t\t\t}\n\t\t\t\tfor (const [index, id] of ids.entries()) {\n\t\t\t\t\tbuffered.set(id, { deltas: Object.fromEntries(Object.entries(result[index * 2][1] as Record<string, string>).map(([k, v]) => [k, parseInt(v, 10)])), pairs: result[index * 2 + 1][1] as string[] });\n\t\t\t\t}\n\t\t\t}\n\t\t\tconst [files, channels, polls, votes, reactions, followings] = await settleAll([\n\t\t\t\tfileIds.length ? manager.getRepository(MiDriveFile).findBy({ id: In(fileIds) }) : [],\n\t\t\t\tchannelIds.length ? manager.getRepository(MiChannel).findBy({ id: In(channelIds) }) : [],\n\t\t\t\tpollIds.length ? manager.getRepository(MiPoll).findBy({ noteId: In(pollIds) }) : [],\n\t\t\t\tviewerId && pollIds.length ? manager.getRepository(MiPollVote).findBy({ noteId: In(pollIds), userId: viewerId }) : [],\n\t\t\t\tviewerId && ids.length ? manager.getRepository(MiNoteReaction).findBy({ noteId: In(ids), userId: viewerId }) : [],\n\t\t\t\tviewerId && userIds.length ? manager.getRepository(MiFollowing).findBy({ followeeId: In(userIds), followerId: viewerId }) : [],\n\t\t\t]);\n\t\t\t// 作者の絵文字材料も全authorを集めて一度に取得する。\n\t\t\tconst selected = new Map(selectedUsers.map(user => [user.id, user]));\n\t\t\tconst missingUsers = userIds.filter(id => !selected.has(id) || refreshUserIds.includes(id));\n\t\t\tconst emojiUsers = [...new Map([...selectedUsers.filter(user => userIds.includes(user.id)), ...(missingUsers.length ? await manager.getRepository(MiUser).find({ where: { id: In(missingUsers) }, select: { id: true, host: true, emojis: true } }) : [])].map(user => [user.id, user])).values()];\n\t\t\tconst emojiNames = new Set<string>();\n\t\t\tconst hosts = [...new Set([...rows.flatMap(n => n.userHost ? [n.userHost] : []), ...emojiUsers.flatMap(u => u.host ? [u.host] : [])])];\n\t\t\tfor (const name of [...rows.flatMap(n => [...n.emojis, ...Object.keys(n.reactions)]), ...[...buffered.values()].flatMap(b => Object.keys(b.deltas)), ...(actorEmojis ? [] : emojiUsers.flatMap(u => u.emojis))]) {\n\t\t\t\tconst bareName = name.replace(/^:/, '').replace(/:$/, '');\n\t\t\t\temojiNames.add(bareName.split('@')[0]);\n\t\t\t\tconst match = name.match(/@([\\w.-]+):?$/);\n\t\t\t\tif (match && match[1] !== '.') {\n\t\t\t\t\tconst host = toPuny(match[1]);\n\t\t\t\t\tif (host) {\n\t\t\t\t\t\thosts.push(host);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\tconst emojiUrls = new Map((hosts.length && emojiNames.size ? await manager.getRepository(MiEmoji).findBy({ host: In([...new Set(hosts)]), name: In([...emojiNames]) }) : []).map(e => [`${e.name}@${e.host}`, e.publicUrl || e.originalUrl]));\n\t\t\tconst authorEmojiUrls = actorEmojis ? await actorEmojis.remote(emojiUsers, new URL(options.url).host) : emojiUrls;\n\t\t\treturn {\n\t\t\t\tnotes, authors: await readNoteAuthors(manager, userIds, viewerId, meta, options, now, authorEmojiUrls, actorEmojis !== undefined, selectedUsers, refreshUserIds",
+        "previous": "): NoteFactsReader {\n\treturn {\n\t\tasync readNotes(ids) {\n\t\t\tif (ids.length === 0) {\n\t\t\t\treturn [];\n\t\t\t}\n\t\t\treturn (await manager.getRepository(MiNote).findBy({ id: In([...ids]) })).map(row => noteFactsFromRow(row, options.createdAtFromId));\n\t\t},\n\t\tasync readGuestAccess(note) {\n\t\t\tconst author = await manager.getRepository(MiUser).findOneByOrFail({ id: note.userId });\n\t\t\tconst meta = await readMeta(manager);\n\t\t\treturn { authorRequiresSignin: author.requireSigninToViewContents, ugcVisibilityForVisitor: meta.ugcVisibilityForVisitor };\n\t\t},\n\t\tasync readMaterials(notes, viewerId, now): Promise<NoteViewMaterials> {\n\t\t\tconst rows = [...notes.values()];\n\t\t\tconst ids = [...notes.keys()];\n\t\t\tconst userIds = [...new Set(rows.map(n => n.userId))];\n\t\t\tconst fileIds = [...new Set(rows.flatMap(n => n.fileIds))];\n\t\t\tconst channelIds = [...new Set(rows.flatMap(n => n.channelId ? [n.channelId] : []))];\n\t\t\tconst pollIds = rows.filter(n => n.hasPoll).map(n => n.id);\n\t\t\tconst meta = await readMeta(manager);\n\t\t\tconst buffered = new Map<string, { deltas: Record<string, number>; pairs: string[] }>();\n\t\t\tif (meta.enableReactionsBuffering && ids.length > 0) {\n\t\t\t\tconst pipeline = redis.pipeline();\n\t\t\t\tfor (const id of ids) {\n\t\t\t\t\tpipeline.hgetall(`reactionsBufferDeltas:${id}`).zrange(`reactionsBufferPairs:${id}`, 0, -1);\n\t\t\t\t}\n\t\t\t\tconst result = await pipeline.exec();\n\t\t\t\tif (!result || result.some(([error]) => error !== null)) {\n\t\t\t\t\tthrow new Error('NOTE_REACTIONS_UNAVAILABLE');\n\t\t\t\t}\n\t\t\t\tfor (const [index, id] of ids.entries()) {\n\t\t\t\t\tbuffered.set(id, { deltas: Object.fromEntries(Object.entries(result[index * 2][1] as Record<string, string>).map(([k, v]) => [k, parseInt(v, 10)])), pairs: result[index * 2 + 1][1] as string[] });\n\t\t\t\t}\n\t\t\t}\n\t\t\tconst [files, channels, polls, votes, reactions, followings] = await settleAll([\n\t\t\t\tfileIds.length ? manager.getRepository(MiDriveFile).findBy({ id: In(fileIds) }) : [],\n\t\t\t\tchannelIds.length ? manager.getRepository(MiChannel).findBy({ id: In(channelIds) }) : [],\n\t\t\t\tpollIds.length ? manager.getRepository(MiPoll).findBy({ noteId: In(pollIds) }) : [],\n\t\t\t\tviewerId && pollIds.length ? manager.getRepository(MiPollVote).findBy({ noteId: In(pollIds), userId: viewerId }) : [],\n\t\t\t\tviewerId && ids.length ? manager.getRepository(MiNoteReaction).findBy({ noteId: In(ids), userId: viewerId }) : [],\n\t\t\t\tviewerId && userIds.length ? manager.getRepository(MiFollowing).findBy({ followeeId: In(userIds), followerId: viewerId }) : [],\n\t\t\t]);\n\t\t\t// 作者の絵文字材料も全authorを集めて一度に取得する。\n\t\t\tconst emojiUsers = userIds.length ? await manager.getRepository(MiUser).find({ where: { id: In(userIds) }, select: { id: true, host: true, emojis: true } }) : [];\n\t\t\tconst emojiNames = new Set<string>();\n\t\t\tconst hosts = [...new Set([...rows.flatMap(n => n.userHost ? [n.userHost] : []), ...emojiUsers.flatMap(u => u.host ? [u.host] : [])])];\n\t\t\tfor (const name of [...rows.flatMap(n => [...n.emojis, ...Object.keys(n.reactions)]), ...[...buffered.values()].flatMap(b => Object.keys(b.deltas)), ...(actorEmojis ? [] : emojiUsers.flatMap(u => u.emojis))]) {\n\t\t\t\tconst bareName = name.replace(/^:/, '').replace(/:$/, '');\n\t\t\t\temojiNames.add(bareName.split('@')[0]);\n\t\t\t\tconst match = name.match(/@([\\w.-]+):?$/);\n\t\t\t\tif (match && match[1] !== '.') {\n\t\t\t\t\tconst host = toPuny(match[1]);\n\t\t\t\t\tif (host) {\n\t\t\t\t\t\thosts.push(host);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\tconst emojiUrls = new Map((hosts.length && emojiNames.size ? await manager.getRepository(MiEmoji).findBy({ host: In([...new Set(hosts)]), name: In([...emojiNames]) }) : []).map(e => [`${e.name}@${e.host}`, e.publicUrl || e.originalUrl]));\n\t\t\tconst authorEmojiUrls = actorEmojis ? await actorEmojis.remote(emojiUsers, new URL(options.url).host) : emojiUrls;\n\t\t\treturn {\n\t\t\t\tnotes, authors: await readNoteAuthors(manager, userIds, viewerId, meta, options, now, authorEmojiUrls, actorEmojis !== undefined"
+      }
+    ]
+  },
+  "packages/backend-next/src/platform/database/note-authors.ts": {
+    "currentSha256": "7137f07fbd9eb92b6fbbfabd2343ee79d28adf72d051ecc393c525d74211f668",
+    "previousSha256": "a8161e9a9ae8fb6f595469cd52ff62cf5d613abb94bfc741143ca3fe4e082a17",
+    "patches": [
+      {
+        "offset": 926,
+        "insert": ", selectedUsers: readonly MiUser[] = [], refreshUserIds: readonly string[] = []) {\n\tconst userIds = [...new Set([...ids, ...(viewerId ? [viewerId] : [])])];\n\tconst selected = new Map(selectedUsers.map(user => [user.id, user]));\n\tconst missing = userIds.filter(id => !selected.has(id) || refreshUserIds.includes(id));\n\tconst users = [...new Map([...selectedUsers.filter(user => userIds.includes(user.id)), ...(missing.length ? await manager.getRepository(MiUser).findBy({ id: In(missing) }) : [])].map(user => [user.id, user])).values()]",
+        "previous": ") {\n\tconst userIds = [...new Set([...ids, ...(viewerId ? [viewerId] : [])])];\n\tconst users = await manager.getRepository(MiUser).findBy({ id: In(userIds) })"
+      }
+    ]
+  },
+  "packages/backend-next/test/unit/composition/http-app.test.ts": {
+    "currentSha256": "a2f030dbfecfa3644a09d1d1aca81a8693ffec7dbad1bc3ceac9894fb46be5eb",
+    "previousSha256": "742be594f57ff832ccc0568b06720f9677d4a1519d0a6f17b88e24a19e6f9e49",
+    "patches": [
+      {
+        "offset": 3004,
+        "insert": "', '/api/notes",
+        "previous": ""
+      }
+    ]
+  }
+};
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const read = path => readFileSync(new URL('../' + path, import.meta.url));
 const optionalRead = path => {
@@ -30,7 +86,6 @@ export const notesPaginationPredecessorFiles = Object.freeze([
 ]);
 
 export function validateNotesPaginationEvidence(value, rawRead = read, optional = optionalRead) {
-	rawRead = getEvidenceCurrentReader(rawRead);
 	return scopedEvidenceValidation(validateNotesPaginationEvidence, value, rawRead, optional, (rawRead, optional) => {
 		for (const [name, digest] of Object.entries(historicalSeals)) assert.equal(sha(rawRead(directory + name)), digest, 'notes pagination historical receipt seal');
 		const receipt = rawRead(directory + 'current-evidence.json');
@@ -40,6 +95,7 @@ export function validateNotesPaginationEvidence(value, rawRead = read, optional 
 		assert.equal(value.scope, 'notes-pagination-305');
 		assert.equal(value.baseRevision, '2fb256cd889200912cf68258e757f5e39429e495');
 		assert.equal(value.upstreamRevision, '8e07cf085adf7009583d234a208e30436f020e26');
+		assert.equal(value.measurement, 'R3');
 		assert.equal(value.measuredWorkingTree, true);
 		assert.equal(value.noInputDrift, true);
 		assert.equal(value.postingComplete, false);
@@ -54,6 +110,7 @@ export function validateNotesPaginationEvidence(value, rawRead = read, optional 
 		const previous = JSON.parse(bytes);
 		assert.equal(previous.baseRevision, value.baseRevision);
 		assert.deepEqual(Object.keys(previous.files), notesPaginationPredecessorFiles);
+		assert.deepEqual(previous.files, projection, 'notes pagination finite follow-up constants match the R2 record');
 		const result = {};
 		for (const [path, binding] of Object.entries(previous.files)) {
 			assert.equal(binding.currentSha256, value.inputs[path]);
@@ -80,13 +137,18 @@ export function validateNotesPaginationEvidence(value, rawRead = read, optional 
 	});
 }
 
-export function readBeforeNotesPagination(path, rawRead = read, optional = optionalRead) {
-	return withEvidenceRequestedPath(path, () => {
-		if (!notesPaginationPredecessorFiles.includes(path)) return rawRead(path);
-		rawRead(path);
-		registerEvidenceObserver(observerRegistration, rawRead, () => {
-			for (const name of ['current-evidence.json', 'predecessor.json', ...Object.keys(historicalSeals)]) rawRead(directory + name);
-		});
-		return Buffer.from(validateNotesPaginationEvidence(undefined, rawRead, optional)[path]);
-	});
+// Historical leaves consume only these exact five byte transitions. The full
+// notes measurement is checked independently by notes-pagination-contract.test.mjs.
+export function projectNotesPaginationInput(path, actual) {
+	const binding = Object.hasOwn(projection, path) ? projection[path] : undefined;
+	if (!binding) return actual;
+	assert.equal(sha(actual), binding.currentSha256, `measured current input drift (notes pagination): ${path}`);
+	let before = Buffer.from(actual);
+	for (const patch of [...binding.patches].reverse()) {
+		const insert = Buffer.from(patch.insert);
+		assert.deepEqual(before.subarray(patch.offset, patch.offset + insert.length), insert, 'notes pagination exact predecessor anchor');
+		before = Buffer.concat([before.subarray(0, patch.offset), Buffer.from(patch.previous), before.subarray(patch.offset + insert.length)]);
+	}
+	assert.equal(sha(before), binding.previousSha256, 'notes pagination exact predecessor identity');
+	return before;
 }

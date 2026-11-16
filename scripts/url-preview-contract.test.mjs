@@ -37,7 +37,7 @@ test('measured preview product validates online/offline and restores exactly eig
  assert.equal(snapshot.lockPatch.path, 'pnpm-lock.yaml');
  assert.equal(sha(readPreUrlPreview('pnpm-lock.yaml')), snapshot.lockPatch.previousSha256);
  for (const path of Object.keys(record().inputs).filter(path => !successorFiles.includes(path))) {
-  if (metaCachePredecessorFiles.includes(path)) {
+  if (metaCachePredecessorFiles.includes(path) || path === 'packages/backend-next/src/modules/note/public.ts') {
    assert.equal(sha(readPreUrlPreview(path)), record().inputs[path]);
   } else {
    assert.deepEqual(readPreUrlPreview(path), read(path));

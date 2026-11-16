@@ -1,0 +1,165 @@
+{
+  "scope": "notes-pagination-305-R3-final-validation",
+  "recordedAt": "2026-11-16T23:55:27.821199+00:00",
+  "productRevision": "435f3741d57b9bb91a1958dcf4c0014df780bee5",
+  "validationWorkingTree": true,
+  "productEvidenceSha256": "a1cc05dfaa86eab26c661a39717fa5a49f0f68b6d75ccdd3f38a8f26aa5a0368",
+  "productInputsStable": true,
+  "validationInputs": {
+    ".github/workflows/test-backend-next.yml": "cf0c9ed1621aedef3eef678588bd83e0789a88ac1b2d315826c7731a67de4931",
+    "docs/superpowers/compatibility/backend-inventory/audit-items.json": "405f01dcd19f99f51fd81ca24f8593a156ea29e738558ea33a3239a3bc16de5e",
+    "docs/superpowers/compatibility/backend-inventory/contracts.json": "4687b9cbb7293abc6ecbdc25230336a3ad5ade568d87f22a83dc25086fb879bb",
+    "docs/superpowers/compatibility/backend-inventory/contracts.md": "169fac008947d80e0b50414605d395e14c2b396b36eabe9c1d363fd2f9bff05e",
+    "docs/superpowers/compatibility/backend-inventory/domains.json": "337c1e13022691597d30e0b5a7724e619e67e7de59e3ef9501da01109073e1c0",
+    "docs/superpowers/compatibility/notes-pagination/README.md": "e2ffa0399fe2d50a3036d4dc90b051eae7777ee85c59592bec0e92d46d25d6a7",
+    "scripts/actor-emoji-cache-evidence.mjs": "699936e7f01b25c1124bd2e446435f684c7d007e6f9d14903394549baff26ce4",
+    "scripts/avatar-images-evidence.mjs": "2899e082351177d8fc15fcbdb2d4f9583648bddc462e11d8d7721cb40fa279d8",
+    "scripts/drive-folder-pubsub-contract.test.mjs": "7a6f6dc4eed3572f5e6c2e3bec07dccf4c22be5c4941abd1c0559d22af9aa5aa",
+    "scripts/drive-folder-pubsub-evidence.mjs": "d2480bf2fa2e61ef1e91cf515f4ea27cf1fdf9bb4965a7f196f1a56c4cf716c4",
+    "scripts/local-emoji-object-evidence-contract.test.mjs": "30e4fd0d271af579af1ac856c6f657f0ca24d2955526d01f7b00c0230195189f",
+    "scripts/meta-cache-contract.test.mjs": "8810a8365bcb4984c339a43311823c21b7ceacccd5688e8c41cd10130e81a14a",
+    "scripts/notes-pagination-contract.test.mjs": "466b4447c4c6997410b24cfa8ba9f2111b281d30ed3b69f99e81b20c972e348e",
+    "scripts/notes-pagination-evidence.mjs": "1aa7eb3654bd5c2fad99a38a3cf152159315df7d0ed8b4c1acc34dddf556f0b9",
+    "scripts/url-preview-contract.test.mjs": "563c2f398ab24cd477da03164df41bd5e7f0881078f76ac67eba83911249dd7a",
+    "scripts/url-preview-evidence.mjs": "6073447f54fa368f2d081509a970cb236921431ee49bc3e69f86cced13676ed2"
+  },
+  "productRuns": [
+    {
+      "name": "build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "build"
+      ],
+      "environment": {
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "BACKEND_NEXT_TEST_DB_PORT": "55505",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56505"
+      },
+      "exitCode": 0,
+      "log": "/tmp/notes305-r3/build.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "typecheck"
+      ],
+      "environment": {
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "BACKEND_NEXT_TEST_DB_PORT": "55505",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56505"
+      },
+      "exitCode": 0,
+      "log": "/tmp/notes305-r3/typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "name": "unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test"
+      ],
+      "environment": {
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "BACKEND_NEXT_TEST_DB_PORT": "55505",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56505"
+      },
+      "exitCode": 0,
+      "log": "/tmp/notes305-r3/unit.log",
+      "logSha256": "d6cd87ff10460503617165b86e7c4f7d4eaab7b5581664c49249997fcd6b622d",
+      "passed": 4944
+    },
+    {
+      "name": "integration",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/notes-list.test.ts",
+        "test/integration/note-show.test.ts",
+        "test/integration/http-app.test.ts"
+      ],
+      "environment": {
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "BACKEND_NEXT_TEST_DB_PORT": "55505",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56505"
+      },
+      "exitCode": 0,
+      "log": "/tmp/notes305-r3/integration.log",
+      "logSha256": "e42929cb4204b42efcd007a85a6c0bd6953fc600e0354a146a6fbd7ca6a470e3",
+      "passed": 44
+    },
+    {
+      "name": "source",
+      "command": [
+        "node",
+        "docs/superpowers/compatibility/notes-pagination/source-probe.mjs",
+        "--check"
+      ],
+      "environment": {
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "BACKEND_NEXT_TEST_DB_PORT": "55505",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56505"
+      },
+      "exitCode": 0,
+      "log": "/tmp/notes305-r3/source.log",
+      "logSha256": "e497c3ff64d8e07e433134ea321ed2d6745acddcc94fac6e40ba08d0f2138341"
+    }
+  ],
+  "qualityRuns": [
+    {
+      "name": "root-contracts",
+      "command": "node --test scripts/*-contract*.test.mjs",
+      "exitCode": 0,
+      "log": "/tmp/notes305-r3/contracts.log",
+      "logSha256": "47c9d10adcade46709648c4df0f21757d0e0bc2b9b68d7165b330ae10e664390",
+      "passed": 757,
+      "failed": 0,
+      "skipped": 1,
+      "skipReason": "Optional migration-source checkout check requires BACKEND_NEXT_UPSTREAM_PATH; unset for the ordinary root contract run. Notes fixed-source/PG comparison ran separately with an explicit pinned source path."
+    },
+    {
+      "name": "evidence-near",
+      "command": "node --test scripts/notes-pagination-contract.test.mjs scripts/actor-emoji-cache-evidence.test.mjs scripts/avatar-images-evidence.test.mjs",
+      "exitCode": 0,
+      "log": "/tmp/notes305-r3/near-evidence.log",
+      "logSha256": "2d62bee9f71c43b72f67689b6c4c2f6d6b96847f0fba0e603117ba433f7cafcd",
+      "passed": 55,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "inventory",
+      "command": "node scripts/backend-contract-inventory.mjs --check",
+      "exitCode": 0,
+      "log": "/tmp/notes305-r3/inventory-final.log",
+      "logSha256": "9506ac89cde2b4c62b8c5dc1c5149e9424db0f4e35b248aa94a8ad3ab8d719d4"
+    },
+    {
+      "name": "shipping",
+      "command": "node scripts/check-shipping.mjs --base 2fb256cd889200912cf68258e757f5e39429e495",
+      "exitCode": 0,
+      "log": "/tmp/notes305-r3/shipping-final.log",
+      "logSha256": "430a0a1a17c7f704c9944a2d8a332f9eac7d63f1c9a4cbf51ef9731aca59a2e0"
+    }
+  ],
+  "legacyProofJsonChanged": false,
+  "liveReads": 31463,
+  "readBudget": 33000,
+  "limitations": [
+    "D7 reference budgets:64 levels/256 notes and cycles fail500",
+    "notes endpoint selects for authenticated identity but packs as guest, matching source",
+    "source-method and real SQL comparisons, not a full upstream server/packer measurement"
+  ],
+  "cleanupLog": "/tmp/notes305-r3/cleanup.log",
+  "legacyProofJsonComparisonBase": "2fb256cd889200912cf68258e757f5e39429e495",
+  "changedLegacyProofJson": []
+}

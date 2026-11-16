@@ -47,12 +47,17 @@ test('finite pubsub reader uses builtins and its observation successor and passe
  assert.equal(readPreDriveFolderPubsub('unrelated', 'utf8', () => Buffer.from('live'), () => null), 'live');
 });
 
-test('process Redis and video runner setup preserve exact historical workflows and reject old bytes supplied as current', () => {
+test('notes CI paths, process Redis and video runner setup preserve exact historical workflows and reject old bytes as current', () => {
  const path = '.github/workflows/test-backend-next.yml';
  const addition = '      - name: Install FFmpeg\n        run: |\n          sudo apt update\n          sudo apt install -y ffmpeg\n';
  const service = '      redis-pubsub:\n        image: redis:8\n        ports: [\'56380:6379\']\n        options: >-\n          --health-cmd "redis-cli ping"\n          --health-interval 1s --health-timeout 3s --health-retries 30\n';
  const current = read(path).toString();
- const sections = current.split('  process:\n');
+ const notesPath = "      - 'docs/superpowers/compatibility/notes-pagination/**'\n";
+ assert.equal(current.split(notesPath).length, 3, 'notes documents trigger push and pull request');
+ const beforeNotes = Buffer.from(current.replaceAll(notesPath, ''));
+ assert.equal(sha(beforeNotes), '522b45f35703a65febb1d1471e601a74914570b364a2e0f205ddb9e895702178');
+ assert.throws(() => validateDriveFolderPubsubSuccessor(undefined, file => file === path ? beforeNotes : read(file), () => null), /measured current input drift/);
+ const sections = beforeNotes.toString().split('  process:\n');
  assert.equal(sections.length, 2);
  assert.equal(sections[0].split(service).length, 2, 'integration service stays present');
  assert.equal(sections[1].split(service).length, 2, 'process has one dedicated service');

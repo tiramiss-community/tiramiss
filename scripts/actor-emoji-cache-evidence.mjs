@@ -6,8 +6,8 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { readPreMetaInitialization } from './meta-initialization-evidence.mjs';
-import { readBeforeNotesPagination } from './notes-pagination-evidence.mjs';
-import { scopedEvidenceValidation, withEvidenceRequestedPath, bindEvidenceCurrentReader, getEvidenceCurrentReader } from './evidence-validation-scope.mjs';
+import { projectNotesPaginationInput } from './notes-pagination-evidence.mjs';
+import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 const directory = 'docs/superpowers/compatibility/actor-emoji-cache/';
 const seal = '20fcbc11ed50287c915ec771c6bcc50149ba6ec18b4453ca888aa500249ead2d';
 const predecessorSeal = '8c0734e3e338987849cb52501368f25f003a2b96ae3a5c41d7334ea626eda880';
@@ -35,9 +35,8 @@ function record(readFile) {
 }
 export function validateActorEmojiCacheEvidence(value, rawRead = read, optional = optionalRead) {
  return scopedEvidenceValidation(validateActorEmojiCacheEvidence, value, rawRead, optional, (rawRead, optional) => {
-  const liveRead = rawRead;
-  const currentRead = bindEvidenceCurrentReader(path => readBeforeNotesPagination(path, liveRead, optional), liveRead);
-  rawRead = path => readBeforeActorEmojiBatch(path, currentRead, optional);
+  const currentRead = rawRead;
+  rawRead = path => actorEmojiBatchFiles.includes(path) ? readBeforeActorEmojiBatch(path, currentRead, optional) : projectNotesPaginationInput(path, currentRead(path));
   if (value === undefined) value = record(rawRead);
   assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'actor emoji cache receipt seal');
   assert.equal(value.scope, 'actor-emoji-cache-303');
@@ -98,8 +97,8 @@ export const actorEmojiBatchFiles = Object.freeze([
 // actor receipt. The original18-input measurement and every historical seal stay unchanged.
 export function validateActorEmojiBatchEvidence(value, rawRead = read, optional = optionalRead) {
  return scopedEvidenceValidation(validateActorEmojiBatchEvidence, value, rawRead, optional, (rawRead, optional) => {
-  const liveRead = getEvidenceCurrentReader(rawRead);
-  rawRead = path => readBeforeNotesPagination(path, liveRead, optional);
+  const currentRead = rawRead;
+  rawRead = path => projectNotesPaginationInput(path, currentRead(path));
   if (value === undefined) {
    const bytes = rawRead(directory + 'batch-current-evidence.json');
    assert.equal(sha(bytes), batchSeal, 'actor emoji batch receipt seal');
