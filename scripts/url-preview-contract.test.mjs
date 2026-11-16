@@ -71,7 +71,7 @@ test('a warm content cache still hashes a changed second lock read', () => {
   const bytes = read(path);
   return path === 'pnpm-lock.yaml' && ++lockReads === 2 ? Buffer.concat([bytes, Buffer.from('\n')]) : bytes;
  };
- assert.throws(() => validateUrlPreviewSuccessor(undefined, changing, () => null), /exact historical lock identity/);
+ assert.throws(() => validateUrlPreviewSuccessor(undefined, changing, () => null), /measured current input drift: pnpm-lock.yaml/);
  assert.equal(lockReads, 2);
 });
 test('cross-call input and receipt drift reject after warming parsed content', () => {

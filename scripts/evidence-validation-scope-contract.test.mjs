@@ -8,6 +8,7 @@ import test from 'node:test';
 import { inEvidenceValidationScope, scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import { validateLocalActorImagesEvidence } from './local-actor-images-evidence.mjs';
+import { validateLocalActorFieldsEvidence } from './local-actor-fields-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
 const identity = {};
@@ -89,4 +90,29 @@ test('the complete image validation stays within a bounded number of live reads'
  const beforeAlias = path => readPreAliasKey(path, undefined, raw);
  const value = JSON.parse(beforeAlias('docs/superpowers/compatibility/remote-user/local-actor-images-current-evidence.json'));
  validateLocalActorImagesEvidence(value, beforeAlias, () => null);
+});
+
+test('a repeated predecessor read cannot replace the first pinned digest', () => {
+ const beforeAlias = path => readPreAliasKey(path);
+ const value = JSON.parse(beforeAlias('docs/superpowers/compatibility/remote-user/local-actor-fields-current-evidence.json'));
+ let predecessorReads = 0;
+ const changing = path => {
+  const bytes = beforeAlias(path);
+  return path === value.predecessor.path && ++predecessorReads > 1 ? Buffer.concat([bytes, Buffer.from('\n')]) : bytes;
+ };
+ assert.throws(() => validateLocalActorFieldsEvidence(value, changing, () => null), /measured current input drift/);
+ assert.equal(predecessorReads, 2);
+});
+
+test('repeated optional reads cannot replace the first presence or digest', () => {
+ for (const initial of [null, Buffer.from('pinned receipt')]) {
+  let reads = 0;
+  const changing = () => ++reads === 1 ? initial : Buffer.from('changed receipt');
+  const validate = (_read, optional) => {
+   assert.deepEqual(optional('receipt'), initial);
+   optional('receipt');
+   return { requested: 'historical' };
+  };
+  assert.throws(() => scopedEvidenceValidation(identity, {}, () => Buffer.from('current'), changing, validate), /actual log\/receipt drift/);
+ }
 });

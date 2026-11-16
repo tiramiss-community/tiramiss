@@ -35,8 +35,18 @@ export function scopedEvidenceValidation(identity, value, readFile, optional, va
    return structuredClone(cached.result);
   }
   const files = new Map(), artifacts = new Map();
-  const observe = path => { const bytes = readFile(path); files.set(path, digest(bytes)); return bytes; };
-  const observeOptional = path => { const bytes = optional(path); artifacts.set(path, digest(bytes)); return bytes; };
+  const observe = path => {
+   const bytes = readFile(path), current = digest(bytes);
+   if (files.has(path)) assert.equal(current, files.get(path), `measured current input drift: ${path}`);
+   else files.set(path, current);
+   return bytes;
+  };
+  const observeOptional = path => {
+   const bytes = optional(path), current = digest(bytes);
+   if (artifacts.has(path)) assert.equal(current, artifacts.get(path), `actual log/receipt drift: ${path}`);
+   else artifacts.set(path, current);
+   return bytes;
+  };
   const result = validate(observe, observeOptional);
   records.set(metadata, { files, artifacts, result: structuredClone(result) });
   return result;
