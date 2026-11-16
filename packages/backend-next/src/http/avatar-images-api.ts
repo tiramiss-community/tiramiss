@@ -68,7 +68,7 @@ export function createAvatarImagesApi(options: {
 			}
 			const boundary = pathname.indexOf('/', 1);
 			const raw = pathname.slice(boundary + 1);
-			if ((boundary === -1 && kind !== 'emoji') || (boundary !== -1 && raw.includes('/')) || (kind === 'avatar' && !raw.startsWith('@'))) {
+			if (boundary === -1 || (boundary !== -1 && raw.includes('/')) || (kind === 'avatar' && !raw.startsWith('@'))) {
 				return json({ message: `Route ${c.req.method}:${pathname}${search} not found`, error: 'Not Found', statusCode: 404 }, 404);
 			}
 			const value = boundary === -1 ? '' : decoded.slice(decodeURIComponent(pathname.slice(0, boundary + 1)).length);

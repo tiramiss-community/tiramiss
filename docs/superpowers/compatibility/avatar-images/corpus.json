@@ -142,7 +142,7 @@
       "path": "/emoji/wave%252Ewebp"
     },
     {
-      "id": "bare-emoji",
+      "id": "empty-emoji-path",
       "path": "/emoji/"
     },
     {
@@ -444,7 +444,7 @@
       "method": "HEAD"
     },
     {
-      "id": "bare-emoji-head",
+      "id": "empty-emoji-path-head",
       "path": "/emoji/",
       "method": "HEAD"
     },
@@ -907,6 +907,16 @@
     {
       "id": "raw-target-6-head",
       "path": "/identicon/%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5",
+      "method": "HEAD"
+    },
+    {
+      "id": "avatar-empty-host-get",
+      "path": "/avatar/@Alice@",
+      "method": "GET"
+    },
+    {
+      "id": "avatar-empty-host-head",
+      "path": "/avatar/@Alice@",
       "method": "HEAD"
     }
   ]

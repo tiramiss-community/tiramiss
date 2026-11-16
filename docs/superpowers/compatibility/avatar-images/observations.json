@@ -1,7 +1,7 @@
 {
   "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
   "observationKind": "literal pinned ServerService callbacks, UserEntityService.getIdenticonUrl, Acct.parse and genIdenticon; controlled repository/Meta doubles and injected generation failure, real listening Fastify/native canvas; not full upstream application or upstream PostgreSQL",
-  "corpusSha256": "52afc509662d7beeb5f31afe7a248b92f0c7c3405d5b7d713ffe7b177d029bb0",
+  "corpusSha256": "c0dfb0a2e554b918e92b7661099d9bf8c9aa2f41518aede1fdf7227a11784eb3",
   "nodeVersion": "v26.4.0",
   "fastifyVersion": "5.12.5",
   "canvasVersion": "1.0.10",
@@ -12,8 +12,8 @@
       "sha256": "365e11c7b4855bfb9118323cfa7117ae8e8617788248662e4d8028cbf539dd86"
     },
     {
-      "path": "packages/misskey-js/src/acct.ts",
-      "sha256": "6271dec045b5a12a9d617491b7b3eba17907877a5d5428387b5a296a9fb771d6"
+      "path": "packages/backend/src/misc/acct.ts",
+      "sha256": "c1ceb56ab1f159d2a8261ac57c0c5f8b20330505a16dc08e572f30a15140e49d"
     },
     {
       "path": "packages/backend/src/core/entities/UserEntityService.ts",
@@ -206,7 +206,7 @@
       "body": ""
     },
     {
-      "id": "bare-emoji",
+      "id": "empty-emoji-path",
       "status": 404,
       "headers": {
         "content-type": null,
@@ -1081,7 +1081,7 @@
       "body": ""
     },
     {
-      "id": "bare-emoji-head",
+      "id": "empty-emoji-path-head",
       "status": 404,
       "headers": {
         "content-type": null,
@@ -2228,6 +2228,30 @@
         "content-security-policy": null,
         "location": null,
         "content-length": "437"
+      },
+      "body": ""
+    },
+    {
+      "id": "avatar-empty-host-get",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "avatar-empty-host-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
       },
       "body": ""
     }

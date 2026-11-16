@@ -17,6 +17,7 @@ const upstream = process.env.BACKEND_NEXT_UPSTREAM_PATH ?? '/tmp/tiramiss-relay1
 const sourceRequire = createRequire(process.env.BACKEND_NEXT_SOURCE_DEPENDENCIES ?? '/tmp/emoji-images-555-source-deps/package.json');
 const corpusBytes = await readFile(new URL('corpus.json', import.meta.url));
 const corpus = JSON.parse(corpusBytes);
+assert.equal(new Set(corpus.cases.map(item => item.id)).size, corpus.cases.length, 'image corpus IDs must be unique');
 const pin = '8e07cf085adf7009583d234a208e30436f020e26';
 const manifest = JSON.parse(execFileSync('git', ['show', `${pin}:packages/backend/package.json`], { cwd: upstream }));
 for (const [name, version] of Object.entries({ fastify: '5.12.5', '@napi-rs/canvas': '1.0.10', 'random-seed': '0.3.0' })) assert.equal(manifest.dependencies[name], version);
@@ -37,13 +38,20 @@ function load(code, globals = {}) {
  return exports;
 }
 const renderer = source('packages/backend/src/misc/gen-identicon.ts');
+assert(renderer.text.includes("import { createCanvas } from '@napi-rs/canvas';"));
+assert(renderer.text.includes("import gen from 'random-seed';"));
 const { genIdenticon } = load(renderer.statements.filter(node => !ts.isImportDeclaration(node)).map(node => node.getText(renderer)).join('\n'), { createCanvas: require('@napi-rs/canvas').createCanvas, gen: require('random-seed') });
-const acct = source('packages/misskey-js/src/acct.ts');
+const acct = source('packages/backend/src/misc/acct.ts');
 const Acct = load(acct.text);
 const entity = source('packages/backend/src/core/entities/UserEntityService.ts');
 const entityClass = entity.statements.find(node => ts.isClassDeclaration(node) && node.name.text === 'UserEntityService');
 const getter = entityClass.members.find(node => node.name?.getText(entity) === 'getIdenticonUrl');
 const server = source('packages/backend/src/server/ServerService.ts');
+assert(server.text.includes("import * as Acct from '@/misc/acct.js';"), 'use the Acct module actually imported by ServerService');
+assert(server.text.includes("import { genIdenticon } from '@/misc/gen-identicon.js';"));
+assert(server.text.includes("import { UserEntityService } from '@/core/entities/UserEntityService.js';"));
+assert(server.text.includes("import Fastify, { type FastifyInstance } from 'fastify';"));
+assert(server.text.includes("import { IsNull } from 'typeorm';"));
 const service = server.statements.find(node => ts.isClassDeclaration(node) && node.name.text === 'ServerService');
 const method = service.members.find(node => node.name?.getText(server) === 'launch');
 const routes = method.body.statements.filter(node => ts.isExpressionStatement(node) && ts.isCallExpression(node.expression) && node.expression.expression.getText(server) === 'fastify.get' && ['/emoji/:path(.*)', '/avatar/@:acct', '/identicon/:x'].includes(node.expression.arguments[0].text));
@@ -82,6 +90,7 @@ try {
   cases.push({ id: item.id, status: response.status, headers, ...(binary ? { bodySha256: sha(response.body), metadata: await require('sharp')(response.body).metadata().then(({ width, height, format }) => ({ width, height, format })) } : { body: response.body.toString() }) });
  }
 } finally { await app.close(); }
+assert.equal(new Set(cases.map(item => item.id)).size, cases.length, 'image observation IDs must be unique');
 for (const [id, status] of Object.entries({ local: 301, avatar: 302, 'seed-alice@local.test': 200, disabled: 302, 'database-failure': 500, 'too-many-at': 400 })) assert.equal(cases.find(item => item.id === id).status, status);
 for (const item of cases.filter(item => item.metadata)) assert.deepEqual(item.metadata, { width: 128, height: 128, format: 'png' });
 const output = JSON.stringify({ upstreamRevision: pin, observationKind: 'literal pinned ServerService callbacks, UserEntityService.getIdenticonUrl, Acct.parse and genIdenticon; controlled repository/Meta doubles and injected generation failure, real listening Fastify/native canvas; not full upstream application or upstream PostgreSQL', corpusSha256: sha(corpusBytes), nodeVersion: process.version, fastifyVersion: sourceRequire('fastify/package.json').version, canvasVersion: require('@napi-rs/canvas/package.json').version, randomSeedVersion: require('random-seed/package.json').version, inputs, cases }, null, 2) + '\n';

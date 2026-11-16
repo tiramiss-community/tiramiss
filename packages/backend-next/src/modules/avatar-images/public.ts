@@ -34,5 +34,5 @@ export function avatarImageUrl(user: ImageUser, url: string, iconUrl: string | n
 
 export function parseAvatarAcct(acct: string, localHost: string): { usernameLower: string; host: string | null } {
 	const [username, host] = (acct.startsWith('@') ? acct.substring(1) : acct).split('@', 2);
-	return { usernameLower: username.toLowerCase(), host: !host || host === localHost ? null : host };
+	return { usernameLower: username.toLowerCase(), host: host === undefined || host === localHost ? null : host };
 }

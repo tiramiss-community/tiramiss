@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { request } from 'node:http';
@@ -21,6 +22,9 @@ export const imageCorpus = JSON.parse(readFileSync(new URL('corpus.json', direct
 export const imageObservations = JSON.parse(readFileSync(new URL('observations.json', directory), 'utf8')) as {
 	cases: { id: string; status: number; headers: Record<string, string | null>; body?: string; bodySha256?: string; metadata?: { width: number; height: number; format: string } }[];
 };
+assert.equal(new Set(imageCorpus.cases.map(item => item.id)).size, imageCorpus.cases.length, 'image corpus IDs must be unique');
+assert.equal(new Set(imageObservations.cases.map(item => item.id)).size, imageObservations.cases.length, 'image observation IDs must be unique');
+assert.deepEqual(imageCorpus.cases.map(item => item.id), imageObservations.cases.map(item => item.id), 'image corpus and observations must correspond one to one');
 export function imageRequest(origin: string, item: Pick<ImageCase, 'path' | 'method'>) {
 	return new Promise<{ status: number; headers: Record<string, string | string[] | undefined>; body: Buffer }>((resolve, reject) => {
 		const endpoint = new URL(origin);
