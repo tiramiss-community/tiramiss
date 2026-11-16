@@ -45,7 +45,7 @@ export function validatePublicEmojisEvidence(value, rawRead = read, optional = o
 		assert.deepEqual(value.inputsAfter, value.inputs);
 		for (const [path, digest] of Object.entries(value.inputs)) {
 			assert(!/package\.json$|pnpm-lock|backend-inventory/.test(path));
-			assert.equal(sha(rawRead(path)), digest, `measured current input drift (public emojis): ${path}`);
+			assert.equal(sha(rawRead(path)), digest, `Meta cache measured current input drift (public emojis): ${path}`);
 		}
 		const predecessorBytes = rawRead(directory + 'predecessor.json');
 		assert.equal(sha(predecessorBytes), predecessorSeal, 'public emojis predecessor seal');
@@ -56,7 +56,7 @@ export function validatePublicEmojisEvidence(value, rawRead = read, optional = o
 		for (const [path, binding] of Object.entries(previous.files)) {
 			assert.equal(binding.currentSha256, value.inputs[path]);
 			let current = rawRead(path).toString();
-			assert.equal(sha(Buffer.from(current)), binding.currentSha256, `measured current input drift (public emojis): ${path}`);
+			assert.equal(sha(Buffer.from(current)), binding.currentSha256, `Meta cache measured current input drift (public emojis): ${path}`);
 			for (const patch of [...binding.patches].reverse()) {
 				assert.equal(current.slice(patch.offset, patch.offset + patch.before.length), patch.before, 'public emojis exact predecessor patch');
 				current = current.slice(0, patch.offset) + patch.after + current.slice(patch.offset + patch.before.length);

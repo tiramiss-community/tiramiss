@@ -3257,6 +3257,42 @@
       ],
       "note": "#552: 固定本家8e07cf0のliteral method/route callbacksを実listening Fastify HTTPで17設定・51応答比較。新実装は通常composition＋実PostgreSQL/Redis/listening HTTPで同じ本文・status・Content-Type・cacheに一致（19 test）。full upstream serverではない。OpenSearchの特殊文字未escape、manifestの浅いoverrideと不正JSON500を維持。 SPA/SSR/静的asset配布、共通ヘッダ・HTTP登録順全体は#554/#563等に残る。",
       "evidenceRevision": "53cbed00ee1117c7880589391c87f3b7c9c6fb14"
+    },
+    "api:emoji": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/emoji/public.ts",
+        "packages/backend-next/src/platform/database/public-emojis.ts",
+        "packages/backend-next/src/http/public-emojis-api.ts",
+        "packages/backend-next/src/composition/public-emojis-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/http/public-emojis-api.test.ts",
+        "packages/backend-next/test/integration/public-emojis.test.ts",
+        "docs/superpowers/compatibility/public-emojis/README.md",
+        "docs/superpowers/compatibility/public-emojis/observations.json",
+        "scripts/public-emojis-contract.test.mjs"
+      ],
+      "note": "#304: 固定本家のliteral endpoint/packer/handleRequest＋実PG/listening Fastifyの16caseを通常compositionの実HTTP/PGと比較。local DB直読・category/name順・localOnly/sensitive/role制限行公開・後方互換URL・省略項目・GET/POST/HEAD/PUT・private/public cache・実tokenを確認。認証とerror serializerはsource側明示wrapper、full本家serverではない。管理更新と他の公開情報は対象外。",
+      "evidenceRevision": "830cdcce059e6e6471a441f92b6f563c75a3ef66"
+    },
+    "api:emojis": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/emoji/public.ts",
+        "packages/backend-next/src/platform/database/public-emojis.ts",
+        "packages/backend-next/src/http/public-emojis-api.ts",
+        "packages/backend-next/src/composition/public-emojis-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/http/public-emojis-api.test.ts",
+        "packages/backend-next/test/integration/public-emojis.test.ts",
+        "docs/superpowers/compatibility/public-emojis/README.md",
+        "docs/superpowers/compatibility/public-emojis/observations.json",
+        "scripts/public-emojis-contract.test.mjs"
+      ],
+      "note": "#304: 固定本家のliteral endpoint/packer/handleRequest＋実PG/listening Fastifyの16caseを通常compositionの実HTTP/PGと比較。local DB直読・category/name順・localOnly/sensitive/role制限行公開・後方互換URL・省略項目・GET/POST/HEAD/PUT・private/public cache・実tokenを確認。認証とerror serializerはsource側明示wrapper、full本家serverではない。管理更新と他の公開情報は対象外。",
+      "evidenceRevision": "830cdcce059e6e6471a441f92b6f563c75a3ef66"
     }
   }
 }
