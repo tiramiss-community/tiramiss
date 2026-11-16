@@ -1,0 +1,372 @@
+{
+  "baseRevision": "5f0549ad96af7ce85e12fdcc4bf26f23b029d29d",
+  "files": {
+    "packages/backend-next/src/composition/actor-http.ts": {
+      "previousSha256": "2db9eb2b8814aac75a7d899edcca06afb9015f00bfbc328d61305a49a358f754",
+      "currentSha256": "fe903c40eeca92fc0cb827c3797d09d8a25eaebc13a34d2b9c64deffb71772b0",
+      "patches": [
+        {
+          "offset": 850,
+          "before": "l, Date.now, resources.actorEmojis?.loca",
+          "after": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/composition/local-actor-tags.ts": {
+      "previousSha256": "cc139c1e60515f95a5b0e31c52cd1c2c35537592672d957c257053eb08a388e9",
+      "currentSha256": "33475307d1984bc7e5c7dab2ef800c09d3aa7a83eed6c8bb12677da4c1777aea",
+      "patches": [
+        {
+          "offset": 365,
+          "before": "ApEmojiFacts } from '../modules/federation/public.js';\nimport type { ",
+          "after": ""
+        },
+        {
+          "offset": 578,
+          "before": ", cachedReader?: (names: readonly string[]) => Promise<ApEmojiFacts[]>",
+          "after": ""
+        },
+        {
+          "offset": 749,
+          "before": " cachedReader ??",
+          "after": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/composition/note-routes.ts": {
+      "previousSha256": "02cf88e67723e58064911f28831428f76508f1d956e925d671033000c222fb86",
+      "currentSha256": "13b7a773654f30a3ebd81c2d1797148ecfe16f77c42247ad5390af4062ac9122",
+      "patches": [
+        {
+          "offset": 1552,
+          "before": ", resources.actorEmojis",
+          "after": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/composition/posting-notifications.ts": {
+      "previousSha256": "0362dd770a68e720246bf0afa0c440afda72a480f5ee815d36374047cdd9d66a",
+      "currentSha256": "efbb6744090d3ae3900d13010b8f1a2b10444e37ef14060fccbeca534df1cb09",
+      "patches": [
+        {
+          "offset": 614,
+          "before": "ActorEmojiCache } from '../platform/actor-emoji-cache.js';\nimport type { ",
+          "after": ""
+        },
+        {
+          "offset": 1191,
+          "before": "\n\tactorEmojis?: ActorEmojiCache;",
+          "after": ""
+        },
+        {
+          "offset": 1851,
+          "before": ", resources.actorEmojis",
+          "after": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/composition/posting-websocket.ts": {
+      "previousSha256": "da8498a578242cc69987561fba27535ad76187d3e7e6e92c5e4ff325cf43ef96",
+      "currentSha256": "75070b865fdc14aa9618ab5e42ec94fd2810779db7822d85507604045eb975c9",
+      "patches": [
+        {
+          "offset": 1060,
+          "before": ", resources.actorEmojis",
+          "after": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/composition/remote-users.ts": {
+      "previousSha256": "90af0e1bc7e00b3b99ff186415f09cc5222be9b788fbed81597b43c02b5e50bd",
+      "currentSha256": "7d8de31c198b075ae52860a8b2c7c5a2da25560db6aadc63d501841cf7e354e3",
+      "patches": [
+        {
+          "offset": 871,
+          "before": "ActorEmojiCache } from '../platform/actor-emoji-cache.js';\nimport type { ",
+          "after": ""
+        },
+        {
+          "offset": 1476,
+          "before": ";\n\tactorEmojis?: ActorEmojiCache",
+          "after": ""
+        },
+        {
+          "offset": 2202,
+          "before": "l, Date.now, parts.actorEmojis?.loca",
+          "after": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/modules/note/render-note.ts": {
+      "previousSha256": "777126dbea41915effe3316f8291ccd9440c294cf44fb5c00c90386614d21d42",
+      "currentSha256": "d35488e853520da9f815311d899922c87a08d28a1f18985940d749394a67e199",
+      "patches": [
+        {
+          "offset": 545,
+          "before": ", keepEmptyUrls = false",
+          "after": ""
+        },
+        {
+          "offset": 959,
+          "before": "(keepEmptyUrls ? ",
+          "after": ""
+        },
+        {
+          "offset": 979,
+          "before": " !== undefined : !!url)",
+          "after": ""
+        },
+        {
+          "offset": 1017,
+          "before": "!",
+          "after": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/connect-resources.ts": {
+      "previousSha256": "df9cd64fc4f69212061f4835ce40bca4046a27ce613d3ff5d308355993d63616",
+      "currentSha256": "acb6aeb42f0d18f3c77184259573fba6f84ac5b60216f9b633c9385c1735a0e9",
+      "patches": [
+        {
+          "offset": 2126,
+          "before": ".js';\nimport { createActorEmojiCache } from './actor-emoji-cache",
+          "after": ""
+        },
+        {
+          "offset": 12585,
+          "before": "actorEmojis = createActorEmojiCache(dataSource.manager, redis);\n\t\tscope.defer(actorEmojis.close);\n\t\tconst ",
+          "after": ""
+        },
+        {
+          "offset": 12787,
+          "before": ", actorEmojis",
+          "after": ""
+        },
+        {
+          "offset": 18926,
+          "before": "actorEmojis, ",
+          "after": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/note-authors.ts": {
+      "previousSha256": "25a7c426e54eed00f4c21dc90b11362451a61e3983e0d4d4447d05cfa941b660",
+      "currentSha256": "a8161e9a9ae8fb6f595469cd52ff62cf5d613abb94bfc741143ca3fe4e082a17",
+      "patches": [
+        {
+          "offset": 898,
+          "before": ", keepEmptyEmojiUrls = false",
+          "after": ""
+        },
+        {
+          "offset": 4865,
+          "before": ", keepEmptyEmojiUrls",
+          "after": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/note-reader.ts": {
+      "previousSha256": "e61458a01126e2979cd029f4c660350a7561a495e2a5661ab1aaae2f5ddfa8b5",
+      "currentSha256": "d3a7d587bc11a198ac7db0f86635aeea82a69b2f0e5241039fa41625281e43d2",
+      "patches": [
+        {
+          "offset": 535,
+          "before": "ActorEmojiCache } from '../actor-emoji-cache.js';\nimport type { ",
+          "after": ""
+        },
+        {
+          "offset": 922,
+          "before": ", actorEmojis?: Pick<ActorEmojiCache, 'remote'>",
+          "after": ""
+        },
+        {
+          "offset": 3998,
+          "before": "(actorEmojis ? [] : ",
+          "after": ""
+        },
+        {
+          "offset": 4050,
+          "before": ")",
+          "after": ""
+        },
+        {
+          "offset": 4386,
+          "before": "&& emojiNames.size ",
+          "after": ""
+        },
+        {
+          "offset": 4588,
+          "before": "const authorEmojiUrls = actorEmojis ? new Map((await Promise.all(emojiUsers.map(user => actorEmojis.remote(user.emojis, user.host, new URL(options.url).host)))).flatMap(map => [...map])) : emojiUrls;\n\t\t\t",
+          "after": ""
+        },
+        {
+          "offset": 4890,
+          "before": "authorE",
+          "after": "e"
+        },
+        {
+          "offset": 4905,
+          "before": ", actorEmojis !== undefined",
+          "after": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/streaming.ts": {
+      "previousSha256": "70c0dfd14e608afc6d57c0e6b3c47f718190e938f9809622567e31d1fd7e78a9",
+      "currentSha256": "812f422e05bb98b4f73214ac4531bceede66f17a43c035bf4da9ce1e7add2f4a",
+      "patches": [
+        {
+          "offset": 917,
+          "before": "ActorEmojiCache } from '../actor-emoji-cache.js';\nimport type { ",
+          "after": ""
+        },
+        {
+          "offset": 1221,
+          "before": ", actorEmojis?: Pick<ActorEmojiCache, 'remote'>",
+          "after": ""
+        },
+        {
+          "offset": 1392,
+          "before": "s, actorEmoji",
+          "after": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/integration/activitypub-actor.test.ts": {
+      "previousSha256": "e054a5cdc9abfb0d142727b798c90a7a463c30349545ddfd0e6a89dccca3ab6f",
+      "currentSha256": "74fb47bb576c29d9e0edef358a3f3975b104217ce7ff511f664f9914e45653d1",
+      "patches": [
+        {
+          "offset": 17934,
+          "before": "",
+          "after": "const key = vi.spyOn(resources.federationKeys, 'readUserKeypair');\n\t"
+        },
+        {
+          "offset": 17948,
+          "before": "w",
+          "after": "f"
+        },
+        {
+          "offset": 17950,
+          "before": "rm",
+          "after": "iled"
+        },
+        {
+          "offset": 18077,
+          "before": "w",
+          "after": "f"
+        },
+        {
+          "offset": 18079,
+          "before": "rm",
+          "after": "iled"
+        },
+        {
+          "offset": 18095,
+          "before": "2",
+          "after": "5"
+        },
+        {
+          "offset": 18110,
+          "before": "(aw",
+          "after": "f"
+        },
+        {
+          "offset": 18115,
+          "before": "t warm",
+          "after": "led"
+        },
+        {
+          "offset": 18122,
+          "before": "j",
+          "after": "header"
+        },
+        {
+          "offset": 18124,
+          "before": "",
+          "after": ".get('cache-c"
+        },
+        {
+          "offset": 18126,
+          "before": "(",
+          "after": "trol'"
+        },
+        {
+          "offset": 18131,
+          "before": "ag).t",
+          "after": ""
+        },
+        {
+          "offset": 18137,
+          "before": "Eq",
+          "after": "BeN"
+        },
+        {
+          "offset": 18140,
+          "before": "a",
+          "after": "l"
+        },
+        {
+          "offset": 18143,
+          "before": "expected",
+          "after": ""
+        },
+        {
+          "offset": 18162,
+          "before": "",
+          "after": "expect("
+        },
+        {
+          "offset": 18252,
+          "before": ";\n\t\t",
+          "after": ").r"
+        },
+        {
+          "offset": 18257,
+          "before": "xp",
+          "after": "j"
+        },
+        {
+          "offset": 18262,
+          "before": "(acquiredTag",
+          "after": ""
+        },
+        {
+          "offset": 18275,
+          "before": ")",
+          "after": ""
+        },
+        {
+          "offset": 18279,
+          "before": "Equal",
+          "after": "Throw"
+        },
+        {
+          "offset": 18285,
+          "before": "",
+          "after": "'"
+        },
+        {
+          "offset": 18286,
+          "before": "xpecte",
+          "after": "moji "
+        },
+        {
+          "offset": 18293,
+          "before": "",
+          "after": "atabase unavailable'"
+        },
+        {
+          "offset": 18305,
+          "before": "fault",
+          "after": "key"
+        },
+        {
+          "offset": 18356,
+          "before": "",
+          "after": ".mockRestore(); key"
+        }
+      ]
+    }
+  }
+}

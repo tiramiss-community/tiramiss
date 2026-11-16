@@ -5,10 +5,11 @@
 import { renderApEmoji, renderApHashtag } from '../modules/federation/public.js';
 import { createLocalEmojiReader } from '../platform/database/local-emojis.js';
 import type { LocalActorFacts, LocalActorTag } from '../modules/federation/public.js';
+import type { ApEmojiFacts } from '../modules/federation/public.js';
 import type { EntityManager } from 'typeorm';
 
-export function createLocalActorTagReader(manager: EntityManager, selfUrl: string, now: () => number = Date.now): (user: Pick<LocalActorFacts, 'emojis' | 'tags'>) => Promise<LocalActorTag[]> {
-	const readEmojis = createLocalEmojiReader(manager);
+export function createLocalActorTagReader(manager: EntityManager, selfUrl: string, now: () => number = Date.now, cachedReader?: (names: readonly string[]) => Promise<ApEmojiFacts[]>): (user: Pick<LocalActorFacts, 'emojis' | 'tags'>) => Promise<LocalActorTag[]> {
+	const readEmojis = cachedReader ?? createLocalEmojiReader(manager);
 	return async user => {
 		const emojis = await readEmojis(user.emojis);
 		return [

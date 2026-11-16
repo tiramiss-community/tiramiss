@@ -1,0 +1,126 @@
+{
+  "scope": "actor-emoji-cache-303-review-checks",
+  "measuredAt": "2026-11-16T03:39:43.669242+00:00",
+  "inputs": {
+    "scripts/actor-emoji-cache-evidence.mjs": "17b1eb1caf4f03d51ddae7dbc475d398a60a882dca53dd3de9c28e36b8eeef50",
+    "scripts/actor-emoji-cache-evidence.test.mjs": "121f8b50c675f84fcca47b5c8d002aea73d7ff66dde0078e10e0b44d9d1b1eba",
+    "scripts/joint-drive-meta-evidence.mjs": "6a3c9704c871e26694907f5be2228d0f98773375c9087701d63362b973dab6eb",
+    "scripts/url-preview-evidence.mjs": "f65bc52683ac8a5aa1b2212ee5631b8f058bec718834944059f15b146128378e",
+    "scripts/url-preview-contract.test.mjs": "b76d1fdc20db4d6401c4c898e30381c54c9df2cd12cd8a1a8a6ae6048a5e93d8",
+    "docs/superpowers/compatibility/actor-emoji-cache/current-evidence.json": "20fcbc11ed50287c915ec771c6bcc50149ba6ec18b4453ca888aa500249ead2d",
+    "docs/superpowers/compatibility/actor-emoji-cache/predecessor.json": "8c0734e3e338987849cb52501368f25f003a2b96ae3a5c41d7334ea626eda880"
+  },
+  "runs": [
+    {
+      "name": "root-near",
+      "command": [
+        "node",
+        "--test",
+        "scripts/remote-user-contract.test.mjs",
+        "scripts/url-preview-contract.test.mjs",
+        "scripts/actor-emoji-cache-evidence.test.mjs"
+      ],
+      "startedAt": "2026-11-16T03:36:38.505504+00:00",
+      "finishedAt": "2026-11-16T03:37:40.974668+00:00",
+      "durationSeconds": 62.451,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/root-near.log",
+      "logSha256": "4405504aeadd03cd3b9e5286e81460edc97e96b9f84a4dffa688abde4504a8d3"
+    },
+    {
+      "name": "root",
+      "command": [
+        "node",
+        "--test",
+        "scripts/actor-emoji-cache-evidence.test.mjs",
+        "scripts/actor-image-removal-contract.test.mjs",
+        "scripts/actor-instance-registration-contract.test.mjs",
+        "scripts/backend-contract-inventory.test.mjs",
+        "scripts/backend-next-ci-contract.test.mjs",
+        "scripts/check-dts.test.mjs",
+        "scripts/drive-files-contract.test.mjs",
+        "scripts/drive-folder-observation-contract.test.mjs",
+        "scripts/drive-folder-pubsub-contract.test.mjs",
+        "scripts/drive-folders-contract.test.mjs",
+        "scripts/evidence-validation-scope-contract.test.mjs",
+        "scripts/hashtag-oracle-evidence-contract.test.mjs",
+        "scripts/image-ingest-contract.test.mjs",
+        "scripts/instance-admin-contract.test.mjs",
+        "scripts/instance-metadata-contract.test.mjs",
+        "scripts/internal-events-contract.test.mjs",
+        "scripts/joint-drive-meta-contract.test.mjs",
+        "scripts/local-actor-alias-key-contract.test.mjs",
+        "scripts/local-actor-alias-key-evidence.test.mjs",
+        "scripts/local-actor-fields-contract.test.mjs",
+        "scripts/local-actor-images-contract.test.mjs",
+        "scripts/local-actor-profile-contract.test.mjs",
+        "scripts/local-actor-tags-contract.test.mjs",
+        "scripts/local-emoji-object-contract.test.mjs",
+        "scripts/local-emoji-object-evidence-contract.test.mjs",
+        "scripts/local-featured-contract.test.mjs",
+        "scripts/local-follow-collections-contract.test.mjs",
+        "scripts/local-follow-collections-history-contract.test.mjs",
+        "scripts/local-outbox-activity-contract.test.mjs",
+        "scripts/local-outbox-evidence.test.mjs",
+        "scripts/local-webfinger-contract.test.mjs",
+        "scripts/meta-cache-ci-fixtures-contract.test.mjs",
+        "scripts/meta-cache-contract.test.mjs",
+        "scripts/note-contract-fixtures.test.mjs",
+        "scripts/note-contract-posting-proof.test.mjs",
+        "scripts/note-contract-posting.test.mjs",
+        "scripts/note-contract-review.test.mjs",
+        "scripts/package-imports-contract.test.mjs",
+        "scripts/queue-session-observation-contract.test.mjs",
+        "scripts/remote-emojis-contract.test.mjs",
+        "scripts/remote-profile-contract.test.mjs",
+        "scripts/remote-user-contract.test.mjs",
+        "scripts/url-preview-contract.test.mjs",
+        "scripts/url-preview-fixture-contract.test.mjs"
+      ],
+      "startedAt": "2026-11-16T03:37:49.083711+00:00",
+      "finishedAt": "2026-11-16T03:38:57.692615+00:00",
+      "durationSeconds": 68.589,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/root.log",
+      "logSha256": "da606ba2f53b05a34cc035c0ff279cf0af1cd994a65141fadf4cb1088b2a0e28"
+    },
+    {
+      "name": "shipping",
+      "command": [
+        "node",
+        "scripts/check-shipping.mjs",
+        "--base",
+        "5f0549ad96af7ce85e12fdcc4bf26f23b029d29d"
+      ],
+      "startedAt": "2026-11-16T03:37:30.219642+00:00",
+      "finishedAt": "2026-11-16T03:37:33.009892+00:00",
+      "durationSeconds": 2.79,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/shipping.log",
+      "logSha256": "9b067524f11781bd7c24d35c7250841115cace9739237a00b89aa7f55e7aca7b"
+    },
+    {
+      "name": "inventory",
+      "command": [
+        "node",
+        "scripts/backend-contract-inventory.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-11-16T03:37:50.423105+00:00",
+      "finishedAt": "2026-11-16T03:37:55.030323+00:00",
+      "durationSeconds": 4.607,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/inventory.log",
+      "logSha256": "9506ac89cde2b4c62b8c5dc1c5149e9424db0f4e35b248aa94a8ad3ab8d719d4"
+    }
+  ],
+  "liveReadBudget": {
+    "reads": 8626,
+    "budget": 20000,
+    "passed": true,
+    "elapsedMs": 544.037305
+  },
+  "ciMeasured": false,
+  "independentReviewComplete": false,
+  "inventory303PendingProductCommit": true
+}

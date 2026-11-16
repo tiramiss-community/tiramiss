@@ -1,0 +1,104 @@
+{
+  "revision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "source": {
+    "misc/cache.ts": "99ea27bbf1287bbc6b2fc08fb7ce083395f30cdca7d6f5d9aca6048d5d9ef95c",
+    "core/CustomEmojiService.ts": "5c8412988843ef719210d5e81b4c47eaa19fcd22a2a20bc20a36e0d43568bc68",
+    "core/activitypub/models/ApNoteService.ts": "ae6d5ceaf20d13e167cba82b7a418e51c5e30b51f66f553d72c3f39c4257d12f"
+  },
+  "literalMethodSha256": {
+    "populateEmoji": "2c4f1630f8f058011698fbcd707af1396d6cb39639699b811559a87d3edac5d8",
+    "extractEmojis": "f49064cf735191cb5f77bba3f8c17f58b944876e6525703d64650d86182c2d64"
+  },
+  "scope": "literal cache classes and populateEmoji; explicit repository/Redis/clock doubles, not full upstream HTTP/PG",
+  "observations": [
+    {
+      "id": "local-cold",
+      "values": [
+        {
+          "url": "https://old.test/wave",
+          "updatedAtMs": 1000
+        }
+      ],
+      "reads": 1
+    },
+    {
+      "id": "local-exact-boundary",
+      "values": [
+        {
+          "url": "https://old.test/wave",
+          "updatedAtMs": 1000
+        }
+      ],
+      "reads": 1
+    },
+    {
+      "id": "local-redis-date-revival",
+      "values": [
+        {
+          "url": "https://old.test/wave",
+          "updatedAtMs": 1000
+        }
+      ],
+      "reads": 1
+    },
+    {
+      "id": "local-expired-db-failure",
+      "reads": 2
+    },
+    {
+      "id": "local-deleted",
+      "values": [],
+      "reads": 3
+    },
+    {
+      "id": "remote-cold-positive-negative",
+      "values": [
+        "https://old.test/wave",
+        null,
+        null,
+        null
+      ],
+      "reads": 5
+    },
+    {
+      "id": "remote-hit-db-stopped",
+      "values": [
+        "https://old.test/wave",
+        null,
+        null,
+        null
+      ],
+      "reads": 5
+    },
+    {
+      "id": "remote-exact-boundary-still-stale",
+      "values": [
+        "https://old.test/wave",
+        null,
+        null,
+        null
+      ],
+      "reads": 5
+    },
+    {
+      "id": "remote-expired-refresh",
+      "values": [
+        "https://new.test/wave",
+        "https://original.test/missing",
+        null,
+        null
+      ],
+      "reads": 7
+    },
+    {
+      "id": "remote-gc-exact-boundary-deleted",
+      "values": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "reads": 9
+    }
+  ]
+}

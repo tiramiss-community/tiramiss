@@ -11,7 +11,7 @@ import type { RuntimeResources } from './create-runtime.js';
 import type { RuntimeConfig } from '../config/types.js';
 export function createActorHttp(resources: RuntimeResources, config: RuntimeConfig) {
 	return createActivityPubActorAliasKeyApi({
-		readTags: createLocalActorTagReader(resources.dataSource.manager, config.url),
+		readTags: createLocalActorTagReader(resources.dataSource.manager, config.url, Date.now, resources.actorEmojis?.local),
 		readActor: createActorReader(resources.dataSource.manager),
 		readActorByAcct: createAcctActorReader(resources.dataSource.manager),
 		readKeyOwner: createLocalKeyOwnerReader(resources.dataSource.manager),

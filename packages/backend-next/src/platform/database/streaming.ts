@@ -14,12 +14,13 @@ import { readMeta } from './meta.js';
 import { EntityNotFoundError, type EntityManager } from 'typeorm';
 import type { Redis } from 'ioredis';
 import type { Logger } from '../logger.js';
+import type { ActorEmojiCache } from '../actor-emoji-cache.js';
 import type { NoteMediaOptions } from './note-files.js';
 import type { StreamFacts, StreamNote } from '../../modules/stream/public.js';
 
-export function createStreamingReader(manager: EntityManager, redis: Redis, logger: Logger, options: NoteMediaOptions) {
+export function createStreamingReader(manager: EntityManager, redis: Redis, logger: Logger, options: NoteMediaOptions, actorEmojis?: Pick<ActorEmojiCache, 'remote'>) {
 	const authenticate = createTokenAuthenticator(manager, logger);
-	const reader = createNoteReader(manager, redis, options);
+	const reader = createNoteReader(manager, redis, options, actorEmojis);
 	return {
 		async authenticate(token: string | null) {
 			const caller = await authenticate(token);

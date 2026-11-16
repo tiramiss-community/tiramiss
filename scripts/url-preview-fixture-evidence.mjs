@@ -61,6 +61,52 @@ export function validatePreviewFixture(value, readFile = read, optional = option
  return previous.files;
 }
 export function readPrePreviewFixture(path, encoding, readFile = read, optional = optionalRead) {
- const bytes = path === fixturePath ? Buffer.from(validatePreviewFixture(record(readFile), readFile, optional)[path]) : readFile(path);
+ const bytes = path === postSaveFixturePath ? Buffer.from(validatePostSaveIdleFixture(undefined, readFile, optional)) : path === fixturePath ? Buffer.from(validatePreviewFixture(record(readFile), readFile, optional)[path]) : readFile(path);
  return encoding ? bytes.toString(encoding) : bytes;
+}
+
+export const postSaveFixturePath = 'packages/backend-next/test/unit/note/post-save.test.ts';
+const postSaveProductionPath = 'packages/backend-next/src/platform/note-post-save.ts';
+const postSaveEvidencePath = 'docs/superpowers/compatibility/actor-emoji-cache/post-save-idle-fixture-evidence.json';
+const postSaveSeal = '8292346647ca19a292a443981b8da488cbbbae38628c9644bcf664bfd2d3aac1';
+// One unrelated CI fixture changes; old runtime measurements remain immutable.
+export function validatePostSaveIdleFixture(value, readFile = read, optional = optionalRead) {
+ if (value === undefined) {
+  const bytes = readFile(postSaveEvidencePath);
+  assert.equal(sha(bytes), postSaveSeal, 'post-save idle fixture receipt seal'); value = JSON.parse(bytes);
+ }
+ assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), postSaveSeal, 'post-save idle fixture receipt seal');
+ assert.equal(value.scope, 'post-save-idle-ci-fixture');
+ assert.equal(value.baseRevision, 'bb41a9d36bd17261df666e6813cc6029fef2618b');
+ assert.equal(value.productionChanged, false); assert.equal(value.noInputDrift, true);
+ assert.equal(value.postingComplete, false); assert.equal(value.ciSuccessMeasured, false);
+ assert.deepEqual(Object.keys(value.inputs), [postSaveFixturePath, postSaveProductionPath]);
+ assert.deepEqual(value.inputsAfter, value.inputs);
+ for (const [path, digest] of Object.entries(value.inputs)) assert.equal(sha(readFile(path)), digest, `post-save idle fixture measured input drift: ${path}`);
+ const previous = value.predecessor;
+ assert.equal(previous.path, postSaveFixturePath);
+ assert.equal(previous.currentSha256, value.inputs[postSaveFixturePath]);
+ assert.equal(previous.previousSha256, '4e529c8dd7508a5a862cdb7f3c0c820a5fda093dfc52da050c92200382a9c42b');
+ let source = readFile(postSaveFixturePath).toString();
+ for (const patch of [...previous.patches].reverse()) {
+  assert.equal(source.slice(patch.offset, patch.offset + patch.before.length), patch.before, 'post-save idle fixture exact patch');
+  source = source.slice(0, patch.offset) + patch.after + source.slice(patch.offset + patch.before.length);
+ }
+ assert.equal(sha(Buffer.from(source)), previous.previousSha256, 'post-save idle fixture predecessor identity');
+ assert.equal(value.mutant.exitCode, 1);
+ assert.deepEqual(value.runs.map(run => run.name), ['post-save-focused', ...Array.from({ length: 10 }, (_, index) => `post-save-repeat-${String(index + 1).padStart(2, '0')}`)]);
+ assert(value.runs.every(run => run.passed === 14 && run.files === 1));
+ for (const run of value.runs) {
+  assert.equal(run.exitCode, 0);
+  const bytes = optional(run.log);
+  if (bytes !== null) {
+   assert.equal(sha(bytes), run.logSha256, 'post-save idle fixture actual log drift');
+   if (run.passed !== undefined) assert(bytes.toString().includes(`Tests  ${run.passed} passed (${run.passed})`));
+  }
+ }
+ for (const run of [value.failedCi, value.mutant]) {
+  const bytes = optional(run.log);
+  if (bytes !== null) assert.equal(sha(bytes), run.logSha256, 'post-save idle fixture actual log drift');
+ }
+ return source;
 }

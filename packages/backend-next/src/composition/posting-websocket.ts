@@ -13,7 +13,7 @@ import type { QueueStatsReader } from '../modules/queue/public.js';
 export function openPostingWebSocket(server: Server, resources: RuntimeResources, config: RuntimeConfig, onFailure: (error: Error) => void, queueStats?: QueueStatsReader) {
 	return openStreamingServer(server, {
 		redis: { ...config.redisForPubsub, connectTimeout: config.processes.startupTimeoutMs }, selfUrl: config.url,
-		ports: createStreamingReader(resources.dataSource.manager, resources.reactionsRedis, resources.logger, { ...config.noteMedia, url: config.url, createdAtFromId: createIdCodec(config.id).createdAtFromId }),
+		ports: createStreamingReader(resources.dataSource.manager, resources.reactionsRedis, resources.logger, { ...config.noteMedia, url: config.url, createdAtFromId: createIdCodec(config.id).createdAtFromId }, resources.actorEmojis),
 		logger: resources.logger, onFailure, queueStats,
 	});
 }

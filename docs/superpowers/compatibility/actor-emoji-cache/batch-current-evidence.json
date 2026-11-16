@@ -1,0 +1,168 @@
+{
+  "scope": "actor-emoji-cache-303-batch",
+  "baseRevision": "4821531ad53285c26a294387318c4decc82a0757",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "frozenAt": "2026-11-16T04:04:36.301665+00:00",
+  "noInputDrift": true,
+  "postingComplete": false,
+  "upstreamFullServerMeasured": false,
+  "inputs": {
+    "packages/backend-next/src/platform/actor-emoji-cache.ts": "89f41257685b8a28ab8f5bfd971a60f6d40e11955e6b373f256257e67cff74cb",
+    "packages/backend-next/src/platform/database/note-reader.ts": "3e68faa46639ae6de3997454ae404036b2583e5edfbca94d8a2244b8ffc709d2",
+    "packages/backend-next/test/unit/actor-emoji-cache.test.ts": "2353b78e72914ce617407b7a7f3e98a72ce720fb63282c982638a73662c78c82",
+    "packages/backend-next/test/integration/actor-emoji-cache-batch.test.ts": "d7d7a34b655fe8a17edb65e54010d74d8e7697bac62e25f4fae882d39dafef62",
+    "packages/backend-next/test/integration/actor-emoji-cache.test.ts": "a6e7ca0facc547ca75c824b3a3c6b7e960d3120c1690ac4dc65244c3cce558e0",
+    "docs/superpowers/compatibility/actor-emoji-cache/source-probe.mjs": "812260244d5d9e99af3173d7ee75d271b23cdd7240a26f4ee242614a6dc5a6b8",
+    "docs/superpowers/compatibility/actor-emoji-cache/observations.json": "0cd0aa78bd2d82a4550273f30acae8e385e876f1f47ffbdf0a4fec5b0f4f07f5"
+  },
+  "inputsAfter": {
+    "packages/backend-next/src/platform/actor-emoji-cache.ts": "89f41257685b8a28ab8f5bfd971a60f6d40e11955e6b373f256257e67cff74cb",
+    "packages/backend-next/src/platform/database/note-reader.ts": "3e68faa46639ae6de3997454ae404036b2583e5edfbca94d8a2244b8ffc709d2",
+    "packages/backend-next/test/unit/actor-emoji-cache.test.ts": "2353b78e72914ce617407b7a7f3e98a72ce720fb63282c982638a73662c78c82",
+    "packages/backend-next/test/integration/actor-emoji-cache-batch.test.ts": "d7d7a34b655fe8a17edb65e54010d74d8e7697bac62e25f4fae882d39dafef62",
+    "packages/backend-next/test/integration/actor-emoji-cache.test.ts": "a6e7ca0facc547ca75c824b3a3c6b7e960d3120c1690ac4dc65244c3cce558e0",
+    "docs/superpowers/compatibility/actor-emoji-cache/source-probe.mjs": "812260244d5d9e99af3173d7ee75d271b23cdd7240a26f4ee242614a6dc5a6b8",
+    "docs/superpowers/compatibility/actor-emoji-cache/observations.json": "0cd0aa78bd2d82a4550273f30acae8e385e876f1f47ffbdf0a4fec5b0f4f07f5"
+  },
+  "runs": [
+    {
+      "name": "batch-build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "build"
+      ],
+      "startedAt": "2026-11-16T04:05:08.521891+00:00",
+      "finishedAt": "2026-11-16T04:05:08.909188+00:00",
+      "durationSeconds": 0.387,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/batch-build.log",
+      "logSha256": "29c5ee0f6b0b20dbb259b99d01276198c3d28190090706394608d4deda6d2c0b"
+    },
+    {
+      "name": "batch-typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "typecheck"
+      ],
+      "startedAt": "2026-11-16T04:05:08.929448+00:00",
+      "finishedAt": "2026-11-16T04:05:10.047132+00:00",
+      "durationSeconds": 1.118,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/batch-typecheck.log",
+      "logSha256": "7f96aaabe6df7a354a3e4d7514375171e219ae2de91268b52d91875e0a026aa4"
+    },
+    {
+      "name": "batch-full-unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test"
+      ],
+      "startedAt": "2026-11-16T04:05:33.957497+00:00",
+      "finishedAt": "2026-11-16T04:06:15.275668+00:00",
+      "durationSeconds": 41.294,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/batch-full-unit.log",
+      "logSha256": "ebd1492bb9594844f5f7251afaf78d3081077bb16106f961b5273449f167c20d",
+      "passed": 4646,
+      "files": 125
+    },
+    {
+      "name": "batch-integration",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/actor-emoji-cache-batch.test.ts",
+        "test/integration/actor-emoji-cache.test.ts",
+        "test/integration/activitypub-actor.test.ts",
+        "test/integration/remote-user.test.ts"
+      ],
+      "startedAt": "2026-11-16T04:05:09.550637+00:00",
+      "finishedAt": "2026-11-16T04:05:30.666198+00:00",
+      "durationSeconds": 21.103,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/batch-integration.log",
+      "logSha256": "d7052c3c305d4966f6779448f0fc8757bd57f7013fd77bed80e1493cbaec7c05",
+      "passed": 180,
+      "files": 4
+    },
+    {
+      "name": "batch-process",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:process",
+        "test/processes/actor-emoji-cache.test.ts"
+      ],
+      "startedAt": "2026-11-16T04:05:35.159544+00:00",
+      "finishedAt": "2026-11-16T04:05:38.867955+00:00",
+      "durationSeconds": 3.708,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/batch-process.log",
+      "logSha256": "44b1aa43c2c82732b135b68802422f3529ff682e715f6da6d4a6ae3060403966",
+      "passed": 1,
+      "files": 1
+    },
+    {
+      "name": "batch-source",
+      "command": [
+        "node",
+        "docs/superpowers/compatibility/actor-emoji-cache/source-probe.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-11-16T04:05:30.685400+00:00",
+      "finishedAt": "2026-11-16T04:05:30.898333+00:00",
+      "durationSeconds": 0.213,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/batch-source.log",
+      "logSha256": "f16f5136e9485cb9d8512583813f4581ff40c200ee12c68baf73a285bc30b193"
+    }
+  ],
+  "regression": {
+    "red": {
+      "name": "batch-red",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/actor-emoji-cache-batch.test.ts"
+      ],
+      "startedAt": "2026-11-16T04:00:30.213440+00:00",
+      "finishedAt": "2026-11-16T04:00:34.649620+00:00",
+      "durationSeconds": 4.436,
+      "exitCode": 1,
+      "log": "/tmp/tiramiss-303-logs/batch-red.log",
+      "logSha256": "766ad30f4abe626b0a00427d59a2a6ec0c704ad786b61ac1fb56619ebe9cc662"
+    },
+    "green": {
+      "name": "batch-green",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/actor-emoji-cache-batch.test.ts"
+      ],
+      "startedAt": "2026-11-16T04:01:24.529262+00:00",
+      "finishedAt": "2026-11-16T04:01:28.824621+00:00",
+      "durationSeconds": 4.295,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/batch-green.log",
+      "logSha256": "2dde78d69ee102c1b0a140bb5990bcb972aad36a5896d9afb7d6024b111f56ba",
+      "passed": 1,
+      "files": 1
+    },
+    "observedColdQueriesBefore": 30,
+    "observedColdQueriesAfter": 1,
+    "observedWarmQueriesAfter": 0
+  }
+}

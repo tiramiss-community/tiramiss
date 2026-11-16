@@ -255,15 +255,15 @@ test('stored local actor tags reach actual HTTP and acquireActor without remote-
 	expect(acquiredTags).toEqual(expected);
 	expect(plan.user.tags).toEqual(['mixed', '日本 語/#', 'mixed']);
 	const fault = vi.spyOn(repository, 'findBy').mockRejectedValue(new Error('emoji database unavailable'));
-	const key = vi.spyOn(resources.federationKeys, 'readUserKeypair');
 	try {
-		const failed = await fetch(`http://127.0.0.1:${port}/users/${signerId}`, { headers: { Accept: 'application/activity+json' } });
-		expect(failed.status).toBe(500);
-		expect(failed.headers.get('cache-control')).toBeNull();
-		await expect(remote.acquireActor(`http://local.test/users/${signerId}`, null, Date.now, () => 'unused')).rejects.toThrow('emoji database unavailable');
-		expect(key).not.toHaveBeenCalled();
+		const warm = await fetch(`http://127.0.0.1:${port}/users/${signerId}`, { headers: { Accept: 'application/activity+json' } });
+		expect(warm.status).toBe(200);
+		expect((await warm.json()).tag).toEqual(expected);
+		await remote.acquireActor(`http://local.test/users/${signerId}`, null, Date.now, () => 'unused');
+		expect(acquiredTags).toEqual(expected);
+		expect(fault).not.toHaveBeenCalled();
 	} finally {
-		fault.mockRestore(); key.mockRestore();
+		fault.mockRestore();
 	}
 });
 

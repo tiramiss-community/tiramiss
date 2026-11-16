@@ -39,30 +39,48 @@ test('post-save failure is logged, does not escape to HTTP, and shutdown waits f
 });
 
 test('idle waits for post-save work started while it is waiting', async () => {
-	let releaseSecond!: () => void;
-	const second = new Promise<void>(resolve => {
-		releaseSecond = resolve;
-	});
+	const deferred = () => {
+		let resolve!: () => void;
+		const promise = new Promise<void>(done => {
+			resolve = done;
+		});
+		return { promise, resolve };
+	};
+	const firstStarted = deferred(), firstCompleted = deferred(), secondStarted = deferred();
+	const firstGate = deferred(), secondGate = deferred();
 	const finished: string[] = [];
 	const effects = createNotePostSave(async ({ userId }) => {
 		if (userId === 'first') {
+			firstStarted.resolve();
+			await firstGate.promise;
 			effects.start({ noteId: 'n2', userId: 'second', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: null });
 		} else {
-			await second;
+			secondStarted.resolve();
+			await secondGate.promise;
 		}
 		finished.push(userId);
+		if (userId === 'first') {
+			firstCompleted.resolve();
+		}
 	}, createLogger('test', () => {}));
 	effects.start({ noteId: 'n1', userId: 'first', repliedNoteId: null, renotedNoteId: null, channelId: null, pollExpiresAtMs: null });
+	await firstStarted.promise;
 	let idle = false;
 	const waiting = effects.idle().then(() => {
 		idle = true;
 	});
-	await new Promise<void>(resolve => setTimeout(resolve, 0));
-	expect(finished).toEqual(['first']);
-	expect(idle).toBe(false);
-	releaseSecond();
-	await waiting;
-	expect(finished).toEqual(['first', 'second']);
+	try {
+		firstGate.resolve();
+		await Promise.all([firstCompleted.promise, secondStarted.promise]);
+		expect(finished).toEqual(['first']);
+		expect(idle).toBe(false);
+		secondGate.resolve();
+		await waiting;
+		expect(finished).toEqual(['first', 'second']);
+	} finally {
+		firstGate.resolve(); secondGate.resolve();
+		await effects.close();
+	}
 });
 
 test('poll enqueue failure is logged with the note and deadline, and does not skip or fail on counts', async () => {
