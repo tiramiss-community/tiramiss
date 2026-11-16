@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { inEvidenceValidationScope, scopedEvidenceValidation } from './evidence-validation-scope.mjs';
 import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -122,6 +123,7 @@ const requestChangePaths = [
 ];
 
 export function validateLocalFollowCollectionsEvidence(value, readFile = read, optional = optionalRead, driftLabel = 'follow collections current input drift') {
+ return scopedEvidenceValidation(validateLocalFollowCollectionsEvidence, value, readFile, optional, (readFile, optional) => {
 	assert.equal(value.schemaVersion, 3);
 	assert.equal(value.scope, 'local-follow-collections-external-review-measurement');
 	assert.equal(value.notesCreateStatus, 'partial');
@@ -347,14 +349,17 @@ export function validateLocalFollowCollectionsEvidence(value, readFile = read, o
 			} else if (run.id === 'source-probe') assert.equal(bytes.toString(), 'local follow source: 318 cases --check\n', 'follow collections actual source count');
 		}
 	}
+ });
 }
 
 // A leaf with no ancestor imports/calls. New inputs have no invented predecessor.
 export function localFollowCollectionsDigest(file, previousDigest, readFile = read, optional = optionalRead, driftLabel) {
+ return inEvidenceValidationScope(() => {
 	if (!renewedFiles.includes(file)) return previousDigest;
 	const bytes = readFile(evidencePath), value = JSON.parse(bytes), binding = value.files[file];
 	assert(binding && (previousDigest === binding.previousSha256 || previousDigest === binding.sha256 || (file === publicPath && previousDigest === value.publicRenewal.previousSha256)), 'follow collections previous identity');
 	validateLocalFollowCollectionsEvidence(value, readFile, optional, driftLabel);
 	assert.equal(sha(bytes), recordBytesSha256, 'follow collections record bytes');
 	return binding.sha256;
+ });
 }

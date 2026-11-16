@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { readPreOutbox } from './local-outbox-evidence.mjs';
@@ -35,6 +36,7 @@ function record(readFile) {
 }
 
 export function validateAliasKeySuccessor(value = record(read), rawRead = read, optional = optionalRead) {
+ return scopedEvidenceValidation(validateAliasKeySuccessor, value, rawRead, optional, (rawRead, optional) => {
  const readFile = path => readPreOutbox(path, undefined, rawRead, optional);
  assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'alias-key successor record seal');
  assert.deepEqual(Object.keys(value.files), successorFiles, 'alias-key finite subset');
@@ -68,6 +70,7 @@ export function validateAliasKeySuccessor(value = record(read), rawRead = read, 
   const bytes = optional(path);
   if (bytes !== null) assert.equal(sha(bytes), digest, 'alias-key actual receipt/log drift');
  }
+ });
 }
 function predecessorBytes(value, path, readFile = read) {
  const fixture = readFile(predecessorPath);
@@ -84,6 +87,7 @@ function predecessorBytes(value, path, readFile = read) {
 // cross the boundary, and each read first verifies the measured live bytes.
 // All other paths (including corpora and receipts) remain ordinary live reads.
 export function readPreAliasKey(path, encoding, rawRead = read) {
+ return withEvidenceRequestedPath(path, () => {
  const readFile = path => readPreOutbox(path, undefined, rawRead);
  if (!successorFiles.includes(path)) {
   const bytes = readFile(path);
@@ -93,4 +97,5 @@ export function readPreAliasKey(path, encoding, rawRead = read) {
  assert.equal(sha(readFile(path)), value.files[path].sha256, 'alias-key current source/test drift');
  const bytes = predecessorBytes(value, path, readFile);
  return encoding ? bytes.toString(encoding) : bytes;
+ });
 }

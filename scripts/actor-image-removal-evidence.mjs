@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { inEvidenceValidationScope, scopedEvidenceValidation } from './evidence-validation-scope.mjs';
 import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -24,6 +25,7 @@ const requiredRuns = ['build', 'typecheck', 'unit', 'integration', 'source'];
 const reviewedRecordSha256 = '88b0692a06e0f576390f893bf18dbced4e56327eb425bb072943890545f66577';
 
 export function validateActorImageRemovalEvidence(value, readFile = read, optional = readOptional) {
+ return scopedEvidenceValidation(validateActorImageRemovalEvidence, value, readFile, optional, (readFile, optional) => {
 	assert.equal(value.schemaVersion, 1);
 	assert.equal(value.scope, 'actor-image-removal-identity-renewal');
 	assert.equal(value.postingComplete, false, 'posting remains partial');
@@ -87,9 +89,11 @@ export function validateActorImageRemovalEvidence(value, readFile = read, option
 		}
 	}
 	assert.equal(sha(JSON.stringify(value)), reviewedRecordSha256, 'reviewed renewal record');
+ });
 }
 
 export function actorImageRemovalDigest(file, previousDigest, label = 'actor image removal previous identity', readFile = read, optional = readOptional) {
+ return inEvidenceValidationScope(() => {
 	const value = JSON.parse(readFile(evidencePath));
 	const binding = value.files[file];
 	if (!binding) return previousDigest;
@@ -97,4 +101,5 @@ export function actorImageRemovalDigest(file, previousDigest, label = 'actor ima
 	assert(binding.previousSha256 === previousDigest || binding.sha256 === previousDigest, label);
 	validateActorImageRemovalEvidence(value, readFile, optional);
 	return binding.sha256;
+ });
 }

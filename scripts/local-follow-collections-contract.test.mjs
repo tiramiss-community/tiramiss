@@ -147,7 +147,7 @@ test('featured, WebFinger, image, tags, profile, image removal and emoji validat
 test('new evidence leaf uses only Node builtins and has no ancestor calls or process tools', () => {
 	const source = read('scripts/local-follow-collections-evidence.mjs').toString();
 	const imports = [...source.matchAll(/from ['"]([^'"]+)['"]/g)].map(m => m[1]);
-	assert(imports.length > 0 && imports.every(p => p.startsWith('node:') || p === './local-actor-alias-key-evidence.mjs'));
+	assert(imports.length > 0 && imports.every(p => p.startsWith('node:') || p === './evidence-validation-scope.mjs' || p === './local-actor-alias-key-evidence.mjs'));
 	assert(!/import\(|execFile|spawn|validateLocalFeatured|localFeaturedDigest|localActor.*Digest|validateLocalActor/.test(source));
 	assert.equal(sha(read(directory + 'local-featured-current-evidence.json')), Object.values(record().files)[0].predecessor.sha256);
 });

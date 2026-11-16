@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { readPreInstanceAdmin } from './instance-admin-evidence.mjs';
@@ -36,6 +37,7 @@ function record(readFile) {
 // The disjoint finite readers restore instance-admin inputs and the hashtag
 // oracle test before older consumers read them. Both current proofs stay strict.
 export function validateEmojiObjectSuccessor(value = record(read), rawRead = read, optional = optionalRead) {
+ return scopedEvidenceValidation(validateEmojiObjectSuccessor, value, rawRead, optional, (rawRead, optional) => {
  const beforeAdmin = path => readPreInstanceAdmin(path, undefined, rawRead, optional);
  const readFile = path => readPreHashtagOracle(path, undefined, beforeAdmin, optional);
  assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'emoji current receipt seal');
@@ -71,11 +73,14 @@ export function validateEmojiObjectSuccessor(value = record(read), rawRead = rea
  const receipt = optional('/tmp/tiramiss-s1-325-20261114/product-run-receipt.json');
  if (receipt !== null) assert.equal(sha(receipt), seal, 'emoji actual receipt drift');
  return saved.files;
+ });
 }
 
 export function readPreEmojiObject(path, encoding, rawRead = read, optional = optionalRead) {
+ return withEvidenceRequestedPath(path, () => {
  const beforeAdmin = path => readPreInstanceAdmin(path, undefined, rawRead, optional);
  const readFile = path => readPreHashtagOracle(path, undefined, beforeAdmin, optional);
  const bytes = successorFiles.includes(path) ? Buffer.from(validateEmojiObjectSuccessor(record(readFile), rawRead, optional)[path]) : readFile(path);
  return encoding ? bytes.toString(encoding) : bytes;
+ });
 }

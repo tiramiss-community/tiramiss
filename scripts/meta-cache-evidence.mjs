@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { scopedEvidenceValidation } from './evidence-validation-scope.mjs';
 import { readForMetaCacheEvidence } from './joint-drive-meta-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -63,6 +64,7 @@ export const metaCachePredecessorFiles = Object.freeze([
 // This one bounded transition preserves historical measurements; it does not renew them.
 // Cached parsing never skips an actual read/hash through the caller's reader.
 export function validateMetaCacheSuccessor(value, readFile = read, optional = optionalRead) {
+ return scopedEvidenceValidation(validateMetaCacheSuccessor, value, readFile, optional, (readFile, optional) => {
  if (value === undefined) {
   value = sealed(readFile(directory + 'current-evidence.json'), seal, 'receipt');
  }
@@ -101,6 +103,7 @@ export function validateMetaCacheSuccessor(value, readFile = read, optional = op
   }
  }
  return { ...previous.files };
+ });
 }
 // A closure belongs to one synchronous validator invocation. It never stores a
 // validation result for the next public call, and still checks each requested input.

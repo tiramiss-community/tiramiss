@@ -1,0 +1,53 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+
+let activeScope;
+const digest = bytes => bytes === null ? null : createHash('sha256').update(bytes).digest('hex');
+
+// Only synchronous work shares a scope. Public calls always start with empty state.
+export function inEvidenceValidationScope(run) {
+ if (activeScope) return run();
+ activeScope = { validations: new Map(), requested: undefined };
+ try { return run(); } finally { activeScope = undefined; }
+}
+
+export function scopedEvidenceValidation(identity, value, readFile, optional, validate) {
+ return inEvidenceValidationScope(() => {
+  const scope = activeScope.validations;
+  if (!scope.has(identity)) scope.set(identity, new Map());
+  const readers = scope.get(identity);
+  if (!readers.has(readFile)) readers.set(readFile, new Map());
+  const options = readers.get(readFile);
+  if (!options.has(optional)) options.set(optional, new Map());
+  const records = options.get(optional);
+  const metadata = JSON.stringify(value);
+  if (records.has(metadata)) {
+   const cached = records.get(metadata);
+   for (const [path, expected] of cached.files) {
+    if (activeScope.requested !== undefined && path !== activeScope.requested && !path.endsWith('.json')) continue;
+    assert.equal(digest(readFile(path)), expected, `measured current input drift: ${path}`);
+   }
+   for (const [path, expected] of cached.artifacts) assert.equal(digest(optional(path)), expected, `actual log/receipt drift: ${path}`);
+   return structuredClone(cached.result);
+  }
+  const files = new Map(), artifacts = new Map();
+  const observe = path => { const bytes = readFile(path); files.set(path, digest(bytes)); return bytes; };
+  const observeOptional = path => { const bytes = optional(path); artifacts.set(path, digest(bytes)); return bytes; };
+  const result = validate(observe, observeOptional);
+  records.set(metadata, { files, artifacts, result: structuredClone(result) });
+  return result;
+ });
+}
+
+export function withEvidenceRequestedPath(path, run) {
+ return inEvidenceValidationScope(() => {
+  const scope = activeScope;
+  const previous = scope.requested;
+  scope.requested = path;
+  try { return run(); } finally { scope.requested = previous; }
+ });
+}

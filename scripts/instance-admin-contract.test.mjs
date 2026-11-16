@@ -63,7 +63,7 @@ test('unchanged Emoji receipt still validates all fourteen original measured inp
 
 test('reader imports only Node builtins and its finite preview successor, passes outside paths through and launches no subprocess/ancestor', () => {
  const source = read('scripts/instance-admin-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:') || ['./url-preview-evidence.mjs', './meta-cache-evidence.mjs'].includes(m[1])));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:') || m[1] === './evidence-validation-scope.mjs' || ['./url-preview-evidence.mjs', './meta-cache-evidence.mjs'].includes(m[1])));
  assert(!/execFile|spawn|import\(/.test(source));
  assert.equal(readPreInstanceAdmin('unrelated.ts', 'utf8', () => Buffer.from('live'), () => null), 'live');
 });

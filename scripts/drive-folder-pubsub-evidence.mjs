@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 import { driveFilePredecessorFiles, readPreDriveFiles } from './drive-files-evidence.mjs';
 import { createValidatedMetaPredecessorReader } from './meta-cache-evidence.mjs';
 import { createHash } from 'node:crypto';
@@ -34,6 +35,7 @@ export const pubsubSuccessorFiles = Object.freeze([
  'packages/backend-next/test/unit/drive/folder-drain.test.ts',
 ]);
 export function validateDriveFolderPubsubSuccessor(value, rawRead = read, optional = optionalRead) {
+ return scopedEvidenceValidation(validateDriveFolderPubsubSuccessor, value, rawRead, optional, (rawRead, optional) => {
  const beforeMeta = createValidatedMetaPredecessorReader(rawRead, optional);
  const previousObservation = validateFolderObservation(undefined, rawRead, optional);
  const readFile = path => Object.hasOwn(previousObservation, path) ? Buffer.from(previousObservation[path]) : driveFilePredecessorFiles.includes(path) ? readPreDriveFiles(path, undefined, rawRead) : beforeMeta(path);
@@ -73,8 +75,11 @@ export function validateDriveFolderPubsubSuccessor(value, rawRead = read, option
  const actual = optional(receiptPath);
  if (actual !== null) assert.equal(sha(actual), seal, 'folder pubsub actual receipt drift');
  return previous.files;
+ });
 }
 export function readPreDriveFolderPubsub(path, encoding, readFile = read, optional = optionalRead) {
+ return withEvidenceRequestedPath(path, () => {
  const bytes = pubsubSuccessorFiles.includes(path) ? Buffer.from(validateDriveFolderPubsubSuccessor(undefined, readFile, optional)[path]) : readFile(path);
  return encoding ? bytes.toString(encoding) : bytes;
+ });
 }

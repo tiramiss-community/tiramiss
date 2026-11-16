@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 import { createValidatedMetaPredecessorReader } from './meta-cache-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -44,6 +45,7 @@ const optionalRead = path => {
 // A finite successor for the eight changed files already bound by older receipts.
 // Cached parsing never replaces reads or hashes through the caller's reader.
 export function validateInternalEventsSuccessor(value, rawRead = read, optional = optionalRead) {
+ return scopedEvidenceValidation(validateInternalEventsSuccessor, value, rawRead, optional, (rawRead, optional) => {
  const readFile = createValidatedMetaPredecessorReader(rawRead, optional);
  if (value === undefined) value = sealed(readFile(evidencePath), seal, 'receipt');
  assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'internal events receipt seal');
@@ -78,12 +80,15 @@ export function validateInternalEventsSuccessor(value, rawRead = read, optional 
  const actual = optional(receiptPath);
  if (actual !== null) assert.equal(sha(actual), seal, 'internal events actual receipt drift');
  return { ...previous.files };
+ });
 }
 export function hasInternalEventPredecessor(path) {
  return internalEventsSuccessorFiles.includes(path) || path === queueSessionObservationPath;
 }
 export function readPreInternalEvents(path, encoding, readFile = read, optional = optionalRead) {
+ return withEvidenceRequestedPath(path, () => {
  if (path === queueSessionObservationPath) return readPreQueueSessionObservation(path, encoding, readFile, optional);
  const bytes = internalEventsSuccessorFiles.includes(path) ? Buffer.from(validateInternalEventsSuccessor(undefined, readFile, optional)[path]) : readFile(path);
  return encoding ? bytes.toString(encoding) : bytes;
+ });
 }

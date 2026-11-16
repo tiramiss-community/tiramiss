@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { inEvidenceValidationScope, scopedEvidenceValidation } from './evidence-validation-scope.mjs';
 import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -22,6 +23,7 @@ const requiredRuns = ['build', 'typecheck', 'units', 'activitypub-actor-integrat
 const reviewedRecordSha256 = '1e3ddeef85c441ed5ba0f4f9ad953414eb9559f7525a430f3bcddba5124fc326';
 
 export function validateLocalActorImagesEvidence(value, readFile = read, optional = optionalRead) {
+ return scopedEvidenceValidation(validateLocalActorImagesEvidence, value, readFile, optional, (readFile, optional) => {
 	assert.equal(value.schemaVersion, 1);
 	assert.equal(value.scope, 'local-actor-images-identity-renewal');
 	assert.equal(value.notesCreateStatus, 'partial');
@@ -107,24 +109,31 @@ export function validateLocalActorImagesEvidence(value, readFile = read, optiona
 		}
 	}
 	assert.equal(sha(JSON.stringify(value)), reviewedRecordSha256, 'reviewed image record');
+ });
 }
 
 export function localActorImagesDigest(file, previousDigest, label = 'local actor images previous identity', readFile = read, optional = optionalRead) {
+ return inEvidenceValidationScope(() => {
 	const value = JSON.parse(readFile(evidencePath));
 	const binding = value.files[file];
 	if (!binding) return previousDigest;
 	assert((binding.previousSha256 !== null && binding.previousSha256 === previousDigest) || binding.sha256 === previousDigest, label);
 	validateLocalActorImagesEvidence(value, readFile, optional);
 	return binding.sha256;
+ });
 }
 
 // Historical callers retain their pinned digest. Current-byte consumers explicitly
 // follow the single WebFinger hop after validating the unchanged image record.
 export function currentLocalActorImagesDigest(file, previousDigest, label = 'local actor images previous identity', readFile = read, optional = optionalRead) {
+ return inEvidenceValidationScope(() => {
 	return localWebfingerDigest(file, localActorImagesDigest(file, previousDigest, label, readFile, optional), readFile, optional);
+ });
 }
 
 // Current byte checks explicitly opt into featured; the older public projection stays stable.
 export function currentFeaturedActorImagesDigest(file, previousDigest, label = 'local actor images previous identity', readFile = read, optional = optionalRead) {
+ return inEvidenceValidationScope(() => {
 	return currentLocalWebfingerDigest(file, localActorImagesDigest(file, previousDigest, label, readFile, optional), readFile, optional);
+ });
 }

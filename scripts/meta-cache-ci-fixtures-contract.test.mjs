@@ -62,6 +62,6 @@ test('CI fixture follow-up preserves the earlier27/33 measured receipt and prede
 });
 test('CI fixture helper imports only builtins and does not execute Git or ancestor readers', () => {
  const source = read('scripts/meta-cache-ci-fixtures-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:')));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || match[1] === './evidence-validation-scope.mjs'));
  assert(!/execFile|spawn|import\(/.test(source));
 });

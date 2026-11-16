@@ -56,7 +56,7 @@ test('Meta cache repeated calls read actual bytes again and return independent m
 });
 test('Meta cache terminal helper imports only builtins without Git, subprocesses or historical ancestor readers', () => {
  const source = read('scripts/meta-cache-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => (match[1].startsWith('node:') || match[1] === './joint-drive-meta-evidence.mjs')));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => (match[1].startsWith('node:') || match[1] === './evidence-validation-scope.mjs' || match[1] === './joint-drive-meta-evidence.mjs')));
  assert(!/execFile|spawn|import\(/.test(source));
 });
 

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 import { createValidatedMetaPredecessorReader } from './meta-cache-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -43,6 +44,7 @@ function record(readFile) {
 // The terminal hop validates the actual merged runtime measurement and restores
 // only nine predecessor files. No Git, subprocess or ancestor reader is needed.
 export function validateInstanceAdminSuccessor(value = record(read), readFile = read, optional = optionalRead) {
+ return scopedEvidenceValidation(validateInstanceAdminSuccessor, value, readFile, optional, (readFile, optional) => {
  const beforeMeta = createValidatedMetaPredecessorReader(readFile, optional);
 	const previousPreview = validateUrlPreviewSuccessor(undefined, readFile, optional);
 	const beforePreview = path => path in previousPreview ? Buffer.from(previousPreview[path]) : beforeMeta(path);
@@ -78,9 +80,12 @@ export function validateInstanceAdminSuccessor(value = record(read), readFile = 
  const actual = optional(receiptPath);
  if (actual !== null) assert.equal(sha(actual), seal, 'instance admin actual receipt drift');
  return previous.files;
+ });
 }
 
 export function readPreInstanceAdmin(path, encoding, readFile = read, optional = optionalRead) {
+ return withEvidenceRequestedPath(path, () => {
  const bytes = successorFiles.includes(path) ? Buffer.from(validateInstanceAdminSuccessor(record(readFile), readFile, optional)[path]) : readPreUrlPreview(path, undefined, readFile, optional);
  return encoding ? bytes.toString(encoding) : bytes;
+ });
 }

@@ -117,6 +117,6 @@ test('explicit offline readers ignore residual host files while default readers 
 
 test('historical reader imports only Node builtins and its finite emoji leaf', () => {
  const source = read('scripts/local-outbox-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:') || m[1] === './local-emoji-object-evidence.mjs'));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(m => m[1].startsWith('node:') || m[1] === './evidence-validation-scope.mjs' || m[1] === './local-emoji-object-evidence.mjs'));
  assert(!/execFile|spawn|import\(/.test(source));
 });
