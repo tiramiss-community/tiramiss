@@ -1,0 +1,79 @@
+{
+  "scope": "public-emojis-304",
+  "baseRevision": "8c3f6d51e17a2a2f73c2f2156a384c2519ca21c5",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "nodeVersion": "v26.4.0",
+  "pnpmVersion": "12.9.1",
+  "measuredWorkingTree": true,
+  "upstreamFullServerMeasured": false,
+  "noInputDrift": true,
+  "inputs": {
+    "packages/backend-next/src/composition/http-app.ts": "8104cc1f5af96c11dfbfdd59d11fb453162386b683312bc6db3db8017ca42634",
+    "packages/backend-next/src/composition/public-emojis-http.ts": "8376bb6a819e2c24479bc05a8e9db70534a1b5fe4e51cebed4b5038a0e67e5f2",
+    "packages/backend-next/src/http/api-endpoint.ts": "262172fbd09ef769607b079e59f862c2f386098b5720a4835df26514b2b73bc2",
+    "packages/backend-next/src/http/api-request.ts": "7c4a83c21a75610f58ce6275f667d548305e46d8a5cd780191731c30eff0b7b5",
+    "packages/backend-next/src/http/public-emojis-api.ts": "1525141014d4bbf274f0bbc6d8275f0f1c59ed4c19dcaf96bbce047992d36f22",
+    "packages/backend-next/src/modules/emoji/public.ts": "75dada59c978310b0d4490b0c12f89131f0c43253dd590ba3d3ba120802c2bda",
+    "packages/backend-next/src/platform/database/public-emojis.ts": "8552d09037529b88998bfd331a25dc227633280e6a8ec110bd6305154265bddf",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "1afbcdadadbb7090f88f3449fc04e1f9e8a1b06e0ff2d1e7898d2cc20e314a4c",
+    "packages/backend-next/test/unit/http/public-emojis-api.test.ts": "65e20ea6857cf8983ab54b6265148ce21a9588ba0553dd55816d797efc90cf44",
+    "packages/backend-next/test/integration/public-emojis.test.ts": "0ef17917736db024f957e9ab7d302fc56405da66b2812814ae53567c9458f2f6",
+    "docs/superpowers/compatibility/public-emojis/corpus.json": "2fdabf31f306848818ddc2bb5b2f9c837c7fb31e535de496269d5a2883aca38a",
+    "docs/superpowers/compatibility/public-emojis/observations.json": "6ee5997f9dcd8e0bec7983ff642df271da19c589576db09db245abac739daf6c",
+    "docs/superpowers/compatibility/public-emojis/source-probe.mjs": "b08f9b130e88f85c1d366383b4ad9af374a526d36b05db276c581a794b22071d"
+  },
+  "inputsAfter": {
+    "packages/backend-next/src/composition/http-app.ts": "8104cc1f5af96c11dfbfdd59d11fb453162386b683312bc6db3db8017ca42634",
+    "packages/backend-next/src/composition/public-emojis-http.ts": "8376bb6a819e2c24479bc05a8e9db70534a1b5fe4e51cebed4b5038a0e67e5f2",
+    "packages/backend-next/src/http/api-endpoint.ts": "262172fbd09ef769607b079e59f862c2f386098b5720a4835df26514b2b73bc2",
+    "packages/backend-next/src/http/api-request.ts": "7c4a83c21a75610f58ce6275f667d548305e46d8a5cd780191731c30eff0b7b5",
+    "packages/backend-next/src/http/public-emojis-api.ts": "1525141014d4bbf274f0bbc6d8275f0f1c59ed4c19dcaf96bbce047992d36f22",
+    "packages/backend-next/src/modules/emoji/public.ts": "75dada59c978310b0d4490b0c12f89131f0c43253dd590ba3d3ba120802c2bda",
+    "packages/backend-next/src/platform/database/public-emojis.ts": "8552d09037529b88998bfd331a25dc227633280e6a8ec110bd6305154265bddf",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "1afbcdadadbb7090f88f3449fc04e1f9e8a1b06e0ff2d1e7898d2cc20e314a4c",
+    "packages/backend-next/test/unit/http/public-emojis-api.test.ts": "65e20ea6857cf8983ab54b6265148ce21a9588ba0553dd55816d797efc90cf44",
+    "packages/backend-next/test/integration/public-emojis.test.ts": "0ef17917736db024f957e9ab7d302fc56405da66b2812814ae53567c9458f2f6",
+    "docs/superpowers/compatibility/public-emojis/corpus.json": "2fdabf31f306848818ddc2bb5b2f9c837c7fb31e535de496269d5a2883aca38a",
+    "docs/superpowers/compatibility/public-emojis/observations.json": "6ee5997f9dcd8e0bec7983ff642df271da19c589576db09db245abac739daf6c",
+    "docs/superpowers/compatibility/public-emojis/source-probe.mjs": "b08f9b130e88f85c1d366383b4ad9af374a526d36b05db276c581a794b22071d"
+  },
+  "runs": [
+    {
+      "name": "build",
+      "command": "pnpm --filter backend-next build",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-304-logs/build.log",
+      "logSha256": "29c5ee0f6b0b20dbb259b99d01276198c3d28190090706394608d4deda6d2c0b"
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm --filter backend-next typecheck",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-304-logs/typecheck.log",
+      "logSha256": "7f96aaabe6df7a354a3e4d7514375171e219ae2de91268b52d91875e0a026aa4"
+    },
+    {
+      "name": "unit",
+      "command": "pnpm --filter backend-next test",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-304-logs/unit.log",
+      "logSha256": "2f8e5f9ef4c066c0f916c163832754311b021ef389b56a05de0c6f3e0f4d25c9",
+      "passed": 4685
+    },
+    {
+      "name": "integration",
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55304 BACKEND_NEXT_TEST_REDIS_PORT=56304 pnpm --filter backend-next test:integration test/integration/public-emojis.test.ts test/integration/actor-emoji-cache.test.ts",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-304-logs/integration.log",
+      "logSha256": "a26b7b9ad88d8f605af77e72dfdc509a14b0621d381ea9434f2bec77c13a1e2f",
+      "passed": 21
+    },
+    {
+      "name": "source",
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55304 node docs/superpowers/compatibility/public-emojis/source-probe.mjs --check",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-304-logs/source.log",
+      "logSha256": "718478e2d1dfab5e8abee26e1ae7f4f692ae46feed63499fba8d2f71995e9520"
+    }
+  ]
+}

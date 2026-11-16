@@ -1,0 +1,30 @@
+# Public emoji reads (#304)
+
+Parent #193 / plan #114. Fixed source: `8e07cf085adf7009583d234a208e30436f020e26`; implementation base: `8c3f6d51e17a2a2f73c2f2156a384c2519ca21c5`. This slice implements public `emoji` / `emojis` and their simple/detailed response transformation. Emoji management, actor import, admin packers, other discovery features and the parent plans remain incomplete.
+
+The public API reads local rows directly from PostgreSQL, as the source endpoints do. It does not use the actor cache. The list is ordered by category/name ascending (PostgreSQL NULL categories last); localOnly, sensitive and role-restricted rows are included. Remote rows are excluded. URLs use `publicUrl || originalUrl`, including an empty final URL. Simple responses omit false flags and empty role IDs, while detailed responses retain them and include nullable host/license/category. Single names are case sensitive. Missing records propagate `EntityNotFoundError` as the ordinary internal error, rather than an invented no-such-emoji error.
+
+Both endpoints allow GET and body-bearing methods through the existing API gate. Anonymous successful GET receives `public, max-age=3600`; POST, authenticated GET and failures retain the private default. An empty token fails authentication. GET reads query strings, repeated keys become arrays, and malformed percent components retain their whole original value, matching pinned fast-querystring. HEAD does not interpret the query as GET input; the measured empty-body detail HEAD returns 400 with an empty response body. The pinned PUT/body detail case succeeds. JSON responses on these two routes use `application/json; charset=utf-8`. Existing endpoints retain their GET rejection and response defaults.
+
+`source-probe.mjs` executes literal fixed-source endpoint callbacks, `EmojiEntityService` simple/detailed pack methods, and `ApiCallService.handleRequest`, using real TypeORM/PostgreSQL and listening Fastify. Authentication and error serialization are explicit wrappers; this is not a full upstream application measurement or proof of all authentication/error/header behavior. Sixteen finite request cases compare status, JSON Content-Type, Cache-Control and response fields against the next implementation's ordinary composed app with a real token, migrations, PostgreSQL/Redis and listening HTTP. Runtime error UUID/message fields are normalized; the exposed exception class is compared. CORS is covered separately by gate/unit checks.
+
+The source probe also executes literal `prefetchEmojis` against PostgreSQL with an explicit Map cache: warm positive entries are retained, local hosts are skipped, and a cached null is queried again and filled after insertion. The existing #303 actor collection reader deliberately retains its established positive and negative twelve-hour cache, deduplicating only cold pairs in one collection query. This slice preserves that accepted caller boundary and does not add an unused prefetch API. It is not a claim that the actor collection operation is identical to every source prefetch call.
+
+The existing runtime owns local Redis EX1800 / memory180000ms and remote43200000ms caches, GC, accepted-work draining and close. The #303 unit/integration/process evidence remains historical and unchanged. Regression checks retain TTL boundaries, real Redis expiry, updates/deletion, warm DB-unavailable behavior, remote import staleness, fallback and close. Additional #304 checks show fresh public reads alongside a stale local cache, public DB failure while warm local/remote hits survive, deletion and missing records, retained negative results after insertion, and a dedicated real Redis connection's disconnection: memory hits survive but an expired local read fails. The dedicated fault connection does not change the application runtime or assert continued process availability after a required runtime Redis connection fails.
+
+Management writers refresh local caches upstream; management is outside this slice. No new management writer or notification invalidation contract is introduced. Remote import still does not invalidate positive/null actor entries. TTL expiry and process close retain their existing behavior.
+
+Reproduction from the repository root, using a dedicated Compose project and ports:
+
+```sh
+BACKEND_NEXT_TEST_DB_PORT=55304 BACKEND_NEXT_TEST_REDIS_PORT=56304 BACKEND_NEXT_TEST_PUBSUB_REDIS_PORT=56305 docker compose -p backend-next-304 -f packages/backend-next/compose.test.yml up -d --wait postgres redis redis-pubsub
+pnpm --filter backend-next build
+pnpm --filter backend-next typecheck
+pnpm --filter backend-next test
+BACKEND_NEXT_TEST_DB_PORT=55304 BACKEND_NEXT_TEST_REDIS_PORT=56304 pnpm --filter backend-next test:integration test/integration/public-emojis.test.ts test/integration/actor-emoji-cache.test.ts
+BACKEND_NEXT_UPSTREAM_PATH=/path/to/fixed/source BACKEND_NEXT_TEST_DB_PORT=55304 node docs/superpowers/compatibility/public-emojis/source-probe.mjs --check
+```
+
+`current-evidence.json` records the finite runtime inputs and successful command logs; `predecessor.json` contains reverse patches for four changed shared HTTP/composition files. The leaf checks current bytes before exposing exact pre-#304 bytes to older proofs. Package/lock/inventory inputs are excluded, and no previous receipt is rewritten or replaced with a renewed claim. Both fresh and same-scope public calls retain requested-path drift checking. Root/proof/shipping results and independent review are separate from runtime measurements.
+
+The initial missing-module test was an import error, not an assertion RED. Assertion RED/GREEN was observed for malformed query decoding and the public JSON charset. Fixture setup initially used a seventeen-character native token; the real schema rejected it before any request ran. Later composition failures reflected the two new registrations and their middleware order; those expectations were updated without broadening route behavior. Earlier failures are not recorded as successful runtime measurements.

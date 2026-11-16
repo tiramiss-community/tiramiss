@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { readPrePublicEmojis } from './public-emojis-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
@@ -29,6 +30,8 @@ export const publicDocumentsPredecessorFiles = Object.freeze([
 
 export function validatePublicDocumentsEvidence(value, rawRead = read, optional = optionalRead) {
 	return scopedEvidenceValidation(validatePublicDocumentsEvidence, value, rawRead, optional, (rawRead, optional) => {
+		const currentRead = rawRead;
+		rawRead = path => readPrePublicEmojis(path, currentRead, optional);
 		const receipt = rawRead(directory + 'current-evidence.json');
 		assert.equal(sha(receipt), receiptSeal, 'public documents receipt seal');
 		if (value === undefined) {

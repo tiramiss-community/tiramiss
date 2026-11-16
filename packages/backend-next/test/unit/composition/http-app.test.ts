@@ -48,7 +48,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 		'/api/admin/federation/update-instance', '/api/admin/federation/refresh-remote-instance-metadata', '/url', '/.well-known/webfinger',
 		'/users/:id/collections/featured', '/notes/:id', '/users/:id/followers', '/users/:id/following',
 		'/users/:user/outbox', '/users//outbox', '/notes/:note/activity', '/notes//activity',
-		'/emojis/:emoji', '/emojis/',
+		'/emojis/:emoji', '/emojis/', '/api/emoji', '/api/emojis',
 		'/manifest.json', '/robots.txt', '/opensearch.xml',
 		'/api/drive/folders/create', '/api/drive/folders/delete', '/api/drive/folders/find', '/api/drive/folders/show', '/api/drive/folders/update',
 		'/api/notes/delete', '/api/notes/show', '/api/notes/create', '/api/test-queue',

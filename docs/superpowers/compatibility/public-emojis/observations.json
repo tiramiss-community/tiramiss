@@ -1,0 +1,395 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "corpusSha256": "2fdabf31f306848818ddc2bb5b2f9c837c7fb31e535de496269d5a2883aca38a",
+  "source": {
+    "server/api/endpoints/emoji.ts": "a2f587f08fa96873e59145880abb21484ba7681f84a55fbe24dd0bcd1b1329dc",
+    "server/api/endpoints/emojis.ts": "f5de373c2c36a81150aed43055752e0ac601de21ca621f6530f07cff2cbefad8",
+    "core/entities/EmojiEntityService.ts": "16c340773963675b5706d984ff1608db44a8d9226199a0da605ea3be0e875392",
+    "server/api/ApiCallService.ts": "da6431575d066d3b71633bead6e5d26130482d8b2a57a01179a1ab82a3032283",
+    "core/CustomEmojiService.ts": "5c8412988843ef719210d5e81b4c47eaa19fcd22a2a20bc20a36e0d43568bc68"
+  },
+  "scope": "literal endpoint callbacks, packSimple/Many/packDetailed and handleRequest; real TypeORM/PostgreSQL and listening Fastify plus literal prefetch with explicit Map cache; explicit auth/error wrapper, not full upstream server",
+  "cases": [
+    {
+      "id": "list-get",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "public, max-age=3600",
+      "body": {
+        "emojis": [
+          {
+            "aliases": [],
+            "name": "aaa",
+            "category": "A",
+            "url": ""
+          },
+          {
+            "aliases": [],
+            "name": "restricted",
+            "category": "A",
+            "url": "https://public.test/restricted",
+            "localOnly": true,
+            "isSensitive": true,
+            "roleIdsThatCanBeUsedThisEmojiAsReaction": [
+              "role"
+            ]
+          },
+          {
+            "aliases": [
+              "alias"
+            ],
+            "name": "plain",
+            "category": null,
+            "url": "https://original.test/plain"
+          },
+          {
+            "aliases": [],
+            "name": "plain%ZZ",
+            "category": null,
+            "url": "https://original.test/plain"
+          }
+        ]
+      }
+    },
+    {
+      "id": "list-post",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "private, max-age=0, must-revalidate",
+      "body": {
+        "emojis": [
+          {
+            "aliases": [],
+            "name": "aaa",
+            "category": "A",
+            "url": ""
+          },
+          {
+            "aliases": [],
+            "name": "restricted",
+            "category": "A",
+            "url": "https://public.test/restricted",
+            "localOnly": true,
+            "isSensitive": true,
+            "roleIdsThatCanBeUsedThisEmojiAsReaction": [
+              "role"
+            ]
+          },
+          {
+            "aliases": [
+              "alias"
+            ],
+            "name": "plain",
+            "category": null,
+            "url": "https://original.test/plain"
+          },
+          {
+            "aliases": [],
+            "name": "plain%ZZ",
+            "category": null,
+            "url": "https://original.test/plain"
+          }
+        ]
+      }
+    },
+    {
+      "id": "detail-fallback",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "public, max-age=3600",
+      "body": {
+        "id": "plain",
+        "aliases": [
+          "alias"
+        ],
+        "name": "plain",
+        "category": null,
+        "host": null,
+        "url": "https://original.test/plain",
+        "license": null,
+        "isSensitive": false,
+        "localOnly": false,
+        "roleIdsThatCanBeUsedThisEmojiAsReaction": []
+      }
+    },
+    {
+      "id": "detail-flags",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "private, max-age=0, must-revalidate",
+      "body": {
+        "id": "restricted",
+        "aliases": [],
+        "name": "restricted",
+        "category": "A",
+        "host": null,
+        "url": "https://public.test/restricted",
+        "license": "CC0",
+        "isSensitive": true,
+        "localOnly": true,
+        "roleIdsThatCanBeUsedThisEmojiAsReaction": [
+          "role"
+        ]
+      }
+    },
+    {
+      "id": "detail-empty-url",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "public, max-age=3600",
+      "body": {
+        "id": "first",
+        "aliases": [],
+        "name": "aaa",
+        "category": "A",
+        "host": null,
+        "url": "",
+        "license": "",
+        "isSensitive": false,
+        "localOnly": false,
+        "roleIdsThatCanBeUsedThisEmojiAsReaction": []
+      }
+    },
+    {
+      "id": "anonymous-token-empty",
+      "status": 401,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "private, max-age=0, must-revalidate",
+      "body": {
+        "error": {
+          "message": "Authentication failed. Please ensure your token is correct.",
+          "code": "AUTHENTICATION_FAILED",
+          "id": "b0a7f5f8-dc2f-4171-b91f-de88ad238e14",
+          "kind": "client"
+        }
+      }
+    },
+    {
+      "id": "authenticated-get",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "private, max-age=0, must-revalidate",
+      "body": {
+        "emojis": [
+          {
+            "aliases": [],
+            "name": "aaa",
+            "category": "A",
+            "url": ""
+          },
+          {
+            "aliases": [],
+            "name": "restricted",
+            "category": "A",
+            "url": "https://public.test/restricted",
+            "localOnly": true,
+            "isSensitive": true,
+            "roleIdsThatCanBeUsedThisEmojiAsReaction": [
+              "role"
+            ]
+          },
+          {
+            "aliases": [
+              "alias"
+            ],
+            "name": "plain",
+            "category": null,
+            "url": "https://original.test/plain"
+          },
+          {
+            "aliases": [],
+            "name": "plain%ZZ",
+            "category": null,
+            "url": "https://original.test/plain"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bearer-precedence",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "private, max-age=0, must-revalidate",
+      "body": {
+        "id": "plain",
+        "aliases": [
+          "alias"
+        ],
+        "name": "plain",
+        "category": null,
+        "host": null,
+        "url": "https://original.test/plain",
+        "license": null,
+        "isSensitive": false,
+        "localOnly": false,
+        "roleIdsThatCanBeUsedThisEmojiAsReaction": []
+      }
+    },
+    {
+      "id": "missing-name",
+      "status": 400,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "private, max-age=0, must-revalidate",
+      "body": {
+        "error": {
+          "message": "Invalid param.",
+          "code": "INVALID_PARAM",
+          "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+          "kind": "client",
+          "info": {
+            "param": "#/required",
+            "reason": "must have required property 'name'"
+          }
+        }
+      }
+    },
+    {
+      "id": "duplicate-name",
+      "status": 400,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "private, max-age=0, must-revalidate",
+      "body": {
+        "error": {
+          "message": "Invalid param.",
+          "code": "INVALID_PARAM",
+          "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+          "kind": "client",
+          "info": {
+            "param": "#/properties/name/type",
+            "reason": "must be string"
+          }
+        }
+      }
+    },
+    {
+      "id": "remote-excluded",
+      "status": 500,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "private, max-age=0, must-revalidate",
+      "body": {
+        "error": {
+          "message": "Internal error occurred. Please contact us if the error persists.",
+          "code": "INTERNAL_ERROR",
+          "id": "5d37dbcb-891e-41ca-a3d6-e690c97775ac",
+          "kind": "server",
+          "info": {
+            "e": {
+              "code": "EntityNotFoundError"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "case-sensitive-name",
+      "status": 500,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "private, max-age=0, must-revalidate",
+      "body": {
+        "error": {
+          "message": "Internal error occurred. Please contact us if the error persists.",
+          "code": "INTERNAL_ERROR",
+          "id": "5d37dbcb-891e-41ca-a3d6-e690c97775ac",
+          "kind": "server",
+          "info": {
+            "e": {
+              "code": "EntityNotFoundError"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "nonstring-name",
+      "status": 400,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "private, max-age=0, must-revalidate",
+      "body": {
+        "error": {
+          "message": "Invalid param.",
+          "code": "INVALID_PARAM",
+          "id": "3d81ceae-475f-4600-b2a8-2bc116157532",
+          "kind": "client",
+          "info": {
+            "param": "#/properties/name/type",
+            "reason": "must be string"
+          }
+        }
+      }
+    },
+    {
+      "id": "head-no-body-input",
+      "status": 400,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "private, max-age=0, must-revalidate",
+      "body": null
+    },
+    {
+      "id": "put-input",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "private, max-age=0, must-revalidate",
+      "body": {
+        "id": "plain",
+        "aliases": [
+          "alias"
+        ],
+        "name": "plain",
+        "category": null,
+        "host": null,
+        "url": "https://original.test/plain",
+        "license": null,
+        "isSensitive": false,
+        "localOnly": false,
+        "roleIdsThatCanBeUsedThisEmojiAsReaction": []
+      }
+    },
+    {
+      "id": "malformed-percent",
+      "status": 500,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "private, max-age=0, must-revalidate",
+      "body": {
+        "error": {
+          "message": "Internal error occurred. Please contact us if the error persists.",
+          "code": "INTERNAL_ERROR",
+          "id": "5d37dbcb-891e-41ca-a3d6-e690c97775ac",
+          "kind": "server",
+          "info": {
+            "e": {
+              "code": "EntityNotFoundError"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "prefetch": [
+    {
+      "id": "prefetch-preserves-positive-and-absent-negative",
+      "urls": [
+        [
+          "remote remote.test",
+          "https://stale.test/remote"
+        ],
+        [
+          "missing remote.test",
+          null
+        ]
+      ]
+    },
+    {
+      "id": "prefetch-rereads-negative-after-insert",
+      "urls": [
+        [
+          "remote remote.test",
+          "https://stale.test/remote"
+        ],
+        [
+          "missing remote.test",
+          "https://new.test/missing"
+        ]
+      ]
+    }
+  ]
+}

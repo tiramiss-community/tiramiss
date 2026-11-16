@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { readPrePublicEmojis } from './public-emojis-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
@@ -37,7 +38,7 @@ test('only two changed shared inputs project to exact base bytes after the full 
 	const previous = validatePublicDocumentsEvidence(undefined, read, () => null);
 	assert.deepEqual(Object.keys(previous), publicDocumentsPredecessorFiles);
 	for (const path of publicDocumentsPredecessorFiles) {
-		assert.equal(sha(read(path)), saved.files[path].currentSha256);
+		assert.equal(sha(readPrePublicEmojis(path, read, () => null)), saved.files[path].currentSha256);
 		assert.equal(sha(readPrePublicDocuments(path, read, () => null)), saved.files[path].previousSha256);
 	}
 	assert.equal(readPrePublicDocuments('unrelated', () => Buffer.from('live')).toString(), 'live');

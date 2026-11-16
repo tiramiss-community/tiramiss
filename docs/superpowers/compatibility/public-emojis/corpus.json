@@ -1,0 +1,169 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "rows": [
+    {
+      "id": "plain",
+      "name": "plain",
+      "host": null,
+      "aliases": [
+        "alias"
+      ],
+      "category": null,
+      "publicUrl": "",
+      "originalUrl": "https://original.test/plain",
+      "license": null,
+      "localOnly": false,
+      "isSensitive": false,
+      "roleIdsThatCanBeUsedThisEmojiAsReaction": []
+    },
+    {
+      "id": "restricted",
+      "name": "restricted",
+      "host": null,
+      "aliases": [],
+      "category": "A",
+      "publicUrl": "https://public.test/restricted",
+      "originalUrl": "https://original.test/restricted",
+      "license": "CC0",
+      "localOnly": true,
+      "isSensitive": true,
+      "roleIdsThatCanBeUsedThisEmojiAsReaction": [
+        "role"
+      ]
+    },
+    {
+      "id": "first",
+      "name": "aaa",
+      "host": null,
+      "aliases": [],
+      "category": "A",
+      "publicUrl": "",
+      "originalUrl": "",
+      "license": "",
+      "localOnly": false,
+      "isSensitive": false,
+      "roleIdsThatCanBeUsedThisEmojiAsReaction": []
+    },
+    {
+      "id": "remote",
+      "name": "remote",
+      "host": "remote.test",
+      "aliases": [],
+      "category": null,
+      "publicUrl": "https://remote.test/emoji",
+      "originalUrl": "https://remote.test/emoji",
+      "license": null,
+      "localOnly": false,
+      "isSensitive": false,
+      "roleIdsThatCanBeUsedThisEmojiAsReaction": []
+    },
+    {
+      "id": "malformed",
+      "name": "plain%ZZ",
+      "host": null,
+      "aliases": [],
+      "category": null,
+      "publicUrl": "",
+      "originalUrl": "https://original.test/plain",
+      "license": null,
+      "localOnly": false,
+      "isSensitive": false,
+      "roleIdsThatCanBeUsedThisEmojiAsReaction": []
+    }
+  ],
+  "cases": [
+    {
+      "id": "list-get",
+      "method": "GET",
+      "path": "/api/emojis"
+    },
+    {
+      "id": "list-post",
+      "method": "POST",
+      "path": "/api/emojis",
+      "body": {}
+    },
+    {
+      "id": "detail-fallback",
+      "method": "GET",
+      "path": "/api/emoji?name=plain"
+    },
+    {
+      "id": "detail-flags",
+      "method": "POST",
+      "path": "/api/emoji",
+      "body": {
+        "name": "restricted"
+      }
+    },
+    {
+      "id": "detail-empty-url",
+      "method": "GET",
+      "path": "/api/emoji?name=aaa"
+    },
+    {
+      "id": "anonymous-token-empty",
+      "method": "GET",
+      "path": "/api/emojis?i="
+    },
+    {
+      "id": "authenticated-get",
+      "method": "GET",
+      "path": "/api/emojis?i=validtoken123456"
+    },
+    {
+      "id": "bearer-precedence",
+      "method": "GET",
+      "path": "/api/emoji?name=plain&i=bad",
+      "headers": {
+        "Authorization": "Bearer validtoken123456"
+      }
+    },
+    {
+      "id": "missing-name",
+      "method": "GET",
+      "path": "/api/emoji"
+    },
+    {
+      "id": "duplicate-name",
+      "method": "GET",
+      "path": "/api/emoji?name=plain&name=aaa"
+    },
+    {
+      "id": "remote-excluded",
+      "method": "GET",
+      "path": "/api/emoji?name=remote"
+    },
+    {
+      "id": "case-sensitive-name",
+      "method": "GET",
+      "path": "/api/emoji?name=PLAIN"
+    },
+    {
+      "id": "nonstring-name",
+      "method": "POST",
+      "path": "/api/emoji",
+      "body": {
+        "name": 42
+      }
+    },
+    {
+      "id": "head-no-body-input",
+      "method": "HEAD",
+      "path": "/api/emoji?name=plain"
+    },
+    {
+      "id": "put-input",
+      "method": "PUT",
+      "path": "/api/emoji",
+      "body": {
+        "name": "plain"
+      }
+    },
+    {
+      "id": "malformed-percent",
+      "method": "GET",
+      "path": "/api/emoji?name=%70lain%ZZ"
+    }
+  ]
+}
