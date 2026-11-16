@@ -36,3 +36,9 @@ docker compose -p backend-next-568 -f packages/backend-next/compose.test.yml dow
 - 失敗した `CREATE UNIQUE INDEX CONCURRENTLY`（重複fixture、23505）で PostgreSQL 自身が残す invalid index を準備する。実 concurrent migration が composite・favorite・pin の invalid index を置換し、有効・非unique・期待する列順/降順の定義へ戻す。これは障害注入用の unique DDL であり、製品の非unique migration の cancel を実測した意味ではない。composite の有効な再実行ではOIDを保持し、旧userId単独indexを除く。全履歴適用後のcomposite名は後続 `MigrationCleanup1752509043847` が `IDX_a6f649630f55af3888e5a42919` へ変更する。
 
 これは有限のDB fixture。無条件rollback・自動修復・任意の途中失敗からの無検査retryを保証しない。再開前には停止状態、実際の履歴・index有効性・定義・失敗したDDLの原因を確認する。ここでの再実行条件は意図的にrenameした列の復元と、有効な先行indexの保持、またはinvalid indexを置換できる concurrent 分岐に限定する。既存データの値変換、全障害、権限不足、通信断によるCOMMIT結果不明、旧版への復元や本番切替は証明していない。
+
+## 実測
+
+[observations.json](observations.json) は frozen `1fe7ef48e00b16b91fc38665d5efc9897c548b30` の実測。Node26.4.0・PostgreSQL18.6・TypeORM1.1.1・pg8.23.1、専用project `backend-next-568` / port55568。runtimeの編集なしで、既存6＋追加7＝13結合テスト（2ファイル）と、固定Git objectとの349件 byte 比較を含むsource3テストがPASSした。実行ログ・追加7ケースのJSON・入力4ファイルのSHA256をreceiptに保存した。OIDはその検証DB内の実値で、別の実行との同値性は求めない。
+
+近傍の test 型検査、依存順build、shipping の変更ファイルlint・SPDX・localeもPASS。広域テストや本家full serverは実行していない。既存pgの並行query deprecation warningは実ログに残す。
