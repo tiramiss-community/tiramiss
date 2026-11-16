@@ -62,7 +62,7 @@ test('historical terminals preserve independent injected reader provenance and r
 	assert.throws(() => createPreConnectCheckPackageReader(independent)(avatarImagesPredecessorFiles[0]), /drift/);
 });
 test('receipt objects, raw metadata and available measurement logs cannot be renewed silently', () => {
-	for (const name of ['current-evidence.json', 'predecessor.json', 'r1-current-evidence.json', 'r1-predecessor.json']) assert.throws(() => validateAvatarImagesEvidence(undefined, path => path === directory + name ? Buffer.from('{}') : read(path), offline), /seal/);
+	for (const name of ['current-evidence.json', 'predecessor.json', 'r1-current-evidence.json', 'r1-predecessor.json', 'r2-current-evidence.json', 'r2-predecessor.json']) assert.throws(() => validateAvatarImagesEvidence(undefined, path => path === directory + name ? Buffer.from('{}') : read(path), offline), /seal/);
 	const value = receipt(); value.noInputDrift = false;
 	assert.throws(() => validateAvatarImagesEvidence(value, read, offline), /seal/);
 	for (const run of receipt().runs) assert.throws(() => validateAvatarImagesEvidence(undefined, read, path => path === run.log ? Buffer.from('changed') : null), /actual log drift/);

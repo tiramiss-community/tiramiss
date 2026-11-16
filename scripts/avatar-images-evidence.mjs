@@ -8,10 +8,12 @@ import { readFileSync } from 'node:fs';
 import { scopedEvidenceValidation, withEvidenceRequestedPath, getEvidenceCurrentReader, registerEvidenceObserver } from './evidence-validation-scope.mjs';
 
 const directory = 'docs/superpowers/compatibility/avatar-images/';
-const receiptSeal = 'def91376d85e900194a83ffbd9fab5588136bb8fd0a1709e550013e224a8e7f9';
+const receiptSeal = '490de47cfab1432a900fa3f322ea97e8f858754a35558ea18f0d752cf22e3839';
 const historySeals = {
   "r1-current-evidence.json": "fdff3890d970fdf3cd4287781e808301bca56d46f51dcc532a14000df2aa868f",
-  "r1-predecessor.json": "bb3ff4c436f4bd16e310a42dea1be634c136694bbd4cbc932e70c6ed744ba680"
+  "r1-predecessor.json": "bb3ff4c436f4bd16e310a42dea1be634c136694bbd4cbc932e70c6ed744ba680",
+  "r2-current-evidence.json": "def91376d85e900194a83ffbd9fab5588136bb8fd0a1709e550013e224a8e7f9",
+  "r2-predecessor.json": "27a4d13467e7b648ed49cc86a9f70ebe1834d7b8a221b21ebb48a944889c7bfb"
 };
 const observerRegistration = {};
 const predecessorSeal = '27a4d13467e7b648ed49cc86a9f70ebe1834d7b8a221b21ebb48a944889c7bfb';

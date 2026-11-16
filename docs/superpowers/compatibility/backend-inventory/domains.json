@@ -3372,8 +3372,8 @@
         "docs/superpowers/compatibility/avatar-images/observations.json",
         "docs/superpowers/compatibility/avatar-images/source-probe.mjs"
       ],
-      "evidenceRevision": "572400e5878620461508200701af08cb0a93f9f5",
-      "note": "#556: 固定本家8e07cf0のliteral3route/getIdenticonUrl/Acct.parse/genIdenticonを実Fastify/canvasとrepository/Meta doubleで178 literal HTTP観測。新通常HTTP/PG172 test、近傍単体242、build/typecheck成功。redirect/static/badge/fallback/cache/CSP、ID/URL null・空、128px PNG hash、無効設定、HEAD、不正encoding/100文字境界と取得失敗を比較。Meta通知は新実装の実Redis検証。full upstream起動/PG、global AP redirect hook(#563)、Drive/proxy/static画像配信とactor URL再実装は対象外。#196/#114は未完了。 R2: literal request targetを維持しdot/..・backslash・decode済み414を追加比較。画像外getPathとRole/unknown/HEAD/OPTIONSは既存動作と比較。"
+      "evidenceRevision": "7d39237c604239ffa8223b5db0c99dc30e6510e7",
+      "note": "#556 R3: 固定本家8e07cf0のliteral3route、実import先backend Acct.parse/getIdenticonUrl/genIdenticonを実Fastify/canvasとrepository/Meta doubleで180 HTTP観測。新通常HTTP/PG174 test、近傍単体244、build/typecheck成功。比較ID一意性と対応を検査し/emoji対/emoji/、空host対未指定host、redirect/static/badge/fallback/cache/CSP、128px PNG/無効設定、raw dot/backslash・不正encoding/100文字境界と失敗を比較。R1/R2のID重複・SDK parser誤参照を訂正し過去receipt/predecessorはarchiveで保持。新実装Meta通知は実Redis検証。full upstream起動/PG、global AP redirect hook(#563)、Drive/proxy/static配信とactor URL再実装は対象外。#196/#114は未完了。"
     },
     "http:packages/backend/src/server/ServerService.ts:223": {
       "status": "verified",
@@ -3393,8 +3393,8 @@
         "docs/superpowers/compatibility/avatar-images/observations.json",
         "docs/superpowers/compatibility/avatar-images/source-probe.mjs"
       ],
-      "evidenceRevision": "572400e5878620461508200701af08cb0a93f9f5",
-      "note": "#556: 固定本家8e07cf0のliteral3route/getIdenticonUrl/Acct.parse/genIdenticonを実Fastify/canvasとrepository/Meta doubleで178 literal HTTP観測。新通常HTTP/PG172 test、近傍単体242、build/typecheck成功。redirect/static/badge/fallback/cache/CSP、ID/URL null・空、128px PNG hash、無効設定、HEAD、不正encoding/100文字境界と取得失敗を比較。Meta通知は新実装の実Redis検証。full upstream起動/PG、global AP redirect hook(#563)、Drive/proxy/static画像配信とactor URL再実装は対象外。#196/#114は未完了。 R2: literal request targetを維持しdot/..・backslash・decode済み414を追加比較。画像外getPathとRole/unknown/HEAD/OPTIONSは既存動作と比較。"
+      "evidenceRevision": "7d39237c604239ffa8223b5db0c99dc30e6510e7",
+      "note": "#556 R3: 固定本家8e07cf0のliteral3route、実import先backend Acct.parse/getIdenticonUrl/genIdenticonを実Fastify/canvasとrepository/Meta doubleで180 HTTP観測。新通常HTTP/PG174 test、近傍単体244、build/typecheck成功。比較ID一意性と対応を検査し/emoji対/emoji/、空host対未指定host、redirect/static/badge/fallback/cache/CSP、128px PNG/無効設定、raw dot/backslash・不正encoding/100文字境界と失敗を比較。R1/R2のID重複・SDK parser誤参照を訂正し過去receipt/predecessorはarchiveで保持。新実装Meta通知は実Redis検証。full upstream起動/PG、global AP redirect hook(#563)、Drive/proxy/static配信とactor URL再実装は対象外。#196/#114は未完了。"
     },
     "http:packages/backend/src/server/ServerService.ts:242": {
       "status": "verified",
@@ -3414,8 +3414,8 @@
         "docs/superpowers/compatibility/avatar-images/observations.json",
         "docs/superpowers/compatibility/avatar-images/source-probe.mjs"
       ],
-      "evidenceRevision": "572400e5878620461508200701af08cb0a93f9f5",
-      "note": "#556: 固定本家8e07cf0のliteral3route/getIdenticonUrl/Acct.parse/genIdenticonを実Fastify/canvasとrepository/Meta doubleで178 literal HTTP観測。新通常HTTP/PG172 test、近傍単体242、build/typecheck成功。redirect/static/badge/fallback/cache/CSP、ID/URL null・空、128px PNG hash、無効設定、HEAD、不正encoding/100文字境界と取得失敗を比較。Meta通知は新実装の実Redis検証。full upstream起動/PG、global AP redirect hook(#563)、Drive/proxy/static画像配信とactor URL再実装は対象外。#196/#114は未完了。 R2: literal request targetを維持しdot/..・backslash・decode済み414を追加比較。画像外getPathとRole/unknown/HEAD/OPTIONSは既存動作と比較。"
+      "evidenceRevision": "7d39237c604239ffa8223b5db0c99dc30e6510e7",
+      "note": "#556 R3: 固定本家8e07cf0のliteral3route、実import先backend Acct.parse/getIdenticonUrl/genIdenticonを実Fastify/canvasとrepository/Meta doubleで180 HTTP観測。新通常HTTP/PG174 test、近傍単体244、build/typecheck成功。比較ID一意性と対応を検査し/emoji対/emoji/、空host対未指定host、redirect/static/badge/fallback/cache/CSP、128px PNG/無効設定、raw dot/backslash・不正encoding/100文字境界と失敗を比較。R1/R2のID重複・SDK parser誤参照を訂正し過去receipt/predecessorはarchiveで保持。新実装Meta通知は実Redis検証。full upstream起動/PG、global AP redirect hook(#563)、Drive/proxy/static配信とactor URL再実装は対象外。#196/#114は未完了。"
     }
   }
 }
