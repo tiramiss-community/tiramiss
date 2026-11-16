@@ -34,6 +34,17 @@ export const pubsubSuccessorFiles = Object.freeze([
  'packages/backend-next/test/integration/drive-folders.test.ts',
  'packages/backend-next/test/unit/drive/folder-drain.test.ts',
 ]);
+const workflowPath = '.github/workflows/test-backend-next.yml';
+const videoFfmpegStep = '      - name: Install FFmpeg\n        run: |\n          sudo apt update\n          sudo apt install -y ffmpeg\n';
+// This runner-only addition does not renew the historical Pub/Sub measurement.
+function workflowBeforeVideoFfmpeg(bytes) {
+ assert.equal(sha(bytes), '41bf145751d3c3b6825e54abb9018e7dc706e0d757d08c6f2568ee3a8bd26184', 'folder measured current input drift (video FFmpeg workflow)');
+ const current = bytes.toString();
+ assert.equal(current.split(videoFfmpegStep).length, 2, 'folder exact video FFmpeg step');
+ const previous = Buffer.from(current.replace(videoFfmpegStep, ''));
+ assert.equal(sha(previous), 'ec6a28293c8168387f5247a91b666b10a1ff98d816b7e55b58f8c4a98bb74426', 'folder exact workflow before video FFmpeg');
+ return previous;
+}
 export function validateDriveFolderPubsubSuccessor(value, rawRead = read, optional = optionalRead) {
  return scopedEvidenceValidation(validateDriveFolderPubsubSuccessor, value, rawRead, optional, (rawRead, optional) => {
  const beforeMeta = createValidatedMetaPredecessorReader(rawRead, optional);
@@ -51,7 +62,10 @@ export function validateDriveFolderPubsubSuccessor(value, rawRead = read, option
  assert.equal(Object.keys(value.inputs).length, 24);
  assert.equal(value.noInputDrift, true);
  assert.deepEqual(value.inputsAfter, value.inputs);
- for (const [path, digest] of Object.entries(value.inputs)) assert.equal(sha(readFile(path)), digest, `folder measured current input drift (pubsub successor): ${path}`);
+ for (const [path, digest] of Object.entries(value.inputs)) {
+  const current = readFile(path);
+  assert.equal(sha(path === workflowPath ? workflowBeforeVideoFfmpeg(current) : current), digest, `folder measured current input drift (pubsub successor): ${path}`);
+ }
  assert.equal(sha(readFile(directory + 'current-evidence.json')), initialSeal, 'folder initial published receipt seal');
  const bytes = readFile(predecessorPath);
  assert.equal(sha(bytes), predecessorSeal, 'folder pubsub predecessor seal');

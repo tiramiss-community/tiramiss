@@ -72,6 +72,10 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile --filter backend-next...
       - run: git diff --exit-code pnpm-lock.yaml
+      - name: Install FFmpeg
+        run: |
+          sudo apt update
+          sudo apt install -y ffmpeg
       - run: pnpm --filter backend-upstream sync:check
       - run: pnpm --filter backend-next... build
       - run: pnpm --filter backend-next... typecheck
