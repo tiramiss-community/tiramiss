@@ -62,10 +62,11 @@ for (const fixture of fixtures) {
 		expect(result.webpublic).toBe(expected.local.webpublic);
 		expectImage(await describe(result.thumbnail), expected.local.thumbnail);
 		for (const generator of ['', 'https://video.test']) {
-			const unexpected = () => {
+			const unexpected = vi.fn(() => {
 				throw Error('external generator must skip local work');
-			};
+			});
 			expect(await generateVideoAlts(bytes(fixture.id), generator, unexpected)).toEqual(expected.external);
+			expect(unexpected).not.toHaveBeenCalled();
 		}
 	});
 }
