@@ -13,7 +13,7 @@ const root = process.env.BACKEND_NEXT_UPSTREAM_PATH;
 assert(root, 'Set BACKEND_NEXT_UPSTREAM_PATH to pinned Git objects');
 const require = createRequire(new URL('../../../../packages/backend-next/package.json', import.meta.url));
 const ts = require('typescript');
-const paths = ['packages/backend/src/core/QueryService.ts', 'packages/backend/src/server/api/endpoints/notes.ts', 'packages/backend/src/core/entities/UserEntityService.ts'];
+const paths = ['packages/backend/src/core/QueryService.ts', 'packages/backend/src/server/api/endpoints/notes.ts', 'packages/backend/src/core/entities/UserEntityService.ts', 'packages/backend/src/core/entities/NoteEntityService.ts'];
 const sources = paths.map(path => execFileSync('git', ['-C', root, 'show', `${revision}:${path}`], { encoding: 'utf8' }));
 const trees = sources.map((source, i) => ts.createSourceFile(paths[i], source, ts.ScriptTarget.Latest, true));
 const compile = (source, sandbox = {}) => vm.runInNewContext(ts.transpile(source, { target: ts.ScriptTarget.ES2022 }), sandbox);
@@ -59,6 +59,14 @@ if (process.argv.includes('--pg')) {
 	const userMethod = trees[2].statements.find(ts.isClassDeclaration).members.find(member => member.name?.getText(trees[2]) === 'packMany');
 	const prefixEnd = userMethod.body.statements.findIndex(statement => statement.getText(trees[2]).startsWith('const _userIds'));
 	const completeUsers = compile(`(async function(users) { ${userMethod.body.statements.slice(0, prefixEnd).map(statement => statement.getText(trees[2])).join('\n')} return _users; })`, { In: require('typeorm').In });
+	let userExpression;
+	function findUserExpression(node) {
+		if (ts.isPropertyAssignment(node) && node.name.getText(trees[3]) === 'user' && node.initializer.getText(trees[3]).includes('packedUsers?.get(note.userId)')) userExpression = node.initializer.getText(trees[3]);
+		ts.forEachChild(node, findUserExpression);
+	}
+	findUserExpression(trees[3]);
+	assert(userExpression);
+	const selectUser = compile(`(function(note, packedUsers, me) { return ${userExpression}; })`);
 	try {
 		const results = [];
 		for (const item of request.cases) {
@@ -66,9 +74,12 @@ if (process.argv.includes('--pg')) {
 			const ids = await callback.call({ notesRepository, queryService: service, noteEntityService: { packMany: async notes => {
 				if (!request.snapshot) return notes.map(note => note.id);
 				if (request.changeUserAfterSelection) await usersRepository.update(request.changeUserAfterSelection.id, request.changeUserAfterSelection.patch);
+				if (request.deleteUserAfterSelection) await usersRepository.delete(request.deleteUserAfterSelection);
 				const users = await completeUsers.call({ usersRepository }, [...notes.map(note => note.user ?? note.userId), ...notes.map(note => note.replyUserId).filter(id => id != null), ...notes.map(note => note.renoteUserId).filter(id => id != null)]);
 				const byId = new Map(users.map(user => [user.id, user]));
-				return notes.map(note => ({ id: note.id, text: note.text, user: { id: note.user.id, name: byId.get(note.userId).name }, reply: note.reply ? { id: note.reply.id, text: note.reply.text } : null, renote: note.renote ? { id: note.renote.id, text: note.renote.text } : null }));
+				const context = { userEntityService: { pack: async user => typeof user === 'string' ? usersRepository.findOneByOrFail({ id: user }) : user } };
+				const userView = async note => { const user = await selectUser.call(context, note, byId, null); return { id: user.id, name: user.name }; };
+				return Promise.all(notes.map(async note => ({ id: note.id, text: note.text, user: await userView(note), reply: note.reply ? { id: note.reply.id, text: note.reply.text, user: await userView(note.reply) } : null, renote: note.renote ? { id: note.renote.id, text: note.renote.text, user: await userView(note.renote) } : null })));
 			} } }, { local: false, limit: 10, ...item.input }, item.authenticated ? { id: 'viewer' } : null);
 			results.push(ids);
 		}

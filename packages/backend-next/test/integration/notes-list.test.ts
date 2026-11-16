@@ -148,14 +148,17 @@ test('authentication precedes input validation; default route rejects GET and se
 	expect((await call()).headers.get('access-control-allow-origin')).toBe('*');
 });
 
-test.each(['update', 'delete', 'shared-author'])('joined snapshots and ID-loaded author precedence survive a concurrent %s after selection', async change => {
+test.each(['update', 'delete', 'shared-author', 'delete-reference-author'])('joined snapshots and ID-loaded author precedence survive a concurrent %s after selection', async change => {
 	const db = resources.dataSource;
 	const userId = codec.newId(time - 2000);
 	const replyId = codec.newId(time + 20000);
 	const renoteId = codec.newId(time + 20100);
 	const rootId = codec.newId(time + 20200);
-	const referenceAuthor = change === 'shared-author' ? userId : author;
+	const referenceAuthor = change === 'shared-author' ? userId : change === 'delete-reference-author' ? codec.newId(time - 1500) : author;
 	await db.getRepository(MiUser).insert({ id: userId, username: `race${change}`, usernameLower: `race${change}`, name: 'selected author' });
+	if (change === 'delete-reference-author') {
+		await db.getRepository(MiUser).insert({ id: referenceAuthor, username: 'reference', usernameLower: 'reference', name: 'selected reference author' });
+	}
 	await db.getRepository(MiNote).insert([
 		{ id: replyId, userId: referenceAuthor, text: 'selected reply', visibility: 'public' },
 		{ id: renoteId, userId: referenceAuthor, text: 'selected renote', visibility: 'public' },
@@ -163,13 +166,26 @@ test.each(['update', 'delete', 'shared-author'])('joined snapshots and ID-loaded
 	]);
 	let expected: object = [{ id: rootId, text: 'selected root', user: { id: userId, name: 'selected author' },
 		reply: { id: replyId, text: 'selected reply' }, renote: { id: renoteId, text: 'selected renote' } }];
+	if (change === 'delete-reference-author') {
+		expected = [{ id: rootId, text: 'selected root', user: { id: userId, name: 'selected author' },
+			reply: { id: replyId, text: 'selected reply', user: { id: referenceAuthor, name: 'selected reference author' } },
+			renote: { id: renoteId, text: 'selected renote', user: { id: referenceAuthor, name: 'selected reference author' } } }];
+	}
 	if (process.env.BACKEND_NEXT_UPSTREAM_PATH) {
 		const result = JSON.parse(execFileSync(process.execPath, [fileURLToPath(new URL('../../../../docs/superpowers/compatibility/notes-pagination/source-probe.mjs', import.meta.url)), '--pg'], {
 			input: JSON.stringify({ snapshot: true, database: database.config.database,
 				...(change === 'shared-author' ? { changeUserAfterSelection: { id: userId, patch: { name: 'changed author', requireSigninToViewContents: true } } } : {}),
+				...(change === 'delete-reference-author' ? { deleteUserAfterSelection: referenceAuthor } : {}),
 				cases: [{ ugc: 'all', authenticated: false, input: { limit: 1 }, dateIds: {} }] }), encoding: 'utf8',
 		}));
 		expected = result[0];
+		if (change === 'delete-reference-author') {
+			await db.getRepository(MiUser).insert({ id: referenceAuthor, username: 'reference', usernameLower: 'reference', name: 'selected reference author' });
+			await db.getRepository(MiNote).insert([
+				{ id: replyId, userId: referenceAuthor, text: 'selected reply', visibility: 'public' },
+				{ id: renoteId, userId: referenceAuthor, text: 'selected renote', visibility: 'public' },
+			]);
+		}
 	}
 	if (change === 'shared-author') {
 		expect(expected).toMatchObject([{ user: { name: process.env.BACKEND_NEXT_UPSTREAM_PATH ? 'changed author' : 'selected author' } }]);
@@ -203,7 +219,9 @@ test.each(['update', 'delete', 'shared-author'])('joined snapshots and ID-loaded
 	try {
 		const pending = call({ limit: 1 });
 		await selected;
-		if (change !== 'delete') {
+		if (change === 'delete-reference-author') {
+			await db.getRepository(MiUser).delete(referenceAuthor);
+		} else if (change !== 'delete') {
 			await db.getRepository(MiUser).update(userId, { name: 'changed author', requireSigninToViewContents: true });
 			await repository.update([replyId, renoteId], { text: 'changed reference' });
 		} else {
@@ -219,5 +237,8 @@ test.each(['update', 'delete', 'shared-author'])('joined snapshots and ID-loaded
 		spy.mockRestore();
 		await repository.delete([rootId, replyId, renoteId]);
 		await db.getRepository(MiUser).delete(userId);
+		if (change === 'delete-reference-author') {
+await db.getRepository(MiUser).delete(referenceAuthor);
+}
 	}
 });

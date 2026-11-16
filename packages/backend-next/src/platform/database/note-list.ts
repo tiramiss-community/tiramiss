@@ -65,7 +65,7 @@ export function createNotesListReader(manager: EntityManager, redis: Redis, opti
 				}
 			}
 		}
-		const selectedUsers = [...new Map(rows.map(row => [row.user!.id, row.user!])).values()];
+		const selectedUsers = [...new Map(rows.flatMap(row => [row.user, row.reply?.user, row.renote?.user].flatMap(user => user ? [[user.id, user] as const] : []))).values()];
 		// packMany appends ID-loaded reference authors after joined root authors.
 		const refreshUserIds = rows.flatMap(row => [row.replyUserId, row.renoteUserId].filter((id): id is string => id !== null));
 		const reader = createNoteReader(manager, redis, options, actorEmojis, selectedUsers, refreshUserIds);

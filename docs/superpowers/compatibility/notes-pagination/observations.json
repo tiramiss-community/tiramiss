@@ -12,6 +12,10 @@
     {
       "path": "packages/backend/src/core/entities/UserEntityService.ts",
       "sha256": "c986907bacb822863fe19214b7ec1443c02ebb028820f33932e7cde7f47f6464"
+    },
+    {
+      "path": "packages/backend/src/core/entities/NoteEntityService.ts",
+      "sha256": "a8ca00a7f5ff1206db352b7f08a82d0efe3e443be15ca5f38e2f696e969dbc00"
     }
   ],
   "scope": "Literal QueryService pagination/guest-UGC methods and notes endpoint callback/schema; query recorder and packMany double, not upstream server or packer.",
