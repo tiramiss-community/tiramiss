@@ -1,0 +1,8 @@
+Lint: packages/backend-next (3 files)
+SPDX: OK — CI 判定と HTML コメント形式を対象 3487 ファイルが通過した。追加確認は不要。
+Locale safety: PASS
+
+Shipping checks:
+Lint:          PASS
+SPDX:          PASS
+Locale safety: PASS
