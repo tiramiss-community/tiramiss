@@ -1,0 +1,107 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "sources": {
+    "packages/backend/src/GlobalModule.ts": "1b44d0fe1221bc110acea893a293a29d61c14f136911b4f6627920d142e3bcf0",
+    "packages/backend/src/core/MetaService.ts": "f787e51b0ace8f230f2f9e908739e5e2b08251ff02e6ac86749bd02cf27de7eb"
+  },
+  "method": "literal GlobalModule $meta factory/dispose and MetaService.update with repository/transaction/pubsub/tracker doubles; no upstream full server or PostgreSQL",
+  "observations": [
+    {
+      "id": "empty",
+      "rows": [
+        {
+          "id": "x"
+        }
+      ],
+      "transactions": 1
+    },
+    {
+      "id": "concurrent",
+      "rows": [
+        {
+          "id": "x"
+        }
+      ],
+      "transactions": 8
+    },
+    {
+      "id": "existing-preserved",
+      "rows": [
+        {
+          "id": "x",
+          "name": "kept",
+          "blockedHosts": [
+            "kept.example"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "descending-id",
+      "selected": "z",
+      "rowCount": 3
+    },
+    {
+      "id": "initialization-failure",
+      "rejected": true,
+      "subscribed": false,
+      "rows": []
+    },
+    {
+      "id": "global-notification",
+      "meta": {
+        "id": "x",
+        "name": "updated",
+        "blockedHosts": [
+          "kept.example"
+        ],
+        "rootUser": null
+      }
+    },
+    {
+      "id": "management-update-producer",
+      "rows": [
+        {
+          "id": "x",
+          "name": "management-update",
+          "blockedHosts": [
+            "kept.example"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "type": "metaUpdated",
+          "body": {
+            "before": {
+              "id": "x",
+              "name": "kept",
+              "blockedHosts": [
+                "kept.example"
+              ]
+            },
+            "after": {
+              "id": "x",
+              "name": "management-update",
+              "blockedHosts": [
+                "kept.example"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "global-dispose",
+      "waitsForTracked": true,
+      "releases": [
+        "database",
+        "redisClient",
+        "redisForPub",
+        "redisForSub",
+        "redisForTimelines",
+        "redisForReactions"
+      ]
+    }
+  ]
+}

@@ -5,30 +5,35 @@
 import { expect, test, vi } from 'vitest';
 import { testConfig } from '../helpers/database.js';
 import { startManagedProcess } from '../../src/processes/lifecycle.js';
-const resources = vi.hoisted(() => ({ close: vi.fn(async () => {}), logger: { info: vi.fn(), error: vi.fn() }, failure: new Promise<Error>(() => {}) }));
+const resources = vi.hoisted(() => ({ meta: { fetch: vi.fn(async () => ({})) }, close: vi.fn(async () => {}), logger: { info: vi.fn(), error: vi.fn() }, failure: new Promise<Error>(() => {}) }));
 const initialize = vi.hoisted(() => vi.fn(async () => resources));
 const check = vi.hoisted(() => vi.fn(async () => {}));
 vi.mock('../../src/composition/create-runtime.js', () => ({ createRuntime: initialize }));
 vi.mock('../../src/platform/database/check-migrations.js', () => ({ assertMigrationsApplied: check }));
 
-test('does not accept traffic before dependency and history checks, and stops once', async () => {
+test('does not accept traffic before dependency, history and Meta initialization, and stops once', async () => {
 	const calls: string[] = [];
 	check.mockImplementationOnce(async () => {
 		calls.push('checked');
 	});
+	resources.meta.fetch.mockImplementationOnce(async () => {
+		calls.push('meta');
+		return {};
+	});
 	const running = await startManagedProcess('http', testConfig(), async () => {
-		expect(calls).toEqual(['checked']);
+		expect(calls).toEqual(['checked', 'meta']);
 		calls.push('listening');
 		return async () => {
 			calls.push('stopped');
 		};
 	});
 	await Promise.all([running.stop(), running.stop()]);
-	expect(calls).toEqual(['checked', 'listening', 'stopped']);
+	expect(calls).toEqual(['checked', 'meta', 'listening', 'stopped']);
 });
 test('closes initialized resources when history check fails without starting transport', async () => {
 	const failure = new Error('pending migration');
 	check.mockRejectedValueOnce(failure);
+	const fetched = resources.meta.fetch.mock.calls.length;
 	let listening = false;
 	await expect(
 		startManagedProcess('http', testConfig(), async () => {
@@ -37,6 +42,17 @@ test('closes initialized resources when history check fails without starting tra
 		}),
 	).rejects.toBe(failure);
 	expect(listening).toBe(false);
+	expect(resources.meta.fetch).toHaveBeenCalledTimes(fetched);
+});
+
+test('a Meta initialization failure closes resources without starting the role', async () => {
+	const failure = new Error('Meta initialization failed');
+	resources.meta.fetch.mockRejectedValueOnce(failure);
+	const closed = resources.close.mock.calls.length;
+	const start = vi.fn();
+	await expect(startManagedProcess('worker', testConfig(), start)).rejects.toBe(failure);
+	expect(start).not.toHaveBeenCalled();
+	expect(resources.close).toHaveBeenCalledTimes(closed + 1);
 });
 
 test('reports a role failure raised during or after start, while shared resources stay healthy', async () => {

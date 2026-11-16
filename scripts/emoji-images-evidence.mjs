@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { scopedEvidenceValidation, withEvidenceRequestedPath, getEvidenceCurrentReader, registerEvidenceObserver } from './evidence-validation-scope.mjs';
+import { readPreMetaInitialization } from './meta-initialization-evidence.mjs';
 
 const directory = 'docs/superpowers/compatibility/emoji-images/';
 const receiptSeal = 'e34dbaf1c3a5d450d65bb0959025e914f10f3e34e191aafc78087b6062bd5264';
@@ -87,7 +88,7 @@ export function validateEmojiImagesEvidence(value, rawRead = read, optional = op
 export function readPreEmojiImages(path, rawRead = read, optional = optionalRead) {
 	return withEvidenceRequestedPath(path, () => {
 		if (!emojiImagesPredecessorFiles.includes(path)) {
-			return rawRead(path);
+			return readPreMetaInitialization(path, rawRead, optional);
 		}
 		// Ancestor validators must observe their requested live view as well as
 		// the original source checked below, so their own cache detects drift.

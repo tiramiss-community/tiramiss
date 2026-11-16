@@ -1,0 +1,30 @@
+{
+  "issue": 574,
+  "runtimeRevision": "1346a975b1a9121359191e32998d5db0969b55e5",
+  "inputs": {
+    "packages/backend-next/src/platform/database/meta.ts": "f77d4ac67496a561ebbfa549ecf23be8f1e78d72d70cc8dbb079c030f657bc11",
+    "packages/backend-next/src/platform/meta-cache.ts": "a1ed13fbdbec2ec9e12f4517be8ee337d921d8de50bf85b62c638e7ccc73ea04",
+    "packages/backend-next/src/platform/connect-resources.ts": "acb6aeb42f0d18f3c77184259573fba6f84ac5b60216f9b633c9385c1735a0e9",
+    "packages/backend-next/src/platform/resource-scope.ts": "2234d776d55759848812b2b6699fceea4b78070928c95a0ea866ab424591854a",
+    "packages/backend-next/src/processes/lifecycle.ts": "95c8d3aaa715e76df4073a8c36168b6d9e011077397917088cb09f6de77d2d7c",
+    "packages/backend-next/src/processes/http.ts": "3cf3cf269f7dc2e46debacd38308123c7301f4f704ea67c7e269175df01c06df",
+    "packages/backend-next/src/entrypoints/run-child.ts": "e88d777c6297086d698b02f887449779af44699417be00feb90df1f272eabd57",
+    "packages/backend-next/test/integration/meta.test.ts": "8366b35d99be000d2bb131d1f6791b166ab82d58ca05e97e3e116849f85b5c2d",
+    "packages/backend-next/test/integration/meta-cache.test.ts": "b64a46abfd2b107a5461f55f7130ee3cf8670f79de7796621c52a021668becc3",
+    "packages/backend-next/test/integration/meta-initialization.test.ts": "ac9664260e1c05d095c3306656782571cfbdf049be7a5aa68e2ce57b5071b074",
+    "packages/backend-next/test/processes/children.test.ts": "d799352cba95a22ffa78eb2e2b299b56369d7f0210e41eefea373705447d586a",
+    "packages/backend-next/test/processes/meta-initialization.test.ts": "c85af09a7d42dec6c08c4af4a8356db20a62c88557a6e05a3ec2a09869a0a702",
+    "packages/backend-next/test/unit/meta-cache.test.ts": "17597969f95aa0663e1d37fb942ff8c3daf2aa6addc3d79b9954827d1333399c",
+    "packages/backend-next/test/helpers/database.ts": "34632277e6a7a80749d23a65eca252a6b521ee3a3c6c1d39863bf76aa4cda3fb",
+    "packages/backend-next/test/helpers/process.ts": "975b2ffacd1f59fa1afc3aaf5f4268c9cb0bdb4557bab9679a46566f546195c6",
+    "packages/backend-upstream/src/models/Meta.ts": "27bd75b935886158a59b4126fa50e4687e6c38e3e91789cddf3438154d6ec38f",
+    "docs/superpowers/compatibility/meta-initialization/source-probe.mjs": "7f296d84606bd111451b086abca811963077c44dbcf21cda2933494918b28d96",
+    "docs/superpowers/compatibility/meta-initialization/observations.json": "fdf76d130f29bdd1305c62bdeda74b6b55ad244efe2a4973d39c54db5fc96b83",
+    "docs/superpowers/compatibility/meta-cache/source-probe.mjs": "efbbc6d2e6f4b8e470e0a1f33c78c602a54b53b0736a543cf36617996e008fd2",
+    "docs/superpowers/compatibility/meta-cache/observations.json": "46c6c6bb5da096e5c65dec8b9d136e996c37331d90329a58de494446f55a028a",
+    "docs/superpowers/compatibility/meta-cache/current-evidence.json": "e8cc0d48df6e8106a613ee696c93f4ccddc618f0dfcdd01d19101b8566a46781",
+    "scripts/meta-initialization-proof.test.mjs": "1a6c5b149a4cf200519cf1664e08fa0f5b1de3d33390a1e71db3693d879482f7",
+    "packages/backend-next/test/unit/lifecycle.test.ts": "89a4e6a3e4fdae7fb38ec45e53eb66b640b52f03c559ec2dbd014cf4ffcaebf0",
+    "packages/backend-next/test/unit/worker-startup.test.ts": "63007c0632740d8877f2bdc3f969e7e994f1c0be2c0a8086140dc5b13a3c3d9f"
+  }
+}
