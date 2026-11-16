@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "issue": 574,
   "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
-  "baseRevision": "fec2ca0f3c012a8d4491ec2327906b7d34a68b35",
-  "runtimeRevision": "fec2ca0f3c012a8d4491ec2327906b7d34a68b35",
-  "proofRevision": "3a13df3d7ce0bcbc7faeac3a8caeff5030c0b4b1",
-  "runtimeChanged": false,
+  "baseRevision": "4e7cda80560da3c9c46f5b02b29c5f6459e2b785",
+  "runtimeRevision": "1346a975b1a9121359191e32998d5db0969b55e5",
+  "proofRevision": "1346a975b1a9121359191e32998d5db0969b55e5",
+  "runtimeChanged": true,
   "upstreamFullServerMeasured": false,
-  "normalEntrypointEagerMetaProven": false,
+  "normalEntrypointEagerMetaProven": true,
   "adminUpdateMetaImplemented": false,
   "postingComplete": false,
   "node": "v26.4.0",
@@ -21,15 +21,14 @@
     "packages/backend-next/src/platform/meta-cache.ts": "a1ed13fbdbec2ec9e12f4517be8ee337d921d8de50bf85b62c638e7ccc73ea04",
     "packages/backend-next/src/platform/connect-resources.ts": "acb6aeb42f0d18f3c77184259573fba6f84ac5b60216f9b633c9385c1735a0e9",
     "packages/backend-next/src/platform/resource-scope.ts": "2234d776d55759848812b2b6699fceea4b78070928c95a0ea866ab424591854a",
-    "packages/backend-next/src/processes/lifecycle.ts": "8b0dd9c9b2b36ae1e4cc5a3b7e5e144e1e1117973fae04b87f187ebdc05e91dd",
+    "packages/backend-next/src/processes/lifecycle.ts": "95c8d3aaa715e76df4073a8c36168b6d9e011077397917088cb09f6de77d2d7c",
     "packages/backend-next/src/processes/http.ts": "3cf3cf269f7dc2e46debacd38308123c7301f4f704ea67c7e269175df01c06df",
     "packages/backend-next/src/entrypoints/run-child.ts": "e88d777c6297086d698b02f887449779af44699417be00feb90df1f272eabd57",
     "packages/backend-next/test/integration/meta.test.ts": "8366b35d99be000d2bb131d1f6791b166ab82d58ca05e97e3e116849f85b5c2d",
     "packages/backend-next/test/integration/meta-cache.test.ts": "b64a46abfd2b107a5461f55f7130ee3cf8670f79de7796621c52a021668becc3",
     "packages/backend-next/test/integration/meta-initialization.test.ts": "ac9664260e1c05d095c3306656782571cfbdf049be7a5aa68e2ce57b5071b074",
     "packages/backend-next/test/processes/children.test.ts": "d799352cba95a22ffa78eb2e2b299b56369d7f0210e41eefea373705447d586a",
-    "packages/backend-next/test/processes/meta-initialization.test.ts": "0ca3d0dd284f7919dc590386d7c3bdba63df23186a84e5c360ba6fce1f7ed323",
-    "packages/backend-next/test/fixtures/meta-startup.mjs": "bc17bdccdaf1dec00f464a48fd560149b8b189a13400a657f7e3b00a4c99c8d2",
+    "packages/backend-next/test/processes/meta-initialization.test.ts": "c85af09a7d42dec6c08c4af4a8356db20a62c88557a6e05a3ec2a09869a0a702",
     "packages/backend-next/test/unit/meta-cache.test.ts": "17597969f95aa0663e1d37fb942ff8c3daf2aa6addc3d79b9954827d1333399c",
     "packages/backend-next/test/helpers/database.ts": "34632277e6a7a80749d23a65eca252a6b521ee3a3c6c1d39863bf76aa4cda3fb",
     "packages/backend-next/test/helpers/process.ts": "975b2ffacd1f59fa1afc3aaf5f4268c9cb0bdb4557bab9679a46566f546195c6",
@@ -39,7 +38,12 @@
     "docs/superpowers/compatibility/meta-cache/source-probe.mjs": "efbbc6d2e6f4b8e470e0a1f33c78c602a54b53b0736a543cf36617996e008fd2",
     "docs/superpowers/compatibility/meta-cache/observations.json": "46c6c6bb5da096e5c65dec8b9d136e996c37331d90329a58de494446f55a028a",
     "docs/superpowers/compatibility/meta-cache/current-evidence.json": "e8cc0d48df6e8106a613ee696c93f4ccddc618f0dfcdd01d19101b8566a46781",
-    "scripts/meta-initialization-proof.test.mjs": "fbbf3014b01b6be6dbcf6642772f40c442706bb7847a178e80fbde6431aff32d"
+    "scripts/meta-initialization-proof.test.mjs": "1a6c5b149a4cf200519cf1664e08fa0f5b1de3d33390a1e71db3693d879482f7",
+    "packages/backend-next/test/unit/lifecycle.test.ts": "89a4e6a3e4fdae7fb38ec45e53eb66b640b52f03c559ec2dbd014cf4ffcaebf0",
+    "packages/backend-next/test/unit/worker-startup.test.ts": "63007c0632740d8877f2bdc3f969e7e994f1c0be2c0a8086140dc5b13a3c3d9f",
+    "scripts/meta-initialization-evidence.mjs": "924f8a446b2efc5e41c8a6b821d49b0d434fd33579d95939f85fbaae351b68a6",
+    "docs/superpowers/compatibility/meta-initialization/r2-inputs.json": "82f78900c034a9158c70affeb18e4cd6edb7349e72085adfa01d92c63b0356fb",
+    "docs/superpowers/compatibility/meta-initialization/lifecycle-predecessor.json": "0641520662e895603b39dad557c97978c24c19aa081bec9b182924a544a76f99"
   },
   "noInputDrift": true,
   "contractRowIds": [
@@ -57,38 +61,38 @@
       "name": "build-upstream",
       "command": "pnpm --filter backend-upstream build",
       "exitCode": 0,
-      "log": "/tmp/tiramiss-574-r1-build-upstream.log",
+      "log": "/tmp/tiramiss-574-r2-build-upstream.log",
       "logSha256": "ea72072a2129d8ea40b3073121023e587fc2c823f6713dd42ebea648e63dd7a7"
     },
     {
       "name": "build",
       "command": "pnpm --filter backend-next build",
       "exitCode": 0,
-      "log": "/tmp/tiramiss-574-r1-build.log",
+      "log": "/tmp/tiramiss-574-r2-build.log",
       "logSha256": "29c5ee0f6b0b20dbb259b99d01276198c3d28190090706394608d4deda6d2c0b"
     },
     {
       "name": "typecheck",
       "command": "pnpm --filter backend-next typecheck",
       "exitCode": 0,
-      "log": "/tmp/tiramiss-574-r1-typecheck.log",
+      "log": "/tmp/tiramiss-574-r2-typecheck.log",
       "logSha256": "7f96aaabe6df7a354a3e4d7514375171e219ae2de91268b52d91875e0a026aa4"
     },
     {
       "name": "unit",
-      "command": "pnpm --filter backend-next test test/unit/meta-cache.test.ts",
+      "command": "pnpm --filter backend-next test test/unit/meta-cache.test.ts test/unit/lifecycle.test.ts test/unit/worker-startup.test.ts",
       "exitCode": 0,
-      "log": "/tmp/tiramiss-574-r1-unit.log",
-      "logSha256": "82f9d948df67ebfe76a29f8dadd11fd01c3d2863188330b03bcd5bd3cb3f65d1",
-      "passed": 3,
-      "files": 1
+      "log": "/tmp/tiramiss-574-r2-unit.log",
+      "logSha256": "15bf487a6555f1f17de29bcea883cd988169aa61c95d6ad4de05067b869df59a",
+      "passed": 20,
+      "files": 3
     },
     {
       "name": "integration",
       "command": "pnpm --filter backend-next test:integration test/integration/meta.test.ts test/integration/meta-cache.test.ts test/integration/meta-initialization.test.ts",
       "exitCode": 0,
-      "log": "/tmp/tiramiss-574-r1-integration.log",
-      "logSha256": "b7092b0bd500e3456c333aefb32e1314a27eebc7095efbf6cdabb020f12cf50e",
+      "log": "/tmp/tiramiss-574-r2-integration.log",
+      "logSha256": "31f84ffcd90a7e51bce567a8cac6a961e86088e27294c825d75c9c9a0d9413f8",
       "passed": 11,
       "files": 3
     },
@@ -96,34 +100,58 @@
       "name": "process",
       "command": "pnpm --filter backend-next test:process test/processes/children.test.ts test/processes/meta-initialization.test.ts",
       "exitCode": 0,
-      "log": "/tmp/tiramiss-574-r1-process.log",
-      "logSha256": "65bc96f397dbfe9bcad7866fbc1d793397d45c71e488a4f5091e475ac5bec8ce",
-      "passed": 14,
+      "log": "/tmp/tiramiss-574-r2-process.log",
+      "logSha256": "e1326cb3ed995d893bb8c2aa48831ae2a811fd94f2300828486d2a810d58e3f6",
+      "passed": 18,
       "files": 2
     },
     {
       "name": "source-initialization",
       "command": "BACKEND_NEXT_UPSTREAM_PATH=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/meta-initialization/source-probe.mjs",
       "exitCode": 0,
-      "log": "/tmp/tiramiss-574-r1-source-initialization.log",
+      "log": "/tmp/tiramiss-574-r2-source-initialization.log",
       "logSha256": "1a8e944f1eb0b62aa814c4858c21dc8c09e2a3012608c2fe8ad7a9f2c4b0f78e"
     },
     {
       "name": "source-cache",
       "command": "BACKEND_NEXT_UPSTREAM_PATH=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/meta-cache/source-probe.mjs",
       "exitCode": 0,
-      "log": "/tmp/tiramiss-574-r1-source-cache.log",
+      "log": "/tmp/tiramiss-574-r2-source-cache.log",
       "logSha256": "85f9ebe1b63df0cc6784b9dbbc9857dd85b869200c8aa01293ad56f2ee4b0bc9"
     }
   ],
   "limitations": [
-    "23 finite direct inputs; not a whole repository or dependency integrity assertion",
+    "27 finite direct inputs; not a whole repository or dependency integrity assertion",
     "pinned source methods use explicit repository/transaction/pubsub/tracker doubles",
-    "normal HTTP/worker Meta initialization remains lazy, unlike upstream GlobalModule",
-    "explicit startup-consumer fixture proves failure/no-ready; does not add eager normal startup",
-    "management update producer observed only through pinned source method; actual admin/update-meta remains issue448",
-    "cache notification consumer uses existing issue317 real Redis/listening HTTP and delivery tests",
+    "normal HTTP/worker initialize Meta after migration guard; direct connectResources and light CLI remain unchanged",
+    "management update producer observed only through pinned name-update method; admin/update-meta remains issue448",
+    "existing issue317 real Redis/listening HTTP and delivery tests prove cache notification consumer",
+    "one historical lifecycle path projected; old source snapshots/receipts are not renewed",
     "existing pg client.query deprecation warning remains",
     "CodeRabbit prerequisite blocked by EROFS ~/.coderabbit/logs; independent coordinator review remains separate"
-  ]
+  ],
+  "round": "R2",
+  "previousEvidence": {
+    "path": "docs/superpowers/compatibility/meta-initialization/evidence-r1.json",
+    "sha256": "6a013f9035edee194fd62e379a426d13f9c2f6c72601ae833b03b3f67bae7b24"
+  },
+  "proofIntegrity": {
+    "bindingInputs": 24,
+    "currentInputs": 27,
+    "bindingSealExcludesItsOwnLeaf": true,
+    "leafAndBindingCoveredByCurrentInputs": true,
+    "sharedEmojiReaderExcludedForIndependentComposition": true,
+    "historicalProjectionPaths": [
+      "packages/backend-next/src/processes/lifecycle.ts"
+    ],
+    "rootValidation": {
+      "command": "node --test scripts/meta-initialization-proof.test.mjs scripts/emoji-images-evidence.test.mjs scripts/evidence-validation-scope-contract.test.mjs scripts/remote-profile-contract.test.mjs scripts/local-webfinger-contract.test.mjs scripts/local-follow-collections-contract.test.mjs scripts/local-follow-collections-history-contract.test.mjs",
+      "passed": 149,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-574-r2-proof-root.log",
+      "logSha256": "f7cef653f04f21d463c82abdf1bc919bdcf55678e78730cc0c2140e1f9279741"
+    }
+  }
 }
