@@ -38,3 +38,9 @@ docker compose -p backend-next-574 -f packages/backend-next/compose.test.yml dow
 ```
 
 [evidence.json](evidence.json)へ今回の有限入力と実行logのhash・件数を記録する。入力はそのファイル単位で照合するが、inventoryは所有する3契約/3監査IDだけを検査する。他Issue行のlive hashを固定せず、過去receiptへのsuccessorや再投影を追加しない。#317の実測は[元の資料](../meta-cache/README.md)に保持する。
+
+## R1 実測（2026-11-16）
+
+Node26.4.0、専用Compose `backend-next-574`（PG55574/Redis56574）。製品コード変更なし、proof commit `3a13df3d7ce0bcbc7faeac3a8caeff5030c0b4b1` と23有限入力を測定前後で照合し、差分なし。upstream/next build・next typecheck、cache単体3件/1file、実PG/Redis/HTTP結合11件/3files、既存children+明示startup consumerのprocess14件/2files、本家source8観測と既存cache source9観測がPASS。全件0失敗/0skip。この範囲に全suiteや本家full serverの成功を含めない。
+
+初期の開発測定では共有依存のNode ABI不一致・古いupstream build、試験fixtureのlock観測条件・閉鎖待機のpolling・port0設定・既存loggerのsanitized出力前提を修正した。成功R1へ過去の失敗を混ぜず、開発logは `/tmp/tiramiss-574-*-dev*.log` に保持する。製品の変更や新しいeager初期化保証で解消したものではない。既存pg query deprecation warningは残る。CodeRabbit CLIはprerequisiteから `~/.coderabbit/logs` への書込みがEROFSで実行不能だったため、review合否は本測定から主張しない。
