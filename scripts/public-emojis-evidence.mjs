@@ -92,7 +92,7 @@ export function readPrePublicEmojis(path, rawRead = read, optional = optionalRea
 		: rawRead(path));
 }
 
-const queryReceiptSeal = 'fa8bf1c4d394bcc36ad204c0cee68f8a1f7a086589831c2124ed1342ccd9ebd2';
+const queryReceiptSeal = '4d95c35605827efa1c8b1a06f1f54f02f0624096a1827eba74246cc71953d0dd';
 const queryPredecessorSeal = 'c02cd70c1c212b42ba1c85e17015a88b394ccec19bd375d87bcb0cd5e2d58299';
 const queryPath = 'packages/backend-next/src/http/api-request.ts';
 
@@ -103,8 +103,11 @@ export function validatePublicEmojiQueryEvidence(value, rawRead = read, optional
 		value ??= JSON.parse(bytes);
 		assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), queryReceiptSeal, 'public emoji query receipt seal');
 		assert.equal(value.scope, 'public-emojis-304-query-append');
+		assert.equal(value.previousEvidence.path, directory + 'query-before-test-relocation-evidence.json');
+		assert.equal(value.previousEvidence.sha256, 'fa8bf1c4d394bcc36ad204c0cee68f8a1f7a086589831c2124ed1342ccd9ebd2');
+		assert.equal(sha(rawRead(value.previousEvidence.path)), value.previousEvidence.sha256, 'public emoji query historical receipt seal');
 		assert.equal(value.baseRevision, 'f588ccbfb538d5ef79a78f37cbe4a39e2e52dda2');
-		assert.deepEqual(Object.keys(value.inputs), [queryPath, 'packages/backend-next/test/unit/http/api-endpoint.test.ts']);
+		assert.deepEqual(Object.keys(value.inputs), [queryPath, 'packages/backend-next/test/unit/http/api-query.test.ts']);
 		assert.deepEqual(value.inputsAfter, value.inputs);
 		assert.equal(value.noInputDrift, true);
 		for (const [path, digest] of Object.entries(value.inputs)) {
