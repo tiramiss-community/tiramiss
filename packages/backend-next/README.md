@@ -95,7 +95,9 @@ DB と `redis`・`redisForPubsub`・`redisForJobQueue`・`redisForTimelines`・`
 明示した別設定は同じ host/port でも個別に確認する。jobQueue 専用 Redis も対象であり、HTTP healthz の ready とは別の検査である。
 
 全検査と接続解放を待ち、全成功なら exit 0、接続・解放・設定読取の失敗なら exit 1。
-接続期限は `backendNext.startupTimeoutMs` を使い、再接続しない。
+接続・Redis readiness 全体の期限は `backendNext.startupTimeoutMs` を使い、再接続しない。
+Redis は INFO の loading 解消を待ち、期限を過ぎた接続は失敗となる。INFO が NOPERM の場合は本家同様に接続成功とし、診断本文を表示しない。
+明示的な `enableReadyCheck: false` は本家同様に INFO 判定を省略する。
 結果は `ready` と固定用途名の `checks: [{ target, ready }]` を JSON で出力する。
 設定読取失敗だけは固定文を stderr へ出力し、例外本文・接続先・資格情報を表示しない。
 migration・schema 同期・業務処理・HTTP/worker 起動・Meilisearch 検査は実行しない。

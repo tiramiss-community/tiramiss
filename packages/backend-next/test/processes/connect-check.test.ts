@@ -5,6 +5,7 @@
 import { execFile } from 'node:child_process';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
+import { createServer, type Socket } from 'node:net';
 import { join, resolve } from 'node:path';
 import { dump } from 'js-yaml';
 import { DataSource } from 'typeorm';
@@ -59,12 +60,12 @@ async function snapshot() {
 	};
 }
 
-async function run(value: unknown, script = false) {
+async function run(value: unknown, script = false, timeout = 7000) {
 	const path = join(directory, 'config.yml');
 	await writeFile(path, dump(value));
 	return new Promise<{ code: number | string; stdout: string; stderr: string }>(done => {
 		execFile(script ? 'pnpm' : process.execPath, script ? ['--silent', 'check:connect'] : [resolve('built/entrypoints/check-connect.js')], {
-			env: { ...process.env, MISSKEY_CONFIG_YML: path }, timeout: 7000,
+			env: { ...process.env, MISSKEY_CONFIG_YML: path }, timeout,
 		}, (error, stdout, stderr) => done({ code: error ? (error.code ?? error.signal ?? 'PROCESS_FAILED') : 0, stdout, stderr }));
 	});
 }
@@ -134,4 +135,92 @@ test.each(['database', ...names].flatMap(target => ['authentication', 'refused']
 test('invalid configuration exits without printing configuration contents', async () => {
 	const result = await run({ secret: 'private-marker' });
 	expect(result).toEqual({ code: 1, stdout: '', stderr: 'Connection check initialization failed.\n' });
+});
+
+test.each([
+	{ mode: 'loading', ready: false },
+	{ mode: 'waiting', ready: false },
+	{ mode: 'recovering', ready: true },
+	{ mode: 'noperm', ready: true },
+	{ mode: 'error', ready: false },
+	{ mode: 'silent', ready: false },
+	{ mode: 'disabled', ready: true },
+])('bounds Redis readiness and drains every accepted connection: $mode', async ({ mode, ready }) => {
+	const sockets = new Set<Socket>();
+	let infos = 0;
+	const server = createServer(socket => {
+		sockets.add(socket);
+		socket.on('error', () => {});
+		socket.on('close', () => sockets.delete(socket));
+		let pending = Buffer.alloc(0);
+		socket.on('data', data => {
+			pending = Buffer.concat([pending, Buffer.isBuffer(data) ? data : Buffer.from(data)]);
+			while (pending.length) {
+				const header = pending.toString().match(/^\*(\d+)\r\n/);
+				if (!header) {
+					return;
+				}
+				let offset = header[0].length;
+				const parts: string[] = [];
+				for (let index = 0; index < Number(header[1]); index++) {
+					const bulk = pending.subarray(offset).toString().match(/^\$(\d+)\r\n/);
+					if (!bulk || pending.length < offset + bulk[0].length + Number(bulk[1]) + 2) {
+						return;
+					}
+					offset += bulk[0].length;
+					parts.push(pending.subarray(offset, offset + Number(bulk[1])).toString());
+					offset += Number(bulk[1]) + 2;
+				}
+				pending = pending.subarray(offset);
+				if (mode === 'silent') {
+					continue;
+				}
+				if (parts[0].toLowerCase() !== 'info') {
+					socket.write('+OK\r\n');
+					continue;
+				}
+				infos++;
+				if (mode === 'noperm' || mode === 'error') {
+					socket.write(`-${mode === 'noperm' ? 'NOPERM' : 'ERR'} fixture-diagnostic\r\n`);
+				} else {
+					const loading = mode !== 'recovering' || infos < 2;
+					const body = `loading:${loading ? 1 : 0}\r\nloading_eta_seconds:${mode === 'waiting' ? 60 : 0.01}\r\n`;
+					socket.write(`$${Buffer.byteLength(body)}\r\n${body}\r\n`);
+				}
+			}
+		});
+	});
+	await new Promise<void>(done => server.listen(0, '127.0.0.1', done));
+	try {
+		const value = configuration();
+		value.backendNext.startupTimeoutMs = 150;
+		Object.assign(value, { redisForJobQueue: { host: '127.0.0.1', port: (server.address() as { port: number }).port, maxLoadingRetryTime: mode === 'waiting' ? 10000 : 10, ...(mode === 'disabled' ? { enableReadyCheck: false } : {}) } });
+		const before = await snapshot();
+		const start = Date.now();
+		const result = await run(value, false, 1500);
+		expect(result.code).toBe(ready ? 0 : 1);
+		expect(Date.now() - start).toBeLessThan(1200);
+		expect(result.stderr).toBe('');
+		expect(JSON.parse(result.stdout).checks.filter((row: { ready: boolean }) => !row.ready)).toEqual(ready ? [] : [{ target: 'redisForJobQueue', ready: false }]);
+		expect(sockets.size).toBe(0);
+		if (mode === 'loading') {
+			expect(infos).toBeGreaterThan(1);
+		} else {
+			expect(infos).toBe(mode === 'disabled' || mode === 'silent' ? 0 : mode === 'recovering' ? 2 : 1);
+		}
+		await assertPreserved(before);
+	} finally {
+		for (const socket of sockets) {
+			socket.destroy();
+		}
+		await new Promise<void>(done => server.close(() => done()));
+	}
+});
+
+test('rejects a zero readiness deadline before opening connections', async () => {
+	const value = configuration();
+	value.backendNext.startupTimeoutMs = 0;
+	const before = await snapshot();
+	expect(await run(value)).toEqual({ code: 1, stdout: '', stderr: 'Connection check initialization failed.\n' });
+	await assertPreserved(before);
 });

@@ -32,3 +32,18 @@ node --test scripts/connect-check-package-evidence.test.mjs scripts/video-ingest
 
 package 変更は依存や lockfile を変更しない。sealed [package-predecessor.json](package-predecessor.json) と `scripts/connect-check-package-evidence.mjs` は新 script の正確な1行だけを除去し、既存 video → CLI → image 証跡の package 入力へ戻す。
 raw current SHA と復元後 SHA の両方を毎回検証し、proof drift と読取後の drift も拒否する。lockfile と他入力は通過する。既存 receipt・proof・実測 log は変更しない。
+
+
+## R2 readiness 追補
+
+現在の追加実測は [readiness-followup.json](readiness-followup.json) を参照する。旧 [current-evidence.json](current-evidence.json) と9ログは R1 の不変履歴として保持する。
+R2 は製品入力4件（接続検査・process test・2つの README）の変更だけを明示し、残る11入力の同一性を確認する。R1 の root809/source8/既存証跡を新しい測定へ読み替えない。
+
+Redis は ioredis 内部の ready check を止め、明示 INFO loop で本家の loading 判定を保つ。
+loading がない/0なら成功、loading 中は ETA と `maxLoadingRetryTime` に従って待つ。INFO の NOPERM は本家同様に成功とするが、診断本文を出さない。
+利用者が `enableReadyCheck: false` を明示した場合は INFO 判定を省略する。PING を新たな必須権限にはしない。
+`startupTimeoutMs` は既存設定読取が正整数に検証し、接続開始から readiness 完了まで一つの期限で覆う。期限後は retry delay と deadline timer を取り消し、全 Redis を切断して終了を待つ。
+
+追加の実 child-process/RESP 試験は継続 loading、長い retry 待機、loading 解消、INFO 制限、INFO 失敗、応答停止、ready check 明示無効を検査する。
+jobQueue の接続先だけを制御し、他の実 PG/Redis が成功すること、期限内の自然終了、固定診断、全接続解放と保存不変を確認する。
+固定 source 本文8条件は変更していない。readiness の追加試験は実 ioredis を使う新入口の検査であり、本家 full server の比較ではない。

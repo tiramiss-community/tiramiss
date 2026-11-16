@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { setTimeout as delay } from 'node:timers/promises';
 import { Redis } from 'ioredis';
 import { createDataSource } from './database/data-source.js';
 import type { RedisConfig, RuntimeConfig } from '../config/types.js';
@@ -24,14 +25,48 @@ export async function checkConnections(config: RuntimeConfig) {
 			...options, lazyConnect: true, connectTimeout: timeoutMs,
 			commandTimeout: timeoutMs, retryStrategy: () => null,
 			reconnectOnError: () => false, maxRetriesPerRequest: 0,
-			enableOfflineQueue: false, disconnectTimeout: 0,
+			enableOfflineQueue: false, disconnectTimeout: 0, enableReadyCheck: false,
 		});
-		// ioredis also emits connection failures; diagnostics contain only the
-		// fixed purpose name below, never driver messages or configuration.
 		const failure = new Promise<never>((_, reject) => client.on('error', reject));
+		const cancellation = new AbortController();
+		let timer: NodeJS.Timeout;
+		const deadline = new Promise<never>((_, reject) => {
+			timer = setTimeout(() => reject(new Error('Redis readiness deadline exceeded')), timeoutMs);
+		});
+		const ready = async () => {
+			await client.connect();
+			if (options.enableReadyCheck === false) {
+				return;
+			}
+			// The library's INFO loop logs raw NOPERM text and retains retry
+			// timers after disconnect. Own this loop so one deadline covers it.
+			for (;;) {
+				let response: string;
+				try {
+					response = await client.info();
+				} catch (error) {
+					if (error instanceof Error && error.message.includes('NOPERM')) {
+						return;
+					}
+					throw error;
+				}
+				const info = Object.fromEntries(response.split('\r\n').map(line => {
+					const [name, ...value] = line.split(':');
+					return [name, value.join(':')];
+				}));
+				if (!info.loading || info.loading === '0') {
+					return;
+				}
+				const etaMs = Number(info.loading_eta_seconds || 1) * 1000;
+				const maximum = client.options.maxLoadingRetryTime;
+				await delay(maximum && maximum < etaMs ? maximum : etaMs, undefined, { signal: cancellation.signal });
+			}
+		};
 		try {
-			await Promise.race([failure, client.connect()]);
+			await Promise.race([failure, deadline, ready()]);
 		} finally {
+			clearTimeout(timer!);
+			cancellation.abort();
 			if (client.status !== 'end') {
 				await new Promise<void>(done => {
 					client.once('end', done);
