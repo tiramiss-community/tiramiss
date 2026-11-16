@@ -9,12 +9,13 @@ import { readNoteAuthors } from './note-authors.js';
 import { noteFileView } from './note-files.js';
 import { readMeta } from './meta.js';
 import { toPuny } from '../../modules/federation/public.js';
+import type { ActorEmojiCache } from '../actor-emoji-cache.js';
 import type { NoteMediaOptions } from './note-files.js';
 import type { EntityManager } from 'typeorm';
 import type { Redis } from 'ioredis';
 import type { NoteFacts, NoteFactsReader, NoteViewMaterials } from '../../modules/note/public.js';
 
-export function createNoteReader(manager: EntityManager, redis: Redis, options: NoteMediaOptions): NoteFactsReader {
+export function createNoteReader(manager: EntityManager, redis: Redis, options: NoteMediaOptions, actorEmojis?: Pick<ActorEmojiCache, 'remote'>): NoteFactsReader {
 	return {
 		async readNotes(ids) {
 			if (ids.length === 0) {
@@ -61,7 +62,7 @@ export function createNoteReader(manager: EntityManager, redis: Redis, options: 
 			const emojiUsers = userIds.length ? await manager.getRepository(MiUser).find({ where: { id: In(userIds) }, select: { id: true, host: true, emojis: true } }) : [];
 			const emojiNames = new Set<string>();
 			const hosts = [...new Set([...rows.flatMap(n => n.userHost ? [n.userHost] : []), ...emojiUsers.flatMap(u => u.host ? [u.host] : [])])];
-			for (const name of [...rows.flatMap(n => [...n.emojis, ...Object.keys(n.reactions)]), ...[...buffered.values()].flatMap(b => Object.keys(b.deltas)), ...emojiUsers.flatMap(u => u.emojis)]) {
+			for (const name of [...rows.flatMap(n => [...n.emojis, ...Object.keys(n.reactions)]), ...[...buffered.values()].flatMap(b => Object.keys(b.deltas)), ...(actorEmojis ? [] : emojiUsers.flatMap(u => u.emojis))]) {
 				const bareName = name.replace(/^:/, '').replace(/:$/, '');
 				emojiNames.add(bareName.split('@')[0]);
 				const match = name.match(/@([\w.-]+):?$/);
@@ -72,9 +73,10 @@ export function createNoteReader(manager: EntityManager, redis: Redis, options: 
 					}
 				}
 			}
-			const emojiUrls = new Map((hosts.length ? await manager.getRepository(MiEmoji).findBy({ host: In([...new Set(hosts)]), name: In([...emojiNames]) }) : []).map(e => [`${e.name}@${e.host}`, e.publicUrl || e.originalUrl]));
+			const emojiUrls = new Map((hosts.length && emojiNames.size ? await manager.getRepository(MiEmoji).findBy({ host: In([...new Set(hosts)]), name: In([...emojiNames]) }) : []).map(e => [`${e.name}@${e.host}`, e.publicUrl || e.originalUrl]));
+			const authorEmojiUrls = actorEmojis ? new Map((await Promise.all(emojiUsers.map(user => actorEmojis.remote(user.emojis, user.host, new URL(options.url).host)))).flatMap(map => [...map])) : emojiUrls;
 			return {
-				notes, authors: await readNoteAuthors(manager, userIds, viewerId, meta, options, now, emojiUrls),
+				notes, authors: await readNoteAuthors(manager, userIds, viewerId, meta, options, now, authorEmojiUrls, actorEmojis !== undefined),
 				files: new Map(files.map(file => [file.id, noteFileView(file, meta.proxyRemoteFiles, options)])),
 				channels: new Map(channels.map(c => [c.id, { id: c.id, name: c.name, color: c.color, isSensitive: c.isSensitive, allowRenoteToExternal: c.allowRenoteToExternal, userId: c.userId }])),
 				polls: new Map(polls.map(p => [p.noteId, { multiple: p.multiple, expiresAt: p.expiresAt?.toISOString() ?? null, choices: p.choices, votes: p.votes, myChoices: votes.filter(v => v.noteId === p.noteId).map(v => v.choice) }])),

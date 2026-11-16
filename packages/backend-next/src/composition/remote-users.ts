@@ -9,6 +9,7 @@ import { createRemoteUserRepository, createRemoteActorTransactions } from '../pl
 import { createActorReader } from '../platform/database/local-actors.js';
 import { toFederationPolicy } from '../platform/database/meta.js';
 import { renderLocalActor } from '../modules/federation/public.js';
+import type { ActorEmojiCache } from '../platform/actor-emoji-cache.js';
 import type { MetaReader } from '../platform/meta-cache.js';
 import type { DataSource } from 'typeorm';
 import type { FederationKeys } from './federation-keys.js';
@@ -19,6 +20,7 @@ import type { RuntimeConfig } from '../config/types.js';
 export function createRemoteUsers(parts: {
 	dataSource: DataSource;
 	meta: MetaReader;
+	actorEmojis?: ActorEmojiCache;
 	logger: Logger;
 	remoteEmojis: { extract(tags: unknown, host: string): Promise<RemoteEmoji[]> };
 	userHashtags: { start: StartUserHashtags };
@@ -30,7 +32,7 @@ export function createRemoteUsers(parts: {
 	// Transport policy uses DNS hostnames: a nondefault port must not collapse either side to an empty host.
 	const withoutRootDot = (host: string) => host.replace(/\.$/, '');
 	const requestRules = createHostRules(withoutRootDot(new URL(config.url).hostname));
-	const readTags = createLocalActorTagReader(parts.dataSource.manager, config.url);
+	const readTags = createLocalActorTagReader(parts.dataSource.manager, config.url, Date.now, parts.actorEmojis?.local);
 	const readMaterials = createLocalActorMaterialsReader(parts.dataSource.manager, config, parts.meta.fetch);
 	const readActor = createActorReader(parts.dataSource.manager, { includeSuspended: true });
 	const readRequestPolicy = async () => {

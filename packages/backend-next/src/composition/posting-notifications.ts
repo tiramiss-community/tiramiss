@@ -8,6 +8,7 @@ import { createNoteNotificationReader } from '../platform/database/note-notifica
 import { createNotificationTransactions } from '../platform/database/poll-ended.js';
 import { createNoteReader } from '../platform/database/note-reader.js';
 import { createIdCodec } from '../platform/id-codec.js';
+import type { ActorEmojiCache } from '../platform/actor-emoji-cache.js';
 import type { NoteCreatedSnapshot, NoteFacts } from '../modules/note/public.js';
 import type { EntityManager, DataSource } from 'typeorm';
 import type { Redis } from 'ioredis';
@@ -17,13 +18,14 @@ import type { UserWebhookEvent } from '../platform/job-queue/user-webhook.js';
 import type { createPostingStream } from '../platform/posting-stream.js';
 
 export function createPostingNotifications(resources: {
+	actorEmojis?: ActorEmojiCache;
 	roleTimelines?(noteId: string, userId: string, note: Record<string, unknown>): Promise<void>;
 	dataSource: DataSource; reactionsRedis: Redis; postingStream: ReturnType<typeof createPostingStream>; webhook?(userId: string, type: UserWebhookEvent, note: Record<string, unknown>): Promise<void>;
 }, config: RuntimeConfig) {
 	const codec = createIdCodec(config.id);
 	const manager: EntityManager = resources.dataSource.manager;
 	const facts = createNoteNotificationReader(manager);
-	const reader = createNoteReader(manager, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId });
+	const reader = createNoteReader(manager, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId }, resources.actorEmojis);
 	const render = async (noteId: string, viewerId: string | null, options: { skipHide?: boolean; withReactionAndUserPairCache?: boolean } = {}, snapshot?: NoteCreatedSnapshot) => {
 		const now = Date.now();
 		const snapshots = new Map<string, NoteFacts>();

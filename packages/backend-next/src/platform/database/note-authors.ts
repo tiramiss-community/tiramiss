@@ -12,7 +12,7 @@ import type { MiMeta } from 'backend-upstream/entities';
 import type { AuthorFacts, NoteViewMaterials } from '../../modules/note/public.js';
 
 export async function readNoteAuthors(manager: EntityManager, ids: readonly string[], viewerId: string | null, meta: MiMeta,
-	options: { url: string; createdAtFromId(id: string): number }, now: number, emojiUrls: NoteViewMaterials['emojiUrls']) {
+	options: { url: string; createdAtFromId(id: string): number }, now: number, emojiUrls: NoteViewMaterials['emojiUrls'], keepEmptyEmojiUrls = false) {
 	const userIds = [...new Set([...ids, ...(viewerId ? [viewerId] : [])])];
 	const users = await manager.getRepository(MiUser).findBy({ id: In(userIds) });
 	const roles = (await manager.getRepository(MiRole).find()).map(roleDefinition);
@@ -52,7 +52,7 @@ export async function readNoteAuthors(manager: EntityManager, ids: readonly stri
 				...(user.makeNotesFollowersOnlyBefore !== null ? { makeNotesFollowersOnlyBefore: user.makeNotesFollowersOnlyBefore } : {}),
 				...(user.makeNotesHiddenBefore !== null ? { makeNotesHiddenBefore: user.makeNotesHiddenBefore } : {}),
 				...(instance ? { instance: { name: instance.name, softwareName: instance.softwareName, softwareVersion: instance.softwareVersion, iconUrl: instance.iconUrl, faviconUrl: instance.faviconUrl, themeColor: instance.themeColor } } : {}),
-				emojis: populateEmojis(user.emojis, user.host, { emojiUrls, localHost }),
+				emojis: populateEmojis(user.emojis, user.host, { emojiUrls, localHost }, keepEmptyEmojiUrls),
 				onlineStatus: user.hideOnlineStatus || elapsed === null ? 'unknown' : elapsed < 600000 ? 'online' : elapsed < 259200000 ? 'active' : 'offline',
 				...(meta.showRoleBadgesOfRemoteUsers || user.host === null ? { badgeRoles: badges.filter(r => r.isPublic || moderator).sort((a, b) => b.displayOrder - a.displayOrder).map(r => ({ name: r.name, iconUrl: r.iconUrl, displayOrder: r.displayOrder })) } : {}),
 			},

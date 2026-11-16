@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { readForActorEmojiCacheEvidence } from './actor-emoji-cache-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 const sharedPath = 'packages/backend-next/test/unit/composition/http-app.test.ts';
@@ -13,7 +14,7 @@ const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 // Only this auto-merged fixture changed both feature receipts. Each view keeps
 // its own original current-input checks; neither old receipt is renewed here.
 function project(file, readFile, feature, label) {
- if (file !== sharedPath) return readFile(file);
+ if (file !== sharedPath) return readForActorEmojiCacheEvidence(file, readFile);
  const bytes = readFile(predecessorPath);
  assert.equal(hash(bytes), seal, 'joint drive/meta predecessor seal');
  const previous = JSON.parse(bytes);

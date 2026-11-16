@@ -23,7 +23,7 @@ import type { Hono } from 'hono';
 export function prepareNoteRoutes(resources: RuntimeResources, config: RuntimeConfig) {
 	const manager = resources.dataSource.manager;
 	const codec = createIdCodec(config.id);
-	const reader = createNoteReader(manager, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId });
+	const reader = createNoteReader(manager, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId }, resources.actorEmojis);
 	const show = createShowNote(reader);
 	const create = createNoteApplication({
 		dataSource: resources.dataSource, roleMaterials: resources.roleMaterials, ids: codec, clock: Date.now,

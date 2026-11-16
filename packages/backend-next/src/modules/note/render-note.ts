@@ -9,7 +9,7 @@ import type { JsonObject, NoteViewMaterials } from './model.js';
 
 class NoteMaterialMissing extends Error {}
 
-export function populateEmojis(names: readonly string[], host: string | null, materials: Pick<NoteViewMaterials, 'emojiUrls' | 'localHost'>): Record<string, string> {
+export function populateEmojis(names: readonly string[], host: string | null, materials: Pick<NoteViewMaterials, 'emojiUrls' | 'localHost'>, keepEmptyUrls = false): Record<string, string> {
 	const rules = createHostRules(materials.localHost);
 	return Object.fromEntries(names.flatMap(value => {
 		const match = value.match(/^([-\w]+)(?:@([\w.-]+))?$/);
@@ -21,7 +21,7 @@ export function populateEmojis(names: readonly string[], host: string | null, ma
 			return [];
 		}
 		const url = materials.emojiUrls.get(`${match[1]}@${target}`);
-		return url ? [[value, url]] : [];
+		return (keepEmptyUrls ? url !== undefined : !!url) ? [[value, url!]] : [];
 	}));
 }
 

@@ -30,6 +30,7 @@ import { createNoteHashtagWriter, readHashtagRankingSettings } from './database/
 import { createHashtagRanking } from './hashtag-ranking.js';
 import { createNoteAntennaReader } from './database/note-antennas.js';
 import { readMeta } from './database/meta.js';
+import { createActorEmojiCache } from './actor-emoji-cache.js';
 import { createMetaCache } from './meta-cache.js';
 import { createInstanceMetadata } from './instance-metadata.js';
 import { createInstanceLedger } from './instance-ledger.js';
@@ -305,8 +306,10 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		scope.defer(postingSearch.close);
 		const postingStream = createPostingStream(rolePublisher, config.url);
 		const timelineCache = createTimelineCache(timelinesRedis, { createdAtFromId: createIdCodec(config.id).createdAtFromId, currentTime: Date.now, random: () => Math.random() });
+		const actorEmojis = createActorEmojiCache(dataSource.manager, redis);
+		scope.defer(actorEmojis.close);
 		const postingNotifications = createPostingNotifications({
-			dataSource, reactionsRedis, postingStream, webhook: webhooks.enqueue,
+			dataSource, reactionsRedis, postingStream, actorEmojis, webhook: webhooks.enqueue,
 			roleTimelines: createPostingRoleTimelines({
 				readRoleIds: createRoleTimelineReader(dataSource.manager, roleMaterials, createIdCodec(config.id).createdAtFromId).roleIds,
 				cache: timelineCache, publish: postingStream.role, currentTime: Date.now,
@@ -418,7 +421,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw new DiagnosticError('TIMELINES_REDIS_ENDED', {});
 		}
 		active = true;
-		return { meta, urlPreview, instanceAdministration, dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, remoteEmojis, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
+		return { actorEmojis, meta, urlPreview, instanceAdministration, dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, remoteEmojis, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
 	};
 
 	try {

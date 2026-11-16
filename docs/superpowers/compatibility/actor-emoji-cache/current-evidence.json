@@ -1,0 +1,152 @@
+{
+  "scope": "actor-emoji-cache-303",
+  "baseRevision": "5f0549ad96af7ce85e12fdcc4bf26f23b029d29d",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "nodeVersion": "26.4.0",
+  "measuredWorkingTree": true,
+  "postingComplete": false,
+  "upstreamFullServerMeasured": false,
+  "noInputDrift": true,
+  "inputs": {
+    "packages/backend-next/src/composition/actor-http.ts": "fe903c40eeca92fc0cb827c3797d09d8a25eaebc13a34d2b9c64deffb71772b0",
+    "packages/backend-next/src/composition/local-actor-tags.ts": "33475307d1984bc7e5c7dab2ef800c09d3aa7a83eed6c8bb12677da4c1777aea",
+    "packages/backend-next/src/composition/note-routes.ts": "13b7a773654f30a3ebd81c2d1797148ecfe16f77c42247ad5390af4062ac9122",
+    "packages/backend-next/src/composition/posting-notifications.ts": "efbb6744090d3ae3900d13010b8f1a2b10444e37ef14060fccbeca534df1cb09",
+    "packages/backend-next/src/composition/posting-websocket.ts": "75070b865fdc14aa9618ab5e42ec94fd2810779db7822d85507604045eb975c9",
+    "packages/backend-next/src/composition/remote-users.ts": "7d8de31c198b075ae52860a8b2c7c5a2da25560db6aadc63d501841cf7e354e3",
+    "packages/backend-next/src/modules/note/render-note.ts": "d35488e853520da9f815311d899922c87a08d28a1f18985940d749394a67e199",
+    "packages/backend-next/src/platform/connect-resources.ts": "acb6aeb42f0d18f3c77184259573fba6f84ac5b60216f9b633c9385c1735a0e9",
+    "packages/backend-next/src/platform/database/note-authors.ts": "a8161e9a9ae8fb6f595469cd52ff62cf5d613abb94bfc741143ca3fe4e082a17",
+    "packages/backend-next/src/platform/database/note-reader.ts": "d3a7d587bc11a198ac7db0f86635aeea82a69b2f0e5241039fa41625281e43d2",
+    "packages/backend-next/src/platform/database/streaming.ts": "812f422e05bb98b4f73214ac4531bceede66f17a43c035bf4da9ce1e7add2f4a",
+    "packages/backend-next/test/integration/activitypub-actor.test.ts": "74fb47bb576c29d9e0edef358a3f3975b104217ce7ff511f664f9914e45653d1",
+    "packages/backend-next/src/platform/actor-emoji-cache.ts": "34fc0fa74cbc111ab9378a6e8930448a1cb001fe9d8906a5d07e1dbf05793c65",
+    "packages/backend-next/test/unit/actor-emoji-cache.test.ts": "c2648fead2d30c2907781c1a224e8205401caf5f649ec2948ce328959233b040",
+    "packages/backend-next/test/integration/actor-emoji-cache.test.ts": "a6e7ca0facc547ca75c824b3a3c6b7e960d3120c1690ac4dc65244c3cce558e0",
+    "packages/backend-next/test/processes/actor-emoji-cache.test.ts": "198b4288e6b4a3e714a354b185415aded500445a05e5db95452371365c9bf52f",
+    "docs/superpowers/compatibility/actor-emoji-cache/source-probe.mjs": "812260244d5d9e99af3173d7ee75d271b23cdd7240a26f4ee242614a6dc5a6b8",
+    "docs/superpowers/compatibility/actor-emoji-cache/observations.json": "0cd0aa78bd2d82a4550273f30acae8e385e876f1f47ffbdf0a4fec5b0f4f07f5"
+  },
+  "inputsAfter": {
+    "packages/backend-next/src/composition/actor-http.ts": "fe903c40eeca92fc0cb827c3797d09d8a25eaebc13a34d2b9c64deffb71772b0",
+    "packages/backend-next/src/composition/local-actor-tags.ts": "33475307d1984bc7e5c7dab2ef800c09d3aa7a83eed6c8bb12677da4c1777aea",
+    "packages/backend-next/src/composition/note-routes.ts": "13b7a773654f30a3ebd81c2d1797148ecfe16f77c42247ad5390af4062ac9122",
+    "packages/backend-next/src/composition/posting-notifications.ts": "efbb6744090d3ae3900d13010b8f1a2b10444e37ef14060fccbeca534df1cb09",
+    "packages/backend-next/src/composition/posting-websocket.ts": "75070b865fdc14aa9618ab5e42ec94fd2810779db7822d85507604045eb975c9",
+    "packages/backend-next/src/composition/remote-users.ts": "7d8de31c198b075ae52860a8b2c7c5a2da25560db6aadc63d501841cf7e354e3",
+    "packages/backend-next/src/modules/note/render-note.ts": "d35488e853520da9f815311d899922c87a08d28a1f18985940d749394a67e199",
+    "packages/backend-next/src/platform/connect-resources.ts": "acb6aeb42f0d18f3c77184259573fba6f84ac5b60216f9b633c9385c1735a0e9",
+    "packages/backend-next/src/platform/database/note-authors.ts": "a8161e9a9ae8fb6f595469cd52ff62cf5d613abb94bfc741143ca3fe4e082a17",
+    "packages/backend-next/src/platform/database/note-reader.ts": "d3a7d587bc11a198ac7db0f86635aeea82a69b2f0e5241039fa41625281e43d2",
+    "packages/backend-next/src/platform/database/streaming.ts": "812f422e05bb98b4f73214ac4531bceede66f17a43c035bf4da9ce1e7add2f4a",
+    "packages/backend-next/test/integration/activitypub-actor.test.ts": "74fb47bb576c29d9e0edef358a3f3975b104217ce7ff511f664f9914e45653d1",
+    "packages/backend-next/src/platform/actor-emoji-cache.ts": "34fc0fa74cbc111ab9378a6e8930448a1cb001fe9d8906a5d07e1dbf05793c65",
+    "packages/backend-next/test/unit/actor-emoji-cache.test.ts": "c2648fead2d30c2907781c1a224e8205401caf5f649ec2948ce328959233b040",
+    "packages/backend-next/test/integration/actor-emoji-cache.test.ts": "a6e7ca0facc547ca75c824b3a3c6b7e960d3120c1690ac4dc65244c3cce558e0",
+    "packages/backend-next/test/processes/actor-emoji-cache.test.ts": "198b4288e6b4a3e714a354b185415aded500445a05e5db95452371365c9bf52f",
+    "docs/superpowers/compatibility/actor-emoji-cache/source-probe.mjs": "812260244d5d9e99af3173d7ee75d271b23cdd7240a26f4ee242614a6dc5a6b8",
+    "docs/superpowers/compatibility/actor-emoji-cache/observations.json": "0cd0aa78bd2d82a4550273f30acae8e385e876f1f47ffbdf0a4fec5b0f4f07f5"
+  },
+  "runs": [
+    {
+      "name": "build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "build"
+      ],
+      "startedAt": "2026-11-16T03:35:10.335743+00:00",
+      "finishedAt": "2026-11-16T03:35:10.753671+00:00",
+      "durationSeconds": 0.418,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/build.log",
+      "logSha256": "29c5ee0f6b0b20dbb259b99d01276198c3d28190090706394608d4deda6d2c0b"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "typecheck"
+      ],
+      "startedAt": "2026-11-16T03:35:10.774069+00:00",
+      "finishedAt": "2026-11-16T03:35:11.981023+00:00",
+      "durationSeconds": 1.207,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/typecheck.log",
+      "logSha256": "7f96aaabe6df7a354a3e4d7514375171e219ae2de91268b52d91875e0a026aa4"
+    },
+    {
+      "name": "unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test"
+      ],
+      "startedAt": "2026-11-16T03:34:58.766177+00:00",
+      "finishedAt": "2026-11-16T03:35:40.567342+00:00",
+      "durationSeconds": 41.791,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/unit.log",
+      "logSha256": "19cc438b6ccbe00a4d362e28bfc46833058d24741562f4f8edd3da0f57c5518c",
+      "passed": 4644,
+      "files": 125
+    },
+    {
+      "name": "integration",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/actor-emoji-cache.test.ts",
+        "test/integration/activitypub-actor.test.ts",
+        "test/integration/remote-user.test.ts"
+      ],
+      "startedAt": "2026-11-16T03:35:09.140645+00:00",
+      "finishedAt": "2026-11-16T03:35:28.551510+00:00",
+      "durationSeconds": 19.401,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/integration.log",
+      "logSha256": "c59e276f68ab7ddbb747dfe2afd5a85ae83eacab4d8d03e1085d159a374b8aa0",
+      "passed": 179,
+      "files": 3
+    },
+    {
+      "name": "process",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:process",
+        "test/processes/actor-emoji-cache.test.ts"
+      ],
+      "startedAt": "2026-11-16T03:35:12.000063+00:00",
+      "finishedAt": "2026-11-16T03:35:15.454541+00:00",
+      "durationSeconds": 3.444,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/process.log",
+      "logSha256": "210cf49be7f3eccd500ad384293d567c8bfca211815155e23890dea59de5bd96",
+      "passed": 1,
+      "files": 1
+    },
+    {
+      "name": "source",
+      "command": [
+        "node",
+        "docs/superpowers/compatibility/actor-emoji-cache/source-probe.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-11-16T03:35:15.472815+00:00",
+      "finishedAt": "2026-11-16T03:35:15.683674+00:00",
+      "durationSeconds": 0.211,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/source.log",
+      "logSha256": "f16f5136e9485cb9d8512583813f4581ff40c200ee12c68baf73a285bc30b193"
+    }
+  ],
+  "frozenAt": "2026-11-16T03:34:58.728849+00:00"
+}
