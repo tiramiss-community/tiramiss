@@ -31,6 +31,8 @@ export const publicEmojisPredecessorFiles = Object.freeze([
 
 export function validatePublicEmojisEvidence(value, rawRead = read, optional = optionalRead) {
 	return scopedEvidenceValidation(validatePublicEmojisEvidence, value, rawRead, optional, (rawRead, optional) => {
+		const currentRead = rawRead;
+		rawRead = path => readBeforePublicEmojiQuery(path, currentRead, optional);
 		const bytes = rawRead(directory + 'current-evidence.json');
 		assert.equal(sha(bytes), receiptSeal, 'public emojis receipt seal');
 		value ??= JSON.parse(bytes);
@@ -87,5 +89,56 @@ export function validatePublicEmojisEvidence(value, rawRead = read, optional = o
 export function readPrePublicEmojis(path, rawRead = read, optional = optionalRead) {
 	return withEvidenceRequestedPath(path, () => publicEmojisPredecessorFiles.includes(path)
 		? Buffer.from(validatePublicEmojisEvidence(undefined, rawRead, optional)[path])
+		: rawRead(path));
+}
+
+const queryReceiptSeal = 'fa8bf1c4d394bcc36ad204c0cee68f8a1f7a086589831c2124ed1342ccd9ebd2';
+const queryPredecessorSeal = 'c02cd70c1c212b42ba1c85e17015a88b394ccec19bd375d87bcb0cd5e2d58299';
+const queryPath = 'packages/backend-next/src/http/api-request.ts';
+
+export function validatePublicEmojiQueryEvidence(value, rawRead = read, optional = optionalRead) {
+	return scopedEvidenceValidation(validatePublicEmojiQueryEvidence, value, rawRead, optional, (rawRead, optional) => {
+		const bytes = rawRead(directory + 'query-current-evidence.json');
+		assert.equal(sha(bytes), queryReceiptSeal, 'public emoji query receipt seal');
+		value ??= JSON.parse(bytes);
+		assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), queryReceiptSeal, 'public emoji query receipt seal');
+		assert.equal(value.scope, 'public-emojis-304-query-append');
+		assert.equal(value.baseRevision, 'f588ccbfb538d5ef79a78f37cbe4a39e2e52dda2');
+		assert.deepEqual(Object.keys(value.inputs), [queryPath, 'packages/backend-next/test/unit/http/api-endpoint.test.ts']);
+		assert.deepEqual(value.inputsAfter, value.inputs);
+		assert.equal(value.noInputDrift, true);
+		for (const [path, digest] of Object.entries(value.inputs)) {
+			assert.equal(sha(rawRead(path)), digest, `Meta cache measured current input drift (public emoji query): ${path}`);
+		}
+		const previousBytes = rawRead(directory + 'query-predecessor.json');
+		assert.equal(sha(previousBytes), queryPredecessorSeal, 'public emoji query predecessor seal');
+		const previous = JSON.parse(previousBytes);
+		assert.equal(previous.baseRevision, value.baseRevision);
+		assert.equal(previous.path, queryPath);
+		assert.equal(previous.currentSha256, value.inputs[queryPath]);
+		let current = rawRead(queryPath).toString();
+		for (const patch of [...previous.patches].reverse()) {
+			assert.equal(current.slice(patch.offset, patch.offset + patch.before.length), patch.before, 'public emoji query exact predecessor patch');
+			current = current.slice(0, patch.offset) + patch.after + current.slice(patch.offset + patch.before.length);
+		}
+		assert.equal(sha(Buffer.from(current)), previous.previousSha256, 'public emoji query exact predecessor identity');
+		assert.deepEqual(value.runs.map(run => run.name), ['query-unit', 'query-typecheck']);
+		for (const run of value.runs) {
+			assert.equal(run.exitCode, 0);
+			const log = optional(run.log);
+			if (log !== null) {
+				assert.equal(sha(log), run.logSha256, 'public emoji query actual log drift');
+				if (run.passed !== undefined) {
+					assert(log.toString().includes(`Tests  ${run.passed} passed (${run.passed})`));
+				}
+			}
+		}
+		return current;
+	});
+}
+
+export function readBeforePublicEmojiQuery(path, rawRead = read, optional = optionalRead) {
+	return withEvidenceRequestedPath(path, () => path === queryPath
+		? Buffer.from(validatePublicEmojiQueryEvidence(undefined, rawRead, optional))
 		: rawRead(path));
 }

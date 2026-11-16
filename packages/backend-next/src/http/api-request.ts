@@ -50,7 +50,13 @@ function readGetQuery(url: string): Record<string, unknown> {
 		const key = decode(equals === -1 ? pair : pair.slice(0, equals));
 		const value = decode(equals === -1 ? '' : pair.slice(equals + 1));
 		const previous = result[key];
-		result[key] = previous === undefined ? value : Array.isArray(previous) ? [...previous, value] : [previous, value];
+		if (previous === undefined) {
+			result[key] = value;
+		} else if (Array.isArray(previous)) {
+			previous.push(value);
+		} else {
+			result[key] = [previous, value];
+		}
 	}
 	return result;
 }

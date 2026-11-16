@@ -7,7 +7,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { inEvidenceValidationScope } from './evidence-validation-scope.mjs';
-import { publicEmojisPredecessorFiles, readPrePublicEmojis, validatePublicEmojisEvidence } from './public-emojis-evidence.mjs';
+import { publicEmojisPredecessorFiles, readPrePublicEmojis, validatePublicEmojisEvidence, readBeforePublicEmojiQuery, validatePublicEmojiQueryEvidence } from './public-emojis-evidence.mjs';
 import { readPrePublicDocuments } from './public-documents-evidence.mjs';
 
 const read = path => readFileSync(new URL('../' + path, import.meta.url));
@@ -37,7 +37,7 @@ test('finite current gate restores only the four exact shared predecessors with 
 	const saved = JSON.parse(read(directory + 'predecessor.json'));
 	assert.deepEqual(Object.keys(before), publicEmojisPredecessorFiles);
 	for (const path of publicEmojisPredecessorFiles) {
-		assert.equal(sha(read(path)), saved.files[path].currentSha256);
+		assert.equal(sha(readBeforePublicEmojiQuery(path, read, () => null)), saved.files[path].currentSha256);
 		assert.equal(sha(readPrePublicEmojis(path, read, () => null)), saved.files[path].previousSha256);
 	}
 	assert.equal(readPrePublicEmojis('unrelated', () => Buffer.from('live')).toString(), 'live');
@@ -76,4 +76,32 @@ test('same-scope and later public invocations recheck requested live bytes', () 
 		assert.throws(() => readPrePublicEmojis(path, reader, offline), /measured current input drift/);
 	});
 	assert.throws(() => readPrePublicEmojis(path, reader, offline), /measured current input drift/);
+});
+
+
+test('query append follow-up binds actual nearest runs and checks later current reads without rewriting history', () => {
+	const current = JSON.parse(read(directory + 'query-current-evidence.json'));
+	const historical = validatePublicEmojiQueryEvidence(undefined, read, () => null);
+	const saved = JSON.parse(read(directory + 'query-predecessor.json'));
+	assert.equal(sha(Buffer.from(historical)), saved.previousSha256);
+	assert.equal(sha(read(saved.path)), saved.currentSha256);
+	assert.notEqual(saved.previousSha256, saved.currentSha256);
+	for (const path of Object.keys(current.inputs)) {
+		const drift = file => file === path ? Buffer.concat([read(file), Buffer.from('\n')]) : read(file);
+		assert.throws(() => validatePublicEmojiQueryEvidence(undefined, drift, () => null), /measured current input drift/);
+		assert.throws(() => readPrePublicDocuments(publicEmojisPredecessorFiles[0], drift, () => null), /measured current input drift/);
+	}
+	let changed = false;
+	const reader = file => file === saved.path && changed ? Buffer.from(historical) : read(file);
+	const offline = () => null;
+	inEvidenceValidationScope(() => {
+		readPrePublicEmojis(saved.path, reader, offline);
+		changed = true;
+		assert.throws(() => readPrePublicEmojis(saved.path, reader, offline), /measured current input drift/);
+	});
+	assert.throws(() => readPrePublicEmojis(saved.path, reader, offline), /measured current input drift/);
+	for (const run of current.runs) {
+		assert.throws(() => validatePublicEmojiQueryEvidence(undefined, read, path => path === run.log ? Buffer.from('forged PASS') : null), /actual log drift/);
+	}
+	assert.equal(readBeforePublicEmojiQuery('unrelated', () => Buffer.from('live')).toString(), 'live');
 });
