@@ -1,0 +1,156 @@
+{
+  "runtimeRevision": "23a40c1753574f4c288e30a5ec3a14ba64dd976e",
+  "baseRevision": "0927918fe987cae2fcbf2b69bdb58ee6c5ca734a",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "nodeVersion": "v26.4.0",
+  "ffmpegVersion": "ffmpeg version 4.4.2-0ubuntu0.22.04.1 Copyright (c) 2000-2021 the FFmpeg developers",
+  "inputs": {
+    "docs/superpowers/compatibility/backend-inventory/audit-items.json": "2935ecb60502ac51b80030ba19c6d32cd3efbf5cb0b0048bbc708624ae5ceba8",
+    "docs/superpowers/compatibility/backend-inventory/contracts.json": "2ede29fa32f14f99b123f7a15b5e80492959697689a43d5174b4ca2fe2d436a1",
+    "docs/superpowers/compatibility/backend-inventory/contracts.md": "9f1c2e117faecb276249c480a4d446a74431633566f68a2d9a786bdd7a6e3b24",
+    "docs/superpowers/compatibility/video-ingest/README.md": "dc09fdf50784820551c87370b4f61685d45ac4705a851e2a8318fbe0aa21b985",
+    "docs/superpowers/compatibility/video-ingest/dependency-predecessor.json": "fe0b6132b2f0d30af98f499791c71847cdf9cc0a67d89a2631b6c751c96d9d29",
+    "docs/superpowers/compatibility/video-ingest/fixtures.json": "6d0d4a954b5670c59f35961a19e8253288e52bf1916b51df5bd0e006657a19ba",
+    "docs/superpowers/compatibility/video-ingest/observations.json": "b45d71ec0be3981931809097447ed5e5422ef2ef84cac4a21522a63e392ff5ae",
+    "docs/superpowers/compatibility/video-ingest/source-probe.mjs": "ac798387e6ee7ce57840abe551d86e5bc58cec2795aeae8ce29d6a73f73d3f6c",
+    "packages/backend-next/package.json": "8eae5596313821fb81aeaf01d7e5ae93be9204a48f9323621f23390710746ad8",
+    "packages/backend-next/src/modules/drive/file-view.ts": "284b275992c39d61f83bc265a8f006d259894484df8839e1b84e207fde25bfbb",
+    "packages/backend-next/src/modules/drive/image-ingest.ts": "0c9dc6527e440fbfa42f1ee59aefc121d709f2f368dfccf6483c770d2b6b5b48",
+    "packages/backend-next/src/modules/drive/video-ingest.ts": "ecfcdc855091a80ae169cdf0fecfaa03250b1e588e91a5308659af653b607456",
+    "packages/backend-next/src/modules/drive/video-thumbnail-url.ts": "efc0ca366aa2643ead765057308ede679bfb3394de23904c960e9a1f68bc2bc0",
+    "packages/backend-next/src/platform/video/ffmpeg-frame.ts": "f4c415fcfba203051352db657dcf8a058fb19e30d2130c3f827463a214a5ed41",
+    "packages/backend-next/test/unit/drive/video-ingest.test.ts": "3c7fce174cd797f86fb31d859c0307df27171c6139cfb68c21b3eaed84b4c775",
+    "packages/backend-next/test/unit/note/files.test.ts": "39397ffc752b317f155002d2a9eb8e5848a2ad0ce7a5ddbf9709f545f33c5ef5",
+    "pnpm-lock.yaml": "99310316507984158e2af521c1de0035230961dd496fbff60b32d461b85b2396",
+    "scripts/cli-package-evidence.mjs": "98312f8b447850f9bdcc3b271bf8c433afacc5e651b43cfc5eacbcdd91cda4db",
+    "scripts/cli-package-evidence.test.mjs": "6cef2cf623f9212df399d744f608fcfad2ee376e85e840a6bc4a21018ec76c0f",
+    "scripts/image-ingest-dependency-evidence.mjs": "8974e15447766ab9f48769c3304dd0d0a34999a05e8c3fcb970a6ef2dbedd67f",
+    "scripts/video-ingest-contract.test.mjs": "6106528b39873f2b610f273fd55cfdcd21bd74420c022fd8821b5c21c16a66d3",
+    "scripts/video-ingest-dependency-evidence.mjs": "cb51cec3ec03953cb75dfa44ce4d9514445b6e896eb037577966866c18f3d6a0"
+  },
+  "inputsAfter": {
+    "docs/superpowers/compatibility/backend-inventory/audit-items.json": "2935ecb60502ac51b80030ba19c6d32cd3efbf5cb0b0048bbc708624ae5ceba8",
+    "docs/superpowers/compatibility/backend-inventory/contracts.json": "2ede29fa32f14f99b123f7a15b5e80492959697689a43d5174b4ca2fe2d436a1",
+    "docs/superpowers/compatibility/backend-inventory/contracts.md": "9f1c2e117faecb276249c480a4d446a74431633566f68a2d9a786bdd7a6e3b24",
+    "docs/superpowers/compatibility/video-ingest/README.md": "dc09fdf50784820551c87370b4f61685d45ac4705a851e2a8318fbe0aa21b985",
+    "docs/superpowers/compatibility/video-ingest/dependency-predecessor.json": "fe0b6132b2f0d30af98f499791c71847cdf9cc0a67d89a2631b6c751c96d9d29",
+    "docs/superpowers/compatibility/video-ingest/fixtures.json": "6d0d4a954b5670c59f35961a19e8253288e52bf1916b51df5bd0e006657a19ba",
+    "docs/superpowers/compatibility/video-ingest/observations.json": "b45d71ec0be3981931809097447ed5e5422ef2ef84cac4a21522a63e392ff5ae",
+    "docs/superpowers/compatibility/video-ingest/source-probe.mjs": "ac798387e6ee7ce57840abe551d86e5bc58cec2795aeae8ce29d6a73f73d3f6c",
+    "packages/backend-next/package.json": "8eae5596313821fb81aeaf01d7e5ae93be9204a48f9323621f23390710746ad8",
+    "packages/backend-next/src/modules/drive/file-view.ts": "284b275992c39d61f83bc265a8f006d259894484df8839e1b84e207fde25bfbb",
+    "packages/backend-next/src/modules/drive/image-ingest.ts": "0c9dc6527e440fbfa42f1ee59aefc121d709f2f368dfccf6483c770d2b6b5b48",
+    "packages/backend-next/src/modules/drive/video-ingest.ts": "ecfcdc855091a80ae169cdf0fecfaa03250b1e588e91a5308659af653b607456",
+    "packages/backend-next/src/modules/drive/video-thumbnail-url.ts": "efc0ca366aa2643ead765057308ede679bfb3394de23904c960e9a1f68bc2bc0",
+    "packages/backend-next/src/platform/video/ffmpeg-frame.ts": "f4c415fcfba203051352db657dcf8a058fb19e30d2130c3f827463a214a5ed41",
+    "packages/backend-next/test/unit/drive/video-ingest.test.ts": "3c7fce174cd797f86fb31d859c0307df27171c6139cfb68c21b3eaed84b4c775",
+    "packages/backend-next/test/unit/note/files.test.ts": "39397ffc752b317f155002d2a9eb8e5848a2ad0ce7a5ddbf9709f545f33c5ef5",
+    "pnpm-lock.yaml": "99310316507984158e2af521c1de0035230961dd496fbff60b32d461b85b2396",
+    "scripts/cli-package-evidence.mjs": "98312f8b447850f9bdcc3b271bf8c433afacc5e651b43cfc5eacbcdd91cda4db",
+    "scripts/cli-package-evidence.test.mjs": "6cef2cf623f9212df399d744f608fcfad2ee376e85e840a6bc4a21018ec76c0f",
+    "scripts/image-ingest-dependency-evidence.mjs": "8974e15447766ab9f48769c3304dd0d0a34999a05e8c3fcb970a6ef2dbedd67f",
+    "scripts/video-ingest-contract.test.mjs": "6106528b39873f2b610f273fd55cfdcd21bd74420c022fd8821b5c21c16a66d3",
+    "scripts/video-ingest-dependency-evidence.mjs": "cb51cec3ec03953cb75dfa44ce4d9514445b6e896eb037577966866c18f3d6a0"
+  },
+  "noInputDrift": true,
+  "runtimeInputSha256": "6c0a40130b83780653a62518af58105e52e6cec174db1cff57d17e5c31f7f12f",
+  "uncommittedUpdates": [
+    "Video test adds real pack projection assertions, full fixture typing, and RGB rounding tolerance; production code equals runtimeRevision.",
+    "README documents tolerance; inventory two finite rows pin runtimeRevision."
+  ],
+  "runs": [
+    {
+      "name": "build",
+      "command": "pnpm --filter backend-next... build",
+      "cwd": ".",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-281-build.log",
+      "logSha256": "72b693bd864788f5040c68f7e1f81600a063ddbf7ad8afe138444bb016873542"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "node node_modules/typescript/bin/tsc6 -p tsconfig.json --noEmit",
+        "node node_modules/typescript/bin/tsc6 -p tsconfig.test.json --noEmit"
+      ],
+      "cwd": "packages/backend-next",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-281-typecheck.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "sync",
+      "command": "node scripts/sync.mjs --check",
+      "cwd": "packages/backend-upstream",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-281-sync.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "source",
+      "command": "UPSTREAM_ROOT=/tmp/tiramiss-relay171-upstream node docs/superpowers/compatibility/video-ingest/source-probe.mjs --check",
+      "cwd": ".",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-281-source.log",
+      "logSha256": "8ab7304e78106f90723ac11ac95cccde07c0ffed25935d6e7d5e3deb811084c7"
+    },
+    {
+      "name": "focused",
+      "command": "node node_modules/vitest/vitest.mjs run --config vitest.config.ts test/unit/drive/video-ingest.test.ts test/unit/drive/image-ingest.test.ts test/unit/drive/files-source.test.ts test/unit/note/files.test.ts",
+      "cwd": "packages/backend-next",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-281-focused.log",
+      "logSha256": "af6c649172002f3e98738b686cb8be2c4c3c404e87f6df22da65571c631877ab",
+      "passed": 273,
+      "files": 4,
+      "elapsedSeconds": 1.52
+    },
+    {
+      "name": "contracts",
+      "command": "node --test scripts/video-ingest-contract.test.mjs scripts/image-ingest-contract.test.mjs scripts/cli-package-evidence.test.mjs scripts/url-preview-contract.test.mjs scripts/drive-files-contract.test.mjs scripts/joint-drive-meta-contract.test.mjs",
+      "cwd": ".",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-281-contracts.log",
+      "logSha256": "8484b8338d7495791ef5cc5ba056d2ffe03a9880cf76e877c8329279a96e5215",
+      "passed": 60,
+      "elapsedSeconds": 3.180450727
+    },
+    {
+      "name": "inventory",
+      "command": "node scripts/backend-contract-inventory.mjs --check",
+      "cwd": ".",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-281-inventory-check.log",
+      "logSha256": "9506ac89cde2b4c62b8c5dc1c5149e9424db0f4e35b248aa94a8ad3ab8d719d4"
+    },
+    {
+      "name": "shipping",
+      "command": "node scripts/check-shipping.mjs --base 0927918fe987cae2fcbf2b69bdb58ee6c5ca734a",
+      "cwd": ".",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-281-shipping.log",
+      "logSha256": "f703f7643d289a804c3348ff56441aef62b263ece60b6f96432252a4814c97ee"
+    }
+  ],
+  "supplementalRuns": [
+    {
+      "name": "unit-all-before-final-test-only-assertions",
+      "command": "node node_modules/vitest/vitest.mjs run --config vitest.config.ts",
+      "cwd": "packages/backend-next",
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-281-unit-all.log",
+      "logSha256": "4a7d480950f775591b0446ed7df269c7639f5929fbb447d36626480509b8789e",
+      "passed": 4663,
+      "files": 126,
+      "elapsedSeconds": 39.51,
+      "note": "Production inputs are unchanged. This run preceded final pack-projection assertions, fixture typing/lint and RGB rounding tolerance; focused run verifies the final tests."
+    }
+  ],
+  "limits": [
+    "Pinned source methods use real FFmpeg/ffprobe/sharp/filesystem, not full upstream HTTP/server/DB. Source tmp.dir boundary uses native temporary directories with production cleanup enabled.",
+    "No upload/storage/remote fetching/sensitivity implementation in this slice.",
+    "Offline installation initially failed on unrelated cached @oxc-project/runtime metadata. Normal pnpm build completed frozen-lockfile installation successfully; RE2 was not rebuilt.",
+    "Whole-root contracts are left to the existing CI gate; targeted validators cover changed dependency inputs and adjacent Drive projection.",
+    "The input manifest is final worktree bytes. runtimeRevision is the production checkpoint, not a claim that final metadata/test-only changes were already committed."
+  ]
+}

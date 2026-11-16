@@ -1,0 +1,37 @@
+{
+  "baseRevision": "0927918fe987cae2fcbf2b69bdb58ee6c5ca734a",
+  "files": {
+    "packages/backend-next/package.json": {
+      "currentSha256": "8eae5596313821fb81aeaf01d7e5ae93be9204a48f9323621f23390710746ad8",
+      "previousSha256": "bc7c984010063b75f50f28b59a01e84175ff550f374cceadba7d52fac87b2126",
+      "changes": [
+        {
+          "offset": 1944,
+          "before": "\t\t\"probe-image-size\": \"7.4.0\",\n\t\t\"fluent-ffmpeg\": \"2.1.3\"\n",
+          "after": "\t\t\"probe-image-size\": \"7.4.0\"\n"
+        },
+        {
+          "offset": 2365,
+          "before": "\t\t\"@types/tinycolor2\": \"1.4.6\",\n\t\t\"@types/fluent-ffmpeg\": \"2.1.28\"\n",
+          "after": "\t\t\"@types/tinycolor2\": \"1.4.6\"\n"
+        }
+      ]
+    },
+    "pnpm-lock.yaml": {
+      "currentSha256": "99310316507984158e2af521c1de0035230961dd496fbff60b32d461b85b2396",
+      "previousSha256": "3d1d9010b8de870fd03b165f2d926f51021d175cd290d61b2df03cf30cf3da9c",
+      "changes": [
+        {
+          "offset": 24583,
+          "before": "      fluent-ffmpeg:\n        specifier: 2.1.3\n        version: 2.1.3\n",
+          "after": ""
+        },
+        {
+          "offset": 27584,
+          "before": "      '@types/fluent-ffmpeg':\n        specifier: 2.1.28\n        version: 2.1.28\n",
+          "after": ""
+        }
+      ]
+    }
+  }
+}

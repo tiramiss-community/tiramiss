@@ -19,6 +19,7 @@ adapterの部分実装と、通常worker/APIを通した機能の完成を区別
 ## ビルドと起動
 
 リポジトリが指定するNode.jsとpnpmを用いる。
+動画サムネイルの生成と単体テストには、PATH上のFFmpegとffprobeが必要。Ubuntu/Debianでは`sudo apt install ffmpeg`で両方を導入できる。既存`Dockerfile`のrunnerには同パッケージを導入済み。
 
 ```sh
 pnpm install --frozen-lockfile --filter backend-next...

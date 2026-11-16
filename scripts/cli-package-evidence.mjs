@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { createPreVideoIngestDependencyReader } from './video-ingest-dependency-evidence.mjs';
 import { createHash } from 'node:crypto';
 
 const packagePath = 'packages/backend-next/package.json';
@@ -13,8 +14,9 @@ const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 // This terminal hop restores one measured script addition. Historical package
 // and lock receipts are validated by their original readers after this hop.
 export function createPreCliPackageReader(readFile) {
+	const beforeVideo = createPreVideoIngestDependencyReader(readFile);
 	return path => {
-		const bytes = readFile(path);
+		const bytes = path === packagePath ? beforeVideo(path) : readFile(path);
 		if (path !== packagePath) {
 			return bytes;
 		}

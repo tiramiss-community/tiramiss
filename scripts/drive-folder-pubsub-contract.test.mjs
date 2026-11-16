@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
+import { inEvidenceValidationScope } from './evidence-validation-scope.mjs';
 import { pubsubSuccessorFiles, readPreDriveFolderPubsub, validateDriveFolderPubsubSuccessor } from './drive-folder-pubsub-evidence.mjs';
 import { validateDriveFoldersSuccessor } from './drive-folders-evidence.mjs';
 import { readPreUrlPreview } from './url-preview-evidence.mjs';
@@ -44,4 +45,24 @@ test('finite pubsub reader uses builtins and its observation successor and passe
  assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || match[1] === './evidence-validation-scope.mjs' || match[1] === './meta-cache-evidence.mjs' || match[1] === './drive-files-evidence.mjs' || match[1] === './drive-folder-observation-evidence.mjs'));
  assert(!/execFile|spawn|import\(/.test(source));
  assert.equal(readPreDriveFolderPubsub('unrelated', 'utf8', () => Buffer.from('live'), () => null), 'live');
+});
+
+test('video runner setup preserves the exact historical workflow and rejects old bytes supplied as current', () => {
+ const path = '.github/workflows/test-backend-next.yml';
+ const addition = '      - name: Install FFmpeg\n        run: |\n          sudo apt update\n          sudo apt install -y ffmpeg\n';
+ const before = Buffer.from(read(path).toString().replace(addition, ''));
+ assert.equal(sha(before), record().inputs[path]);
+ assert.doesNotThrow(() => validateDriveFolderPubsubSuccessor(undefined, read, () => null));
+ assert.throws(() => validateDriveFolderPubsubSuccessor(undefined, file => file === path ? before : read(file), () => null), /measured current input drift/);
+});
+test('video workflow raw drift rejects after warming its requested path within one validation scope', () => {
+ const path = '.github/workflows/test-backend-next.yml';
+ let changed = false;
+ const reader = file => changed && file === path ? Buffer.concat([read(file), Buffer.from('\n')]) : read(file);
+ const offline = () => null;
+ inEvidenceValidationScope(() => {
+  readPreDriveFolderPubsub(path, undefined, reader, offline);
+  changed = true;
+  assert.throws(() => readPreDriveFolderPubsub(path, undefined, reader, offline), /measured current input drift/);
+ });
 });

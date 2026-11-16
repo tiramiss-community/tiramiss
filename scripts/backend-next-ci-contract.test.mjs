@@ -14,7 +14,7 @@ const setupCommands = ['pnpm install --frozen-lockfile --filter backend-next...'
 const build = 'pnpm --filter backend-next... build';
 const owned = {
  contracts: ['node scripts/backend-contract-inventory.mjs --check', 'node --test scripts/*-contract*.test.mjs'],
- checks: ['pnpm --filter backend-upstream sync:check', build, 'pnpm --filter backend-next... typecheck', 'pnpm --filter backend-next... lint', 'pnpm --filter backend-upstream test', 'pnpm --filter backend-next test'],
+ checks: ['sudo apt update\nsudo apt install -y ffmpeg\n', 'pnpm --filter backend-upstream sync:check', build, 'pnpm --filter backend-next... typecheck', 'pnpm --filter backend-next... lint', 'pnpm --filter backend-upstream test', 'pnpm --filter backend-next test'],
  integration: [build, 'pnpm --filter backend-next test:integration', 'pnpm --filter backend-next test:acceptance'],
  process: [build, 'pnpm --filter backend-next test:process'],
 };

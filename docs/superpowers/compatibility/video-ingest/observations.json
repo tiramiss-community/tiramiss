@@ -1,0 +1,172 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "manifest": [
+    {
+      "path": "packages/backend/src/core/VideoProcessingService.ts",
+      "sha256": "f04fdc97cfb4bcaaf8f45a64325cb14158cb3c501cbf72001b2dc95d878ffe0c",
+      "gitBlob": "747fe4fc7ee7edcbd909e3300f09844667c06100"
+    },
+    {
+      "path": "packages/backend/src/core/ImageProcessingService.ts",
+      "sha256": "1dd6e63a42bc2541ff3052464cb314f877d81a57f27b572aeba2a051549f4487",
+      "gitBlob": "c0687a36bfd7fe65466a60490272949bd2bb147c"
+    },
+    {
+      "path": "packages/backend/src/core/DriveService.ts",
+      "sha256": "5d63120be9869efbc21059cd69358f81f8518f29ed9e3f4162153afb208959de",
+      "gitBlob": "e3919bed7d65b177242e091012eec950b81c72d7"
+    },
+    {
+      "path": "packages/backend/src/misc/prelude/url.ts",
+      "sha256": "23157930e879afe70598a81c2e2671e2ceaee6a71023afc2f7b4a15fecb58e9d",
+      "gitBlob": "270a0750754eac81c651b7090bd0a7c2d7b3c798"
+    }
+  ],
+  "corpusSha256": "6d0d4a954b5670c59f35961a19e8253288e52bf1916b51df5bd0e006657a19ba",
+  "versions": {
+    "fluentFfmpeg": "2.1.3",
+    "sharp": "0.35.5"
+  },
+  "cases": [
+    {
+      "id": "landscape-phases",
+      "rejects": false,
+      "thumbnail": {
+        "type": "image/webp",
+        "ext": "webp",
+        "format": "webp",
+        "width": 498,
+        "height": 374,
+        "rgb": [
+          1,
+          254,
+          0
+        ],
+        "hasMetadata": false
+      },
+      "local": {
+        "webpublic": null,
+        "thumbnail": {
+          "type": "image/webp",
+          "ext": "webp",
+          "format": "webp",
+          "width": 498,
+          "height": 374,
+          "rgb": [
+            1,
+            254,
+            0
+          ],
+          "hasMetadata": false
+        }
+      },
+      "external": {
+        "webpublic": null,
+        "thumbnail": null
+      }
+    },
+    {
+      "id": "small-portrait",
+      "rejects": false,
+      "thumbnail": {
+        "type": "image/webp",
+        "ext": "webp",
+        "format": "webp",
+        "width": 80,
+        "height": 120,
+        "rgb": [
+          253,
+          254,
+          1
+        ],
+        "hasMetadata": false
+      },
+      "local": {
+        "webpublic": null,
+        "thumbnail": {
+          "type": "image/webp",
+          "ext": "webp",
+          "format": "webp",
+          "width": 80,
+          "height": 120,
+          "rgb": [
+            253,
+            254,
+            1
+          ],
+          "hasMetadata": false
+        }
+      },
+      "external": {
+        "webpublic": null,
+        "thumbnail": null
+      }
+    },
+    {
+      "id": "audio-only",
+      "rejects": true,
+      "thumbnail": null,
+      "local": {
+        "webpublic": null,
+        "thumbnail": null
+      },
+      "external": {
+        "webpublic": null,
+        "thumbnail": null
+      }
+    },
+    {
+      "id": "corrupt",
+      "rejects": true,
+      "thumbnail": null,
+      "local": {
+        "webpublic": null,
+        "thumbnail": null
+      },
+      "external": {
+        "webpublic": null,
+        "thumbnail": null
+      }
+    },
+    {
+      "id": "truncated",
+      "rejects": true,
+      "thumbnail": null,
+      "local": {
+        "webpublic": null,
+        "thumbnail": null
+      },
+      "external": {
+        "webpublic": null,
+        "thumbnail": null
+      }
+    }
+  ],
+  "urls": [
+    {
+      "generator": null,
+      "url": null
+    },
+    {
+      "generator": "",
+      "url": "/thumbnail.webp?thumbnail=1&url=https%3A%2F%2Ffile.test%2Fa%20b.mp4%3Fx%3D1%26y%3D%E6%97%A5%E6%9C%AC%23frame"
+    },
+    {
+      "generator": "https://video.test",
+      "url": "https://video.test/thumbnail.webp?thumbnail=1&url=https%3A%2F%2Ffile.test%2Fa%20b.mp4%3Fx%3D1%26y%3D%E6%97%A5%E6%9C%AC%23frame"
+    },
+    {
+      "generator": "https://video.test/path?token=x",
+      "url": "https://video.test/path?token=x/thumbnail.webp&thumbnail=1&url=https%3A%2F%2Ffile.test%2Fa%20b.mp4%3Fx%3D1%26y%3D%E6%97%A5%E6%9C%AC%23frame"
+    },
+    {
+      "generator": "https://video.test/path?",
+      "url": "https://video.test/path?/thumbnail.webp&thumbnail=1&url=https%3A%2F%2Ffile.test%2Fa%20b.mp4%3Fx%3D1%26y%3D%E6%97%A5%E6%9C%AC%23frame"
+    }
+  ],
+  "processFailure": {
+    "rejects": true,
+    "cleanup": true
+  },
+  "cleanup": true
+}
