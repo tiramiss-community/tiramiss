@@ -1,0 +1,108 @@
+{
+  "issue": 577,
+  "previousHead": "184c31553e45843b6b13853c7950bb4e7cbc5153",
+  "runtimeRevision": "c3398834c0a77da9427fea906add9e4392892b8a",
+  "previousEvidence": {
+    "path": "docs/superpowers/compatibility/connect-check/readiness-followup.json",
+    "sha256": "2fd8eaf772ef22ba07207093c9c089278b8156ff61e61c3354933d2b96a06c52",
+    "evidenceRevision": "678398922f55989e18729a2458a01394c8aa67e1",
+    "disposition": "Immutable R2 measurement; its inputs describe R2. R1 receipt and all R1/R2 logs remain unchanged."
+  },
+  "inputScope": "12 checkpoint-diff files plus config loader, DataSource builder and lockfile; finite set, not every transitive/toolchain input.",
+  "changedInputs": {
+    "docs/superpowers/compatibility/connect-check/README.md": {
+      "before": "d5c50a34ae8ac8ba52ac8dccfdae58682b3d1b15c58772409348e446ba742f5a",
+      "after": "1055e92081cabba8d15903d305a7f2779e19e55a457e3249c400d76f196e2ae8"
+    },
+    "packages/backend-next/src/platform/connect-check.ts": {
+      "before": "7fc2a7c6caca1d30e020e2e45996854e950c744121b9a4bff4b90f043ed0bc9c",
+      "after": "803e841c2b4bbb8b13379ae578105d4b420a9be448e85a8785d4e19a1be4b364"
+    },
+    "packages/backend-next/test/processes/connect-check.test.ts": {
+      "before": "42a8963a7413373fded307612664220d4bc96268e3af11269c53cfcb565ad1b8",
+      "after": "9cb926ddd11203c8bf543943edaf2cb4cd64b9fe79076775759522070009959b"
+    }
+  },
+  "unchangedInputs": [
+    "docs/superpowers/compatibility/connect-check/package-predecessor.json",
+    "docs/superpowers/compatibility/connect-check/source-observations.json",
+    "docs/superpowers/compatibility/connect-check/source-probe.mjs",
+    "packages/backend-next/README.md",
+    "packages/backend-next/package.json",
+    "packages/backend-next/src/config/load-config.ts",
+    "packages/backend-next/src/entrypoints/check-connect.ts",
+    "packages/backend-next/src/platform/database/data-source.ts",
+    "pnpm-lock.yaml",
+    "scripts/connect-check-package-evidence.mjs",
+    "scripts/connect-check-package-evidence.test.mjs",
+    "scripts/video-ingest-dependency-evidence.mjs"
+  ],
+  "inputs": {
+    "docs/superpowers/compatibility/connect-check/README.md": "1055e92081cabba8d15903d305a7f2779e19e55a457e3249c400d76f196e2ae8",
+    "docs/superpowers/compatibility/connect-check/package-predecessor.json": "f2a56c988c6e075abc439947ccefa50fb20cee09d41b06cbad0030eb18dff5a1",
+    "docs/superpowers/compatibility/connect-check/source-observations.json": "deeeb5c221cbd1399eb057e06b6b61e8d962eee69118b2683bf3af300098bca7",
+    "docs/superpowers/compatibility/connect-check/source-probe.mjs": "fa81d4a5987f7f32bda624ffc809e59631f988a9434bec1ee1a671a193b4c092",
+    "packages/backend-next/README.md": "f2a70567ed578fb524b7e7c914a9c36d548ecaf8b1405624d18b1b0efb1490c6",
+    "packages/backend-next/package.json": "68ad8750a1b118f683188c44b979baeacf75b272fac9917739a8efb7ed468eae",
+    "packages/backend-next/src/config/load-config.ts": "6771450cf0ae420bff37bbbf677f6dc46b2e40d214f31b575b90688abc8d4213",
+    "packages/backend-next/src/entrypoints/check-connect.ts": "69885e72f3ab79c761edc43d845585732d3e011c91508eb24a38172b8245a598",
+    "packages/backend-next/src/platform/connect-check.ts": "803e841c2b4bbb8b13379ae578105d4b420a9be448e85a8785d4e19a1be4b364",
+    "packages/backend-next/src/platform/database/data-source.ts": "ffced6c8a1f3994cae8424ae4aae594aefdb52846461caadecad03cc9e1c8f90",
+    "packages/backend-next/test/processes/connect-check.test.ts": "9cb926ddd11203c8bf543943edaf2cb4cd64b9fe79076775759522070009959b",
+    "pnpm-lock.yaml": "99310316507984158e2af521c1de0035230961dd496fbff60b32d461b85b2396",
+    "scripts/connect-check-package-evidence.mjs": "09771af33e15e9bc396402c540dc566d407215f4c6899bc1db7abf9140ecacb7",
+    "scripts/connect-check-package-evidence.test.mjs": "2d8e7dd26af86f700f16337f3342eb7448833c13cf38f3b9dd3ac6686a4b5416",
+    "scripts/video-ingest-dependency-evidence.mjs": "9f7b520782d0839ac40ba602193d821f23082ebf0e7743208945db47211d54a1"
+  },
+  "logs": {
+    "docs/superpowers/compatibility/connect-check/logs/authentication-build.log": "29c5ee0f6b0b20dbb259b99d01276198c3d28190090706394608d4deda6d2c0b",
+    "docs/superpowers/compatibility/connect-check/logs/authentication-near.log": "399b28cb30a3f724f472bc0c12f73e42c851e912f29747fb4f66c83ba46cfe23",
+    "docs/superpowers/compatibility/connect-check/logs/authentication-process.log": "6cfee69cc3e2d5b6af4ac0482a85fe91e000928757a44064b3baee543413bb02",
+    "docs/superpowers/compatibility/connect-check/logs/authentication-shipping.log": "ed0a4f4a4f530ca68343df5b11fa0a5da06e31c64c9a6d7f792b123046838388",
+    "docs/superpowers/compatibility/connect-check/logs/authentication-typecheck.log": "7f96aaabe6df7a354a3e4d7514375171e219ae2de91268b52d91875e0a026aa4"
+  },
+  "driverObservation": {
+    "name": "ioredis",
+    "version": "5.11.1",
+    "files": {
+      "built/Redis.js": "3d2d8a6538470697dc1b7952b2a39ec6dc6862450e812e2cc3676d03a2ef117d",
+      "built/redis/event_handler.js": "6249ca8246dcc8c6ea8a0d64440622da09d2d2eb1efa81031a26469d253e08fd",
+      "built/utils/index.js": "93e42805d7d4a977a1929ffee22e6ee6bbb9c2af6c8abcc2bef18176b01007ca"
+    },
+    "finding": "Automatic AUTH is not included in clientCommandPromises. connect can resolve before its response with ready check and client info disabled and no connection name. Null/undefined command arguments are serialized as empty strings."
+  },
+  "results": {
+    "build": "PASS",
+    "typecheck": "PASS",
+    "process": {
+      "tests": 47,
+      "files": 2,
+      "checkConnectTests": 27,
+      "existingCliTests": 20,
+      "failures": 0,
+      "skipped": 0,
+      "newCases": [
+        "ACL authentication accepted only after delayed AUTH response",
+        "ACL authentication rejected",
+        "password-only authentication accepted only after delayed AUTH response",
+        "password-only authentication rejected"
+      ],
+      "protocolAssertions": "Exact ready-check/client-info disabled options, no connection name; only AUTH commands on these fixture connections, literal credential argument shapes preserved; no AUTH when no credentials."
+    },
+    "nearContracts": {
+      "tests": 39,
+      "failures": 0
+    },
+    "shipping": {
+      "lint": "PASS",
+      "SPDX": "PASS",
+      "localeSafety": "PASS"
+    }
+  },
+  "contract": "For explicit enableReadyCheck:false with credentials, await a public AUTH call with the same credentials within the existing deadline. This repeats automatic AUTH once without requiring a new command permission. Skip additional AUTH when no credentials, and add neither INFO nor PING. Global handlers and cleanup remain unchanged.",
+  "history": [
+    "R1 current-evidence.json and R2 readiness-followup.json with all 14 logs are immutable history; old product-input hashes identify those prior measurements.",
+    "Fixed source probe/observations are unchanged historical source-body observations, not a new full-server comparison.",
+    "Independent focused re-review is pending before push."
+  ]
+}

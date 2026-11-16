@@ -1,0 +1,10 @@
+$ vitest run --config vitest.process.config.ts test/processes/connect-check.test.ts test/processes/cli.test.ts
+
+ RUN  v5.0.3 /home/osamu/develop/tiramiss/.claude/worktrees/check-connect-577/packages/backend-next
+
+
+ Test Files  2 passed (2)
+      Tests  47 passed (47)
+   Start at  18:09:59
+   Duration  6.18s (tests 98%, import 2%, transform 1%)
+
