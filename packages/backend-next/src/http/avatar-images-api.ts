@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Hono } from 'hono';
+import { getPath } from 'hono/utils/url';
 import { avatarImageUrl, emojiImageUrl, parseAvatarAcct } from '../modules/avatar-images/public.js';
 import type { AvatarImageReader, AvatarImageSettings } from '../modules/avatar-images/public.js';
 
@@ -14,6 +15,35 @@ function json(body: object, status: number, headers: Record<string, string> = {}
 	return new Response(text, { status, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': String(Buffer.byteLength(text)), ...headers } });
 }
 
+function imageRequestTarget(request: Request, bindings?: unknown): string {
+	const incoming = bindings && typeof bindings === 'object' && 'incoming' in bindings ? bindings.incoming : undefined;
+	const target = incoming && typeof incoming === 'object' && 'url' in incoming && typeof incoming.url === 'string' ? incoming.url : undefined;
+	if (target?.startsWith('/')) {
+		return target;
+	}
+	const url = request.url;
+	const start = url.indexOf('/', url.indexOf(':') + 3);
+	return start === -1 ? '/' : url.slice(start);
+}
+
+// Only image route dispatch uses the adapter's original request target. Other
+// routes retain Hono's existing pathname semantics.
+export const getAvatarImagesPath: Hono['getPath'] = (request, options) => {
+	const target = imageRequestTarget(request, options?.env);
+	const pathname = target.split('?', 1)[0];
+	const boundary = pathname.indexOf('/', 1);
+	let prefix: string;
+	try {
+		prefix = decodeURIComponent(pathname.slice(1, boundary === -1 ? undefined : boundary));
+	} catch {
+		return getPath(request);
+	}
+	if (!['emoji', 'avatar', 'identicon'].includes(prefix)) {
+		return getPath(request);
+	}
+	return `/${prefix}${boundary === -1 ? '' : pathname.slice(boundary)}`;
+};
+
 export function createAvatarImagesApi(options: {
 	reader: AvatarImageReader;
 	readSettings(): Promise<AvatarImageSettings>;
@@ -21,25 +51,29 @@ export function createAvatarImagesApi(options: {
 	url: string;
 	mediaProxy: string;
 }) {
-	const app = new Hono();
+	const app = new Hono({ getPath: getAvatarImagesPath });
 	for (const kind of ['emoji', 'avatar', 'identicon'] as const) {
 		app.get(`/${kind}/*`, async c => {
-			const url = new URL(c.req.url);
+			const target = imageRequestTarget(c.req.raw, c.env);
+			const queryStart = target.indexOf('?');
+			const pathname = queryStart === -1 ? target : target.slice(0, queryStart);
+			const search = queryStart === -1 ? '' : target.slice(queryStart);
+			const query = new URLSearchParams(search);
 			const headers: Record<string, string> = {};
 			let decoded: string;
 			try {
-				decoded = decodeURIComponent(url.pathname);
+				decoded = decodeURIComponent(pathname);
 			} catch {
-				return json({ error: 'Bad Request', code: 'FST_ERR_BAD_URL', message: `'${url.pathname}' is not a valid url component`, statusCode: 400 }, 400, { 'Content-Type': 'application/json' });
+				return json({ error: 'Bad Request', code: 'FST_ERR_BAD_URL', message: `'${pathname}' is not a valid url component`, statusCode: 400 }, 400, { 'Content-Type': 'application/json' });
 			}
-			const boundary = url.pathname.indexOf('/', 1);
-			const raw = url.pathname.slice(boundary + 1);
+			const boundary = pathname.indexOf('/', 1);
+			const raw = pathname.slice(boundary + 1);
 			if ((boundary === -1 && kind !== 'emoji') || (boundary !== -1 && raw.includes('/')) || (kind === 'avatar' && !raw.startsWith('@'))) {
-				return json({ message: `Route ${c.req.method}:${url.pathname}${url.search} not found`, error: 'Not Found', statusCode: 404 }, 404);
+				return json({ message: `Route ${c.req.method}:${pathname}${search} not found`, error: 'Not Found', statusCode: 404 }, 404);
 			}
-			const value = boundary === -1 ? '' : decoded.slice(decodeURIComponent(url.pathname.slice(0, boundary + 1)).length);
+			const value = boundary === -1 ? '' : decoded.slice(decodeURIComponent(pathname.slice(0, boundary + 1)).length);
 			if (value.length - (kind === 'avatar' ? 1 : 0) > 100) {
-				return json({ error: 'Bad Request', code: 'FST_ERR_MAX_PARAM_LENGTH', message: `'${url.pathname}' is exceeding the max param length`, statusCode: 414 }, 414, { 'Content-Type': 'application/json' });
+				return json({ error: 'Bad Request', code: 'FST_ERR_MAX_PARAM_LENGTH', message: `'${decoded}' is exceeding the max param length`, statusCode: 414 }, 414, { 'Content-Type': 'application/json' });
 			}
 			const empty = (status: number, location?: string) => new Response(null, { status, headers: { ...headers, ...(location !== undefined ? { Location: location } : {}), 'Content-Length': '0' } });
 			try {
@@ -57,9 +91,9 @@ export function createAvatarImagesApi(options: {
 					const emoji = await options.reader.emoji(name, host === undefined || host === '.' ? null : host);
 					headers['Content-Security-Policy'] = csp;
 					if (emoji == null) {
-						return url.searchParams.has('fallback') ? empty(302, '/static-assets/emoji-unknown.png') : empty(404);
+						return query.has('fallback') ? empty(302, '/static-assets/emoji-unknown.png') : empty(404);
 					}
-					return empty(301, emojiImageUrl(emoji, options.mediaProxy, { badge: url.searchParams.has('badge'), static: url.searchParams.has('static') }));
+					return empty(301, emojiImageUrl(emoji, options.mediaProxy, { badge: query.has('badge'), static: query.has('static') }));
 				}
 				if (kind === 'avatar') {
 					const acct = parseAvatarAcct(value.slice(1), new URL(options.url).host);

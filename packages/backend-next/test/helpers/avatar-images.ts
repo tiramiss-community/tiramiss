@@ -23,7 +23,8 @@ export const imageObservations = JSON.parse(readFileSync(new URL('observations.j
 };
 export function imageRequest(origin: string, item: Pick<ImageCase, 'path' | 'method'>) {
 	return new Promise<{ status: number; headers: Record<string, string | string[] | undefined>; body: Buffer }>((resolve, reject) => {
-		const req = request(origin + item.path, { method: item.method }, async res => {
+		const endpoint = new URL(origin);
+		const req = request({ hostname: endpoint.hostname, port: endpoint.port, path: item.path, method: item.method }, async res => {
 			const chunks: Buffer[] = [];
 			for await (const chunk of res) {
 				chunks.push(chunk);

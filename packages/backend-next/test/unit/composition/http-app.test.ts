@@ -5,6 +5,7 @@
 import { Hono } from 'hono';
 import { expect, test, vi } from 'vitest';
 import { createBackendHttpApp } from '../../../src/composition/http-app.js';
+import { createRoleHttpApp } from '../../../src/composition/role-http.js';
 import { createBackendHttpApp as legacy } from '../../../src/composition/note-http.js';
 import { testConfig } from '../../helpers/database.js';
 import type { RuntimeResources } from '../../../src/composition/create-runtime.js';
@@ -190,5 +191,19 @@ test('ordinary composition exposes custom emoji fallback, unknown avatar and dis
 		expect(response.status).toBe(302);
 		expect(response.headers.get('location')).toBe(location);
 		expect(response.headers.get('cache-control')).toBe('public, max-age=86400');
+	}
+});
+
+test('image path dispatch preserves existing Role GET/HEAD/OPTIONS and unknown route responses', async () => {
+	const { resources } = fixture();
+	const config = testConfig();
+	const baseline = createRoleHttpApp(resources, config);
+	const app = createBackendHttpApp(resources, config);
+	for (const path of ['/api/admin/roles/show', '/unknown']) {
+		for (const method of ['GET', 'HEAD', 'OPTIONS']) {
+			const before = await baseline.request(path, { method });
+			const after = await app.request(path, { method });
+			expect({ status: after.status, headers: Object.fromEntries(after.headers), body: await after.text() }).toEqual({ status: before.status, headers: Object.fromEntries(before.headers), body: await before.text() });
+		}
 	}
 });

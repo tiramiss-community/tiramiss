@@ -64,14 +64,13 @@ instance.usersRepository = { async findOne({ where }) {
 const app = sourceRequire('fastify')();
 instance.register(app);
 await app.listen({ port: 0, host: '127.0.0.1' });
-const origin = `http://127.0.0.1:${app.server.address().port}`;
 const cases = [];
 try {
  for (const item of corpus.cases) {
   instance.config = { ...corpus.config, ...(item.mediaProxy ? { mediaProxy: item.mediaProxy } : {}) };
   instance.meta = { ...corpus.meta, ...item.meta };
   const response = await new Promise((resolve, reject) => {
-   const req = request(origin + item.path, { method: item.method }, async res => {
+   const req = request({ hostname: '127.0.0.1', port: app.server.address().port, path: item.path, method: item.method }, async res => {
     const chunks = [];
     for await (const chunk of res) chunks.push(chunk);
     resolve({ status: res.statusCode, headers: res.headers, body: Buffer.concat(chunks) });

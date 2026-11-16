@@ -838,6 +838,76 @@
       "id": "unicode-limit-seed-head",
       "path": "/identicon/%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5",
       "method": "HEAD"
+    },
+    {
+      "id": "raw-target-0-get",
+      "path": "/identicon/%2E",
+      "method": "GET"
+    },
+    {
+      "id": "raw-target-0-head",
+      "path": "/identicon/%2E",
+      "method": "HEAD"
+    },
+    {
+      "id": "raw-target-1-get",
+      "path": "/identicon/%2E%2E",
+      "method": "GET"
+    },
+    {
+      "id": "raw-target-1-head",
+      "path": "/identicon/%2E%2E",
+      "method": "HEAD"
+    },
+    {
+      "id": "raw-target-2-get",
+      "path": "/identicon/.",
+      "method": "GET"
+    },
+    {
+      "id": "raw-target-2-head",
+      "path": "/identicon/.",
+      "method": "HEAD"
+    },
+    {
+      "id": "raw-target-3-get",
+      "path": "/identicon/..",
+      "method": "GET"
+    },
+    {
+      "id": "raw-target-3-head",
+      "path": "/identicon/..",
+      "method": "HEAD"
+    },
+    {
+      "id": "raw-target-4-get",
+      "path": "/identicon/a\\b",
+      "method": "GET"
+    },
+    {
+      "id": "raw-target-4-head",
+      "path": "/identicon/a\\b",
+      "method": "HEAD"
+    },
+    {
+      "id": "raw-target-5-get",
+      "path": "/avatar/@Alice\\x",
+      "method": "GET"
+    },
+    {
+      "id": "raw-target-5-head",
+      "path": "/avatar/@Alice\\x",
+      "method": "HEAD"
+    },
+    {
+      "id": "raw-target-6-get",
+      "path": "/identicon/%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5",
+      "method": "GET"
+    },
+    {
+      "id": "raw-target-6-head",
+      "path": "/identicon/%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5%E6%97%A5",
+      "method": "HEAD"
     }
   ]
 }

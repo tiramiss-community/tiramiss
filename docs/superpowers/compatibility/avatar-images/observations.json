@@ -1,7 +1,7 @@
 {
   "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
   "observationKind": "literal pinned ServerService callbacks, UserEntityService.getIdenticonUrl, Acct.parse and genIdenticon; controlled repository/Meta doubles and injected generation failure, real listening Fastify/native canvas; not full upstream application or upstream PostgreSQL",
-  "corpusSha256": "93b3e7d7f238a51ddcce04012f448b25b91c22c3865774948cd0953d137060b8",
+  "corpusSha256": "52afc509662d7beeb5f31afe7a248b92f0c7c3405d5b7d713ffe7b177d029bb0",
   "nodeVersion": "v26.4.0",
   "fastifyVersion": "5.12.5",
   "canvasVersion": "1.0.10",
@@ -2035,6 +2035,199 @@
         "content-security-policy": null,
         "location": null,
         "content-length": "2189"
+      },
+      "body": ""
+    },
+    {
+      "id": "raw-target-0-get",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1911"
+      },
+      "bodySha256": "3fe1094bfbb0345cd93cee53f86438ee0d2ffe3dd6b319afa65b60c23b03a15c",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "raw-target-0-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1911"
+      },
+      "body": ""
+    },
+    {
+      "id": "raw-target-1-get",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1955"
+      },
+      "bodySha256": "3cfe906166f6f2160def63c0175f5a42d4ecde25c8fe9185f970257ff2ee7de1",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "raw-target-1-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1955"
+      },
+      "body": ""
+    },
+    {
+      "id": "raw-target-2-get",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1911"
+      },
+      "bodySha256": "3fe1094bfbb0345cd93cee53f86438ee0d2ffe3dd6b319afa65b60c23b03a15c",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "raw-target-2-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1911"
+      },
+      "body": ""
+    },
+    {
+      "id": "raw-target-3-get",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1955"
+      },
+      "bodySha256": "3cfe906166f6f2160def63c0175f5a42d4ecde25c8fe9185f970257ff2ee7de1",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "raw-target-3-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1955"
+      },
+      "body": ""
+    },
+    {
+      "id": "raw-target-4-get",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1849"
+      },
+      "bodySha256": "79d693138ab21f484c071bccc1d47700aa6ed34319daca0d290f55d1843430ad",
+      "metadata": {
+        "width": 128,
+        "height": 128,
+        "format": "png"
+      }
+    },
+    {
+      "id": "raw-target-4-head",
+      "status": 200,
+      "headers": {
+        "content-type": "image/png",
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "1849"
+      },
+      "body": ""
+    },
+    {
+      "id": "raw-target-5-get",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "raw-target-5-head",
+      "status": 302,
+      "headers": {
+        "content-type": null,
+        "cache-control": "public, max-age=86400",
+        "content-security-policy": null,
+        "location": "/static-assets/user-unknown.png",
+        "content-length": "0"
+      },
+      "body": ""
+    },
+    {
+      "id": "raw-target-6-get",
+      "status": 414,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "437"
+      },
+      "body": "{\"error\":\"Bad Request\",\"code\":\"FST_ERR_MAX_PARAM_LENGTH\",\"message\":\"'/identicon/日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日' is exceeding the max param length\",\"statusCode\":414}"
+    },
+    {
+      "id": "raw-target-6-head",
+      "status": 414,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": null,
+        "content-security-policy": null,
+        "location": null,
+        "content-length": "437"
       },
       "body": ""
     }

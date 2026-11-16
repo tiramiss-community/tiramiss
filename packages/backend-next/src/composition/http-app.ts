@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { Hono } from 'hono';
+import { getAvatarImagesPath } from '../http/avatar-images-api.js';
 import { createPublicEmojisHttp } from './public-emojis-http.js';
 import { createDriveFilesHttp } from './drive-files-http.js';
 import { createDriveFoldersHttp } from './drive-folders-http.js';
@@ -21,12 +23,12 @@ import { prepareNoteRoutes, registerNoteRoutes } from './note-routes.js';
 import { createRoleHttpApp } from './role-http.js';
 import type { RuntimeResources } from './create-runtime.js';
 import type { RuntimeConfig } from '../config/types.js';
-import type { Hono } from 'hono';
 
 export function createBackendHttpApp(resources: RuntimeResources, config: RuntimeConfig, queueApi?: Hono) {
 	const note = prepareNoteRoutes(resources, config);
 	const folders = createDriveFoldersHttp(resources, config);
-	const app = createRoleHttpApp(resources, config)
+	const app = new Hono({ getPath: getAvatarImagesPath })
+		.route('/', createRoleHttpApp(resources, config))
 		.route('/', createDriveFilesHttp(resources, config))
 		.route('/', createActorHttp(resources, config))
 		.route('/', createInstanceAdminHttp(resources))
