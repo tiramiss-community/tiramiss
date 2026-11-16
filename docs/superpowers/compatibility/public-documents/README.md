@@ -32,6 +32,8 @@ node --test scripts/public-documents-contract.test.mjs scripts/joint-drive-meta-
 
 `current-evidence.json` は実行ログの SHA-256 と、最後の freeze 時に採取した10入力の SHA-256 を結ぶ。入力採取は実行後であり、実行前後のハッシュ採取や commit 済み revision の測定とは主張しない。`measuredWorkingTree: true`、`inputCapture: at-final-freeze`、`upstreamFullServerMeasured: false` を明記する。build/typecheck、unit31件、integration19件、source51 HTTP と同期検査は全て成功した実ログを記録する。型検査で visitor 設定を本家と同じ union 型へ限定した修正は出力ロジックを変えない。
 
-`predecessor.json` は基点 `0927918fe987cae2fcbf2b69bdb58ee6c5ca734a` の composition2ファイルを保持する。新 reader は10現在入力と証跡の seal を検査してから、その2ファイルだけを基点の表示へ戻す。既存 `joint-drive-meta-evidence.mjs` の末端1か所へ接続し、古い receipt・ログ・seal は更新しない。同期 invocation の scope 以外へ検証結果をキャッシュしない。新契約テストは全10入力の変更、前像を現在値として渡すケース、後続呼出し・同一scopeでの変更、証跡とログの改変を拒否する。
+`predecessor.json` は基点 `0927918fe987cae2fcbf2b69bdb58ee6c5ca734a` の composition2ファイルを保持する。新 reader は独立した公開呼出しで10現在入力と証跡の seal を検査してから、その2ファイルだけを基点の表示へ戻す。既存 `joint-drive-meta-evidence.mjs` の末端1か所へ接続し、古い receipt・ログ・seal は更新しない。同期 invocation の scope 以外へ検証結果をキャッシュしない。同一の同期 scope 内で検証結果を再利用するときは、要求した path と JSON 証跡・利用可能なログの変更を検査する。要求していない TypeScript 入力は、次の独立した公開呼出しで再検査する。新契約テストは全10入力の変更、前像を現在値として渡すケース、後続呼出しでの変更、同一 scope で要求 path が変わるケース、証跡とログの改変を拒否する。
 
 CHANGELOG 候補: 新バックエンドで manifest・robots・OpenSearch の公開文書を利用可能にした。
+
+台帳の9契約行・6監査行の `evidenceRevision` は、実装・検証ファイルの存在を固定する checkpoint `53cbed00ee1117c7880589391c87f3b7c9c6fb14` を指す。これは実行後に作成した通常コミットであり、そのコミットを対象に実測したという意味ではない。HTTP3行の正本は `domains.json` の overrides、監査6行の正本は `audit-items.json` に置き、`contracts.json` と `contracts.md` は generator で生成する。

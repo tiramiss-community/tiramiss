@@ -3203,6 +3203,60 @@
       ],
       "note": "#572: No-argument/help, literal ping/pong and unknown-command stdout/stderr/exit verified through built entrypoint/package script. Config-only initialization opens no connections. Intentional help difference: advertise implemented help/ping, not unsupported reset-captcha. Fixed-source Nest initialization is doubled; full Nest/DB/Redis startup diagnostics are not measured. docs/superpowers/compatibility/cli/README.md",
       "evidenceRevision": "294a63ebec86c865f28b9b6cf1b6975a0c301705"
+    },
+    "http:packages/backend/src/server/web/ClientServerService.ts:380": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/public-documents/public.ts",
+        "packages/backend-next/src/http/public-documents-api.ts",
+        "packages/backend-next/src/composition/public-documents-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/public-documents.test.ts",
+        "packages/backend-next/test/integration/public-documents.test.ts",
+        "docs/superpowers/compatibility/public-documents/README.md",
+        "docs/superpowers/compatibility/public-documents/observations.json",
+        "scripts/public-documents-contract.test.mjs"
+      ],
+      "note": "#552: 固定本家8e07cf0のliteral method/route callbacksを実listening Fastify HTTPで17設定・51応答比較。新実装は通常composition＋実PostgreSQL/Redis/listening HTTPで同じ本文・status・Content-Type・cacheに一致（19 test）。full upstream serverではない。OpenSearchの特殊文字未escape、manifestの浅いoverrideと不正JSON500を維持。 SPA/SSR/静的asset配布、共通ヘッダ・HTTP登録順全体は#554/#563等に残る。",
+      "evidenceRevision": "53cbed00ee1117c7880589391c87f3b7c9c6fb14"
+    },
+    "http:packages/backend/src/server/web/ClientServerService.ts:389": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/public-documents/public.ts",
+        "packages/backend-next/src/http/public-documents-api.ts",
+        "packages/backend-next/src/composition/public-documents-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/public-documents.test.ts",
+        "packages/backend-next/test/integration/public-documents.test.ts",
+        "docs/superpowers/compatibility/public-documents/README.md",
+        "docs/superpowers/compatibility/public-documents/observations.json",
+        "scripts/public-documents-contract.test.mjs"
+      ],
+      "note": "#552: 固定本家8e07cf0のliteral method/route callbacksを実listening Fastify HTTPで17設定・51応答比較。新実装は通常composition＋実PostgreSQL/Redis/listening HTTPで同じ本文・status・Content-Type・cacheに一致（19 test）。full upstream serverではない。OpenSearchの特殊文字未escape、manifestの浅いoverrideと不正JSON500を維持。 SPA/SSR/静的asset配布、共通ヘッダ・HTTP登録順全体は#554/#563等に残る。",
+      "evidenceRevision": "53cbed00ee1117c7880589391c87f3b7c9c6fb14"
+    },
+    "http:packages/backend/src/server/web/ClientServerService.ts:421": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/public-documents/public.ts",
+        "packages/backend-next/src/http/public-documents-api.ts",
+        "packages/backend-next/src/composition/public-documents-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/public-documents.test.ts",
+        "packages/backend-next/test/integration/public-documents.test.ts",
+        "docs/superpowers/compatibility/public-documents/README.md",
+        "docs/superpowers/compatibility/public-documents/observations.json",
+        "scripts/public-documents-contract.test.mjs"
+      ],
+      "note": "#552: 固定本家8e07cf0のliteral method/route callbacksを実listening Fastify HTTPで17設定・51応答比較。新実装は通常composition＋実PostgreSQL/Redis/listening HTTPで同じ本文・status・Content-Type・cacheに一致（19 test）。full upstream serverではない。OpenSearchの特殊文字未escape、manifestの浅いoverrideと不正JSON500を維持。 SPA/SSR/静的asset配布、共通ヘッダ・HTTP登録順全体は#554/#563等に残る。",
+      "evidenceRevision": "53cbed00ee1117c7880589391c87f3b7c9c6fb14"
     }
   }
 }
