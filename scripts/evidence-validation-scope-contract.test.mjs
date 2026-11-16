@@ -84,9 +84,10 @@ test('work queued during a synchronous scope starts a fresh scope', async () => 
 test('the complete image validation stays within a bounded number of live reads', () => {
  let reads = 0;
  const raw = path => {
-  // #555 adds four successor JSON inputs whose live reads propagate through
-  // the historical observers; the measured complete view uses 21,439 reads.
-  assert(++reads <= 24000, 'image validation exceeded the live read budget');
+  // #556's sealed JSON and shared-input freshness add 8,054 necessary reads:
+  // 29,493 measured, versus #555's 21,439; retain approximately 12% headroom.
+  // See compatibility/avatar-images/README.md for the finite measured breakdown.
+  assert(++reads <= 33000, `image validation exceeded the live read budget (${reads})`);
   return readFileSync(new URL(path, root));
  };
  const beforeAlias = path => readPreAliasKey(path, undefined, raw);
