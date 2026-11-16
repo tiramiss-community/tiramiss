@@ -1,0 +1,78 @@
+{
+  "scope": "actor-emoji-cache-optional-reader-identity-followup",
+  "baseRevision": "8bf7783848e8c5935b8fb4cda21130b1ecdc976d",
+  "measuredAt": "2026-11-16T04:53:37.565749+00:00",
+  "changedInput": {
+    "path": "scripts/actor-emoji-cache-evidence.test.mjs",
+    "previousSha256": "c7c23889bb02b0ed69f6cdc3665b91cbd3fd41b0fed10af3175db8cc1a30a123",
+    "sha256": "6a4c3ded7b67ef3ac6a938c6d4721ac9dd6688eed7cd0cbd70d3fa051e8d1bc4"
+  },
+  "priorReviewRecordsRetainedAsHistory": [
+    {
+      "path": "docs/superpowers/compatibility/actor-emoji-cache/review-checks.json",
+      "sha256": "748ca814add421131b99cd97137ac6b5620d3a7837cd82afb84686e0787dddae",
+      "historicalTestSha256": "121f8b50c675f84fcca47b5c8d002aea73d7ff66dde0078e10e0b44d9d1b1eba"
+    },
+    {
+      "path": "docs/superpowers/compatibility/actor-emoji-cache/batch-review-checks.json",
+      "sha256": "261d015671b0e57ecd9f24c862ed6d60627739f92fc53a8407a851b9ce21e609",
+      "historicalTestSha256": "c7c23889bb02b0ed69f6cdc3665b91cbd3fd41b0fed10af3175db8cc1a30a123"
+    }
+  ],
+  "runtimeChanged": false,
+  "newHistoricalProjection": false,
+  "memoGuardObservation": {
+    "sharedOptionalIdentity": true,
+    "memoGuardMessage": "measured current input drift: packages/backend-next/src/composition/actor-http.ts",
+    "frame": "at file:///home/osamu/develop/tiramiss/.claude/worktrees/emoji-cache-303/scripts/evidence-validation-scope.mjs:32:12"
+  },
+  "runs": [
+    {
+      "name": "optional-identity-focused",
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "actor validation preserves fresh calls",
+        "scripts/actor-emoji-cache-evidence.test.mjs"
+      ],
+      "startedAt": "2026-11-16T04:53:07.237470+00:00",
+      "finishedAt": "2026-11-16T04:53:07.313018+00:00",
+      "durationSeconds": 0.076,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/optional-identity-focused.log",
+      "logSha256": "213a3c505710b4cf22c27be3067c5ac74872398ba8132ba52ce08eb59fc17719"
+    },
+    {
+      "name": "optional-identity-leaf",
+      "command": [
+        "node",
+        "--test",
+        "scripts/actor-emoji-cache-evidence.test.mjs"
+      ],
+      "startedAt": "2026-11-16T04:53:07.332335+00:00",
+      "finishedAt": "2026-11-16T04:53:07.472959+00:00",
+      "durationSeconds": 0.141,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/optional-identity-leaf.log",
+      "logSha256": "1a2b49a27df13f6a49462b76316a85c50ef0af13a2ae4e25c24a2ad34ac27733"
+    },
+    {
+      "name": "optional-identity-shipping",
+      "command": [
+        "node",
+        "scripts/check-shipping.mjs",
+        "--base",
+        "HEAD"
+      ],
+      "startedAt": "2026-11-16T04:53:37.590729+00:00",
+      "finishedAt": "2026-11-16T04:53:37.725664+00:00",
+      "durationSeconds": 0.135,
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-303-logs/optional-identity-shipping.log",
+      "logSha256": "ee30a0c2d054149eb75501909d57c17a66eec6e83700e046db8394a3a9d66fb0"
+    }
+  ],
+  "ciMeasured": false,
+  "broadSuitesRerun": false
+}

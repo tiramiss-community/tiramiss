@@ -32,15 +32,16 @@ test('actor cache rejects a historical view as current, receipt corruption and f
 test('actor validation preserves fresh calls, same-scope requested drift and independent reader identities', () => {
  const requested = actorEmojiCacheFiles[0]; let changed;
  const dynamic = path => path === changed ? Buffer.concat([read(path), Buffer.from('\n')]) : read(path);
+ const optional = () => null;
  inEvidenceValidationScope(() => {
-  readForActorEmojiCacheEvidence(requested, dynamic, () => null); changed = requested;
-  assert.throws(() => readForActorEmojiCacheEvidence(requested, dynamic, () => null), /measured current input drift/);
-  assert(Buffer.isBuffer(readForActorEmojiCacheEvidence(requested, read, () => null)));
+  readForActorEmojiCacheEvidence(requested, dynamic, optional); changed = requested;
+  assert.throws(() => readForActorEmojiCacheEvidence(requested, dynamic, optional), /measured current input drift/);
+  assert(Buffer.isBuffer(readForActorEmojiCacheEvidence(requested, read, optional)));
  });
- assert.throws(() => readForActorEmojiCacheEvidence(requested, dynamic, () => null), /measured current input drift/);
+ assert.throws(() => readForActorEmojiCacheEvidence(requested, dynamic, optional), /measured current input drift/);
  changed = undefined;
- const mutable = readForActorEmojiCacheEvidence(requested, dynamic, () => null); mutable[0] = 0;
- assert.notEqual(readForActorEmojiCacheEvidence(requested, dynamic, () => null)[0], 0);
+ const mutable = readForActorEmojiCacheEvidence(requested, dynamic, optional); mutable[0] = 0;
+ assert.notEqual(readForActorEmojiCacheEvidence(requested, dynamic, optional)[0], 0);
 });
 
 
