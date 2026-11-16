@@ -87,6 +87,21 @@ pause/resumeは制御完了を待つ。clear/promote/retry/removeと監査は本
 
 現在の業務queueは `deliver` / `endedPollNotification` / `userWebhookDeliver` の3つ。成功7日/30件・失敗7日/100件を各jobに指定し、同じqueue・同じ終端状態への次の遷移時に清掃する。静かな履歴の7日後の消去は保証しない。Queue/Workerの保持fallbackはなく、無設定jobも後続jobの共有終端集合の清掃対象にはなり得る。終端限定clearは未完了jobを残すが、明示`*`/非終端clearは破棄操作である。全10名の管理handleは残る7業務producer/Workerの完成を意味しない。通知本体の保持は#177、保守/定期jobは#199/#200などの各担当へ残る。
 
+## 接続事前確認（#577）
+
+ビルド後、通常と同じ設定で `pnpm --filter backend-next check:connect` を実行する。
+DB と `redis`・`redisForPubsub`・`redisForJobQueue`・`redisForTimelines`・`redisForReactions` を確認する。
+用途別設定の省略時は base Redis を再利用し、同じ設定オブジェクトへの接続は一度だけ行う。
+明示した別設定は同じ host/port でも個別に確認する。jobQueue 専用 Redis も対象であり、HTTP healthz の ready とは別の検査である。
+
+全検査と接続解放を待ち、全成功なら exit 0、接続・解放・設定読取の失敗なら exit 1。
+接続期限は `backendNext.startupTimeoutMs` を使い、再接続しない。
+結果は `ready` と固定用途名の `checks: [{ target, ready }]` を JSON で出力する。
+設定読取失敗だけは固定文を stderr へ出力し、例外本文・接続先・資格情報を表示しない。
+migration・schema 同期・業務処理・HTTP/worker 起動・Meilisearch 検査は実行しない。
+成功はその時点の接続確認であり、migration の適用状況や通常サーバーの ready を保証しない。
+[固定本家比較と実依存検証](../../docs/superpowers/compatibility/connect-check/README.md)を参照する。
+
 ## 停止下のqueue引継ぎ確認（#165）
 
 ビルド後、旧新すべてのHTTP・worker・scheduler・scanner・補助producerを完全停止し、復元した隔離先を向く設定で実行する。

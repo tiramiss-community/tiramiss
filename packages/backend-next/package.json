@@ -15,6 +15,7 @@
 		"test:process": "vitest run --config vitest.process.config.ts",
 		"cli": "node built/entrypoints/cli.js",
 		"migrate": "node built/entrypoints/migrate.js",
+		"check:connect": "node built/entrypoints/check-connect.js",
 		"check-migrations": "node built/entrypoints/check-migrations.js",
 		"check-schema": "node built/entrypoints/check-schema.js",
 		"check-queue-handoff": "node built/entrypoints/check-queue-handoff.js",

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { createPreConnectCheckPackageReader } from './connect-check-package-evidence.mjs';
 import { createHash } from 'node:crypto';
 const path = 'docs/superpowers/compatibility/video-ingest/dependency-predecessor.json';
 const seal = 'fe0b6132b2f0d30af98f499791c71847cdf9cc0a67d89a2631b6c751c96d9d29';
@@ -13,6 +14,7 @@ let parsed;
 // Only #281's dependency additions are restored. Every call checks live bytes;
 // no product receipt or unrelated source is replaced by this finite projection.
 export function createPreVideoIngestDependencyReader(readFile) {
+	readFile = createPreConnectCheckPackageReader(readFile);
 	return input => {
 		const bytes = readFile(input);
 		if (!affected.includes(input)) {
