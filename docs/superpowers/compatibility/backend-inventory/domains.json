@@ -3634,7 +3634,8 @@
         "packages/backend-next/src/platform/database/announcements.ts",
         "packages/backend-next/src/http/announcements-api.ts",
         "packages/backend-next/src/composition/announcements-http.ts",
-        "packages/backend-next/src/composition/http-app.ts"
+        "packages/backend-next/src/composition/http-app.ts",
+        "packages/backend-next/src/platform/announcement-publisher.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/announcements.test.ts",
@@ -3642,10 +3643,15 @@
         "docs/superpowers/compatibility/announcements/source-probe.mjs",
         "docs/superpowers/compatibility/announcements/observations.json",
         "docs/superpowers/compatibility/announcements/README.md",
-        "docs/superpowers/compatibility/announcements/current-evidence.json"
+        "docs/superpowers/compatibility/announcements/current-evidence.json",
+        "docs/superpowers/compatibility/announcements/publish-source-probe.mjs",
+        "docs/superpowers/compatibility/announcements/publish-observations.json",
+        "docs/superpowers/compatibility/announcements/publish-followup-evidence.json",
+        "docs/superpowers/compatibility/announcements/observation-boundary-evidence.json",
+        "docs/superpowers/compatibility/announcements/shared-proof-followup-evidence.json"
       ],
-      "note": "#337: fixed literal source methods on migrated PostgreSQL (28 cases/63 steps) match canonical listening HTTP, PostgreSQL state and actual Redis messages. Audience/private visibility, existing-user unread condition, pagination, viewer read state, duplicate/no-such/non-target reads, individual deactivation, pack failure exclusion and readAllAnnouncements are covered. Admin mutations/archive scheduling #449 and parent #193/#114 remain unfinished. Full upstream HTTP/auth serializer/Redis failure behavior not measured.",
-      "evidenceRevision": "18ee6ef8e3b3c1248fa01b55056ab52dfc715c02"
+      "note": "#337: fixed literal source methods on migrated PostgreSQL (28 cases/63 steps) match canonical listening HTTP, PostgreSQL state and actual Redis messages. Audience/private visibility, existing-user unread condition, pagination, viewer read state, duplicate/no-such/non-target reads, individual deactivation, pack failure exclusion and readAllAnnouncements are covered. Admin mutations/archive scheduling #449 and parent #193/#114 remain unfinished. Full upstream HTTP/auth serializer not measured. Publication followup preserves HTTP204 and saved read/deactivation on actual Redis PUBLISH rejection, duplicate no-op and accepted-send HTTP shutdown drain; original receipt is immutable.",
+      "evidenceRevision": "d4d119e0b1611f5e7b27c78dd233823d7af75b05"
     },
     "api:announcements/show": {
       "status": "verified",
@@ -3654,7 +3660,8 @@
         "packages/backend-next/src/platform/database/announcements.ts",
         "packages/backend-next/src/http/announcements-api.ts",
         "packages/backend-next/src/composition/announcements-http.ts",
-        "packages/backend-next/src/composition/http-app.ts"
+        "packages/backend-next/src/composition/http-app.ts",
+        "packages/backend-next/src/platform/announcement-publisher.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/announcements.test.ts",
@@ -3662,10 +3669,15 @@
         "docs/superpowers/compatibility/announcements/source-probe.mjs",
         "docs/superpowers/compatibility/announcements/observations.json",
         "docs/superpowers/compatibility/announcements/README.md",
-        "docs/superpowers/compatibility/announcements/current-evidence.json"
+        "docs/superpowers/compatibility/announcements/current-evidence.json",
+        "docs/superpowers/compatibility/announcements/publish-source-probe.mjs",
+        "docs/superpowers/compatibility/announcements/publish-observations.json",
+        "docs/superpowers/compatibility/announcements/publish-followup-evidence.json",
+        "docs/superpowers/compatibility/announcements/observation-boundary-evidence.json",
+        "docs/superpowers/compatibility/announcements/shared-proof-followup-evidence.json"
       ],
-      "note": "#337: fixed literal source methods on migrated PostgreSQL (28 cases/63 steps) match canonical listening HTTP, PostgreSQL state and actual Redis messages. Audience/private visibility, existing-user unread condition, pagination, viewer read state, duplicate/no-such/non-target reads, individual deactivation, pack failure exclusion and readAllAnnouncements are covered. Admin mutations/archive scheduling #449 and parent #193/#114 remain unfinished. Full upstream HTTP/auth serializer/Redis failure behavior not measured.",
-      "evidenceRevision": "18ee6ef8e3b3c1248fa01b55056ab52dfc715c02"
+      "note": "#337: fixed literal source methods on migrated PostgreSQL (28 cases/63 steps) match canonical listening HTTP, PostgreSQL state and actual Redis messages. Audience/private visibility, existing-user unread condition, pagination, viewer read state, duplicate/no-such/non-target reads, individual deactivation, pack failure exclusion and readAllAnnouncements are covered. Admin mutations/archive scheduling #449 and parent #193/#114 remain unfinished. Full upstream HTTP/auth serializer not measured. Publication followup preserves HTTP204 and saved read/deactivation on actual Redis PUBLISH rejection, duplicate no-op and accepted-send HTTP shutdown drain; original receipt is immutable.",
+      "evidenceRevision": "d4d119e0b1611f5e7b27c78dd233823d7af75b05"
     },
     "api:i/read-announcement": {
       "status": "verified",
@@ -3674,7 +3686,8 @@
         "packages/backend-next/src/platform/database/announcements.ts",
         "packages/backend-next/src/http/announcements-api.ts",
         "packages/backend-next/src/composition/announcements-http.ts",
-        "packages/backend-next/src/composition/http-app.ts"
+        "packages/backend-next/src/composition/http-app.ts",
+        "packages/backend-next/src/platform/announcement-publisher.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/announcements.test.ts",
@@ -3682,10 +3695,15 @@
         "docs/superpowers/compatibility/announcements/source-probe.mjs",
         "docs/superpowers/compatibility/announcements/observations.json",
         "docs/superpowers/compatibility/announcements/README.md",
-        "docs/superpowers/compatibility/announcements/current-evidence.json"
+        "docs/superpowers/compatibility/announcements/current-evidence.json",
+        "docs/superpowers/compatibility/announcements/publish-source-probe.mjs",
+        "docs/superpowers/compatibility/announcements/publish-observations.json",
+        "docs/superpowers/compatibility/announcements/publish-followup-evidence.json",
+        "docs/superpowers/compatibility/announcements/observation-boundary-evidence.json",
+        "docs/superpowers/compatibility/announcements/shared-proof-followup-evidence.json"
       ],
-      "note": "#337: fixed literal source methods on migrated PostgreSQL (28 cases/63 steps) match canonical listening HTTP, PostgreSQL state and actual Redis messages. Audience/private visibility, existing-user unread condition, pagination, viewer read state, duplicate/no-such/non-target reads, individual deactivation, pack failure exclusion and readAllAnnouncements are covered. Admin mutations/archive scheduling #449 and parent #193/#114 remain unfinished. Full upstream HTTP/auth serializer/Redis failure behavior not measured.",
-      "evidenceRevision": "18ee6ef8e3b3c1248fa01b55056ab52dfc715c02"
+      "note": "#337: fixed literal source methods on migrated PostgreSQL (28 cases/63 steps) match canonical listening HTTP, PostgreSQL state and actual Redis messages. Audience/private visibility, existing-user unread condition, pagination, viewer read state, duplicate/no-such/non-target reads, individual deactivation, pack failure exclusion and readAllAnnouncements are covered. Admin mutations/archive scheduling #449 and parent #193/#114 remain unfinished. Full upstream HTTP/auth serializer not measured. Publication followup preserves HTTP204 and saved read/deactivation on actual Redis PUBLISH rejection, duplicate no-op and accepted-send HTTP shutdown drain; original receipt is immutable.",
+      "evidenceRevision": "d4d119e0b1611f5e7b27c78dd233823d7af75b05"
     }
   }
 }
