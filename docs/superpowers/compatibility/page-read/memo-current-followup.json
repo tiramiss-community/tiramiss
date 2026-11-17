@@ -1,0 +1,189 @@
+{
+  "scope": "page-read-293-memo-current-web-followup",
+  "baseRevision": "53173fde468efe72c46658ce93f3c20997f3b304",
+  "nodeVersion": "v26.4.0",
+  "startedAt": "2026-11-17T05:14:23.794346+00:00",
+  "productLogicChanged": false,
+  "runtimeRemeasured": false,
+  "priorRuntimeReceipt": "docs/superpowers/compatibility/page-read/verification.json",
+  "priorRuntimeReceiptSha256": "7c832065818befd73f5b18a3c8e06de0ee622878eccab41bfabca023c3ddfaae",
+  "preservedReceiptSha256": {
+    "docs/superpowers/compatibility/notes-pagination/current-evidence.json": "a1cc05dfaa86eab26c661a39717fa5a49f0f68b6d75ccdd3f38a8f26aa5a0368",
+    "docs/superpowers/compatibility/notes-pagination/predecessor.json": "3ecbc05f908b71d8e5750e70d8f3384fa7866ebaaeffda421d1bf3433c545e3a",
+    "docs/superpowers/compatibility/notes-pagination/r1-current-evidence.json": "ffc91999009233ae9da8b05c589ca08854dc249f6e7d8647eff5acc1ea84312a",
+    "docs/superpowers/compatibility/notes-pagination/r1-predecessor.json": "51074136dcd387e79ce49cb38079d7363a240caf03c50d6da237e6e6de838808",
+    "docs/superpowers/compatibility/notes-pagination/r2-current-evidence.json": "7f0c730a8ef247ff244f5994150ece5c61671492734537b8805f134d86937aee",
+    "docs/superpowers/compatibility/page-read/verification-r1.json": "a7f7156767ecc450b989ae8dcb963b0efde5a04192ed2849c35bdba6fbec4325",
+    "docs/superpowers/compatibility/page-read/verification-r2.json": "fa43214f915fa0073275a13274c4cde3bd3cdfa53271450dcc28c04adafdc723",
+    "docs/superpowers/compatibility/page-read/verification-r3.json": "a4c7bc6785ea4743fca169f4038372d03a813f67d4138a21967d4fb361f5637c",
+    "docs/superpowers/compatibility/page-read/verification.json": "7c832065818befd73f5b18a3c8e06de0ee622878eccab41bfabca023c3ddfaae",
+    "docs/superpowers/compatibility/user-memo/corpus.json": "362bfd1b7d8ab5a492882765a97904ee374d01a4a715ec6ae4de40f4d6a017b4",
+    "docs/superpowers/compatibility/user-memo/current-evidence.json": "c2fcc0482512a19660e43989497fd547ba0c1ccc0db8073a83a6f5d8b1bc0957",
+    "docs/superpowers/compatibility/user-memo/observations.json": "46b63893ae1c043385dd60a1fb295f63e5886426b26cde6d884088f56c63101a"
+  },
+  "unchangedRuntimeInputs": {
+    "packages/backend-next/src/composition/http-app.ts": "2e8d012d59c1c0ca2920eefccc7a542ab73de8a15dc82a211d3ab0a49beabe26",
+    "packages/backend-next/src/composition/pages-http.ts": "274b05fa6eaeaa77630fcc35476ee26affa89d11db11e8ea94373e7aa1096a53",
+    "packages/backend-next/src/http/api-endpoint.ts": "262172fbd09ef769607b079e59f862c2f386098b5720a4835df26514b2b73bc2",
+    "packages/backend-next/src/http/pages-api.ts": "b65755f4f7e66e69a42bd4c74f44f825f5fac6a5ce97a77312cd7bd3e2a0cd7d",
+    "packages/backend-next/src/modules/drive/file-view.ts": "284b275992c39d61f83bc265a8f006d259894484df8839e1b84e207fde25bfbb",
+    "packages/backend-next/src/modules/page/public.ts": "4bdf6610233bc71e605b82db953c26180f82ed662ca8d8272afe56158b162dca",
+    "packages/backend-next/src/modules/page/read.ts": "3caaab1325c173b263d737f19c37eb85e4e5a554841e6613398990a6342f7a8e",
+    "packages/backend-next/src/platform/database/authenticate.ts": "64b83c005791625008c53f493b024d5973ecc904e36642b4fa9543217f1c08cd",
+    "packages/backend-next/src/platform/database/data-source.ts": "ffced6c8a1f3994cae8424ae4aae594aefdb52846461caadecad03cc9e1c8f90",
+    "packages/backend-next/src/platform/database/drive-files.ts": "7c5c54a77ae04fcf15f633f7ecc0eb6c8f662dd11cba09f614abfe19f592f03a",
+    "packages/backend-next/src/platform/database/note-authors.ts": "7137f07fbd9eb92b6fbbfabd2343ee79d28adf72d051ecc393c525d74211f668",
+    "packages/backend-next/src/platform/database/pages.ts": "56379e8ec9763c5762b9744ec38aa8250585ea8105a17eeb995573c2f8e066c7",
+    "packages/backend-next/test/integration/page-read.test.ts": "0955f81f39bdf657b5b953e30ae92188bdb3b93939d81a449da701b25cf6e3c7",
+    "packages/backend-next/test/package-imports.test.ts": "ec087b0dfa5203ab1652b23f798978a759d077a8b0155deeb23b02df001819db",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "f6e205b59d56cd23cd835ec57e80f0fafbedc708a75284cd0af5f1c8bddb4e8f",
+    "packages/backend-next/test/unit/page/read.test.ts": "fba322296179034feb010a5464a45c3d46b08df63847a76665b13b1906537c2c",
+    "packages/backend-next/test/unit/page/source.test.ts": "3cd4356d948b6ac672b5bd8e29cc72965a1e410950242e670c8a7511d3ebfa2b",
+    "packages/backend-upstream/.managed-files.json": "1dbc03fe89be48dbb79fd54f30b91490a82a50225da516e40c28cdc67dce565e",
+    "packages/backend-upstream/exports/entities.ts": "3f189c5ebff793a377034680a6a7d1694f56ee24c185c91ab84fc8769cc2188d",
+    "packages/backend-upstream/src/models/PageLike.ts": "9c4528c3d34266f8c17682f61240e48bb3b795337093d17ab1fd9dcdb6982d87",
+    "packages/backend-upstream/upstream-sync.json": "9f9398d372fba9e781f71f9782fae16d63268f8488956f8d788bd618240dd484"
+  },
+  "inputsBefore": {
+    "scripts/notes-pagination-evidence.mjs": "8acaf3a24dba0da3b58e5f00db44b9e0fe6b1077b88468459d799aded86e9c69",
+    "scripts/page-relation-contract.test.mjs": "8070262975ae0febf7d530cec83cfc26e88c6b32bfd54ec7d5576f708f9d67d7",
+    "scripts/page-read-contract.test.mjs": "29c4208060497f2ee9ebe7aed6b99c6f9807c7d4d776fee1714993a33d01ec96",
+    "scripts/user-memo-contract.test.mjs": "6fee0a3f3abd79f80a288abda4b71adeea23f25e55126e31740446051358aa53",
+    "scripts/poll-recommendation-contract.test.mjs": "381ec2896f493f8092f5d1e9cad3640f4444e3b46da5c101ba21148e94795030",
+    "scripts/notes-pagination-contract.test.mjs": "466b4447c4c6997410b24cfa8ba9f2111b281d30ed3b69f99e81b20c972e348e",
+    "scripts/package-imports-contract.test.mjs": "941d084a835b915ace8e45eef009123aa0035ee53221de6f66026f0967faef0a",
+    "scripts/package-imports-evidence.mjs": "c2d2e61512ed543fa45bf3be1f0fa14ff56b6d58ecfc90b84e740546b69250e1",
+    "packages/backend-next/src/composition/http-app.ts": "2e8d012d59c1c0ca2920eefccc7a542ab73de8a15dc82a211d3ab0a49beabe26",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "f6e205b59d56cd23cd835ec57e80f0fafbedc708a75284cd0af5f1c8bddb4e8f",
+    "docs/superpowers/compatibility/page-read/README.md": "78a10938b4155ea4e6b812a2334f8075f5f9e9e5f22de7314f7bfcafc42243bb"
+  },
+  "historicalMemoInput": {
+    "revision": "80f91dac6eb110a441e4d19d03fc3b6160fe536c",
+    "path": "packages/backend-next/test/unit/composition/http-app.test.ts",
+    "sha256": "43aab6cd144b8d0937fca5bec41322d2bed0125c1f94118e7bebb4437d901bda",
+    "restoredSha256": "a2f030dbfecfa3644a09d1d1aca81a8693ffec7dbad1bc3ceac9894fb46be5eb"
+  },
+  "regressionRed": {
+    "helperSha256": "7d1aa313c796746aa32c6cacef84bf8bdeb30a60123151fe573bc0a5adb5391d",
+    "candidateTestSha256": "8070262975ae0febf7d530cec83cfc26e88c6b32bfd54ec7d5576f708f9d67d7",
+    "failed": 1,
+    "passed": 0,
+    "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/web-memo-test-red.log",
+    "logSha256": "71d6baa8e579a5cef66a870f03bb17b78b3be461212b6d7493c78a103bc2ccb7"
+  },
+  "runs": [
+    {
+      "name": "contracts",
+      "command": [
+        "node",
+        "--test",
+        "scripts/page-relation-contract.test.mjs",
+        "scripts/page-read-contract.test.mjs",
+        "scripts/user-memo-contract.test.mjs",
+        "scripts/poll-recommendation-contract.test.mjs",
+        "scripts/notes-pagination-contract.test.mjs",
+        "scripts/package-imports-contract.test.mjs"
+      ],
+      "startedAt": "2026-11-17T05:14:23.794421+00:00",
+      "completedAt": "2026-11-17T05:14:23.920105+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/memo-followup-contracts.log",
+      "logSha256": "096e68c87d888827da89317fb1cb89f2e4fac4c782076fa918f3a96a3f86255d"
+    },
+    {
+      "name": "shipping",
+      "command": [
+        "node",
+        "scripts/check-shipping.mjs",
+        "--base",
+        "11bd324e2827"
+      ],
+      "startedAt": "2026-11-17T05:14:23.941699+00:00",
+      "completedAt": "2026-11-17T05:14:26.426425+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/memo-followup-shipping.log",
+      "logSha256": "1e25f06b332286055ecc936c88728726bad161adcc91b619063c4aee1e4d65d6"
+    },
+    {
+      "name": "diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "startedAt": "2026-11-17T05:14:26.426528+00:00",
+      "completedAt": "2026-11-17T05:14:26.430688+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/memo-followup-diff-check.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "historical-git-blob",
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "import assert from 'node:assert/strict';\nimport {execFileSync} from 'node:child_process';\nimport {createHash} from 'node:crypto';\nimport {projectPageReadInput,projectUserMemoInput} from './scripts/notes-pagination-evidence.mjs';\nconst path='packages/backend-next/test/unit/composition/http-app.test.ts';\nconst actual=execFileSync('git',['show','80f91dac6:'+path]);\nconst hash=bytes=>createHash('sha256').update(bytes).digest('hex');\nassert.equal(hash(actual),'43aab6cd144b8d0937fca5bec41322d2bed0125c1f94118e7bebb4437d901bda');\nassert.equal(projectPageReadInput(path,actual),actual);\nassert.equal(hash(projectUserMemoInput(path,actual)),'a2f030dbfecfa3644a09d1d1aca81a8693ffec7dbad1bc3ceac9894fb46be5eb');\nfor(const drift of [Buffer.concat([actual,Buffer.from('\\n')]),Buffer.from(actual.toString().replace('users/update-memo','users/changed-memo'))]) {\n assert.throws(()=>projectPageReadInput(path,drift),/measured current input drift/);\n assert.throws(()=>projectUserMemoInput(path,drift),/measured current input drift/);\n}\nconsole.log('historical Git blob 43aab6 -> a2f030 and unknown drift rejection PASS');\n"
+      ],
+      "startedAt": "2026-11-17T05:15:21.312011+00:00",
+      "completedAt": "2026-11-17T05:15:21.343968+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/memo-followup-historical-git-blob.log",
+      "logSha256": "9fbbbc799b3aad8e37dfc3a394899ef453b19b3dd52db1dd91911c0693021cf6"
+    }
+  ],
+  "inputsAfter": {
+    "scripts/notes-pagination-evidence.mjs": "8acaf3a24dba0da3b58e5f00db44b9e0fe6b1077b88468459d799aded86e9c69",
+    "scripts/page-relation-contract.test.mjs": "8070262975ae0febf7d530cec83cfc26e88c6b32bfd54ec7d5576f708f9d67d7",
+    "scripts/page-read-contract.test.mjs": "29c4208060497f2ee9ebe7aed6b99c6f9807c7d4d776fee1714993a33d01ec96",
+    "scripts/user-memo-contract.test.mjs": "6fee0a3f3abd79f80a288abda4b71adeea23f25e55126e31740446051358aa53",
+    "scripts/poll-recommendation-contract.test.mjs": "381ec2896f493f8092f5d1e9cad3640f4444e3b46da5c101ba21148e94795030",
+    "scripts/notes-pagination-contract.test.mjs": "466b4447c4c6997410b24cfa8ba9f2111b281d30ed3b69f99e81b20c972e348e",
+    "scripts/package-imports-contract.test.mjs": "941d084a835b915ace8e45eef009123aa0035ee53221de6f66026f0967faef0a",
+    "scripts/package-imports-evidence.mjs": "c2d2e61512ed543fa45bf3be1f0fa14ff56b6d58ecfc90b84e740546b69250e1",
+    "packages/backend-next/src/composition/http-app.ts": "2e8d012d59c1c0ca2920eefccc7a542ab73de8a15dc82a211d3ab0a49beabe26",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "f6e205b59d56cd23cd835ec57e80f0fafbedc708a75284cd0af5f1c8bddb4e8f",
+    "docs/superpowers/compatibility/page-read/README.md": "78a10938b4155ea4e6b812a2334f8075f5f9e9e5f22de7314f7bfcafc42243bb"
+  },
+  "preservedReceiptsAfter": {
+    "docs/superpowers/compatibility/notes-pagination/current-evidence.json": "a1cc05dfaa86eab26c661a39717fa5a49f0f68b6d75ccdd3f38a8f26aa5a0368",
+    "docs/superpowers/compatibility/notes-pagination/predecessor.json": "3ecbc05f908b71d8e5750e70d8f3384fa7866ebaaeffda421d1bf3433c545e3a",
+    "docs/superpowers/compatibility/notes-pagination/r1-current-evidence.json": "ffc91999009233ae9da8b05c589ca08854dc249f6e7d8647eff5acc1ea84312a",
+    "docs/superpowers/compatibility/notes-pagination/r1-predecessor.json": "51074136dcd387e79ce49cb38079d7363a240caf03c50d6da237e6e6de838808",
+    "docs/superpowers/compatibility/notes-pagination/r2-current-evidence.json": "7f0c730a8ef247ff244f5994150ece5c61671492734537b8805f134d86937aee",
+    "docs/superpowers/compatibility/page-read/verification-r1.json": "a7f7156767ecc450b989ae8dcb963b0efde5a04192ed2849c35bdba6fbec4325",
+    "docs/superpowers/compatibility/page-read/verification-r2.json": "fa43214f915fa0073275a13274c4cde3bd3cdfa53271450dcc28c04adafdc723",
+    "docs/superpowers/compatibility/page-read/verification-r3.json": "a4c7bc6785ea4743fca169f4038372d03a813f67d4138a21967d4fb361f5637c",
+    "docs/superpowers/compatibility/page-read/verification.json": "7c832065818befd73f5b18a3c8e06de0ee622878eccab41bfabca023c3ddfaae",
+    "docs/superpowers/compatibility/user-memo/corpus.json": "362bfd1b7d8ab5a492882765a97904ee374d01a4a715ec6ae4de40f4d6a017b4",
+    "docs/superpowers/compatibility/user-memo/current-evidence.json": "c2fcc0482512a19660e43989497fd547ba0c1ccc0db8073a83a6f5d8b1bc0957",
+    "docs/superpowers/compatibility/user-memo/observations.json": "46b63893ae1c043385dd60a1fb295f63e5886426b26cde6d884088f56c63101a"
+  },
+  "unchangedRuntimeInputsAfter": {
+    "packages/backend-next/src/composition/http-app.ts": "2e8d012d59c1c0ca2920eefccc7a542ab73de8a15dc82a211d3ab0a49beabe26",
+    "packages/backend-next/src/composition/pages-http.ts": "274b05fa6eaeaa77630fcc35476ee26affa89d11db11e8ea94373e7aa1096a53",
+    "packages/backend-next/src/http/api-endpoint.ts": "262172fbd09ef769607b079e59f862c2f386098b5720a4835df26514b2b73bc2",
+    "packages/backend-next/src/http/pages-api.ts": "b65755f4f7e66e69a42bd4c74f44f825f5fac6a5ce97a77312cd7bd3e2a0cd7d",
+    "packages/backend-next/src/modules/drive/file-view.ts": "284b275992c39d61f83bc265a8f006d259894484df8839e1b84e207fde25bfbb",
+    "packages/backend-next/src/modules/page/public.ts": "4bdf6610233bc71e605b82db953c26180f82ed662ca8d8272afe56158b162dca",
+    "packages/backend-next/src/modules/page/read.ts": "3caaab1325c173b263d737f19c37eb85e4e5a554841e6613398990a6342f7a8e",
+    "packages/backend-next/src/platform/database/authenticate.ts": "64b83c005791625008c53f493b024d5973ecc904e36642b4fa9543217f1c08cd",
+    "packages/backend-next/src/platform/database/data-source.ts": "ffced6c8a1f3994cae8424ae4aae594aefdb52846461caadecad03cc9e1c8f90",
+    "packages/backend-next/src/platform/database/drive-files.ts": "7c5c54a77ae04fcf15f633f7ecc0eb6c8f662dd11cba09f614abfe19f592f03a",
+    "packages/backend-next/src/platform/database/note-authors.ts": "7137f07fbd9eb92b6fbbfabd2343ee79d28adf72d051ecc393c525d74211f668",
+    "packages/backend-next/src/platform/database/pages.ts": "56379e8ec9763c5762b9744ec38aa8250585ea8105a17eeb995573c2f8e066c7",
+    "packages/backend-next/test/integration/page-read.test.ts": "0955f81f39bdf657b5b953e30ae92188bdb3b93939d81a449da701b25cf6e3c7",
+    "packages/backend-next/test/package-imports.test.ts": "ec087b0dfa5203ab1652b23f798978a759d077a8b0155deeb23b02df001819db",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "f6e205b59d56cd23cd835ec57e80f0fafbedc708a75284cd0af5f1c8bddb4e8f",
+    "packages/backend-next/test/unit/page/read.test.ts": "fba322296179034feb010a5464a45c3d46b08df63847a76665b13b1906537c2c",
+    "packages/backend-next/test/unit/page/source.test.ts": "3cd4356d948b6ac672b5bd8e29cc72965a1e410950242e670c8a7511d3ebfa2b",
+    "packages/backend-upstream/.managed-files.json": "1dbc03fe89be48dbb79fd54f30b91490a82a50225da516e40c28cdc67dce565e",
+    "packages/backend-upstream/exports/entities.ts": "3f189c5ebff793a377034680a6a7d1694f56ee24c185c91ab84fc8769cc2188d",
+    "packages/backend-upstream/src/models/PageLike.ts": "9c4528c3d34266f8c17682f61240e48bb3b795337093d17ab1fd9dcdb6982d87",
+    "packages/backend-upstream/upstream-sync.json": "9f9398d372fba9e781f71f9782fae16d63268f8488956f8d788bd618240dd484"
+  },
+  "noInputDrift": true,
+  "priorReceiptsUnchanged": true,
+  "runtimeInputsUnchanged": true,
+  "completedAt": "2026-11-17T05:15:21.344055+00:00"
+}

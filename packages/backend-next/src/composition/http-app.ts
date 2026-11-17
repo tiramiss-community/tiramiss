@@ -7,6 +7,7 @@ import { getAvatarImagesPath } from '../http/avatar-images-api.js';
 import { createPublicEmojisHttp } from './public-emojis-http.js';
 import { createUserRelationHttp } from './user-relation-http.js';
 import { createUserMemoHttp } from './user-memo-http.js';
+import { createPagesHttp } from './pages-http.js';
 import { createDriveFilesHttp } from './drive-files-http.js';
 import { createDriveFoldersHttp } from './drive-folders-http.js';
 import { registerHttpAppWork } from './http-app-work.js';
@@ -29,11 +30,13 @@ import type { RuntimeConfig } from '../config/types.js';
 export function createBackendHttpApp(resources: RuntimeResources, config: RuntimeConfig, queueApi?: Hono) {
 	const note = prepareNoteRoutes(resources, config);
 	const folders = createDriveFoldersHttp(resources, config);
+	const pages = createPagesHttp(resources, config);
 	const app = new Hono({ getPath: getAvatarImagesPath })
 		.route('/', createRoleHttpApp(resources, config))
 		.route('/', createUserMemoHttp(resources, config))
 		.route('/', createUserRelationHttp(resources))
 		.route('/', createDriveFilesHttp(resources, config))
+		.route('/', pages.app)
 		.route('/', createActorHttp(resources, config))
 		.route('/', createInstanceAdminHttp(resources))
 		.route('/', createUrlPreviewHttp(resources))
@@ -47,7 +50,9 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		.route('/', createEmojiImagesHttp())
 		.route('/', createAvatarImagesHttp(resources, config))
 		.route('/', folders.app);
-	registerHttpAppWork(app, folders.idle);
+	registerHttpAppWork(app, async () => {
+		await Promise.all([folders.idle(), pages.idle()]);
+	});
 	registerNoteRoutes(app, resources, note);
 	if (queueApi) {
 		app.route('/', queueApi);

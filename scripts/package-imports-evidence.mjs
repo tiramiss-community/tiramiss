@@ -131,6 +131,7 @@ const userMemoEntityProjection = {
   }
 };
 export function projectUserMemoEntityInput(path, actual, driftLabel = 'package import measured input') {
+ actual = projectPageLikeEntityInput(path, actual, driftLabel);
  const binding = Object.hasOwn(userMemoEntityProjection, path) ? userMemoEntityProjection[path] : undefined;
  if (!binding) return actual;
  if (sha(actual) === binding.previousSha256) return actual;
@@ -142,5 +143,87 @@ export function projectUserMemoEntityInput(path, actual, driftLabel = 'package i
   before = Buffer.concat([before.subarray(0, patch.offset), Buffer.from(patch.previous), before.subarray(patch.offset + insert.length)]);
  }
  assert.equal(sha(before), binding.previousSha256, 'user memo Entity exact predecessor identity');
+ return before;
+}
+
+// #293 adds PageLike and verifies its registered metadata. Restore precisely
+// these measured bytes before applying the earlier UserMemo transition.
+const pageLikeEntityProjection = {
+  "packages/backend-upstream/.managed-files.json": {
+    "currentSha256": "1dbc03fe89be48dbb79fd54f30b91490a82a50225da516e40c28cdc67dce565e",
+    "previousSha256": "48bbbdcd10e4b90e03622a94ecb9539819963cecb7acaffa6ef9d24979c41410",
+    "patches": [
+      {
+        "offset": 17423,
+        "insert": "ageLike.ts\",\n\t\"src/models/P",
+        "previous": ""
+      }
+    ]
+  },
+  "packages/backend-upstream/exports/entities.ts": {
+    "currentSha256": "3f189c5ebff793a377034680a6a7d1694f56ee24c185c91ab84fc8769cc2188d",
+    "previousSha256": "05ff04e21dee5f38a108332c5c1e9bbdee734e8e8b8169f363674a39050e9146",
+    "patches": [
+      {
+        "offset": 2399,
+        "insert": "import { MiPageLike } from '../src/models/PageLike.js';\n",
+        "previous": ""
+      },
+      {
+        "offset": 2986,
+        "insert": ", MiPageLike",
+        "previous": ""
+      },
+      {
+        "offset": 3549,
+        "insert": ", MiPageLike",
+        "previous": ""
+      }
+    ]
+  },
+  "packages/backend-upstream/upstream-sync.json": {
+    "currentSha256": "9f9398d372fba9e781f71f9782fae16d63268f8488956f8d788bd618240dd484",
+    "previousSha256": "2249ddafc88912805a900366e8ee19cebf5f4f584ac28a932c2ab26a44282661",
+    "patches": [
+      {
+        "offset": 1260,
+        "insert": ",\n\t\t\"src/models/PageLike.ts\"",
+        "previous": ""
+      }
+    ]
+  },
+  "packages/backend-next/test/package-imports.test.ts": {
+    "currentSha256": "ec087b0dfa5203ab1652b23f798978a759d077a8b0155deeb23b02df001819db",
+    "previousSha256": "6d892d5b6f571cf93fea57c80c5346a9f63fd15b6e8c018b7c60b44886367b2f",
+    "patches": [
+      {
+        "offset": 327,
+        "insert": ", MiPageLike",
+        "previous": ""
+      },
+      {
+        "offset": 3683,
+        "insert": "const pageLike = source.getMetadata(MiPageLike);\n\texpect(pageLike.tableName).toBe('page_like');\n\texpect(pageLike.indices.some(index => index.isUnique && index.columns.map(column => column.propertyName).join(',') === 'userId,pageId')).toBe(true);\n\tfor (const [property, table] of [['user', 'user'], ['page', 'page']] as const) {\n\t\tconst relation = pageLike.relations.find(value => value.propertyName === property);\n\t\texpect(relation?.inverseEntityMetadata.tableName).toBe(table);\n\t\texpect(relation?.onDelete).toBe('CASCADE');\n\t}\n\t",
+        "previous": ""
+      },
+      {
+        "offset": 4256,
+        "insert": "40",
+        "previous": "39"
+      }
+    ]
+  }
+};
+export function projectPageLikeEntityInput(path, actual, driftLabel = 'package import measured input') {
+ const binding = Object.hasOwn(pageLikeEntityProjection, path) ? pageLikeEntityProjection[path] : undefined;
+ if (!binding || [binding.previousSha256, userMemoEntityProjection[path]?.previousSha256].includes(sha(actual))) return actual;
+ assert.equal(sha(actual), binding.currentSha256, `${driftLabel} (PageLike): ${path}`);
+ let before = Buffer.from(actual);
+ for (const patch of [...binding.patches].reverse()) {
+  const insert = Buffer.from(patch.insert);
+  assert.deepEqual(before.subarray(patch.offset, patch.offset + insert.length), insert, 'PageLike exact predecessor anchor');
+  before = Buffer.concat([before.subarray(0, patch.offset), Buffer.from(patch.previous), before.subarray(patch.offset + insert.length)]);
+ }
+ assert.equal(sha(before), binding.previousSha256, 'PageLike exact predecessor identity');
  return before;
 }

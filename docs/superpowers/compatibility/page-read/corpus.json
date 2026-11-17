@@ -1,0 +1,422 @@
+{
+  "doubles": [
+    "Full pinned PageEntityService/pages-show/DriveFileEntityService/IdService modules and their imported pure helpers are transpiled and required from pinned Git objects; no method-body extraction.",
+    "Nest decorators and Endpoint lifecycle are inert adapters; endpoint handler and schema remain source code.",
+    "Repository doubles apply fixed PostgreSQL null/undefined WHERE-ignore semantics, exact remaining filters, explicit missing/failure states and asynchronous content update; real PostgreSQL and normal HTTP tested separately.",
+    "UserEntityService.pack double emits only id/username, records default UserLite option and viewer; real UserLite fields are asserted in HTTP tests.",
+    "DriveFolder/Utility/Video services are unused for these image fixtures; ID generation randomness uses zeroes for module initialization; generation is outside these cases."
+  ],
+  "users": [
+    {
+      "id": "alice",
+      "username": "alice",
+      "usernameLower": "alice",
+      "host": null
+    },
+    {
+      "id": "bob",
+      "username": "bob",
+      "usernameLower": "bob",
+      "host": null
+    },
+    {
+      "id": "remote",
+      "username": "remote",
+      "usernameLower": "remote",
+      "host": "remote.test"
+    }
+  ],
+  "files": [
+    {
+      "id": "at3hjq76file0001",
+      "userId": "alice",
+      "userHost": null,
+      "folderId": null,
+      "name": "test.png",
+      "type": "image/png",
+      "md5": "00000000000000000000000000000000",
+      "size": 10,
+      "isSensitive": false,
+      "blurhash": null,
+      "properties": {
+        "width": 10,
+        "height": 20,
+        "orientation": 6,
+        "avgColor": "aabbcc"
+      },
+      "url": "https://storage/original",
+      "webpublicUrl": "https://storage/public",
+      "thumbnailUrl": null,
+      "uri": null,
+      "isLink": false,
+      "webpublicAccessKey": "web0",
+      "comment": null,
+      "maybePorn": false,
+      "maybeSensitive": false,
+      "src": null,
+      "thumbnailAccessKey": "thumb0",
+      "accessKey": "original0",
+      "webpublicType": "image/webp",
+      "storedInternal": true,
+      "requestIp": "192.0.2.1",
+      "requestHeaders": {
+        "host": "upload.test"
+      }
+    },
+    {
+      "id": "at3hjq76file0002",
+      "userId": "bob",
+      "userHost": null,
+      "folderId": null,
+      "name": "test.png",
+      "type": "image/png",
+      "md5": "00000000000000000000000000000000",
+      "size": 10,
+      "isSensitive": false,
+      "blurhash": null,
+      "properties": {
+        "width": 10,
+        "height": 20,
+        "orientation": 6,
+        "avgColor": "aabbcc"
+      },
+      "url": "https://storage/foreign",
+      "webpublicUrl": null,
+      "thumbnailUrl": null,
+      "uri": null,
+      "isLink": false,
+      "webpublicAccessKey": "web1",
+      "comment": null,
+      "maybePorn": false,
+      "maybeSensitive": false,
+      "src": null,
+      "thumbnailAccessKey": "thumb1",
+      "accessKey": "original1",
+      "webpublicType": "image/webp",
+      "storedInternal": true,
+      "requestIp": "192.0.2.1",
+      "requestHeaders": {
+        "host": "upload.test"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "id": "at3hjq76page0001",
+      "userId": "alice",
+      "updatedAt": "2026-11-01T00:00:00.000Z",
+      "title": "Page",
+      "name": "case-sensitive",
+      "summary": null,
+      "hideTitleWhenPinned": true,
+      "alignCenter": false,
+      "font": "sans-serif",
+      "script": "test script",
+      "eyeCatchingImageId": "at3hjq76file0002",
+      "likedCount": 2,
+      "visibility": "specified",
+      "visibleUserIds": [],
+      "variables": [
+        {
+          "name": "variable",
+          "type": "number",
+          "value": 1
+        }
+      ],
+      "content": [
+        {
+          "type": "section",
+          "children": [
+            {
+              "type": "image",
+              "fileId": "at3hjq76file0001"
+            },
+            {
+              "type": "image",
+              "fileId": "at3hjq76file0002"
+            },
+            {
+              "type": "image",
+              "fileId": "missing"
+            },
+            {
+              "type": "section",
+              "children": [
+                {
+                  "type": "image",
+                  "fileId": "at3hjq76file0001"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at3hjq76page0002",
+      "userId": "alice",
+      "updatedAt": "2026-11-01T00:00:00.000Z",
+      "title": "Page",
+      "name": "legacy",
+      "summary": null,
+      "hideTitleWhenPinned": true,
+      "alignCenter": false,
+      "font": "sans-serif",
+      "script": "test script",
+      "eyeCatchingImageId": null,
+      "likedCount": 2,
+      "visibility": "specified",
+      "visibleUserIds": [],
+      "variables": [
+        {
+          "name": "variable",
+          "type": "number",
+          "value": 1
+        }
+      ],
+      "content": [
+        {
+          "type": "section",
+          "children": [
+            {
+              "type": "input",
+              "inputType": "text",
+              "default": "abc"
+            },
+            {
+              "type": "input",
+              "inputType": "number",
+              "default": "12px"
+            },
+            {
+              "type": "input",
+              "inputType": "number",
+              "default": ""
+            },
+            {
+              "type": "input",
+              "inputType": "number",
+              "default": "bad"
+            },
+            {
+              "type": "input",
+              "inputType": "unsupported"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at3hjq76page0003",
+      "userId": "alice",
+      "updatedAt": "2026-11-01T00:00:00.000Z",
+      "title": "Page",
+      "name": "nullish3",
+      "summary": null,
+      "hideTitleWhenPinned": true,
+      "alignCenter": false,
+      "font": "sans-serif",
+      "script": "test script",
+      "eyeCatchingImageId": null,
+      "likedCount": 2,
+      "visibility": "specified",
+      "visibleUserIds": [],
+      "variables": [
+        {
+          "name": "variable",
+          "type": "number",
+          "value": 1
+        }
+      ],
+      "content": [
+        {
+          "type": "image"
+        }
+      ]
+    },
+    {
+      "id": "at3hjq76page0004",
+      "userId": "alice",
+      "updatedAt": "2026-11-01T00:00:00.000Z",
+      "title": "Page",
+      "name": "nullish4",
+      "summary": null,
+      "hideTitleWhenPinned": true,
+      "alignCenter": false,
+      "font": "sans-serif",
+      "script": "test script",
+      "eyeCatchingImageId": null,
+      "likedCount": 2,
+      "visibility": "specified",
+      "visibleUserIds": [],
+      "variables": [
+        {
+          "name": "variable",
+          "type": "number",
+          "value": 1
+        }
+      ],
+      "content": [
+        {
+          "type": "image",
+          "fileId": null
+        }
+      ]
+    },
+    {
+      "id": "at3hjq76page0005",
+      "userId": "alice",
+      "updatedAt": "2026-11-01T00:00:00.000Z",
+      "title": "Page",
+      "name": "stringchildren",
+      "summary": null,
+      "hideTitleWhenPinned": true,
+      "alignCenter": false,
+      "font": "sans-serif",
+      "script": "test script",
+      "eyeCatchingImageId": null,
+      "likedCount": 2,
+      "visibility": "specified",
+      "visibleUserIds": [],
+      "variables": [
+        {
+          "name": "variable",
+          "type": "number",
+          "value": 1
+        }
+      ],
+      "content": [
+        {
+          "type": "section",
+          "children": "abc"
+        }
+      ]
+    }
+  ],
+  "likes": [
+    {
+      "pageId": "at3hjq76page0001",
+      "userId": "bob"
+    }
+  ],
+  "cases": [
+    {
+      "id": "guest-id",
+      "input": {
+        "pageId": "at3hjq76page0001"
+      }
+    },
+    {
+      "id": "liked-viewer",
+      "actor": "bob",
+      "input": {
+        "pageId": "at3hjq76page0001"
+      }
+    },
+    {
+      "id": "unliked-owner",
+      "actor": "alice",
+      "input": {
+        "pageId": "at3hjq76page0001"
+      }
+    },
+    {
+      "id": "local-name-uppercase",
+      "input": {
+        "name": "case-sensitive",
+        "username": "ALICE"
+      }
+    },
+    {
+      "id": "missing-page",
+      "input": {
+        "pageId": "missing"
+      }
+    },
+    {
+      "id": "missing-name",
+      "input": {
+        "name": "CASE-sensitive",
+        "username": "alice"
+      }
+    },
+    {
+      "id": "remote-name",
+      "input": {
+        "name": "case-sensitive",
+        "username": "remote"
+      }
+    },
+    {
+      "id": "invalid-empty",
+      "input": {}
+    },
+    {
+      "id": "invalid-id",
+      "input": {
+        "pageId": "bad-id"
+      }
+    },
+    {
+      "id": "id-precedes-name",
+      "input": {
+        "pageId": "at3hjq76page0001",
+        "name": "none",
+        "username": "none"
+      }
+    },
+    {
+      "id": "legacy-write",
+      "input": {
+        "pageId": "at3hjq76page0002"
+      }
+    },
+    {
+      "id": "legacy-write-failure",
+      "input": {
+        "pageId": "at3hjq76page0002"
+      },
+      "failWrite": true
+    },
+    {
+      "id": "missing-eye-after-migration",
+      "input": {
+        "pageId": "at3hjq76page0002"
+      },
+      "missingEye": true
+    },
+    {
+      "id": "page-read-failure",
+      "input": {
+        "pageId": "at3hjq76page0001"
+      },
+      "failRead": true
+    },
+    {
+      "id": "image-id-missing",
+      "input": {
+        "pageId": "at3hjq76page0003"
+      }
+    },
+    {
+      "id": "image-id-null",
+      "input": {
+        "pageId": "at3hjq76page0004"
+      }
+    },
+    {
+      "id": "null-id-precedes-name",
+      "input": {
+        "pageId": null,
+        "name": "missing",
+        "username": "alice"
+      }
+    },
+    {
+      "id": "string-children",
+      "input": {
+        "pageId": "at3hjq76page0005"
+      }
+    }
+  ]
+}

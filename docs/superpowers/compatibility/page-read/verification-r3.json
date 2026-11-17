@@ -1,0 +1,214 @@
+{
+  "scope": "page-read-293",
+  "baseRevision": "11bd324e28279d57fa77f0a2da71a066067ab225",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "nodeVersion": "v26.4.0",
+  "startedAt": "2026-11-17T04:37:33.927312+00:00",
+  "measuredWorkingTree": true,
+  "upstreamFullServerMeasured": false,
+  "inputs": {
+    "docs/superpowers/compatibility/page-read/README.md": "fff7c3f9730471adc874c1d1c78a5649ad17e969058c1dbfcda2266c75a617a6",
+    "docs/superpowers/compatibility/page-read/corpus.json": "d5970574a3fff83b3872b5d4c7128a62bd34f8cc983b5f4b93d252595bea8401",
+    "docs/superpowers/compatibility/page-read/observations.json": "49f32c54c246a0eab01da2102773c82f285972675ca453e8417599f8de748338",
+    "docs/superpowers/compatibility/page-read/source-probe.mjs": "0928efa235c71745a077110e1c569c20799d0b188594a009cbce2bc4c8309ff0",
+    "packages/backend-next/src/composition/http-app.ts": "2e8d012d59c1c0ca2920eefccc7a542ab73de8a15dc82a211d3ab0a49beabe26",
+    "packages/backend-next/src/composition/pages-http.ts": "274b05fa6eaeaa77630fcc35476ee26affa89d11db11e8ea94373e7aa1096a53",
+    "packages/backend-next/src/http/pages-api.ts": "b65755f4f7e66e69a42bd4c74f44f825f5fac6a5ce97a77312cd7bd3e2a0cd7d",
+    "packages/backend-next/src/modules/page/public.ts": "4bdf6610233bc71e605b82db953c26180f82ed662ca8d8272afe56158b162dca",
+    "packages/backend-next/src/modules/page/read.ts": "52e5a4aa22bc2b0826abb7e452646a83652bef1f8f82423f6036d52e1a493c0d",
+    "packages/backend-next/src/platform/database/pages.ts": "3129837da7acca81ce0b1ad2e3496d9a7e4e397dc370584de87bafbd63843aeb",
+    "packages/backend-next/test/integration/page-read.test.ts": "ab289f73dd418bfd262d8562b94a13d054d739d1fdfefe44bfe2d0b0da2fe489",
+    "packages/backend-next/test/package-imports.test.ts": "ec087b0dfa5203ab1652b23f798978a759d077a8b0155deeb23b02df001819db",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "f6e205b59d56cd23cd835ec57e80f0fafbedc708a75284cd0af5f1c8bddb4e8f",
+    "packages/backend-next/test/unit/page/read.test.ts": "82eb34f647c05b0aa50847610ee0683963560cfa135cc198884c49d911825388",
+    "packages/backend-next/test/unit/page/source.test.ts": "8c755f3e72cb71ef4011fe88c20112701535c8956b8ae443181eeab48a1a0691",
+    "packages/backend-upstream/.managed-files.json": "1dbc03fe89be48dbb79fd54f30b91490a82a50225da516e40c28cdc67dce565e",
+    "packages/backend-upstream/exports/entities.ts": "3f189c5ebff793a377034680a6a7d1694f56ee24c185c91ab84fc8769cc2188d",
+    "packages/backend-upstream/src/models/PageLike.ts": "9c4528c3d34266f8c17682f61240e48bb3b795337093d17ab1fd9dcdb6982d87",
+    "packages/backend-upstream/upstream-sync.json": "9f9398d372fba9e781f71f9782fae16d63268f8488956f8d788bd618240dd484",
+    "scripts/notes-pagination-evidence.mjs": "184c489bb568d9d9077b944a548a783e28c11bb67518ce2e0bea29632c774760",
+    "scripts/package-imports-evidence.mjs": "c2d2e61512ed543fa45bf3be1f0fa14ff56b6d58ecfc90b84e740546b69250e1",
+    "scripts/page-read-contract.test.mjs": "be4dbf31fdba29307daff6770fced1896899da0afb068d8d6760b125bed89e90",
+    "scripts/user-memo-contract.test.mjs": "2ac5972ea3395d21d4e0b436e7f1daba1293807c033b9cb5462a555cdecd871b"
+  },
+  "runs": [
+    {
+      "name": "sync-check",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-upstream",
+        "sync:check"
+      ],
+      "environment": {
+        "BACKEND_NEXT_TEST_DB_PORT": "55931",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56931",
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "UPSTREAM_ROOT": "/home/osamu/develop/misskey"
+      },
+      "startedAt": "2026-11-17T04:37:33.927341+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/sync-check-r3.log",
+      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd"
+    },
+    {
+      "name": "sync-tests",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-upstream",
+        "test"
+      ],
+      "environment": {
+        "BACKEND_NEXT_TEST_DB_PORT": "55931",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56931",
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "UPSTREAM_ROOT": "/home/osamu/develop/misskey"
+      },
+      "startedAt": "2026-11-17T04:37:34.817342+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/sync-tests-r3.log",
+      "logSha256": "5be57e800f53780230023a4c7ba7da1811dad02346615b46e465b8545c916f4b"
+    },
+    {
+      "name": "build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "build"
+      ],
+      "environment": {
+        "BACKEND_NEXT_TEST_DB_PORT": "55931",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56931",
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "UPSTREAM_ROOT": "/home/osamu/develop/misskey"
+      },
+      "startedAt": "2026-11-17T04:37:35.127661+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/build-r3.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "typecheck"
+      ],
+      "environment": {
+        "BACKEND_NEXT_TEST_DB_PORT": "55931",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56931",
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "UPSTREAM_ROOT": "/home/osamu/develop/misskey"
+      },
+      "startedAt": "2026-11-17T04:37:35.865207+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/typecheck-r3.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "name": "unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test"
+      ],
+      "environment": {
+        "BACKEND_NEXT_TEST_DB_PORT": "55931",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56931",
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "UPSTREAM_ROOT": "/home/osamu/develop/misskey"
+      },
+      "startedAt": "2026-11-17T04:37:37.047105+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/unit-r3.log",
+      "logSha256": "29aad028884568f1f6c2846eac876baa61a7f4950cd949362d7eb1f546c42d3a"
+    },
+    {
+      "name": "integration",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/page-read.test.ts"
+      ],
+      "environment": {
+        "BACKEND_NEXT_TEST_DB_PORT": "55931",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56931",
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "UPSTREAM_ROOT": "/home/osamu/develop/misskey"
+      },
+      "startedAt": "2026-11-17T04:38:20.189556+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/integration-r3.log",
+      "logSha256": "051c92e26781ba9104db70e147d3906604b3dfcd429240e1c8646d5e3e455d06"
+    },
+    {
+      "name": "source",
+      "command": [
+        "node",
+        "docs/superpowers/compatibility/page-read/source-probe.mjs",
+        "--check"
+      ],
+      "environment": {
+        "BACKEND_NEXT_TEST_DB_PORT": "55931",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56931",
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "UPSTREAM_ROOT": "/home/osamu/develop/misskey"
+      },
+      "startedAt": "2026-11-17T04:38:23.990953+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/source-r3.log",
+      "logSha256": "a7c47d10eb8a77aa3d854b0afe900c1f3208e2f62c696fed39bdb97ccfbadeda"
+    },
+    {
+      "name": "contracts",
+      "command": [
+        "bash",
+        "-c",
+        "node --test scripts/*-contract*.test.mjs"
+      ],
+      "environment": {
+        "BACKEND_NEXT_TEST_DB_PORT": "55931",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56931",
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "UPSTREAM_ROOT": "/home/osamu/develop/misskey"
+      },
+      "startedAt": "2026-11-17T04:38:24.462781+00:00",
+      "exitCode": 1,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/contracts-r3.log",
+      "logSha256": "93118bd0c1fb170b60049cdb33906381662f51238f2cf486dfcd68dc32413a0c"
+    }
+  ],
+  "inputsAfter": {
+    "docs/superpowers/compatibility/page-read/README.md": "fff7c3f9730471adc874c1d1c78a5649ad17e969058c1dbfcda2266c75a617a6",
+    "docs/superpowers/compatibility/page-read/corpus.json": "d5970574a3fff83b3872b5d4c7128a62bd34f8cc983b5f4b93d252595bea8401",
+    "docs/superpowers/compatibility/page-read/observations.json": "49f32c54c246a0eab01da2102773c82f285972675ca453e8417599f8de748338",
+    "docs/superpowers/compatibility/page-read/source-probe.mjs": "0928efa235c71745a077110e1c569c20799d0b188594a009cbce2bc4c8309ff0",
+    "packages/backend-next/src/composition/http-app.ts": "2e8d012d59c1c0ca2920eefccc7a542ab73de8a15dc82a211d3ab0a49beabe26",
+    "packages/backend-next/src/composition/pages-http.ts": "274b05fa6eaeaa77630fcc35476ee26affa89d11db11e8ea94373e7aa1096a53",
+    "packages/backend-next/src/http/pages-api.ts": "b65755f4f7e66e69a42bd4c74f44f825f5fac6a5ce97a77312cd7bd3e2a0cd7d",
+    "packages/backend-next/src/modules/page/public.ts": "4bdf6610233bc71e605b82db953c26180f82ed662ca8d8272afe56158b162dca",
+    "packages/backend-next/src/modules/page/read.ts": "52e5a4aa22bc2b0826abb7e452646a83652bef1f8f82423f6036d52e1a493c0d",
+    "packages/backend-next/src/platform/database/pages.ts": "3129837da7acca81ce0b1ad2e3496d9a7e4e397dc370584de87bafbd63843aeb",
+    "packages/backend-next/test/integration/page-read.test.ts": "ab289f73dd418bfd262d8562b94a13d054d739d1fdfefe44bfe2d0b0da2fe489",
+    "packages/backend-next/test/package-imports.test.ts": "ec087b0dfa5203ab1652b23f798978a759d077a8b0155deeb23b02df001819db",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "f6e205b59d56cd23cd835ec57e80f0fafbedc708a75284cd0af5f1c8bddb4e8f",
+    "packages/backend-next/test/unit/page/read.test.ts": "82eb34f647c05b0aa50847610ee0683963560cfa135cc198884c49d911825388",
+    "packages/backend-next/test/unit/page/source.test.ts": "8c755f3e72cb71ef4011fe88c20112701535c8956b8ae443181eeab48a1a0691",
+    "packages/backend-upstream/.managed-files.json": "1dbc03fe89be48dbb79fd54f30b91490a82a50225da516e40c28cdc67dce565e",
+    "packages/backend-upstream/exports/entities.ts": "3f189c5ebff793a377034680a6a7d1694f56ee24c185c91ab84fc8769cc2188d",
+    "packages/backend-upstream/src/models/PageLike.ts": "9c4528c3d34266f8c17682f61240e48bb3b795337093d17ab1fd9dcdb6982d87",
+    "packages/backend-upstream/upstream-sync.json": "9f9398d372fba9e781f71f9782fae16d63268f8488956f8d788bd618240dd484",
+    "scripts/notes-pagination-evidence.mjs": "184c489bb568d9d9077b944a548a783e28c11bb67518ce2e0bea29632c774760",
+    "scripts/package-imports-evidence.mjs": "c2d2e61512ed543fa45bf3be1f0fa14ff56b6d58ecfc90b84e740546b69250e1",
+    "scripts/page-read-contract.test.mjs": "be4dbf31fdba29307daff6770fced1896899da0afb068d8d6760b125bed89e90",
+    "scripts/user-memo-contract.test.mjs": "2ac5972ea3395d21d4e0b436e7f1daba1293807c033b9cb5462a555cdecd871b"
+  },
+  "noInputDrift": true,
+  "finishedAt": "2026-11-17T04:41:03.301473+00:00"
+}

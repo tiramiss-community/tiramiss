@@ -372,6 +372,7 @@
 	"src/models/NoteReaction.ts",
 	"src/models/NoteThreadMuting.ts",
 	"src/models/Page.ts",
+	"src/models/PageLike.ts",
 	"src/models/Poll.ts",
 	"src/models/PollVote.ts",
 	"src/models/Relay.ts",

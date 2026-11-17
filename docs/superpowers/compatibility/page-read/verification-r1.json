@@ -1,0 +1,148 @@
+{
+  "scope": "page-read-293",
+  "baseRevision": "11bd324e28279d57fa77f0a2da71a066067ab225",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "nodeVersion": "v26.4.0",
+  "startedAt": "2026-11-17T04:32:41.294212+00:00",
+  "measuredWorkingTree": true,
+  "upstreamFullServerMeasured": false,
+  "inputs": {
+    "docs/superpowers/compatibility/page-read/corpus.json": "d5970574a3fff83b3872b5d4c7128a62bd34f8cc983b5f4b93d252595bea8401",
+    "docs/superpowers/compatibility/page-read/observations.json": "49f32c54c246a0eab01da2102773c82f285972675ca453e8417599f8de748338",
+    "docs/superpowers/compatibility/page-read/source-probe.mjs": "0928efa235c71745a077110e1c569c20799d0b188594a009cbce2bc4c8309ff0",
+    "packages/backend-next/src/composition/http-app.ts": "2e8d012d59c1c0ca2920eefccc7a542ab73de8a15dc82a211d3ab0a49beabe26",
+    "packages/backend-next/src/composition/pages-http.ts": "274b05fa6eaeaa77630fcc35476ee26affa89d11db11e8ea94373e7aa1096a53",
+    "packages/backend-next/src/http/pages-api.ts": "b65755f4f7e66e69a42bd4c74f44f825f5fac6a5ce97a77312cd7bd3e2a0cd7d",
+    "packages/backend-next/src/modules/page/public.ts": "4bdf6610233bc71e605b82db953c26180f82ed662ca8d8272afe56158b162dca",
+    "packages/backend-next/src/modules/page/read.ts": "52e5a4aa22bc2b0826abb7e452646a83652bef1f8f82423f6036d52e1a493c0d",
+    "packages/backend-next/src/platform/database/pages.ts": "3129837da7acca81ce0b1ad2e3496d9a7e4e397dc370584de87bafbd63843aeb",
+    "packages/backend-next/test/integration/page-read.test.ts": "ab289f73dd418bfd262d8562b94a13d054d739d1fdfefe44bfe2d0b0da2fe489",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "f6e205b59d56cd23cd835ec57e80f0fafbedc708a75284cd0af5f1c8bddb4e8f",
+    "packages/backend-next/test/unit/page/read.test.ts": "82eb34f647c05b0aa50847610ee0683963560cfa135cc198884c49d911825388",
+    "packages/backend-next/test/unit/page/source.test.ts": "8c755f3e72cb71ef4011fe88c20112701535c8956b8ae443181eeab48a1a0691",
+    "packages/backend-upstream/.managed-files.json": "1dbc03fe89be48dbb79fd54f30b91490a82a50225da516e40c28cdc67dce565e",
+    "packages/backend-upstream/exports/entities.ts": "3f189c5ebff793a377034680a6a7d1694f56ee24c185c91ab84fc8769cc2188d",
+    "packages/backend-upstream/src/models/PageLike.ts": "9c4528c3d34266f8c17682f61240e48bb3b795337093d17ab1fd9dcdb6982d87",
+    "packages/backend-upstream/upstream-sync.json": "9f9398d372fba9e781f71f9782fae16d63268f8488956f8d788bd618240dd484",
+    "scripts/notes-pagination-evidence.mjs": "2097933d2e7dcfb30e57f0eb11aa539db6757fa1629c4edda96e148113a66727"
+  },
+  "runs": [
+    {
+      "name": "sync-check",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-upstream",
+        "sync:check"
+      ],
+      "environment": {
+        "BACKEND_NEXT_TEST_DB_PORT": "55931",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56931",
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "UPSTREAM_ROOT": "/home/osamu/develop/misskey"
+      },
+      "startedAt": "2026-11-17T04:32:41.294239+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/sync-check-final.log",
+      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd"
+    },
+    {
+      "name": "sync-tests",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-upstream",
+        "test"
+      ],
+      "environment": {
+        "BACKEND_NEXT_TEST_DB_PORT": "55931",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56931",
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "UPSTREAM_ROOT": "/home/osamu/develop/misskey"
+      },
+      "startedAt": "2026-11-17T04:32:42.156570+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/sync-tests-final.log",
+      "logSha256": "dcea7723984a596d3db5a4ce8b2460c0ea7eebc08bd9f00e4896e6b471fc78c1"
+    },
+    {
+      "name": "build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "build"
+      ],
+      "environment": {
+        "BACKEND_NEXT_TEST_DB_PORT": "55931",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56931",
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "UPSTREAM_ROOT": "/home/osamu/develop/misskey"
+      },
+      "startedAt": "2026-11-17T04:32:42.462473+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/build-final.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "typecheck"
+      ],
+      "environment": {
+        "BACKEND_NEXT_TEST_DB_PORT": "55931",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56931",
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "UPSTREAM_ROOT": "/home/osamu/develop/misskey"
+      },
+      "startedAt": "2026-11-17T04:32:43.216796+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/typecheck-final.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "name": "unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test"
+      ],
+      "environment": {
+        "BACKEND_NEXT_TEST_DB_PORT": "55931",
+        "BACKEND_NEXT_TEST_REDIS_PORT": "56931",
+        "BACKEND_NEXT_UPSTREAM_PATH": "/home/osamu/develop/misskey",
+        "UPSTREAM_ROOT": "/home/osamu/develop/misskey"
+      },
+      "startedAt": "2026-11-17T04:32:44.379171+00:00",
+      "exitCode": 1,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol2-page-293/node_modules/.cache/page293/unit-final.log",
+      "logSha256": "367eb5ac9ff896fb330cde93401f872613053b4cd686f060a7f5315defc47fa7"
+    }
+  ],
+  "inputsAfter": {
+    "docs/superpowers/compatibility/page-read/corpus.json": "d5970574a3fff83b3872b5d4c7128a62bd34f8cc983b5f4b93d252595bea8401",
+    "docs/superpowers/compatibility/page-read/observations.json": "49f32c54c246a0eab01da2102773c82f285972675ca453e8417599f8de748338",
+    "docs/superpowers/compatibility/page-read/source-probe.mjs": "0928efa235c71745a077110e1c569c20799d0b188594a009cbce2bc4c8309ff0",
+    "packages/backend-next/src/composition/http-app.ts": "2e8d012d59c1c0ca2920eefccc7a542ab73de8a15dc82a211d3ab0a49beabe26",
+    "packages/backend-next/src/composition/pages-http.ts": "274b05fa6eaeaa77630fcc35476ee26affa89d11db11e8ea94373e7aa1096a53",
+    "packages/backend-next/src/http/pages-api.ts": "b65755f4f7e66e69a42bd4c74f44f825f5fac6a5ce97a77312cd7bd3e2a0cd7d",
+    "packages/backend-next/src/modules/page/public.ts": "4bdf6610233bc71e605b82db953c26180f82ed662ca8d8272afe56158b162dca",
+    "packages/backend-next/src/modules/page/read.ts": "52e5a4aa22bc2b0826abb7e452646a83652bef1f8f82423f6036d52e1a493c0d",
+    "packages/backend-next/src/platform/database/pages.ts": "3129837da7acca81ce0b1ad2e3496d9a7e4e397dc370584de87bafbd63843aeb",
+    "packages/backend-next/test/integration/page-read.test.ts": "ab289f73dd418bfd262d8562b94a13d054d739d1fdfefe44bfe2d0b0da2fe489",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "f6e205b59d56cd23cd835ec57e80f0fafbedc708a75284cd0af5f1c8bddb4e8f",
+    "packages/backend-next/test/unit/page/read.test.ts": "82eb34f647c05b0aa50847610ee0683963560cfa135cc198884c49d911825388",
+    "packages/backend-next/test/unit/page/source.test.ts": "8c755f3e72cb71ef4011fe88c20112701535c8956b8ae443181eeab48a1a0691",
+    "packages/backend-upstream/.managed-files.json": "1dbc03fe89be48dbb79fd54f30b91490a82a50225da516e40c28cdc67dce565e",
+    "packages/backend-upstream/exports/entities.ts": "3f189c5ebff793a377034680a6a7d1694f56ee24c185c91ab84fc8769cc2188d",
+    "packages/backend-upstream/src/models/PageLike.ts": "9c4528c3d34266f8c17682f61240e48bb3b795337093d17ab1fd9dcdb6982d87",
+    "packages/backend-upstream/upstream-sync.json": "9f9398d372fba9e781f71f9782fae16d63268f8488956f8d788bd618240dd484",
+    "scripts/notes-pagination-evidence.mjs": "2097933d2e7dcfb30e57f0eb11aa539db6757fa1629c4edda96e148113a66727"
+  },
+  "noInputDrift": true,
+  "finishedAt": "2026-11-17T04:33:28.146772+00:00"
+}
