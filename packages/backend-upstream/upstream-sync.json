@@ -40,7 +40,8 @@
 		"src/models/Antenna.ts",
 		"src/models/UserPublickey.ts",
 		"src/models/FollowRequest.ts",
-		"src/models/UserNotePining.ts"
+		"src/models/UserNotePining.ts",
+		"src/models/UserMemo.ts"
 	],
 	"migrationDirectory": "migration",
 	"externalDependencies": [

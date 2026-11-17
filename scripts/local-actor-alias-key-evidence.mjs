@@ -7,6 +7,8 @@ import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { readPreOutbox } from './local-outbox-evidence.mjs';
+import { projectUserMemoEntityInput } from './package-imports-evidence.mjs';
+export { projectUserMemoEntityInput } from './package-imports-evidence.mjs';
 
 const root = new URL('../', import.meta.url);
 const evidencePath = 'docs/superpowers/compatibility/remote-user/local-actor-alias-key-current-evidence.json';
@@ -90,7 +92,7 @@ export function readPreAliasKey(path, encoding, rawRead = read) {
  return withEvidenceRequestedPath(path, () => {
  const readFile = path => readPreOutbox(path, undefined, rawRead);
  if (!successorFiles.includes(path)) {
-  const bytes = readFile(path);
+  const bytes = projectUserMemoEntityInput(path, readFile(path));
   return encoding ? bytes.toString(encoding) : bytes;
  }
  const value = record(readFile);

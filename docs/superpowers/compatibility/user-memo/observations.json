@@ -1,0 +1,469 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "manifest": [
+    {
+      "path": "packages/backend/src/server/api/endpoints/users/update-memo.ts",
+      "gitBlob": "5a10de0c40ceb4db3d05b2456a5c83bff7a8b5fa",
+      "sha256": "8e084b2c327723765fd7cf1c44d88af70a6ad8c3335b1ec7fa8d722530dbbbb6"
+    },
+    {
+      "path": "packages/backend/src/core/entities/UserEntityService.ts",
+      "gitBlob": "7b932e3230699f4266ff4860d0c850c41038047a",
+      "sha256": "c986907bacb822863fe19214b7ec1443c02ebb028820f33932e7cde7f47f6464"
+    },
+    {
+      "path": "packages/backend/src/models/UserMemo.ts",
+      "gitBlob": "facc8c6b1c298af365a41d642b66e5b7e89c7a7a",
+      "sha256": "be96c785faa88f9bd2613c137f9ea8b268dc2bb8f3b8803bf5c764dbcad7e494"
+    },
+    {
+      "path": "packages/backend/src/server/api/GetterService.ts",
+      "gitBlob": "6f689dfa24b80fe127bf05012bdf4c8d0419407f",
+      "sha256": "8c8864d50e7524b3ff358e2bb4ff5aceda8e3f1e3a7ad8efe1e7ac9c1b4236c7"
+    }
+  ],
+  "corpusSha256": "362bfd1b7d8ab5a492882765a97904ee374d01a4a715ec6ae4de40f4d6a017b4",
+  "doubles": "Literal endpoint callback and literal UserEntityService memo block; controlled repository/Getter/IdService, no full upstream HTTP server or PostgreSQL.",
+  "access": {
+    "requireCredential": true,
+    "kind": "write:account"
+  },
+  "cases": [
+    {
+      "id": "insert",
+      "rows": [
+        {
+          "id": "newmemo",
+          "userId": "alice",
+          "targetUserId": "target",
+          "memo": "private memo"
+        }
+      ],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": "private memo"
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "update-stable-id",
+      "rows": [
+        {
+          "id": "oldmemo",
+          "userId": "alice",
+          "targetUserId": "target",
+          "memo": "replacement"
+        }
+      ],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": "replacement"
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "empty-deletes",
+      "rows": [],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": null
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "null-deletes",
+      "rows": [],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": null
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "delete-absent",
+      "rows": [],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": null
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "whitespace-preserved",
+      "rows": [
+        {
+          "id": "newmemo",
+          "userId": "alice",
+          "targetUserId": "target",
+          "memo": "  \n "
+        }
+      ],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": "  \n "
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "self-memo",
+      "rows": [
+        {
+          "id": "newmemo",
+          "userId": "alice",
+          "targetUserId": "alice",
+          "memo": "self"
+        }
+      ],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": "self"
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "other-author-insert",
+      "rows": [
+        {
+          "id": "bobmemo",
+          "userId": "bob",
+          "targetUserId": "target",
+          "memo": "bob secret"
+        },
+        {
+          "id": "newmemo",
+          "userId": "alice",
+          "targetUserId": "target",
+          "memo": "alice secret"
+        }
+      ],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": "alice secret"
+        },
+        {
+          "viewerId": "bob",
+          "memo": "bob secret"
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "other-author-delete",
+      "rows": [
+        {
+          "id": "bobmemo",
+          "userId": "bob",
+          "targetUserId": "target",
+          "memo": "bob secret"
+        }
+      ],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": null
+        },
+        {
+          "viewerId": "bob",
+          "memo": "bob secret"
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "missing-user-save",
+      "error": {
+        "code": "NO_SUCH_USER",
+        "id": "6fef56f3-e765-4957-88e5-c6f65329b8a5"
+      },
+      "rows": [],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": null
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "missing-user-delete",
+      "error": {
+        "code": "NO_SUCH_USER",
+        "id": "6fef56f3-e765-4957-88e5-c6f65329b8a5"
+      },
+      "rows": [],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": null
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "missing-memo",
+      "error": {
+        "code": "INVALID_PARAM"
+      },
+      "rows": [],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": null
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "invalid-memo",
+      "error": {
+        "code": "INVALID_PARAM"
+      },
+      "rows": [],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": null
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "invalid-user-id",
+      "error": {
+        "code": "INVALID_PARAM"
+      },
+      "rows": [],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": null
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "insert-failure",
+      "error": {
+        "message": "insert unavailable"
+      },
+      "rows": [],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": null
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "find-failure",
+      "error": {
+        "message": "find unavailable"
+      },
+      "rows": [],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": null
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "update-failure",
+      "error": {
+        "message": "update unavailable"
+      },
+      "rows": [
+        {
+          "id": "oldmemo",
+          "userId": "alice",
+          "targetUserId": "target",
+          "memo": "previous"
+        }
+      ],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": "previous"
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "delete-failure",
+      "error": {
+        "message": "delete unavailable"
+      },
+      "rows": [
+        {
+          "id": "oldmemo",
+          "userId": "alice",
+          "targetUserId": "target",
+          "memo": "previous"
+        }
+      ],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": "previous"
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": "target-lookup-failure",
+      "error": {
+        "message": "target unavailable"
+      },
+      "rows": [],
+      "reads": [
+        {
+          "viewerId": "alice",
+          "memo": null
+        },
+        {
+          "viewerId": "bob",
+          "memo": null
+        },
+        {
+          "viewerId": null,
+          "memo": null
+        }
+      ]
+    }
+  ]
+}

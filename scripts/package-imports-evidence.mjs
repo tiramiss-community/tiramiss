@@ -31,7 +31,7 @@ export function validatePackageImportsEvidence(value, readFile = read, optional 
 	assert.equal(value.previousSha256, previous, 'package import predecessor');
 	assert.deepEqual(Object.keys(value.inputSha256).sort(), [packageImportsPath, ...['src/models/UserNotePining.ts', 'upstream-sync.json', 'exports/entities.ts', '.managed-files.json'].map(path => 'packages/backend-upstream/' + path)].sort());
 	for (const [path, digest] of Object.entries(value.inputSha256)) {
-		assert.equal(sha(readFile(path)), digest, 'package import measured input');
+		assert.equal(sha(projectUserMemoEntityInput(path, readFile(path))), digest, 'package import measured input');
 	}
 	const run = value.measurement;
 	assert.equal(run.exitCode, 0, 'package import successful measurement');
@@ -61,4 +61,86 @@ export function packageImportsDigest(file, oldDigest, readFile = read, optional 
 	assert(oldDigest === previous || oldDigest === value.inputSha256[file], 'package import predecessor');
 	validatePackageImportsEvidence(value, readFile, optional);
 	return value.inputSha256[file];
+}
+
+// #294 Entity synchronization is additive; original package/collection receipts stay sealed.
+const userMemoEntityProjection = {
+  "packages/backend-upstream/.managed-files.json": {
+    "currentSha256": "48bbbdcd10e4b90e03622a94ecb9539819963cecb7acaffa6ef9d24979c41410",
+    "previousSha256": "e2a6859ffa1f6e0ac16db2c92b5b6a0a0a451d197ebd5672fbc3aff21250781a",
+    "patches": [
+      {
+        "offset": 17767,
+        "insert": "Memo.ts\",\n\t\"src/models/User",
+        "previous": ""
+      }
+    ]
+  },
+  "packages/backend-upstream/exports/entities.ts": {
+    "currentSha256": "05ff04e21dee5f38a108332c5c1e9bbdee734e8e8b8169f363674a39050e9146",
+    "previousSha256": "a3ba9f949469c6d730cbdcdd070994b38dbc55980075397ffc6df4eccc6d03dc",
+    "patches": [
+      {
+        "offset": 2343,
+        "insert": "import { MiUserMemo } from '../src/models/UserMemo.js';\n",
+        "previous": ""
+      },
+      {
+        "offset": 2918,
+        "insert": ", MiUserMemo",
+        "previous": ""
+      },
+      {
+        "offset": 3469,
+        "insert": ", MiUserMemo",
+        "previous": ""
+      }
+    ]
+  },
+  "packages/backend-upstream/upstream-sync.json": {
+    "currentSha256": "2249ddafc88912805a900366e8ee19cebf5f4f584ac28a932c2ab26a44282661",
+    "previousSha256": "321ffe253df336975cc763aacb04f8f5a2286c1d4e85a76285b74b58373429dd",
+    "patches": [
+      {
+        "offset": 1232,
+        "insert": ",\n\t\t\"src/models/UserMemo.ts\"",
+        "previous": ""
+      }
+    ]
+  },
+  "packages/backend-next/test/package-imports.test.ts": {
+    "currentSha256": "6d892d5b6f571cf93fea57c80c5346a9f63fd15b6e8c018b7c60b44886367b2f",
+    "previousSha256": "6cbf1b616b51d139298dc85350137a10c430a89205467cf454ba8b101de68d90",
+    "patches": [
+      {
+        "offset": 297,
+        "insert": ", MiUserMemo",
+        "previous": ""
+      },
+      {
+        "offset": 3151,
+        "insert": "const memoMetadata = source.getMetadata(MiUserMemo);\n\texpect(memoMetadata.tableName).toBe('user_memo');\n\texpect(memoMetadata.indices.some(index => index.isUnique && index.columns.map(column => column.propertyName).join(',') === 'userId,targetUserId')).toBe(true);\n\tfor (const property of ['user', 'targetUser']) {\n\t\tconst relation = memoMetadata.relations.find(value => value.propertyName === property);\n\t\texpect(relation?.inverseEntityMetadata.tableName).toBe('user');\n\t\texpect(relation?.onDelete).toBe('CASCADE');\n\t}\n\t",
+        "previous": ""
+      },
+      {
+        "offset": 3716,
+        "insert": "9",
+        "previous": "8"
+      }
+    ]
+  }
+};
+export function projectUserMemoEntityInput(path, actual, driftLabel = 'package import measured input') {
+ const binding = Object.hasOwn(userMemoEntityProjection, path) ? userMemoEntityProjection[path] : undefined;
+ if (!binding) return actual;
+ if (sha(actual) === binding.previousSha256) return actual;
+ assert.equal(sha(actual), binding.currentSha256, `${driftLabel} (user memo): ${path}`);
+ let before = Buffer.from(actual);
+ for (const patch of [...binding.patches].reverse()) {
+  const insert = Buffer.from(patch.insert);
+  assert.deepEqual(before.subarray(patch.offset, patch.offset + insert.length), insert, 'user memo Entity exact predecessor anchor');
+  before = Buffer.concat([before.subarray(0, patch.offset), Buffer.from(patch.previous), before.subarray(patch.offset + insert.length)]);
+ }
+ assert.equal(sha(before), binding.previousSha256, 'user memo Entity exact predecessor identity');
+ return before;
 }

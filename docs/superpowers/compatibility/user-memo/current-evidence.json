@@ -1,0 +1,276 @@
+{
+  "scope": "user-memo-294",
+  "baseRevision": "7f64bd8f5996791f9cfe47b9aec124a988c3182d",
+  "runtimeSourceRevision": "9760605f1716d4ce4a07d923a46ed09068fc3df6",
+  "proofRevision": "8d0c72c61835143b447a957b503bbb233e3956e5",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "nodeVersion": "v26.4.0",
+  "pnpmVersion": "12.9.1",
+  "upstreamFullServerMeasured": false,
+  "userDetailedComplete": false,
+  "measurementNotes": "Runtime commands use unchanged committed runtime/module/test/Entity bytes from 9760605; only caller diagnostic prefixes changed in 8d0c72. Final root command starts after its 32-input freeze and preserves that exact map. Earlier mixed-start/Node24 results are history, not this root measurement.",
+  "finalRootWindow": {
+    "startedAt": "2026-11-17T01:31:49.048621+00:00",
+    "completedAt": "2026-11-17T01:35:29.636543+00:00",
+    "inputsBefore": {
+      "docs/superpowers/compatibility/user-memo/corpus.json": "362bfd1b7d8ab5a492882765a97904ee374d01a4a715ec6ae4de40f4d6a017b4",
+      "docs/superpowers/compatibility/user-memo/observations.json": "46b63893ae1c043385dd60a1fb295f63e5886426b26cde6d884088f56c63101a",
+      "docs/superpowers/compatibility/user-memo/source-probe.mjs": "0fc013c3f09cb0b73d0cf21c5c91459a18e09e2a192891006046e144339c06a8",
+      "packages/backend-next/package.json": "5f630013c7328d447e9b433a5f77fd28ec0138548906508f123b2ba01ad66182",
+      "packages/backend-next/src/composition/http-app.ts": "70ad0cbb84ddcefaa2e6fc9ac79e1a0c769707537ed39d200d7340b98c0657a6",
+      "packages/backend-next/src/composition/user-memo-http.ts": "d33518a20b79a38a8d5d03f23c6bf766a048f39bfe07a9144ea20ef7bbc99d33",
+      "packages/backend-next/src/http/api-endpoint.ts": "262172fbd09ef769607b079e59f862c2f386098b5720a4835df26514b2b73bc2",
+      "packages/backend-next/src/http/api-error.ts": "2161d5e01366ed1e2c16552af674c9a6ba5091c8109768f0c9ecda9375a32ae6",
+      "packages/backend-next/src/http/user-memo-api.ts": "dc120e9580d6aea883e11071cde201c5af4c95f8ed2469c3e0c1433d12b20218",
+      "packages/backend-next/src/modules/access/authorize.ts": "88ddaae296231983e71461486cd3e9d6ed3703b0e5e8d0e4c4f79d69d2a953f3",
+      "packages/backend-next/src/modules/access/input.ts": "a7d1b0120f109d6db9493e5e816173426fecfd12eb594c997001a5793bc96434",
+      "packages/backend-next/src/modules/user-memo/public.ts": "27553ac9f5505f15b79c3506b187059c00fe0d25cd8ce737f883feaa6b6a4ac7",
+      "packages/backend-next/src/platform/database/authenticate.ts": "64b83c005791625008c53f493b024d5973ecc904e36642b4fa9543217f1c08cd",
+      "packages/backend-next/src/platform/database/data-source.ts": "ffced6c8a1f3994cae8424ae4aae594aefdb52846461caadecad03cc9e1c8f90",
+      "packages/backend-next/src/platform/database/user-memo.ts": "2f63000d60295ba543b8d2579814eb83b4785db62f7629b72e9ab955d706f24f",
+      "packages/backend-next/test/helpers/database.ts": "34632277e6a7a80749d23a65eca252a6b521ee3a3c6c1d39863bf76aa4cda3fb",
+      "packages/backend-next/test/integration/user-memo.test.ts": "e50d5bb16a511ffa880209cbf6d95635b67a2a0e694a3bfe9db493efc544a2c1",
+      "packages/backend-next/test/package-imports.test.ts": "6d892d5b6f571cf93fea57c80c5346a9f63fd15b6e8c018b7c60b44886367b2f",
+      "packages/backend-next/test/unit/composition/http-app.test.ts": "43aab6cd144b8d0937fca5bec41322d2bed0125c1f94118e7bebb4437d901bda",
+      "packages/backend-next/test/unit/user-memo.test.ts": "47f448c3ca2d75ac7f1458784c64cbf6202d46b73e041e1efb420593d845a59e",
+      "packages/backend-upstream/.managed-files.json": "48bbbdcd10e4b90e03622a94ecb9539819963cecb7acaffa6ef9d24979c41410",
+      "packages/backend-upstream/exports/entities.ts": "05ff04e21dee5f38a108332c5c1e9bbdee734e8e8b8169f363674a39050e9146",
+      "packages/backend-upstream/package.json": "d1a95f10bf8816890eef6dd9a8392d0bb3e6d2613f8b746ab54c385ed90a7421",
+      "packages/backend-upstream/src/models/UserMemo.ts": "be96c785faa88f9bd2613c137f9ea8b268dc2bb8f3b8803bf5c764dbcad7e494",
+      "packages/backend-upstream/upstream-sync.json": "2249ddafc88912805a900366e8ee19cebf5f4f584ac28a932c2ab26a44282661",
+      "pnpm-lock.yaml": "7802badea4fb65c63c13c8678020a2e651f148c8b9c46289342082068c5f99aa",
+      "scripts/local-actor-alias-key-evidence.mjs": "8f726226d2be7d2d2e18e6293c0a8493cea08e342affa196243fd83abf4ea7ab",
+      "scripts/local-featured-evidence.mjs": "7c0992a9c28ad37feab80d6e98ac66e7067bcee2deb942735e932cfe89f66a3d",
+      "scripts/local-follow-collections-evidence.mjs": "62ce4a7945363b1c91bd072f6d618e5116d45f1976a9384198095d0d19d79894",
+      "scripts/notes-pagination-evidence.mjs": "420962428e97596bf1b8c68e06288bded812b72693cea9a3077712f478c521e2",
+      "scripts/package-imports-evidence.mjs": "4f409a134ab7ffa8b9a845e0c8793b4373d182d53c8215932c3ac33f64f2434a",
+      "scripts/user-memo-contract.test.mjs": "91cef71c8522bf16cb9db8f35f85764559c8819b8aeb743dfc47f886d6eea36f"
+    },
+    "inputsAfter": {
+      "docs/superpowers/compatibility/user-memo/corpus.json": "362bfd1b7d8ab5a492882765a97904ee374d01a4a715ec6ae4de40f4d6a017b4",
+      "docs/superpowers/compatibility/user-memo/observations.json": "46b63893ae1c043385dd60a1fb295f63e5886426b26cde6d884088f56c63101a",
+      "docs/superpowers/compatibility/user-memo/source-probe.mjs": "0fc013c3f09cb0b73d0cf21c5c91459a18e09e2a192891006046e144339c06a8",
+      "packages/backend-next/package.json": "5f630013c7328d447e9b433a5f77fd28ec0138548906508f123b2ba01ad66182",
+      "packages/backend-next/src/composition/http-app.ts": "70ad0cbb84ddcefaa2e6fc9ac79e1a0c769707537ed39d200d7340b98c0657a6",
+      "packages/backend-next/src/composition/user-memo-http.ts": "d33518a20b79a38a8d5d03f23c6bf766a048f39bfe07a9144ea20ef7bbc99d33",
+      "packages/backend-next/src/http/api-endpoint.ts": "262172fbd09ef769607b079e59f862c2f386098b5720a4835df26514b2b73bc2",
+      "packages/backend-next/src/http/api-error.ts": "2161d5e01366ed1e2c16552af674c9a6ba5091c8109768f0c9ecda9375a32ae6",
+      "packages/backend-next/src/http/user-memo-api.ts": "dc120e9580d6aea883e11071cde201c5af4c95f8ed2469c3e0c1433d12b20218",
+      "packages/backend-next/src/modules/access/authorize.ts": "88ddaae296231983e71461486cd3e9d6ed3703b0e5e8d0e4c4f79d69d2a953f3",
+      "packages/backend-next/src/modules/access/input.ts": "a7d1b0120f109d6db9493e5e816173426fecfd12eb594c997001a5793bc96434",
+      "packages/backend-next/src/modules/user-memo/public.ts": "27553ac9f5505f15b79c3506b187059c00fe0d25cd8ce737f883feaa6b6a4ac7",
+      "packages/backend-next/src/platform/database/authenticate.ts": "64b83c005791625008c53f493b024d5973ecc904e36642b4fa9543217f1c08cd",
+      "packages/backend-next/src/platform/database/data-source.ts": "ffced6c8a1f3994cae8424ae4aae594aefdb52846461caadecad03cc9e1c8f90",
+      "packages/backend-next/src/platform/database/user-memo.ts": "2f63000d60295ba543b8d2579814eb83b4785db62f7629b72e9ab955d706f24f",
+      "packages/backend-next/test/helpers/database.ts": "34632277e6a7a80749d23a65eca252a6b521ee3a3c6c1d39863bf76aa4cda3fb",
+      "packages/backend-next/test/integration/user-memo.test.ts": "e50d5bb16a511ffa880209cbf6d95635b67a2a0e694a3bfe9db493efc544a2c1",
+      "packages/backend-next/test/package-imports.test.ts": "6d892d5b6f571cf93fea57c80c5346a9f63fd15b6e8c018b7c60b44886367b2f",
+      "packages/backend-next/test/unit/composition/http-app.test.ts": "43aab6cd144b8d0937fca5bec41322d2bed0125c1f94118e7bebb4437d901bda",
+      "packages/backend-next/test/unit/user-memo.test.ts": "47f448c3ca2d75ac7f1458784c64cbf6202d46b73e041e1efb420593d845a59e",
+      "packages/backend-upstream/.managed-files.json": "48bbbdcd10e4b90e03622a94ecb9539819963cecb7acaffa6ef9d24979c41410",
+      "packages/backend-upstream/exports/entities.ts": "05ff04e21dee5f38a108332c5c1e9bbdee734e8e8b8169f363674a39050e9146",
+      "packages/backend-upstream/package.json": "d1a95f10bf8816890eef6dd9a8392d0bb3e6d2613f8b746ab54c385ed90a7421",
+      "packages/backend-upstream/src/models/UserMemo.ts": "be96c785faa88f9bd2613c137f9ea8b268dc2bb8f3b8803bf5c764dbcad7e494",
+      "packages/backend-upstream/upstream-sync.json": "2249ddafc88912805a900366e8ee19cebf5f4f584ac28a932c2ab26a44282661",
+      "pnpm-lock.yaml": "7802badea4fb65c63c13c8678020a2e651f148c8b9c46289342082068c5f99aa",
+      "scripts/local-actor-alias-key-evidence.mjs": "8f726226d2be7d2d2e18e6293c0a8493cea08e342affa196243fd83abf4ea7ab",
+      "scripts/local-featured-evidence.mjs": "7c0992a9c28ad37feab80d6e98ac66e7067bcee2deb942735e932cfe89f66a3d",
+      "scripts/local-follow-collections-evidence.mjs": "62ce4a7945363b1c91bd072f6d618e5116d45f1976a9384198095d0d19d79894",
+      "scripts/notes-pagination-evidence.mjs": "420962428e97596bf1b8c68e06288bded812b72693cea9a3077712f478c521e2",
+      "scripts/package-imports-evidence.mjs": "4f409a134ab7ffa8b9a845e0c8793b4373d182d53c8215932c3ac33f64f2434a",
+      "scripts/user-memo-contract.test.mjs": "91cef71c8522bf16cb9db8f35f85764559c8819b8aeb743dfc47f886d6eea36f"
+    },
+    "noInputDrift": true
+  },
+  "runs": [
+    {
+      "name": "build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "build"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/sol-delivery-20261117/memo294/node26-build.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
+      "runtimeSourceRevision": "9760605f1716d4ce4a07d923a46ed09068fc3df6"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/sol-delivery-20261117/memo294/node26-typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+      "runtimeSourceRevision": "9760605f1716d4ce4a07d923a46ed09068fc3df6"
+    },
+    {
+      "name": "sync-check",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-upstream",
+        "sync:check"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/sol-delivery-20261117/memo294/node26-sync.log",
+      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd",
+      "runtimeSourceRevision": "9760605f1716d4ce4a07d923a46ed09068fc3df6"
+    },
+    {
+      "name": "upstream-tests",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-upstream",
+        "test"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/sol-delivery-20261117/memo294/node26-upstream-tests.log",
+      "logSha256": "95f1dcb8654654e4ba5ac210f75d48ffc05ce6d2a7b3b3d1b81d4d09bd797ad9",
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "runtimeSourceRevision": "9760605f1716d4ce4a07d923a46ed09068fc3df6"
+    },
+    {
+      "name": "unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/sol-delivery-20261117/memo294/node26-unit-r2.log",
+      "logSha256": "1f22d8e958aa2ed97235bde1f4eab17e2a155fa0606332279986ac1e4eceb5df",
+      "passed": 4964,
+      "failed": 0,
+      "skipped": 0,
+      "runtimeSourceRevision": "9760605f1716d4ce4a07d923a46ed09068fc3df6"
+    },
+    {
+      "name": "http-pg-schema",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/user-memo.test.ts",
+        "test/integration/migrations.test.ts"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/sol-delivery-20261117/memo294/node26-integration-r2.log",
+      "logSha256": "e1776b5fafe23adeb9c73022c958e8c34ac58c22d348e2ef8cf9b12c17b2ee53",
+      "passed": 23,
+      "failed": 0,
+      "skipped": 0,
+      "runtimeSourceRevision": "9760605f1716d4ce4a07d923a46ed09068fc3df6"
+    },
+    {
+      "name": "source",
+      "command": [
+        "node",
+        "docs/superpowers/compatibility/user-memo/source-probe.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/sol-delivery-20261117/memo294/node26-source.log",
+      "logSha256": "f072b595ae49991b286dda3d28e6053bb0199f9c704aaaaf89fc3de146924f56",
+      "passed": 19,
+      "failed": 0,
+      "skipped": 0,
+      "runtimeSourceRevision": "9760605f1716d4ce4a07d923a46ed09068fc3df6"
+    },
+    {
+      "name": "root-contracts",
+      "command": [
+        "node",
+        "--test",
+        "scripts/*contract*.test.mjs"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/sol-delivery-20261117/memo294/node26-root-contracts-final.log",
+      "logSha256": "07bed439e8947f07069d676fbeaabea759f1110fdf480c994cbe7f66cfb9c6b2",
+      "passed": 765,
+      "failed": 0,
+      "skipped": 1
+    },
+    {
+      "name": "near-contracts",
+      "command": [
+        "node",
+        "--test",
+        "scripts/user-memo-contract.test.mjs",
+        "scripts/notes-pagination-contract.test.mjs",
+        "scripts/package-imports-contract.test.mjs"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/sol-delivery-20261117/memo294/node26-near-contracts-final.log",
+      "logSha256": "cfefbe5d8297f46291fe07119ba9aba211d4884db2f7fd6ce4bcd098e3ae3c16",
+      "passed": 22,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "inventory",
+      "command": [
+        "node",
+        "scripts/backend-contract-inventory.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/sol-delivery-20261117/memo294/node26-inventory-check.log",
+      "logSha256": "9506ac89cde2b4c62b8c5dc1c5149e9424db0f4e35b248aa94a8ad3ab8d719d4"
+    },
+    {
+      "name": "shipping",
+      "command": [
+        "node",
+        "scripts/check-shipping.mjs",
+        "--base",
+        "7f64bd8f5996791f9cfe47b9aec124a988c3182d"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/sol-delivery-20261117/memo294/node26-shipping.log",
+      "logSha256": "aa69d0e4a8542db7da0aa6ef7f854a912df46523c5a71247ae57e36efd6f4a31"
+    }
+  ],
+  "optionalSkip": "Existing migration-proof comparison requires optional pinned upstream checkout; unchanged test, not one of the memo/PG/source cases.",
+  "history": [
+    {
+      "log": "/tmp/sol-delivery-20261117/memo294/unit-all-r2.log",
+      "nodeVersion": "v24.20.0",
+      "passed": 4964,
+      "note": "Before restoring the shared authentication array to the base for #489 ownership; no final-root binding claimed."
+    },
+    {
+      "log": "/tmp/sol-delivery-20261117/memo294/integration-r3.log",
+      "nodeVersion": "v24.20.0",
+      "passed": 23
+    },
+    {
+      "log": "/tmp/sol-delivery-20261117/memo294/root-contracts-r3.log",
+      "nodeVersion": "v24.20.0",
+      "passed": 762,
+      "failed": 3,
+      "skipped": 1,
+      "note": "Caller diagnostic prefixes corrected in 8d0c72."
+    },
+    {
+      "log": "/tmp/sol-delivery-20261117/memo294/node26-root-contracts.log",
+      "nodeVersion": "v26.4.0",
+      "passed": 764,
+      "failed": 1,
+      "skipped": 1,
+      "note": "Started before the last diagnostic correction; explicitly not promoted to final."
+    }
+  ],
+  "failureCorrectionStages": 12,
+  "independentReview": "/tmp/sol-delivery-20261117/review-memo294.md"
+}
