@@ -178,7 +178,8 @@ export function projectUserMemoInput(path, actual) {
 	if (!binding) return actual;
 	const digest = sha(actual);
 	if (digest === binding.previous || digest === binding.pollOnly) return actual;
-	assert(digest === binding.current || (binding.combined && digest === binding.combined), `measured current input drift (notes pagination): ${path} (user memo predecessor)`);
+	const driftLabel = path.endsWith('/src/composition/http-app.ts') ? 'Meta cache measured current input drift' : 'measured current input drift (notes pagination)';
+	assert(digest === binding.current || (binding.combined && digest === binding.combined), `${driftLabel}: ${path} (user memo predecessor)`);
 	let before = actual.toString();
 	for (const addition of binding.additions) {
 		assert.equal(before.split(addition).length, 2, 'user memo exact predecessor anchor');

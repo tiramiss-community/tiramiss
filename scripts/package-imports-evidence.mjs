@@ -130,11 +130,11 @@ const userMemoEntityProjection = {
     ]
   }
 };
-export function projectUserMemoEntityInput(path, actual) {
+export function projectUserMemoEntityInput(path, actual, driftLabel = 'package import measured input') {
  const binding = Object.hasOwn(userMemoEntityProjection, path) ? userMemoEntityProjection[path] : undefined;
  if (!binding) return actual;
  if (sha(actual) === binding.previousSha256) return actual;
- assert.equal(sha(actual), binding.currentSha256, `package import measured input (user memo): ${path}`);
+ assert.equal(sha(actual), binding.currentSha256, `${driftLabel} (user memo): ${path}`);
  let before = Buffer.from(actual);
  for (const patch of [...binding.patches].reverse()) {
   const insert = Buffer.from(patch.insert);
