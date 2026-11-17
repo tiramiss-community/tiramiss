@@ -1,0 +1,293 @@
+{
+  "doubles": [
+    "Repository row matching/query projection for source observation; real PG repositories separately compared in integration test",
+    "Endpoint authentication is exercised through the new normal HTTP entry; full upstream server is not booted"
+  ],
+  "rows": {
+    "following": [
+      {
+        "id": "ab",
+        "followeeId": "bob",
+        "followerId": "alice",
+        "isFollowerHibernated": true,
+        "withReplies": true,
+        "notify": "normal",
+        "followerHost": "remote.test",
+        "followerInbox": "https://remote.test/inbox",
+        "followerSharedInbox": "https://remote.test/shared",
+        "followeeHost": null,
+        "followeeInbox": null,
+        "followeeSharedInbox": null
+      },
+      {
+        "id": "ca",
+        "followeeId": "alice",
+        "followerId": "carol",
+        "isFollowerHibernated": false,
+        "withReplies": false,
+        "notify": null,
+        "followerHost": null,
+        "followerInbox": null,
+        "followerSharedInbox": null,
+        "followeeHost": null,
+        "followeeInbox": null,
+        "followeeSharedInbox": null
+      }
+    ],
+    "follow_request": [
+      {
+        "followerId": "alice",
+        "followeeId": "carol"
+      },
+      {
+        "followerId": "bob",
+        "followeeId": "alice"
+      }
+    ],
+    "blocking": [
+      {
+        "blockerId": "alice",
+        "blockeeId": "bob"
+      },
+      {
+        "blockerId": "carol",
+        "blockeeId": "alice"
+      }
+    ],
+    "muting": [
+      {
+        "muterId": "alice",
+        "muteeId": "bob"
+      },
+      {
+        "muterId": "carol",
+        "muteeId": "alice"
+      }
+    ],
+    "renote_muting": [
+      {
+        "muterId": "alice",
+        "muteeId": "carol"
+      },
+      {
+        "muterId": "bob",
+        "muteeId": "alice"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "alice-0",
+      "viewerId": "alice",
+      "input": {
+        "userId": "bob"
+      }
+    },
+    {
+      "id": "alice-1",
+      "viewerId": "alice",
+      "input": {
+        "userId": "carol"
+      }
+    },
+    {
+      "id": "alice-2",
+      "viewerId": "alice",
+      "input": {
+        "userId": "unknown"
+      }
+    },
+    {
+      "id": "alice-3",
+      "viewerId": "alice",
+      "input": {
+        "userId": []
+      }
+    },
+    {
+      "id": "alice-4",
+      "viewerId": "alice",
+      "input": {
+        "userId": [
+          "carol",
+          "bob",
+          "unknown",
+          "bob",
+          "alice",
+          "empty"
+        ]
+      }
+    },
+    {
+      "id": "bob-5",
+      "viewerId": "bob",
+      "input": {
+        "userId": "bob"
+      }
+    },
+    {
+      "id": "bob-6",
+      "viewerId": "bob",
+      "input": {
+        "userId": "carol"
+      }
+    },
+    {
+      "id": "bob-7",
+      "viewerId": "bob",
+      "input": {
+        "userId": "unknown"
+      }
+    },
+    {
+      "id": "bob-8",
+      "viewerId": "bob",
+      "input": {
+        "userId": []
+      }
+    },
+    {
+      "id": "bob-9",
+      "viewerId": "bob",
+      "input": {
+        "userId": [
+          "carol",
+          "bob",
+          "unknown",
+          "bob",
+          "alice",
+          "empty"
+        ]
+      }
+    },
+    {
+      "id": "carol-10",
+      "viewerId": "carol",
+      "input": {
+        "userId": "bob"
+      }
+    },
+    {
+      "id": "carol-11",
+      "viewerId": "carol",
+      "input": {
+        "userId": "carol"
+      }
+    },
+    {
+      "id": "carol-12",
+      "viewerId": "carol",
+      "input": {
+        "userId": "unknown"
+      }
+    },
+    {
+      "id": "carol-13",
+      "viewerId": "carol",
+      "input": {
+        "userId": []
+      }
+    },
+    {
+      "id": "carol-14",
+      "viewerId": "carol",
+      "input": {
+        "userId": [
+          "carol",
+          "bob",
+          "unknown",
+          "bob",
+          "alice",
+          "empty"
+        ]
+      }
+    },
+    {
+      "id": "empty-15",
+      "viewerId": "empty",
+      "input": {
+        "userId": "bob"
+      }
+    },
+    {
+      "id": "empty-16",
+      "viewerId": "empty",
+      "input": {
+        "userId": "carol"
+      }
+    },
+    {
+      "id": "empty-17",
+      "viewerId": "empty",
+      "input": {
+        "userId": "unknown"
+      }
+    },
+    {
+      "id": "empty-18",
+      "viewerId": "empty",
+      "input": {
+        "userId": []
+      }
+    },
+    {
+      "id": "empty-19",
+      "viewerId": "empty",
+      "input": {
+        "userId": [
+          "carol",
+          "bob",
+          "unknown",
+          "bob",
+          "alice",
+          "empty"
+        ]
+      }
+    },
+    {
+      "id": "invalid-20",
+      "viewerId": "alice",
+      "input": {}
+    },
+    {
+      "id": "invalid-21",
+      "viewerId": "alice",
+      "input": {
+        "userId": ""
+      }
+    },
+    {
+      "id": "invalid-22",
+      "viewerId": "alice",
+      "input": {
+        "userId": [
+          "bob",
+          "bad-id"
+        ]
+      }
+    },
+    {
+      "id": "invalid-23",
+      "viewerId": "alice",
+      "input": {
+        "userId": null
+      }
+    },
+    {
+      "id": "invalid-24",
+      "viewerId": "alice",
+      "input": {
+        "userId": 5
+      }
+    },
+    {
+      "id": "invalid-25",
+      "viewerId": "alice",
+      "input": {
+        "userId": [
+          5
+        ]
+      }
+    }
+  ]
+}

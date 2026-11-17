@@ -199,11 +199,17 @@ export function projectNotesPaginationInput(path, actual) {
 // earlier measurements; the optional #489 combination removes only #294 bytes.
 const userMemoProjection = {
 	'packages/backend-next/src/composition/http-app.ts': {
+		relationCurrent: '5f881c86b179744c73be9d1c7b668a2227747b9cf98a8a7ecfbb7b2dc2b68264',
+		relationPrevious: '70ad0cbb84ddcefaa2e6fc9ac79e1a0c769707537ed39d200d7340b98c0657a6',
+		relationAdditions: ["import { createUserRelationHttp } from './user-relation-http.js';\n", "\t\t.route('/', createUserRelationHttp(resources))\n"],
 		current: '70ad0cbb84ddcefaa2e6fc9ac79e1a0c769707537ed39d200d7340b98c0657a6',
 		previous: 'e8851b4ec5bba14758c315e98368105051463cb7cba8d26b3c18ad332ff381cc',
 		additions: ["import { createUserMemoHttp } from './user-memo-http.js';\n", "\t\t.route('/', createUserMemoHttp(resources, config))\n"],
 	},
 	'packages/backend-next/test/unit/composition/http-app.test.ts': {
+		relationCurrent: '734cee44fd1181a8c77fa08bf05623e41b28478b0f4eea8a2d2f8689c7632899',
+		relationPrevious: 'cdcc4eb0be344bbafde0b45f85072cd570d17850f81e275908836290ca8589d2',
+		relationAdditions: [", '/api/users/relation'"],
 		current: '43aab6cd144b8d0937fca5bec41322d2bed0125c1f94118e7bebb4437d901bda',
 		previous: 'a2f030dbfecfa3644a09d1d1aca81a8693ffec7dbad1bc3ceac9894fb46be5eb',
 		combined: 'cdcc4eb0be344bbafde0b45f85072cd570d17850f81e275908836290ca8589d2',
@@ -215,6 +221,15 @@ const userMemoProjection = {
 export function projectUserMemoInput(path, actual) {
 	const binding = Object.hasOwn(userMemoProjection, path) ? userMemoProjection[path] : undefined;
 	if (!binding) return actual;
+	if (sha(actual) === binding.relationCurrent) {
+		let before = actual.toString();
+		for (const addition of binding.relationAdditions) {
+			assert.equal(before.split(addition).length, 2, 'relation exact predecessor anchor');
+			before = before.replace(addition, '');
+		}
+		assert.equal(sha(before), binding.relationPrevious, 'relation exact predecessor identity');
+		actual = Buffer.from(before);
+	}
 	const digest = sha(actual);
 	if (digest === binding.previous || digest === binding.pollOnly) return actual;
 	const driftLabel = path.endsWith('/src/composition/http-app.ts') ? 'Meta cache measured current input drift' : 'measured current input drift (notes pagination)';
