@@ -344,6 +344,10 @@ const pageReadProjection = {
   }
 };
 export function projectPageReadInput(path, actual) {
+	actual = projectAnnouncementReadInput(path, actual);
+	if (path === 'packages/backend-next/test/unit/composition/http-app.test.ts' && actual.includes(Buffer.from("'/api/roles/list'"))) {
+		actual = projectPublicRoleInput(path, actual);
+	}
 	const binding = Object.hasOwn(pageReadProjection, path) ? pageReadProjection[path] : undefined;
 	if (!binding) return actual;
 	const digest = sha(actual);
@@ -358,5 +362,106 @@ export function projectPageReadInput(path, actual) {
 		before = Buffer.concat([before.subarray(0, patch.offset), Buffer.from(patch.previous), before.subarray(patch.offset + insert.length)]);
 	}
 	assert.equal(sha(before), combined ? binding.relationCurrent : binding.previous, 'Page read exact predecessor identity');
+	return before;
+}
+
+// #295 changes only the Role route assertion. Retain earlier measured bytes.
+export function projectPublicRoleInput(path, actual) {
+	actual = projectAnnouncementReadInput(path, actual);
+	if (path !== 'packages/backend-next/test/unit/composition/http-app.test.ts') return actual;
+	const previous = 'f107b9b110e85b050fb1ff3d2ce92d6b3cf973911fcf43bea0c4b805f63a765b';
+	const current = '571480ecccd8402950670c3cf6f663b73b25025db6a9456dfd77605846cac5f1';
+	if (sha(actual) === previous) return actual;
+	assert.equal(sha(actual), current, 'measured current input drift (notes pagination): public Role');
+	const addition = ", '/api/roles/list', '/api/roles/show'";
+	const text = actual.toString();
+	assert.equal(text.split(addition).length, 2, 'public Role exact predecessor anchor');
+	const before = Buffer.from(text.replace(addition, ''));
+	assert.equal(sha(before), previous, 'public Role exact predecessor identity');
+	return before;
+}
+
+// #337 restores only the exact standalone or Role-combined announcement registration.
+const announcementReadProjection = {
+  "packages/backend-next/src/composition/http-app.ts": [
+    {
+      "currentSha256": "0a4f896273723713804be41f07f0a0ac217886f68ffb1b5aa3cbd01c87894cb4",
+      "previousSha256": "350bbc6ff8951287282253c391a80d9be2c1d4d6fbd5dce6149b51c00c3f386f",
+      "patches": [
+        {
+          "offset": 129,
+          "insert": "';\nimport { createAnnouncementsHttp } from './announcements-http.js",
+          "previous": ""
+        },
+        {
+          "offset": 2070,
+          "insert": "AnnouncementsHttp(resources, config))\n\t\t.route('/', create",
+          "previous": ""
+        }
+      ]
+    },
+    {
+      "currentSha256": "b54091a0049aa30a888c72227f5a3e568156eabb4804b11fd3b34a7ca9ed853d",
+      "previousSha256": "350bbc6ff8951287282253c391a80d9be2c1d4d6fbd5dce6149b51c00c3f386f",
+      "patches": [
+        {
+          "offset": 129,
+          "insert": "';\nimport { createAnnouncementsHttp } from './announcements-http.js",
+          "previous": ""
+        },
+        {
+          "offset": 1897,
+          "insert": "nnouncements = createAnnouncementsHttp(resources, config);\n\tconst a",
+          "previous": ""
+        },
+        {
+          "offset": 2115,
+          "insert": ")\n\t\t.route('/', announcements.app",
+          "previous": ""
+        },
+        {
+          "offset": 3018,
+          "insert": ", announcements.idle()",
+          "previous": ""
+        }
+      ]
+    }
+  ],
+  "packages/backend-next/test/unit/composition/http-app.test.ts": [
+    {
+      "currentSha256": "afc8d83b69ef9ad41caaa49c5a121c9d661286363d4a1071f1ce779d2cbd9c88",
+      "previousSha256": "f107b9b110e85b050fb1ff3d2ce92d6b3cf973911fcf43bea0c4b805f63a765b",
+      "patches": [
+        {
+          "offset": 2120,
+          "insert": "', '/api/announcements', '/api/announcements/show', '/api/i/read-announcement",
+          "previous": ""
+        }
+      ]
+    },
+    {
+      "currentSha256": "3a279a89e29ea382b95a8c6a7122fd0c50ee18c16ebbd49e7ca931556776a946",
+      "previousSha256": "571480ecccd8402950670c3cf6f663b73b25025db6a9456dfd77605846cac5f1",
+      "patches": [
+        {
+          "offset": 2158,
+          "insert": "', '/api/announcements', '/api/announcements/show', '/api/i/read-announcement",
+          "previous": ""
+        }
+      ]
+    }
+  ]
+};
+export function projectAnnouncementReadInput(path, actual) {
+	const variants = Object.hasOwn(announcementReadProjection, path) ? announcementReadProjection[path] : [];
+	const binding = variants.find(value => sha(actual) === value.currentSha256);
+	if (!binding) return actual;
+	let before = Buffer.from(actual);
+	for (const patch of [...binding.patches].reverse()) {
+		const insert = Buffer.from(patch.insert);
+		assert.deepEqual(before.subarray(patch.offset, patch.offset + insert.length), insert, 'announcement exact predecessor anchor');
+		before = Buffer.concat([before.subarray(0, patch.offset), Buffer.from(patch.previous), before.subarray(patch.offset + insert.length)]);
+	}
+	assert.equal(sha(before), binding.previousSha256, 'announcement exact predecessor identity');
 	return before;
 }

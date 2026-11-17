@@ -56,9 +56,9 @@ beforeEach(async () => {
 	await source.getRepository(MiModerationLog).deleteAll();
 });
 
-test('constructs only show and update operations without opening a transaction', () => {
+test('constructs public and admin operations without opening a transaction', () => {
 	const transaction = vi.spyOn(source, 'transaction');
-	expect(Object.keys(application()).sort()).toEqual(['showRole', 'updateRole']);
+	expect(Object.keys(application()).sort()).toEqual(['listPublicRoles', 'showPublicRole', 'showRole', 'updateRole']);
 	expect(transaction).not.toHaveBeenCalled();
 });
 

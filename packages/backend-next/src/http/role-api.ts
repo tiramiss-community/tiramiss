@@ -40,3 +40,22 @@ export function createRoleEndpoints(dependencies: {
 		},
 	];
 }
+
+export function createPublicRoleEndpoints(dependencies: {
+	showPublicRole(access: AccessRequest, input: unknown, evaluation: RoleEvaluation): Promise<RoleShowData>;
+	listPublicRoles(access: AccessRequest, input: unknown, evaluation: RoleEvaluation): Promise<RoleShowData[]>;
+}): ApiEndpoint[] {
+	return [
+		{
+			name: 'roles/list',
+			access: { requireCredential: true, kind: 'read:account' },
+			handle: (access, input) => withEvaluation(async evaluation => (await dependencies.listPublicRoles(access, input, evaluation)).map(roleResponse)),
+		},
+		{
+			name: 'roles/show',
+			access: {},
+			handle: (access, input) => withEvaluation(async evaluation => roleResponse(await dependencies.showPublicRole(access, input, evaluation))),
+			errors: noSuchRole('de5502bf-009a-4639-86c1-fec349e46dcb'),
+		},
+	];
+}

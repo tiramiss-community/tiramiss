@@ -1,0 +1,108 @@
+{
+  "scope": "role-public-and-announcement-finite-shared-inputs",
+  "notes": {
+    "packages/backend-next/src/composition/http-app.ts": [
+      {
+        "currentSha256": "0a4f896273723713804be41f07f0a0ac217886f68ffb1b5aa3cbd01c87894cb4",
+        "previousSha256": "350bbc6ff8951287282253c391a80d9be2c1d4d6fbd5dce6149b51c00c3f386f",
+        "patches": [
+          {
+            "offset": 129,
+            "insert": "';\nimport { createAnnouncementsHttp } from './announcements-http.js",
+            "previous": ""
+          },
+          {
+            "offset": 2070,
+            "insert": "AnnouncementsHttp(resources, config))\n\t\t.route('/', create",
+            "previous": ""
+          }
+        ]
+      }
+    ],
+    "packages/backend-next/test/unit/composition/http-app.test.ts": [
+      {
+        "currentSha256": "afc8d83b69ef9ad41caaa49c5a121c9d661286363d4a1071f1ce779d2cbd9c88",
+        "previousSha256": "f107b9b110e85b050fb1ff3d2ce92d6b3cf973911fcf43bea0c4b805f63a765b",
+        "patches": [
+          {
+            "offset": 2120,
+            "insert": "', '/api/announcements', '/api/announcements/show', '/api/i/read-announcement",
+            "previous": ""
+          }
+        ]
+      },
+      {
+        "currentSha256": "3a279a89e29ea382b95a8c6a7122fd0c50ee18c16ebbd49e7ca931556776a946",
+        "previousSha256": "571480ecccd8402950670c3cf6f663b73b25025db6a9456dfd77605846cac5f1",
+        "patches": [
+          {
+            "offset": 2158,
+            "insert": "', '/api/announcements', '/api/announcements/show', '/api/i/read-announcement",
+            "previous": ""
+          }
+        ]
+      }
+    ]
+  },
+  "package": {
+    "packages/backend-upstream/upstream-sync.json": {
+      "currentSha256": "97f4c47a784ab71693bcdae889ac2eed81e862659473a07a722fe292ade1a5fd",
+      "previousSha256": "9f9398d372fba9e781f71f9782fae16d63268f8488956f8d788bd618240dd484",
+      "patches": [
+        {
+          "offset": 1288,
+          "insert": ",\n\t\t\"src/models/Announcement.ts\",\n\t\t\"src/models/AnnouncementRead.ts\"",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-upstream/.managed-files.json": {
+      "currentSha256": "12b58d1dfb82ba6c15f476ed804ff8b0e025f16003a31274f7ac651a4aab14d5",
+      "previousSha256": "1dbc03fe89be48dbb79fd54f30b91490a82a50225da516e40c28cdc67dce565e",
+      "patches": [
+        {
+          "offset": 16834,
+          "insert": "nouncement.ts\",\n\t\"src/models/AnnouncementRead.ts\",\n\t\"src/models/An",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-upstream/exports/entities.ts": {
+      "currentSha256": "3ce5640083ad0003d38037fbb563476045492062e0f820c26de8c3427653c804",
+      "previousSha256": "3f189c5ebff793a377034680a6a7d1694f56ee24c185c91ab84fc8769cc2188d",
+      "patches": [
+        {
+          "offset": 2455,
+          "insert": "import { MiAnnouncement } from '../src/models/Announcement.js';\nimport { MiAnnouncementRead } from '../src/models/AnnouncementRead.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 3134,
+          "insert": ", MiAnnouncement, MiAnnouncementRead",
+          "previous": ""
+        },
+        {
+          "offset": 3733,
+          "insert": ", MiAnnouncement, MiAnnouncementRead",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/package-imports.test.ts": {
+      "currentSha256": "79286cf3f69d3e1cf40e06fa95c9a2af9e6b940391c4dcfeade2aac1127acfa6",
+      "previousSha256": "ec087b0dfa5203ab1652b23f798978a759d077a8b0155deeb23b02df001819db",
+      "patches": [
+        {
+          "offset": 4212,
+          "insert": "const announcement = source.getMetadata('MiAnnouncement');\n\texpect(announcement.tableName).toBe('announcement');\n\texpect(announcement.relations.find(value => value.propertyName === 'user')?.onDelete).toBe('CASCADE');\n\tconst announcementRead = source.getMetadata('MiAnnouncementRead');\n\texpect(announcementRead.tableName).toBe('announcement_read');\n\texpect(announcementRead.indices.some(index => index.isUnique && index.columns.map(column => column.propertyName).join(',') === 'userId,announcementId')).toBe(true);\n\tfor (const property of ['user', 'announcement']) {\n\t\texpect(announcementRead.relations.find(value => value.propertyName === property)?.onDelete).toBe('CASCADE');\n\t}\n\t",
+          "previous": ""
+        },
+        {
+          "offset": 4938,
+          "insert": "2",
+          "previous": "0"
+        }
+      ]
+    }
+  }
+}

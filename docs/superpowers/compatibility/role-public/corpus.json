@@ -1,0 +1,278 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "atMs": 1794873600000,
+  "roles": [
+    {
+      "id": "a000000000000001",
+      "name": "low",
+      "description": "role low",
+      "isPublic": true,
+      "isExplorable": true,
+      "displayOrder": -5,
+      "updatedAt": "2026-11-17T00:00:00.000Z",
+      "lastUsedAt": "2026-11-17T00:00:00.000Z",
+      "policies": {
+        "canInvite": null,
+        "unknown": {
+          "value": 7
+        },
+        "pinLimit": {
+          "useDefault": false,
+          "priority": 1,
+          "value": 99
+        }
+      }
+    },
+    {
+      "id": "a000000000000002",
+      "name": "hidden",
+      "description": "role hidden",
+      "isPublic": false,
+      "isExplorable": true,
+      "displayOrder": 100,
+      "updatedAt": "2026-11-17T00:00:00.000Z",
+      "lastUsedAt": "2026-11-17T00:00:00.000Z",
+      "policies": {
+        "canInvite": null,
+        "unknown": {
+          "value": 7
+        },
+        "pinLimit": {
+          "useDefault": false,
+          "priority": 1,
+          "value": 99
+        }
+      }
+    },
+    {
+      "id": "a000000000000003",
+      "name": "unlisted",
+      "description": "role unlisted",
+      "isPublic": true,
+      "isExplorable": false,
+      "displayOrder": 9,
+      "updatedAt": "2026-11-17T00:00:00.000Z",
+      "lastUsedAt": "2026-11-17T00:00:00.000Z",
+      "policies": {
+        "canInvite": null,
+        "unknown": {
+          "value": 7
+        },
+        "pinLimit": {
+          "useDefault": false,
+          "priority": 1,
+          "value": 99
+        }
+      }
+    },
+    {
+      "id": "a000000000000004",
+      "name": "high",
+      "description": "role high",
+      "isPublic": true,
+      "isExplorable": true,
+      "displayOrder": 30,
+      "updatedAt": "2026-11-17T00:00:00.000Z",
+      "lastUsedAt": "2026-11-17T00:00:00.000Z",
+      "policies": {
+        "canInvite": null,
+        "unknown": {
+          "value": 7
+        },
+        "pinLimit": {
+          "useDefault": false,
+          "priority": 1,
+          "value": 99
+        }
+      }
+    },
+    {
+      "id": "a000000000000005",
+      "name": "tie",
+      "description": "role tie",
+      "isPublic": true,
+      "isExplorable": true,
+      "displayOrder": 30,
+      "updatedAt": "2026-11-17T00:00:00.000Z",
+      "lastUsedAt": "2026-11-17T00:00:00.000Z",
+      "policies": {
+        "canInvite": null,
+        "unknown": {
+          "value": 7
+        },
+        "pinLimit": {
+          "useDefault": false,
+          "priority": 1,
+          "value": 99
+        }
+      }
+    },
+    {
+      "id": "a000000000000006",
+      "name": "conditional",
+      "description": "role low",
+      "isPublic": true,
+      "isExplorable": true,
+      "displayOrder": 11,
+      "updatedAt": "2026-11-17T00:00:00.000Z",
+      "lastUsedAt": "2026-11-17T00:00:00.000Z",
+      "policies": {
+        "canInvite": null,
+        "unknown": {
+          "value": 7
+        },
+        "pinLimit": {
+          "useDefault": false,
+          "priority": 1,
+          "value": 99
+        }
+      },
+      "target": "conditional",
+      "condFormula": {
+        "type": "isLocal"
+      }
+    }
+  ],
+  "assignments": [
+    {
+      "id": "a000000000000100",
+      "userId": "a000000000000050",
+      "roleId": "a000000000000001",
+      "expiresAt": null
+    },
+    {
+      "id": "a000000000000101",
+      "userId": "a000000000000051",
+      "roleId": "a000000000000001",
+      "expiresAt": "2026-11-17T00:00:00.001Z"
+    },
+    {
+      "id": "a000000000000102",
+      "userId": "a000000000000052",
+      "roleId": "a000000000000001",
+      "expiresAt": "2026-11-17T00:00:00.000Z"
+    },
+    {
+      "id": "a000000000000103",
+      "userId": "a000000000000053",
+      "roleId": "a000000000000001",
+      "expiresAt": "2026-11-16T23:59:59.999Z"
+    },
+    {
+      "id": "a000000000000112",
+      "userId": "a000000000000050",
+      "roleId": "a000000000000002",
+      "expiresAt": null
+    },
+    {
+      "id": "a000000000000113",
+      "userId": "a000000000000050",
+      "roleId": "a000000000000003",
+      "expiresAt": null
+    },
+    {
+      "id": "a000000000000114",
+      "userId": "a000000000000050",
+      "roleId": "a000000000000004",
+      "expiresAt": null
+    },
+    {
+      "id": "a000000000000115",
+      "userId": "a000000000000050",
+      "roleId": "a000000000000005",
+      "expiresAt": null
+    }
+  ],
+  "cases": [
+    {
+      "id": "list",
+      "endpoint": "list",
+      "actor": "native",
+      "input": {}
+    },
+    {
+      "id": "list-invalid",
+      "endpoint": "list",
+      "actor": "native",
+      "input": []
+    },
+    {
+      "id": "show-public",
+      "endpoint": "show",
+      "actor": "anonymous",
+      "input": {
+        "roleId": "a000000000000001"
+      }
+    },
+    {
+      "id": "show-unlisted",
+      "endpoint": "show",
+      "actor": "anonymous",
+      "input": {
+        "roleId": "a000000000000003"
+      }
+    },
+    {
+      "id": "show-private",
+      "endpoint": "show",
+      "actor": "native",
+      "input": {
+        "roleId": "a000000000000002"
+      }
+    },
+    {
+      "id": "show-unknown",
+      "endpoint": "show",
+      "actor": "anonymous",
+      "input": {
+        "roleId": "a000000000000099"
+      }
+    },
+    {
+      "id": "show-missing-param",
+      "endpoint": "show",
+      "actor": "anonymous",
+      "input": {}
+    },
+    {
+      "id": "show-invalid-param",
+      "endpoint": "show",
+      "actor": "anonymous",
+      "input": {
+        "roleId": "!"
+      }
+    },
+    {
+      "id": "list-anonymous",
+      "endpoint": "list",
+      "actor": "anonymous",
+      "input": {}
+    },
+    {
+      "id": "list-scope",
+      "endpoint": "list",
+      "actor": "scope",
+      "input": {}
+    },
+    {
+      "id": "list-no-scope",
+      "endpoint": "list",
+      "actor": "noScope",
+      "input": {}
+    },
+    {
+      "id": "list-suspended",
+      "endpoint": "list",
+      "actor": "suspended",
+      "input": {}
+    },
+    {
+      "id": "show-suspended",
+      "endpoint": "show",
+      "actor": "suspended",
+      "input": {
+        "roleId": "a000000000000001"
+      }
+    }
+  ]
+}
