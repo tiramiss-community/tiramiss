@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { createShowRole, createUpdateRole } from '../modules/role/public.js';
+import { createPublicRoles, createShowRole, createUpdateRole } from '../modules/role/public.js';
 import { readRoleAuthorizationFacts } from '../platform/database/role-authorization-facts.js';
 import { createRoleShowReader } from '../platform/database/role-show.js';
 import { createRoleUpdateTransactions } from '../platform/database/role-update.js';
@@ -19,18 +19,21 @@ export interface RoleApplicationDependencies {
 	changes: RoleChanges;
 }
 
-export type RoleApplication = ReturnType<typeof createShowRole> & ReturnType<typeof createUpdateRole>;
+export type RoleApplication = ReturnType<typeof createPublicRoles> & ReturnType<typeof createShowRole> & ReturnType<typeof createUpdateRole>;
 
 export function createRoleApplication(parts: RoleApplicationDependencies): RoleApplication {
 	const manager = parts.dataSource.manager;
+	const roles = createRoleShowReader(manager, parts.ids.createdAtFromId);
+	const authorizationFacts = { read: (id: string) => readRoleAuthorizationFacts(manager, id, parts.ids.createdAtFromId) };
+	const publicRoles = createPublicRoles({ authorizationFacts, roles });
 	const show = createShowRole({
-		authorizationFacts: { read: id => readRoleAuthorizationFacts(manager, id, parts.ids.createdAtFromId) },
-		roles: createRoleShowReader(manager, parts.ids.createdAtFromId),
+		authorizationFacts,
+		roles,
 	});
 	const update = createUpdateRole({
 		transactions: createRoleUpdateTransactions(parts.dataSource, parts.ids),
 		clock: parts.clock,
 		changes: parts.changes,
 	});
-	return { showRole: show.showRole, updateRole: update.updateRole };
+	return { ...publicRoles, showRole: show.showRole, updateRole: update.updateRole };
 }
