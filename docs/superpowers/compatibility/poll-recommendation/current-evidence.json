@@ -1,0 +1,131 @@
+{
+  "scope": "poll-recommendation-489",
+  "runtimeRevision": "b2565983c3dd346cd247bc69b2bcde997077575d",
+  "baseRevision": "7f64bd8f5996791f9cfe47b9aec124a988c3182d",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "measurement": "R6",
+  "nodeVersion": "v26.4.0",
+  "pnpmVersion": "12.9.1",
+  "measuredWorkingTree": true,
+  "upstreamFullServerMeasured": false,
+  "postingComplete": false,
+  "changeScope": "Test fixture isolation only after PR613 nitpick. Product runtime is unchanged. The race uses a dedicated Note/Poll, deletes only its own ID and verifies all shared business rows unchanged.",
+  "previousEvidence": {
+    "path": "docs/superpowers/compatibility/poll-recommendation/r5-current-evidence.json",
+    "sha256": "75b2dfd69a7f540a5e3597ec2a6b3718a5359fd9fd00fd8bddc499c9bec4899f"
+  },
+  "inputs": {
+    "packages/backend-next/src/composition/note-routes.ts": "2f7242d5d7b5ffcaf03a505c1ceabc2fedb1588bf88b49a1bc4ddbdf77e11b2a",
+    "packages/backend-next/src/composition/poll-recommendation-http.ts": "8b49aed3453a0963805704a2db3f41eb25c18a417415f965b6955622ff43fb33",
+    "packages/backend-next/src/http/poll-recommendation-api.ts": "0d05c6ae52f3fc78adc330bfb0415672f21860a43fb92a850c6446ecb1ad7931",
+    "packages/backend-next/src/modules/poll-recommendation/public.ts": "84c0a733296b66e9b49892c032c3c248f0bd94fb589bfe571b4028935e286fb4",
+    "packages/backend-next/src/modules/poll-recommendation/recommend-polls.ts": "a80467edebb50eedd471d6d725a449aebcd4980b38e38a019d5c00c614b8a324",
+    "packages/backend-next/src/platform/database/poll-recommendation.ts": "11670d3258906a3fec24df1bec42f0de2ba791efd6efc76fb8e1d0bb58d2de83",
+    "packages/backend-next/src/modules/note/read-plan.ts": "a56d578a1053731378df865dc895a1ad8d1fb243935c968d6b96fe4ce461f71c",
+    "packages/backend-next/src/modules/note/render-note.ts": "d35488e853520da9f815311d899922c87a08d28a1f18985940d749394a67e199",
+    "packages/backend-next/src/modules/note/model.ts": "743fab5382b2abed70633e059c0da664a3e1255cb0695047b17d7a5718b62327",
+    "packages/backend-next/src/modules/note/public.ts": "e2a810519faf1d6ec025d7f7817776a86795c6e07bbfdbddcc120e8203a507f1",
+    "packages/backend-next/src/platform/database/note-reader.ts": "989af51a138f31ea6b5075bb18abb4ce9221ad92d33cf7a8b1de88b8de8fce9e",
+    "packages/backend-next/src/platform/database/note-authors.ts": "7137f07fbd9eb92b6fbbfabd2343ee79d28adf72d051ecc393c525d74211f668",
+    "packages/backend-next/src/platform/database/authenticate.ts": "64b83c005791625008c53f493b024d5973ecc904e36642b4fa9543217f1c08cd",
+    "packages/backend-next/src/modules/access/authorize.ts": "88ddaae296231983e71461486cd3e9d6ed3703b0e5e8d0e4c4f79d69d2a953f3",
+    "packages/backend-next/src/http/api-endpoint.ts": "262172fbd09ef769607b079e59f862c2f386098b5720a4835df26514b2b73bc2",
+    "packages/backend-next/test/unit/note/recommend-polls.test.ts": "ca54e6ae213b427d1c8b4dafcd5bb0cac16f0e79a8ba87704476ab9709e171e3",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "fe2cd18f8f899620e6a9830a2b6639348cde7a501f72808072db44698aa4fa6e",
+    "packages/backend-next/test/integration/poll-recommendation.test.ts": "fa513dc7c933f62376e143eff90bf4a8668980af3c399faa91004bcd1740a2bc",
+    "packages/backend-next/test/helpers/notes-list-source-database.mjs": "ef7bb66df931eb4389f7f2667552911bf2a730edeec63a5bd6dbeb04e78d8504",
+    "docs/superpowers/compatibility/poll-recommendation/source-probe.mjs": "c907d4a515ddcac87ba04875ecb60a91b5a60b267ad8ef91c13f339c433d6acb",
+    "docs/superpowers/compatibility/poll-recommendation/source-observations.json": "f638f2b77cc3eea3799b4632a493d7d6bb8777e375431b9118bef91e3f0db39f",
+    "docs/superpowers/compatibility/poll-recommendation/pg-observations.json": "a1b43289689cad9129bbfc0085648b9aa284ce01c5eef67f6e0833bcc29c3704",
+    "docs/superpowers/compatibility/poll-recommendation/predecessor.json": "bf73eaaebe598bf76049711da41697292f095640559e0acfb7ec97a76903501f",
+    "scripts/notes-pagination-evidence.mjs": "e99909b159a05612421a2c9052821f663f19f29dbee62443fe40c9748bc60638",
+    "scripts/poll-recommendation-contract.test.mjs": "b1038b5cd0e87ba50a47f232e8c40e7e2625727b8abbb1b9a7315f7c62968e6c",
+    "docs/superpowers/compatibility/poll-recommendation/auth-source-probe.mjs": "f07b3a3b5741acb10ae20374ad25ecc4407657c5fc28e37b5601b4da8fe6b288",
+    "docs/superpowers/compatibility/poll-recommendation/auth-observations.json": "c4a374ee3b43c5cba25136ef881c4a22e1349ac3643abba6c1e101d5080f682f"
+  },
+  "startedAt": "2026-11-17T01:49:02.388848+00:00",
+  "runs": [
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/sol-delivery-20261117/poll489/r6-typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "name": "integration",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/poll-recommendation.test.ts",
+        "test/integration/notes-list.test.ts",
+        "test/integration/note-show.test.ts"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/sol-delivery-20261117/poll489/r6-integration.log",
+      "logSha256": "9b73d026f2853daf8bef3db4b76b029076c94ad49055772b4a1d3ca9376d7fb4"
+    },
+    {
+      "name": "shipping",
+      "command": [
+        "node",
+        "scripts/check-shipping.mjs",
+        "--base",
+        "7f64bd8f5996791f9cfe47b9aec124a988c3182d"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/sol-delivery-20261117/poll489/r6-shipping.log",
+      "logSha256": "aa69d0e4a8542db7da0aa6ef7f854a912df46523c5a71247ae57e36efd6f4a31"
+    }
+  ],
+  "inputsAfter": {
+    "packages/backend-next/src/composition/note-routes.ts": "2f7242d5d7b5ffcaf03a505c1ceabc2fedb1588bf88b49a1bc4ddbdf77e11b2a",
+    "packages/backend-next/src/composition/poll-recommendation-http.ts": "8b49aed3453a0963805704a2db3f41eb25c18a417415f965b6955622ff43fb33",
+    "packages/backend-next/src/http/poll-recommendation-api.ts": "0d05c6ae52f3fc78adc330bfb0415672f21860a43fb92a850c6446ecb1ad7931",
+    "packages/backend-next/src/modules/poll-recommendation/public.ts": "84c0a733296b66e9b49892c032c3c248f0bd94fb589bfe571b4028935e286fb4",
+    "packages/backend-next/src/modules/poll-recommendation/recommend-polls.ts": "a80467edebb50eedd471d6d725a449aebcd4980b38e38a019d5c00c614b8a324",
+    "packages/backend-next/src/platform/database/poll-recommendation.ts": "11670d3258906a3fec24df1bec42f0de2ba791efd6efc76fb8e1d0bb58d2de83",
+    "packages/backend-next/src/modules/note/read-plan.ts": "a56d578a1053731378df865dc895a1ad8d1fb243935c968d6b96fe4ce461f71c",
+    "packages/backend-next/src/modules/note/render-note.ts": "d35488e853520da9f815311d899922c87a08d28a1f18985940d749394a67e199",
+    "packages/backend-next/src/modules/note/model.ts": "743fab5382b2abed70633e059c0da664a3e1255cb0695047b17d7a5718b62327",
+    "packages/backend-next/src/modules/note/public.ts": "e2a810519faf1d6ec025d7f7817776a86795c6e07bbfdbddcc120e8203a507f1",
+    "packages/backend-next/src/platform/database/note-reader.ts": "989af51a138f31ea6b5075bb18abb4ce9221ad92d33cf7a8b1de88b8de8fce9e",
+    "packages/backend-next/src/platform/database/note-authors.ts": "7137f07fbd9eb92b6fbbfabd2343ee79d28adf72d051ecc393c525d74211f668",
+    "packages/backend-next/src/platform/database/authenticate.ts": "64b83c005791625008c53f493b024d5973ecc904e36642b4fa9543217f1c08cd",
+    "packages/backend-next/src/modules/access/authorize.ts": "88ddaae296231983e71461486cd3e9d6ed3703b0e5e8d0e4c4f79d69d2a953f3",
+    "packages/backend-next/src/http/api-endpoint.ts": "262172fbd09ef769607b079e59f862c2f386098b5720a4835df26514b2b73bc2",
+    "packages/backend-next/test/unit/note/recommend-polls.test.ts": "ca54e6ae213b427d1c8b4dafcd5bb0cac16f0e79a8ba87704476ab9709e171e3",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "fe2cd18f8f899620e6a9830a2b6639348cde7a501f72808072db44698aa4fa6e",
+    "packages/backend-next/test/integration/poll-recommendation.test.ts": "fa513dc7c933f62376e143eff90bf4a8668980af3c399faa91004bcd1740a2bc",
+    "packages/backend-next/test/helpers/notes-list-source-database.mjs": "ef7bb66df931eb4389f7f2667552911bf2a730edeec63a5bd6dbeb04e78d8504",
+    "docs/superpowers/compatibility/poll-recommendation/source-probe.mjs": "c907d4a515ddcac87ba04875ecb60a91b5a60b267ad8ef91c13f339c433d6acb",
+    "docs/superpowers/compatibility/poll-recommendation/source-observations.json": "f638f2b77cc3eea3799b4632a493d7d6bb8777e375431b9118bef91e3f0db39f",
+    "docs/superpowers/compatibility/poll-recommendation/pg-observations.json": "a1b43289689cad9129bbfc0085648b9aa284ce01c5eef67f6e0833bcc29c3704",
+    "docs/superpowers/compatibility/poll-recommendation/predecessor.json": "bf73eaaebe598bf76049711da41697292f095640559e0acfb7ec97a76903501f",
+    "scripts/notes-pagination-evidence.mjs": "e99909b159a05612421a2c9052821f663f19f29dbee62443fe40c9748bc60638",
+    "scripts/poll-recommendation-contract.test.mjs": "b1038b5cd0e87ba50a47f232e8c40e7e2625727b8abbb1b9a7315f7c62968e6c",
+    "docs/superpowers/compatibility/poll-recommendation/auth-source-probe.mjs": "f07b3a3b5741acb10ae20374ad25ecc4407657c5fc28e37b5601b4da8fe6b288",
+    "docs/superpowers/compatibility/poll-recommendation/auth-observations.json": "c4a374ee3b43c5cba25136ef881c4a22e1349ac3643abba6c1e101d5080f682f"
+  },
+  "noInputDrift": true,
+  "completedAt": "2026-11-17T01:49:17.781329+00:00",
+  "priorCiFailure": {
+    "head": "35ecffd5deceba3f28e2625c01ac82d056d977f3",
+    "status": "FAIL",
+    "passed": 1947,
+    "failed": 1,
+    "skipped": 2,
+    "test": "test/integration/internal-events.test.ts:79",
+    "observation": "Redis CLIENT LIST still contains the internal-events connection immediately after close. This file is unchanged by poll recommendations. Not counted as PASS or repaired here. Parent will monitor latest CI.",
+    "log": "/tmp/sol-delivery-20261117/poll489/ci-integration-initial.log",
+    "logSha256": "dca6e74a3ffc954662a95822170c6602c44872b588f9ff30ff21167d080b6589"
+  },
+  "historicalValidation": "R4 full unit4947 and R5 unit21/integration57/source/root-near9 remain their original measurements. R6 replays the changed fixture, neighbouring HTTP/PG, typecheck and shipping only."
+}

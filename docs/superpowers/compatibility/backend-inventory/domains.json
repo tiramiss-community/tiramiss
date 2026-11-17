@@ -1665,6 +1665,33 @@
       "note": "#305: ID/日時優先順位・昇降順・exclusive境界・limit、notes固有条件、guest UGCと認証時もguest packingを通常HTTPへ接続。joined snapshot・参照作者のID補完/fallbackは4barrierで確認。親#185と投稿partialは未完了。",
       "evidenceRevision": "435f3741d57b9bb91a1958dcf4c0014df780bee5"
     },
+    "api:notes/polls/recommendation": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/poll-recommendation/public.ts",
+        "packages/backend-next/src/modules/poll-recommendation/recommend-polls.ts",
+        "packages/backend-next/src/platform/database/poll-recommendation.ts",
+        "packages/backend-next/src/http/poll-recommendation-api.ts",
+        "packages/backend-next/src/composition/poll-recommendation-http.ts",
+        "packages/backend-next/src/composition/note-routes.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/note/recommend-polls.test.ts",
+        "packages/backend-next/test/integration/poll-recommendation.test.ts",
+        "docs/superpowers/compatibility/poll-recommendation/README.md",
+        "docs/superpowers/compatibility/poll-recommendation/source-probe.mjs",
+        "docs/superpowers/compatibility/poll-recommendation/auth-source-probe.mjs",
+        "docs/superpowers/compatibility/poll-recommendation/source-observations.json",
+        "docs/superpowers/compatibility/poll-recommendation/pg-observations.json",
+        "docs/superpowers/compatibility/poll-recommendation/auth-observations.json",
+        "docs/superpowers/compatibility/poll-recommendation/current-evidence.json"
+      ],
+      "differences": [
+        "既存Note描画のD7 64階層/256 Note・循環500とMeta/cache境界を引継ぐ。固定source callbackを同一PGの9入力で通常HTTPと比較、未認証gate/ApiErrorをliteral実行。full upstream server/packer比較ではない。"
+      ],
+      "note": "#489: local・本人以外・public・未期限切れ・未投票・mute除外・excludeChannelsとoffset/limit、Poll選択後のNote再取得降順、viewer付きdetail描画を通常HTTPへ接続。保存不変。投票更新・TL共通filter一律適用と親#184の完了は含まない。",
+      "evidenceRevision": "96d051373b2c4a5a442a32ca235df4e518d852ff"
+    },
     "api:notes/show": {
       "status": "verified",
       "implementation": [

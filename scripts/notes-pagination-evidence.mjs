@@ -67,6 +67,45 @@ const projection = {
     ]
   }
 };
+const pollRecommendationProjection = {
+  "packages/backend-next/src/composition/note-routes.ts": {
+    "currentSha256": "2f7242d5d7b5ffcaf03a505c1ceabc2fedb1588bf88b49a1bc4ddbdf77e11b2a",
+    "previousSha256": "ccac3cb13d5dbe5908f869cd1de788fff20ba877e00f722ec25f47507fca76e0",
+    "patches": [
+      {
+        "offset": 142,
+        "insert": "';\nimport { createPollRecommendationHttp } from './poll-recommendation-http.js",
+        "previous": ""
+      },
+      {
+        "offset": 3066,
+        "insert": ", pollRecommendation: createPollRecommendationHttp(resources, config)",
+        "previous": ""
+      },
+      {
+        "offset": 3352,
+        "insert": "\n\t\t.route('/', prepared.pollRecommendation)",
+        "previous": ""
+      }
+    ]
+  },
+  "packages/backend-next/test/unit/composition/http-app.test.ts": {
+    "currentSha256": "fe2cd18f8f899620e6a9830a2b6639348cde7a501f72808072db44698aa4fa6e",
+    "previousSha256": "a2f030dbfecfa3644a09d1d1aca81a8693ffec7dbad1bc3ceac9894fb46be5eb",
+    "patches": [
+      {
+        "offset": 3004,
+        "insert": "/polls/recommendation', '/api/notes",
+        "previous": ""
+      },
+      {
+        "offset": 3148,
+        "insert": "'notes/polls/recommendation', ",
+        "previous": ""
+      }
+    ]
+  }
+};
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const read = path => readFileSync(new URL('../' + path, import.meta.url));
 const optionalRead = path => {
@@ -87,6 +126,8 @@ export const notesPaginationPredecessorFiles = Object.freeze([
 
 export function validateNotesPaginationEvidence(value, rawRead = read, optional = optionalRead) {
 	return scopedEvidenceValidation(validateNotesPaginationEvidence, value, rawRead, optional, (rawRead, optional) => {
+		const currentRead = rawRead;
+		rawRead = path => projectPollRecommendationInput(path, currentRead(path));
 		for (const [name, digest] of Object.entries(historicalSeals)) assert.equal(sha(rawRead(directory + name)), digest, 'notes pagination historical receipt seal');
 		const receipt = rawRead(directory + 'current-evidence.json');
 		assert.equal(sha(receipt), receiptSeal, 'notes pagination receipt seal');
@@ -140,6 +181,7 @@ export function validateNotesPaginationEvidence(value, rawRead = read, optional 
 // Historical leaves consume only these exact five byte transitions. The full
 // notes measurement is checked independently by notes-pagination-contract.test.mjs.
 export function projectNotesPaginationInput(path, actual) {
+	actual = projectPollRecommendationInput(path, actual);
 	const binding = Object.hasOwn(projection, path) ? projection[path] : undefined;
 	if (!binding) return actual;
 	assert.equal(sha(actual), binding.currentSha256, `measured current input drift (notes pagination): ${path}`);
@@ -150,5 +192,20 @@ export function projectNotesPaginationInput(path, actual) {
 		before = Buffer.concat([before.subarray(0, patch.offset), Buffer.from(patch.previous), before.subarray(patch.offset + insert.length)]);
 	}
 	assert.equal(sha(before), binding.previousSha256, 'notes pagination exact predecessor identity');
+	return before;
+}
+
+// Only these measured #489 additions project to the immutable #305 R3 input.
+export function projectPollRecommendationInput(path, actual) {
+	const binding = Object.hasOwn(pollRecommendationProjection, path) ? pollRecommendationProjection[path] : undefined;
+	if (!binding) return actual;
+	assert.equal(sha(actual), binding.currentSha256, `measured current input drift (notes pagination): ${path} (poll recommendation)`);
+	let before = Buffer.from(actual);
+	for (const patch of [...binding.patches].reverse()) {
+		const insert = Buffer.from(patch.insert);
+		assert.deepEqual(before.subarray(patch.offset, patch.offset + insert.length), insert, 'poll recommendation exact predecessor anchor');
+		before = Buffer.concat([before.subarray(0, patch.offset), Buffer.from(patch.previous), before.subarray(patch.offset + insert.length)]);
+	}
+	assert.equal(sha(before), binding.previousSha256, 'poll recommendation exact predecessor identity');
 	return before;
 }
