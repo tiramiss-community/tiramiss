@@ -40,3 +40,5 @@ route登録と一覧期待値の2入力だけが既存 notes-pagination の測�
 R2 の製品測定は [r2-current-evidence.json](r2-current-evidence.json) に byte 不変で保持する。その後の Page 登録との共有 script 変更は `current-evidence.json` の R3 として、変更した script と共有2入力を固定し、関連する21契約を実行する。製品 code/test は R2 と同一であり、製品テストを再実行したとの記録にはしない。
 
 既知の Page 単独、relation 単独、両者同居の2ファイルだけを正確な hash と逆 patch で識別する。両者同居は Page の差分だけを戻して既知の relation 単独となり、既存の relation/memo/poll の順に過去の不変 receipt へ渡す。任意の変更は拒否し、既存 read 上限と scope/cache 機構は変更しない。共通契約は3通りを実byteから再構成し、hash・anchor・未知変更拒否を検証する。実際に両製品を合成して通常HTTPを起動する確認は取りまとめ側の最終 head 合成に残す。
+
+CodeRabbit Web follow-up: Page の前段が既存宣言済みの UserMemo 単独 input (`43aab6…`) を拒否する境界を修正した。既存 `current` hash だけを通し、UserMemo の既存 anchor で `a2f030…` へ戻す。旧R2/R3 receipt は byte 不変で、追加の共有 script 実測・RED/PASS・入力/ログ SHA は [memo-current-followup.json](memo-current-followup.json) に分けた。製品 code・登録順・canonical root snapshot は変わらない。
