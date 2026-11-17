@@ -1,0 +1,579 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "manifest": [
+    {
+      "path": "packages/backend/src/core/entities/UserEntityService.ts",
+      "sha256": "c986907bacb822863fe19214b7ec1443c02ebb028820f33932e7cde7f47f6464"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/users/relation.ts",
+      "sha256": "86d5d4ae1f409b63176a102ce34f2defa7e00af800737d3daf6ab61b6fc7eadc"
+    }
+  ],
+  "corpusSha256": "c8363b8d630b5a4cb8432f4c381b98a9b5ab46e47f4bf4ae6ad60633ecf60994",
+  "access": {
+    "requireCredential": true,
+    "kind": "read:account"
+  },
+  "doubles": [
+    "Repository row matching/query projection for source observation; real PG repositories separately compared in integration test",
+    "Endpoint authentication is exercised through the new normal HTTP entry; full upstream server is not booted"
+  ],
+  "cases": [
+    {
+      "id": "alice-0",
+      "result": [
+        {
+          "id": "bob",
+          "following": {
+            "id": "ab",
+            "followeeId": "bob",
+            "followerId": "alice",
+            "isFollowerHibernated": true,
+            "withReplies": true,
+            "notify": "normal",
+            "followerHost": "remote.test",
+            "followerInbox": "https://remote.test/inbox",
+            "followerSharedInbox": "https://remote.test/shared",
+            "followeeHost": null,
+            "followeeInbox": null,
+            "followeeSharedInbox": null
+          },
+          "isFollowing": true,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": true,
+          "isBlocking": true,
+          "isBlocked": false,
+          "isMuted": true,
+          "isRenoteMuted": false
+        }
+      ]
+    },
+    {
+      "id": "alice-1",
+      "result": [
+        {
+          "id": "carol",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": true,
+          "hasPendingFollowRequestFromYou": true,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": true,
+          "isMuted": false,
+          "isRenoteMuted": true
+        }
+      ]
+    },
+    {
+      "id": "alice-2",
+      "result": [
+        {
+          "id": "unknown",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        }
+      ]
+    },
+    {
+      "id": "alice-3",
+      "result": []
+    },
+    {
+      "id": "alice-4",
+      "result": [
+        {
+          "id": "carol",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": true,
+          "hasPendingFollowRequestFromYou": true,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": true,
+          "isMuted": false,
+          "isRenoteMuted": true
+        },
+        {
+          "id": "bob",
+          "following": {
+            "id": "ab",
+            "followeeId": "bob",
+            "followerId": "alice",
+            "isFollowerHibernated": true,
+            "withReplies": true,
+            "notify": "normal",
+            "followerHost": "remote.test",
+            "followerInbox": "https://remote.test/inbox",
+            "followerSharedInbox": "https://remote.test/shared",
+            "followeeHost": null,
+            "followeeInbox": null,
+            "followeeSharedInbox": null
+          },
+          "isFollowing": true,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": true,
+          "isBlocking": true,
+          "isBlocked": false,
+          "isMuted": true,
+          "isRenoteMuted": false
+        },
+        {
+          "id": "unknown",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        },
+        {
+          "id": "alice",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        },
+        {
+          "id": "empty",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        }
+      ]
+    },
+    {
+      "id": "bob-5",
+      "result": [
+        {
+          "id": "bob",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        }
+      ]
+    },
+    {
+      "id": "bob-6",
+      "result": [
+        {
+          "id": "carol",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        }
+      ]
+    },
+    {
+      "id": "bob-7",
+      "result": [
+        {
+          "id": "unknown",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        }
+      ]
+    },
+    {
+      "id": "bob-8",
+      "result": []
+    },
+    {
+      "id": "bob-9",
+      "result": [
+        {
+          "id": "carol",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        },
+        {
+          "id": "bob",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        },
+        {
+          "id": "unknown",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        },
+        {
+          "id": "alice",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": true,
+          "hasPendingFollowRequestFromYou": true,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": true,
+          "isMuted": false,
+          "isRenoteMuted": true
+        },
+        {
+          "id": "empty",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        }
+      ]
+    },
+    {
+      "id": "carol-10",
+      "result": [
+        {
+          "id": "bob",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        }
+      ]
+    },
+    {
+      "id": "carol-11",
+      "result": [
+        {
+          "id": "carol",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        }
+      ]
+    },
+    {
+      "id": "carol-12",
+      "result": [
+        {
+          "id": "unknown",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        }
+      ]
+    },
+    {
+      "id": "carol-13",
+      "result": []
+    },
+    {
+      "id": "carol-14",
+      "result": [
+        {
+          "id": "carol",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        },
+        {
+          "id": "bob",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        },
+        {
+          "id": "unknown",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        },
+        {
+          "id": "alice",
+          "following": {
+            "id": "ca",
+            "followeeId": "alice",
+            "followerId": "carol",
+            "isFollowerHibernated": false,
+            "withReplies": false,
+            "notify": null,
+            "followerHost": null,
+            "followerInbox": null,
+            "followerSharedInbox": null,
+            "followeeHost": null,
+            "followeeInbox": null,
+            "followeeSharedInbox": null
+          },
+          "isFollowing": true,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": true,
+          "isBlocking": true,
+          "isBlocked": false,
+          "isMuted": true,
+          "isRenoteMuted": false
+        },
+        {
+          "id": "empty",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        }
+      ]
+    },
+    {
+      "id": "empty-15",
+      "result": [
+        {
+          "id": "bob",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        }
+      ]
+    },
+    {
+      "id": "empty-16",
+      "result": [
+        {
+          "id": "carol",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        }
+      ]
+    },
+    {
+      "id": "empty-17",
+      "result": [
+        {
+          "id": "unknown",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        }
+      ]
+    },
+    {
+      "id": "empty-18",
+      "result": []
+    },
+    {
+      "id": "empty-19",
+      "result": [
+        {
+          "id": "carol",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        },
+        {
+          "id": "bob",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        },
+        {
+          "id": "unknown",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        },
+        {
+          "id": "alice",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        },
+        {
+          "id": "empty",
+          "following": null,
+          "isFollowing": false,
+          "isFollowed": false,
+          "hasPendingFollowRequestFromYou": false,
+          "hasPendingFollowRequestToYou": false,
+          "isBlocking": false,
+          "isBlocked": false,
+          "isMuted": false,
+          "isRenoteMuted": false
+        }
+      ]
+    },
+    {
+      "id": "invalid-20",
+      "error": {
+        "code": "INVALID_PARAM"
+      }
+    },
+    {
+      "id": "invalid-21",
+      "error": {
+        "code": "INVALID_PARAM"
+      }
+    },
+    {
+      "id": "invalid-22",
+      "error": {
+        "code": "INVALID_PARAM"
+      }
+    },
+    {
+      "id": "invalid-23",
+      "error": {
+        "code": "INVALID_PARAM"
+      }
+    },
+    {
+      "id": "invalid-24",
+      "error": {
+        "code": "INVALID_PARAM"
+      }
+    },
+    {
+      "id": "invalid-25",
+      "error": {
+        "code": "INVALID_PARAM"
+      }
+    }
+  ]
+}
