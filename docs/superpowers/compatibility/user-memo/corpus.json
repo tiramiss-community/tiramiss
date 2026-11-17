@@ -1,0 +1,27 @@
+{
+  "actorId": "alice",
+  "users": ["alice", "bob", "target"],
+  "newId": "newmemo",
+  "doubles": "Literal endpoint callback and literal UserEntityService memo block; controlled repository/Getter/IdService, no full upstream HTTP server or PostgreSQL.",
+  "cases": [
+    {"id":"insert", "input":{"userId":"target","memo":"private memo"}, "rows":[]},
+    {"id":"update-stable-id", "input":{"userId":"target","memo":"replacement"}, "rows":[{"id":"oldmemo","userId":"alice","targetUserId":"target","memo":"previous"}]},
+    {"id":"empty-deletes", "input":{"userId":"target","memo":""}, "rows":[{"id":"oldmemo","userId":"alice","targetUserId":"target","memo":"previous"}]},
+    {"id":"null-deletes", "input":{"userId":"target","memo":null}, "rows":[{"id":"oldmemo","userId":"alice","targetUserId":"target","memo":"previous"}]},
+    {"id":"delete-absent", "input":{"userId":"target","memo":null}, "rows":[]},
+    {"id":"whitespace-preserved", "input":{"userId":"target","memo":"  \n "}, "rows":[]},
+    {"id":"self-memo", "input":{"userId":"alice","memo":"self"}, "rows":[]},
+    {"id":"other-author-insert", "input":{"userId":"target","memo":"alice secret"}, "rows":[{"id":"bobmemo","userId":"bob","targetUserId":"target","memo":"bob secret"}]},
+    {"id":"other-author-delete", "input":{"userId":"target","memo":null}, "rows":[{"id":"bobmemo","userId":"bob","targetUserId":"target","memo":"bob secret"}]},
+    {"id":"missing-user-save", "input":{"userId":"unknown","memo":"text"}, "rows":[]},
+    {"id":"missing-user-delete", "input":{"userId":"unknown","memo":null}, "rows":[]},
+    {"id":"missing-memo", "input":{"userId":"target"}, "rows":[]},
+    {"id":"invalid-memo", "input":{"userId":"target","memo":1}, "rows":[]},
+    {"id":"invalid-user-id", "input":{"userId":"bad-id","memo":"text"}, "rows":[]},
+    {"id":"insert-failure", "input":{"userId":"target","memo":"text"}, "rows":[], "fail":"insert"},
+    {"id":"find-failure", "input":{"userId":"target","memo":"text"}, "rows":[], "fail":"find"},
+    {"id":"update-failure", "input":{"userId":"target","memo":"text"}, "rows":[{"id":"oldmemo","userId":"alice","targetUserId":"target","memo":"previous"}], "fail":"update"},
+    {"id":"delete-failure", "input":{"userId":"target","memo":null}, "rows":[{"id":"oldmemo","userId":"alice","targetUserId":"target","memo":"previous"}], "fail":"delete"},
+    {"id":"target-lookup-failure", "input":{"userId":"target","memo":"text"}, "rows":[], "fail":"target"}
+  ]
+}

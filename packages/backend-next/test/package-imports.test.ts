@@ -6,7 +6,7 @@ import 'reflect-metadata';
 import { execFileSync } from 'node:child_process';
 import { expect, expectTypeOf, test } from 'vitest';
 import { DataSource } from 'typeorm';
-import { entities, MiRole, MiUserNotePining } from 'backend-upstream/entities';
+import { entities, MiRole, MiUserMemo, MiUserNotePining } from 'backend-upstream/entities';
 import type { MiNote } from 'backend-upstream/entities';
 
 test('loads copied entities without eagerly loading migration dependencies', async () => {
@@ -51,7 +51,15 @@ test('loads copied entities without eagerly loading migration dependencies', asy
 		expect(relation?.inverseEntityMetadata.tableName).toBe(table);
 		expect(relation?.onDelete).toBe('CASCADE');
 	}
-	expect(source.entityMetadatas).toHaveLength(38);
+	const memoMetadata = source.getMetadata(MiUserMemo);
+	expect(memoMetadata.tableName).toBe('user_memo');
+	expect(memoMetadata.indices.some(index => index.isUnique && index.columns.map(column => column.propertyName).join(',') === 'userId,targetUserId')).toBe(true);
+	for (const property of ['user', 'targetUser']) {
+		const relation = memoMetadata.relations.find(value => value.propertyName === property);
+		expect(relation?.inverseEntityMetadata.tableName).toBe('user');
+		expect(relation?.onDelete).toBe('CASCADE');
+	}
+	expect(source.entityMetadatas).toHaveLength(39);
 	expect(source.getMetadata('MiWebhook').tableName).toBe('webhook');
 	expect(source.getMetadata('MiWebhook').relations.find(value => value.propertyName === 'user')?.inverseEntityMetadata.tableName).toBe('user');
 	for (const [model, table, relation] of [['MiMuting', 'muting', 'muter'], ['MiRenoteMuting', 'renote_muting', 'mutee'], ['MiNoteThreadMuting', 'note_thread_muting', 'user'], ['MiUserListMembership', 'user_list_membership', 'user']] as const) {

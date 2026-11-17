@@ -4,7 +4,7 @@
  */
 import assert from 'node:assert/strict';
 import { inEvidenceValidationScope, scopedEvidenceValidation } from './evidence-validation-scope.mjs';
-import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
+import { readPreAliasKey, projectUserMemoEntityInput } from './local-actor-alias-key-evidence.mjs';
 import { localFollowCollectionsDigest } from './local-follow-collections-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -57,7 +57,7 @@ export function validateLocalFeaturedEvidence(value, readFile = read, optional =
 	assert.deepEqual(value.remainingGapIds, ['media-emoji', 'instance-metadata', 'charts', 'rich-actor', 'remote-cache']);
 	assert.deepEqual(Object.keys(value.files).sort(), [...renewedFiles].sort(), 'featured renewal subset');
 	assert.deepEqual(Object.keys(value.frozenInputSha256).sort(), measuredFiles, 'featured frozen subset');
-	for (const [path, digest] of Object.entries(value.frozenInputSha256)) assert.equal(sha(readFile(path)), localFollowCollectionsDigest(path, digest, readFile, optional, driftLabel), driftLabel);
+	for (const [path, digest] of Object.entries(value.frozenInputSha256)) assert.equal(sha(projectUserMemoEntityInput(path, readFile(path))), localFollowCollectionsDigest(path, digest, readFile, optional, driftLabel), driftLabel);
 	for (const [file, binding] of Object.entries(value.files)) {
 		const predecessor = binding.predecessor;
 		const bytes = readFile(predecessor.path);

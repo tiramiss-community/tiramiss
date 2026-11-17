@@ -87,6 +87,8 @@ export const notesPaginationPredecessorFiles = Object.freeze([
 
 export function validateNotesPaginationEvidence(value, rawRead = read, optional = optionalRead) {
 	return scopedEvidenceValidation(validateNotesPaginationEvidence, value, rawRead, optional, (rawRead, optional) => {
+		const currentRead = rawRead;
+		rawRead = path => projectUserMemoInput(path, currentRead(path));
 		for (const [name, digest] of Object.entries(historicalSeals)) assert.equal(sha(rawRead(directory + name)), digest, 'notes pagination historical receipt seal');
 		const receipt = rawRead(directory + 'current-evidence.json');
 		assert.equal(sha(receipt), receiptSeal, 'notes pagination receipt seal');
@@ -140,6 +142,7 @@ export function validateNotesPaginationEvidence(value, rawRead = read, optional 
 // Historical leaves consume only these exact five byte transitions. The full
 // notes measurement is checked independently by notes-pagination-contract.test.mjs.
 export function projectNotesPaginationInput(path, actual) {
+	actual = projectUserMemoInput(path, actual);
 	const binding = Object.hasOwn(projection, path) ? projection[path] : undefined;
 	if (!binding) return actual;
 	assert.equal(sha(actual), binding.currentSha256, `measured current input drift (notes pagination): ${path}`);
@@ -151,4 +154,36 @@ export function projectNotesPaginationInput(path, actual) {
 	}
 	assert.equal(sha(before), binding.previousSha256, 'notes pagination exact predecessor identity');
 	return before;
+}
+
+// #294 adds only a memo route and its registration assertion. Preserve the
+// earlier measurements; the optional #489 combination removes only #294 bytes.
+const userMemoProjection = {
+	'packages/backend-next/src/composition/http-app.ts': {
+		current: '70ad0cbb84ddcefaa2e6fc9ac79e1a0c769707537ed39d200d7340b98c0657a6',
+		previous: 'e8851b4ec5bba14758c315e98368105051463cb7cba8d26b3c18ad332ff381cc',
+		additions: ["import { createUserMemoHttp } from './user-memo-http.js';\n", "\t\t.route('/', createUserMemoHttp(resources, config))\n"],
+	},
+	'packages/backend-next/test/unit/composition/http-app.test.ts': {
+		current: '43aab6cd144b8d0937fca5bec41322d2bed0125c1f94118e7bebb4437d901bda',
+		previous: 'a2f030dbfecfa3644a09d1d1aca81a8693ffec7dbad1bc3ceac9894fb46be5eb',
+		combined: 'cdcc4eb0be344bbafde0b45f85072cd570d17850f81e275908836290ca8589d2',
+		pollOnly: 'fe2cd18f8f899620e6a9830a2b6639348cde7a501f72808072db44698aa4fa6e',
+		additions: ["\t\t'/api/users/update-memo',\n"],
+	},
+};
+
+export function projectUserMemoInput(path, actual) {
+	const binding = Object.hasOwn(userMemoProjection, path) ? userMemoProjection[path] : undefined;
+	if (!binding) return actual;
+	const digest = sha(actual);
+	if (digest === binding.previous || digest === binding.pollOnly) return actual;
+	assert(digest === binding.current || (binding.combined && digest === binding.combined), `measured current input drift (notes pagination): ${path} (user memo predecessor)`);
+	let before = actual.toString();
+	for (const addition of binding.additions) {
+		assert.equal(before.split(addition).length, 2, 'user memo exact predecessor anchor');
+		before = before.replace(addition, '');
+	}
+	assert.equal(sha(before), digest === binding.combined ? binding.pollOnly : binding.previous, 'user memo exact predecessor identity');
+	return Buffer.from(before);
 }

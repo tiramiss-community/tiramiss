@@ -4,7 +4,7 @@
  */
 import assert from 'node:assert/strict';
 import { inEvidenceValidationScope, scopedEvidenceValidation } from './evidence-validation-scope.mjs';
-import { readPreAliasKey } from './local-actor-alias-key-evidence.mjs';
+import { readPreAliasKey, projectUserMemoEntityInput } from './local-actor-alias-key-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
@@ -133,7 +133,7 @@ export function validateLocalFollowCollectionsEvidence(value, readFile = read, o
 	assert.deepEqual(value.validationContext, { project: 'backend-next-s1-r13', ports: { postgres: 55516, redis: 56416, meilisearch: 57816 }, ciMeasured: false }, 'follow collections validation context');
 	assert.deepEqual(Object.keys(value.files).sort(), [...renewedFiles].sort(), 'follow collections renewal subset');
 	assert.deepEqual(Object.keys(value.frozenInputSha256).sort(), measuredFiles, 'follow collections frozen subset');
-	for (const [path, digest] of Object.entries(value.frozenInputSha256)) assert.equal(sha(readFile(path)), digest, driftLabel);
+	for (const [path, digest] of Object.entries(value.frozenInputSha256)) assert.equal(sha(projectUserMemoEntityInput(path, readFile(path))), digest, driftLabel);
 	for (const [file, binding] of Object.entries(value.files)) {
 		assert.deepEqual(binding.predecessor, { path: predecessorPath, sha256: predecessorSha256, pointer: ['files', file, 'sha256'] }, 'follow collections predecessor binding');
 		const bytes = readFile(predecessorPath);
