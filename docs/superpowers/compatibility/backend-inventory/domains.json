@@ -1690,7 +1690,7 @@
         "既存Note描画のD7 64階層/256 Note・循環500とMeta/cache境界を引継ぐ。固定source callbackを同一PGの9入力で通常HTTPと比較、未認証gate/ApiErrorをliteral実行。full upstream server/packer比較ではない。"
       ],
       "note": "#489: local・本人以外・public・未期限切れ・未投票・mute除外・excludeChannelsとoffset/limit、Poll選択後のNote再取得降順、viewer付きdetail描画を通常HTTPへ接続。保存不変。投票更新・TL共通filter一律適用と親#184の完了は含まない。",
-      "evidenceRevision": "4956f67735d6de9da80c715fac0f0cc1a6377f79"
+      "evidenceRevision": "96d051373b2c4a5a442a32ca235df4e518d852ff"
     },
     "api:notes/show": {
       "status": "verified",
