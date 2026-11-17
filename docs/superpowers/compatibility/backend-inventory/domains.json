@@ -3442,6 +3442,27 @@
       ],
       "evidenceRevision": "7d39237c604239ffa8223b5db0c99dc30e6510e7",
       "note": "#556 R3: 固定本家8e07cf0のliteral3route、実import先backend Acct.parse/getIdenticonUrl/genIdenticonを実Fastify/canvasとrepository/Meta doubleで180 HTTP観測。新通常HTTP/PG174 test、近傍単体244、build/typecheck成功。比較ID一意性と対応を検査し/emoji対/emoji/、空host対未指定host、redirect/static/badge/fallback/cache/CSP、128px PNG/無効設定、raw dot/backslash・不正encoding/100文字境界と失敗を比較。R1/R2のID重複・SDK parser誤参照を訂正し過去receipt/predecessorはarchiveで保持。新実装Meta通知は実Redis検証。full upstream起動/PG、global AP redirect hook(#563)、Drive/proxy/static配信とactor URL再実装は対象外。#196/#114は未完了。"
+    },
+    "api:users/update-memo": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/user-memo/public.ts",
+        "packages/backend-next/src/platform/database/user-memo.ts",
+        "packages/backend-next/src/http/user-memo-api.ts",
+        "packages/backend-next/src/composition/user-memo-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/user-memo.test.ts",
+        "packages/backend-next/test/integration/user-memo.test.ts",
+        "docs/superpowers/compatibility/user-memo/source-probe.mjs",
+        "docs/superpowers/compatibility/user-memo/observations.json",
+        "scripts/user-memo-contract.test.mjs",
+        "docs/superpowers/compatibility/user-memo/README.md",
+        "docs/superpowers/compatibility/user-memo/current-evidence.json"
+      ],
+      "note": "#294: fixed-source19 and ordinary listening HTTP/PG validate save/update/stable id/null-or-empty delete/unknown user/errors and author isolation. Viewer-scoped UserMemoReader is a narrow read material; full UserDetailed and accounts/#180 remain unfinished. Full upstream server is not measured. See docs/superpowers/compatibility/user-memo/README.md.",
+      "evidenceRevision": "80f91dac6eb110a441e4d19d03fc3b6160fe536c"
     }
   }
 }
