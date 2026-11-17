@@ -36,3 +36,9 @@ BACKEND_NEXT_TEST_DB_PORT=55931 BACKEND_NEXT_TEST_REDIS_PORT=56931 pnpm --filter
 専用Composeの起動は backend-next README に従う。実測入力・ログ・コマンドと hash は `verification.json`。notes-pagination の古い receipt は不変のまま、Page 登録と登録 assertion の有限のバイト差分だけを `scripts/notes-pagination-evidence.mjs` で元へ戻す。新しい実測結果を古い入力へ付け替えない。
 
 初回の全単体検証は PageLike 追加に伴う metadata 件数 assertion の39→40未更新で1失敗、4,973成功だった。対象 assertion/関係検査を更新後、4,974件成功。R2 では既存証跡 reader の重複適用と drift 診断ラベルを検出し、測定中に修正したため noInputDrift:false を保持する。旧 receipt を保存したまま、R3 は入力を固定したが既存 poll synthetic assertion の2失敗を保持する。独立レビューのP2（nullish ID条件と文字列 children）を4ケースでRED→GREENにしてから最終R4を測定する。R1–R3の件数は修正後R4へ付け替えない。実DB検証には既存 migration 経路由来の pg query deprecation warning が出るが、全assertionは成功する。
+
+## Web レビュー後の共有証跡修正
+
+CodeRabbit Web の指摘を、過去の Git blob と同一の UserMemo 単独入力（SHA `43aab6cd…`）で再現した。Page の前段がこの既知入力を拒否し、既存の memo 追加行の除去と `a2f030db…` への復元へ到達できなかった。既存 `userMemoProjection.current` の hash だけを通過集合へ加え、実バイトの RED→GREEN と、memo の厳密な anchor / 旧 hash、Page・Relation・両者同居・poll・未知 drift の拒否を確認する回帰テストを追加した。
+
+R4 の `verification.json` と過去 receipt は不変で維持する。今回変更した共有 helper / test の新しい入力・実測ログは [memo-current-followup.json](memo-current-followup.json) に分けて記録する。製品コードと R4 の runtime 入力は変えておらず、R4 の HTTP/PG・source 件数を今回の helper 入力へ付け替えない。

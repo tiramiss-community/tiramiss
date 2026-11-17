@@ -347,7 +347,7 @@ export function projectPageReadInput(path, actual) {
 	const binding = Object.hasOwn(pageReadProjection, path) ? pageReadProjection[path] : undefined;
 	if (!binding) return actual;
 	const digest = sha(actual);
-	if ([binding.previous, binding.relationCurrent, userMemoProjection[path]?.previous, userMemoProjection[path]?.pollOnly].includes(digest)) return actual;
+	if ([binding.previous, binding.relationCurrent, userMemoProjection[path]?.previous, userMemoProjection[path]?.current, userMemoProjection[path]?.pollOnly].includes(digest)) return actual;
 	const combined = digest === binding.combinedCurrent;
 	const driftLabel = path.endsWith('/src/composition/http-app.ts') ? 'Meta cache measured current input drift' : 'measured current input drift (notes pagination)';
 	assert(digest === binding.current || combined, `${driftLabel}: ${path} (Page/Relation read)`);

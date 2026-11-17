@@ -62,3 +62,20 @@ for (const [path, identity] of Object.entries(states)) {
 		}
 	});
 }
+
+test('declared UserMemo-only bytes pass the Page step and reach the existing exact memo predecessor', () => {
+	const path = 'packages/backend-next/test/unit/composition/http-app.test.ts';
+	let memo = projectPageReadInput(path, readFileSync(new URL('../' + path, import.meta.url))).toString();
+	if (hash(memo) === states[path].relation) memo = change(memo, ", '/api/users/relation'", '');
+	assert.equal(hash(memo), states[path].base);
+	memo = change(memo, "'/api/notes/polls/recommendation', ", '');
+	memo = change(memo, "'notes/polls/recommendation', ", '');
+	const actual = Buffer.from(memo);
+	assert.equal(hash(actual), '43aab6cd144b8d0937fca5bec41322d2bed0125c1f94118e7bebb4437d901bda');
+	assert.equal(projectPageReadInput(path, actual), actual);
+	assert.equal(hash(projectUserMemoInput(path, actual)), 'a2f030dbfecfa3644a09d1d1aca81a8693ffec7dbad1bc3ceac9894fb46be5eb');
+	for (const changed of [memo + '\n', memo.replace('users/update-memo', 'users/changed-memo')]) {
+		assert.throws(() => projectPageReadInput(path, Buffer.from(changed)), /measured current input drift/);
+		assert.throws(() => projectUserMemoInput(path, Buffer.from(changed)), /measured current input drift/);
+	}
+});
