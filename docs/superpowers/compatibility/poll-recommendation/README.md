@@ -34,7 +34,7 @@ node scripts/check-shipping.mjs --base 7f64bd8f5996791f9cfe47b9aec124a988c3182d
 
 ## 実測と失敗履歴
 
-全ログ: `/tmp/sol-delivery-20261117/poll489/`。`current-evidence.json` が最終R5の入力hash・実行コマンド・結果・ログhashを持つ。`r2-current-evidence.json`・`r3-current-evidence.json`・`r4-current-evidence.json` は各時点の入力と実測をそのまま保持する。R2/R3はNode24.20.0（package engines内）の履歴、R4/R5は指定Node26.4.0・pnpm12.9.1。R2からR3へ未認証source観測とそのHTTP検証、projection診断の互換修正を加え、R4からR5へ既知combined入力に対応するcontract testだけを追加した。製品runtimeは一貫して同じ。
+全ログ: `/tmp/sol-delivery-20261117/poll489/`。`current-evidence.json` が最終R6の入力hash・実行コマンド・結果・ログhashを持つ。`r2-current-evidence.json`・`r3-current-evidence.json`・`r4-current-evidence.json`・`r5-current-evidence.json` は各時点の入力と実測をそのまま保持する。R2/R3はNode24.20.0（package engines内）の履歴、R4/R5は指定Node26.4.0・pnpm12.9.1。R2からR3へ未認証source観測とそのHTTP検証、projection診断の互換修正を加え、R4からR5へ既知combined入力に対応するcontract testだけを追加した。製品runtimeは一貫して同じ。
 
 R2: sync/build/typecheck・全単体4,947・実PG/HTTP56・sourceがPASS、実測前後の入力driftなし。R3: sync/build/typecheck・近傍単体21・未認証比較を追加した実PG/HTTP57・両sourceがPASS、27入力の実測前後driftなし。R2の全単体件数を変更後のfixtureの再測定へ読み替えない。R4は指定Node26.4.0で全単体4,947・実PG/HTTP57・sync/build/typecheck・両sourceがPASS、27入力driftなし。R5は合成contract test追加後の同じ27入力を再凍結し、近傍単体21・実PG/HTTP57・両source・近傍root9件とsync/build/typecheckがPASS、実測前後driftなし。
 
@@ -49,3 +49,11 @@ R2: sync/build/typecheck・全単体4,947・実PG/HTTP56・sourceがPASS、実�
 CHANGELOG候補: backend-nextで未投票のローカル公開投票を推薦するAPIを追加。
 
 共通root R3はNode24.20.0で759 PASS / 0 FAIL / 1 optional SKIP（migration-proofの任意upstream checkout照合、対象変更なし）。R5で追加した既知combinedのsynthetic観測は近傍rootで検証し、旧root件数へ付け替えない。指定Nodeでの実合成root検証と最新CI/Webレビューは取りまとめ担当が所有する。
+
+## PR #613 のfixture追補 R6
+
+初回Webレビューのnitpickを検証したところ、削除競合テストが共有の `ids[114]` を削除していた。共有4テーブルの前後一致assertionでREDを再現し、テスト専用の最新Note/Pollを作ってそのIDだけを競合中に削除し、finallyでも片付ける形へ修正した。変更後は共有fixtureが全列不変であることを確認する。最後のtestであることに依存しない。製品runtime・共通proof・固定source/PG観測は不変。
+
+R6はNode26.4.0の27入力を改めて凍結し、変更を含む推薦/隣接Noteの実HTTP/PG57件、fixtureの型、変更ファイルlint/SPDX/localeがPASS、実測前後driftなし。旧R5 receiptはバイト単位で `r5-current-evidence.json` に保持する。R4全単体とR5source/root件数をR6の再測定として扱わない。RED/単独GREENの14skipはtest名filterによる選択で、全HTTP/PG実行の成功件数へ加算しない。
+
+初回CIのintegrationは `internal-events.test.ts:79` のclose直後Redis CLIENT LIST観測で1 FAIL / 1,947 PASS / 2 SKIPだった。対象ファイルは今回変更しておらず、今回のfixture修正に混ぜない。ログ `/tmp/sol-delivery-20261117/poll489/ci-integration-initial.log` とSHAはR6 receiptに保持する。最新CIの確認は取りまとめ担当が所有し、この失敗を成功へ読み替えない。

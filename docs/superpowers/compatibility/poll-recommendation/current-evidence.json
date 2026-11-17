@@ -3,12 +3,17 @@
   "runtimeRevision": "b2565983c3dd346cd247bc69b2bcde997077575d",
   "baseRevision": "7f64bd8f5996791f9cfe47b9aec124a988c3182d",
   "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
-  "measurement": "R5",
+  "measurement": "R6",
   "nodeVersion": "v26.4.0",
   "pnpmVersion": "12.9.1",
   "measuredWorkingTree": true,
   "upstreamFullServerMeasured": false,
   "postingComplete": false,
+  "changeScope": "Test fixture isolation only after PR613 nitpick. Product runtime is unchanged. The race uses a dedicated Note/Poll, deletes only its own ID and verifies all shared business rows unchanged.",
+  "previousEvidence": {
+    "path": "docs/superpowers/compatibility/poll-recommendation/r5-current-evidence.json",
+    "sha256": "75b2dfd69a7f540a5e3597ec2a6b3718a5359fd9fd00fd8bddc499c9bec4899f"
+  },
   "inputs": {
     "packages/backend-next/src/composition/note-routes.ts": "2f7242d5d7b5ffcaf03a505c1ceabc2fedb1588bf88b49a1bc4ddbdf77e11b2a",
     "packages/backend-next/src/composition/poll-recommendation-http.ts": "8b49aed3453a0963805704a2db3f41eb25c18a417415f965b6955622ff43fb33",
@@ -27,7 +32,7 @@
     "packages/backend-next/src/http/api-endpoint.ts": "262172fbd09ef769607b079e59f862c2f386098b5720a4835df26514b2b73bc2",
     "packages/backend-next/test/unit/note/recommend-polls.test.ts": "ca54e6ae213b427d1c8b4dafcd5bb0cac16f0e79a8ba87704476ab9709e171e3",
     "packages/backend-next/test/unit/composition/http-app.test.ts": "fe2cd18f8f899620e6a9830a2b6639348cde7a501f72808072db44698aa4fa6e",
-    "packages/backend-next/test/integration/poll-recommendation.test.ts": "5dd9a7e6eaa1996b9e7aaf30837363a1c0b5aaafa2daaabbaee155fab15194e4",
+    "packages/backend-next/test/integration/poll-recommendation.test.ts": "fa513dc7c933f62376e143eff90bf4a8668980af3c399faa91004bcd1740a2bc",
     "packages/backend-next/test/helpers/notes-list-source-database.mjs": "ef7bb66df931eb4389f7f2667552911bf2a730edeec63a5bd6dbeb04e78d8504",
     "docs/superpowers/compatibility/poll-recommendation/source-probe.mjs": "c907d4a515ddcac87ba04875ecb60a91b5a60b267ad8ef91c13f339c433d6acb",
     "docs/superpowers/compatibility/poll-recommendation/source-observations.json": "f638f2b77cc3eea3799b4632a493d7d6bb8777e375431b9118bef91e3f0db39f",
@@ -38,32 +43,8 @@
     "docs/superpowers/compatibility/poll-recommendation/auth-source-probe.mjs": "f07b3a3b5741acb10ae20374ad25ecc4407657c5fc28e37b5601b4da8fe6b288",
     "docs/superpowers/compatibility/poll-recommendation/auth-observations.json": "c4a374ee3b43c5cba25136ef881c4a22e1349ac3643abba6c1e101d5080f682f"
   },
-  "startedAt": "2026-11-17T01:29:26.741652+00:00",
+  "startedAt": "2026-11-17T01:49:02.388848+00:00",
   "runs": [
-    {
-      "name": "sync",
-      "command": [
-        "pnpm",
-        "--filter",
-        "backend-upstream",
-        "sync:check"
-      ],
-      "exitCode": 0,
-      "log": "/tmp/sol-delivery-20261117/poll489/r5-sync.log",
-      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd"
-    },
-    {
-      "name": "build",
-      "command": [
-        "pnpm",
-        "--filter",
-        "backend-next...",
-        "build"
-      ],
-      "exitCode": 0,
-      "log": "/tmp/sol-delivery-20261117/poll489/r5-build.log",
-      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
-    },
     {
       "name": "typecheck",
       "command": [
@@ -73,24 +54,8 @@
         "typecheck"
       ],
       "exitCode": 0,
-      "log": "/tmp/sol-delivery-20261117/poll489/r5-typecheck.log",
+      "log": "/tmp/sol-delivery-20261117/poll489/r6-typecheck.log",
       "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
-    },
-    {
-      "name": "unit",
-      "command": [
-        "pnpm",
-        "--filter",
-        "backend-next",
-        "test",
-        "test/unit/composition/http-app.test.ts",
-        "test/unit/note/recommend-polls.test.ts",
-        "test/unit/note/list-notes.test.ts",
-        "test/unit/note/show-note.test.ts"
-      ],
-      "exitCode": 0,
-      "log": "/tmp/sol-delivery-20261117/poll489/r5-unit.log",
-      "logSha256": "26d7f6198fc7ccd4283d257bdab992f58b050193326743e064bb1f60b529d5e8"
     },
     {
       "name": "integration",
@@ -104,42 +69,20 @@
         "test/integration/note-show.test.ts"
       ],
       "exitCode": 0,
-      "log": "/tmp/sol-delivery-20261117/poll489/r5-integration.log",
-      "logSha256": "a69c3457c337f1d610395f4da16728b723df8ce99ad6cd9a3552d15156ca2f69"
+      "log": "/tmp/sol-delivery-20261117/poll489/r6-integration.log",
+      "logSha256": "9b73d026f2853daf8bef3db4b76b029076c94ad49055772b4a1d3ca9376d7fb4"
     },
     {
-      "name": "source",
+      "name": "shipping",
       "command": [
         "node",
-        "docs/superpowers/compatibility/poll-recommendation/source-probe.mjs",
-        "--check"
+        "scripts/check-shipping.mjs",
+        "--base",
+        "7f64bd8f5996791f9cfe47b9aec124a988c3182d"
       ],
       "exitCode": 0,
-      "log": "/tmp/sol-delivery-20261117/poll489/r5-source.log",
-      "logSha256": "87cf1230e49c5fb1567c1ce1a05a8890643599cfbf09cfdbe681c320c8351f47"
-    },
-    {
-      "name": "auth-source",
-      "command": [
-        "node",
-        "docs/superpowers/compatibility/poll-recommendation/auth-source-probe.mjs",
-        "--check"
-      ],
-      "exitCode": 0,
-      "log": "/tmp/sol-delivery-20261117/poll489/r5-auth-source.log",
-      "logSha256": "7e201ce867498eba4bfbec279bf037c160e5bacaadc3ba948f7b168c859c2852"
-    },
-    {
-      "name": "contracts",
-      "command": [
-        "node",
-        "--test",
-        "scripts/poll-recommendation-contract.test.mjs",
-        "scripts/notes-pagination-contract.test.mjs"
-      ],
-      "exitCode": 0,
-      "log": "/tmp/sol-delivery-20261117/poll489/r5-contracts.log",
-      "logSha256": "86de6bbb5c0881946c2cc16b8ba3484fe6ebffdeb6273ff2fbac490eaed1b51d"
+      "log": "/tmp/sol-delivery-20261117/poll489/r6-shipping.log",
+      "logSha256": "aa69d0e4a8542db7da0aa6ef7f854a912df46523c5a71247ae57e36efd6f4a31"
     }
   ],
   "inputsAfter": {
@@ -160,7 +103,7 @@
     "packages/backend-next/src/http/api-endpoint.ts": "262172fbd09ef769607b079e59f862c2f386098b5720a4835df26514b2b73bc2",
     "packages/backend-next/test/unit/note/recommend-polls.test.ts": "ca54e6ae213b427d1c8b4dafcd5bb0cac16f0e79a8ba87704476ab9709e171e3",
     "packages/backend-next/test/unit/composition/http-app.test.ts": "fe2cd18f8f899620e6a9830a2b6639348cde7a501f72808072db44698aa4fa6e",
-    "packages/backend-next/test/integration/poll-recommendation.test.ts": "5dd9a7e6eaa1996b9e7aaf30837363a1c0b5aaafa2daaabbaee155fab15194e4",
+    "packages/backend-next/test/integration/poll-recommendation.test.ts": "fa513dc7c933f62376e143eff90bf4a8668980af3c399faa91004bcd1740a2bc",
     "packages/backend-next/test/helpers/notes-list-source-database.mjs": "ef7bb66df931eb4389f7f2667552911bf2a730edeec63a5bd6dbeb04e78d8504",
     "docs/superpowers/compatibility/poll-recommendation/source-probe.mjs": "c907d4a515ddcac87ba04875ecb60a91b5a60b267ad8ef91c13f339c433d6acb",
     "docs/superpowers/compatibility/poll-recommendation/source-observations.json": "f638f2b77cc3eea3799b4632a493d7d6bb8777e375431b9118bef91e3f0db39f",
@@ -172,5 +115,17 @@
     "docs/superpowers/compatibility/poll-recommendation/auth-observations.json": "c4a374ee3b43c5cba25136ef881c4a22e1349ac3643abba6c1e101d5080f682f"
   },
   "noInputDrift": true,
-  "completedAt": "2026-11-17T01:30:03.500392+00:00"
+  "completedAt": "2026-11-17T01:49:17.781329+00:00",
+  "priorCiFailure": {
+    "head": "35ecffd5deceba3f28e2625c01ac82d056d977f3",
+    "status": "FAIL",
+    "passed": 1947,
+    "failed": 1,
+    "skipped": 2,
+    "test": "test/integration/internal-events.test.ts:79",
+    "observation": "Redis CLIENT LIST still contains the internal-events connection immediately after close. This file is unchanged by poll recommendations. Not counted as PASS or repaired here. Parent will monitor latest CI.",
+    "log": "/tmp/sol-delivery-20261117/poll489/ci-integration-initial.log",
+    "logSha256": "dca6e74a3ffc954662a95822170c6602c44872b588f9ff30ff21167d080b6589"
+  },
+  "historicalValidation": "R4 full unit4947 and R5 unit21/integration57/source/root-near9 remain their original measurements. R6 replays the changed fixture, neighbouring HTTP/PG, typecheck and shipping only."
 }

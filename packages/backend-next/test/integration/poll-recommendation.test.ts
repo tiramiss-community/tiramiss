@@ -196,7 +196,12 @@ test('suspension precedes invalid input; POST-only route preserves common CORS',
 });
 
 test('concurrent deletion between Poll selection and Note refetch yields no root without material reads', async () => {
+	const before = await snapshot();
+	const raceId = codec.newId(now - 1000);
+	const notes = resources.dataSource.getRepository(MiNote);
 	const repository = resources.dataSource.getRepository(MiPoll);
+	await notes.insert({ id: raceId, userId: author, text: 'race-only poll', visibility: 'public', hasPoll: true });
+	await repository.insert({ noteId: raceId, userId: author, noteVisibility: 'public', choices: ['a', 'b'], votes: [0, 0], multiple: false });
 	const original = repository.createQueryBuilder.bind(repository);
 	const spy = vi.spyOn(repository, 'createQueryBuilder').mockImplementation((...args) => {
 		const query = original(...args);
@@ -204,7 +209,7 @@ test('concurrent deletion between Poll selection and Note refetch yields no root
 			const getMany = query.getMany.bind(query);
 			query.getMany = async () => {
 				const selected = await getMany();
-				await resources.dataSource.getRepository(MiNote).delete(ids[114]);
+				await notes.delete(raceId);
 				return selected;
 			};
 		}
@@ -214,5 +219,7 @@ test('concurrent deletion between Poll selection and Note refetch yields no root
 		expect(await list({ limit: 1 })).toEqual([]);
 	} finally {
 		spy.mockRestore();
+		await notes.delete(raceId);
 	}
+	expect(await snapshot()).toEqual(before);
 });
