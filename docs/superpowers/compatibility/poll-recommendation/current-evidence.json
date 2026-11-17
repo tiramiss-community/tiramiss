@@ -1,8 +1,11 @@
 {
   "scope": "poll-recommendation-489",
+  "runtimeRevision": "b2565983c3dd346cd247bc69b2bcde997077575d",
   "baseRevision": "7f64bd8f5996791f9cfe47b9aec124a988c3182d",
   "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
-  "measurement": "R3",
+  "measurement": "R5",
+  "nodeVersion": "v26.4.0",
+  "pnpmVersion": "12.9.1",
   "measuredWorkingTree": true,
   "upstreamFullServerMeasured": false,
   "postingComplete": false,
@@ -31,11 +34,11 @@
     "docs/superpowers/compatibility/poll-recommendation/pg-observations.json": "a1b43289689cad9129bbfc0085648b9aa284ce01c5eef67f6e0833bcc29c3704",
     "docs/superpowers/compatibility/poll-recommendation/predecessor.json": "bf73eaaebe598bf76049711da41697292f095640559e0acfb7ec97a76903501f",
     "scripts/notes-pagination-evidence.mjs": "e99909b159a05612421a2c9052821f663f19f29dbee62443fe40c9748bc60638",
-    "scripts/poll-recommendation-contract.test.mjs": "09804892578d32d401a0587f9968d1149b91e42cd67ed6491d1f240509ba527c",
+    "scripts/poll-recommendation-contract.test.mjs": "b1038b5cd0e87ba50a47f232e8c40e7e2625727b8abbb1b9a7315f7c62968e6c",
     "docs/superpowers/compatibility/poll-recommendation/auth-source-probe.mjs": "f07b3a3b5741acb10ae20374ad25ecc4407657c5fc28e37b5601b4da8fe6b288",
     "docs/superpowers/compatibility/poll-recommendation/auth-observations.json": "c4a374ee3b43c5cba25136ef881c4a22e1349ac3643abba6c1e101d5080f682f"
   },
-  "startedAt": "2026-11-17T01:22:02.920552+00:00",
+  "startedAt": "2026-11-17T01:29:26.741652+00:00",
   "runs": [
     {
       "name": "sync",
@@ -46,7 +49,7 @@
         "sync:check"
       ],
       "exitCode": 0,
-      "log": "/tmp/sol-delivery-20261117/poll489/r3-sync.log",
+      "log": "/tmp/sol-delivery-20261117/poll489/r5-sync.log",
       "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd"
     },
     {
@@ -58,7 +61,7 @@
         "build"
       ],
       "exitCode": 0,
-      "log": "/tmp/sol-delivery-20261117/poll489/r3-build.log",
+      "log": "/tmp/sol-delivery-20261117/poll489/r5-build.log",
       "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
     },
     {
@@ -70,7 +73,7 @@
         "typecheck"
       ],
       "exitCode": 0,
-      "log": "/tmp/sol-delivery-20261117/poll489/r3-typecheck.log",
+      "log": "/tmp/sol-delivery-20261117/poll489/r5-typecheck.log",
       "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
     },
     {
@@ -86,8 +89,8 @@
         "test/unit/note/show-note.test.ts"
       ],
       "exitCode": 0,
-      "log": "/tmp/sol-delivery-20261117/poll489/r3-unit.log",
-      "logSha256": "23095bb5aafa56e1922ee61b1e001fca7f9dd1b0acb06afdb1bbfe64609f09d9"
+      "log": "/tmp/sol-delivery-20261117/poll489/r5-unit.log",
+      "logSha256": "26d7f6198fc7ccd4283d257bdab992f58b050193326743e064bb1f60b529d5e8"
     },
     {
       "name": "integration",
@@ -101,8 +104,8 @@
         "test/integration/note-show.test.ts"
       ],
       "exitCode": 0,
-      "log": "/tmp/sol-delivery-20261117/poll489/r3-integration.log",
-      "logSha256": "19ebd53ee97ec70e02ff38d3fc265febab147b12e1ab67afb6d6df68e93e7bd8"
+      "log": "/tmp/sol-delivery-20261117/poll489/r5-integration.log",
+      "logSha256": "a69c3457c337f1d610395f4da16728b723df8ce99ad6cd9a3552d15156ca2f69"
     },
     {
       "name": "source",
@@ -112,7 +115,7 @@
         "--check"
       ],
       "exitCode": 0,
-      "log": "/tmp/sol-delivery-20261117/poll489/r3-source.log",
+      "log": "/tmp/sol-delivery-20261117/poll489/r5-source.log",
       "logSha256": "87cf1230e49c5fb1567c1ce1a05a8890643599cfbf09cfdbe681c320c8351f47"
     },
     {
@@ -123,8 +126,20 @@
         "--check"
       ],
       "exitCode": 0,
-      "log": "/tmp/sol-delivery-20261117/poll489/r3-auth-source.log",
+      "log": "/tmp/sol-delivery-20261117/poll489/r5-auth-source.log",
       "logSha256": "7e201ce867498eba4bfbec279bf037c160e5bacaadc3ba948f7b168c859c2852"
+    },
+    {
+      "name": "contracts",
+      "command": [
+        "node",
+        "--test",
+        "scripts/poll-recommendation-contract.test.mjs",
+        "scripts/notes-pagination-contract.test.mjs"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/sol-delivery-20261117/poll489/r5-contracts.log",
+      "logSha256": "86de6bbb5c0881946c2cc16b8ba3484fe6ebffdeb6273ff2fbac490eaed1b51d"
     }
   ],
   "inputsAfter": {
@@ -152,10 +167,10 @@
     "docs/superpowers/compatibility/poll-recommendation/pg-observations.json": "a1b43289689cad9129bbfc0085648b9aa284ce01c5eef67f6e0833bcc29c3704",
     "docs/superpowers/compatibility/poll-recommendation/predecessor.json": "bf73eaaebe598bf76049711da41697292f095640559e0acfb7ec97a76903501f",
     "scripts/notes-pagination-evidence.mjs": "e99909b159a05612421a2c9052821f663f19f29dbee62443fe40c9748bc60638",
-    "scripts/poll-recommendation-contract.test.mjs": "09804892578d32d401a0587f9968d1149b91e42cd67ed6491d1f240509ba527c",
+    "scripts/poll-recommendation-contract.test.mjs": "b1038b5cd0e87ba50a47f232e8c40e7e2625727b8abbb1b9a7315f7c62968e6c",
     "docs/superpowers/compatibility/poll-recommendation/auth-source-probe.mjs": "f07b3a3b5741acb10ae20374ad25ecc4407657c5fc28e37b5601b4da8fe6b288",
     "docs/superpowers/compatibility/poll-recommendation/auth-observations.json": "c4a374ee3b43c5cba25136ef881c4a22e1349ac3643abba6c1e101d5080f682f"
   },
   "noInputDrift": true,
-  "completedAt": "2026-11-17T01:22:34.209792+00:00"
+  "completedAt": "2026-11-17T01:30:03.500392+00:00"
 }

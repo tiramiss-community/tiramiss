@@ -15,7 +15,7 @@
 
 ## 実行
 
-独立node_modulesへ `pnpm install --frozen-lockfile --filter backend-next...` を実行する。専用Composeは `sol-poll489`、PG61432、Redis61379。ユーザー用 `misskey-infra` は使わない。通常HTTPは動的port。設定とmigrationは `packages/backend-next/README.md` に従う。
+指定Node26.4.0をPATHの先頭に置く（今回実測では `/tmp/tiramiss-s1-node26/bin`）。独立node_modulesへ `pnpm install --frozen-lockfile --filter backend-next...` を実行する。専用Composeは `sol-poll489`、PG61432、Redis61379。ユーザー用 `misskey-infra` は使わない。通常HTTPは動的port。設定とmigrationは `packages/backend-next/README.md` に従う。
 
 ```sh
 BACKEND_NEXT_TEST_DB_PORT=61432 BACKEND_NEXT_TEST_REDIS_PORT=61379 docker compose -p sol-poll489 -f packages/backend-next/compose.test.yml up -d --wait postgres redis
@@ -34,11 +34,11 @@ node scripts/check-shipping.mjs --base 7f64bd8f5996791f9cfe47b9aec124a988c3182d
 
 ## 実測と失敗履歴
 
-全ログ: `/tmp/sol-delivery-20261117/poll489/`。`current-evidence.json` が最終R3の入力hash・実行コマンド・結果・ログhashを持つ。`r2-current-evidence.json` はR2時点の25入力と実測をそのまま保持する。R2からR3へ製品runtimeは不変で、未認証source観測とそのHTTP検証、projection診断の互換修正を加えた。
+全ログ: `/tmp/sol-delivery-20261117/poll489/`。`current-evidence.json` が最終R5の入力hash・実行コマンド・結果・ログhashを持つ。`r2-current-evidence.json`・`r3-current-evidence.json`・`r4-current-evidence.json` は各時点の入力と実測をそのまま保持する。R2/R3はNode24.20.0（package engines内）の履歴、R4/R5は指定Node26.4.0・pnpm12.9.1。R2からR3へ未認証source観測とそのHTTP検証、projection診断の互換修正を加え、R4からR5へ既知combined入力に対応するcontract testだけを追加した。製品runtimeは一貫して同じ。
 
-R2: sync/build/typecheck・全単体4,947・実PG/HTTP56・sourceがPASS、実測前後の入力driftなし。R3: sync/build/typecheck・近傍単体21・未認証比較を追加した実PG/HTTP57・両sourceがPASS、27入力の実測前後driftなし。R2の全単体件数を変更後のfixtureの再測定へ読み替えない。
+R2: sync/build/typecheck・全単体4,947・実PG/HTTP56・sourceがPASS、実測前後の入力driftなし。R3: sync/build/typecheck・近傍単体21・未認証比較を追加した実PG/HTTP57・両sourceがPASS、27入力の実測前後driftなし。R2の全単体件数を変更後のfixtureの再測定へ読み替えない。R4は指定Node26.4.0で全単体4,947・実PG/HTTP57・sync/build/typecheck・両sourceがPASS、27入力driftなし。R5は合成contract test追加後の同じ27入力を再凍結し、近傍単体21・実PG/HTTP57・両source・近傍root9件とsync/build/typecheckがPASS、実測前後driftなし。
 
-失敗はログに保持した。意図したTDD missing-moduleとprojection未実装のRED以外に、単体fixtureのreactionCount/旧reaction名期待で2回、既存composition一覧の新route期待不足で1回、共有proofの固定hashで1回、整形lintで1回、projectionの診断prefixを旧negative testが拒否して1回。fixture2修正・route期待1修正・有限projection1追加・整形1修正・診断prefix1修正の6修正段階。製品runtimeの不一致による実PG/HTTP失敗はない。
+失敗はログに保持した。意図したTDD missing-moduleとprojection未実装のRED以外に、単体fixtureのreactionCount/旧reaction名期待で2回、既存composition一覧の新route期待不足で1回、共有proofの固定hashで1回、整形lintで1回、projectionの診断prefixを旧negative testが拒否して1回。fixture2修正・route期待1修正・有限projection1追加・整形1修正・診断prefix1修正の6修正段階。さらにNode26への切替時に自worktreeのre2 ABI不一致を検知して指定Nodeでrebuildし、合成contractのsynthetic fixtureの挿入位置を1回修正した。予期しない失敗/修正は実行単位で計8段階。製品runtimeの不一致による実PG/HTTP失敗はない。Git commitの最初の試行は共有Git管理領域がsandboxで読取専用だったため失敗し、承認されたescalationでcommitした。
 
 ## 共有proofの保守
 
@@ -47,3 +47,5 @@ R2: sync/build/typecheck・全単体4,947・実PG/HTTP56・sourceがPASS、実�
 並行#294との合成は、memo追加→poll-only bytes→#305 R3の順に有限projectionを通す。#294担当が既知combined hashのsynthetic検証を所有し、取りまとめ担当が実合成bytesを照合する。各PR単独の成功から合成成功を主張しない。
 
 CHANGELOG候補: backend-nextで未投票のローカル公開投票を推薦するAPIを追加。
+
+共通root R3はNode24.20.0で759 PASS / 0 FAIL / 1 optional SKIP（migration-proofの任意upstream checkout照合、対象変更なし）。R5で追加した既知combinedのsynthetic観測は近傍rootで検証し、旧root件数へ付け替えない。指定Nodeでの実合成root検証と最新CI/Webレビューは取りまとめ担当が所有する。
