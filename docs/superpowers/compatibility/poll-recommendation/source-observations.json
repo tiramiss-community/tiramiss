@@ -1,0 +1,46 @@
+{
+  "identity": {
+    "revision": "8e07cf085adf7009583d234a208e30436f020e26",
+    "path": "packages/backend/src/server/api/endpoints/notes/polls/recommendation.ts",
+    "sha256": "f382c7aa96d4185066e22b9da40164db09a2ce18488fcd74b823cc0669ac02ca"
+  },
+  "schema": {
+    "type": "object",
+    "properties": {
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10
+      },
+      "offset": {
+        "type": "integer",
+        "default": 0
+      },
+      "excludeChannels": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "required": []
+  },
+  "meta": {
+    "tags": [
+      "notes"
+    ],
+    "requireCredential": true,
+    "kind": "read:account",
+    "res": {
+      "type": "array",
+      "optional": false,
+      "nullable": false,
+      "items": {
+        "type": "object",
+        "optional": false,
+        "nullable": false,
+        "ref": "Note"
+      }
+    }
+  },
+  "scope": "Literal pinned endpoint callback/schema/meta. PG mode uses real QueryBuilder/PG and a packMany ID double, not upstream full server or packer."
+}
