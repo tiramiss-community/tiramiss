@@ -90,6 +90,9 @@ test('assignment expires at equality; existing admin conversion and UserDetailed
 	expect((await reader.readPublic(id, corpus.atMs - 1))?.assignedCount).toBe(3);
 	expect((await reader.readPublic(id, corpus.atMs))?.assignedCount).toBe(2);
 	expect((await reader.readPublic(id, corpus.atMs + 1))?.assignedCount).toBe(1);
+	for (const [atMs, expected] of [[corpus.atMs - 1, 3], [corpus.atMs, 2], [corpus.atMs + 1, 1]]) {
+		expect((await reader.listPublic(atMs)).find(row => row.role.id === id)?.assignedCount).toBe(expected);
+	}
 	expect(await reader.readUserRoles(user({ userId }), corpus.atMs)).toEqual(observations.userRoles);
 	expect(await reader.read(id, corpus.atMs)).toEqual(await reader.readPublic(id, corpus.atMs));
 	expect(await resources.dataSource.getRepository(MiRoleAssignment).count()).toBe(corpus.assignments.length);
@@ -103,11 +106,42 @@ test('query failure propagates to HTTP 500 without successful partial output or 
 		throw new Error('injected role count failure'); 
 	});
 	try {
-		const response = await fetch(`${origin}/api/roles/show`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ roleId: corpus.roles[0].id }) });
-		expect(response.status).toBe(500);
-		expect((await response.json()).error.code).toBe('INTERNAL_ERROR');
+		for (const endpoint of ['show', 'list']) {
+			const response = await fetch(`${origin}/api/roles/${endpoint}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ roleId: corpus.roles[0].id, i: seed.actors.ordinary.token }) });
+			expect(response.status).toBe(500);
+			expect((await response.json()).error.code).toBe('INTERNAL_ERROR');
+		}
 	} finally {
 		fail.mockRestore();
 	}
 	expect(await db.getRepository(MiRole).find()).toEqual(before);
+});
+
+test('public list fetches all active assignment counts in one database read', async () => {
+	const reader = createRoleShowReader(resources.dataSource.manager, seed.codec.createdAtFromId);
+	const queries = vi.spyOn(resources.dataSource.logger, 'logQuery');
+	try {
+		const result = await reader.listPublic(corpus.atMs);
+		const expected = observations.cases.find((entry: { id: string }) => entry.id === 'list').body;
+		expect(result.map(row => ({ id: row.role.id, usersCount: row.assignedCount }))).toEqual(expected.map((row: { id: string; usersCount: number }) => ({ id: row.id, usersCount: row.usersCount })));
+		expect(queries.mock.calls.filter(([sql]) => sql.includes('"role_assignment"'))).toHaveLength(1);
+	} finally {
+		queries.mockRestore();
+	}
+});
+
+test('an empty public list is returned even when unrelated assignments remain', async () => {
+	const repository = resources.dataSource.getRepository(MiRole);
+	const original = await repository.findBy({ isPublic: true, isExplorable: true });
+	await repository.update({ isPublic: true, isExplorable: true }, { isExplorable: false });
+	try {
+		const response = await fetch(`${origin}/api/roles/list`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ i: seed.actors.ordinary.token }) });
+		expect(response.status).toBe(200);
+		expect(await response.json()).toEqual([]);
+		expect(await resources.dataSource.getRepository(MiRoleAssignment).count()).toBe(corpus.assignments.length);
+	} finally {
+		for (const row of original) {
+			await repository.update(row.id, { isExplorable: row.isExplorable });
+		}
+	}
 });
