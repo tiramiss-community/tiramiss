@@ -68,3 +68,20 @@ test('standalone Announcement and combined Role/Announcement bytes preserve exac
   assert.throws(() => projectUserMemoEntityInput(path, Buffer.concat([next, Buffer.from('\n')])), /measured input/);
  }
 });
+
+test('Announcement publisher fix restores only its frozen root bytes through the direct Page entry', async () => {
+ const { projectAnnouncementReadInput, projectPageReadInput } = await import('./notes-pagination-evidence.mjs');
+ const proof = JSON.parse(read('docs/superpowers/compatibility/role-public/announcement-fix-predecessor.json'));
+ const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+ const before = projectAnnouncementReadInput(proof.path, read(proof.path));
+ assert.equal(sha(before), proof.binding.previousSha256);
+ let actual = before;
+ for (const patch of proof.binding.patches) {
+  const previous = Buffer.from(patch.previous);
+  assert.deepEqual(actual.subarray(patch.offset, patch.offset + previous.length), previous);
+  actual = Buffer.concat([actual.subarray(0, patch.offset), Buffer.from(patch.insert), actual.subarray(patch.offset + previous.length)]);
+ }
+ assert.equal(sha(actual), proof.binding.currentSha256);
+ assert.deepEqual(projectPageReadInput(proof.path, actual), projectPageReadInput(proof.path, before));
+ assert.throws(() => projectPageReadInput(proof.path, Buffer.concat([actual, Buffer.from('\n')])), /input drift/);
+});

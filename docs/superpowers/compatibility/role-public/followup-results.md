@@ -12,3 +12,5 @@
 近接67件、および宣言した合成byteを実ファイルへ配置した隔離fixtureで Role contract3件が成功した。この合成fixtureは製品の実HTTP/PG試験ではなく、byte projection の直接入口と未知drift拒否の試験である。
 
 [followup-evidence.json](followup-evidence.json) は修正入力の前後一致を確認した新規の独立測定で、全 root contract784件中783成功・失敗0・既存1skipとshipping成功を記録する。原測定のproduct入力や測定結果を付け替えない。後続Announcement製品修正の追加variant・最終合成測定は、それぞれ後続receiptで区別する。
+
+Announcement の publish 失敗修正後の root `b54091a0049aa30a888c72227f5a3e568156eabb4804b11fd3b34a7ca9ed853d` は、[追加の固定variant](announcement-fix-predecessor.json) と [別測定](announcement-fix-variant-evidence.json) に分離した。旧variantと旧proofを保持し、近接68件・新しい宣言合成実ファイルfixture4件・shippingの成功と前後入力一致を記録する。新variant後の全root成功はここで再主張せず、取りまとめ担当の最終合成測定と各PR最新headのCIで確認する。

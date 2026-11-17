@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "scope": "announcement-publisher-fix-known-variant",
+  "predecessorRevision": "2333c31d91fa63005e1499622859838ff8eb3377",
+  "productRevision": "ae37f95aa52d978d47b665433d06c66018a34825",
+  "measuredWorkingTree": true,
+  "noInputDrift": true,
+  "inputs": {
+    "scripts/notes-pagination-evidence.mjs": "d23a008134f323ff6b14e0c03c530376c183f282807ba2de6c203a3e79057f2e",
+    "scripts/package-imports-evidence.mjs": "aae192e7be8511aea409168977ffb65ade403f053f8204f619ab0cacc244670c",
+    "scripts/drive-folder-pubsub-evidence.mjs": "6d7da979b7ba4e79287e18e16e5bcfd918ad495123c3bf0a0bb0e4bc9786211d",
+    "scripts/drive-folder-pubsub-contract.test.mjs": "2e28b9f30713e3e95f6efca912c697566a76951882d7755e6f3e32836df908c3",
+    "scripts/role-public-contract.test.mjs": "1f93b6695f4a5f8d7d058be42f404b98bfbda08e6a7d98c011477d3aa8646f7b",
+    ".github/workflows/test-backend-next.yml": "2d5591a5a03eae69eca95442a2e652d1ce220840683541eca4d3739c95885608",
+    "docs/superpowers/compatibility/role-public/announcement-fix-predecessor.json": "c9099baabcabc8f052384204210b4218bf89151f3acd9c3589616833547987fc",
+    "docs/superpowers/compatibility/role-public/followup-predecessor.json": "87e35515e332b0fd30a1559a403886519d5559a2ac8c5e39a445446fb16fd6a3"
+  },
+  "inputsAfter": {
+    "scripts/notes-pagination-evidence.mjs": "d23a008134f323ff6b14e0c03c530376c183f282807ba2de6c203a3e79057f2e",
+    "scripts/package-imports-evidence.mjs": "aae192e7be8511aea409168977ffb65ade403f053f8204f619ab0cacc244670c",
+    "scripts/drive-folder-pubsub-evidence.mjs": "6d7da979b7ba4e79287e18e16e5bcfd918ad495123c3bf0a0bb0e4bc9786211d",
+    "scripts/drive-folder-pubsub-contract.test.mjs": "2e28b9f30713e3e95f6efca912c697566a76951882d7755e6f3e32836df908c3",
+    "scripts/role-public-contract.test.mjs": "1f93b6695f4a5f8d7d058be42f404b98bfbda08e6a7d98c011477d3aa8646f7b",
+    ".github/workflows/test-backend-next.yml": "2d5591a5a03eae69eca95442a2e652d1ce220840683541eca4d3739c95885608",
+    "docs/superpowers/compatibility/role-public/announcement-fix-predecessor.json": "c9099baabcabc8f052384204210b4218bf89151f3acd9c3589616833547987fc",
+    "docs/superpowers/compatibility/role-public/followup-predecessor.json": "87e35515e332b0fd30a1559a403886519d5559a2ac8c5e39a445446fb16fd6a3"
+  },
+  "declaredCombinedFixture": {
+    "path": "/tmp/role295-current-combined-contract-0k4heh89",
+    "inputs": {
+      "docs/superpowers/compatibility/role-public/announcement-fix-predecessor.json": "c9099baabcabc8f052384204210b4218bf89151f3acd9c3589616833547987fc",
+      "docs/superpowers/compatibility/role-public/followup-predecessor.json": "87e35515e332b0fd30a1559a403886519d5559a2ac8c5e39a445446fb16fd6a3",
+      "docs/superpowers/compatibility/role-public/corpus.json": "56c58a021a7d28a915b9f34a8112882d765c290e7695172258a910e1af3dc705",
+      "docs/superpowers/compatibility/role-public/observations.json": "429bdbe6e38be2946b6ae6117b01bb4940766e8968e67be6f7102d0237dcb262",
+      "packages/backend-next/src/composition/http-app.ts": "b54091a0049aa30a888c72227f5a3e568156eabb4804b11fd3b34a7ca9ed853d",
+      "packages/backend-next/test/package-imports.test.ts": "79286cf3f69d3e1cf40e06fa95c9a2af9e6b940391c4dcfeade2aac1127acfa6",
+      "packages/backend-next/test/unit/composition/http-app.test.ts": "3a279a89e29ea382b95a8c6a7122fd0c50ee18c16ebbd49e7ca931556776a946",
+      "packages/backend-upstream/upstream-sync.json": "97f4c47a784ab71693bcdae889ac2eed81e862659473a07a722fe292ade1a5fd",
+      "packages/backend-upstream/.managed-files.json": "12b58d1dfb82ba6c15f476ed804ff8b0e025f16003a31274f7ac651a4aab14d5",
+      "packages/backend-upstream/exports/entities.ts": "3ce5640083ad0003d38037fbb563476045492062e0f820c26de8c3427653c804",
+      "scripts/package-imports-evidence.mjs": "aae192e7be8511aea409168977ffb65ade403f053f8204f619ab0cacc244670c",
+      "scripts/role-public-contract.test.mjs": "1f93b6695f4a5f8d7d058be42f404b98bfbda08e6a7d98c011477d3aa8646f7b",
+      "scripts/notes-pagination-evidence.mjs": "d23a008134f323ff6b14e0c03c530376c183f282807ba2de6c203a3e79057f2e",
+      "scripts/evidence-validation-scope.mjs": "d318b6b64a451a0e32bfd9f78cc51fc717ecde9bf19db9a148b4b6dd034c2090"
+    },
+    "inputsAfter": {
+      "docs/superpowers/compatibility/role-public/announcement-fix-predecessor.json": "c9099baabcabc8f052384204210b4218bf89151f3acd9c3589616833547987fc",
+      "docs/superpowers/compatibility/role-public/followup-predecessor.json": "87e35515e332b0fd30a1559a403886519d5559a2ac8c5e39a445446fb16fd6a3",
+      "docs/superpowers/compatibility/role-public/corpus.json": "56c58a021a7d28a915b9f34a8112882d765c290e7695172258a910e1af3dc705",
+      "docs/superpowers/compatibility/role-public/observations.json": "429bdbe6e38be2946b6ae6117b01bb4940766e8968e67be6f7102d0237dcb262",
+      "packages/backend-next/src/composition/http-app.ts": "b54091a0049aa30a888c72227f5a3e568156eabb4804b11fd3b34a7ca9ed853d",
+      "packages/backend-next/test/package-imports.test.ts": "79286cf3f69d3e1cf40e06fa95c9a2af9e6b940391c4dcfeade2aac1127acfa6",
+      "packages/backend-next/test/unit/composition/http-app.test.ts": "3a279a89e29ea382b95a8c6a7122fd0c50ee18c16ebbd49e7ca931556776a946",
+      "packages/backend-upstream/upstream-sync.json": "97f4c47a784ab71693bcdae889ac2eed81e862659473a07a722fe292ade1a5fd",
+      "packages/backend-upstream/.managed-files.json": "12b58d1dfb82ba6c15f476ed804ff8b0e025f16003a31274f7ac651a4aab14d5",
+      "packages/backend-upstream/exports/entities.ts": "3ce5640083ad0003d38037fbb563476045492062e0f820c26de8c3427653c804",
+      "scripts/package-imports-evidence.mjs": "aae192e7be8511aea409168977ffb65ade403f053f8204f619ab0cacc244670c",
+      "scripts/role-public-contract.test.mjs": "1f93b6695f4a5f8d7d058be42f404b98bfbda08e6a7d98c011477d3aa8646f7b",
+      "scripts/notes-pagination-evidence.mjs": "d23a008134f323ff6b14e0c03c530376c183f282807ba2de6c203a3e79057f2e",
+      "scripts/evidence-validation-scope.mjs": "d318b6b64a451a0e32bfd9f78cc51fc717ecde9bf19db9a148b4b6dd034c2090"
+    },
+    "scope": "actual files for finite shared projections; not combined runtime/HTTP/PG"
+  },
+  "runs": [
+    {
+      "command": [
+        "node",
+        "--test",
+        "scripts/role-public-contract.test.mjs",
+        "scripts/notes-pagination-contract.test.mjs",
+        "scripts/package-imports-contract.test.mjs",
+        "scripts/page-read-contract.test.mjs",
+        "scripts/page-relation-contract.test.mjs",
+        "scripts/user-memo-contract.test.mjs",
+        "scripts/poll-recommendation-contract.test.mjs",
+        "scripts/drive-folder-pubsub-contract.test.mjs"
+      ],
+      "startedAt": "2026-11-17T08:08:55.972198+00:00",
+      "completedAt": "2026-11-17T08:08:59.902190+00:00",
+      "exitCode": 0,
+      "counts": {
+        "tests": 68,
+        "pass": 68,
+        "fail": 0,
+        "skipped": 0
+      },
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/roles-new-variant-final-near.log",
+      "logSha256": "0592247a5465911cb3ec2a4edda2548e2fca87b589de29e150de1f686c603bf8"
+    },
+    {
+      "command": [
+        "node",
+        "--test",
+        "/tmp/role295-current-combined-contract-0k4heh89/scripts/role-public-contract.test.mjs"
+      ],
+      "startedAt": "2026-11-17T08:08:59.902238+00:00",
+      "completedAt": "2026-11-17T08:08:59.970331+00:00",
+      "exitCode": 0,
+      "counts": {
+        "tests": 4,
+        "pass": 4,
+        "fail": 0,
+        "skipped": 0
+      },
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/roles-new-variant-final-combined-fixture.log",
+      "logSha256": "6b95e7b61193c5aa80f0ddb455ec71514d45529057e062955ebb20679e07c88e"
+    },
+    {
+      "command": [
+        "node",
+        "scripts/check-shipping.mjs",
+        "--base",
+        "45a2f217e3b991c309798ff61b118841085d7f48"
+      ],
+      "startedAt": "2026-11-17T08:08:59.970382+00:00",
+      "completedAt": "2026-11-17T08:09:02.441296+00:00",
+      "exitCode": 0,
+      "counts": {},
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/roles-new-variant-final-shipping.log",
+      "logSha256": "e5dc1a4ddd3f42d09b9e985e617d3ebd60ca9110fc74420ecde25743145ce283"
+    }
+  ],
+  "fullRoot": "prior freeze in followup-evidence.json; latest combined root delegated to coordinator and latest standalone root to PR CI"
+}

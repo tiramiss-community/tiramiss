@@ -399,6 +399,32 @@ const announcementReadProjection = {
           "previous": ""
         }
       ]
+    },
+    {
+      "currentSha256": "b54091a0049aa30a888c72227f5a3e568156eabb4804b11fd3b34a7ca9ed853d",
+      "previousSha256": "350bbc6ff8951287282253c391a80d9be2c1d4d6fbd5dce6149b51c00c3f386f",
+      "patches": [
+        {
+          "offset": 129,
+          "insert": "';\nimport { createAnnouncementsHttp } from './announcements-http.js",
+          "previous": ""
+        },
+        {
+          "offset": 1897,
+          "insert": "nnouncements = createAnnouncementsHttp(resources, config);\n\tconst a",
+          "previous": ""
+        },
+        {
+          "offset": 2115,
+          "insert": ")\n\t\t.route('/', announcements.app",
+          "previous": ""
+        },
+        {
+          "offset": 3018,
+          "insert": ", announcements.idle()",
+          "previous": ""
+        }
+      ]
     }
   ],
   "packages/backend-next/test/unit/composition/http-app.test.ts": [
