@@ -3490,6 +3490,121 @@
       ],
       "note": "#294: fixed-source19 and ordinary listening HTTP/PG validate save/update/stable id/null-or-empty delete/unknown user/errors and author isolation. Viewer-scoped UserMemoReader is a narrow read material; full UserDetailed and accounts/#180 remain unfinished. Full upstream server is not measured. See docs/superpowers/compatibility/user-memo/README.md.",
       "evidenceRevision": "80f91dac6eb110a441e4d19d03fc3b6160fe536c"
+    },
+    "api:pages/show": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/page/public.ts",
+        "packages/backend-next/src/modules/page/read.ts",
+        "packages/backend-next/src/platform/database/pages.ts",
+        "packages/backend-next/src/http/pages-api.ts",
+        "packages/backend-next/src/composition/pages-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/page/read.test.ts",
+        "packages/backend-next/test/unit/page/source.test.ts",
+        "packages/backend-next/test/integration/page-read.test.ts",
+        "docs/superpowers/compatibility/page-read/source-probe.mjs",
+        "docs/superpowers/compatibility/page-read/observations.json",
+        "docs/superpowers/compatibility/page-read/verification.json",
+        "docs/superpowers/compatibility/page-read/README.md",
+        "scripts/page-read-contract.test.mjs"
+      ],
+      "evidenceRevision": "671f5db3b77b6a7b6d4bd361daca08d102b16b63",
+      "note": "#293: 通常 pages/show と Page pack/packMany の読取を移植。ID/名前/guest/like、所有者限定添付、eye catch、旧input再帰変換・非待機content書戻しを固定本家モジュール実体と比較。nullish WHERE-ignore と文字列childrenの4境界は固定postgres設定の実PG sourceでも一致。最終R4: unit23、HTTP/PG21、source18、共有契約34、同期/build/typecheck/shipping成功、入力前後不変。R1–R3履歴は修正後結果へ付け替えない。PageLike同期と既存migrationのschema差分0件。書込失敗は診断しHTTP終了時に待つ差異を明示。Page CRUD/一覧/like更新、UserDetailed全体、#191/#114全体は未完了。"
+    },
+    "entity:page": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/page/public.ts",
+        "packages/backend-next/src/modules/page/read.ts",
+        "packages/backend-next/src/platform/database/pages.ts",
+        "packages/backend-next/src/http/pages-api.ts",
+        "packages/backend-next/src/composition/pages-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/page/read.test.ts",
+        "packages/backend-next/test/unit/page/source.test.ts",
+        "packages/backend-next/test/integration/page-read.test.ts",
+        "docs/superpowers/compatibility/page-read/source-probe.mjs",
+        "docs/superpowers/compatibility/page-read/observations.json",
+        "docs/superpowers/compatibility/page-read/verification.json",
+        "docs/superpowers/compatibility/page-read/README.md",
+        "scripts/page-read-contract.test.mjs"
+      ],
+      "evidenceRevision": "671f5db3b77b6a7b6d4bd361daca08d102b16b63",
+      "note": "#293: 通常 pages/show と Page pack/packMany の読取を移植。ID/名前/guest/like、所有者限定添付、eye catch、旧input再帰変換・非待機content書戻しを固定本家モジュール実体と比較。nullish WHERE-ignore と文字列childrenの4境界は固定postgres設定の実PG sourceでも一致。最終R4: unit23、HTTP/PG21、source18、共有契約34、同期/build/typecheck/shipping成功、入力前後不変。R1–R3履歴は修正後結果へ付け替えない。PageLike同期と既存migrationのschema差分0件。書込失敗は診断しHTTP終了時に待つ差異を明示。Page CRUD/一覧/like更新、UserDetailed全体、#191/#114全体は未完了。"
+    },
+    "packer:PageEntityService": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/page/public.ts",
+        "packages/backend-next/src/modules/page/read.ts",
+        "packages/backend-next/src/platform/database/pages.ts",
+        "packages/backend-next/src/http/pages-api.ts",
+        "packages/backend-next/src/composition/pages-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/page/read.test.ts",
+        "packages/backend-next/test/unit/page/source.test.ts",
+        "packages/backend-next/test/integration/page-read.test.ts",
+        "docs/superpowers/compatibility/page-read/source-probe.mjs",
+        "docs/superpowers/compatibility/page-read/observations.json",
+        "docs/superpowers/compatibility/page-read/verification.json",
+        "docs/superpowers/compatibility/page-read/README.md",
+        "scripts/page-read-contract.test.mjs"
+      ],
+      "evidenceRevision": "671f5db3b77b6a7b6d4bd361daca08d102b16b63",
+      "note": "#293: 通常 pages/show と Page pack/packMany の読取を移植。ID/名前/guest/like、所有者限定添付、eye catch、旧input再帰変換・非待機content書戻しを固定本家モジュール実体と比較。nullish WHERE-ignore と文字列childrenの4境界は固定postgres設定の実PG sourceでも一致。最終R4: unit23、HTTP/PG21、source18、共有契約34、同期/build/typecheck/shipping成功、入力前後不変。R1–R3履歴は修正後結果へ付け替えない。PageLike同期と既存migrationのschema差分0件。書込失敗は診断しHTTP終了時に待つ差異を明示。Page CRUD/一覧/like更新、UserDetailed全体、#191/#114全体は未完了。"
+    },
+    "responsibility:packers:42": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/page/public.ts",
+        "packages/backend-next/src/modules/page/read.ts",
+        "packages/backend-next/src/platform/database/pages.ts",
+        "packages/backend-next/src/http/pages-api.ts",
+        "packages/backend-next/src/composition/pages-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/page/read.test.ts",
+        "packages/backend-next/test/unit/page/source.test.ts",
+        "packages/backend-next/test/integration/page-read.test.ts",
+        "docs/superpowers/compatibility/page-read/source-probe.mjs",
+        "docs/superpowers/compatibility/page-read/observations.json",
+        "docs/superpowers/compatibility/page-read/verification.json",
+        "docs/superpowers/compatibility/page-read/README.md",
+        "scripts/page-read-contract.test.mjs"
+      ],
+      "evidenceRevision": "671f5db3b77b6a7b6d4bd361daca08d102b16b63",
+      "note": "#293: 通常 pages/show と Page pack/packMany の読取を移植。ID/名前/guest/like、所有者限定添付、eye catch、旧input再帰変換・非待機content書戻しを固定本家モジュール実体と比較。nullish WHERE-ignore と文字列childrenの4境界は固定postgres設定の実PG sourceでも一致。最終R4: unit23、HTTP/PG21、source18、共有契約34、同期/build/typecheck/shipping成功、入力前後不変。R1–R3履歴は修正後結果へ付け替えない。PageLike同期と既存migrationのschema差分0件。書込失敗は診断しHTTP終了時に待つ差異を明示。Page CRUD/一覧/like更新、UserDetailed全体、#191/#114全体は未完了。"
+    },
+    "responsibility:packers:43": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/page/public.ts",
+        "packages/backend-next/src/modules/page/read.ts",
+        "packages/backend-next/src/platform/database/pages.ts",
+        "packages/backend-next/src/http/pages-api.ts",
+        "packages/backend-next/src/composition/pages-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/page/read.test.ts",
+        "packages/backend-next/test/unit/page/source.test.ts",
+        "packages/backend-next/test/integration/page-read.test.ts",
+        "docs/superpowers/compatibility/page-read/source-probe.mjs",
+        "docs/superpowers/compatibility/page-read/observations.json",
+        "docs/superpowers/compatibility/page-read/verification.json",
+        "docs/superpowers/compatibility/page-read/README.md",
+        "scripts/page-read-contract.test.mjs"
+      ],
+      "evidenceRevision": "671f5db3b77b6a7b6d4bd361daca08d102b16b63",
+      "note": "#293: 通常 pages/show と Page pack/packMany の読取を移植。ID/名前/guest/like、所有者限定添付、eye catch、旧input再帰変換・非待機content書戻しを固定本家モジュール実体と比較。nullish WHERE-ignore と文字列childrenの4境界は固定postgres設定の実PG sourceでも一致。最終R4: unit23、HTTP/PG21、source18、共有契約34、同期/build/typecheck/shipping成功、入力前後不変。R1–R3履歴は修正後結果へ付け替えない。PageLike同期と既存migrationのschema差分0件。書込失敗は診断しHTTP終了時に待つ差異を明示。Page CRUD/一覧/like更新、UserDetailed全体、#191/#114全体は未完了。"
     }
   }
 }
