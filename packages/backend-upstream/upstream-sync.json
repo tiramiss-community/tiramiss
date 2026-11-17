@@ -41,7 +41,8 @@
 		"src/models/UserPublickey.ts",
 		"src/models/FollowRequest.ts",
 		"src/models/UserNotePining.ts",
-		"src/models/UserMemo.ts"
+		"src/models/UserMemo.ts",
+		"src/models/PageLike.ts"
 	],
 	"migrationDirectory": "migration",
 	"externalDependencies": [

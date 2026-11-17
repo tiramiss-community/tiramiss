@@ -55,3 +55,4 @@
 | [UF-012](packages/backend/src/core/MetaService.md#uf-012-取得中の古いmetaが通知済みの値を上書きする) | `core/MetaService.ts` | 取得中の古いMetaが通知後にcacheを上書きする | 引き継いだ（#317） | 未報告 |
 | [UF-013](packages/backend/src/core/MetaService.md#uf-013-周期再取得のdbエラーにrejection-handlerがない) | `core/MetaService.ts` | 周期再取得のDB失敗が未処理rejectionになる | loggerへ報告（#317） | 未報告 |
 | [UF-014](packages/backend/src/server/web/ClientServerService.md#uf-014-twemojiバッジの96px指定に対して512pxが出力される) | `server/web/ClientServerService.ts` | Sharp 0.35.5の固定画像バッジが96px指定に対して512pxになる | 引き継いだ（#555） | 未報告 |
+| [UF-015](packages/backend/src/core/entities/PageEntityService.md#uf-015-旧content書戻しのdb失敗が未処理rejectionになる) | `core/entities/PageEntityService.ts` | 旧inputの非待機書戻しにrejection handlerがない | 非待機を維持しloggerへ報告（#293） | 未報告 |

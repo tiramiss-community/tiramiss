@@ -1,0 +1,1701 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "manifest": [
+    {
+      "path": "packages/backend/src/postgres.ts",
+      "sha256": "c6879b6b23c5fb1e7518ff0eaa02397791470732389954648f42ab13c0eaaa74",
+      "gitBlob": "0df2614c6d16e51db06cb485e0e9f98909be24aa"
+    },
+    {
+      "path": "packages/backend/src/core/entities/PageEntityService.ts",
+      "sha256": "90f62af7a27a3934e7ec8c554959afbaaa165c73b56254531269201770bfc51b",
+      "gitBlob": "46bf51bb6d28a6dce272161e2c649de44e91167d"
+    },
+    {
+      "path": "packages/backend/src/misc/prelude/await-all.ts",
+      "sha256": "2fd2ebc896251cb3a16b9e2c2d7b32e42544d019266ee3a61a451eb3de03d873",
+      "gitBlob": "48249fe1ae5373b6367e1d3e15f9d253113c60ba"
+    },
+    {
+      "path": "packages/backend/src/decorators.ts",
+      "sha256": "207c53166f496fb50e49b765b02ca7334cf7f817343222901a9646442a225f21",
+      "gitBlob": "42f925e1251cf8d5eb48caeb96d5a72fb203c017"
+    },
+    {
+      "path": "packages/backend/src/core/entities/DriveFileEntityService.ts",
+      "sha256": "a48a07792b784a3ded4364594d346e2cd2d9a7e0a506b56b082325a8f41ca738",
+      "gitBlob": "1865d494c4ba39d84daa62501469895e7224a3fb"
+    },
+    {
+      "path": "packages/backend/src/misc/prelude/url.ts",
+      "sha256": "23157930e879afe70598a81c2e2671e2ceaee6a71023afc2f7b4a15fecb58e9d",
+      "gitBlob": "270a0750754eac81c651b7090bd0a7c2d7b3c798"
+    },
+    {
+      "path": "packages/backend/src/misc/clone.ts",
+      "sha256": "83ed1125236510a1f12e382233c50a0aa4c00b923fff8a2595c0fc729652e1b0",
+      "gitBlob": "ed0548564922658d31c7f6f9f92f8b12558e5796"
+    },
+    {
+      "path": "packages/backend/src/misc/is-mime-image.ts",
+      "sha256": "eae78d9877ddfde78107e4d3833bc58238fff57c09e72beb277c3a5cabc06432",
+      "gitBlob": "8ffbc9923066ac0e83acc671559b9504fb75797e"
+    },
+    {
+      "path": "packages/backend/src/const.ts",
+      "sha256": "fbc65ab901b483490836f659cb1844c73bdfba8e18957ea4e2cd2038985b6324",
+      "gitBlob": "1ca03972068251a159fe1137e5a0bff27f9b15c4"
+    },
+    {
+      "path": "packages/backend/src/misc/unique-by-key.ts",
+      "sha256": "938749827d8abdff565ed27d32af3cdb6034b844f8ccdbd28be3b322bd7605ab",
+      "gitBlob": "4308e29d2177f30e53729d66d2499663b0963a30"
+    },
+    {
+      "path": "packages/backend/src/core/IdService.ts",
+      "sha256": "237d9410066fb6acfe872e7e617e6f4ce7b0093989e88baad1c29066b69f4f65",
+      "gitBlob": "223a8de678382fda4ec01e771525e120b41f95ae"
+    },
+    {
+      "path": "packages/backend/src/misc/id/aid.ts",
+      "sha256": "ae7d72425947600d69619d5e6b601e6e5b372d42678978f9de36821c95744b78",
+      "gitBlob": "c0e8478db55a19b2b2905d8d5c629872b08eaefc"
+    },
+    {
+      "path": "packages/backend/src/misc/bigint.ts",
+      "sha256": "5a56dedbc99a7c21d1829c606e454fd86deaf104fe0318ff60bdae0be096bb5f",
+      "gitBlob": "efa1527ec9c4b9144d5ceed4e41c3889c52fbc34"
+    },
+    {
+      "path": "packages/backend/src/misc/id/aidx.ts",
+      "sha256": "613a33f3247823856f861961a05961a8c50151133669d56b8b6441dd0d5e86f9",
+      "gitBlob": "006673a6d013e372226efcfbddf858316ed1115d"
+    },
+    {
+      "path": "packages/backend/src/misc/id/meid.ts",
+      "sha256": "679c4a517b82cbaf6790fd45c25ed114e90edd91023d5e49004eed3e5bda439c",
+      "gitBlob": "563e07ed8fd8cf4fdcdb20e4d1923ea418634d3b"
+    },
+    {
+      "path": "packages/backend/src/misc/id/meidg.ts",
+      "sha256": "cd0ce743802342c5b24f133fc665033ee07566c746c201c525698a7073999fcb",
+      "gitBlob": "b82580711441eb5c893ba07cbfcc7d5fc32047b4"
+    },
+    {
+      "path": "packages/backend/src/misc/id/object-id.ts",
+      "sha256": "5dccac2c6af79f3f27d02c90847f10948dd587c1109b07fe62f62a7ac475e610",
+      "gitBlob": "68409c7a61584b0695f59660254cbb587bd64e0f"
+    },
+    {
+      "path": "packages/backend/src/misc/id/ulid.ts",
+      "sha256": "56ee26e1a0f4666e14aaa0a84bbd2e494f04bf86af5cebbfdfce92039e0d915a",
+      "gitBlob": "291a33385f0e896408bdfe083c8da9f13145c762"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/pages/show.ts",
+      "sha256": "c1f764cdc334788cc7e0e84be839afe34b8deb0ea3d0a70e67d951cdfe5a4abc",
+      "gitBlob": "8427bab2d5af58870b6e7d4ef469fa11e70e219e"
+    },
+    {
+      "path": "packages/backend/src/server/api/error.ts",
+      "sha256": "1146f3cc06ebc2adc087823d37c00f7f0630331beae2fa221e05225b731f2638",
+      "gitBlob": "2f8322a5689f42188ba1bda3a8d3ecca01c8736b"
+    }
+  ],
+  "invalidWhereValuesBehavior": {
+    "null": "ignore",
+    "undefined": "ignore"
+  },
+  "corpusSha256": "3f89f329feac6fc40aaa0d99a21b01204bc5d7170e92c49ef2c7c9e46fee71bf",
+  "doubles": [
+    "Full pinned PageEntityService/pages-show/DriveFileEntityService/IdService modules and their imported pure helpers are transpiled and required from pinned Git objects; no method-body extraction.",
+    "Nest decorators and Endpoint lifecycle are inert adapters; endpoint handler and schema remain source code.",
+    "Repository doubles apply fixed PostgreSQL null/undefined WHERE-ignore semantics, exact remaining filters, explicit missing/failure states and asynchronous content update; real PostgreSQL and normal HTTP tested separately.",
+    "UserEntityService.pack double emits only id/username, records default UserLite option and viewer; real UserLite fields are asserted in HTTP tests.",
+    "DriveFolder/Utility/Video services are unused for these image fixtures; ID generation randomness uses zeroes for module initialization; generation is outside these cases."
+  ],
+  "cases": [
+    {
+      "id": "guest-id",
+      "expected": {
+        "result": {
+          "id": "at3hjq76page0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "updatedAt": "2026-11-01T00:00:00.000Z",
+          "userId": "alice",
+          "user": {
+            "id": "alice",
+            "username": "alice"
+          },
+          "content": [
+            {
+              "type": "section",
+              "children": [
+                {
+                  "type": "image",
+                  "fileId": "at3hjq76file0001"
+                },
+                {
+                  "type": "image",
+                  "fileId": "at3hjq76file0002"
+                },
+                {
+                  "type": "image",
+                  "fileId": "missing"
+                },
+                {
+                  "type": "section",
+                  "children": [
+                    {
+                      "type": "image",
+                      "fileId": "at3hjq76file0001"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "variables": [
+            {
+              "name": "variable",
+              "type": "number",
+              "value": 1
+            }
+          ],
+          "title": "Page",
+          "name": "case-sensitive",
+          "summary": null,
+          "hideTitleWhenPinned": true,
+          "alignCenter": false,
+          "font": "sans-serif",
+          "script": "test script",
+          "eyeCatchingImageId": "at3hjq76file0002",
+          "eyeCatchingImage": {
+            "id": "at3hjq76file0002",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "test.png",
+            "type": "image/png",
+            "md5": "00000000000000000000000000000000",
+            "size": 10,
+            "isSensitive": false,
+            "blurhash": null,
+            "properties": {
+              "width": 20,
+              "height": 10,
+              "avgColor": "aabbcc"
+            },
+            "url": "https://storage/foreign",
+            "thumbnailUrl": "https://storage/foreign",
+            "comment": null,
+            "folderId": null,
+            "folder": null,
+            "userId": null,
+            "user": null
+          },
+          "attachedFiles": [
+            {
+              "id": "at3hjq76file0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "test.png",
+              "type": "image/png",
+              "md5": "00000000000000000000000000000000",
+              "size": 10,
+              "isSensitive": false,
+              "blurhash": null,
+              "properties": {
+                "width": 20,
+                "height": 10,
+                "avgColor": "aabbcc"
+              },
+              "url": "https://storage/public",
+              "thumbnailUrl": "https://storage/public",
+              "comment": null,
+              "folderId": null,
+              "folder": null,
+              "userId": "alice",
+              "user": null
+            },
+            {
+              "id": "at3hjq76file0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "test.png",
+              "type": "image/png",
+              "md5": "00000000000000000000000000000000",
+              "size": 10,
+              "isSensitive": false,
+              "blurhash": null,
+              "properties": {
+                "width": 20,
+                "height": 10,
+                "avgColor": "aabbcc"
+              },
+              "url": "https://storage/public",
+              "thumbnailUrl": "https://storage/public",
+              "comment": null,
+              "folderId": null,
+              "folder": null,
+              "userId": "alice",
+              "user": null
+            }
+          ],
+          "likedCount": 2
+        },
+        "writes": [],
+        "userCalls": [
+          {
+            "id": "alice",
+            "viewer": null,
+            "options": null
+          }
+        ],
+        "persistedContent": [
+          {
+            "type": "section",
+            "children": [
+              {
+                "type": "image",
+                "fileId": "at3hjq76file0001"
+              },
+              {
+                "type": "image",
+                "fileId": "at3hjq76file0002"
+              },
+              {
+                "type": "image",
+                "fileId": "missing"
+              },
+              {
+                "type": "section",
+                "children": [
+                  {
+                    "type": "image",
+                    "fileId": "at3hjq76file0001"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "liked-viewer",
+      "expected": {
+        "result": {
+          "id": "at3hjq76page0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "updatedAt": "2026-11-01T00:00:00.000Z",
+          "userId": "alice",
+          "user": {
+            "id": "alice",
+            "username": "alice"
+          },
+          "content": [
+            {
+              "type": "section",
+              "children": [
+                {
+                  "type": "image",
+                  "fileId": "at3hjq76file0001"
+                },
+                {
+                  "type": "image",
+                  "fileId": "at3hjq76file0002"
+                },
+                {
+                  "type": "image",
+                  "fileId": "missing"
+                },
+                {
+                  "type": "section",
+                  "children": [
+                    {
+                      "type": "image",
+                      "fileId": "at3hjq76file0001"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "variables": [
+            {
+              "name": "variable",
+              "type": "number",
+              "value": 1
+            }
+          ],
+          "title": "Page",
+          "name": "case-sensitive",
+          "summary": null,
+          "hideTitleWhenPinned": true,
+          "alignCenter": false,
+          "font": "sans-serif",
+          "script": "test script",
+          "eyeCatchingImageId": "at3hjq76file0002",
+          "eyeCatchingImage": {
+            "id": "at3hjq76file0002",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "test.png",
+            "type": "image/png",
+            "md5": "00000000000000000000000000000000",
+            "size": 10,
+            "isSensitive": false,
+            "blurhash": null,
+            "properties": {
+              "width": 20,
+              "height": 10,
+              "avgColor": "aabbcc"
+            },
+            "url": "https://storage/foreign",
+            "thumbnailUrl": "https://storage/foreign",
+            "comment": null,
+            "folderId": null,
+            "folder": null,
+            "userId": null,
+            "user": null
+          },
+          "attachedFiles": [
+            {
+              "id": "at3hjq76file0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "test.png",
+              "type": "image/png",
+              "md5": "00000000000000000000000000000000",
+              "size": 10,
+              "isSensitive": false,
+              "blurhash": null,
+              "properties": {
+                "width": 20,
+                "height": 10,
+                "avgColor": "aabbcc"
+              },
+              "url": "https://storage/public",
+              "thumbnailUrl": "https://storage/public",
+              "comment": null,
+              "folderId": null,
+              "folder": null,
+              "userId": "alice",
+              "user": null
+            },
+            {
+              "id": "at3hjq76file0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "test.png",
+              "type": "image/png",
+              "md5": "00000000000000000000000000000000",
+              "size": 10,
+              "isSensitive": false,
+              "blurhash": null,
+              "properties": {
+                "width": 20,
+                "height": 10,
+                "avgColor": "aabbcc"
+              },
+              "url": "https://storage/public",
+              "thumbnailUrl": "https://storage/public",
+              "comment": null,
+              "folderId": null,
+              "folder": null,
+              "userId": "alice",
+              "user": null
+            }
+          ],
+          "likedCount": 2,
+          "isLiked": true
+        },
+        "writes": [],
+        "userCalls": [
+          {
+            "id": "alice",
+            "viewer": "bob",
+            "options": null
+          }
+        ],
+        "persistedContent": [
+          {
+            "type": "section",
+            "children": [
+              {
+                "type": "image",
+                "fileId": "at3hjq76file0001"
+              },
+              {
+                "type": "image",
+                "fileId": "at3hjq76file0002"
+              },
+              {
+                "type": "image",
+                "fileId": "missing"
+              },
+              {
+                "type": "section",
+                "children": [
+                  {
+                    "type": "image",
+                    "fileId": "at3hjq76file0001"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "unliked-owner",
+      "expected": {
+        "result": {
+          "id": "at3hjq76page0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "updatedAt": "2026-11-01T00:00:00.000Z",
+          "userId": "alice",
+          "user": {
+            "id": "alice",
+            "username": "alice"
+          },
+          "content": [
+            {
+              "type": "section",
+              "children": [
+                {
+                  "type": "image",
+                  "fileId": "at3hjq76file0001"
+                },
+                {
+                  "type": "image",
+                  "fileId": "at3hjq76file0002"
+                },
+                {
+                  "type": "image",
+                  "fileId": "missing"
+                },
+                {
+                  "type": "section",
+                  "children": [
+                    {
+                      "type": "image",
+                      "fileId": "at3hjq76file0001"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "variables": [
+            {
+              "name": "variable",
+              "type": "number",
+              "value": 1
+            }
+          ],
+          "title": "Page",
+          "name": "case-sensitive",
+          "summary": null,
+          "hideTitleWhenPinned": true,
+          "alignCenter": false,
+          "font": "sans-serif",
+          "script": "test script",
+          "eyeCatchingImageId": "at3hjq76file0002",
+          "eyeCatchingImage": {
+            "id": "at3hjq76file0002",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "test.png",
+            "type": "image/png",
+            "md5": "00000000000000000000000000000000",
+            "size": 10,
+            "isSensitive": false,
+            "blurhash": null,
+            "properties": {
+              "width": 20,
+              "height": 10,
+              "avgColor": "aabbcc"
+            },
+            "url": "https://storage/foreign",
+            "thumbnailUrl": "https://storage/foreign",
+            "comment": null,
+            "folderId": null,
+            "folder": null,
+            "userId": null,
+            "user": null
+          },
+          "attachedFiles": [
+            {
+              "id": "at3hjq76file0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "test.png",
+              "type": "image/png",
+              "md5": "00000000000000000000000000000000",
+              "size": 10,
+              "isSensitive": false,
+              "blurhash": null,
+              "properties": {
+                "width": 20,
+                "height": 10,
+                "avgColor": "aabbcc"
+              },
+              "url": "https://storage/public",
+              "thumbnailUrl": "https://storage/public",
+              "comment": null,
+              "folderId": null,
+              "folder": null,
+              "userId": "alice",
+              "user": null
+            },
+            {
+              "id": "at3hjq76file0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "test.png",
+              "type": "image/png",
+              "md5": "00000000000000000000000000000000",
+              "size": 10,
+              "isSensitive": false,
+              "blurhash": null,
+              "properties": {
+                "width": 20,
+                "height": 10,
+                "avgColor": "aabbcc"
+              },
+              "url": "https://storage/public",
+              "thumbnailUrl": "https://storage/public",
+              "comment": null,
+              "folderId": null,
+              "folder": null,
+              "userId": "alice",
+              "user": null
+            }
+          ],
+          "likedCount": 2,
+          "isLiked": false
+        },
+        "writes": [],
+        "userCalls": [
+          {
+            "id": "alice",
+            "viewer": "alice",
+            "options": null
+          }
+        ],
+        "persistedContent": [
+          {
+            "type": "section",
+            "children": [
+              {
+                "type": "image",
+                "fileId": "at3hjq76file0001"
+              },
+              {
+                "type": "image",
+                "fileId": "at3hjq76file0002"
+              },
+              {
+                "type": "image",
+                "fileId": "missing"
+              },
+              {
+                "type": "section",
+                "children": [
+                  {
+                    "type": "image",
+                    "fileId": "at3hjq76file0001"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "local-name-uppercase",
+      "expected": {
+        "result": {
+          "id": "at3hjq76page0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "updatedAt": "2026-11-01T00:00:00.000Z",
+          "userId": "alice",
+          "user": {
+            "id": "alice",
+            "username": "alice"
+          },
+          "content": [
+            {
+              "type": "section",
+              "children": [
+                {
+                  "type": "image",
+                  "fileId": "at3hjq76file0001"
+                },
+                {
+                  "type": "image",
+                  "fileId": "at3hjq76file0002"
+                },
+                {
+                  "type": "image",
+                  "fileId": "missing"
+                },
+                {
+                  "type": "section",
+                  "children": [
+                    {
+                      "type": "image",
+                      "fileId": "at3hjq76file0001"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "variables": [
+            {
+              "name": "variable",
+              "type": "number",
+              "value": 1
+            }
+          ],
+          "title": "Page",
+          "name": "case-sensitive",
+          "summary": null,
+          "hideTitleWhenPinned": true,
+          "alignCenter": false,
+          "font": "sans-serif",
+          "script": "test script",
+          "eyeCatchingImageId": "at3hjq76file0002",
+          "eyeCatchingImage": {
+            "id": "at3hjq76file0002",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "test.png",
+            "type": "image/png",
+            "md5": "00000000000000000000000000000000",
+            "size": 10,
+            "isSensitive": false,
+            "blurhash": null,
+            "properties": {
+              "width": 20,
+              "height": 10,
+              "avgColor": "aabbcc"
+            },
+            "url": "https://storage/foreign",
+            "thumbnailUrl": "https://storage/foreign",
+            "comment": null,
+            "folderId": null,
+            "folder": null,
+            "userId": null,
+            "user": null
+          },
+          "attachedFiles": [
+            {
+              "id": "at3hjq76file0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "test.png",
+              "type": "image/png",
+              "md5": "00000000000000000000000000000000",
+              "size": 10,
+              "isSensitive": false,
+              "blurhash": null,
+              "properties": {
+                "width": 20,
+                "height": 10,
+                "avgColor": "aabbcc"
+              },
+              "url": "https://storage/public",
+              "thumbnailUrl": "https://storage/public",
+              "comment": null,
+              "folderId": null,
+              "folder": null,
+              "userId": "alice",
+              "user": null
+            },
+            {
+              "id": "at3hjq76file0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "test.png",
+              "type": "image/png",
+              "md5": "00000000000000000000000000000000",
+              "size": 10,
+              "isSensitive": false,
+              "blurhash": null,
+              "properties": {
+                "width": 20,
+                "height": 10,
+                "avgColor": "aabbcc"
+              },
+              "url": "https://storage/public",
+              "thumbnailUrl": "https://storage/public",
+              "comment": null,
+              "folderId": null,
+              "folder": null,
+              "userId": "alice",
+              "user": null
+            }
+          ],
+          "likedCount": 2
+        },
+        "writes": [],
+        "userCalls": [
+          {
+            "id": "alice",
+            "viewer": null,
+            "options": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "missing-page",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_PAGE",
+          "id": "222120c0-3ead-4528-811b-b96f233388d7",
+          "message": "No such page."
+        },
+        "writes": [],
+        "userCalls": []
+      }
+    },
+    {
+      "id": "missing-name",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_PAGE",
+          "id": "222120c0-3ead-4528-811b-b96f233388d7",
+          "message": "No such page."
+        },
+        "writes": [],
+        "userCalls": []
+      }
+    },
+    {
+      "id": "remote-name",
+      "expected": {
+        "error": {
+          "code": "NO_SUCH_PAGE",
+          "id": "222120c0-3ead-4528-811b-b96f233388d7",
+          "message": "No such page."
+        },
+        "writes": [],
+        "userCalls": []
+      }
+    },
+    {
+      "id": "invalid-empty",
+      "expected": {
+        "error": {
+          "code": "INVALID_PARAM"
+        },
+        "writes": [],
+        "userCalls": []
+      }
+    },
+    {
+      "id": "invalid-id",
+      "expected": {
+        "error": {
+          "code": "INVALID_PARAM"
+        },
+        "writes": [],
+        "userCalls": []
+      }
+    },
+    {
+      "id": "id-precedes-name",
+      "expected": {
+        "result": {
+          "id": "at3hjq76page0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "updatedAt": "2026-11-01T00:00:00.000Z",
+          "userId": "alice",
+          "user": {
+            "id": "alice",
+            "username": "alice"
+          },
+          "content": [
+            {
+              "type": "section",
+              "children": [
+                {
+                  "type": "image",
+                  "fileId": "at3hjq76file0001"
+                },
+                {
+                  "type": "image",
+                  "fileId": "at3hjq76file0002"
+                },
+                {
+                  "type": "image",
+                  "fileId": "missing"
+                },
+                {
+                  "type": "section",
+                  "children": [
+                    {
+                      "type": "image",
+                      "fileId": "at3hjq76file0001"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "variables": [
+            {
+              "name": "variable",
+              "type": "number",
+              "value": 1
+            }
+          ],
+          "title": "Page",
+          "name": "case-sensitive",
+          "summary": null,
+          "hideTitleWhenPinned": true,
+          "alignCenter": false,
+          "font": "sans-serif",
+          "script": "test script",
+          "eyeCatchingImageId": "at3hjq76file0002",
+          "eyeCatchingImage": {
+            "id": "at3hjq76file0002",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "test.png",
+            "type": "image/png",
+            "md5": "00000000000000000000000000000000",
+            "size": 10,
+            "isSensitive": false,
+            "blurhash": null,
+            "properties": {
+              "width": 20,
+              "height": 10,
+              "avgColor": "aabbcc"
+            },
+            "url": "https://storage/foreign",
+            "thumbnailUrl": "https://storage/foreign",
+            "comment": null,
+            "folderId": null,
+            "folder": null,
+            "userId": null,
+            "user": null
+          },
+          "attachedFiles": [
+            {
+              "id": "at3hjq76file0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "test.png",
+              "type": "image/png",
+              "md5": "00000000000000000000000000000000",
+              "size": 10,
+              "isSensitive": false,
+              "blurhash": null,
+              "properties": {
+                "width": 20,
+                "height": 10,
+                "avgColor": "aabbcc"
+              },
+              "url": "https://storage/public",
+              "thumbnailUrl": "https://storage/public",
+              "comment": null,
+              "folderId": null,
+              "folder": null,
+              "userId": "alice",
+              "user": null
+            },
+            {
+              "id": "at3hjq76file0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "test.png",
+              "type": "image/png",
+              "md5": "00000000000000000000000000000000",
+              "size": 10,
+              "isSensitive": false,
+              "blurhash": null,
+              "properties": {
+                "width": 20,
+                "height": 10,
+                "avgColor": "aabbcc"
+              },
+              "url": "https://storage/public",
+              "thumbnailUrl": "https://storage/public",
+              "comment": null,
+              "folderId": null,
+              "folder": null,
+              "userId": "alice",
+              "user": null
+            }
+          ],
+          "likedCount": 2
+        },
+        "writes": [],
+        "userCalls": [
+          {
+            "id": "alice",
+            "viewer": null,
+            "options": null
+          }
+        ],
+        "persistedContent": [
+          {
+            "type": "section",
+            "children": [
+              {
+                "type": "image",
+                "fileId": "at3hjq76file0001"
+              },
+              {
+                "type": "image",
+                "fileId": "at3hjq76file0002"
+              },
+              {
+                "type": "image",
+                "fileId": "missing"
+              },
+              {
+                "type": "section",
+                "children": [
+                  {
+                    "type": "image",
+                    "fileId": "at3hjq76file0001"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "legacy-write",
+      "expected": {
+        "result": {
+          "id": "at3hjq76page0002",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "updatedAt": "2026-11-01T00:00:00.000Z",
+          "userId": "alice",
+          "user": {
+            "id": "alice",
+            "username": "alice"
+          },
+          "content": [
+            {
+              "type": "section",
+              "children": [
+                {
+                  "type": "textInput",
+                  "inputType": "text",
+                  "default": "abc"
+                },
+                {
+                  "type": "numberInput",
+                  "inputType": "number",
+                  "default": 12
+                },
+                {
+                  "type": "numberInput",
+                  "inputType": "number",
+                  "default": ""
+                },
+                {
+                  "type": "numberInput",
+                  "inputType": "number",
+                  "default": null
+                },
+                {
+                  "type": "input",
+                  "inputType": "unsupported"
+                }
+              ]
+            }
+          ],
+          "variables": [
+            {
+              "name": "variable",
+              "type": "number",
+              "value": 1
+            }
+          ],
+          "title": "Page",
+          "name": "legacy",
+          "summary": null,
+          "hideTitleWhenPinned": true,
+          "alignCenter": false,
+          "font": "sans-serif",
+          "script": "test script",
+          "eyeCatchingImageId": null,
+          "eyeCatchingImage": null,
+          "attachedFiles": [],
+          "likedCount": 2
+        },
+        "writes": [
+          {
+            "id": "at3hjq76page0002",
+            "content": [
+              {
+                "type": "section",
+                "children": [
+                  {
+                    "type": "textInput",
+                    "inputType": "text",
+                    "default": "abc"
+                  },
+                  {
+                    "type": "numberInput",
+                    "inputType": "number",
+                    "default": 12
+                  },
+                  {
+                    "type": "numberInput",
+                    "inputType": "number",
+                    "default": ""
+                  },
+                  {
+                    "type": "numberInput",
+                    "inputType": "number",
+                    "default": null
+                  },
+                  {
+                    "type": "input",
+                    "inputType": "unsupported"
+                  }
+                ]
+              }
+            ],
+            "state": "saved"
+          }
+        ],
+        "userCalls": [
+          {
+            "id": "alice",
+            "viewer": null,
+            "options": null
+          }
+        ],
+        "persistedContent": [
+          {
+            "type": "section",
+            "children": [
+              {
+                "type": "textInput",
+                "inputType": "text",
+                "default": "abc"
+              },
+              {
+                "type": "numberInput",
+                "inputType": "number",
+                "default": 12
+              },
+              {
+                "type": "numberInput",
+                "inputType": "number",
+                "default": ""
+              },
+              {
+                "type": "numberInput",
+                "inputType": "number",
+                "default": null
+              },
+              {
+                "type": "input",
+                "inputType": "unsupported"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "legacy-write-failure",
+      "expected": {
+        "result": {
+          "id": "at3hjq76page0002",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "updatedAt": "2026-11-01T00:00:00.000Z",
+          "userId": "alice",
+          "user": {
+            "id": "alice",
+            "username": "alice"
+          },
+          "content": [
+            {
+              "type": "section",
+              "children": [
+                {
+                  "type": "textInput",
+                  "inputType": "text",
+                  "default": "abc"
+                },
+                {
+                  "type": "numberInput",
+                  "inputType": "number",
+                  "default": 12
+                },
+                {
+                  "type": "numberInput",
+                  "inputType": "number",
+                  "default": ""
+                },
+                {
+                  "type": "numberInput",
+                  "inputType": "number",
+                  "default": null
+                },
+                {
+                  "type": "input",
+                  "inputType": "unsupported"
+                }
+              ]
+            }
+          ],
+          "variables": [
+            {
+              "name": "variable",
+              "type": "number",
+              "value": 1
+            }
+          ],
+          "title": "Page",
+          "name": "legacy",
+          "summary": null,
+          "hideTitleWhenPinned": true,
+          "alignCenter": false,
+          "font": "sans-serif",
+          "script": "test script",
+          "eyeCatchingImageId": null,
+          "eyeCatchingImage": null,
+          "attachedFiles": [],
+          "likedCount": 2
+        },
+        "writes": [
+          {
+            "id": "at3hjq76page0002",
+            "content": [
+              {
+                "type": "section",
+                "children": [
+                  {
+                    "type": "textInput",
+                    "inputType": "text",
+                    "default": "abc"
+                  },
+                  {
+                    "type": "numberInput",
+                    "inputType": "number",
+                    "default": 12
+                  },
+                  {
+                    "type": "numberInput",
+                    "inputType": "number",
+                    "default": ""
+                  },
+                  {
+                    "type": "numberInput",
+                    "inputType": "number",
+                    "default": null
+                  },
+                  {
+                    "type": "input",
+                    "inputType": "unsupported"
+                  }
+                ]
+              }
+            ],
+            "state": "failed"
+          }
+        ],
+        "userCalls": [
+          {
+            "id": "alice",
+            "viewer": null,
+            "options": null
+          }
+        ],
+        "persistedContent": [
+          {
+            "type": "section",
+            "children": [
+              {
+                "type": "input",
+                "inputType": "text",
+                "default": "abc"
+              },
+              {
+                "type": "input",
+                "inputType": "number",
+                "default": "12px"
+              },
+              {
+                "type": "input",
+                "inputType": "number",
+                "default": ""
+              },
+              {
+                "type": "input",
+                "inputType": "number",
+                "default": "bad"
+              },
+              {
+                "type": "input",
+                "inputType": "unsupported"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "missing-eye-after-migration",
+      "expected": {
+        "error": {
+          "message": "file missing"
+        },
+        "writes": [
+          {
+            "id": "at3hjq76page0002",
+            "content": [
+              {
+                "type": "section",
+                "children": [
+                  {
+                    "type": "textInput",
+                    "inputType": "text",
+                    "default": "abc"
+                  },
+                  {
+                    "type": "numberInput",
+                    "inputType": "number",
+                    "default": 12
+                  },
+                  {
+                    "type": "numberInput",
+                    "inputType": "number",
+                    "default": ""
+                  },
+                  {
+                    "type": "numberInput",
+                    "inputType": "number",
+                    "default": null
+                  },
+                  {
+                    "type": "input",
+                    "inputType": "unsupported"
+                  }
+                ]
+              }
+            ],
+            "state": "saved"
+          }
+        ],
+        "userCalls": [
+          {
+            "id": "alice",
+            "viewer": null,
+            "options": null
+          }
+        ],
+        "persistedContent": [
+          {
+            "type": "section",
+            "children": [
+              {
+                "type": "textInput",
+                "inputType": "text",
+                "default": "abc"
+              },
+              {
+                "type": "numberInput",
+                "inputType": "number",
+                "default": 12
+              },
+              {
+                "type": "numberInput",
+                "inputType": "number",
+                "default": ""
+              },
+              {
+                "type": "numberInput",
+                "inputType": "number",
+                "default": null
+              },
+              {
+                "type": "input",
+                "inputType": "unsupported"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-read-failure",
+      "expected": {
+        "error": {
+          "message": "page read failed"
+        },
+        "writes": [],
+        "userCalls": [],
+        "persistedContent": [
+          {
+            "type": "section",
+            "children": [
+              {
+                "type": "image",
+                "fileId": "at3hjq76file0001"
+              },
+              {
+                "type": "image",
+                "fileId": "at3hjq76file0002"
+              },
+              {
+                "type": "image",
+                "fileId": "missing"
+              },
+              {
+                "type": "section",
+                "children": [
+                  {
+                    "type": "image",
+                    "fileId": "at3hjq76file0001"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "image-id-missing",
+      "expected": {
+        "result": {
+          "id": "at3hjq76page0003",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "updatedAt": "2026-11-01T00:00:00.000Z",
+          "userId": "alice",
+          "user": {
+            "id": "alice",
+            "username": "alice"
+          },
+          "content": [
+            {
+              "type": "image"
+            }
+          ],
+          "variables": [
+            {
+              "name": "variable",
+              "type": "number",
+              "value": 1
+            }
+          ],
+          "title": "Page",
+          "name": "nullish3",
+          "summary": null,
+          "hideTitleWhenPinned": true,
+          "alignCenter": false,
+          "font": "sans-serif",
+          "script": "test script",
+          "eyeCatchingImageId": null,
+          "eyeCatchingImage": null,
+          "attachedFiles": [
+            {
+              "id": "at3hjq76file0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "test.png",
+              "type": "image/png",
+              "md5": "00000000000000000000000000000000",
+              "size": 10,
+              "isSensitive": false,
+              "blurhash": null,
+              "properties": {
+                "width": 20,
+                "height": 10,
+                "avgColor": "aabbcc"
+              },
+              "url": "https://storage/public",
+              "thumbnailUrl": "https://storage/public",
+              "comment": null,
+              "folderId": null,
+              "folder": null,
+              "userId": "alice",
+              "user": null
+            }
+          ],
+          "likedCount": 2
+        },
+        "writes": [],
+        "userCalls": [
+          {
+            "id": "alice",
+            "viewer": null,
+            "options": null
+          }
+        ],
+        "persistedContent": [
+          {
+            "type": "image"
+          }
+        ]
+      }
+    },
+    {
+      "id": "image-id-null",
+      "expected": {
+        "result": {
+          "id": "at3hjq76page0004",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "updatedAt": "2026-11-01T00:00:00.000Z",
+          "userId": "alice",
+          "user": {
+            "id": "alice",
+            "username": "alice"
+          },
+          "content": [
+            {
+              "type": "image",
+              "fileId": null
+            }
+          ],
+          "variables": [
+            {
+              "name": "variable",
+              "type": "number",
+              "value": 1
+            }
+          ],
+          "title": "Page",
+          "name": "nullish4",
+          "summary": null,
+          "hideTitleWhenPinned": true,
+          "alignCenter": false,
+          "font": "sans-serif",
+          "script": "test script",
+          "eyeCatchingImageId": null,
+          "eyeCatchingImage": null,
+          "attachedFiles": [
+            {
+              "id": "at3hjq76file0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "test.png",
+              "type": "image/png",
+              "md5": "00000000000000000000000000000000",
+              "size": 10,
+              "isSensitive": false,
+              "blurhash": null,
+              "properties": {
+                "width": 20,
+                "height": 10,
+                "avgColor": "aabbcc"
+              },
+              "url": "https://storage/public",
+              "thumbnailUrl": "https://storage/public",
+              "comment": null,
+              "folderId": null,
+              "folder": null,
+              "userId": "alice",
+              "user": null
+            }
+          ],
+          "likedCount": 2
+        },
+        "writes": [],
+        "userCalls": [
+          {
+            "id": "alice",
+            "viewer": null,
+            "options": null
+          }
+        ],
+        "persistedContent": [
+          {
+            "type": "image",
+            "fileId": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "null-id-precedes-name",
+      "expected": {
+        "result": {
+          "id": "at3hjq76page0001",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "updatedAt": "2026-11-01T00:00:00.000Z",
+          "userId": "alice",
+          "user": {
+            "id": "alice",
+            "username": "alice"
+          },
+          "content": [
+            {
+              "type": "section",
+              "children": [
+                {
+                  "type": "image",
+                  "fileId": "at3hjq76file0001"
+                },
+                {
+                  "type": "image",
+                  "fileId": "at3hjq76file0002"
+                },
+                {
+                  "type": "image",
+                  "fileId": "missing"
+                },
+                {
+                  "type": "section",
+                  "children": [
+                    {
+                      "type": "image",
+                      "fileId": "at3hjq76file0001"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "variables": [
+            {
+              "name": "variable",
+              "type": "number",
+              "value": 1
+            }
+          ],
+          "title": "Page",
+          "name": "case-sensitive",
+          "summary": null,
+          "hideTitleWhenPinned": true,
+          "alignCenter": false,
+          "font": "sans-serif",
+          "script": "test script",
+          "eyeCatchingImageId": "at3hjq76file0002",
+          "eyeCatchingImage": {
+            "id": "at3hjq76file0002",
+            "createdAt": "2026-11-03T00:00:01.122Z",
+            "name": "test.png",
+            "type": "image/png",
+            "md5": "00000000000000000000000000000000",
+            "size": 10,
+            "isSensitive": false,
+            "blurhash": null,
+            "properties": {
+              "width": 20,
+              "height": 10,
+              "avgColor": "aabbcc"
+            },
+            "url": "https://storage/foreign",
+            "thumbnailUrl": "https://storage/foreign",
+            "comment": null,
+            "folderId": null,
+            "folder": null,
+            "userId": null,
+            "user": null
+          },
+          "attachedFiles": [
+            {
+              "id": "at3hjq76file0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "test.png",
+              "type": "image/png",
+              "md5": "00000000000000000000000000000000",
+              "size": 10,
+              "isSensitive": false,
+              "blurhash": null,
+              "properties": {
+                "width": 20,
+                "height": 10,
+                "avgColor": "aabbcc"
+              },
+              "url": "https://storage/public",
+              "thumbnailUrl": "https://storage/public",
+              "comment": null,
+              "folderId": null,
+              "folder": null,
+              "userId": "alice",
+              "user": null
+            },
+            {
+              "id": "at3hjq76file0001",
+              "createdAt": "2026-11-03T00:00:01.122Z",
+              "name": "test.png",
+              "type": "image/png",
+              "md5": "00000000000000000000000000000000",
+              "size": 10,
+              "isSensitive": false,
+              "blurhash": null,
+              "properties": {
+                "width": 20,
+                "height": 10,
+                "avgColor": "aabbcc"
+              },
+              "url": "https://storage/public",
+              "thumbnailUrl": "https://storage/public",
+              "comment": null,
+              "folderId": null,
+              "folder": null,
+              "userId": "alice",
+              "user": null
+            }
+          ],
+          "likedCount": 2
+        },
+        "writes": [],
+        "userCalls": [
+          {
+            "id": "alice",
+            "viewer": null,
+            "options": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "string-children",
+      "expected": {
+        "result": {
+          "id": "at3hjq76page0005",
+          "createdAt": "2026-11-03T00:00:01.122Z",
+          "updatedAt": "2026-11-01T00:00:00.000Z",
+          "userId": "alice",
+          "user": {
+            "id": "alice",
+            "username": "alice"
+          },
+          "content": [
+            {
+              "type": "section",
+              "children": "abc"
+            }
+          ],
+          "variables": [
+            {
+              "name": "variable",
+              "type": "number",
+              "value": 1
+            }
+          ],
+          "title": "Page",
+          "name": "stringchildren",
+          "summary": null,
+          "hideTitleWhenPinned": true,
+          "alignCenter": false,
+          "font": "sans-serif",
+          "script": "test script",
+          "eyeCatchingImageId": null,
+          "eyeCatchingImage": null,
+          "attachedFiles": [],
+          "likedCount": 2
+        },
+        "writes": [],
+        "userCalls": [
+          {
+            "id": "alice",
+            "viewer": null,
+            "options": null
+          }
+        ],
+        "persistedContent": [
+          {
+            "type": "section",
+            "children": "abc"
+          }
+        ]
+      }
+    }
+  ]
+}

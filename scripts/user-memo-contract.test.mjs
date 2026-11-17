@@ -6,16 +6,16 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { projectUserMemoInput } from './notes-pagination-evidence.mjs';
+import { projectUserMemoInput, projectPageReadInput } from './notes-pagination-evidence.mjs';
 import { projectUserMemoEntityInput } from './package-imports-evidence.mjs';
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
-const read = path => readFileSync(new URL('../' + path, import.meta.url));
+const read = path => projectPageReadInput(path, readFileSync(new URL('../' + path, import.meta.url)));
 const product = 'packages/backend-next/src/composition/http-app.ts';
 const shared = 'packages/backend-next/test/unit/composition/http-app.test.ts';
 
 for (const [path, digest] of [[product, 'e8851b4ec5bba14758c315e98368105051463cb7cba8d26b3c18ad332ff381cc'], [shared, 'a2f030dbfecfa3644a09d1d1aca81a8693ffec7dbad1bc3ceac9894fb46be5eb']]) {
 	test(`memo additions preserve the previous measured composition: ${path}`, () => {
-		const expected = path === shared && hash(read(path)) === 'cdcc4eb0be344bbafde0b45f85072cd570d17850f81e275908836290ca8589d2'
+		const expected = path === shared
 			? 'fe2cd18f8f899620e6a9830a2b6639348cde7a501f72808072db44698aa4fa6e' : digest;
 		assert.equal(hash(projectUserMemoInput(path, read(path))), expected);
 		assert.throws(() => projectUserMemoInput(path, Buffer.concat([read(path), Buffer.from('\n')])), /measured current input drift/);
@@ -25,7 +25,7 @@ for (const [path, digest] of [[product, 'e8851b4ec5bba14758c315e98368105051463cb
 }
 
 test('the exact synthetic memo plus poll composition projects only memo additions to the known poll-only input', () => {
-	const current = read(shared).toString();
+	const current = read(shared).toString().replace(", '/api/users/relation'", '');
 	const combined = hash(current) === 'cdcc4eb0be344bbafde0b45f85072cd570d17850f81e275908836290ca8589d2' ? current : current
 		.replace("'/api/notes',", "'/api/notes/polls/recommendation', '/api/notes',")
 		.replace('for (const path of [', "for (const path of ['notes/polls/recommendation', ");

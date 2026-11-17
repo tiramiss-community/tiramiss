@@ -199,11 +199,17 @@ export function projectNotesPaginationInput(path, actual) {
 // earlier measurements; the optional #489 combination removes only #294 bytes.
 const userMemoProjection = {
 	'packages/backend-next/src/composition/http-app.ts': {
+		relationCurrent: '5f881c86b179744c73be9d1c7b668a2227747b9cf98a8a7ecfbb7b2dc2b68264',
+		relationPrevious: '70ad0cbb84ddcefaa2e6fc9ac79e1a0c769707537ed39d200d7340b98c0657a6',
+		relationAdditions: ["import { createUserRelationHttp } from './user-relation-http.js';\n", "\t\t.route('/', createUserRelationHttp(resources))\n"],
 		current: '70ad0cbb84ddcefaa2e6fc9ac79e1a0c769707537ed39d200d7340b98c0657a6',
 		previous: 'e8851b4ec5bba14758c315e98368105051463cb7cba8d26b3c18ad332ff381cc',
 		additions: ["import { createUserMemoHttp } from './user-memo-http.js';\n", "\t\t.route('/', createUserMemoHttp(resources, config))\n"],
 	},
 	'packages/backend-next/test/unit/composition/http-app.test.ts': {
+		relationCurrent: '734cee44fd1181a8c77fa08bf05623e41b28478b0f4eea8a2d2f8689c7632899',
+		relationPrevious: 'cdcc4eb0be344bbafde0b45f85072cd570d17850f81e275908836290ca8589d2',
+		relationAdditions: [", '/api/users/relation'"],
 		current: '43aab6cd144b8d0937fca5bec41322d2bed0125c1f94118e7bebb4437d901bda',
 		previous: 'a2f030dbfecfa3644a09d1d1aca81a8693ffec7dbad1bc3ceac9894fb46be5eb',
 		combined: 'cdcc4eb0be344bbafde0b45f85072cd570d17850f81e275908836290ca8589d2',
@@ -213,8 +219,18 @@ const userMemoProjection = {
 };
 
 export function projectUserMemoInput(path, actual) {
+	actual = projectPageReadInput(path, actual);
 	const binding = Object.hasOwn(userMemoProjection, path) ? userMemoProjection[path] : undefined;
 	if (!binding) return actual;
+	if (sha(actual) === binding.relationCurrent) {
+		let before = actual.toString();
+		for (const addition of binding.relationAdditions) {
+			assert.equal(before.split(addition).length, 2, 'relation exact predecessor anchor');
+			before = before.replace(addition, '');
+		}
+		assert.equal(sha(before), binding.relationPrevious, 'relation exact predecessor identity');
+		actual = Buffer.from(before);
+	}
 	const digest = sha(actual);
 	if (digest === binding.previous || digest === binding.pollOnly) return actual;
 	const driftLabel = path.endsWith('/src/composition/http-app.ts') ? 'Meta cache measured current input drift' : 'measured current input drift (notes pagination)';
@@ -240,5 +256,107 @@ export function projectPollRecommendationInput(path, actual) {
 		before = Buffer.concat([before.subarray(0, patch.offset), Buffer.from(patch.previous), before.subarray(patch.offset + insert.length)]);
 	}
 	assert.equal(sha(before), binding.previousSha256, 'poll recommendation exact predecessor identity');
+	return before;
+}
+
+// Page-only and the exact Page+Relation combination restore the previous
+// shared input; the combined branch retains Relation for its existing step.
+const pageReadProjection = {
+  "packages/backend-next/src/composition/http-app.ts": {
+    "current": "2e8d012d59c1c0ca2920eefccc7a542ab73de8a15dc82a211d3ab0a49beabe26",
+    "previous": "70ad0cbb84ddcefaa2e6fc9ac79e1a0c769707537ed39d200d7340b98c0657a6",
+    "patches": [
+      {
+        "offset": 313,
+        "insert": "-http.js';\nimport { createPagesHttp } from './pages",
+        "previous": ""
+      },
+      {
+        "offset": 1712,
+        "insert": "pages = createPagesHttp(resources, config);\n\tconst ",
+        "previous": ""
+      },
+      {
+        "offset": 1970,
+        "insert": ")\n\t\t.route('/', pages.app",
+        "previous": ""
+      },
+      {
+        "offset": 2673,
+        "insert": "async () => {\n\t\tawait Promise.all([",
+        "previous": ""
+      },
+      {
+        "offset": 2720,
+        "insert": "(), pages.idle()]);\n\t}",
+        "previous": ""
+      }
+    ],
+    "relationCurrent": "5f881c86b179744c73be9d1c7b668a2227747b9cf98a8a7ecfbb7b2dc2b68264",
+    "combinedCurrent": "350bbc6ff8951287282253c391a80d9be2c1d4d6fbd5dce6149b51c00c3f386f",
+    "combinedPatches": [
+      {
+        "offset": 379,
+        "insert": "-http.js';\nimport { createPagesHttp } from './pages",
+        "previous": ""
+      },
+      {
+        "offset": 1778,
+        "insert": "pages = createPagesHttp(resources, config);\n\tconst ",
+        "previous": ""
+      },
+      {
+        "offset": 2085,
+        "insert": ")\n\t\t.route('/', pages.app",
+        "previous": ""
+      },
+      {
+        "offset": 2788,
+        "insert": "async () => {\n\t\tawait Promise.all([",
+        "previous": ""
+      },
+      {
+        "offset": 2835,
+        "insert": "(), pages.idle()]);\n\t}",
+        "previous": ""
+      }
+    ]
+  },
+  "packages/backend-next/test/unit/composition/http-app.test.ts": {
+    "current": "f6e205b59d56cd23cd835ec57e80f0fafbedc708a75284cd0af5f1c8bddb4e8f",
+    "previous": "cdcc4eb0be344bbafde0b45f85072cd570d17850f81e275908836290ca8589d2",
+    "patches": [
+      {
+        "offset": 2271,
+        "insert": "', '/api/pages/show",
+        "previous": ""
+      }
+    ],
+    "relationCurrent": "734cee44fd1181a8c77fa08bf05623e41b28478b0f4eea8a2d2f8689c7632899",
+    "combinedCurrent": "f107b9b110e85b050fb1ff3d2ce92d6b3cf973911fcf43bea0c4b805f63a765b",
+    "combinedPatches": [
+      {
+        "offset": 2294,
+        "insert": "', '/api/pages/show",
+        "previous": ""
+      }
+    ]
+  }
+};
+export function projectPageReadInput(path, actual) {
+	const binding = Object.hasOwn(pageReadProjection, path) ? pageReadProjection[path] : undefined;
+	if (!binding) return actual;
+	const digest = sha(actual);
+	if ([binding.previous, binding.relationCurrent, userMemoProjection[path]?.previous, userMemoProjection[path]?.pollOnly].includes(digest)) return actual;
+	const combined = digest === binding.combinedCurrent;
+	const driftLabel = path.endsWith('/src/composition/http-app.ts') ? 'Meta cache measured current input drift' : 'measured current input drift (notes pagination)';
+	assert(digest === binding.current || combined, `${driftLabel}: ${path} (Page/Relation read)`);
+	let before = Buffer.from(actual);
+	for (const patch of [...(combined ? binding.combinedPatches : binding.patches)].reverse()) {
+		const insert = Buffer.from(patch.insert);
+		assert.deepEqual(before.subarray(patch.offset, patch.offset + insert.length), insert, 'Page read exact predecessor anchor');
+		before = Buffer.concat([before.subarray(0, patch.offset), Buffer.from(patch.previous), before.subarray(patch.offset + insert.length)]);
+	}
+	assert.equal(sha(before), combined ? binding.relationCurrent : binding.previous, 'Page read exact predecessor identity');
 	return before;
 }
