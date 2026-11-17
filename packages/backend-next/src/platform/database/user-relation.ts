@@ -29,7 +29,7 @@ export function createUserRelationStore(manager: EntityManager) {
 	return {
 		reader,
 		async readActor(userId: string) {
-			const user = await manager.getRepository(MiUser).findOneByOrFail({ id: userId });
+			const user = await manager.getRepository(MiUser).findOneOrFail({ where: { id: userId }, select: { isSuspended: true } });
 			return { isSuspended: user.isSuspended, isModerator: false, isAdministrator: false };
 		},
 	};

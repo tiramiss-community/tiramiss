@@ -42,3 +42,5 @@ R2 の製品測定は [r2-current-evidence.json](r2-current-evidence.json) に b
 既知の Page 単独、relation 単独、両者同居の2ファイルだけを正確な hash と逆 patch で識別する。両者同居は Page の差分だけを戻して既知の relation 単独となり、既存の relation/memo/poll の順に過去の不変 receipt へ渡す。任意の変更は拒否し、既存 read 上限と scope/cache 機構は変更しない。共通契約は3通りを実byteから再構成し、hash・anchor・未知変更拒否を検証する。実際に両製品を合成して通常HTTPを起動する確認は取りまとめ側の最終 head 合成に残す。
 
 CodeRabbit Web follow-up: Page の前段が既存宣言済みの UserMemo 単独 input (`43aab6…`) を拒否する境界を修正した。既存 `current` hash だけを通し、UserMemo の既存 anchor で `a2f030…` へ戻す。旧R2/R3 receipt は byte 不変で、追加の共有 script 実測・RED/PASS・入力/ログ SHA は [memo-current-followup.json](memo-current-followup.json) に分けた。製品 code・登録順・canonical root snapshot は変わらない。
+
+Web nitpick follow-up: actor 認可facts は `isSuspended` だけを取得する。`findOneOrFail` と呼出順を維持し、通常認証後に actor が消えた場合も入力検証より先に HTTP 500 となることを専用PG診断で確認した。TypeORM は選択列に内部用の主キーも補う。旧 receipt は変更せず、新しい近接 build/typecheck/unit/HTTP/PG と実SQL・失敗境界の記録を [actor-read-followup.json](actor-read-followup.json) に分けた。
