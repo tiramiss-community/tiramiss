@@ -1,0 +1,251 @@
+{
+  "scope": "announcements-337",
+  "baseRevision": "45a2f217e3b991c309798ff61b118841085d7f48",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "nodeVersion": "v26.4.0",
+  "pnpmVersion": "12.9.1",
+  "sourceCases": 28,
+  "sourceSteps": 63,
+  "upstreamFullServerMeasured": false,
+  "independentReview": "Coordinator-owned; not claimed by implementer",
+  "startedAt": "2026-11-17T07:50:34.799473+00:00",
+  "inputsBefore": {
+    "docs/superpowers/compatibility/announcements/README.md": "abf0c434580c6af19bda05110ff600ece4be7052debd2b0ac2683905aba51d47",
+    "docs/superpowers/compatibility/announcements/corpus.json": "f8c0257e17277f3bfdc9e28aac338d0c28c9d2a4ebf5f46eb2929534f10dbb63",
+    "docs/superpowers/compatibility/announcements/observations.json": "2cdaf9aa3a03b9ec3a798f7fd5ccdc8a24850b84b5b89c011e0451fc94420c1b",
+    "docs/superpowers/compatibility/announcements/source-probe.mjs": "08d4de4654b2084d5532ea49edafb278c0c85b9bccf0eacf7549ca0194538aeb",
+    "packages/backend-next/package.json": "5f630013c7328d447e9b433a5f77fd28ec0138548906508f123b2ba01ad66182",
+    "packages/backend-next/src/composition/announcements-http.ts": "0a1961dabed08c583a36e69d7a89d0bd8f80525a099e2f4e097c8eb9d9390ca9",
+    "packages/backend-next/src/composition/http-app.ts": "0a4f896273723713804be41f07f0a0ac217886f68ffb1b5aa3cbd01c87894cb4",
+    "packages/backend-next/src/http/announcements-api.ts": "9de675a9415c37df75751b009605d72443397c06f83be191371be523f1cef8e5",
+    "packages/backend-next/src/http/api-endpoint.ts": "262172fbd09ef769607b079e59f862c2f386098b5720a4835df26514b2b73bc2",
+    "packages/backend-next/src/modules/announcement/public.ts": "d170423963d56ac6335253a2da2ae1d80798304ab69f49cce901bc7adaa46656",
+    "packages/backend-next/src/platform/database/announcements.ts": "66223a4fab0d00d015673de51e1fa25a3b3e3be97dfe198c946c79ccc7706bc6",
+    "packages/backend-next/src/platform/database/authenticate.ts": "64b83c005791625008c53f493b024d5973ecc904e36642b4fa9543217f1c08cd",
+    "packages/backend-next/src/platform/database/data-source.ts": "ffced6c8a1f3994cae8424ae4aae594aefdb52846461caadecad03cc9e1c8f90",
+    "packages/backend-next/src/platform/posting-stream.ts": "c66f14f9c3454a51404d7c02e72e53c9bce97801ba01ea9f2ee3acf04983f9d5",
+    "packages/backend-next/test/helpers/database.ts": "34632277e6a7a80749d23a65eca252a6b521ee3a3c6c1d39863bf76aa4cda3fb",
+    "packages/backend-next/test/integration/announcements.test.ts": "1137c818e64c918f3e9998f14e6a8bc8cf9da8d6ff92aa21841924704f763f02",
+    "packages/backend-next/test/package-imports.test.ts": "79286cf3f69d3e1cf40e06fa95c9a2af9e6b940391c4dcfeade2aac1127acfa6",
+    "packages/backend-next/test/unit/announcements.test.ts": "b8470f5c84e8122d84ae6ced1d3d257e630b3081eb1de6771cc2f1877ee25226",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "afc8d83b69ef9ad41caaa49c5a121c9d661286363d4a1071f1ce779d2cbd9c88",
+    "packages/backend-upstream/.managed-files.json": "12b58d1dfb82ba6c15f476ed804ff8b0e025f16003a31274f7ac651a4aab14d5",
+    "packages/backend-upstream/exports/entities.ts": "3ce5640083ad0003d38037fbb563476045492062e0f820c26de8c3427653c804",
+    "packages/backend-upstream/src/models/Announcement.ts": "74ebb2c97c3ce6ec893dd65cf15bb3cff1687d0b939619b8a61a77a630bf6489",
+    "packages/backend-upstream/src/models/AnnouncementRead.ts": "46dddc3731d70bf062fd74cdf8283e0b86da665bb94f4c86a4364d89ff98cef6",
+    "packages/backend-upstream/upstream-sync.json": "97f4c47a784ab71693bcdae889ac2eed81e862659473a07a722fe292ade1a5fd",
+    "pnpm-lock.yaml": "7802badea4fb65c63c13c8678020a2e651f148c8b9c46289342082068c5f99aa"
+  },
+  "runs": [
+    {
+      "name": "build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "build"
+      ],
+      "startedAt": "2026-11-17T07:50:34.800333+00:00",
+      "completedAt": "2026-11-17T07:50:35.517156+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/announcement-final-build.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "typecheck"
+      ],
+      "startedAt": "2026-11-17T07:50:35.517427+00:00",
+      "completedAt": "2026-11-17T07:50:36.664286+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/announcement-final-typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "name": "sync-check",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-upstream",
+        "sync:check"
+      ],
+      "startedAt": "2026-11-17T07:50:36.664585+00:00",
+      "completedAt": "2026-11-17T07:50:37.526610+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/announcement-final-sync-check.log",
+      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd"
+    },
+    {
+      "name": "upstream-test",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-upstream",
+        "test"
+      ],
+      "startedAt": "2026-11-17T07:50:37.526918+00:00",
+      "completedAt": "2026-11-17T07:50:37.810459+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/announcement-final-upstream-test.log",
+      "logSha256": "6d0d4525b71fc612b2c79f464c6741a7812a8dce5d23950e59b0211d5480cd55"
+    },
+    {
+      "name": "source",
+      "command": [
+        "node",
+        "docs/superpowers/compatibility/announcements/source-probe.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-11-17T07:50:37.810711+00:00",
+      "completedAt": "2026-11-17T07:50:39.496756+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/announcement-final-source.log",
+      "logSha256": "fb215b26b1c5260b3e74b36af4ae4eb5ba9c76e3ca54904b0d201b720d7527c6"
+    },
+    {
+      "name": "unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test"
+      ],
+      "startedAt": "2026-11-17T07:50:39.497043+00:00",
+      "completedAt": "2026-11-17T07:51:22.211226+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/announcement-final-unit.log",
+      "logSha256": "e5848ae5215b984c4e063b418d55004e6573d4ebf7bb71342eb570d7be0b1793"
+    },
+    {
+      "name": "http-pg-redis-schema",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/announcements.test.ts",
+        "test/integration/http-app.test.ts",
+        "test/integration/migrations.test.ts"
+      ],
+      "startedAt": "2026-11-17T07:51:22.211516+00:00",
+      "completedAt": "2026-11-17T07:51:29.636060+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/announcement-final-http-pg-redis-schema.log",
+      "logSha256": "463cc486ec1caf9d60bdb0cf27a0a8ab32b97790364ff07c4facc23c68381ffa"
+    },
+    {
+      "name": "shipping",
+      "command": [
+        "node",
+        "scripts/check-shipping.mjs",
+        "--base",
+        "45a2f217e3b991c309798ff61b118841085d7f48"
+      ],
+      "startedAt": "2026-11-17T07:51:29.636333+00:00",
+      "completedAt": "2026-11-17T07:51:32.276790+00:00",
+      "exitCode": 0,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/announcement-final-shipping.log",
+      "logSha256": "b8e39144af59c7888a36968c59d7b48ef4c29b1b545509499f9c2c7b3b37811d"
+    },
+    {
+      "name": "near-contracts",
+      "command": [
+        "node",
+        "--test",
+        "scripts/notes-pagination-contract.test.mjs",
+        "scripts/package-imports-contract.test.mjs"
+      ],
+      "startedAt": "2026-11-17T07:51:32.277084+00:00",
+      "completedAt": "2026-11-17T07:51:32.366407+00:00",
+      "exitCode": 1,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/announcement-final-near-contracts.log",
+      "logSha256": "298533e90c96eaa0cac36913b04acb76f3c255a116eb57936c33e630ad886f7f"
+    }
+  ],
+  "completedAt": "2026-11-17T07:51:32.366726+00:00",
+  "inputsAfter": {
+    "docs/superpowers/compatibility/announcements/README.md": "abf0c434580c6af19bda05110ff600ece4be7052debd2b0ac2683905aba51d47",
+    "docs/superpowers/compatibility/announcements/corpus.json": "f8c0257e17277f3bfdc9e28aac338d0c28c9d2a4ebf5f46eb2929534f10dbb63",
+    "docs/superpowers/compatibility/announcements/observations.json": "2cdaf9aa3a03b9ec3a798f7fd5ccdc8a24850b84b5b89c011e0451fc94420c1b",
+    "docs/superpowers/compatibility/announcements/source-probe.mjs": "08d4de4654b2084d5532ea49edafb278c0c85b9bccf0eacf7549ca0194538aeb",
+    "packages/backend-next/package.json": "5f630013c7328d447e9b433a5f77fd28ec0138548906508f123b2ba01ad66182",
+    "packages/backend-next/src/composition/announcements-http.ts": "0a1961dabed08c583a36e69d7a89d0bd8f80525a099e2f4e097c8eb9d9390ca9",
+    "packages/backend-next/src/composition/http-app.ts": "0a4f896273723713804be41f07f0a0ac217886f68ffb1b5aa3cbd01c87894cb4",
+    "packages/backend-next/src/http/announcements-api.ts": "9de675a9415c37df75751b009605d72443397c06f83be191371be523f1cef8e5",
+    "packages/backend-next/src/http/api-endpoint.ts": "262172fbd09ef769607b079e59f862c2f386098b5720a4835df26514b2b73bc2",
+    "packages/backend-next/src/modules/announcement/public.ts": "d170423963d56ac6335253a2da2ae1d80798304ab69f49cce901bc7adaa46656",
+    "packages/backend-next/src/platform/database/announcements.ts": "66223a4fab0d00d015673de51e1fa25a3b3e3be97dfe198c946c79ccc7706bc6",
+    "packages/backend-next/src/platform/database/authenticate.ts": "64b83c005791625008c53f493b024d5973ecc904e36642b4fa9543217f1c08cd",
+    "packages/backend-next/src/platform/database/data-source.ts": "ffced6c8a1f3994cae8424ae4aae594aefdb52846461caadecad03cc9e1c8f90",
+    "packages/backend-next/src/platform/posting-stream.ts": "c66f14f9c3454a51404d7c02e72e53c9bce97801ba01ea9f2ee3acf04983f9d5",
+    "packages/backend-next/test/helpers/database.ts": "34632277e6a7a80749d23a65eca252a6b521ee3a3c6c1d39863bf76aa4cda3fb",
+    "packages/backend-next/test/integration/announcements.test.ts": "1137c818e64c918f3e9998f14e6a8bc8cf9da8d6ff92aa21841924704f763f02",
+    "packages/backend-next/test/package-imports.test.ts": "79286cf3f69d3e1cf40e06fa95c9a2af9e6b940391c4dcfeade2aac1127acfa6",
+    "packages/backend-next/test/unit/announcements.test.ts": "b8470f5c84e8122d84ae6ced1d3d257e630b3081eb1de6771cc2f1877ee25226",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "afc8d83b69ef9ad41caaa49c5a121c9d661286363d4a1071f1ce779d2cbd9c88",
+    "packages/backend-upstream/.managed-files.json": "12b58d1dfb82ba6c15f476ed804ff8b0e025f16003a31274f7ac651a4aab14d5",
+    "packages/backend-upstream/exports/entities.ts": "3ce5640083ad0003d38037fbb563476045492062e0f820c26de8c3427653c804",
+    "packages/backend-upstream/src/models/Announcement.ts": "74ebb2c97c3ce6ec893dd65cf15bb3cff1687d0b939619b8a61a77a630bf6489",
+    "packages/backend-upstream/src/models/AnnouncementRead.ts": "46dddc3731d70bf062fd74cdf8283e0b86da665bb94f4c86a4364d89ff98cef6",
+    "packages/backend-upstream/upstream-sync.json": "97f4c47a784ab71693bcdae889ac2eed81e862659473a07a722fe292ade1a5fd",
+    "pnpm-lock.yaml": "7802badea4fb65c63c13c8678020a2e651f148c8b9c46289342082068c5f99aa"
+  },
+  "noInputDrift": true,
+  "counts": {
+    "unit": {
+      "passed": 4984,
+      "failed": 0,
+      "skipped": 1,
+      "files": 139
+    },
+    "integration": {
+      "passed": 40,
+      "failed": 0,
+      "skipped": 0,
+      "files": 3
+    },
+    "upstreamTest": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    },
+    "source": {
+      "cases": 28,
+      "steps": 63
+    },
+    "nearUnit": {
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0,
+      "files": 3
+    }
+  },
+  "optionalSkip": "Unchanged test/unit/page/source.test.ts: pinned imported source reexecution needs BACKEND_NEXT_UPSTREAM_PATH.",
+  "knownSharedProofFailure": "near-contracts exit1 is the expected drift caused by 3 new HTTP routes and 2 synchronized Entities. Coordinator owns finite projections in scripts/notes-pagination-evidence.mjs and scripts/package-imports-evidence.mjs; historical receipts unchanged. This run is not claimed green.",
+  "history": [
+    {
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/announcement-red.log",
+      "result": "Expected red: HTTP404 instead of200, 1 failing test"
+    },
+    {
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/announcement-typecheck1.log",
+      "result": "Corrected resource name redisForPubsub to existing postingStream; typecheck failed"
+    },
+    {
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/announcement-integration1.log",
+      "result": "31 PASS/1 FAIL: source harness mapped PostgreSQL 42P01 as an API code; corrected harness to map only ApiError to declared codes, regenerated observations and reran exact source/new HTTP cases"
+    },
+    {
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/announcement-typecheck3.log",
+      "result": "Corrected optional JSON-union error narrowing in test; runtime unchanged"
+    },
+    {
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/announcement-shipping1.log",
+      "result": "3 missing blank lines fixed; lint failed then final shipping passed"
+    }
+  ]
+}

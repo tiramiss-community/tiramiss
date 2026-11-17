@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Hono } from 'hono';
+import { createAnnouncementsHttp } from './announcements-http.js';
 import { getAvatarImagesPath } from '../http/avatar-images-api.js';
 import { createPublicEmojisHttp } from './public-emojis-http.js';
 import { createUserRelationHttp } from './user-relation-http.js';
@@ -34,6 +35,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 	const app = new Hono({ getPath: getAvatarImagesPath })
 		.route('/', createRoleHttpApp(resources, config))
 		.route('/', createUserMemoHttp(resources, config))
+		.route('/', createAnnouncementsHttp(resources, config))
 		.route('/', createUserRelationHttp(resources))
 		.route('/', createDriveFilesHttp(resources, config))
 		.route('/', pages.app)
