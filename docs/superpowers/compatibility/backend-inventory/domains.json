@@ -3626,6 +3626,48 @@
       ],
       "evidenceRevision": "671f5db3b77b6a7b6d4bd361daca08d102b16b63",
       "note": "#293: 通常 pages/show と Page pack/packMany の読取を移植。ID/名前/guest/like、所有者限定添付、eye catch、旧input再帰変換・非待機content書戻しを固定本家モジュール実体と比較。nullish WHERE-ignore と文字列childrenの4境界は固定postgres設定の実PG sourceでも一致。最終R4: unit23、HTTP/PG21、source18、共有契約34、同期/build/typecheck/shipping成功、入力前後不変。R1–R3履歴は修正後結果へ付け替えない。PageLike同期と既存migrationのschema差分0件。書込失敗は診断しHTTP終了時に待つ差異を明示。Page CRUD/一覧/like更新、UserDetailed全体、#191/#114全体は未完了。"
+    },
+    "api:roles/list": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/role/public-roles.ts",
+        "packages/backend-next/src/platform/database/role-show.ts",
+        "packages/backend-next/src/http/role-response.ts",
+        "packages/backend-next/src/http/role-api.ts",
+        "packages/backend-next/src/composition/role-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/role/public-roles.test.ts",
+        "packages/backend-next/test/integration/role-public.test.ts",
+        "docs/superpowers/compatibility/role-public/source-probe.mjs",
+        "docs/superpowers/compatibility/role-public/observations.json",
+        "docs/superpowers/compatibility/role-public/README.md",
+        "docs/superpowers/compatibility/role-public/current-evidence.json",
+        "scripts/role-public-contract.test.mjs"
+      ],
+      "evidenceRevision": "ae37f95aa52d978d47b665433d06c66018a34825",
+      "note": "#295: fixed literal Role list/show/packer and UserDetailed role projection compare against migrated PostgreSQL and listening HTTP; public/private/unknown/explorable, native/scoped authorization, input shape, policy defaults/unknown keys, expiry equality/counts and stable user display ordering covered. Existing pure roleResponse is shared; UserDetailed8-field materials and DB reader are provided, full UserDetailed #297 and roles/notes/member lists remain separate. Source9, near-unit148, real integration17, existing acceptance65 pass; full upstream application/authentication is not measured. Shared proof followup does not rewrite historical receipts."
+    },
+    "api:roles/show": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/role/public-roles.ts",
+        "packages/backend-next/src/platform/database/role-show.ts",
+        "packages/backend-next/src/http/role-response.ts",
+        "packages/backend-next/src/http/role-api.ts",
+        "packages/backend-next/src/composition/role-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/role/public-roles.test.ts",
+        "packages/backend-next/test/integration/role-public.test.ts",
+        "docs/superpowers/compatibility/role-public/source-probe.mjs",
+        "docs/superpowers/compatibility/role-public/observations.json",
+        "docs/superpowers/compatibility/role-public/README.md",
+        "docs/superpowers/compatibility/role-public/current-evidence.json",
+        "scripts/role-public-contract.test.mjs"
+      ],
+      "evidenceRevision": "ae37f95aa52d978d47b665433d06c66018a34825",
+      "note": "#295: fixed literal Role list/show/packer and UserDetailed role projection compare against migrated PostgreSQL and listening HTTP; public/private/unknown/explorable, native/scoped authorization, input shape, policy defaults/unknown keys, expiry equality/counts and stable user display ordering covered. Existing pure roleResponse is shared; UserDetailed8-field materials and DB reader are provided, full UserDetailed #297 and roles/notes/member lists remain separate. Source9, near-unit148, real integration17, existing acceptance65 pass; full upstream application/authentication is not measured. Shared proof followup does not rewrite historical receipts."
     }
   }
 }

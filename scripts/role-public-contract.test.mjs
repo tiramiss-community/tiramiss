@@ -32,8 +32,8 @@ test('only the exact public Role assertion projects to its immutable predecessor
 });
 
 test('standalone Announcement and combined Role/Announcement bytes preserve exact shared predecessors and reject drift', async () => {
- const { projectUserMemoInput } = await import('./notes-pagination-evidence.mjs');
- const { projectUserMemoEntityInput } = await import('./package-imports-evidence.mjs');
+ const { projectUserMemoInput, projectAnnouncementReadInput } = await import('./notes-pagination-evidence.mjs');
+ const { projectUserMemoEntityInput, projectAnnouncementEntityInput } = await import('./package-imports-evidence.mjs');
  const proof = JSON.parse(read('docs/superpowers/compatibility/role-public/followup-predecessor.json'));
  const sha = bytes => createHash('sha256').update(bytes).digest('hex');
  const forward = (before, binding) => {
@@ -50,14 +50,19 @@ test('standalone Announcement and combined Role/Announcement bytes preserve exac
  for (const [path, variants] of Object.entries(proof.notes)) {
   for (const binding of variants) {
    const actual = read(path);
-   const before = sha(actual) === binding.previousSha256 ? actual : projectPublicRoleInput(path, actual);
+   const candidates = [actual, projectAnnouncementReadInput(path, actual), projectPublicRoleInput(path, actual)];
+   const before = candidates.find(bytes => sha(bytes) === binding.previousSha256);
+   assert(before);
    const next = forward(before, binding);
    assert.deepEqual(projectUserMemoInput(path, next), projectUserMemoInput(path, before));
+   if (path.endsWith('/test/unit/composition/http-app.test.ts')) {
+    assert.deepEqual(projectPublicRoleInput(path, next), projectPublicRoleInput(path, before));
+   }
    assert.throws(() => projectUserMemoInput(path, Buffer.concat([next, Buffer.from('\n')])), /input drift/);
   }
  }
  for (const [path, binding] of Object.entries(proof.package)) {
-  const before = read(path);
+  const before = projectAnnouncementEntityInput(path, read(path));
   const next = forward(before, binding);
   assert.deepEqual(projectUserMemoEntityInput(path, next), projectUserMemoEntityInput(path, before));
   assert.throws(() => projectUserMemoEntityInput(path, Buffer.concat([next, Buffer.from('\n')])), /measured input/);

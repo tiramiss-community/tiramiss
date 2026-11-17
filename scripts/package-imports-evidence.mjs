@@ -131,7 +131,7 @@ const userMemoEntityProjection = {
   }
 };
 export function projectUserMemoEntityInput(path, actual, driftLabel = 'package import measured input') {
- actual = projectPageLikeEntityInput(path, projectAnnouncementEntityInput(path, actual), driftLabel);
+ actual = projectPageLikeEntityInput(path, actual, driftLabel);
  const binding = Object.hasOwn(userMemoEntityProjection, path) ? userMemoEntityProjection[path] : undefined;
  if (!binding) return actual;
  if (sha(actual) === binding.previousSha256) return actual;
@@ -215,6 +215,7 @@ const pageLikeEntityProjection = {
   }
 };
 export function projectPageLikeEntityInput(path, actual, driftLabel = 'package import measured input') {
+ actual = projectAnnouncementEntityInput(path, actual);
  const binding = Object.hasOwn(pageLikeEntityProjection, path) ? pageLikeEntityProjection[path] : undefined;
  if (!binding || [binding.previousSha256, userMemoEntityProjection[path]?.previousSha256].includes(sha(actual))) return actual;
  assert.equal(sha(actual), binding.currentSha256, `${driftLabel} (PageLike): ${path}`);

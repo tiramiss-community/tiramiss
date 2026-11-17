@@ -219,10 +219,6 @@ const userMemoProjection = {
 };
 
 export function projectUserMemoInput(path, actual) {
-	actual = projectAnnouncementReadInput(path, actual);
-	if (path === 'packages/backend-next/test/unit/composition/http-app.test.ts' && actual.includes(Buffer.from("'/api/roles/list'"))) {
-		actual = projectPublicRoleInput(path, actual);
-	}
 	actual = projectPageReadInput(path, actual);
 	const binding = Object.hasOwn(userMemoProjection, path) ? userMemoProjection[path] : undefined;
 	if (!binding) return actual;
@@ -348,6 +344,10 @@ const pageReadProjection = {
   }
 };
 export function projectPageReadInput(path, actual) {
+	actual = projectAnnouncementReadInput(path, actual);
+	if (path === 'packages/backend-next/test/unit/composition/http-app.test.ts' && actual.includes(Buffer.from("'/api/roles/list'"))) {
+		actual = projectPublicRoleInput(path, actual);
+	}
 	const binding = Object.hasOwn(pageReadProjection, path) ? pageReadProjection[path] : undefined;
 	if (!binding) return actual;
 	const digest = sha(actual);
@@ -367,6 +367,7 @@ export function projectPageReadInput(path, actual) {
 
 // #295 changes only the Role route assertion. Retain earlier measured bytes.
 export function projectPublicRoleInput(path, actual) {
+	actual = projectAnnouncementReadInput(path, actual);
 	if (path !== 'packages/backend-next/test/unit/composition/http-app.test.ts') return actual;
 	const previous = 'f107b9b110e85b050fb1ff3d2ce92d6b3cf973911fcf43bea0c4b805f63a765b';
 	const current = '571480ecccd8402950670c3cf6f663b73b25025db6a9456dfd77605846cac5f1';

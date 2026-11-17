@@ -38,7 +38,22 @@ const workflowPath = '.github/workflows/test-backend-next.yml';
 const videoFfmpegStep = '      - name: Install FFmpeg\n        run: |\n          sudo apt update\n          sudo apt install -y ffmpeg\n';
 const processRedisService = '      redis-pubsub:\n        image: redis:8\n        ports: [\'56380:6379\']\n        options: >-\n          --health-cmd "redis-cli ping"\n          --health-interval 1s --health-timeout 3s --health-retries 30\n';
 // Restore only the process lane addition; the identical integration service is historical.
+export function projectComparisonCiWorkflow(bytes) {
+ // #295/#337 add only comparison-document CI triggers; historical measurements stay sealed.
+ if (sha(bytes) === '2d5591a5a03eae69eca95442a2e652d1ce220840683541eca4d3739c95885608') {
+  let previous = bytes.toString();
+  for (const path of ['role-public', 'announcements']) {
+   const addition = `      - 'docs/superpowers/compatibility/${path}/**'\n`;
+   assert.equal(previous.split(addition).length, 3, 'folder exact comparison CI paths');
+   previous = previous.replaceAll(addition, '');
+  }
+  bytes = Buffer.from(previous);
+ }
+
+ return bytes;
+}
 function workflowBeforeCheckConnectRedis(bytes) {
+ bytes = projectComparisonCiWorkflow(bytes);
  assert.equal(sha(bytes), 'cf0c9ed1621aedef3eef678588bd83e0789a88ac1b2d315826c7731a67de4931', 'folder measured current input drift (notes contract CI workflow)');
  const notesPath = "      - 'docs/superpowers/compatibility/notes-pagination/**'\n";
  assert.equal(bytes.toString().split(notesPath).length, 3, 'folder exact notes CI path in push and pull request');
