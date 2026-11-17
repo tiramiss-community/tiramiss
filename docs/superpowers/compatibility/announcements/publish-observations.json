@@ -1,0 +1,29 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "corpusSha256": "dade147bfdc17994afb74de7ae8d640d2eb8a69f2aec2f4f3f26ffb4caf912de",
+  "sourceProbeSha256": "5c1beda232303b9fee3000b5f33126d92efd54689de69166571d81c791ffe6cb",
+  "manifest": [
+    {
+      "path": "packages/backend/src/core/AnnouncementService.ts",
+      "sha256": "366d4647c93f9085f1aa6418589d98eed5dc938a4f1560fe7c7ce34c9c5314ac"
+    },
+    {
+      "path": "packages/backend/src/core/GlobalEventService.ts",
+      "sha256": "4cca6fcbc95dcc3b61c5ca8ab440ae6a0a302776f8ea44fef33dfdb43245bae8"
+    }
+  ],
+  "doubles": [
+    "Insertion/lookup/update repositories retain one personal read and reject duplicate inserts; migrated PostgreSQL behavior remains covered by the original 28-case source probe",
+    "Unread lookup returns an empty set so this probe isolates the publication boundary",
+    "Redis publish returns a deferred rejecting Promise with an attached observer to record rejection without triggering an unhandled process rejection"
+  ],
+  "case": "deferred-publication-rejects-after-personal-read",
+  "outcome": {
+    "returnedBeforeDelivery": true,
+    "deliveryRejected": true,
+    "readCount": 1,
+    "isActive": false,
+    "publishAttempts": 1,
+    "duplicateWasNoOp": true
+  }
+}

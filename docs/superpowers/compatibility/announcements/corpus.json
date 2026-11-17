@@ -1,0 +1,1367 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "now": "2026-11-17T00:00:00.000Z",
+  "users": [
+    {
+      "id": "2000000000000001",
+      "username": "alice",
+      "token": "alicetoken123456"
+    },
+    {
+      "id": "8000000000000001",
+      "username": "bob",
+      "token": "bobtoken12345678"
+    }
+  ],
+  "newReadId": "9000000000000001",
+  "doubles": [
+    "Endpoint base/ApiError and AJV validation adapter",
+    "IdService aidx parse/gen injected; date-bound cases avoid timestamp ties",
+    "Source GlobalEventService publish methods use an in-memory transport; new implementation verified on actual Redis",
+    "Fixed current time; fixtures use expiry dates far from wall clock",
+    "Source methods execute actual PostgreSQL TypeORM repositories, not a query-builder double"
+  ],
+  "cases": [
+    {
+      "id": "empty",
+      "rows": [],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "announcements",
+          "input": {}
+        }
+      ]
+    },
+    {
+      "id": "public-anonymous",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "announcements",
+          "input": {}
+        }
+      ]
+    },
+    {
+      "id": "viewer-separation",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "4000000000000001",
+          "title": "Announcement 4000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": "2000000000000001",
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "5000000000000001",
+          "title": "Announcement 5000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": "8000000000000001",
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [
+        {
+          "id": "readseed",
+          "userId": "2000000000000001",
+          "announcementId": "3000000000000001"
+        }
+      ],
+      "steps": [
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {}
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": "2000000000000001",
+          "input": {}
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": "8000000000000001",
+          "input": {}
+        }
+      ]
+    },
+    {
+      "id": "show-recipient-visibility",
+      "rows": [
+        {
+          "id": "4000000000000001",
+          "title": "Announcement 4000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": "2000000000000001",
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "announcements/show",
+          "viewer": null,
+          "input": {
+            "announcementId": "4000000000000001"
+          }
+        },
+        {
+          "endpoint": "announcements/show",
+          "viewer": "8000000000000001",
+          "input": {
+            "announcementId": "4000000000000001"
+          }
+        },
+        {
+          "endpoint": "announcements/show",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "4000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "missing-show",
+      "rows": [],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "announcements/show",
+          "viewer": null,
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "show-inactive-and-expired",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": false,
+          "autoArchiveAt": "2001-01-01T00:00:00.000Z",
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "announcements/show",
+          "viewer": null,
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        },
+        {
+          "endpoint": "announcements/show",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "active-filter",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "4000000000000001",
+          "title": "Announcement 4000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": false,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "5000000000000001",
+          "title": "Announcement 5000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": "2001-01-01T00:00:00.000Z",
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "6000000000000001",
+          "title": "Announcement 6000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": "2099-01-01T00:00:00.000Z",
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {}
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {
+            "isActive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "existing-users-display",
+      "rows": [
+        {
+          "id": "1000000000000001",
+          "title": "Announcement 1000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": true,
+          "updatedAt": null
+        },
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": true,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "announcements",
+          "viewer": "2000000000000001",
+          "input": {}
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": "8000000000000001",
+          "input": {}
+        }
+      ]
+    },
+    {
+      "id": "all-fields",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": "https://example.test/image.png",
+          "icon": "warning",
+          "display": "dialog",
+          "needConfirmationToRead": true,
+          "silence": true,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": "2026-01-01T01:02:03.000Z"
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "announcements/show",
+          "viewer": null,
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        },
+        {
+          "endpoint": "announcements/show",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "id-pagination",
+      "rows": [
+        {
+          "id": "1000000000000001",
+          "title": "Announcement 1000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "4000000000000001",
+          "title": "Announcement 4000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "5000000000000001",
+          "title": "Announcement 5000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {
+            "limit": 2
+          }
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {
+            "sinceId": "1000000000000001",
+            "limit": 2
+          }
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {
+            "untilId": "5000000000000001",
+            "limit": 2
+          }
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {
+            "sinceId": "1000000000000001",
+            "untilId": "5000000000000001",
+            "limit": 2
+          }
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {
+            "sinceId": "1000000000000001",
+            "sinceDate": 1,
+            "untilDate": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "date-pagination",
+      "rows": [
+        {
+          "id": "1000000000000001",
+          "title": "Announcement 1000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "4000000000000001",
+          "title": "Announcement 4000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {
+            "sinceDate": 1098364800000
+          }
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {
+            "untilDate": 1098364800000
+          }
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {
+            "sinceDate": 0,
+            "untilDate": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "read-public",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        },
+        {
+          "endpoint": "announcements/show",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        },
+        {
+          "endpoint": "announcements/show",
+          "viewer": "8000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "read-duplicate",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        },
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "read-missing",
+      "rows": [],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "read-personal",
+      "rows": [
+        {
+          "id": "4000000000000001",
+          "title": "Announcement 4000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": "2000000000000001",
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "4000000000000001"
+          }
+        },
+        {
+          "endpoint": "announcements/show",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "4000000000000001"
+          }
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": "2000000000000001",
+          "input": {}
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": "2000000000000001",
+          "input": {
+            "isActive": false
+          }
+        },
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "4000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "read-other-recipient",
+      "rows": [
+        {
+          "id": "4000000000000001",
+          "title": "Announcement 4000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": "8000000000000001",
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "4000000000000001"
+          }
+        },
+        {
+          "endpoint": "announcements/show",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "4000000000000001"
+          }
+        },
+        {
+          "endpoint": "announcements/show",
+          "viewer": "8000000000000001",
+          "input": {
+            "announcementId": "4000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "remaining-unread",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "4000000000000001",
+          "title": "Announcement 4000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        },
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "4000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "silent-does-not-block",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "4000000000000001",
+          "title": "Announcement 4000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": true,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "old-existing-does-not-block",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "1000000000000001",
+          "title": "Announcement 1000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": true,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "new-existing-blocks",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "4000000000000001",
+          "title": "Announcement 4000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": true,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        },
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "4000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "equal-existing-does-not-block",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "2000000000000001",
+          "title": "Announcement 2000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": true,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "other-recipient-does-not-block",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "4000000000000001",
+          "title": "Announcement 4000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": "8000000000000001",
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "inactive-expired-do-not-block",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "4000000000000001",
+          "title": "Announcement 4000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": false,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "5000000000000001",
+          "title": "Announcement 5000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": "2001-01-01T00:00:00.000Z",
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "already-read-does-not-block",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "4000000000000001",
+          "title": "Announcement 4000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [
+        {
+          "id": "seedread",
+          "userId": "2000000000000001",
+          "announcementId": "4000000000000001"
+        }
+      ],
+      "steps": [
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pack-failure-is-excluded",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        },
+        {
+          "id": "!",
+          "title": "Announcement !",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {}
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": "2000000000000001",
+          "input": {}
+        }
+      ]
+    },
+    {
+      "id": "read-lookup-failure",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {}
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": "2000000000000001",
+          "input": {}
+        },
+        {
+          "endpoint": "announcements/show",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        }
+      ],
+      "failure": "reads-unavailable"
+    },
+    {
+      "id": "read-insert-failure",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {
+            "announcementId": "3000000000000001"
+          }
+        }
+      ],
+      "failure": "reads-unavailable"
+    },
+    {
+      "id": "validation",
+      "rows": [
+        {
+          "id": "3000000000000001",
+          "title": "Announcement 3000000000000001",
+          "text": "Announcement text",
+          "imageUrl": null,
+          "icon": "info",
+          "display": "normal",
+          "needConfirmationToRead": false,
+          "silence": false,
+          "userId": null,
+          "isActive": true,
+          "autoArchiveAt": null,
+          "forExistingUsers": false,
+          "updatedAt": null
+        }
+      ],
+      "reads": [],
+      "steps": [
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {
+            "limit": 0
+          }
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {
+            "limit": 101
+          }
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {
+            "limit": 1.5
+          }
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {
+            "isActive": "true"
+          }
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {
+            "sinceId": "!"
+          }
+        },
+        {
+          "endpoint": "announcements",
+          "viewer": null,
+          "input": {
+            "sinceDate": 1.5
+          }
+        },
+        {
+          "endpoint": "announcements/show",
+          "viewer": null,
+          "input": {}
+        },
+        {
+          "endpoint": "i/read-announcement",
+          "viewer": "2000000000000001",
+          "input": {}
+        }
+      ]
+    }
+  ]
+}

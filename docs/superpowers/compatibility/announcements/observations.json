@@ -1,0 +1,2081 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "corpusSha256": "f8c0257e17277f3bfdc9e28aac338d0c28c9d2a4ebf5f46eb2929534f10dbb63",
+  "sourceProbeSha256": "08d4de4654b2084d5532ea49edafb278c0c85b9bccf0eacf7549ca0194538aeb",
+  "manifest": [
+    {
+      "path": "packages/backend/src/core/AnnouncementService.ts",
+      "gitBlob": "0f84e5f5aff121983bd1e1d3f22995d01df2f70c",
+      "sha256": "366d4647c93f9085f1aa6418589d98eed5dc938a4f1560fe7c7ce34c9c5314ac"
+    },
+    {
+      "path": "packages/backend/src/core/entities/AnnouncementEntityService.ts",
+      "gitBlob": "90b04d0229a659fafa09796c2b37675621bdb44d",
+      "sha256": "cbc6c59ad90de592806bf03bb17c6937c01923b97f5d0741931c3e2f67d827db"
+    },
+    {
+      "path": "packages/backend/src/core/QueryService.ts",
+      "gitBlob": "b75fc805bbbbe07891f1fd79428368f9ac41b97b",
+      "sha256": "6eb0324d8f7d96bee6a0317bd77224051135dd49283a7f8b8c258c8ae5ae9357"
+    },
+    {
+      "path": "packages/backend/src/core/GlobalEventService.ts",
+      "gitBlob": "5221b2e532ec8a4310eb10226789ac1ce8ef0183",
+      "sha256": "4cca6fcbc95dcc3b61c5ca8ab440ae6a0a302776f8ea44fef33dfdb43245bae8"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/announcements.ts",
+      "gitBlob": "284e09310231eedc618e125cb7db323510174f76",
+      "sha256": "a9b572828dce2ff2935f18760d280f1cf008d5cbf6d891f80dd0123278587d59"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/announcements/show.ts",
+      "gitBlob": "6312a0a54cb8ff1aaad7d5d4369d3634babc75df",
+      "sha256": "296b89b69697c72c585feac0b796c07e5be1908eba4549add71c72c1e0cf33ce"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/i/read-announcement.ts",
+      "gitBlob": "4db1ca73c145ae1e9552bd738eabf074870b1863",
+      "sha256": "da237056bdd59814b419d152db323e954744a433d386fdc61d812f2052a81d90"
+    },
+    {
+      "path": "packages/backend/src/models/Announcement.ts",
+      "gitBlob": "4155161cfc29a6d7b573c2f17fef0baef3cf1caf",
+      "sha256": "74ebb2c97c3ce6ec893dd65cf15bb3cff1687d0b939619b8a61a77a630bf6489"
+    },
+    {
+      "path": "packages/backend/src/models/AnnouncementRead.ts",
+      "gitBlob": "2133cff14081a2ec2e7ed88fc647ab498d00ac27",
+      "sha256": "46dddc3731d70bf062fd74cdf8283e0b86da665bb94f4c86a4364d89ff98cef6"
+    },
+    {
+      "path": "packages/backend/test/e2e/announcements.ts",
+      "gitBlob": "d9b8592f7d2cb97f84a2e0543d69d2a1870dcf4c",
+      "sha256": "21ea56165aa1a6b8043c6c9d8316215059964f379eedc0f58e41df582f342d9a"
+    }
+  ],
+  "sourceExecution": "literal pinned methods and Endpoint callbacks with actual migrated PostgreSQL repositories",
+  "doubles": [
+    "Endpoint base/ApiError and AJV validation adapter",
+    "IdService aidx parse/gen injected; date-bound cases avoid timestamp ties",
+    "Source GlobalEventService publish methods use an in-memory transport; new implementation verified on actual Redis",
+    "Fixed current time; fixtures use expiry dates far from wall clock",
+    "Source methods execute actual PostgreSQL TypeORM repositories, not a query-builder double"
+  ],
+  "access": {
+    "announcements": {
+      "requireCredential": false
+    },
+    "announcements/show": {
+      "requireCredential": false
+    },
+    "i/read-announcement": {
+      "requireCredential": true,
+      "kind": "write:account"
+    }
+  },
+  "cases": [
+    {
+      "id": "empty",
+      "steps": [
+        {
+          "value": [],
+          "rows": [],
+          "reads": [],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "public-anonymous",
+      "steps": [
+        {
+          "value": [
+            {
+              "id": "3000000000000001",
+              "createdAt": "2007-06-13T23:28:12.288Z",
+              "updatedAt": null,
+              "title": "Announcement 3000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "viewer-separation",
+      "steps": [
+        {
+          "value": [
+            {
+              "id": "3000000000000001",
+              "createdAt": "2007-06-13T23:28:12.288Z",
+              "updatedAt": null,
+              "title": "Announcement 3000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "5000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            }
+          ],
+          "events": []
+        },
+        {
+          "value": [
+            {
+              "id": "4000000000000001",
+              "createdAt": "2009-12-06T23:17:36.384Z",
+              "updatedAt": null,
+              "title": "Announcement 4000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": true,
+              "needConfirmationToRead": false,
+              "silence": false,
+              "isRead": false
+            },
+            {
+              "id": "3000000000000001",
+              "createdAt": "2007-06-13T23:28:12.288Z",
+              "updatedAt": null,
+              "title": "Announcement 3000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false,
+              "isRead": true
+            }
+          ],
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "5000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            }
+          ],
+          "events": []
+        },
+        {
+          "value": [
+            {
+              "id": "5000000000000001",
+              "createdAt": "2012-05-31T23:07:00.480Z",
+              "updatedAt": null,
+              "title": "Announcement 5000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": true,
+              "needConfirmationToRead": false,
+              "silence": false,
+              "isRead": false
+            },
+            {
+              "id": "3000000000000001",
+              "createdAt": "2007-06-13T23:28:12.288Z",
+              "updatedAt": null,
+              "title": "Announcement 3000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false,
+              "isRead": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "5000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            }
+          ],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "show-recipient-visibility",
+      "steps": [
+        {
+          "error": {
+            "code": "NO_SUCH_ANNOUNCEMENT",
+            "id": "b57b5e1d-4f49-404a-9edb-46b00268f121",
+            "message": "No such announcement."
+          },
+          "rows": [
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "error": {
+            "code": "NO_SUCH_ANNOUNCEMENT",
+            "id": "b57b5e1d-4f49-404a-9edb-46b00268f121",
+            "message": "No such announcement."
+          },
+          "rows": [
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "value": {
+            "id": "4000000000000001",
+            "createdAt": "2009-12-06T23:17:36.384Z",
+            "updatedAt": null,
+            "title": "Announcement 4000000000000001",
+            "text": "Announcement text",
+            "imageUrl": null,
+            "icon": "info",
+            "display": "normal",
+            "forYou": true,
+            "needConfirmationToRead": false,
+            "silence": false,
+            "isRead": false
+          },
+          "rows": [
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "missing-show",
+      "steps": [
+        {
+          "error": {
+            "code": "NO_SUCH_ANNOUNCEMENT",
+            "id": "b57b5e1d-4f49-404a-9edb-46b00268f121",
+            "message": "No such announcement."
+          },
+          "rows": [],
+          "reads": [],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "show-inactive-and-expired",
+      "steps": [
+        {
+          "value": {
+            "id": "3000000000000001",
+            "createdAt": "2007-06-13T23:28:12.288Z",
+            "updatedAt": null,
+            "title": "Announcement 3000000000000001",
+            "text": "Announcement text",
+            "imageUrl": null,
+            "icon": "info",
+            "display": "normal",
+            "forYou": false,
+            "needConfirmationToRead": false,
+            "silence": false
+          },
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": false,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "value": {
+            "id": "3000000000000001",
+            "createdAt": "2007-06-13T23:28:12.288Z",
+            "updatedAt": null,
+            "title": "Announcement 3000000000000001",
+            "text": "Announcement text",
+            "imageUrl": null,
+            "icon": "info",
+            "display": "normal",
+            "forYou": false,
+            "needConfirmationToRead": false,
+            "silence": false,
+            "isRead": false
+          },
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": false,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "active-filter",
+      "steps": [
+        {
+          "value": [
+            {
+              "id": "6000000000000001",
+              "createdAt": "2014-11-24T22:56:24.576Z",
+              "updatedAt": null,
+              "title": "Announcement 6000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            },
+            {
+              "id": "3000000000000001",
+              "createdAt": "2007-06-13T23:28:12.288Z",
+              "updatedAt": null,
+              "title": "Announcement 3000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": false,
+              "updatedAt": null
+            },
+            {
+              "id": "5000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "6000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "value": [
+            {
+              "id": "5000000000000001",
+              "createdAt": "2012-05-31T23:07:00.480Z",
+              "updatedAt": null,
+              "title": "Announcement 5000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            },
+            {
+              "id": "4000000000000001",
+              "createdAt": "2009-12-06T23:17:36.384Z",
+              "updatedAt": null,
+              "title": "Announcement 4000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": false,
+              "updatedAt": null
+            },
+            {
+              "id": "5000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "6000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "existing-users-display",
+      "steps": [
+        {
+          "value": [
+            {
+              "id": "3000000000000001",
+              "createdAt": "2007-06-13T23:28:12.288Z",
+              "updatedAt": null,
+              "title": "Announcement 3000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false,
+              "isRead": false
+            },
+            {
+              "id": "1000000000000001",
+              "createdAt": "2002-06-25T23:49:24.096Z",
+              "updatedAt": null,
+              "title": "Announcement 1000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false,
+              "isRead": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "1000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "value": [
+            {
+              "id": "3000000000000001",
+              "createdAt": "2007-06-13T23:28:12.288Z",
+              "updatedAt": null,
+              "title": "Announcement 3000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false,
+              "isRead": false
+            },
+            {
+              "id": "1000000000000001",
+              "createdAt": "2002-06-25T23:49:24.096Z",
+              "updatedAt": null,
+              "title": "Announcement 1000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false,
+              "isRead": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "1000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "all-fields",
+      "steps": [
+        {
+          "value": {
+            "id": "3000000000000001",
+            "createdAt": "2007-06-13T23:28:12.288Z",
+            "updatedAt": "2026-01-01T01:02:03.000Z",
+            "title": "Announcement 3000000000000001",
+            "text": "Announcement text",
+            "imageUrl": "https://example.test/image.png",
+            "icon": "warning",
+            "display": "dialog",
+            "forYou": false,
+            "needConfirmationToRead": true,
+            "silence": true
+          },
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": "2026-01-01T01:02:03.000Z"
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "value": {
+            "id": "3000000000000001",
+            "createdAt": "2007-06-13T23:28:12.288Z",
+            "updatedAt": "2026-01-01T01:02:03.000Z",
+            "title": "Announcement 3000000000000001",
+            "text": "Announcement text",
+            "imageUrl": "https://example.test/image.png",
+            "icon": "warning",
+            "display": "dialog",
+            "forYou": false,
+            "needConfirmationToRead": true,
+            "silence": true,
+            "isRead": false
+          },
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": "2026-01-01T01:02:03.000Z"
+            }
+          ],
+          "reads": [],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "id-pagination",
+      "steps": [
+        {
+          "value": [
+            {
+              "id": "5000000000000001",
+              "createdAt": "2012-05-31T23:07:00.480Z",
+              "updatedAt": null,
+              "title": "Announcement 5000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            },
+            {
+              "id": "4000000000000001",
+              "createdAt": "2009-12-06T23:17:36.384Z",
+              "updatedAt": null,
+              "title": "Announcement 4000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "1000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "5000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "value": [
+            {
+              "id": "3000000000000001",
+              "createdAt": "2007-06-13T23:28:12.288Z",
+              "updatedAt": null,
+              "title": "Announcement 3000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            },
+            {
+              "id": "4000000000000001",
+              "createdAt": "2009-12-06T23:17:36.384Z",
+              "updatedAt": null,
+              "title": "Announcement 4000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "1000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "5000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "value": [
+            {
+              "id": "4000000000000001",
+              "createdAt": "2009-12-06T23:17:36.384Z",
+              "updatedAt": null,
+              "title": "Announcement 4000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            },
+            {
+              "id": "3000000000000001",
+              "createdAt": "2007-06-13T23:28:12.288Z",
+              "updatedAt": null,
+              "title": "Announcement 3000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "1000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "5000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "value": [
+            {
+              "id": "4000000000000001",
+              "createdAt": "2009-12-06T23:17:36.384Z",
+              "updatedAt": null,
+              "title": "Announcement 4000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            },
+            {
+              "id": "3000000000000001",
+              "createdAt": "2007-06-13T23:28:12.288Z",
+              "updatedAt": null,
+              "title": "Announcement 3000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "1000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "5000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "value": [
+            {
+              "id": "3000000000000001",
+              "createdAt": "2007-06-13T23:28:12.288Z",
+              "updatedAt": null,
+              "title": "Announcement 3000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            },
+            {
+              "id": "4000000000000001",
+              "createdAt": "2009-12-06T23:17:36.384Z",
+              "updatedAt": null,
+              "title": "Announcement 4000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            },
+            {
+              "id": "5000000000000001",
+              "createdAt": "2012-05-31T23:07:00.480Z",
+              "updatedAt": null,
+              "title": "Announcement 5000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "1000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "5000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "date-pagination",
+      "steps": [
+        {
+          "value": [
+            {
+              "id": "3000000000000001",
+              "createdAt": "2007-06-13T23:28:12.288Z",
+              "updatedAt": null,
+              "title": "Announcement 3000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            },
+            {
+              "id": "4000000000000001",
+              "createdAt": "2009-12-06T23:17:36.384Z",
+              "updatedAt": null,
+              "title": "Announcement 4000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "1000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "value": [
+            {
+              "id": "1000000000000001",
+              "createdAt": "2002-06-25T23:49:24.096Z",
+              "updatedAt": null,
+              "title": "Announcement 1000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "1000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "value": [
+            {
+              "id": "4000000000000001",
+              "createdAt": "2009-12-06T23:17:36.384Z",
+              "updatedAt": null,
+              "title": "Announcement 4000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            },
+            {
+              "id": "3000000000000001",
+              "createdAt": "2007-06-13T23:28:12.288Z",
+              "updatedAt": null,
+              "title": "Announcement 3000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            },
+            {
+              "id": "1000000000000001",
+              "createdAt": "2002-06-25T23:49:24.096Z",
+              "updatedAt": null,
+              "title": "Announcement 1000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "1000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "read-public",
+      "steps": [
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            }
+          ],
+          "events": [
+            {
+              "topic": "example.test",
+              "channel": "mainStream:2000000000000001",
+              "message": {
+                "type": "readAllAnnouncements",
+                "body": null
+              }
+            }
+          ]
+        },
+        {
+          "value": {
+            "id": "3000000000000001",
+            "createdAt": "2007-06-13T23:28:12.288Z",
+            "updatedAt": null,
+            "title": "Announcement 3000000000000001",
+            "text": "Announcement text",
+            "imageUrl": null,
+            "icon": "info",
+            "display": "normal",
+            "forYou": false,
+            "needConfirmationToRead": false,
+            "silence": false,
+            "isRead": true
+          },
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            }
+          ],
+          "events": []
+        },
+        {
+          "value": {
+            "id": "3000000000000001",
+            "createdAt": "2007-06-13T23:28:12.288Z",
+            "updatedAt": null,
+            "title": "Announcement 3000000000000001",
+            "text": "Announcement text",
+            "imageUrl": null,
+            "icon": "info",
+            "display": "normal",
+            "forYou": false,
+            "needConfirmationToRead": false,
+            "silence": false,
+            "isRead": false
+          },
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            }
+          ],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "read-duplicate",
+      "steps": [
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            }
+          ],
+          "events": [
+            {
+              "topic": "example.test",
+              "channel": "mainStream:2000000000000001",
+              "message": {
+                "type": "readAllAnnouncements",
+                "body": null
+              }
+            }
+          ]
+        },
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            }
+          ],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "read-missing",
+      "steps": [
+        {
+          "value": null,
+          "rows": [],
+          "reads": [],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "read-personal",
+      "steps": [
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "4000000000000001",
+              "isActive": false,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "4000000000000001"
+            }
+          ],
+          "events": [
+            {
+              "topic": "example.test",
+              "channel": "mainStream:2000000000000001",
+              "message": {
+                "type": "readAllAnnouncements",
+                "body": null
+              }
+            }
+          ]
+        },
+        {
+          "value": {
+            "id": "4000000000000001",
+            "createdAt": "2009-12-06T23:17:36.384Z",
+            "updatedAt": null,
+            "title": "Announcement 4000000000000001",
+            "text": "Announcement text",
+            "imageUrl": null,
+            "icon": "info",
+            "display": "normal",
+            "forYou": true,
+            "needConfirmationToRead": false,
+            "silence": false,
+            "isRead": true
+          },
+          "rows": [
+            {
+              "id": "4000000000000001",
+              "isActive": false,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "4000000000000001"
+            }
+          ],
+          "events": []
+        },
+        {
+          "value": [],
+          "rows": [
+            {
+              "id": "4000000000000001",
+              "isActive": false,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "4000000000000001"
+            }
+          ],
+          "events": []
+        },
+        {
+          "value": [
+            {
+              "id": "4000000000000001",
+              "createdAt": "2009-12-06T23:17:36.384Z",
+              "updatedAt": null,
+              "title": "Announcement 4000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": true,
+              "needConfirmationToRead": false,
+              "silence": false,
+              "isRead": true
+            }
+          ],
+          "rows": [
+            {
+              "id": "4000000000000001",
+              "isActive": false,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "4000000000000001"
+            }
+          ],
+          "events": []
+        },
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "4000000000000001",
+              "isActive": false,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "4000000000000001"
+            }
+          ],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "read-other-recipient",
+      "steps": [
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "4000000000000001"
+            }
+          ],
+          "events": [
+            {
+              "topic": "example.test",
+              "channel": "mainStream:2000000000000001",
+              "message": {
+                "type": "readAllAnnouncements",
+                "body": null
+              }
+            }
+          ]
+        },
+        {
+          "error": {
+            "code": "NO_SUCH_ANNOUNCEMENT",
+            "id": "b57b5e1d-4f49-404a-9edb-46b00268f121",
+            "message": "No such announcement."
+          },
+          "rows": [
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "4000000000000001"
+            }
+          ],
+          "events": []
+        },
+        {
+          "value": {
+            "id": "4000000000000001",
+            "createdAt": "2009-12-06T23:17:36.384Z",
+            "updatedAt": null,
+            "title": "Announcement 4000000000000001",
+            "text": "Announcement text",
+            "imageUrl": null,
+            "icon": "info",
+            "display": "normal",
+            "forYou": true,
+            "needConfirmationToRead": false,
+            "silence": false,
+            "isRead": false
+          },
+          "rows": [
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "4000000000000001"
+            }
+          ],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "remaining-unread",
+      "steps": [
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            }
+          ],
+          "events": []
+        },
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            },
+            {
+              "userId": "2000000000000001",
+              "announcementId": "4000000000000001"
+            }
+          ],
+          "events": [
+            {
+              "topic": "example.test",
+              "channel": "mainStream:2000000000000001",
+              "message": {
+                "type": "readAllAnnouncements",
+                "body": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "silent-does-not-block",
+      "steps": [
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            }
+          ],
+          "events": [
+            {
+              "topic": "example.test",
+              "channel": "mainStream:2000000000000001",
+              "message": {
+                "type": "readAllAnnouncements",
+                "body": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "old-existing-does-not-block",
+      "steps": [
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "1000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            }
+          ],
+          "events": [
+            {
+              "topic": "example.test",
+              "channel": "mainStream:2000000000000001",
+              "message": {
+                "type": "readAllAnnouncements",
+                "body": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "new-existing-blocks",
+      "steps": [
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            }
+          ],
+          "events": []
+        },
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            },
+            {
+              "userId": "2000000000000001",
+              "announcementId": "4000000000000001"
+            }
+          ],
+          "events": [
+            {
+              "topic": "example.test",
+              "channel": "mainStream:2000000000000001",
+              "message": {
+                "type": "readAllAnnouncements",
+                "body": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "equal-existing-does-not-block",
+      "steps": [
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "2000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            }
+          ],
+          "events": [
+            {
+              "topic": "example.test",
+              "channel": "mainStream:2000000000000001",
+              "message": {
+                "type": "readAllAnnouncements",
+                "body": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "other-recipient-does-not-block",
+      "steps": [
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            }
+          ],
+          "events": [
+            {
+              "topic": "example.test",
+              "channel": "mainStream:2000000000000001",
+              "message": {
+                "type": "readAllAnnouncements",
+                "body": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "inactive-expired-do-not-block",
+      "steps": [
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": false,
+              "updatedAt": null
+            },
+            {
+              "id": "5000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            }
+          ],
+          "events": [
+            {
+              "topic": "example.test",
+              "channel": "mainStream:2000000000000001",
+              "message": {
+                "type": "readAllAnnouncements",
+                "body": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "already-read-does-not-block",
+      "steps": [
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "4000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [
+            {
+              "userId": "2000000000000001",
+              "announcementId": "3000000000000001"
+            },
+            {
+              "userId": "2000000000000001",
+              "announcementId": "4000000000000001"
+            }
+          ],
+          "events": [
+            {
+              "topic": "example.test",
+              "channel": "mainStream:2000000000000001",
+              "message": {
+                "type": "readAllAnnouncements",
+                "body": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pack-failure-is-excluded",
+      "steps": [
+        {
+          "value": [
+            {
+              "id": "3000000000000001",
+              "createdAt": "2007-06-13T23:28:12.288Z",
+              "updatedAt": null,
+              "title": "Announcement 3000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "!",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "value": [
+            {
+              "id": "3000000000000001",
+              "createdAt": "2007-06-13T23:28:12.288Z",
+              "updatedAt": null,
+              "title": "Announcement 3000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false,
+              "isRead": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "!",
+              "isActive": true,
+              "updatedAt": null
+            },
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "read-lookup-failure",
+      "steps": [
+        {
+          "value": [
+            {
+              "id": "3000000000000001",
+              "createdAt": "2007-06-13T23:28:12.288Z",
+              "updatedAt": null,
+              "title": "Announcement 3000000000000001",
+              "text": "Announcement text",
+              "imageUrl": null,
+              "icon": "info",
+              "display": "normal",
+              "forYou": false,
+              "needConfirmationToRead": false,
+              "silence": false
+            }
+          ],
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "value": [],
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "error": {
+            "code": "INTERNAL_ERROR"
+          },
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "read-insert-failure",
+      "steps": [
+        {
+          "value": null,
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        }
+      ]
+    },
+    {
+      "id": "validation",
+      "steps": [
+        {
+          "error": {
+            "code": "INVALID_PARAM"
+          },
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "error": {
+            "code": "INVALID_PARAM"
+          },
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "error": {
+            "code": "INVALID_PARAM"
+          },
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "error": {
+            "code": "INVALID_PARAM"
+          },
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "error": {
+            "code": "INVALID_PARAM"
+          },
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "error": {
+            "code": "INVALID_PARAM"
+          },
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "error": {
+            "code": "INVALID_PARAM"
+          },
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        },
+        {
+          "error": {
+            "code": "INVALID_PARAM"
+          },
+          "rows": [
+            {
+              "id": "3000000000000001",
+              "isActive": true,
+              "updatedAt": null
+            }
+          ],
+          "reads": [],
+          "events": []
+        }
+      ]
+    }
+  ]
+}

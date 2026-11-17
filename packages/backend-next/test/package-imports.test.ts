@@ -67,7 +67,16 @@ test('loads copied entities without eagerly loading migration dependencies', asy
 		expect(relation?.inverseEntityMetadata.tableName).toBe(table);
 		expect(relation?.onDelete).toBe('CASCADE');
 	}
-	expect(source.entityMetadatas).toHaveLength(40);
+	const announcement = source.getMetadata('MiAnnouncement');
+	expect(announcement.tableName).toBe('announcement');
+	expect(announcement.relations.find(value => value.propertyName === 'user')?.onDelete).toBe('CASCADE');
+	const announcementRead = source.getMetadata('MiAnnouncementRead');
+	expect(announcementRead.tableName).toBe('announcement_read');
+	expect(announcementRead.indices.some(index => index.isUnique && index.columns.map(column => column.propertyName).join(',') === 'userId,announcementId')).toBe(true);
+	for (const property of ['user', 'announcement']) {
+		expect(announcementRead.relations.find(value => value.propertyName === property)?.onDelete).toBe('CASCADE');
+	}
+	expect(source.entityMetadatas).toHaveLength(42);
 	expect(source.getMetadata('MiWebhook').tableName).toBe('webhook');
 	expect(source.getMetadata('MiWebhook').relations.find(value => value.propertyName === 'user')?.inverseEntityMetadata.tableName).toBe('user');
 	for (const [model, table, relation] of [['MiMuting', 'muting', 'muter'], ['MiRenoteMuting', 'renote_muting', 'mutee'], ['MiNoteThreadMuting', 'note_thread_muting', 'user'], ['MiUserListMembership', 'user_list_membership', 'user']] as const) {
