@@ -6,10 +6,10 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { projectUserMemoInput } from './notes-pagination-evidence.mjs';
+import { projectUserMemoInput, projectPageReadInput } from './notes-pagination-evidence.mjs';
 import { projectUserMemoEntityInput } from './package-imports-evidence.mjs';
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
-const read = path => readFileSync(new URL('../' + path, import.meta.url));
+const read = path => projectPageReadInput(path, readFileSync(new URL('../' + path, import.meta.url)));
 const product = 'packages/backend-next/src/composition/http-app.ts';
 const shared = 'packages/backend-next/test/unit/composition/http-app.test.ts';
 

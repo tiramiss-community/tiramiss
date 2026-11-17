@@ -1,18 +1,13 @@
 {
   "scope": "user-relation-296",
-  "baseRevision": "11bd324e28279d57fa77f0a2da71a066067ab225",
+  "measurement": "R3 shared Page/Relation registration proof only",
   "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
-  "measuredWorkingTree": true,
-  "upstreamFullServerMeasured": false,
-  "userDetailedComplete": false,
-  "nodeVersion": "v26.4.0",
-  "measurement": "R2 after large-target regression fix",
-  "historicalWindow": {
-    "path": "/tmp/relation296-before-large-current-evidence.json",
-    "note": "R1 full unit4969 and broad root770 PASS/1 optionalSKIP are historical; product changed during R1 root window and noInputDrift is false. Those counts are not asserted for R2."
+  "runtimeEvidence": {
+    "path": "docs/superpowers/compatibility/user-relation/r2-current-evidence.json",
+    "sha256": "6c41de87519d79957ffb883995596afef1e1998644ad755fc45e485d556f6298",
+    "note": "R2 product counts/logs are retained unchanged; no product command is rerun by R3."
   },
-  "startedAt": "2026-11-17T04:33:23.974273+00:00",
-  "inputsBefore": {
+  "inheritedProductInputs": {
     "docs/superpowers/compatibility/user-relation/corpus.json": "c8363b8d630b5a4cb8432f4c381b98a9b5ab46e47f4bf4ae6ad60633ecf60994",
     "docs/superpowers/compatibility/user-relation/observations.json": "8a2366750cc35cd776e432095dfee9d9c3c4b204c3708cc71e25913eefcbf819",
     "docs/superpowers/compatibility/user-relation/source-probe.mjs": "17cf7b325466d1f2668f7e76a918528aa52c3211b80d04e6877bc00f08e14ff9",
@@ -31,154 +26,55 @@
     "packages/backend-next/test/unit/composition/http-app.test.ts": "734cee44fd1181a8c77fa08bf05623e41b28478b0f4eea8a2d2f8689c7632899",
     "packages/backend-next/test/unit/user-relation.test.ts": "104edaf2f5de9264524c8f078718b3a9349ceac5c7e6e5fe7e233230cc173944",
     "pnpm-lock.yaml": "7802badea4fb65c63c13c8678020a2e651f148c8b9c46289342082068c5f99aa",
-    "scripts/notes-pagination-evidence.mjs": "5b4630ae49e023fe25d2e4aaeec89a8c1eaac993a0cc67cfc362918a310d8a28",
-    "scripts/poll-recommendation-contract.test.mjs": "9ed43fe7a9648bea6135f407557e2f68874db297a18892bddbeb2ff59a6b0e38",
-    "scripts/user-memo-contract.test.mjs": "15eb7bce43ea2c81006c2f68f39109400b6f244d2ad65c55bf1f0feb4c8610ed",
     "scripts/user-relation-contract.test.mjs": "8a914986c2193793f597bff5ac9f34da4d5ca4cdf2e0f69165f9675fcbecea28"
   },
+  "inheritedProductInputsUnchanged": true,
+  "startedAt": "2026-11-17T04:48:05.860839+00:00",
+  "inputsBefore": {
+    "scripts/notes-pagination-evidence.mjs": "7d1aa313c796746aa32c6cacef84bf8bdeb30a60123151fe573bc0a5adb5391d",
+    "scripts/user-memo-contract.test.mjs": "6fee0a3f3abd79f80a288abda4b71adeea23f25e55126e31740446051358aa53",
+    "scripts/poll-recommendation-contract.test.mjs": "381ec2896f493f8092f5d1e9cad3640f4444e3b46da5c101ba21148e94795030",
+    "scripts/page-relation-contract.test.mjs": "da3cc48243b55b292ff9c058d2f8e9d504d2e246cf0efd731b7efca4a268b2ac",
+    "scripts/user-relation-contract.test.mjs": "8a914986c2193793f597bff5ac9f34da4d5ca4cdf2e0f69165f9675fcbecea28",
+    "scripts/notes-pagination-contract.test.mjs": "466b4447c4c6997410b24cfa8ba9f2111b281d30ed3b69f99e81b20c972e348e",
+    "packages/backend-next/src/composition/http-app.ts": "5f881c86b179744c73be9d1c7b668a2227747b9cf98a8a7ecfbb7b2dc2b68264",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "734cee44fd1181a8c77fa08bf05623e41b28478b0f4eea8a2d2f8689c7632899"
+  },
   "runs": [
-    {
-      "name": "build",
-      "command": [
-        "pnpm",
-        "--filter",
-        "backend-next...",
-        "build"
-      ],
-      "environment": {
-        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH",
-        "BACKEND_NEXT_TEST_DB_PORT": "55961",
-        "BACKEND_NEXT_TEST_REDIS_PORT": "56961"
-      },
-      "exitCode": 0,
-      "durationSeconds": 0.782,
-      "log": "/tmp/relation296-r2-build.log",
-      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
-      "noInputDrift": true
-    },
-    {
-      "name": "typecheck",
-      "command": [
-        "pnpm",
-        "--filter",
-        "backend-next...",
-        "typecheck"
-      ],
-      "environment": {
-        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH",
-        "BACKEND_NEXT_TEST_DB_PORT": "55961",
-        "BACKEND_NEXT_TEST_REDIS_PORT": "56961"
-      },
-      "exitCode": 0,
-      "durationSeconds": 1.237,
-      "log": "/tmp/relation296-r2-typecheck.log",
-      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
-      "noInputDrift": true
-    },
-    {
-      "name": "unit",
-      "command": [
-        "pnpm",
-        "--filter",
-        "backend-next",
-        "test",
-        "test/unit/user-relation.test.ts",
-        "test/unit/composition/http-app.test.ts"
-      ],
-      "environment": {
-        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH",
-        "BACKEND_NEXT_TEST_DB_PORT": "55961",
-        "BACKEND_NEXT_TEST_REDIS_PORT": "56961"
-      },
-      "exitCode": 0,
-      "durationSeconds": 1.419,
-      "log": "/tmp/relation296-r2-unit.log",
-      "logSha256": "80df6edc6fffe1a0ff3d5f2e352518c280ca6bec4eeca30ffb12ee00c792cbc3",
-      "noInputDrift": true,
-      "passed": 17
-    },
-    {
-      "name": "integration",
-      "command": [
-        "pnpm",
-        "--filter",
-        "backend-next",
-        "test:integration",
-        "test/integration/user-relation.test.ts",
-        "test/integration/user-memo.test.ts",
-        "test/integration/http-app.test.ts"
-      ],
-      "environment": {
-        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH",
-        "BACKEND_NEXT_TEST_DB_PORT": "55961",
-        "BACKEND_NEXT_TEST_REDIS_PORT": "56961"
-      },
-      "exitCode": 0,
-      "durationSeconds": 8.566,
-      "log": "/tmp/relation296-r2-integration.log",
-      "logSha256": "4118447acc8cbc62f9f461ade211bec1c95af16c66bb680b063c17260ff7eac3",
-      "noInputDrift": true,
-      "passed": 51
-    },
-    {
-      "name": "source",
-      "command": [
-        "node",
-        "docs/superpowers/compatibility/user-relation/source-probe.mjs",
-        "--check"
-      ],
-      "environment": {
-        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH",
-        "BACKEND_NEXT_TEST_DB_PORT": "55961",
-        "BACKEND_NEXT_TEST_REDIS_PORT": "56961"
-      },
-      "exitCode": 0,
-      "durationSeconds": 0.233,
-      "log": "/tmp/relation296-r2-source.log",
-      "logSha256": "cc82429d6d10b349e970a11df9e0882349f72a9d43c115f6e4de64fc612aa15f",
-      "noInputDrift": true,
-      "observations": 26
-    },
-    {
-      "name": "sync",
-      "command": [
-        "pnpm",
-        "--filter",
-        "backend-upstream",
-        "sync:check"
-      ],
-      "environment": {
-        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH",
-        "BACKEND_NEXT_TEST_DB_PORT": "55961",
-        "BACKEND_NEXT_TEST_REDIS_PORT": "56961"
-      },
-      "exitCode": 0,
-      "durationSeconds": 0.884,
-      "log": "/tmp/relation296-r2-sync.log",
-      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd",
-      "noInputDrift": true
-    },
     {
       "name": "contracts",
       "command": [
         "node",
         "--test",
+        "scripts/page-relation-contract.test.mjs",
         "scripts/user-relation-contract.test.mjs",
         "scripts/user-memo-contract.test.mjs",
         "scripts/poll-recommendation-contract.test.mjs",
         "scripts/notes-pagination-contract.test.mjs"
       ],
       "environment": {
-        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH",
-        "BACKEND_NEXT_TEST_DB_PORT": "55961",
-        "BACKEND_NEXT_TEST_REDIS_PORT": "56961"
+        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH"
       },
       "exitCode": 0,
-      "durationSeconds": 0.115,
-      "log": "/tmp/relation296-r2-contracts.log",
-      "logSha256": "d269414031fcbdfd51e70cdc85b11b2b4c8c16018666bd9f1b10472b3fb917c6",
-      "noInputDrift": true,
-      "passed": 19
+      "durationSeconds": 0.128,
+      "log": "/tmp/relation296-r3-contracts.log",
+      "logSha256": "9772e2318385b400687f691564e0ce3d538e5033a3ca3494688bf46d476a749c",
+      "passed": 21
+    },
+    {
+      "name": "inventory",
+      "command": [
+        "node",
+        "scripts/backend-contract-inventory.mjs",
+        "--check"
+      ],
+      "environment": {
+        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH"
+      },
+      "exitCode": 0,
+      "durationSeconds": 2.023,
+      "log": "/tmp/relation296-r3-inventory.log",
+      "logSha256": "9506ac89cde2b4c62b8c5dc1c5149e9424db0f4e35b248aa94a8ad3ab8d719d4"
     },
     {
       "name": "shipping",
@@ -189,41 +85,27 @@
         "11bd324e2827"
       ],
       "environment": {
-        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH",
-        "BACKEND_NEXT_TEST_DB_PORT": "55961",
-        "BACKEND_NEXT_TEST_REDIS_PORT": "56961"
+        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH"
       },
       "exitCode": 0,
-      "durationSeconds": 2.482,
-      "log": "/tmp/relation296-r2-shipping.log",
-      "logSha256": "c176fea7d490b613247182b8999171ccb48e8f45db9da7f3997fd37811560fea",
-      "noInputDrift": true
+      "durationSeconds": 2.41,
+      "log": "/tmp/relation296-r3-shipping.log",
+      "logSha256": "45f13206b350ca58467f65b53774de2558b40ace6832105f66752ff9503f38af"
     }
   ],
+  "upstreamFullServerMeasured": false,
+  "userDetailedComplete": false,
+  "combinedProductMeasured": false,
   "inputsAfter": {
-    "docs/superpowers/compatibility/user-relation/corpus.json": "c8363b8d630b5a4cb8432f4c381b98a9b5ab46e47f4bf4ae6ad60633ecf60994",
-    "docs/superpowers/compatibility/user-relation/observations.json": "8a2366750cc35cd776e432095dfee9d9c3c4b204c3708cc71e25913eefcbf819",
-    "docs/superpowers/compatibility/user-relation/source-probe.mjs": "17cf7b325466d1f2668f7e76a918528aa52c3211b80d04e6877bc00f08e14ff9",
-    "docs/superpowers/plans/2026-11-17-user-relation-296.md": "bae6bf48a53d5aab800dd361e4b31bae9e090fb9c1f9c5fd1c727b605a4b2fa4",
-    "packages/backend-next/package.json": "5f630013c7328d447e9b433a5f77fd28ec0138548906508f123b2ba01ad66182",
+    "scripts/notes-pagination-evidence.mjs": "7d1aa313c796746aa32c6cacef84bf8bdeb30a60123151fe573bc0a5adb5391d",
+    "scripts/user-memo-contract.test.mjs": "6fee0a3f3abd79f80a288abda4b71adeea23f25e55126e31740446051358aa53",
+    "scripts/poll-recommendation-contract.test.mjs": "381ec2896f493f8092f5d1e9cad3640f4444e3b46da5c101ba21148e94795030",
+    "scripts/page-relation-contract.test.mjs": "da3cc48243b55b292ff9c058d2f8e9d504d2e246cf0efd731b7efca4a268b2ac",
+    "scripts/user-relation-contract.test.mjs": "8a914986c2193793f597bff5ac9f34da4d5ca4cdf2e0f69165f9675fcbecea28",
+    "scripts/notes-pagination-contract.test.mjs": "466b4447c4c6997410b24cfa8ba9f2111b281d30ed3b69f99e81b20c972e348e",
     "packages/backend-next/src/composition/http-app.ts": "5f881c86b179744c73be9d1c7b668a2227747b9cf98a8a7ecfbb7b2dc2b68264",
-    "packages/backend-next/src/composition/user-relation-http.ts": "fbdcc2bb5dfb1a2a91e7c9da97b7dbd1aef89b13a8c3f72a1a6966b7125bfada",
-    "packages/backend-next/src/http/api-endpoint.ts": "262172fbd09ef769607b079e59f862c2f386098b5720a4835df26514b2b73bc2",
-    "packages/backend-next/src/http/user-relation-api.ts": "7761ae3acd314291e22bf183ea230a151a038ab6a4ef364664d083e58a31a105",
-    "packages/backend-next/src/modules/user-relation/public.ts": "d5f1e1ac0318889913eb9dd9c5077d901604d541c56e5811ae7c4330482c6d15",
-    "packages/backend-next/src/platform/database/authenticate.ts": "64b83c005791625008c53f493b024d5973ecc904e36642b4fa9543217f1c08cd",
-    "packages/backend-next/src/platform/database/data-source.ts": "ffced6c8a1f3994cae8424ae4aae594aefdb52846461caadecad03cc9e1c8f90",
-    "packages/backend-next/src/platform/database/user-relation.ts": "dfa8066f119715945b68fdb346c98c3345ee72dcf9051058e500e6a340b576c4",
-    "packages/backend-next/test/helpers/database.ts": "34632277e6a7a80749d23a65eca252a6b521ee3a3c6c1d39863bf76aa4cda3fb",
-    "packages/backend-next/test/integration/user-relation.test.ts": "4dae321a909c37c2d546e2ec5753c2db6567cff3d19f39bfddd86eae54106498",
-    "packages/backend-next/test/unit/composition/http-app.test.ts": "734cee44fd1181a8c77fa08bf05623e41b28478b0f4eea8a2d2f8689c7632899",
-    "packages/backend-next/test/unit/user-relation.test.ts": "104edaf2f5de9264524c8f078718b3a9349ceac5c7e6e5fe7e233230cc173944",
-    "pnpm-lock.yaml": "7802badea4fb65c63c13c8678020a2e651f148c8b9c46289342082068c5f99aa",
-    "scripts/notes-pagination-evidence.mjs": "5b4630ae49e023fe25d2e4aaeec89a8c1eaac993a0cc67cfc362918a310d8a28",
-    "scripts/poll-recommendation-contract.test.mjs": "9ed43fe7a9648bea6135f407557e2f68874db297a18892bddbeb2ff59a6b0e38",
-    "scripts/user-memo-contract.test.mjs": "15eb7bce43ea2c81006c2f68f39109400b6f244d2ad65c55bf1f0feb4c8610ed",
-    "scripts/user-relation-contract.test.mjs": "8a914986c2193793f597bff5ac9f34da4d5ca4cdf2e0f69165f9675fcbecea28"
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "734cee44fd1181a8c77fa08bf05623e41b28478b0f4eea8a2d2f8689c7632899"
   },
   "noInputDrift": true,
-  "completedAt": "2026-11-17T04:33:39.702886+00:00"
+  "completedAt": "2026-11-17T04:48:10.423100+00:00"
 }

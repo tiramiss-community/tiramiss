@@ -34,3 +34,9 @@ Node 26.4.0 / pnpm 12.9.1。実行は全て `PATH=/tmp/tiramiss-s1-node26/bin:$P
 route登録と一覧期待値の2入力だけが既存 notes-pagination の測定対象に重なる。`scripts/notes-pagination-evidence.mjs` の既存 memo follow-up に、今回の厳密な current SHA →追加2行/文字列の除去→previous SHA を記録する。旧 receipt・seal・件数・log は変更しない。新 scope/cache・read上限は追加しない。memo/poll の synthetic composition test は既存版に相当する入力を明示して引き続き検証し、新 relation contract が通常currentの投影と任意変更拒否を確認する。
 
 今回の32件とsource26件は relation の新測定であり、過去の notes/memo/poll の測定を新しい入力へ付け替えたとの主張ではない。関係更新、通知/stream/AP 副作用、UserDetailed 全体、#182/#180/#114 全体の完了を意味しない。
+
+## 共有登録の有限な合成
+
+R2 の製品測定は [r2-current-evidence.json](r2-current-evidence.json) に byte 不変で保持する。その後の Page 登録との共有 script 変更は `current-evidence.json` の R3 として、変更した script と共有2入力を固定し、関連する21契約を実行する。製品 code/test は R2 と同一であり、製品テストを再実行したとの記録にはしない。
+
+既知の Page 単独、relation 単独、両者同居の2ファイルだけを正確な hash と逆 patch で識別する。両者同居は Page の差分だけを戻して既知の relation 単独となり、既存の relation/memo/poll の順に過去の不変 receipt へ渡す。任意の変更は拒否し、既存 read 上限と scope/cache 機構は変更しない。共通契約は3通りを実byteから再構成し、hash・anchor・未知変更拒否を検証する。実際に両製品を合成して通常HTTPを起動する確認は取りまとめ側の最終 head 合成に残す。
