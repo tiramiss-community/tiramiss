@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "scope": "public-role-bounded-grouped-count-bindings",
+  "baseRevision": "e766ff4bfe9ce53e1970fceb37cc6f8787d6c993",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "measuredWorkingTree": true,
+  "noInputDrift": true,
+  "inputs": {
+    "packages/backend-next/src/platform/database/role-show.ts": "c4e3544030b4e01540dce860ab91076aadc7383392a9db0ca7f77682dc6239ca",
+    "packages/backend-next/src/http/role-response.ts": "e6cdd4472fee4a15bd571f60d5ee94ec5b3b040233b1497ad61cf336c039f77d",
+    "packages/backend-next/src/composition/role.ts": "522d7d881550aedda3e76e3ba3b5ee1222ec189339eae18689b34396a0496083",
+    "packages/backend-next/test/integration/role-public.test.ts": "5f23827d1bc49a5c620da0037140a03a19392da0d1fec173a13a3f2ec93226cc",
+    "packages/backend-next/test/integration/role-application.test.ts": "99781eaa2d6f8e2813a300e4ad336c301a83c76202d182d548742b7ea2b30dd6",
+    "packages/backend-next/test/integration/http-app.test.ts": "5f72af40b476043cb64d96619c267ee76f855fd1241b5ea3e0355543bff7757c",
+    "packages/backend-next/test/unit/role/public-roles.test.ts": "c2dc0e74ef43f4081c8e7d99719ec6eff017bd8b41279cba2406bed8bd602948",
+    "packages/backend-next/test/unit/role/show-role.test.ts": "54dad44d4bac2aed9a8fb13b5e3f0cb0483529bee46f1f340ef6438bb938ce04",
+    "packages/backend-next/test/unit/role/role-show-count-query.test.ts": "c02c2c89dab6612bc6ed7c4386c2d93eb1cff36bf3a1c7fdfb43363d9f2b20e5",
+    "docs/superpowers/compatibility/role-public/source-probe.mjs": "fab2c60aa954b0720d3d1b51275c1ecbde5dffede54c2b293cbb803c508e57ae",
+    "docs/superpowers/compatibility/role-public/corpus.json": "56c58a021a7d28a915b9f34a8112882d765c290e7695172258a910e1af3dc705",
+    "docs/superpowers/compatibility/role-public/observations.json": "429bdbe6e38be2946b6ae6117b01bb4940766e8968e67be6f7102d0237dcb262",
+    "docs/superpowers/compatibility/role-public/bounded-bind-followup.md": "5bfecba6688c2f276147cca68e55e2cb58b49e23370bbcd08d615353c780df5a"
+  },
+  "inputsAfter": {
+    "packages/backend-next/src/platform/database/role-show.ts": "c4e3544030b4e01540dce860ab91076aadc7383392a9db0ca7f77682dc6239ca",
+    "packages/backend-next/src/http/role-response.ts": "e6cdd4472fee4a15bd571f60d5ee94ec5b3b040233b1497ad61cf336c039f77d",
+    "packages/backend-next/src/composition/role.ts": "522d7d881550aedda3e76e3ba3b5ee1222ec189339eae18689b34396a0496083",
+    "packages/backend-next/test/integration/role-public.test.ts": "5f23827d1bc49a5c620da0037140a03a19392da0d1fec173a13a3f2ec93226cc",
+    "packages/backend-next/test/integration/role-application.test.ts": "99781eaa2d6f8e2813a300e4ad336c301a83c76202d182d548742b7ea2b30dd6",
+    "packages/backend-next/test/integration/http-app.test.ts": "5f72af40b476043cb64d96619c267ee76f855fd1241b5ea3e0355543bff7757c",
+    "packages/backend-next/test/unit/role/public-roles.test.ts": "c2dc0e74ef43f4081c8e7d99719ec6eff017bd8b41279cba2406bed8bd602948",
+    "packages/backend-next/test/unit/role/show-role.test.ts": "54dad44d4bac2aed9a8fb13b5e3f0cb0483529bee46f1f340ef6438bb938ce04",
+    "packages/backend-next/test/unit/role/role-show-count-query.test.ts": "c02c2c89dab6612bc6ed7c4386c2d93eb1cff36bf3a1c7fdfb43363d9f2b20e5",
+    "docs/superpowers/compatibility/role-public/source-probe.mjs": "fab2c60aa954b0720d3d1b51275c1ecbde5dffede54c2b293cbb803c508e57ae",
+    "docs/superpowers/compatibility/role-public/corpus.json": "56c58a021a7d28a915b9f34a8112882d765c290e7695172258a910e1af3dc705",
+    "docs/superpowers/compatibility/role-public/observations.json": "429bdbe6e38be2946b6ae6117b01bb4940766e8968e67be6f7102d0237dcb262",
+    "docs/superpowers/compatibility/role-public/bounded-bind-followup.md": "5bfecba6688c2f276147cca68e55e2cb58b49e23370bbcd08d615353c780df5a"
+  },
+  "red": [
+    {
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/roles-bind-count-red.log",
+      "logSha256": "9d2004b87d84d0ca9674e0d364bb6b2a9919001c4c4ec4863e85977dcec588de",
+      "result": "0RolePASS; 1Role scalar instead of array RED;65535Role generated65536 binds instead of constant2 RED"
+    }
+  ],
+  "runs": [
+    {
+      "label": "build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "build"
+      ],
+      "startedAt": "2026-11-17T08:33:23.154586+00:00",
+      "completedAt": "2026-11-17T08:33:23.909760+00:00",
+      "exitCode": 0,
+      "passed": null,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/roles-bounded-final-build.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "label": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "typecheck"
+      ],
+      "startedAt": "2026-11-17T08:33:23.909837+00:00",
+      "completedAt": "2026-11-17T08:33:25.082084+00:00",
+      "exitCode": 0,
+      "passed": null,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/roles-bounded-final-typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "label": "source",
+      "command": [
+        "node",
+        "docs/superpowers/compatibility/role-public/source-probe.mjs"
+      ],
+      "startedAt": "2026-11-17T08:33:25.082164+00:00",
+      "completedAt": "2026-11-17T08:33:26.791043+00:00",
+      "exitCode": 0,
+      "passed": null,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/roles-bounded-final-source.log",
+      "logSha256": "4ff119b0e6db8b151e78199373c4a5e4c557b6e9c6a770a4b6771859315c85f0"
+    },
+    {
+      "label": "unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/unit/role",
+        "test/unit/http/endpoint-access.test.ts",
+        "test/unit/composition/http-app.test.ts"
+      ],
+      "startedAt": "2026-11-17T08:33:26.791124+00:00",
+      "completedAt": "2026-11-17T08:33:29.795287+00:00",
+      "exitCode": 0,
+      "passed": 151,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/roles-bounded-final-unit.log",
+      "logSha256": "472e8e9ba0df6ed7b423e0940ff818306f30941d3f2b1edf9b9db7e81100f933"
+    },
+    {
+      "label": "integration",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/role-public.test.ts",
+        "test/integration/http-app.test.ts",
+        "test/integration/role-application.test.ts"
+      ],
+      "startedAt": "2026-11-17T08:33:29.795370+00:00",
+      "completedAt": "2026-11-17T08:33:36.750640+00:00",
+      "exitCode": 0,
+      "passed": 24,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/roles-bounded-final-integration.log",
+      "logSha256": "fed71b21ae2e61371d0ff673cb64ed69658b690c0839f703be8047449e5d03dd"
+    },
+    {
+      "label": "contracts",
+      "command": [
+        "node",
+        "--test",
+        "scripts/role-public-contract.test.mjs"
+      ],
+      "startedAt": "2026-11-17T08:33:36.750733+00:00",
+      "completedAt": "2026-11-17T08:33:36.818362+00:00",
+      "exitCode": 0,
+      "passed": 4,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/roles-bounded-final-contracts.log",
+      "logSha256": "fc3639375e2bb682f3653338387a39a2dce6c03ee16b54339131dec84bc40d1f"
+    },
+    {
+      "label": "inventory",
+      "command": [
+        "node",
+        "scripts/backend-contract-inventory.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-11-17T08:33:36.818446+00:00",
+      "completedAt": "2026-11-17T08:33:38.799165+00:00",
+      "exitCode": 0,
+      "passed": null,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/roles-bounded-final-inventory.log",
+      "logSha256": "9506ac89cde2b4c62b8c5dc1c5149e9424db0f4e35b248aa94a8ad3ab8d719d4"
+    },
+    {
+      "label": "shipping",
+      "command": [
+        "node",
+        "scripts/check-shipping.mjs",
+        "--base",
+        "e766ff4bfe9ce53e1970fceb37cc6f8787d6c993"
+      ],
+      "startedAt": "2026-11-17T08:33:38.799246+00:00",
+      "completedAt": "2026-11-17T08:33:41.136950+00:00",
+      "exitCode": 0,
+      "passed": null,
+      "log": "/home/osamu/develop/tiramiss/.claude/worktrees/sol-delivery-round3-20261117-artifacts/roles-bounded-final-shipping.log",
+      "logSha256": "8a4619e84f432298f78eedf585e1f16da79c0f1649b586bfa1ed2b81df5946b7"
+    }
+  ],
+  "upstreamFullServerMeasured": false,
+  "limits": "Same pinned source9 and exact output comparison. Real TypeORM non-DB query generation observes0/1/65535Role bounded binds; normal PostgreSQL observes array/time binds. This is not a large-DB throughput/capacity benchmark. Full integration/CI belongs to latest-head CI, not inferred from near24. Historical receipts remain unchanged."
+}

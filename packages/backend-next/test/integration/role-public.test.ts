@@ -124,7 +124,9 @@ test('public list fetches all active assignment counts in one database read', as
 		const result = await reader.listPublic(corpus.atMs);
 		const expected = observations.cases.find((entry: { id: string }) => entry.id === 'list').body;
 		expect(result.map(row => ({ id: row.role.id, usersCount: row.assignedCount }))).toEqual(expected.map((row: { id: string; usersCount: number }) => ({ id: row.id, usersCount: row.usersCount })));
-		expect(queries.mock.calls.filter(([sql]) => sql.includes('"role_assignment"'))).toHaveLength(1);
+		const assignmentQueries = queries.mock.calls.filter(([sql]) => sql.includes('"role_assignment"'));
+		expect(assignmentQueries).toHaveLength(1);
+		expect(assignmentQueries[0][1]).toEqual([result.map(row => row.role.id), new Date(corpus.atMs)]);
 	} finally {
 		queries.mockRestore();
 	}

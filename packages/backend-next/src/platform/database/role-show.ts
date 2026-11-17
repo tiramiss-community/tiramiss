@@ -29,7 +29,7 @@ export function createRoleShowReader(manager: EntityManager, createdAtFromId: (i
 			}
 			const counts = await manager.getRepository(MiRoleAssignment).createQueryBuilder('assignment')
 				.select('assignment.roleId', 'roleId').addSelect('COUNT(*)', 'count')
-				.where('assignment.roleId IN (:...roleIds)', { roleIds: rows.map(row => row.id) })
+				.where('assignment.roleId = ANY(:roleIds)', { roleIds: rows.map(row => row.id) })
 				.andWhere('(assignment.expiresAt IS NULL OR assignment.expiresAt > :at)', { at: new Date(atMs) })
 				.groupBy('assignment.roleId').getRawMany<{ roleId: string; count: string }>();
 			const byRole = new Map(counts.map(row => [row.roleId, Number(row.count)]));
