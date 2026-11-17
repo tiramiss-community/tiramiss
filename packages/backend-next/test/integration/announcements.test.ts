@@ -92,6 +92,7 @@ for (const item of corpus.cases) {
 					await resources.dataSource.query('ALTER TABLE announcement_read_unavailable RENAME TO announcement_read');
 				}
 			}
+			await drainHttpAppWork(app);
 			await subscriber.ping();
 			const sourceStep = expected.steps[index];
 			if ('error' in sourceStep && sourceStep.error) {
@@ -137,6 +138,7 @@ test('concurrent duplicate reads persist one row and emit one all-read message',
 	events.length = 0;
 	const responses = await Promise.all(Array.from({ length: 5 }, () => request('i/read-announcement', { i: corpus.users[0].token, announcementId: '6000000000000001' })));
 	expect(responses.map(response => response.status)).toEqual([204, 204, 204, 204, 204]);
+	await drainHttpAppWork(app);
 	await subscriber.ping();
 	expect(await reads.count()).toBe(1);
 	expect(await announcements.findOneByOrFail({ id: '6000000000000001' })).toMatchObject({ isActive: false });
