@@ -5,8 +5,11 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { expect, test } from 'vitest';
+import { createAnnouncementPublisher } from '../../src/platform/announcement-publisher.js';
+import { createLogger } from '../../src/platform/logger.js';
 import { createAccessRequest } from '../../src/modules/access/public.js';
 import { createAnnouncements, renderAnnouncement } from '../../src/modules/announcement/public.js';
+import publishObservations from '../../../../docs/superpowers/compatibility/announcements/publish-observations.json' with { type: 'json' };
 import corpus from '../../../../docs/superpowers/compatibility/announcements/corpus.json' with { type: 'json' };
 import observations from '../../../../docs/superpowers/compatibility/announcements/observations.json' with { type: 'json' };
 import type { AnnouncementPorts, AnnouncementRow } from '../../src/modules/announcement/public.js';
@@ -126,4 +129,60 @@ test('suspension precedes malformed read input and leaves no read state', async 
 	f.ports.readActor = async () => ({ isSuspended: true, isModerator: false, isAdministrator: false });
 	await expect(createAnnouncements(f.ports).read(actor(), {})).rejects.toMatchObject({ reason: 'YOUR_ACCOUNT_SUSPENDED' });
 	expect(f.reads.size).toBe(0);
+});
+
+test('publication starts without awaiting the send and idle tracks accepted sends', async () => {
+	let release!: () => void;
+	const sending = new Promise<void>(resolve => {
+		release = resolve;
+	});
+	const publisher = createAnnouncementPublisher(() => sending, createLogger('announcement-publish-test', () => {}));
+	expect(publisher.publish('alice')).toBeUndefined();
+	let settled = false;
+	const idle = publisher.idle().then(() => {
+		settled = true;
+	});
+	await Promise.resolve();
+	expect(settled).toBe(false);
+	release();
+	await idle;
+	expect(settled).toBe(true);
+});
+
+test('publication failures are diagnosed and do not reject the drain', async () => {
+	const lines: string[] = [];
+	const publisher = createAnnouncementPublisher(async () => {
+		throw Error('pubsub unavailable');
+	}, createLogger('announcement-publish-test', line => lines.push(line)));
+	publisher.publish('alice');
+	await expect(publisher.idle()).resolves.toBeUndefined();
+	expect(lines.map(line => JSON.parse(line))).toContainEqual(expect.objectContaining({ event: 'announcement-publish.failed', userId: 'alice' }));
+});
+
+test('deferred publication rejection matches the literal source result after the read returns', async () => {
+	const f = fixture();
+	f.ports.find = async () => ({ ...row, userId: 'alice' });
+	let rejectDelivery!: (error: Error) => void;
+	let publishAttempts = 0;
+	let deliveryRejected = false;
+	const delivery = new Promise<void>((_resolve, reject) => {
+		rejectDelivery = reject;
+	});
+	const publisher = createAnnouncementPublisher(() => {
+		publishAttempts++;
+		return delivery;
+	}, { info: () => {}, error: () => {
+		deliveryRejected = true;
+	} });
+	f.ports.readAll = publisher.publish;
+	const app = createAnnouncements(f.ports);
+	await app.read(actor(), { announcementId: row.id });
+	const returnedBeforeDelivery = !deliveryRejected;
+	rejectDelivery(Error('PUBLISH unavailable'));
+	await publisher.idle();
+	await app.read(actor(), { announcementId: row.id });
+	expect({ returnedBeforeDelivery, deliveryRejected, readCount: f.reads.size, isActive: f.active(), publishAttempts, duplicateWasNoOp: f.reads.size === 1 && publishAttempts === 1 }).toEqual(publishObservations.outcome);
+	for (const [file, expected] of [['publish-corpus.json', publishObservations.corpusSha256], ['publish-source-probe.mjs', publishObservations.sourceProbeSha256]]) {
+		expect(createHash('sha256').update(readFileSync(new URL(`../../../../docs/superpowers/compatibility/announcements/${file}`, import.meta.url))).digest('hex')).toBe(expected);
+	}
 });

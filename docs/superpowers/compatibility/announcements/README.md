@@ -12,7 +12,7 @@
 
 新実装の結合テストは同一の入力を通常 `createBackendHttpApp` のlistening HTTPへ送信し、実PGの行と実Redis購読メッセージを観測して、1操作ずつsource結果へ照合する。別の試験でtoken/scope/凍結順、5並列の同一既読、unique/FK/CASCADEを確認する。単体は純粋変換、失敗除外、重複、挿入失敗、挿入後失敗、認可順と証跡入力対応を確認する。
 
-source側のEndpoint基底/ApiError/AJV、aidx用IdService、固定時刻、イベントtransportは明示したdoubleであり、本家のNestアプリ全体・認証/HTTPエラーserializer・本家Redis実接続は起動していない。新実装側では通常の共通認証とHTTP adapter、実PG、実Redisを使う。ランダムな診断UUID/内部DB例外文言の完全一致と、日付cursorの同一ミリ秒内の乱数suffix比較は主張しない。期限fixtureは測定時刻から十分離した2001/2099年であり、アーカイブ予約実行は検証しない。DB障害に対する本家同様の挿入例外抑制を維持し、Redis切断時の本家fire-and-forgetの未処理Promise rejectionまでは比較していない。
+source側のEndpoint基底/ApiError/AJV、aidx用IdService、固定時刻、イベントtransportは明示したdoubleであり、本家のNestアプリ全体・認証/HTTPエラーserializer・本家Redis実接続は起動していない。新実装側では通常の共通認証とHTTP adapter、実PG、実Redisを使う。ランダムな診断UUID/内部DB例外文言の完全一致と、日付cursorの同一ミリ秒内の乱数suffix比較は主張しない。期限fixtureは測定時刻から十分離した2001/2099年であり、アーカイブ予約実行は検証しない。DB障害に対する本家同様の挿入例外抑制を維持し、Redis配信失敗は下記followupで補完した。本家の未処理Promise rejection自体は再現せず、診断して終了時に待つ。
 
 Announcement/AnnouncementReadはmanifestへ追加して機械同期し、生成exportsから通常DataSourceに登録した。旧backendや既存migrationは編集しない。migration/history/schema検査とEntity読込・unique/FK/cascadeの実PG試験を実施する。
 
@@ -38,3 +38,11 @@ node scripts/check-shipping.mjs --base 45a2f217e3b991c309798ff61b118841085d7f48
 測定input・実行結果・log SHA256は `current-evidence.json` を参照する。歴史的receiptは更新しない。共有HTTP route追加と同期Entity2件による既存proofの有限projectionは取りまとめ担当が別作業として所有する。共有proof未更新によるcontract driftと製品の比較結果を区別する。
 
 CHANGELOG候補: backend-nextでお知らせの公開・個人宛取得と閲覧者別の既読処理を実装。
+
+## 配信失敗のfollowup
+
+独立レビューで、初版の `await readAll` がRedis配信拒否を保存済み既読のHTTP500へ変えていた差異を検出した。初版の `current-evidence.json` と28case/63step観測は当時の履歴として保持し、修正の入力・結果は `publish-followup-evidence.json` に別記する。
+
+固定本家のread/publish/publishMainStreamはRedisの返却PromiseをHTTP結果に含めない。`publish-source-probe.mjs` はそのliteral methodsを抽出し、未完了配信より先にreadが返ること、遅延した配信拒否後にも既読保存・個人宛無効化・重複no-opが残ることを `publish-corpus.json` / `publish-observations.json` に記録する。この追加source probeのDB窓口は明示したdoubleであり、元の28case実PG比較とは区別する。
+
+新実装は専用publisherで配信を非待機にし、拒否を `announcement-publish.failed` として診断する。受け付けた配信はHTTP終了時の既存drainへ登録する。実専用RedisのACLでPUBLISHだけを拒否する試験は、通常listening HTTPが204、既読行・個人宛isActive=false/updatedAt不変、再読で送信増加なしを確認する。遅延Promise注入による別の実HTTP/PG試験は、送信前のHTTP204と終了待機を確認する。元fixtureやreceiptのhashを新しい成功測定に付け替えない。

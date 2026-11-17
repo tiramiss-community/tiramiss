@@ -1,0 +1,12 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "case": "deferred-publication-rejects-after-personal-read",
+  "userId": "alice",
+  "announcementId": "announcement",
+  "newReadId": "newread",
+  "doubles": [
+    "Insertion/lookup/update repositories retain one personal read and reject duplicate inserts; migrated PostgreSQL behavior remains covered by the original 28-case source probe",
+    "Unread lookup returns an empty set so this probe isolates the publication boundary",
+    "Redis publish returns a deferred rejecting Promise with an attached observer to record rejection without triggering an unhandled process rejection"
+  ]
+}

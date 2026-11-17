@@ -27,7 +27,7 @@ export interface AnnouncementPorts {
 	insertRead(id: string, viewerId: string, announcementId: string): Promise<void>;
 	deactivate(id: string): Promise<void>;
 	hasUnread(viewerId: string, now: Date): Promise<boolean>;
-	readAll(viewerId: string): Promise<void>;
+	readAll(viewerId: string): void;
 	newId(): string;
 	idFromDate(date: number): string;
 	createdAtFromId(id: string): number;
@@ -107,7 +107,7 @@ export function createAnnouncements(ports: AnnouncementPorts) {
 				await ports.deactivate(announcementId);
 			}
 			if (!await ports.hasUnread(actor.userId, ports.now())) {
-				await ports.readAll(actor.userId);
+				ports.readAll(actor.userId);
 			}
 		},
 	};

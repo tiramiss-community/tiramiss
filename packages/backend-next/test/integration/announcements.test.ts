@@ -2,12 +2,13 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { afterAll, beforeAll, expect, test } from 'vitest';
+import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { Redis } from 'ioredis';
 import { MiAccessToken, MiAnnouncement, MiAnnouncementRead, MiUser } from 'backend-upstream/entities';
 import corpus from '../../../../docs/superpowers/compatibility/announcements/corpus.json' with { type: 'json' };
 import observations from '../../../../docs/superpowers/compatibility/announcements/observations.json' with { type: 'json' };
 import { connectResources } from '../../src/platform/connect-resources.js';
+import { drainHttpAppWork } from '../../src/composition/http-app-work.js';
 import { createBackendHttpApp } from '../../src/composition/http-app.js';
 import { migrateDatabase } from '../../src/platform/database/migrate.js';
 import { createLogger } from '../../src/platform/logger.js';
@@ -18,6 +19,7 @@ import type { Server } from 'node:http';
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 let resources: Awaited<ReturnType<typeof connectResources>>;
 let server: Server;
+let app: ReturnType<typeof createBackendHttpApp>;
 let url: string;
 let subscriber: Redis;
 const events: unknown[] = [];
@@ -33,7 +35,8 @@ beforeAll(async () => {
 	subscriber = new Redis({ host: database.config.redisForPubsub.host, port: database.config.redisForPubsub.port });
 	subscriber.on('message', (topic, value) => events.push({ topic, ...JSON.parse(value) }));
 	await subscriber.subscribe('example.test');
-	server = await listenHttp(createBackendHttpApp(resources, database.config), { port: 0 });
+	app = createBackendHttpApp(resources, database.config);
+	server = await listenHttp(app, { port: 0 });
 	url = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
 });
 afterAll(async () => {
@@ -138,6 +141,74 @@ test('concurrent duplicate reads persist one row and emit one all-read message',
 	expect(await reads.count()).toBe(1);
 	expect(await announcements.findOneByOrFail({ id: '6000000000000001' })).toMatchObject({ isActive: false });
 	expect(events).toEqual([{ topic: 'example.test', channel: `mainStream:${corpus.users[0].id}`, message: { type: 'readAllAnnouncements', body: null } }]);
+});
+
+test('Redis publication rejection preserves successful reads and duplicate requests stay no-ops', async () => {
+	const announcements = resources.dataSource.getRepository(MiAnnouncement);
+	const reads = resources.dataSource.getRepository(MiAnnouncementRead);
+	await reads.createQueryBuilder().delete().execute();
+	await announcements.createQueryBuilder().delete().execute();
+	const announcementId = '7000000000000001';
+	await announcements.insert({ id: announcementId, title: 'Pubsub failure', text: 'Saved read', userId: corpus.users[0].id });
+	const publish = vi.spyOn(resources.postingStream, 'main');
+	const log = vi.spyOn(resources.logger, 'error');
+	events.length = 0;
+	await resources.redis.acl('SETUSER', 'default', '-publish');
+	try {
+		const response = await request('i/read-announcement', { i: corpus.users[0].token, announcementId });
+		expect(response.status).toBe(204);
+		await drainHttpAppWork(app);
+		expect(await reads.findOneBy({ userId: corpus.users[0].id, announcementId })).not.toBeNull();
+		expect(await announcements.findOneByOrFail({ id: announcementId })).toMatchObject({ isActive: false, updatedAt: null });
+		const duplicate = await request('i/read-announcement', { i: corpus.users[0].token, announcementId });
+		expect(duplicate.status).toBe(204);
+		await drainHttpAppWork(app);
+		expect(publish).toHaveBeenCalledTimes(1);
+		expect(log).toHaveBeenCalledWith('announcement-publish.failed', expect.objectContaining({ userId: corpus.users[0].id }));
+		expect(events).toEqual([]);
+	} finally {
+		await resources.redis.acl('SETUSER', 'default', '+publish');
+		publish.mockRestore();
+		log.mockRestore();
+	}
+});
+
+test('normal HTTP finishes before publication and shutdown waits for accepted sends', async () => {
+	const announcements = resources.dataSource.getRepository(MiAnnouncement);
+	const reads = resources.dataSource.getRepository(MiAnnouncementRead);
+	await reads.createQueryBuilder().delete().execute();
+	await announcements.createQueryBuilder().delete().execute();
+	const announcementId = '7000000000000002';
+	await announcements.insert({ id: announcementId, title: 'Pending publication', text: 'Saved read' });
+	let rejectDelivery!: (error: Error) => void;
+	const pending = new Promise<void>((_resolve, reject) => {
+		rejectDelivery = reject;
+	});
+	const publish = vi.spyOn(resources.postingStream, 'main').mockReturnValueOnce(pending);
+	const local = await listenHttp(createBackendHttpApp(resources, database.config), { port: 0 });
+	let closing: Promise<void> | undefined;
+	try {
+		const response = await fetch(`http://127.0.0.1:${(local.address() as { port: number }).port}/api/i/read-announcement`, {
+			method: 'POST', headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ i: corpus.users[0].token, announcementId }), signal: AbortSignal.timeout(2000),
+		});
+		expect(response.status).toBe(204);
+		expect(await reads.countBy({ userId: corpus.users[0].id, announcementId })).toBe(1);
+		let closed = false;
+		closing = closeHttp(local).then(() => {
+			closed = true;
+		});
+		await new Promise<void>(resolve => setImmediate(resolve));
+		expect(closed).toBe(false);
+		rejectDelivery(Error('delivery failed after response'));
+		await closing;
+		expect(closed).toBe(true);
+		expect(publish).toHaveBeenCalledTimes(1);
+	} finally {
+		rejectDelivery(Error('test cleanup'));
+		await (closing ?? closeHttp(local));
+		publish.mockRestore();
+	}
 });
 
 test('upstream read uniqueness and cascading foreign keys survive copied entity registration', async () => {

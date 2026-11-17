@@ -32,10 +32,11 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 	const note = prepareNoteRoutes(resources, config);
 	const folders = createDriveFoldersHttp(resources, config);
 	const pages = createPagesHttp(resources, config);
+	const announcements = createAnnouncementsHttp(resources, config);
 	const app = new Hono({ getPath: getAvatarImagesPath })
 		.route('/', createRoleHttpApp(resources, config))
 		.route('/', createUserMemoHttp(resources, config))
-		.route('/', createAnnouncementsHttp(resources, config))
+		.route('/', announcements.app)
 		.route('/', createUserRelationHttp(resources))
 		.route('/', createDriveFilesHttp(resources, config))
 		.route('/', pages.app)
@@ -53,7 +54,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		.route('/', createAvatarImagesHttp(resources, config))
 		.route('/', folders.app);
 	registerHttpAppWork(app, async () => {
-		await Promise.all([folders.idle(), pages.idle()]);
+		await Promise.all([folders.idle(), pages.idle(), announcements.idle()]);
 	});
 	registerNoteRoutes(app, resources, note);
 	if (queueApi) {
