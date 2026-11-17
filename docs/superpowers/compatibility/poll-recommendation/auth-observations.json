@@ -1,0 +1,28 @@
+{
+  "revision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "inputs": [
+    {
+      "path": "packages/backend/src/server/api/ApiCallService.ts",
+      "sha256": "da6431575d066d3b71633bead6e5d26130482d8b2a57a01179a1ab82a3032283"
+    },
+    {
+      "path": "packages/backend/src/server/api/error.ts",
+      "sha256": "1146f3cc06ebc2adc087823d37c00f7f0630331beae2fa221e05225b731f2638"
+    }
+  ],
+  "endpointIdentity": {
+    "revision": "8e07cf085adf7009583d234a208e30436f020e26",
+    "path": "packages/backend/src/server/api/endpoints/notes/polls/recommendation.ts",
+    "sha256": "f382c7aa96d4185066e22b9da40164db09a2ce18488fcd74b823cc0669ac02ca"
+  },
+  "status": 401,
+  "body": {
+    "error": {
+      "message": "Credential required.",
+      "code": "CREDENTIAL_REQUIRED",
+      "id": "1384574d-a912-4b81-8601-c7b1c4085df1",
+      "kind": "client"
+    }
+  },
+  "scope": "Literal missing-credential gate and ApiError constructor with pinned endpoint meta. Full upstream HTTP/authentication is not measured."
+}

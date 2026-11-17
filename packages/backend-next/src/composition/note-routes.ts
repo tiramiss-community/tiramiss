@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { randomUUID } from 'node:crypto';
+import { createPollRecommendationHttp } from './poll-recommendation-http.js';
 import { createNoteDeleteApi } from '../http/note-delete-api.js';
 import { createNoteDeleter } from '../platform/database/note-deleter.js';
 import { createNoteDeleteRateLimiter } from '../platform/note-delete-rate-limit.js';
@@ -46,12 +47,13 @@ export function prepareNoteRoutes(resources: RuntimeResources, config: RuntimeCo
 		publishDeleted: (snapshot, occurredAtMs) => resources.notePostDelete.start({ kind: 'stream', snapshot, occurredAtMs }),
 	});
 	const authenticate = createTokenAuthenticator(manager, resources.logger);
-	return { authenticate, deletion, show, list, create, reader };
+	return { authenticate, deletion, show, list, create, reader, pollRecommendation: createPollRecommendationHttp(resources, config) };
 }
 
 export function registerNoteRoutes(app: Hono, resources: RuntimeResources, prepared: ReturnType<typeof prepareNoteRoutes>) {
 	const { authenticate, deletion, show, list, create, reader } = prepared;
 	return app
+		.route('/', prepared.pollRecommendation)
 		.route('/', createNotesListApi({ authenticate, listNotes: list.listNotes, logger: resources.logger }))
 		.route('/', createNoteDeleteApi({ authenticate, deleteNote: deletion.deleteNote, logger: resources.logger }))
 		.route('/', createNoteApi({ authenticate, showNote: show.showNote, logger: resources.logger }))
