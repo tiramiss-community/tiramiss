@@ -5,6 +5,7 @@
 import { Hono } from 'hono';
 import { getAvatarImagesPath } from '../http/avatar-images-api.js';
 import { createPublicEmojisHttp } from './public-emojis-http.js';
+import { createUserRelationHttp } from './user-relation-http.js';
 import { createUserMemoHttp } from './user-memo-http.js';
 import { createDriveFilesHttp } from './drive-files-http.js';
 import { createDriveFoldersHttp } from './drive-folders-http.js';
@@ -31,6 +32,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 	const app = new Hono({ getPath: getAvatarImagesPath })
 		.route('/', createRoleHttpApp(resources, config))
 		.route('/', createUserMemoHttp(resources, config))
+		.route('/', createUserRelationHttp(resources))
 		.route('/', createDriveFilesHttp(resources, config))
 		.route('/', createActorHttp(resources, config))
 		.route('/', createInstanceAdminHttp(resources))

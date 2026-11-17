@@ -1,0 +1,111 @@
+{
+  "scope": "user-relation-296",
+  "measurement": "R3 shared Page/Relation registration proof only",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "runtimeEvidence": {
+    "path": "docs/superpowers/compatibility/user-relation/r2-current-evidence.json",
+    "sha256": "6c41de87519d79957ffb883995596afef1e1998644ad755fc45e485d556f6298",
+    "note": "R2 product counts/logs are retained unchanged; no product command is rerun by R3."
+  },
+  "inheritedProductInputs": {
+    "docs/superpowers/compatibility/user-relation/corpus.json": "c8363b8d630b5a4cb8432f4c381b98a9b5ab46e47f4bf4ae6ad60633ecf60994",
+    "docs/superpowers/compatibility/user-relation/observations.json": "8a2366750cc35cd776e432095dfee9d9c3c4b204c3708cc71e25913eefcbf819",
+    "docs/superpowers/compatibility/user-relation/source-probe.mjs": "17cf7b325466d1f2668f7e76a918528aa52c3211b80d04e6877bc00f08e14ff9",
+    "docs/superpowers/plans/2026-11-17-user-relation-296.md": "bae6bf48a53d5aab800dd361e4b31bae9e090fb9c1f9c5fd1c727b605a4b2fa4",
+    "packages/backend-next/package.json": "5f630013c7328d447e9b433a5f77fd28ec0138548906508f123b2ba01ad66182",
+    "packages/backend-next/src/composition/http-app.ts": "5f881c86b179744c73be9d1c7b668a2227747b9cf98a8a7ecfbb7b2dc2b68264",
+    "packages/backend-next/src/composition/user-relation-http.ts": "fbdcc2bb5dfb1a2a91e7c9da97b7dbd1aef89b13a8c3f72a1a6966b7125bfada",
+    "packages/backend-next/src/http/api-endpoint.ts": "262172fbd09ef769607b079e59f862c2f386098b5720a4835df26514b2b73bc2",
+    "packages/backend-next/src/http/user-relation-api.ts": "7761ae3acd314291e22bf183ea230a151a038ab6a4ef364664d083e58a31a105",
+    "packages/backend-next/src/modules/user-relation/public.ts": "d5f1e1ac0318889913eb9dd9c5077d901604d541c56e5811ae7c4330482c6d15",
+    "packages/backend-next/src/platform/database/authenticate.ts": "64b83c005791625008c53f493b024d5973ecc904e36642b4fa9543217f1c08cd",
+    "packages/backend-next/src/platform/database/data-source.ts": "ffced6c8a1f3994cae8424ae4aae594aefdb52846461caadecad03cc9e1c8f90",
+    "packages/backend-next/src/platform/database/user-relation.ts": "dfa8066f119715945b68fdb346c98c3345ee72dcf9051058e500e6a340b576c4",
+    "packages/backend-next/test/helpers/database.ts": "34632277e6a7a80749d23a65eca252a6b521ee3a3c6c1d39863bf76aa4cda3fb",
+    "packages/backend-next/test/integration/user-relation.test.ts": "4dae321a909c37c2d546e2ec5753c2db6567cff3d19f39bfddd86eae54106498",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "734cee44fd1181a8c77fa08bf05623e41b28478b0f4eea8a2d2f8689c7632899",
+    "packages/backend-next/test/unit/user-relation.test.ts": "104edaf2f5de9264524c8f078718b3a9349ceac5c7e6e5fe7e233230cc173944",
+    "pnpm-lock.yaml": "7802badea4fb65c63c13c8678020a2e651f148c8b9c46289342082068c5f99aa",
+    "scripts/user-relation-contract.test.mjs": "8a914986c2193793f597bff5ac9f34da4d5ca4cdf2e0f69165f9675fcbecea28"
+  },
+  "inheritedProductInputsUnchanged": true,
+  "startedAt": "2026-11-17T04:48:05.860839+00:00",
+  "inputsBefore": {
+    "scripts/notes-pagination-evidence.mjs": "7d1aa313c796746aa32c6cacef84bf8bdeb30a60123151fe573bc0a5adb5391d",
+    "scripts/user-memo-contract.test.mjs": "6fee0a3f3abd79f80a288abda4b71adeea23f25e55126e31740446051358aa53",
+    "scripts/poll-recommendation-contract.test.mjs": "381ec2896f493f8092f5d1e9cad3640f4444e3b46da5c101ba21148e94795030",
+    "scripts/page-relation-contract.test.mjs": "da3cc48243b55b292ff9c058d2f8e9d504d2e246cf0efd731b7efca4a268b2ac",
+    "scripts/user-relation-contract.test.mjs": "8a914986c2193793f597bff5ac9f34da4d5ca4cdf2e0f69165f9675fcbecea28",
+    "scripts/notes-pagination-contract.test.mjs": "466b4447c4c6997410b24cfa8ba9f2111b281d30ed3b69f99e81b20c972e348e",
+    "packages/backend-next/src/composition/http-app.ts": "5f881c86b179744c73be9d1c7b668a2227747b9cf98a8a7ecfbb7b2dc2b68264",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "734cee44fd1181a8c77fa08bf05623e41b28478b0f4eea8a2d2f8689c7632899"
+  },
+  "runs": [
+    {
+      "name": "contracts",
+      "command": [
+        "node",
+        "--test",
+        "scripts/page-relation-contract.test.mjs",
+        "scripts/user-relation-contract.test.mjs",
+        "scripts/user-memo-contract.test.mjs",
+        "scripts/poll-recommendation-contract.test.mjs",
+        "scripts/notes-pagination-contract.test.mjs"
+      ],
+      "environment": {
+        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH"
+      },
+      "exitCode": 0,
+      "durationSeconds": 0.128,
+      "log": "/tmp/relation296-r3-contracts.log",
+      "logSha256": "9772e2318385b400687f691564e0ce3d538e5033a3ca3494688bf46d476a749c",
+      "passed": 21
+    },
+    {
+      "name": "inventory",
+      "command": [
+        "node",
+        "scripts/backend-contract-inventory.mjs",
+        "--check"
+      ],
+      "environment": {
+        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH"
+      },
+      "exitCode": 0,
+      "durationSeconds": 2.023,
+      "log": "/tmp/relation296-r3-inventory.log",
+      "logSha256": "9506ac89cde2b4c62b8c5dc1c5149e9424db0f4e35b248aa94a8ad3ab8d719d4"
+    },
+    {
+      "name": "shipping",
+      "command": [
+        "node",
+        "scripts/check-shipping.mjs",
+        "--base",
+        "11bd324e2827"
+      ],
+      "environment": {
+        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH"
+      },
+      "exitCode": 0,
+      "durationSeconds": 2.41,
+      "log": "/tmp/relation296-r3-shipping.log",
+      "logSha256": "45f13206b350ca58467f65b53774de2558b40ace6832105f66752ff9503f38af"
+    }
+  ],
+  "upstreamFullServerMeasured": false,
+  "userDetailedComplete": false,
+  "combinedProductMeasured": false,
+  "inputsAfter": {
+    "scripts/notes-pagination-evidence.mjs": "7d1aa313c796746aa32c6cacef84bf8bdeb30a60123151fe573bc0a5adb5391d",
+    "scripts/user-memo-contract.test.mjs": "6fee0a3f3abd79f80a288abda4b71adeea23f25e55126e31740446051358aa53",
+    "scripts/poll-recommendation-contract.test.mjs": "381ec2896f493f8092f5d1e9cad3640f4444e3b46da5c101ba21148e94795030",
+    "scripts/page-relation-contract.test.mjs": "da3cc48243b55b292ff9c058d2f8e9d504d2e246cf0efd731b7efca4a268b2ac",
+    "scripts/user-relation-contract.test.mjs": "8a914986c2193793f597bff5ac9f34da4d5ca4cdf2e0f69165f9675fcbecea28",
+    "scripts/notes-pagination-contract.test.mjs": "466b4447c4c6997410b24cfa8ba9f2111b281d30ed3b69f99e81b20c972e348e",
+    "packages/backend-next/src/composition/http-app.ts": "5f881c86b179744c73be9d1c7b668a2227747b9cf98a8a7ecfbb7b2dc2b68264",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "734cee44fd1181a8c77fa08bf05623e41b28478b0f4eea8a2d2f8689c7632899"
+  },
+  "noInputDrift": true,
+  "completedAt": "2026-11-17T04:48:10.423100+00:00"
+}

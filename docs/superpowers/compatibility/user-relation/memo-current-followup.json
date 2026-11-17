@@ -1,0 +1,125 @@
+{
+  "scope": "user-relation-296-web-memo-current-followup",
+  "baseHead": "4e9c59c7f275d8ef60ece7f2e51643c946d6f545",
+  "nodeVersion": "v26.4.0",
+  "productRemeasured": false,
+  "priorReceipts": {
+    "docs/superpowers/compatibility/user-relation/current-evidence.json": "2f2829772f72d3850ee7e2a64ae91c40e930939d0a9805565c190479c548a6e2",
+    "docs/superpowers/compatibility/user-relation/r2-current-evidence.json": "6c41de87519d79957ffb883995596afef1e1998644ad755fc45e485d556f6298"
+  },
+  "startedAt": "2026-11-17T05:13:20.891517+00:00",
+  "inputsBefore": {
+    "scripts/notes-pagination-evidence.mjs": "8acaf3a24dba0da3b58e5f00db44b9e0fe6b1077b88468459d799aded86e9c69",
+    "scripts/page-relation-contract.test.mjs": "8070262975ae0febf7d530cec83cfc26e88c6b32bfd54ec7d5576f708f9d67d7",
+    "scripts/user-relation-contract.test.mjs": "8a914986c2193793f597bff5ac9f34da4d5ca4cdf2e0f69165f9675fcbecea28",
+    "scripts/user-memo-contract.test.mjs": "6fee0a3f3abd79f80a288abda4b71adeea23f25e55126e31740446051358aa53",
+    "scripts/poll-recommendation-contract.test.mjs": "381ec2896f493f8092f5d1e9cad3640f4444e3b46da5c101ba21148e94795030",
+    "scripts/notes-pagination-contract.test.mjs": "466b4447c4c6997410b24cfa8ba9f2111b281d30ed3b69f99e81b20c972e348e",
+    "packages/backend-next/src/composition/http-app.ts": "5f881c86b179744c73be9d1c7b668a2227747b9cf98a8a7ecfbb7b2dc2b68264",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "734cee44fd1181a8c77fa08bf05623e41b28478b0f4eea8a2d2f8689c7632899",
+    "docs/superpowers/compatibility/user-relation/current-evidence.json": "2f2829772f72d3850ee7e2a64ae91c40e930939d0a9805565c190479c548a6e2",
+    "docs/superpowers/compatibility/user-relation/r2-current-evidence.json": "6c41de87519d79957ffb883995596afef1e1998644ad755fc45e485d556f6298"
+  },
+  "regressionRed": {
+    "command": [
+      "node",
+      "--test",
+      "scripts/page-relation-contract.test.mjs"
+    ],
+    "exitCode": 1,
+    "log": "/tmp/relation296-web-memo-red.log",
+    "logSha256": "dbdfa70063bf1fd2c55356e68f00e40533e5de78ad64d2d2b87ffd45230050ea",
+    "expectedFailure": "Known memo-only43aab6 bytes rejected by Page predecessor before existing memo step"
+  },
+  "actualPriorBytes": {
+    "gitRevision": "80f91dac6eb110a441e4d19d03fc3b6160fe536c",
+    "path": "packages/backend-next/test/unit/composition/http-app.test.ts",
+    "localArtifact": "/tmp/memo-only-43aab6-http-app.test.ts",
+    "sha256": "43aab6cd144b8d0937fca5bec41322d2bed0125c1f94118e7bebb4437d901bda",
+    "expectedProjectedSha256": "a2f030dbfecfa3644a09d1d1aca81a8693ffec7dbad1bc3ceac9894fb46be5eb"
+  },
+  "runs": [
+    {
+      "name": "contracts",
+      "command": [
+        "node",
+        "--test",
+        "scripts/page-relation-contract.test.mjs",
+        "scripts/user-relation-contract.test.mjs",
+        "scripts/user-memo-contract.test.mjs",
+        "scripts/poll-recommendation-contract.test.mjs",
+        "scripts/notes-pagination-contract.test.mjs"
+      ],
+      "environment": {
+        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH"
+      },
+      "exitCode": 0,
+      "durationSeconds": 0.138,
+      "log": "/tmp/relation296-web-followup-contracts.log",
+      "logSha256": "4a9786402c55d67144e71ee97387374c694d7a35e36038d76230852e2f4f1041",
+      "passed": 22
+    },
+    {
+      "name": "actual-git-bytes",
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import {createHash} from 'node:crypto';import {projectUserMemoInput} from './scripts/notes-pagination-evidence.mjs';const result=projectUserMemoInput('packages/backend-next/test/unit/composition/http-app.test.ts',readFileSync('/tmp/memo-only-43aab6-http-app.test.ts'));assert.equal(createHash('sha256').update(result).digest('hex'),'a2f030dbfecfa3644a09d1d1aca81a8693ffec7dbad1bc3ceac9894fb46be5eb');console.log('actual Git blob43aab6 projected to a2f030 PASS');"
+      ],
+      "environment": {
+        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH"
+      },
+      "exitCode": 0,
+      "durationSeconds": 0.027,
+      "log": "/tmp/relation296-web-followup-actual-git-bytes.log",
+      "logSha256": "7235c06ba9b72dfcd2c0bb7b23a51635b901167a688dea7c348ab901fb94ba77"
+    },
+    {
+      "name": "inventory",
+      "command": [
+        "node",
+        "scripts/backend-contract-inventory.mjs",
+        "--check"
+      ],
+      "environment": {
+        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH"
+      },
+      "exitCode": 0,
+      "durationSeconds": 2.162,
+      "log": "/tmp/relation296-web-followup-inventory.log",
+      "logSha256": "9506ac89cde2b4c62b8c5dc1c5149e9424db0f4e35b248aa94a8ad3ab8d719d4"
+    },
+    {
+      "name": "shipping",
+      "command": [
+        "node",
+        "scripts/check-shipping.mjs",
+        "--base",
+        "11bd324e2827"
+      ],
+      "environment": {
+        "PATH": "/tmp/tiramiss-s1-node26/bin:$PATH"
+      },
+      "exitCode": 0,
+      "durationSeconds": 2.462,
+      "log": "/tmp/relation296-web-followup-shipping.log",
+      "logSha256": "45f13206b350ca58467f65b53774de2558b40ace6832105f66752ff9503f38af"
+    }
+  ],
+  "inputsAfter": {
+    "scripts/notes-pagination-evidence.mjs": "8acaf3a24dba0da3b58e5f00db44b9e0fe6b1077b88468459d799aded86e9c69",
+    "scripts/page-relation-contract.test.mjs": "8070262975ae0febf7d530cec83cfc26e88c6b32bfd54ec7d5576f708f9d67d7",
+    "scripts/user-relation-contract.test.mjs": "8a914986c2193793f597bff5ac9f34da4d5ca4cdf2e0f69165f9675fcbecea28",
+    "scripts/user-memo-contract.test.mjs": "6fee0a3f3abd79f80a288abda4b71adeea23f25e55126e31740446051358aa53",
+    "scripts/poll-recommendation-contract.test.mjs": "381ec2896f493f8092f5d1e9cad3640f4444e3b46da5c101ba21148e94795030",
+    "scripts/notes-pagination-contract.test.mjs": "466b4447c4c6997410b24cfa8ba9f2111b281d30ed3b69f99e81b20c972e348e",
+    "packages/backend-next/src/composition/http-app.ts": "5f881c86b179744c73be9d1c7b668a2227747b9cf98a8a7ecfbb7b2dc2b68264",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "734cee44fd1181a8c77fa08bf05623e41b28478b0f4eea8a2d2f8689c7632899",
+    "docs/superpowers/compatibility/user-relation/current-evidence.json": "2f2829772f72d3850ee7e2a64ae91c40e930939d0a9805565c190479c548a6e2",
+    "docs/superpowers/compatibility/user-relation/r2-current-evidence.json": "6c41de87519d79957ffb883995596afef1e1998644ad755fc45e485d556f6298"
+  },
+  "noInputDrift": true,
+  "priorReceiptsUnchanged": true,
+  "completedAt": "2026-11-17T05:13:25.681400+00:00"
+}
