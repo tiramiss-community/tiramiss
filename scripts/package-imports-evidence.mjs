@@ -215,6 +215,7 @@ const pageLikeEntityProjection = {
   }
 };
 export function projectPageLikeEntityInput(path, actual, driftLabel = 'package import measured input') {
+ actual = projectAnnouncementEntityInput(path, actual);
  const binding = Object.hasOwn(pageLikeEntityProjection, path) ? pageLikeEntityProjection[path] : undefined;
  if (!binding || [binding.previousSha256, userMemoEntityProjection[path]?.previousSha256].includes(sha(actual))) return actual;
  assert.equal(sha(actual), binding.currentSha256, `${driftLabel} (PageLike): ${path}`);
@@ -226,4 +227,79 @@ export function projectPageLikeEntityInput(path, actual, driftLabel = 'package i
  }
  assert.equal(sha(before), binding.previousSha256, 'PageLike exact predecessor identity');
  return before;
+}
+
+// #337 synchronizes two fixed upstream entities and their metadata checks.
+const announcementEntityProjection = {
+  "packages/backend-upstream/upstream-sync.json": {
+    "currentSha256": "97f4c47a784ab71693bcdae889ac2eed81e862659473a07a722fe292ade1a5fd",
+    "previousSha256": "9f9398d372fba9e781f71f9782fae16d63268f8488956f8d788bd618240dd484",
+    "patches": [
+      {
+        "offset": 1288,
+        "insert": ",\n\t\t\"src/models/Announcement.ts\",\n\t\t\"src/models/AnnouncementRead.ts\"",
+        "previous": ""
+      }
+    ]
+  },
+  "packages/backend-upstream/.managed-files.json": {
+    "currentSha256": "12b58d1dfb82ba6c15f476ed804ff8b0e025f16003a31274f7ac651a4aab14d5",
+    "previousSha256": "1dbc03fe89be48dbb79fd54f30b91490a82a50225da516e40c28cdc67dce565e",
+    "patches": [
+      {
+        "offset": 16834,
+        "insert": "nouncement.ts\",\n\t\"src/models/AnnouncementRead.ts\",\n\t\"src/models/An",
+        "previous": ""
+      }
+    ]
+  },
+  "packages/backend-upstream/exports/entities.ts": {
+    "currentSha256": "3ce5640083ad0003d38037fbb563476045492062e0f820c26de8c3427653c804",
+    "previousSha256": "3f189c5ebff793a377034680a6a7d1694f56ee24c185c91ab84fc8769cc2188d",
+    "patches": [
+      {
+        "offset": 2455,
+        "insert": "import { MiAnnouncement } from '../src/models/Announcement.js';\nimport { MiAnnouncementRead } from '../src/models/AnnouncementRead.js';\n",
+        "previous": ""
+      },
+      {
+        "offset": 3134,
+        "insert": ", MiAnnouncement, MiAnnouncementRead",
+        "previous": ""
+      },
+      {
+        "offset": 3733,
+        "insert": ", MiAnnouncement, MiAnnouncementRead",
+        "previous": ""
+      }
+    ]
+  },
+  "packages/backend-next/test/package-imports.test.ts": {
+    "currentSha256": "79286cf3f69d3e1cf40e06fa95c9a2af9e6b940391c4dcfeade2aac1127acfa6",
+    "previousSha256": "ec087b0dfa5203ab1652b23f798978a759d077a8b0155deeb23b02df001819db",
+    "patches": [
+      {
+        "offset": 4212,
+        "insert": "const announcement = source.getMetadata('MiAnnouncement');\n\texpect(announcement.tableName).toBe('announcement');\n\texpect(announcement.relations.find(value => value.propertyName === 'user')?.onDelete).toBe('CASCADE');\n\tconst announcementRead = source.getMetadata('MiAnnouncementRead');\n\texpect(announcementRead.tableName).toBe('announcement_read');\n\texpect(announcementRead.indices.some(index => index.isUnique && index.columns.map(column => column.propertyName).join(',') === 'userId,announcementId')).toBe(true);\n\tfor (const property of ['user', 'announcement']) {\n\t\texpect(announcementRead.relations.find(value => value.propertyName === property)?.onDelete).toBe('CASCADE');\n\t}\n\t",
+        "previous": ""
+      },
+      {
+        "offset": 4938,
+        "insert": "2",
+        "previous": "0"
+      }
+    ]
+  }
+};
+export function projectAnnouncementEntityInput(path, actual) {
+	const binding = Object.hasOwn(announcementEntityProjection, path) ? announcementEntityProjection[path] : undefined;
+	if (!binding || sha(actual) !== binding.currentSha256) return actual;
+	let before = Buffer.from(actual);
+	for (const patch of [...binding.patches].reverse()) {
+		const insert = Buffer.from(patch.insert);
+		assert.deepEqual(before.subarray(patch.offset, patch.offset + insert.length), insert, 'announcement Entity exact predecessor anchor');
+		before = Buffer.concat([before.subarray(0, patch.offset), Buffer.from(patch.previous), before.subarray(patch.offset + insert.length)]);
+	}
+	assert.equal(sha(before), binding.previousSha256, 'announcement Entity exact predecessor identity');
+	return before;
 }

@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
 import { inEvidenceValidationScope } from './evidence-validation-scope.mjs';
-import { pubsubSuccessorFiles, readPreDriveFolderPubsub, validateDriveFolderPubsubSuccessor } from './drive-folder-pubsub-evidence.mjs';
+import { pubsubSuccessorFiles, readPreDriveFolderPubsub, validateDriveFolderPubsubSuccessor, projectComparisonCiWorkflow } from './drive-folder-pubsub-evidence.mjs';
 import { validateDriveFoldersSuccessor } from './drive-folders-evidence.mjs';
 import { readPreUrlPreview } from './url-preview-evidence.mjs';
 const root = new URL('../', import.meta.url);
@@ -51,7 +51,7 @@ test('notes CI paths, process Redis and video runner setup preserve exact histor
  const path = '.github/workflows/test-backend-next.yml';
  const addition = '      - name: Install FFmpeg\n        run: |\n          sudo apt update\n          sudo apt install -y ffmpeg\n';
  const service = '      redis-pubsub:\n        image: redis:8\n        ports: [\'56380:6379\']\n        options: >-\n          --health-cmd "redis-cli ping"\n          --health-interval 1s --health-timeout 3s --health-retries 30\n';
- const current = read(path).toString();
+ const current = projectComparisonCiWorkflow(read(path)).toString();
  const notesPath = "      - 'docs/superpowers/compatibility/notes-pagination/**'\n";
  assert.equal(current.split(notesPath).length, 3, 'notes documents trigger push and pull request');
  const beforeNotes = Buffer.from(current.replaceAll(notesPath, ''));
