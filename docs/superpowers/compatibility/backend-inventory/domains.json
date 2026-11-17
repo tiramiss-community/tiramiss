@@ -3626,6 +3626,66 @@
       ],
       "evidenceRevision": "671f5db3b77b6a7b6d4bd361daca08d102b16b63",
       "note": "#293: 通常 pages/show と Page pack/packMany の読取を移植。ID/名前/guest/like、所有者限定添付、eye catch、旧input再帰変換・非待機content書戻しを固定本家モジュール実体と比較。nullish WHERE-ignore と文字列childrenの4境界は固定postgres設定の実PG sourceでも一致。最終R4: unit23、HTTP/PG21、source18、共有契約34、同期/build/typecheck/shipping成功、入力前後不変。R1–R3履歴は修正後結果へ付け替えない。PageLike同期と既存migrationのschema差分0件。書込失敗は診断しHTTP終了時に待つ差異を明示。Page CRUD/一覧/like更新、UserDetailed全体、#191/#114全体は未完了。"
+    },
+    "api:announcements": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/announcement/public.ts",
+        "packages/backend-next/src/platform/database/announcements.ts",
+        "packages/backend-next/src/http/announcements-api.ts",
+        "packages/backend-next/src/composition/announcements-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/announcements.test.ts",
+        "packages/backend-next/test/integration/announcements.test.ts",
+        "docs/superpowers/compatibility/announcements/source-probe.mjs",
+        "docs/superpowers/compatibility/announcements/observations.json",
+        "docs/superpowers/compatibility/announcements/README.md",
+        "docs/superpowers/compatibility/announcements/current-evidence.json"
+      ],
+      "note": "#337: fixed literal source methods on migrated PostgreSQL (28 cases/63 steps) match canonical listening HTTP, PostgreSQL state and actual Redis messages. Audience/private visibility, existing-user unread condition, pagination, viewer read state, duplicate/no-such/non-target reads, individual deactivation, pack failure exclusion and readAllAnnouncements are covered. Admin mutations/archive scheduling #449 and parent #193/#114 remain unfinished. Full upstream HTTP/auth serializer/Redis failure behavior not measured.",
+      "evidenceRevision": "18ee6ef8e3b3c1248fa01b55056ab52dfc715c02"
+    },
+    "api:announcements/show": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/announcement/public.ts",
+        "packages/backend-next/src/platform/database/announcements.ts",
+        "packages/backend-next/src/http/announcements-api.ts",
+        "packages/backend-next/src/composition/announcements-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/announcements.test.ts",
+        "packages/backend-next/test/integration/announcements.test.ts",
+        "docs/superpowers/compatibility/announcements/source-probe.mjs",
+        "docs/superpowers/compatibility/announcements/observations.json",
+        "docs/superpowers/compatibility/announcements/README.md",
+        "docs/superpowers/compatibility/announcements/current-evidence.json"
+      ],
+      "note": "#337: fixed literal source methods on migrated PostgreSQL (28 cases/63 steps) match canonical listening HTTP, PostgreSQL state and actual Redis messages. Audience/private visibility, existing-user unread condition, pagination, viewer read state, duplicate/no-such/non-target reads, individual deactivation, pack failure exclusion and readAllAnnouncements are covered. Admin mutations/archive scheduling #449 and parent #193/#114 remain unfinished. Full upstream HTTP/auth serializer/Redis failure behavior not measured.",
+      "evidenceRevision": "18ee6ef8e3b3c1248fa01b55056ab52dfc715c02"
+    },
+    "api:i/read-announcement": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/announcement/public.ts",
+        "packages/backend-next/src/platform/database/announcements.ts",
+        "packages/backend-next/src/http/announcements-api.ts",
+        "packages/backend-next/src/composition/announcements-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/announcements.test.ts",
+        "packages/backend-next/test/integration/announcements.test.ts",
+        "docs/superpowers/compatibility/announcements/source-probe.mjs",
+        "docs/superpowers/compatibility/announcements/observations.json",
+        "docs/superpowers/compatibility/announcements/README.md",
+        "docs/superpowers/compatibility/announcements/current-evidence.json"
+      ],
+      "note": "#337: fixed literal source methods on migrated PostgreSQL (28 cases/63 steps) match canonical listening HTTP, PostgreSQL state and actual Redis messages. Audience/private visibility, existing-user unread condition, pagination, viewer read state, duplicate/no-such/non-target reads, individual deactivation, pack failure exclusion and readAllAnnouncements are covered. Admin mutations/archive scheduling #449 and parent #193/#114 remain unfinished. Full upstream HTTP/auth serializer/Redis failure behavior not measured.",
+      "evidenceRevision": "18ee6ef8e3b3c1248fa01b55056ab52dfc715c02"
     }
   }
 }
