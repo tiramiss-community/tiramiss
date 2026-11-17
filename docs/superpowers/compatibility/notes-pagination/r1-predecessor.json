@@ -1,0 +1,39 @@
+{
+  "scope": "notes-pagination-305",
+  "baseRevision": "2fb256cd889200912cf68258e757f5e39429e495",
+  "files": {
+    "packages/backend-next/src/composition/note-routes.ts": {
+      "currentSha256": "9183d8a472db6ab0f6fb5eb18f454c88da9b2edc6151c5971d06eacc92fcaacf",
+      "previousSha256": "13b7a773654f30a3ebd81c2d1797148ecfe16f77c42247ad5390af4062ac9122",
+      "patches": [
+        {
+          "offset": 442,
+          "insert": "sListApi } from '../http/notes-list-api.js';\nimport { createListNotes } from '../modules/note/public.js';\nimport { createNotesListReader } from '../platform/database/note-list.js';\nimport { createNoteCreateApi } from '../http/note-create-api.js';\nimport { createNoteRateLimiter } from '../platform/note-rate-limit.js';\nimport { createDeleteNote, createShowNote, readNotePlan, renderNote } from '../modules/note/public.js';\nimport { createHostRules, renderDeletedNoteActivity } from '../modules/federation/public.js';\nimport { createNoteReader } from '../platform/database/note-reader.js';\nimport { createTokenAuthenticator } from '../platform/database/authenticate.js';\nimport { createIdCodec } from '../platform/id-codec.js';\nimport { createNoteApplication } from './note.js';\nimport { createRemoteUsers } from './remote-users.js';\nimport type { RuntimeResources } from './create-runtime.js';\nimport type { RuntimeConfig } from '../config/types.js';\nimport type { Hono } from 'hono';\n\nexport function prepareNoteRoutes(resources: RuntimeResources, config: RuntimeConfig) {\n\tconst manager = resources.dataSource.manager;\n\tconst codec = createIdCodec(config.id);\n\tconst reader = createNoteReader(manager, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId }, resources.actorEmojis);\n\tconst show = createShowNote(reader);\n\tconst list = createListNotes(reader, createNotesListReader(manager, codec.createdAtFromId), codec.newId);\n\tconst create = createNoteApplication({\n\t\tdataSource: resources.dataSource, roleMaterials: resources.roleMaterials, ids: codec, clock: Date.now,\n\t\tremoteUsers: createRemoteUsers(resources, config),\n\t\tlimit: createNoteRateLimiter(resources.redis),\n\t\tafterSaved: input => resources.notePostSave.start(input),\n\t});\n\tconst deletion = createDeleteNote({\n\t\t...createNoteDeleter(manager, codec.createdAtFromId),\n\t\tlimit: createNoteDeleteRateLimiter(resources.redis),\n\t\trenderActivity: (snapshot, now) => renderDeletedNoteActivity(snapshot, {\n\t\t\tselfUrl: config.url, now, randomId: randomUUID(), isLocalUri: createHostRules(new URL(config.url).host).isUriLocal,\n\t\t}),\n\t\tstart: resources.notePostDelete.start,\n\t\tpublishDeleted: (snapshot, occurredAtMs) => resources.notePostDelete.start({ kind: 'stream', snapshot, occurredAtMs }),\n\t});\n\tconst authenticate = createTokenAuthenticator(manager, resources.logger);\n\treturn { authenticate, deletion, show, list, create, reader };\n}\n\nexport function registerNoteRoutes(app: Hono, resources: RuntimeResources, prepared: ReturnType<typeof prepareNoteRoutes>) {\n\tconst { authenticate, deletion, show, list, create, reader } = prepared;\n\treturn app\n\t\t.route('/', createNotesListApi({ authenticate, listNotes: list.listNotes, logger: resources.logger }))",
+          "previous": "CreateApi } from '../http/note-create-api.js';\nimport { createNoteRateLimiter } from '../platform/note-rate-limit.js';\nimport { createDeleteNote, createShowNote, readNotePlan, renderNote } from '../modules/note/public.js';\nimport { createHostRules, renderDeletedNoteActivity } from '../modules/federation/public.js';\nimport { createNoteReader } from '../platform/database/note-reader.js';\nimport { createTokenAuthenticator } from '../platform/database/authenticate.js';\nimport { createIdCodec } from '../platform/id-codec.js';\nimport { createNoteApplication } from './note.js';\nimport { createRemoteUsers } from './remote-users.js';\nimport type { RuntimeResources } from './create-runtime.js';\nimport type { RuntimeConfig } from '../config/types.js';\nimport type { Hono } from 'hono';\n\nexport function prepareNoteRoutes(resources: RuntimeResources, config: RuntimeConfig) {\n\tconst manager = resources.dataSource.manager;\n\tconst codec = createIdCodec(config.id);\n\tconst reader = createNoteReader(manager, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId }, resources.actorEmojis);\n\tconst show = createShowNote(reader);\n\tconst create = createNoteApplication({\n\t\tdataSource: resources.dataSource, roleMaterials: resources.roleMaterials, ids: codec, clock: Date.now,\n\t\tremoteUsers: createRemoteUsers(resources, config),\n\t\tlimit: createNoteRateLimiter(resources.redis),\n\t\tafterSaved: input => resources.notePostSave.start(input),\n\t});\n\tconst deletion = createDeleteNote({\n\t\t...createNoteDeleter(manager, codec.createdAtFromId),\n\t\tlimit: createNoteDeleteRateLimiter(resources.redis),\n\t\trenderActivity: (snapshot, now) => renderDeletedNoteActivity(snapshot, {\n\t\t\tselfUrl: config.url, now, randomId: randomUUID(), isLocalUri: createHostRules(new URL(config.url).host).isUriLocal,\n\t\t}),\n\t\tstart: resources.notePostDelete.start,\n\t\tpublishDeleted: (snapshot, occurredAtMs) => resources.notePostDelete.start({ kind: 'stream', snapshot, occurredAtMs }),\n\t});\n\tconst authenticate = createTokenAuthenticator(manager, resources.logger);\n\treturn { authenticate, deletion, show, create, reader };\n}\n\nexport function registerNoteRoutes(app: Hono, resources: RuntimeResources, prepared: ReturnType<typeof prepareNoteRoutes>) {\n\tconst { authenticate, deletion, show, create, reader } = prepared;\n\treturn app"
+        }
+      ]
+    },
+    "packages/backend-next/src/modules/note/public.ts": {
+      "currentSha256": "e2a810519faf1d6ec025d7f7817776a86795c6e07bbfdbddcc120e8203a507f1",
+      "previousSha256": "6ba915caac0c26b9be0a2679b548eb5966492ce4a39333d7d9b8ed7f83f930cd",
+      "patches": [
+        {
+          "offset": 176,
+          "insert": "createListNotes } from './list-notes.js';\nexport type { NotesListInput, NotesListReader } from './list-notes.js';\nexport { ",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "currentSha256": "a2f030dbfecfa3644a09d1d1aca81a8693ffec7dbad1bc3ceac9894fb46be5eb",
+      "previousSha256": "742be594f57ff832ccc0568b06720f9677d4a1519d0a6f17b88e24a19e6f9e49",
+      "patches": [
+        {
+          "offset": 3004,
+          "insert": "', '/api/notes",
+          "previous": ""
+        }
+      ]
+    }
+  }
+}

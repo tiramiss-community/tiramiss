@@ -7,6 +7,9 @@ import { createNoteDeleteApi } from '../http/note-delete-api.js';
 import { createNoteDeleter } from '../platform/database/note-deleter.js';
 import { createNoteDeleteRateLimiter } from '../platform/note-delete-rate-limit.js';
 import { createNoteApi } from '../http/note-api.js';
+import { createNotesListApi } from '../http/notes-list-api.js';
+import { createListNotes } from '../modules/note/public.js';
+import { createNotesListReader } from '../platform/database/note-list.js';
 import { createNoteCreateApi } from '../http/note-create-api.js';
 import { createNoteRateLimiter } from '../platform/note-rate-limit.js';
 import { createDeleteNote, createShowNote, readNotePlan, renderNote } from '../modules/note/public.js';
@@ -25,6 +28,8 @@ export function prepareNoteRoutes(resources: RuntimeResources, config: RuntimeCo
 	const codec = createIdCodec(config.id);
 	const reader = createNoteReader(manager, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId }, resources.actorEmojis);
 	const show = createShowNote(reader);
+	const list = createListNotes(createNotesListReader(manager, resources.reactionsRedis,
+		{ ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId }, resources.actorEmojis), codec.newId);
 	const create = createNoteApplication({
 		dataSource: resources.dataSource, roleMaterials: resources.roleMaterials, ids: codec, clock: Date.now,
 		remoteUsers: createRemoteUsers(resources, config),
@@ -41,12 +46,13 @@ export function prepareNoteRoutes(resources: RuntimeResources, config: RuntimeCo
 		publishDeleted: (snapshot, occurredAtMs) => resources.notePostDelete.start({ kind: 'stream', snapshot, occurredAtMs }),
 	});
 	const authenticate = createTokenAuthenticator(manager, resources.logger);
-	return { authenticate, deletion, show, create, reader };
+	return { authenticate, deletion, show, list, create, reader };
 }
 
 export function registerNoteRoutes(app: Hono, resources: RuntimeResources, prepared: ReturnType<typeof prepareNoteRoutes>) {
-	const { authenticate, deletion, show, create, reader } = prepared;
+	const { authenticate, deletion, show, list, create, reader } = prepared;
 	return app
+		.route('/', createNotesListApi({ authenticate, listNotes: list.listNotes, logger: resources.logger }))
 		.route('/', createNoteDeleteApi({ authenticate, deleteNote: deletion.deleteNote, logger: resources.logger }))
 		.route('/', createNoteApi({ authenticate, showNote: show.showNote, logger: resources.logger }))
 		.route('/', createNoteCreateApi({

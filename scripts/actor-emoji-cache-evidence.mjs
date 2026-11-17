@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { readPreMetaInitialization } from './meta-initialization-evidence.mjs';
+import { projectNotesPaginationInput } from './notes-pagination-evidence.mjs';
 import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 const directory = 'docs/superpowers/compatibility/actor-emoji-cache/';
 const seal = '20fcbc11ed50287c915ec771c6bcc50149ba6ec18b4453ca888aa500249ead2d';
@@ -35,7 +36,7 @@ function record(readFile) {
 export function validateActorEmojiCacheEvidence(value, rawRead = read, optional = optionalRead) {
  return scopedEvidenceValidation(validateActorEmojiCacheEvidence, value, rawRead, optional, (rawRead, optional) => {
   const currentRead = rawRead;
-  rawRead = path => readBeforeActorEmojiBatch(path, currentRead, optional);
+  rawRead = path => actorEmojiBatchFiles.includes(path) ? readBeforeActorEmojiBatch(path, currentRead, optional) : projectNotesPaginationInput(path, currentRead(path));
   if (value === undefined) value = record(rawRead);
   assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'actor emoji cache receipt seal');
   assert.equal(value.scope, 'actor-emoji-cache-303');
@@ -96,6 +97,8 @@ export const actorEmojiBatchFiles = Object.freeze([
 // actor receipt. The original18-input measurement and every historical seal stay unchanged.
 export function validateActorEmojiBatchEvidence(value, rawRead = read, optional = optionalRead) {
  return scopedEvidenceValidation(validateActorEmojiBatchEvidence, value, rawRead, optional, (rawRead, optional) => {
+  const currentRead = rawRead;
+  rawRead = path => projectNotesPaginationInput(path, currentRead(path));
   if (value === undefined) {
    const bytes = rawRead(directory + 'batch-current-evidence.json');
    assert.equal(sha(bytes), batchSeal, 'actor emoji batch receipt seal');

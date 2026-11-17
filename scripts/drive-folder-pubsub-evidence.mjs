@@ -39,6 +39,10 @@ const videoFfmpegStep = '      - name: Install FFmpeg\n        run: |\n         
 const processRedisService = '      redis-pubsub:\n        image: redis:8\n        ports: [\'56380:6379\']\n        options: >-\n          --health-cmd "redis-cli ping"\n          --health-interval 1s --health-timeout 3s --health-retries 30\n';
 // Restore only the process lane addition; the identical integration service is historical.
 function workflowBeforeCheckConnectRedis(bytes) {
+ assert.equal(sha(bytes), 'cf0c9ed1621aedef3eef678588bd83e0789a88ac1b2d315826c7731a67de4931', 'folder measured current input drift (notes contract CI workflow)');
+ const notesPath = "      - 'docs/superpowers/compatibility/notes-pagination/**'\n";
+ assert.equal(bytes.toString().split(notesPath).length, 3, 'folder exact notes CI path in push and pull request');
+ bytes = Buffer.from(bytes.toString().replaceAll(notesPath, ''));
  assert.equal(sha(bytes), '522b45f35703a65febb1d1471e601a74914570b364a2e0f205ddb9e895702178', 'folder measured current input drift (process Redis workflow)');
  const sections = bytes.toString().split('  process:\n');
  assert.equal(sections.length, 2, 'folder exact process section');

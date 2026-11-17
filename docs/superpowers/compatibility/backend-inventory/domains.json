@@ -1639,6 +1639,32 @@
         "ロール更新と監査を同時確定。HTTPの既知差異はdocs/superpowers/specs/2026-10-17-role-compatibility-contract.mdとcompatibility/role/README.mdを参照。"
       ]
     },
+    "api:notes": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/http/notes-list-api.ts",
+        "packages/backend-next/src/modules/note/list-notes.ts",
+        "packages/backend-next/src/modules/shared/pagination.ts",
+        "packages/backend-next/src/platform/database/note-list.ts",
+        "packages/backend-next/src/composition/note-routes.ts",
+        "packages/backend-next/src/platform/database/note-reader.ts",
+        "packages/backend-next/src/platform/database/note-authors.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/shared/pagination.test.ts",
+        "packages/backend-next/test/unit/note/list-notes.test.ts",
+        "packages/backend-next/test/integration/notes-list.test.ts",
+        "docs/superpowers/compatibility/notes-pagination/README.md",
+        "docs/superpowers/compatibility/notes-pagination/observations.json",
+        "docs/superpowers/compatibility/notes-pagination/source-probe.mjs",
+        "docs/superpowers/compatibility/notes-pagination/current-evidence.json"
+      ],
+      "differences": [
+        "既存D7参照予算64階層/256 Note・循環500を引継ぐ。source callback/QueryServiceと同一PGの132入力でID順序を直接比較。full upstream server/packer比較ではない。"
+      ],
+      "note": "#305: ID/日時優先順位・昇降順・exclusive境界・limit、notes固有条件、guest UGCと認証時もguest packingを通常HTTPへ接続。joined snapshot・参照作者のID補完/fallbackは4barrierで確認。親#185と投稿partialは未完了。",
+      "evidenceRevision": "435f3741d57b9bb91a1958dcf4c0014df780bee5"
+    },
     "api:notes/show": {
       "status": "verified",
       "implementation": [

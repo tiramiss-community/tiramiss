@@ -37,7 +37,7 @@ test('measured preview product validates online/offline and restores exactly eig
  assert.equal(snapshot.lockPatch.path, 'pnpm-lock.yaml');
  assert.equal(sha(readPreUrlPreview('pnpm-lock.yaml')), snapshot.lockPatch.previousSha256);
  for (const path of Object.keys(record().inputs).filter(path => !successorFiles.includes(path))) {
-  if (metaCachePredecessorFiles.includes(path)) {
+  if (metaCachePredecessorFiles.includes(path) || path === 'packages/backend-next/src/modules/note/public.ts') {
    assert.equal(sha(readPreUrlPreview(path)), record().inputs[path]);
   } else {
    assert.deepEqual(readPreUrlPreview(path), read(path));
@@ -110,7 +110,7 @@ test('repeated validations retain every actual read and optional-artifact check'
 });
 test('preview reader uses only builtins and disjoint finite successors, without subprocesses or ancestor readers', () => {
  const source = read('scripts/url-preview-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || match[1] === './evidence-validation-scope.mjs' || ['./meta-cache-ci-fixtures-evidence.mjs', './meta-cache-evidence.mjs', './drive-files-evidence.mjs', './url-preview-fixture-evidence.mjs', './internal-events-evidence.mjs', './drive-folders-evidence.mjs', './drive-folder-pubsub-evidence.mjs', './image-ingest-dependency-evidence.mjs', './actor-emoji-cache-evidence.mjs'].includes(match[1])));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || match[1] === './evidence-validation-scope.mjs' || ['./meta-cache-ci-fixtures-evidence.mjs', './meta-cache-evidence.mjs', './drive-files-evidence.mjs', './url-preview-fixture-evidence.mjs', './internal-events-evidence.mjs', './drive-folders-evidence.mjs', './drive-folder-pubsub-evidence.mjs', './image-ingest-dependency-evidence.mjs', './actor-emoji-cache-evidence.mjs', './notes-pagination-evidence.mjs'].includes(match[1])));
  assert(!/execFile|spawn|import\(/.test(source));
  assert.equal(readPreUrlPreview('unrelated.ts', 'utf8', () => Buffer.from('live'), () => null), 'live');
 });

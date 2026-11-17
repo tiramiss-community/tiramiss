@@ -12,9 +12,11 @@ import type { MiMeta } from 'backend-upstream/entities';
 import type { AuthorFacts, NoteViewMaterials } from '../../modules/note/public.js';
 
 export async function readNoteAuthors(manager: EntityManager, ids: readonly string[], viewerId: string | null, meta: MiMeta,
-	options: { url: string; createdAtFromId(id: string): number }, now: number, emojiUrls: NoteViewMaterials['emojiUrls'], keepEmptyEmojiUrls = false) {
+	options: { url: string; createdAtFromId(id: string): number }, now: number, emojiUrls: NoteViewMaterials['emojiUrls'], keepEmptyEmojiUrls = false, selectedUsers: readonly MiUser[] = [], refreshUserIds: readonly string[] = []) {
 	const userIds = [...new Set([...ids, ...(viewerId ? [viewerId] : [])])];
-	const users = await manager.getRepository(MiUser).findBy({ id: In(userIds) });
+	const selected = new Map(selectedUsers.map(user => [user.id, user]));
+	const missing = userIds.filter(id => !selected.has(id) || refreshUserIds.includes(id));
+	const users = [...new Map([...selectedUsers.filter(user => userIds.includes(user.id)), ...(missing.length ? await manager.getRepository(MiUser).findBy({ id: In(missing) }) : [])].map(user => [user.id, user])).values()];
 	const roles = (await manager.getRepository(MiRole).find()).map(roleDefinition);
 	const assignments = (await manager.getRepository(MiRoleAssignment).findBy({ userId: In(userIds) })).map(row => ({
 		id: row.id, userId: row.userId, roleId: row.roleId, expiresAtMs: row.expiresAt?.getTime() ?? null,

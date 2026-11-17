@@ -25,8 +25,9 @@ test('Meta cache restores exactly27 historical inputs after validating all33 mea
 for (const path of Object.keys(record().inputs)) {
  test(`Meta cache rejects current drift including newly added material: ${path}`, () => {
   const changed = p => p === path ? Buffer.concat([read(p), Buffer.from('\n')]) : read(p);
-  assert.throws(() => validateMetaCacheSuccessor(undefined, changed, () => null), /Meta cache measured current input drift/);
-  assert.throws(() => readPreMetaCache(metaCachePredecessorFiles[0], undefined, changed, () => null), /Meta cache measured current input drift/);
+  const expected = path === 'packages/backend-next/test/unit/composition/http-app.test.ts' ? /(?:Meta cache measured current input drift|measured current input drift \(notes pagination(?: requested)?\))/ : /Meta cache measured current input drift/;
+  assert.throws(() => validateMetaCacheSuccessor(undefined, changed, () => null), expected);
+  assert.throws(() => readPreMetaCache(metaCachePredecessorFiles[0], undefined, changed, () => null), expected);
  });
 }
 test('Meta cache receipt/predecessor seals reject corruption without optional logs', () => {
@@ -43,7 +44,7 @@ test('Meta cache validates every present log and never accepts a prior projectio
  }
  const previous = validateMetaCacheSuccessor(undefined, read, () => null);
  const projected = path => Object.hasOwn(previous, path) ? Buffer.from(previous[path]) : read(path);
- assert.throws(() => validateMetaCacheSuccessor(undefined, projected, () => null), /Meta cache measured current input drift/);
+ assert.throws(() => validateMetaCacheSuccessor(undefined, projected, () => null), /(?:Meta cache measured current input drift|measured current input drift \(notes pagination(?: requested)?\))/);
 });
 test('Meta cache repeated calls read actual bytes again and return independent maps', () => {
  let changed;

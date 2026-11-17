@@ -4,6 +4,7 @@
  */
 import assert from 'node:assert/strict';
 import { readForActorEmojiCacheEvidence } from './actor-emoji-cache-evidence.mjs';
+import { projectNotesPaginationInput } from './notes-pagination-evidence.mjs';
 import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 import { createPreImageIngestDependencyReader } from './image-ingest-dependency-evidence.mjs';
 import { ciFixtureFiles, readPreMetaCacheCiFixtures } from './meta-cache-ci-fixtures-evidence.mjs';
@@ -73,7 +74,8 @@ export function validateUrlPreviewSuccessor(value, readFile = read, optional = o
  const previousFolders = validateDriveFoldersSuccessor(undefined, readBeforeInternalEvents, optional);
  readFile = path => path in previousFolders ? Buffer.from(previousFolders[path]) : Object.hasOwn(previousInternalEvents, path) ? Buffer.from(previousInternalEvents[path]) : beforeMeta(path);
  for (const [path, digest] of Object.entries(value.inputs)) {
-  assert.equal(sha(readFile(path)), digest, `instance admin measured current input drift (URL preview successor): ${path}`);
+  const bytes = path === 'packages/backend-next/src/modules/note/public.ts' ? projectNotesPaginationInput(path, readFile(path)) : readFile(path);
+  assert.equal(sha(bytes), digest, `instance admin measured current input drift (URL preview successor): ${path}`);
  }
  const bytes = readFile(predecessorPath);
  assert.equal(sha(bytes), predecessorSeal, 'URL preview predecessor seal');
@@ -120,6 +122,10 @@ export function validateUrlPreviewSuccessor(value, readFile = read, optional = o
 
 export function readPreUrlPreview(path, encoding, readFile = read, optional = optionalRead) {
  return withEvidenceRequestedPath(path, () => {
+ if (path === 'packages/backend-next/src/modules/note/public.ts') {
+  const bytes = projectNotesPaginationInput(path, readFile(path));
+  return encoding ? bytes.toString(encoding) : bytes;
+ }
  if (ciFixtureFiles.includes(path)) {
   return readPreMetaCacheCiFixtures(path, encoding, readFile, optional);
  }
