@@ -15,7 +15,7 @@
 
 ## 現在の到達点
 
-Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装・本家比較資料・HTTP/受け入れテストに接続済み。これを `verified`（検証根拠あり）とする。他の Role API は未実装。根拠は [Role 比較資料](../role/README.md)、[#115](https://github.com/tiramiss-community/tiramiss/issues/115) と #116–#121。
+Role 初期対象の `admin/roles/show` と `admin/roles/update` は、新実装・本家比較資料・HTTP/受け入れテストに接続済み。これを `verified`（検証根拠あり）とする。公開 `roles/list`・`roles/show` と Role pack の人数/policy補完、UserDetailed 向け8項目のRole材料は #295 で追加比較済み。根拠は [公開Role比較資料](../role-public/README.md)。その他の Role API、roles/notes・所属ユーザー一覧、UserDetailed全体は各後続Issueに残る。根拠は [Role 比較資料](../role/README.md)、[#115](https://github.com/tiramiss-community/tiramiss/issues/115) と #116–#121。
 
 `notes/show` は固定本家の観測 JSON と照合済みで `verified`。`notes/create` は #170 のローカル部分（添付・投票・返信/Renote・channel・指定宛先・MFM 抽出）まで実装した `partial` で、未登録リモートユーザー宛てのメンションは #195 まで保存前に 501 で拒否する。PG 通知保存と起動・migration の基盤は `partial`。旧 PG ジョブ基盤と AP 宛先 snapshot/page/host lease は PR #212/#213 で撤去したため、当時のAP送信とジョブ管理は `not_implemented` に戻した。現在の管理14 API/QueueStatsは下記#163で検証済み。**通常 worker は本家の投票終了（`endedPollNotification`、#162）・AP配送（`deliver`、#171）・投稿webhook（`userWebhookDeliver`、#175）の3ジョブを実行する。** 投票終了ジョブの投入・queue と Worker の設定・受信者の選定と PG への保存は本家 probe と比較して `partial` にした（[比較資料](../poll-ended/README.md)）。 #160 の最初の PR で、AP の署名・署名付き送信・配送結果の分類を本家と比較して `partial` にした。#171 の最初の PR で、ノート作成の Create/Announce の表現・宛先の選定・deliver queue と Worker・配送前の判定・インスタンス台帳を通常起動へ接続し、本家 probe と note の C9（relay を除く）と比較して `partial` にした（[比較資料](../ap-deliver/README.md)）。relayとJSON-LD署名は#171の2番目のPR #227で接続済み。Delete/Undoは#172の下記sliceで接続した。 部分実装から公開機能全体の完成を推測しない。
 
