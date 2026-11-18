@@ -1519,6 +1519,23 @@
     }
   ],
   "overrides": {
+    "api:admin/roles/update-default-policies": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/role/update-default-policies.ts",
+        "packages/backend-next/src/platform/database/default-role-policies.ts",
+        "packages/backend-next/src/composition/default-role-policies.ts",
+        "packages/backend-next/src/composition/role-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/role/update-default-policies.test.ts",
+        "packages/backend-next/test/unit/role/default-policies-source.test.ts",
+        "packages/backend-next/test/integration/default-role-policies.test.ts",
+        "docs/superpowers/compatibility/default-role-policies/README.md"
+      ],
+      "note": "#415: default-policy update, raw JSON replacement, audit and metaUpdated/policiesUpdated notifications; subsequent anonymous/normal-user evaluation and warm remote Meta cache. Pinned literal endpoint comparison uses service doubles; full upstream server/PG and individual policy consumers are outside this slice.",
+      "evidenceRevision": "04916a394507942348b27b4eb85f2a00274d6f09"
+    },
     "api:charts/notes": {
       "status": "partial",
       "implementation": [
