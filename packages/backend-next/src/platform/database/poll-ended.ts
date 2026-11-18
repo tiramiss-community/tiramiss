@@ -41,7 +41,10 @@ export function createPollEndedReader(manager: EntityManager) {
 
 export function createNotificationTransactions(source: DataSource) {
 	const persistence = new PostNotificationPersistence();
-	return createTransactionRunner<PostNotificationWrites>(source, manager => ({
-		save: notification => persistence.save(manager, notification),
+	return createTransactionRunner<PostNotificationWrites>(source, (manager, { assertActive }) => ({
+		save: async notification => {
+			assertActive();
+			await persistence.save(manager, notification);
+		},
 	}));
 }

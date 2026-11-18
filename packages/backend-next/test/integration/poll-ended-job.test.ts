@@ -16,6 +16,7 @@ import { assertMigrationsApplied } from '../../src/platform/database/check-migra
 import { assertSchemaMatches } from '../../src/platform/database/check-schema.js';
 import { PostNotificationPersistence } from '../../src/platform/database/notification/persistence.js';
 import { createPollEndedReader } from '../../src/platform/database/poll-ended.js';
+import * as notificationTransactions from '../../src/platform/database/poll-ended.js';
 import { createPollEndedHandler } from '../../src/composition/poll-ended-job.js';
 import { baseQueueOptions } from '../../src/platform/job-queue/connection.js';
 import { ENDED_POLL_NOTIFICATION } from '../../src/platform/job-queue/ended-poll-notification.js';
@@ -23,6 +24,7 @@ import { createIdCodec } from '../../src/platform/id-codec.js';
 import { createLogger } from '../../src/platform/logger.js';
 import type { DataSource } from 'typeorm';
 import type { RedisConfig } from '../../src/config/types.js';
+import type { PostNotificationWrites } from '../../src/modules/notification/public.js';
 import type { PostNotification } from '../../src/modules/notification/public.js';
 
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
@@ -320,4 +322,38 @@ test('losing the producer connection is reported, and a normal close is not', as
 	await healthy.ready();
 	await healthy.close();
 	expect(lost).toBe(1);
+});
+
+test('poll-ended caller expires saved capabilities before publishing and keeps recipients independent', async () => {
+	const noteId = await seedPoll(users.author, [users.voterA]);
+	const createTransactions = notificationTransactions.createNotificationTransactions;
+	const scopes: PostNotificationWrites[] = [];
+	const factory = vi.spyOn(notificationTransactions, 'createNotificationTransactions').mockImplementation(db => {
+		const transactions = createTransactions(db);
+		return { run: work => transactions.run(writes => {
+			scopes.push(writes);
+			return work(writes);
+		}) };
+	});
+	try {
+		const handle = createPollEndedHandler({
+			dataSource: source, logger,
+			postingNotifications: { createdEvents: () => async () => {}, afterNotificationSaved: async notification => {
+				const writes = scopes.at(-1)!;
+				await expect(writes.save({ ...notification, id: 'escaped-poll-ended' })).rejects.toThrow('The transaction has ended');
+			} },
+		}, { id: 'aidx' });
+		await handle({ noteId });
+		expect(scopes).toHaveLength(2);
+		for (const writes of scopes) {
+			await expect(writes.save({ id: 'escaped-poll-ended', recipientId: users.author, type: 'pollEnded', notifierId: null,
+				noteId, targetNoteId: null, createdAtMs: Date.now() })).rejects.toThrow('The transaction has ended');
+		}
+		expect(await notifications()).toEqual([users.author, users.voterA].sort().map(recipient => ({
+			recipient_id: recipient, notification_type: 'pollEnded', notifier_id: null, note_id: noteId, target_note_id: null,
+		})));
+		expect(logs.filter(log => log.event === 'poll-ended.notification-failed')).toEqual([]);
+	} finally {
+		factory.mockRestore();
+	}
 });

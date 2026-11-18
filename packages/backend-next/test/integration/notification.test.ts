@@ -2,12 +2,14 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { afterAll, beforeAll, beforeEach, expect, test } from 'vitest';
-import type { DataSource } from 'typeorm';
+import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
+import type { DataSource, EntityManager } from 'typeorm';
 import { createTestDatabase } from '../helpers/database.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
 import { migrateDatabase } from '../../src/platform/database/migrate.js';
 import { PostNotificationPersistence } from '../../src/platform/database/notification/persistence.js';
+import { createNotificationTransactions } from '../../src/platform/database/poll-ended.js';
+import type { PostNotificationWrites } from '../../src/modules/notification/public.js';
 import type { PostNotification } from '../../src/modules/notification/public.js';
 
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
@@ -101,4 +103,53 @@ test('requires a live caller-owned transaction for saving and flushing', async (
 
 test.each([0, -1, 0.5, NaN, Infinity])('rejects invalid per-recipient retention %s', count => {
 	expect(() => new PostNotificationPersistence({ perUserNotificationsMaxCount: count })).toThrow('count');
+});
+
+test.each(['commit', 'rollback'] as const)('expires save before %s starts and rejects it during another transaction', async outcome => {
+	const transactions = createNotificationTransactions(source);
+	const failure = new Error('abort notification transaction');
+	let escaped!: PostNotificationWrites;
+	const transaction = source.transaction.bind(source);
+	const interception = vi.spyOn(source, 'transaction').mockImplementation(async (work: unknown) => transaction(async manager => {
+		try {
+			return await (work as (manager: EntityManager) => Promise<unknown>)(manager);
+		} finally {
+			expect(manager.queryRunner?.isTransactionActive).toBe(true);
+			await expect(escaped.save(record('escaped-before-end'))).rejects.toThrow('The transaction has ended');
+		}
+	}));
+	try {
+		const pending = transactions.run(async writes => {
+			escaped = writes;
+			await writes.save(record('accepted'));
+			if (outcome === 'rollback') {
+				throw failure;
+			}
+		});
+		if (outcome === 'rollback') {
+			await expect(pending).rejects.toBe(failure);
+		} else {
+			await pending;
+		}
+	} finally {
+		interception.mockRestore();
+	}
+	await expect(escaped.save(record('escaped-after-end'))).rejects.toThrow('The transaction has ended');
+	await transactions.run(async writes => {
+		await expect(escaped.save(record('escaped-next-transaction'))).rejects.toThrow('The transaction has ended');
+		await writes.save(record('next'));
+	});
+	expect((await bodies()).map((row: { notification_id: string }) => row.notification_id))
+		.toEqual(outcome === 'commit' ? ['accepted', 'next'] : ['next']);
+});
+
+test('rollback restores flushed bodies and preserves the caller exception', async () => {
+	await save(record('one'));
+	await save(record('other', 'note', 'another'));
+	const failure = new Error('abort flush');
+	await expect(source.transaction(async manager => {
+		await storage.flush(manager, 'recipient');
+		throw failure;
+	})).rejects.toBe(failure);
+	expect((await bodies()).map((row: { notification_id: string }) => row.notification_id)).toEqual(['one', 'other']);
 });
