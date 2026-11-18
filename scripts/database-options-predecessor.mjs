@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectDatabaseReplicationInput } from './database-replication-predecessor.mjs';
 import { projectAnnouncementArchiveInput } from './announcement-archive-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
@@ -15,7 +16,7 @@ const { files } = JSON.parse(record);
 // Historical validators compare their original inputs. Only the three exact
 // changes from #567 have a predecessor; other bytes reach their existing guards.
 export function projectDatabaseOptionsInput(path, actual) {
-	actual = projectAnnouncementArchiveInput(path, actual);
+	actual = projectAnnouncementArchiveInput(path, projectDatabaseReplicationInput(path, actual));
 	if (!Object.hasOwn(files, path)) {
 		return actual;
 	}

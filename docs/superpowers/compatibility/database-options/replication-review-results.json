@@ -1,0 +1,129 @@
+{
+  "scope": "database-replication-review-followup-567",
+  "previousCommit": "65a7c0b338574050544452748990c838b7b8af6c",
+  "measuredAt": "2026-11-18T08:39:41.874235+00:00",
+  "runtimeChanges": [
+    "Close all tracked pg pools when initialization fails, using a per-DataSource supported pg driver option",
+    "Lease primary only for just-saved create response, post-save notification projection and AP materials; default manager retained when replication is disabled"
+  ],
+  "preserved": [
+    "Ordinary show/list, Role and authentication reads retain pinned-source Repository routing",
+    "Existing rich projections and createdSnapshot, business/HTTP callback contracts and transaction boundaries",
+    "Old receipts and predecessor seals remain unchanged"
+  ],
+  "environment": {
+    "node": "26.4.0",
+    "postgres": "18.6",
+    "pg": "8.23.1",
+    "typeorm": "1.1.1",
+    "project": "sol-db567-replica",
+    "ports": [
+      62532,
+      62533,
+      62579
+    ]
+  },
+  "inputs": {
+    "docs/superpowers/compatibility/database-options/replication-runtime-predecessor.json": "28d35329498c0e1c6cff9b20bacef57bc524193ecfca037bca934fbf07a3ba54",
+    "docs/superpowers/compatibility/database-options/replication.md": "6bc337adb84ca8ac759981b62cd8050954d27d62d2bf705a72ee2fea9fd6ea08",
+    "packages/backend-next/README.md": "796db074805d6e3a5d92887c06806910dc55621e6c414431b6b177b8d5e51bcb",
+    "packages/backend-next/compose.replication.test.yml": "18099a65c4123a555eeb8a2e079a5a7a217d9d198462be5ff9277f92dc1ab220",
+    "packages/backend-next/src/composition/note-routes.ts": "8e8925a80409b1cbebf1bcbbd0fa3f04acdd123a562564df24250a8dd81227c0",
+    "packages/backend-next/src/composition/posting-notifications.ts": "18061f542bb3846b97ceea7b283ad479be423e2a13be9ec2f4132d860ea85927",
+    "packages/backend-next/src/platform/connect-resources.ts": "5090fbe16ecca93ba9214594e5544794c8589d7f48b9634e9cb2384c5c8959d0",
+    "packages/backend-next/src/platform/database/data-source.ts": "0ef647696a8b51f2ad257c4fb06dbc76f5d1b99efa7b39e35843c3c13787c39e",
+    "packages/backend-next/src/platform/database/primary-read.ts": "1f2a36983891581322979a34543e9d37ee567c8d592532081ff1f66cf317a311",
+    "packages/backend-next/src/platform/database/runtime-data-source.ts": "4298a6d4655537e54d0c24bc791d15f310038c1dbc04a15bfb0c1e523b900894",
+    "packages/backend-next/test/replication/database.test.ts": "996c31f2e46639491af73e4bf1db4453d55511e1212b0735d5b5f35ca3917853",
+    "scripts/announcement-archive-contract.test.mjs": "75435444436b8828aa54c58e230e41991186d94ce56aa0742d45ff553830c606",
+    "scripts/announcement-archive-predecessor.mjs": "59e3ac537fc26e5ea0b31f83b4c4a4cea0fcd2d03b2b77915ef173ef73d76461",
+    "scripts/database-options-contract.test.mjs": "33feb57078b1a39ccdf4864587a95aa8cb3a6a62f93f0e8dd146b9f66e2e15b4",
+    "scripts/database-replication-predecessor.mjs": "dd061044c60e1ad629a3e30592e2dad7e1b92c266c6927c2b2490c70aa943fac",
+    "scripts/database-replication-runtime-predecessor.mjs": "999cceb31e531783ddbc4e81df01217ccc5b060d3b37e2dfde995873fbca4b3f"
+  },
+  "measurements": [
+    {
+      "check": "build",
+      "result": "PASS",
+      "log": "/tmp/db567-review-build-final2.log",
+      "sha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "check": "typecheck",
+      "result": "PASS",
+      "log": "/tmp/db567-review-typecheck-final4.log",
+      "sha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "check": "unit",
+      "result": "5284 PASS / 1 existing SKIP; 152 files",
+      "log": "/tmp/db567-review-unit-final2.log",
+      "sha256": "696180c553638cb5e3ef186126499efe9c63bde7b84df958a5c28465465b21e5"
+    },
+    {
+      "check": "physical-standby",
+      "result": "18 PASS",
+      "log": "/tmp/db567-review-replica-final4.log",
+      "sha256": "7acd3ff3e4539a5d4e124b3f9d352eaefd914a0dc1384c9115e818682e2e107f"
+    },
+    {
+      "check": "near-integration",
+      "result": "106 PASS; 5 files",
+      "log": "/tmp/db567-review-integration-measured2.log",
+      "sha256": "ca148e0047e35a1066dee87b2a3f402651e26224aaea79caf563ff5b30693d73"
+    },
+    {
+      "check": "root-contracts",
+      "result": "808 PASS / 1 existing SKIP; 809 tests",
+      "log": "/tmp/db567-review-root-measured.log",
+      "sha256": "12e0a50edbd2cbaec617d602f9defd4a89829bf7a85fe8cbcce5fc92d3640556"
+    },
+    {
+      "check": "fresh-compose",
+      "result": "PASS: TCP-ready primary and streaming standby",
+      "log": "/tmp/db567-review-fresh-compose.log",
+      "sha256": "68f9066dba1872c90ee140d4bbd98e00d65903fde20f26033bc65a1523602773"
+    },
+    {
+      "check": "finite-predecessor",
+      "result": "4 PASS",
+      "log": "/tmp/db567-review-predecessor-final3.log",
+      "sha256": "e01377507bd09dc7f9091ef438886ed1271b132400b617a77badc6c82f34b8a0"
+    },
+    {
+      "check": "shipping",
+      "result": "PASS",
+      "log": "/tmp/db567-review-shipping-last.log",
+      "sha256": "5cbf946544ca686853ac461fb0508f7ab04d6b1aab194586530a61691a12fb5d"
+    }
+  ],
+  "counterexamples": [
+    {
+      "log": "/tmp/db567-review-regression-red.log",
+      "sha256": "e47c4809fb53c35a80ee64be973f923b571ec9a1fe2495f6e10ababa425a4df3",
+      "result": "3 FAIL: leaked standby on failed primary; leaked first standby on failed second slave; create500 with paused replay"
+    },
+    {
+      "log": "/tmp/db567-review-replica-final.log",
+      "sha256": "d67e6b955fdd341e55b1239d034b5cc5ea659469568cb148173cf2c3661a3752",
+      "result": "1 FAIL: Poll notification projection read stale standby before delivery"
+    },
+    {
+      "log": "/tmp/db567-review-integration-measured.log",
+      "sha256": "f9e693473400ae95a53a961c77fedb88d4794de2821863e31646d38461b720a8",
+      "result": "1 FAIL: default-source response-read failure injection bypassed; restored default manager identity"
+    },
+    {
+      "log": "/tmp/db567-review-shipping.log",
+      "sha256": "a7d0e2e3737bb4991449629f2b322bff23dc3e59f69ce75e57ebc526c02aed65",
+      "result": "Lint FAIL: two extra blank lines; removed without behavior changes"
+    }
+  ],
+  "limitations": [
+    "Fixed source factory comparison is not full upstream HTTP",
+    "Source trace establishes saved-object upstream behavior; next rich projection uses scoped primary reads instead",
+    "No replica promotion/failover or random multi-slave distribution measurement",
+    "Ordinary replica read-after-write remains eventually visible; no new global consistency guarantee",
+    "Existing pg concurrent-query deprecation warnings and WebFinger fault-injection diagnostics remain"
+  ]
+}

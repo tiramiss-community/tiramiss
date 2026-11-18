@@ -1,0 +1,44 @@
+name: Test (backend-next replication)
+
+on:
+  pull_request:
+    paths:
+      - 'packages/backend-next/**'
+      - 'packages/backend-upstream/**'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
+      - 'pnpm-lock.yaml'
+      - '.node-version'
+      - '.github/workflows/test-backend-next-replication.yml'
+  push:
+    branches: [develop, master]
+    paths:
+      - 'packages/backend-next/**'
+      - 'packages/backend-upstream/**'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
+      - 'pnpm-lock.yaml'
+      - '.node-version'
+      - '.github/workflows/test-backend-next-replication.yml'
+  workflow_dispatch:
+
+jobs:
+  replication:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: pnpm/action-setup@v6.0.10
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --filter backend-next...
+      - run: git diff --exit-code pnpm-lock.yaml
+      - run: pnpm --filter backend-next... build
+      - name: Start isolated PostgreSQL streaming replica dependencies
+        run: docker compose -p backend-next-replication -f packages/backend-next/compose.test.yml -f packages/backend-next/compose.replication.test.yml up -d --wait postgres postgres-replica redis
+      - name: Database primary and physical standby compatibility
+        run: pnpm --filter backend-next exec vitest run --config vitest.replication.config.ts
+      - name: Stop isolated PostgreSQL streaming replica dependencies
+        if: always()
+        run: docker compose -p backend-next-replication -f packages/backend-next/compose.test.yml -f packages/backend-next/compose.replication.test.yml down

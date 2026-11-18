@@ -151,6 +151,9 @@ docker compose -p backend-next-test -f packages/backend-next/compose.test.yml do
 結合・プロセステストは専用DBに接続し、`backend_next_<ランダムID>`のDBだけを作成・削除する。
 本番設定は読み込まない。
 
+`dbReplications: true` と `dbSlaves` を指定すると、通常の Repository/QueryBuilder の読取は replica、書込・transaction 内読取・生 `DataSource.query` は primary を使う。本家と同じ TypeORM の routing で、transaction 外の通常の read-after-write（`notes/show` を含む）は replica の遅延を受ける。保存直後の投稿作成応答・通知描画・AP 配送の投稿本文・投票・直接宛先は primary から読み、保存済みの投稿や投票を replica 未反映として欠落させない。通常のフォロワー宛先照会は replica の遅延を受ける。空の `dbSlaves: []` は primary へ戻り、未指定/false は replica 設定を参照しない。migration は primary のみを使う。`db.extra` は primary と各 replica の両方へ適用され、`host` / `port` を指定すると replica の接続先も上書きされる。
+physical standby の専用試験は [#567 の比較資料](../../docs/superpowers/compatibility/database-options/replication.md) に従って `compose.replication.test.yml` を重ね、`pnpm --filter backend-next exec vitest run --config vitest.replication.config.ts` を実行する。standby の公開ポートは `BACKEND_NEXT_TEST_REPLICA_DB_PORT`（既定 `55433`）で変更できる。
+
 #164の保持・清掃に絞る場合は、上記のCompose手順で専用のPostgreSQL/Redisを起動後に次を実行する。source oracleの再実行は[保持比較資料](../../docs/superpowers/compatibility/queue-retention/README.md#実行と直接比較)を参照する。handler結果を制御した実adapter検証とsource比較を分け、既存の各業務・processテストを引き継ぐ。
 
 ```sh

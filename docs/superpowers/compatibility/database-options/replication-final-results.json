@@ -1,0 +1,124 @@
+{
+  "scope": "database-replication-final-followup-567",
+  "previousCommit": "4c1ed2264b64669dc9fd6bac02554e8bc0ee9a2c",
+  "measuredAt": "2026-11-18T09:22:48.210236+00:00",
+  "changes": [
+    "Explicit primary SelectQueryBuilder obtains/releases each SQL runner; existing selected runner preserved, no ambient context",
+    "Primary query for same-operation mentionedRemoteUsers and direct delivery recipients; ordinary follower reads unchanged",
+    "Release public registered runners before failed-initialization pool shutdown; reject active/concurrent duplicate initialize before ownership cleanup",
+    "Replica pause acknowledgement, same-job destination/object assertion, independent test cleanup, INVALID_CONFIG field assertions, pnpm root workflow triggers"
+  ],
+  "environment": {
+    "node": "26.4.0",
+    "postgres": "18.6",
+    "typeorm": "1.1.1",
+    "pg": "8.23.1",
+    "project": "sol-db567-replica",
+    "ports": [
+      62532,
+      62533,
+      62579
+    ]
+  },
+  "inputs": {
+    ".github/workflows/test-backend-next-replication.yml": "f386da75a5a053c1811b01bbeb290a5c9bd40e79a636c090f5665cb17e4e2514",
+    "docs/superpowers/compatibility/database-options/replication-final-predecessor.json": "65bb633870a4e4c0bb735f06362f1bde594ea9539f32aeaa4f92286d8c79c43c",
+    "docs/superpowers/compatibility/database-options/replication.md": "73ec162229882d2f886b9ade099e86057ba64446f06d6f96d3217c1bea623305",
+    "packages/backend-next/README.md": "f9b29b64b994ec2ac5f4fb0974509e5d016403b4eca92b1ed898090e04fff8db",
+    "packages/backend-next/src/composition/note.ts": "9e495fd35325ef6661799eddbf256eb8dbcf05517654a76b6db7d3c06ccf2275",
+    "packages/backend-next/src/platform/connect-resources.ts": "be9ba81cbfcdd1d9b650d0606f6b8927562967a2ea76395bf000a21383f4be52",
+    "packages/backend-next/src/platform/database/primary-read.ts": "dfdbfc9ed0887b20f5d48572c1b690a5a60ecba4f90a6922eaa462cdd8ea9c23",
+    "packages/backend-next/src/platform/database/runtime-data-source.ts": "d33a94ef6567e01106a2eb0368fa5790de395e658276d745546903147f1a6075",
+    "packages/backend-next/test/replication/database.test.ts": "23b9899f3c272d6d14006eaab3c3fb633e8132d1098bb4bf8a50222bfeaae80a",
+    "packages/backend-next/test/replication/initialization.test.ts": "d9eb8c21649c1d99ef7c22baf0865b9566657156f8e1853b8a4b4b0156d4daba",
+    "packages/backend-next/test/unit/database-replication-config.test.ts": "e2eecaeea951a786094924085d22596eff4d7224b322e8623c6b713a7344cd35",
+    "scripts/database-options-contract.test.mjs": "c2e432d4bc54e85ce54eb047b8b9a39cef5ec2ec8a15bfe4c257ac2396db7fe2",
+    "scripts/database-replication-final-predecessor.mjs": "107e1e83893277a700d7ecf262056125b7f5d9ab321df540dd9bea6c0f96a092",
+    "scripts/database-replication-runtime-predecessor.mjs": "948d804ac9befd25f08bf635ba670c04b8d3c155873fff55a53bcb85444d1a3c"
+  },
+  "commands": [
+    {
+      "check": "build",
+      "log": "/tmp/db567-round2-build.log",
+      "sha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
+      "result": "PASS"
+    },
+    {
+      "check": "typecheck",
+      "log": "/tmp/db567-round2-typecheck-final.log",
+      "sha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+      "result": "PASS"
+    },
+    {
+      "check": "unit",
+      "log": "/tmp/db567-round2-unit-all.log",
+      "sha256": "05755c8805aed8a8f92f8e82d2ccb14a0f31ed11531f6565a48c2d8d952e37a2",
+      "result": "5284 PASS / 1 existing SKIP; 152 files"
+    },
+    {
+      "check": "physical-standby",
+      "log": "/tmp/db567-round2-replica-final.log",
+      "sha256": "665dd31cc896191f8c8df62fe6e23aecb1e044d9639e995397dc4d1b3daeb279",
+      "result": "29 PASS; 2 files"
+    },
+    {
+      "check": "near-integration",
+      "log": "/tmp/db567-round2-integration-all.log",
+      "sha256": "97380056c05e011f3d757fd455ad6e4303c5a4afc761031ee50fcce39f9da9ea",
+      "result": "214 PASS; 6 files"
+    },
+    {
+      "check": "root-contracts",
+      "log": "/tmp/db567-round2-root.log",
+      "sha256": "0686f7ddd53a2fd89950f0ada428e1979cd287be1abd6764bcff0ed237a426c9",
+      "result": "809 PASS / 1 existing SKIP; 810 tests"
+    },
+    {
+      "check": "predecessor",
+      "log": "/tmp/db567-round2-predecessor-final.log",
+      "sha256": "db8d5bb707c3392f99e17742fda8b5e5c90d0a58315f1f0d67b8cd5946416021",
+      "result": "5 PASS"
+    },
+    {
+      "check": "shipping",
+      "log": "/tmp/db567-round2-shipping-last.log",
+      "sha256": "a6ab1f0b2ea1c4171aced53d400d7dde667916827597f32941089daa9891aa16",
+      "result": "PASS"
+    }
+  ],
+  "counterexamples": [
+    {
+      "log": "/tmp/db567-round2-red.log",
+      "sha256": "9ea030e643e4a712cd60e732575a28159f7985b2159f5524a4dd6098adcb1fd9",
+      "result": "2 FAIL: max1 independent query timeout during non-DB wait; empty stored remote URI despite resolved mention"
+    },
+    {
+      "log": "/tmp/db567-round2-green.log",
+      "sha256": "0db46f9b5f184346be9301f984ca8a567105dff8b1a88d942eceaab94cf43e35",
+      "result": "1 FAIL: expected shared rather than direct personal inbox; corrected test to source direct recipe"
+    },
+    {
+      "log": "/tmp/db567-metadata-red.log",
+      "sha256": "975e0583d645f7474c9b8490d1e22dbc713befeef59d4d095e55a2c517dd17ac",
+      "result": "4 real-PG metadata-error initialization attempts hung until test timeout before borrowed-runner cleanup"
+    },
+    {
+      "log": "/tmp/db567-ownership-red.log",
+      "sha256": "44ec99a5bbad5cd8f54214d4216cf29e343ec9450a440073a37a6c80e1f38185",
+      "result": "4 duplicate/concurrent initialization ownership regressions before guard"
+    },
+    {
+      "log": "/tmp/db567-round2-shipping.log",
+      "sha256": "85d80227a4e191ae3732209ff46c84ff48cb1fe421bc73fd2d69294cb55fa9a3",
+      "result": "Lint-only extra blank line removed"
+    }
+  ],
+  "limits": [
+    "Fixed upstream factory and source trace, not full upstream server",
+    "Normal follower/show/Role/authentication reads retain source replica routing and lag",
+    "Query cache/disableCache/slow-query diagnostics remain #567",
+    "No failover/promotion or random replica-selection distribution proof",
+    "New primary strategy has no transaction or global read-mode mutation",
+    "Existing pg concurrent-query deprecation warnings and external-checkout skips remain"
+  ]
+}

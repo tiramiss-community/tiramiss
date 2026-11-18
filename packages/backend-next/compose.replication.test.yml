@@ -1,0 +1,30 @@
+# Use with compose.test.yml under an isolated Compose project.
+services:
+  postgres:
+    command: ['postgres', '-c', 'hba_file=/etc/postgresql/replication-test.pg_hba.conf']
+    volumes:
+      - ./test/fixtures/database-options/replication.pg_hba.conf:/etc/postgresql/replication-test.pg_hba.conf:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -h 127.0.0.1 -U postgres -d backend_next_test']
+  postgres-replica:
+    image: postgres:18
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: foundation-test-only
+    ports:
+      - '127.0.0.1:${BACKEND_NEXT_TEST_REPLICA_DB_PORT:-55433}:5432'
+    tmpfs:
+      - /var/lib/postgresql
+    entrypoint: ['bash', '-ec']
+    command:
+      - |
+        install -d -m 700 -o postgres -g postgres /var/lib/postgresql/replica
+        gosu postgres pg_basebackup -h postgres -U postgres -D /var/lib/postgresql/replica -R -X stream
+        exec gosu postgres postgres -D /var/lib/postgresql/replica
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d backend_next_test']
+      interval: 1s
+      timeout: 3s
+      retries: 30

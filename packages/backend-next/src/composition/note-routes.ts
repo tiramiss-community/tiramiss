@@ -15,6 +15,7 @@ import { createNoteCreateApi } from '../http/note-create-api.js';
 import { createNoteRateLimiter } from '../platform/note-rate-limit.js';
 import { createDeleteNote, createShowNote, readNotePlan, renderNote } from '../modules/note/public.js';
 import { createHostRules, renderDeletedNoteActivity } from '../modules/federation/public.js';
+import { readFromPrimary } from '../platform/database/primary-read.js';
 import { createNoteReader } from '../platform/database/note-reader.js';
 import { createTokenAuthenticator } from '../platform/database/authenticate.js';
 import { createIdCodec } from '../platform/id-codec.js';
@@ -47,11 +48,17 @@ export function prepareNoteRoutes(resources: RuntimeResources, config: RuntimeCo
 		publishDeleted: (snapshot, occurredAtMs) => resources.notePostDelete.start({ kind: 'stream', snapshot, occurredAtMs }),
 	});
 	const authenticate = createTokenAuthenticator(manager, resources.logger);
-	return { authenticate, deletion, show, list, create, reader, pollRecommendation: createPollRecommendationHttp(resources, config) };
+	const readCreatedNote = (id: string, viewerId: string, now: number) => readFromPrimary(resources.dataSource, async primary => {
+		// The saved note and Poll may not have reached a replica when the create response is rendered.
+		const createdReader = createNoteReader(primary, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId }, resources.actorEmojis);
+		const notes = await readNotePlan([id], createdReader.readNotes);
+		return renderNote(id, await createdReader.readMaterials(notes, viewerId, now), viewerId, now);
+	});
+	return { authenticate, deletion, show, list, create, reader, readCreatedNote, pollRecommendation: createPollRecommendationHttp(resources, config) };
 }
 
 export function registerNoteRoutes(app: Hono, resources: RuntimeResources, prepared: ReturnType<typeof prepareNoteRoutes>) {
-	const { authenticate, deletion, show, list, create, reader } = prepared;
+	const { authenticate, deletion, show, list, create, readCreatedNote } = prepared;
 	return app
 		.route('/', prepared.pollRecommendation)
 		.route('/', createNotesListApi({ authenticate, listNotes: list.listNotes, logger: resources.logger }))
@@ -59,9 +66,6 @@ export function registerNoteRoutes(app: Hono, resources: RuntimeResources, prepa
 		.route('/', createNoteApi({ authenticate, showNote: show.showNote, logger: resources.logger }))
 		.route('/', createNoteCreateApi({
 			authenticate, createNote: create.createNote, logger: resources.logger,
-			readCreatedNote: async (id, viewerId, now) => {
-				const notes = await readNotePlan([id], reader.readNotes);
-				return renderNote(id, await reader.readMaterials(notes, viewerId, now), viewerId, now);
-			},
+			readCreatedNote,
 		}));
 }

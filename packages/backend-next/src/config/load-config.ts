@@ -10,7 +10,7 @@ import { idMethods, type IdMethod } from '../platform/id-codec.js';
 import { DiagnosticError } from '../platform/diagnostic-error.js';
 import { parseAllowedPrivateNetworks } from '../platform/outbound-http/private-address.js';
 import { upstreamRelease } from './upstream-release.js';
-import type { DeliverJobConfig, OutboundHttpConfig, RedisConfig, RuntimeConfig } from './types.js';
+import type { DatabaseConnectionConfig, DeliverJobConfig, OutboundHttpConfig, RedisConfig, RuntimeConfig } from './types.js';
 
 type ObjectValue = Record<string, unknown>;
 
@@ -84,6 +84,29 @@ function deliverJob(source: ObjectValue): DeliverJobConfig {
 	};
 }
 
+function databaseReplicas(source: ObjectValue): DatabaseConnectionConfig[] | undefined {
+	if (source.dbReplications != null && typeof source.dbReplications !== 'boolean') {
+		throw new DiagnosticError('INVALID_CONFIG', { field: 'dbReplications' });
+	}
+	if (!source.dbReplications) {
+		return undefined;
+	}
+	if (!Array.isArray(source.dbSlaves)) {
+		throw new DiagnosticError('INVALID_CONFIG', { field: 'dbSlaves' });
+	}
+	return source.dbSlaves.map((value, index) => {
+		const field = `dbSlaves[${index}]`;
+		const replica = object(value, field);
+		return {
+			host: text(replica.host, `${field}.host`),
+			port: positive(replica.port, `${field}.port`, 65535),
+			database: text(replica.db, `${field}.db`),
+			username: text(replica.user, `${field}.user`),
+			password: text(replica.pass, `${field}.pass`, true),
+		};
+	});
+}
+
 function redis(value: unknown, host: string): RedisConfig {
 	const source = object(value, 'redis');
 	const prefix = text(source.prefix ?? host, 'redis.prefix');
@@ -152,6 +175,7 @@ export async function loadConfig(
 	}
 
 	const db = object(source.db, 'db');
+	const replicas = databaseReplicas(source);
 	const specific = source.backendNext === undefined ? {} : object(source.backendNext, 'backendNext');
 	const cache = specific.roleCache === undefined ? {} : object(specific.roleCache, 'backendNext.roleCache');
 	const baseRedis = redis(source.redis, url.host);
@@ -182,6 +206,7 @@ export async function loadConfig(
 			username: text(db.user ?? env.DATABASE_USER, 'db.user'),
 			password: text(db.pass ?? env.DATABASE_PASSWORD ?? '', 'db.pass', true),
 			extra: db.extra === undefined ? {} : object(db.extra, 'db.extra'),
+			...(replicas === undefined ? {} : { replicas }),
 		},
 		redis: baseRedis,
 		redisForJobQueue: source.redisForJobQueue ? redis(source.redisForJobQueue, url.host) : baseRedis,

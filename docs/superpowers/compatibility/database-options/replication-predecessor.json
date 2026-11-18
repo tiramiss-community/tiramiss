@@ -1,0 +1,87 @@
+{
+  "baseline": "161380446434f3c8e8a912c0266270f8bb285b50",
+  "measurement": "replication-results.json",
+  "files": {
+    "packages/backend-next/src/platform/database/data-source.ts": {
+      "currentSha256": "554f8ada3917c3c062ba3c66832176ce5c416e378a5307b36358d5207450cd60",
+      "previousSha256": "4615353f9ee1405851593914ed4f9246e467e8183d4ef2560a41686cd3edd056",
+      "patches": [
+        {
+          "offset": 712,
+          "insert": "const { replicas: _replicas, ...primary } = config;\n\t",
+          "previous": ""
+        },
+        {
+          "offset": 799,
+          "insert": "pr",
+          "previous": "conf"
+        },
+        {
+          "offset": 802,
+          "insert": "mary",
+          "previous": "g"
+        },
+        {
+          "offset": 1219,
+          "insert": "stays on the primary and ",
+          "previous": ""
+        },
+        {
+          "offset": 1253,
+          "insert": "i",
+          "previous": ""
+        },
+        {
+          "offset": 1255,
+          "insert": "",
+          "previous": "he databa"
+        },
+        {
+          "offset": 1256,
+          "insert": "",
+          "previous": "e"
+        },
+        {
+          "offset": 1266,
+          "insert": "replicati",
+          "previous": ""
+        },
+        {
+          "offset": 1277,
+          "insert": " and defau",
+          "previous": ""
+        },
+        {
+          "offset": 1288,
+          "insert": "ts",
+          "previous": "y"
+        },
+        {
+          "offset": 1291,
+          "insert": "ar",
+          "previous": "th"
+        },
+        {
+          "offset": 1302,
+          "insert": "-",
+          "previous": " fact"
+        },
+        {
+          "offset": 1304,
+          "insert": "nl",
+          "previous": "r"
+        },
+        {
+          "offset": 1307,
+          "insert": "",
+          "previous": " supplies these defaults"
+        },
+        {
+          "offset": 1346,
+          "insert": ",\n\t\t...(config.replicas === undefined ? {} : { replication: {\n\t\t\tmaster: { host: config.host, port: config.port, database: config.database, username: config.username, password: config.password },\n\t\t\tslaves: config.replicas,\n\t\t} })",
+          "previous": ""
+        }
+      ]
+    }
+  }
+}
