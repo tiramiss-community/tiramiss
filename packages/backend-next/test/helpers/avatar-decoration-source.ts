@@ -59,15 +59,15 @@ export function createAvatarDecorationSource(manager: EntityManager, id: string,
 		},
 		idService: { gen: () => id },
 		globalEventService: { publishInternalEvent(type: string, body: MiAvatarDecoration) {
-			events.push({ type, body }); 
+			events.push({ type, body });
 		} },
 		moderationLogService: { log(actor: { id: string }, type: string, info: object) {
-			logs.push({ actorId: actor.id, type, info }); 
+			logs.push({ actorId: actor.id, type, info });
 		} },
 	};
 	const FixedDate = class extends Date {
 		constructor(value?: string | number) {
-			super(value ?? atMs); 
+			super(value ?? atMs);
 		}
 	};
 	for (const name of ['create', 'update', 'delete']) {
@@ -99,7 +99,7 @@ export async function avatarDecorationSourceAccess(facts: { root: boolean; admin
 	const meta = endpoint.statements.filter(ts.isVariableStatement).flatMap(node => node.declarationList.declarations).find(node => node.name.getText() === 'meta')!.initializer!;
 	class ApiError extends Error {
 		constructor(readonly body: object) {
-			super(); 
+			super();
 		}
 	}
 	const receiver = { meta: { rootUserId: facts.root ? 'actor' : 'root' }, roleService: {
@@ -113,7 +113,7 @@ export async function avatarDecorationSourceAccess(facts: { root: boolean; admin
 		return null;
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return error.body; 
+			return error.body;
 		}
 		throw error;
 	}

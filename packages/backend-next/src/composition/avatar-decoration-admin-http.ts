@@ -22,7 +22,7 @@ export function createAvatarDecorationAdminHttp(resources: Pick<RuntimeResources
 		// Source publishers/audit are non-waiting; a failed effect cannot undo a saved decoration.
 		const task = Promise.resolve().then(work).then(() => {}, error => {
 			try {
-				resources.logger.error('avatar-decoration.effect-failed', { error }); 
+				resources.logger.error('avatar-decoration.effect-failed', { error });
 			} catch { /* Diagnostics cannot change a saved operation. */ }
 		});
 		pending.add(task);
@@ -36,13 +36,18 @@ export function createAvatarDecorationAdminHttp(resources: Pick<RuntimeResources
 		async readActor(userId, atMs) {
 			const facts = await readRoleAuthorizationFacts(manager, userId, ids.createdAtFromId);
 			const access = roleAccessFacts(userId, facts, atMs);
-			return { isSuspended: access.isSuspended, get isModerator() {
-				return access.isModerator; 
-			}, get isAdministrator() {
-				return access.isAdministrator; 
-			}, get canManageAvatarDecorations() {
-				return evaluatePolicies({ userId, roles: selectApplicableRoles(facts.roles, facts.assignments, facts.user, atMs), basePolicies: facts.instance.basePolicies, uploadLimitBytes: Infinity }).canManageAvatarDecorations;
-			} };
+			return {
+				isSuspended: access.isSuspended,
+				get isModerator() {
+					return access.isModerator;
+				},
+				get isAdministrator() {
+					return access.isAdministrator;
+				},
+				get canManageAvatarDecorations() {
+					return evaluatePolicies({ userId, roles: selectApplicableRoles(facts.roles, facts.assignments, facts.user, atMs), basePolicies: facts.instance.basePolicies, uploadLimitBytes: Infinity }).canManageAvatarDecorations;
+				},
+			};
 		},
 		publish: (type, row) => start(() => resources.publishInternalEvent(type, row)),
 		audit: entry => start(() => appendModerationLog(manager, entry, ids.newId)),

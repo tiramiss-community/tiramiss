@@ -45,10 +45,10 @@ beforeAll(async () => {
 		{ id: seed.codec.newId(), userId: seed.actors.ordinary.id, token: 'decoration-write-token', hash: 'decoration-write-token', permission: ['write:admin:avatar-decorations'] },
 	]);
 	events = await openInternalEvents({ subscriberConfig: database.config.redisForPubsub, url: database.config.url, onError: error => {
-		throw error; 
+		throw error;
 	} });
 	events.register({ onInternal(event) {
-		received.push(event); 
+		received.push(event);
 	} });
 	peer = createAvatarDecorationCache({ events, read: createAvatarDecorationReader(resources.dataSource.manager) });
 	app = createBackendHttpApp(resources, database.config);
@@ -57,10 +57,10 @@ beforeAll(async () => {
 });
 afterAll(async () => {
 	if (server) {
-		await closeHttp(server); 
+		await closeHttp(server);
 	}
 	if (app) {
-		await drainHttpAppWork(app); 
+		await drainHttpAppWork(app);
 	}
 	await peer?.close();
 	await events?.close();
@@ -91,12 +91,12 @@ test('listening HTTP create/update/delete match literal pinned callbacks and ser
 	expect(createdResponse.status).toBe(200);
 	const created = await createdResponse.json();
 	await vi.waitFor(async () => {
-		expect(await peer.getAll()).toHaveLength(1); 
+		expect(await peer.getAll()).toHaveLength(1);
 	});
 	const patch = { id: created.id, name: 'updated', category: null };
 	expect((await call('update', patch)).status).toBe(204);
 	await vi.waitFor(async () => {
-		expect((await peer.getAll())[0].name).toBe('updated'); 
+		expect((await peer.getAll())[0].name).toBe('updated');
 	});
 	const listed = await (await call('list', { limit: 1, sinceId: 'zzzz', userId: null })).json();
 	expect(listed).toHaveLength(1);
@@ -104,7 +104,7 @@ test('listening HTTP create/update/delete match literal pinned callbacks and ser
 	expect(await publicResponse.json()).toEqual([{ id: created.id, ...attributes, name: 'updated', category: null, roleIdsThatCanBeUsedThisDecoration: [] }]);
 	expect((await call('delete', { id: created.id })).status).toBe(204);
 	await vi.waitFor(async () => {
-		expect(await peer.getAll()).toEqual([]); 
+		expect(await peer.getAll()).toEqual([]);
 	});
 	const actualLogs = await logs();
 	await vi.waitFor(() => expect(received).toHaveLength(3));
@@ -142,10 +142,10 @@ for (const [actor, expected] of [['root', 200], ['administrator', 200], ['ordina
 			}
 		}
 		if (actor === 'moderator' || actor === 'expired') {
-			expect((await response.json()).error).toMatchObject({ code: 'ROLE_PERMISSION_DENIED', id: '7f86f06f-7e15-4057-8561-f4b6d4ac755a' }); 
+			expect((await response.json()).error).toMatchObject({ code: 'ROLE_PERMISSION_DENIED', id: '7f86f06f-7e15-4057-8561-f4b6d4ac755a' });
 		}
 		if (actor === 'suspended') {
-			expect((await response.json()).error.code).toBe('YOUR_ACCOUNT_SUSPENDED'); 
+			expect((await response.json()).error.code).toBe('YOUR_ACCOUNT_SUSPENDED');
 		}
 	});
 }
@@ -197,7 +197,7 @@ test('database write failure yields no new row, event or audit and succeeds afte
 test('failed event publication and diagnostic logger preserve saved HTTP success and drain accepted work', async () => {
 	const publish = vi.spyOn(resources, 'publishInternalEvent').mockRejectedValue(new Error('Redis publish fault'));
 	const diagnostic = vi.spyOn(resources.logger, 'error').mockImplementation(() => {
-		throw new Error('diagnostic fault'); 
+		throw new Error('diagnostic fault');
 	});
 	try {
 		const response = await call('create', attributes);
@@ -218,9 +218,9 @@ test('literal pinned policy and scope gate matches real delegated read/write tok
 			const expectedError = await avatarDecorationSourceAccess({ root: false, administrator: false, policy: true, suspended: false, permissions: [`${scope}:admin:avatar-decorations`] }, operation);
 			const response = await call(operation, operation === 'create' ? attributes : {}, `decoration-${scope}-token`);
 			if (expectedError) {
-				expect((await response.json()).error).toMatchObject(expectedError); 
+				expect((await response.json()).error).toMatchObject(expectedError);
 			} else {
-				expect(response.status).toBe(200); 
+				expect(response.status).toBe(200);
 			}
 		}
 	}
