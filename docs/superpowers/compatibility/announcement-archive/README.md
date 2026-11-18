@@ -35,4 +35,6 @@ pnpm --filter backend-next test:process test/processes/announcement-archive.test
 
 systemの未移植名はデフォルトhandlerで処理しない。通常workerは本家同様に未知名を失敗として保持するため、未移植jobを含む共有Redisで起動してよい意味ではない。停止下引継ぎ検査は引き続きsystem queueを保守的に拒否し、他system handler・9 scheduler・正式なpayload引継ぎは #199/#200/#526 に残す。切替前の検査を迂回しない。
 
+存在確認と状態確認の間に予約が削除された場合の`unknown`判定も本家を維持する。次回復元まで予約がなくなる競合は [UF-016](../../../backend-next/upstream-findings/packages/backend/src/core/QueueService.md) に記録した。
+
 管理CRUDと変更取消への接続は #194、未読API等の既存比較は [announcements](../announcements/README.md) に残す。#193/#199/#114全体の完成や本番切替を意味しない。
