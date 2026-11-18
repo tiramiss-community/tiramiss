@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectAnnouncementArchiveInput } from './announcement-archive-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -43,7 +44,7 @@ export function validateWorkerLoggingEvidence(readFile = read, optional = option
 	assert.deepEqual(Object.keys(current.predecessors), predecessorPaths, 'worker logging finite predecessor scope');
 	assert.equal(current.baseRevision, 'fe1a8106c3b3d5aba8ddf57de5e28e37e4e0e6ca');
 	for (const [path, digest] of Object.entries(current.currentInputs)) {
-		assert.equal(sha(readFile(path)), digest, `worker logging measured input drift: ${path}`);
+		assert.equal(sha(projectAnnouncementArchiveInput(path, readFile(path))), digest, `worker logging measured input drift: ${path}`);
 	}
 	for (const [path, binding] of Object.entries(current.predecessors)) {
 		assert.equal(binding.currentSha256, current.currentInputs[path], 'worker logging measured successor');
@@ -73,6 +74,7 @@ export function validateWorkerLoggingEvidence(readFile = read, optional = option
 // Keep the dated measurements on their original bytes. Only the exact measured
 // worker-logging successor is projected; unknown bytes reach the existing guards.
 export function projectWorkerLoggingInput(path, actual, readFile = read) {
+	actual = projectAnnouncementArchiveInput(path, actual);
 	if (!predecessorPaths.includes(path)) {
 		return actual;
 	}

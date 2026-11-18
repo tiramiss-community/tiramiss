@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectAnnouncementArchiveInput } from './announcement-archive-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 import { driveFilePredecessorFiles, readPreDriveFiles } from './drive-files-evidence.mjs';
@@ -39,6 +40,7 @@ const videoFfmpegStep = '      - name: Install FFmpeg\n        run: |\n         
 const processRedisService = '      redis-pubsub:\n        image: redis:8\n        ports: [\'56380:6379\']\n        options: >-\n          --health-cmd "redis-cli ping"\n          --health-interval 1s --health-timeout 3s --health-retries 30\n';
 // Restore only the process lane addition; the identical integration service is historical.
 export function projectComparisonCiWorkflow(bytes) {
+ bytes = projectAnnouncementArchiveInput(workflowPath, bytes);
  // #295/#337 add only comparison-document CI triggers; historical measurements stay sealed.
  if (sha(bytes) === '2d5591a5a03eae69eca95442a2e652d1ce220840683541eca4d3739c95885608') {
   let previous = bytes.toString();

@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectAnnouncementArchiveInput } from './announcement-archive-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -35,7 +36,7 @@ export function validateQueueSessionObservation(value, readFile = read, optional
  assert.deepEqual(Object.keys(value.inputs), [queueSessionObservationPath]);
  assert.equal(value.noInputDrift, true);
  assert.deepEqual(value.inputsAfter, value.inputs);
- assert.equal(sha(readFile(queueSessionObservationPath)), value.inputs[queueSessionObservationPath], 'queue session measured fixture input drift');
+ assert.equal(sha(projectAnnouncementArchiveInput(queueSessionObservationPath, readFile(queueSessionObservationPath))), value.inputs[queueSessionObservationPath], 'queue session measured fixture input drift');
  const previous = sealed(readFile(predecessorPath), predecessorSeal, 'predecessor');
  assert.equal(previous.commit, value.baseRevision);
  assert.deepEqual(Object.keys(previous.files), [queueSessionObservationPath]);
