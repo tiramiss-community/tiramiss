@@ -221,9 +221,11 @@
     "docs/superpowers/specs/2026-10-17-role-compatibility-contract.md": "5ba13cf0982bdf2cfe5fda58b065116bc01c1919a41d49f95ce9894ac6b2fcfd",
     "docs/superpowers/plans/2026-11-08-moderation-log-appender-194.md": "c4e29b6c8c09361de2233b5000c21f800051d806338c8939062953c6cbe8d4e6",
     "docs/superpowers/compatibility/note/observations.json": "ba3d42b9648d3bb72a01394f54d61c9da442f9f8f7f5b71e60fa82646959a5f6",
-    "docs/superpowers/compatibility/note/n7/posting-proof-272.json": "41f87f127936dd84d8b818ce735b2ed5efa78f2b5cf366833227fdbe9f43d109",
+    "docs/superpowers/compatibility/note/n7/posting-proof-272.json": "41f87f127936dd84d8b818ce735b2ed5efa78f2b5cf366833227fdbe9f43d109"
+  },
+  "inspectedSourceRevision": "6af8cd5baab289e684266cde7c3955129320c8c3",
+  "observationArtifacts": {
     "docs/superpowers/compatibility/moderation-log/source-probe.mjs": "2a1a71a41c3979e19f459c12346a0d7b221c2c3ce844426a88e968b0f777b8ef",
     "docs/superpowers/compatibility/moderation-log/source-observations.json": "1f887b3940df1e396d20f0ecbb63ab50aece2a5cd9af07d33ae8852af1fd2606"
-  },
-  "inspectedSourceRevision": "4199ff8e3b7596753b5faf2e2bd6b11ccfc55054"
+  }
 }

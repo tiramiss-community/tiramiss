@@ -31,6 +31,9 @@ test('finite moderation-log evidence names both callers and preserves execution 
 });
 
 test('the recorded observation and named caller assertions remain linked', () => {
+	for (const [path, expected] of Object.entries(evidence.observationArtifacts)) {
+		assert.equal(createHash('sha256').update(read(path)).digest('hex'), expected, `added observation artifact: ${path}`);
+	}
 	for (const [path, expected] of Object.entries(observation.currentInputs)) {
 		assert.equal(evidence.inspectedInputs[path], expected, `observation input: ${path}`);
 	}
