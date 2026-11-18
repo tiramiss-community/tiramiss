@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectNoteChartsInput } from './note-charts-evidence.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -181,7 +182,7 @@ export function validateNotesPaginationEvidence(value, rawRead = read, optional 
 // Historical leaves consume only these exact five byte transitions. The full
 // notes measurement is checked independently by notes-pagination-contract.test.mjs.
 export function projectNotesPaginationInput(path, actual) {
-	actual = projectPollRecommendationInput(path, projectUserMemoInput(path, actual));
+	actual = projectPollRecommendationInput(path, projectUserMemoInput(path, projectNoteChartsInput(path, actual)));
 	const binding = Object.hasOwn(projection, path) ? projection[path] : undefined;
 	if (!binding) return actual;
 	assert.equal(sha(actual), binding.currentSha256, `measured current input drift (notes pagination): ${path}`);
@@ -453,6 +454,7 @@ const announcementReadProjection = {
   ]
 };
 export function projectAnnouncementReadInput(path, actual) {
+	actual = projectNoteChartsInput(path, actual);
 	const variants = Object.hasOwn(announcementReadProjection, path) ? announcementReadProjection[path] : [];
 	const binding = variants.find(value => sha(actual) === value.currentSha256);
 	if (!binding) return actual;

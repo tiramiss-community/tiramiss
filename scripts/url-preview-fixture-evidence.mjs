@@ -82,7 +82,7 @@ export function validatePostSaveIdleFixture(value, readFile = read, optional = o
  assert.equal(value.postingComplete, false); assert.equal(value.ciSuccessMeasured, false);
  assert.deepEqual(Object.keys(value.inputs), [postSaveFixturePath, postSaveProductionPath]);
  assert.deepEqual(value.inputsAfter, value.inputs);
- for (const [path, digest] of Object.entries(value.inputs)) assert.equal(sha(readFile(path)), digest, `post-save idle fixture measured input drift: ${path}`);
+ for (const [path, digest] of Object.entries(value.inputs)) assert.equal(sha(projectPostSaveChartInput(path, readFile(path))), digest, `post-save idle fixture measured input drift: ${path}`);
  const previous = value.predecessor;
  assert.equal(previous.path, postSaveFixturePath);
  assert.equal(previous.currentSha256, value.inputs[postSaveFixturePath]);
@@ -109,4 +109,20 @@ export function validatePostSaveIdleFixture(value, readFile = read, optional = o
   if (bytes !== null) assert.equal(sha(bytes), run.logSha256, 'post-save idle fixture actual log drift');
  }
  return source;
+}
+
+// Keep this standalone fixture leaf builtins-only. #274's separately measured
+// producer adds these exact chart dispatch bytes; the old idle receipt is history.
+function projectPostSaveChartInput(path, actual) {
+ if (path !== postSaveProductionPath || sha(actual) !== 'e70abe9b1693b2a7c681075fc674257c62f2ed7d6f373a8ec16175fd1e8873c0') return actual;
+ let previous = actual.toString();
+ for (const addition of [
+  '\tcharts?(input: NotePostSaveInput): Promise<void>;\n',
+  "\t\tif (steps.charts) {\n\t\t\tstart('charts', () => steps.charts!(input));\n\t\t}\n",
+ ]) {
+  assert.equal(previous.split(addition).length, 2, 'post-save chart predecessor anchor');
+  previous = previous.replace(addition, '');
+ }
+ assert.equal(sha(Buffer.from(previous)), 'af4b441de6527947089c2b701a6b851b356e6bc2e5e1a144638fa305e86771b2', 'post-save chart predecessor identity');
+ return Buffer.from(previous);
 }

@@ -28,6 +28,7 @@ function fixture() {
 			throw new Error('unexpected actor mutation');
 		} },
 		notePostSave: { start: vi.fn() },
+		noteCharts: { read: vi.fn(async () => ({ local: { total: [0] } })) },
 		notePostDelete: { get start() {
 			events.push('note'); return vi.fn();
 		} },
@@ -43,6 +44,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 	expect(events).toEqual(['note', 'role']);
 	expect(legacy).toBe(createBackendHttpApp);
 	expect([...new Set(app.routes.map(route => route.path))]).toEqual([
+		'/api/charts/notes', '/api/charts/user/notes',
 		'/api/admin/roles/show', '/api/admin/roles/update', '/api/roles/list', '/api/roles/show',
 		'/api/users/update-memo', '/api/announcements', '/api/announcements/show', '/api/i/read-announcement', '/api/users/relation',
 		'/api/drive/files/show', '/api/drive/files/find', '/api/drive/files/find-by-hash', '/api/drive/files/check-existence', '/api/admin/drive/show-file', '/api/pages/show',

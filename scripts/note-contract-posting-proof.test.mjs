@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectNoteChartsInput } from './note-charts-evidence.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -15,7 +16,7 @@ test('finite #272 posting proof artifact exists', () => {
 	assert.ok(existsSync(artifact), 'missing current posting-proof-272.json artifact');
 });
 
-const read = file => file === postSaveFixturePath ? readPrePreviewFixture(file, 'utf8') : readFileSync(new URL(file, root), 'utf8');
+const read = file => file === postSaveFixturePath ? readPrePreviewFixture(file, 'utf8') : projectNoteChartsInput(file, readFileSync(new URL(file, root))).toString('utf8');
 const digest = value => createHash('sha256').update(value).digest('hex');
 const historicalSource = (commit, file) => execFileSync('git', ['show', `${commit}:${file}`], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 16 * 1024 * 1024 });
 const load = () => JSON.parse(readFileSync(artifact, 'utf8'));

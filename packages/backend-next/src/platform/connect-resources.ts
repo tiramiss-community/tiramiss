@@ -2,6 +2,10 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { createPostingNoteCharts } from '../composition/posting-note-charts.js';
+import { createNoteCharts } from '../modules/chart/public.js';
+import { createNoteChartStore } from './database/chart/store.js';
+import { startNoteChartFlush } from './note-chart-flush.js';
 import { randomBytes } from 'node:crypto';
 import { MiInstance } from 'backend-upstream/entities';
 import { Redis } from 'ioredis';
@@ -365,7 +369,17 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			readSettings: () => readHashtagRankingSettings(dataSource.manager),
 		}, logger);
 		scope.defer(userHashtags.close);
+		const noteCharts = createNoteCharts(createNoteChartStore(dataSource, redis, error => logger.error('note-charts.unlock-failed', { error })), Date.now);
+		const postingNoteCharts = createPostingNoteCharts(noteCharts, async () => (await meta.fetch()).enableChartsForRemoteUser);
+		const noteChartFlush = startNoteChartFlush(noteCharts.flush, error => logger.error('note-charts.flush-failed', { error }));
+		// ResourceScope unwinds in reverse: accepted post-save/delete work must finish before the last flush.
+		scope.defer(noteChartFlush.close);
 		const notePostSave = createNotePostSave(createNotePostSaveWork({
+			charts: async input => {
+				if (input.createdSnapshot) {
+					await postingNoteCharts(input.createdSnapshot.note, true, input.createdSnapshot.author ? input.createdSnapshot.author.host : input.createdSnapshot.note.userHost);
+				}
+			},
 			instances: input => noteInstanceCounts.created(input.createdSnapshot?.author?.host ?? null),
 			counts: createNotePostSaveCounts(dataSource.manager),
 			hashtags: createPostingHashtags({
@@ -403,7 +417,9 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			deliverToRelays,
 			enqueue: jobs.deliverMany,
 		});
-		const notePostDelete = createNotePostDelete(input => input.kind === 'instanceCounts'
+		const notePostDelete = createNotePostDelete(async input => input.kind === 'charts'
+			? postingNoteCharts({ ...input.snapshot.note, userHost: input.snapshot.noteHost }, false, input.snapshot.authorHost)
+			: input.kind === 'instanceCounts'
 			? noteInstanceCounts.deleted(input.snapshot.authorHost)
 			: input.kind === 'search'
 				? postingSearch.unindex(input.snapshot.note)
@@ -421,7 +437,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw new DiagnosticError('TIMELINES_REDIS_ENDED', {});
 		}
 		active = true;
-		return { actorEmojis, meta, urlPreview, instanceAdministration, dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, remoteEmojis, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
+		return { noteCharts, actorEmojis, meta, urlPreview, instanceAdministration, dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, remoteEmojis, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
 	};
 
 	try {

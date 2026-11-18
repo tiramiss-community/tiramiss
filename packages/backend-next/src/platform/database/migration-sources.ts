@@ -9,6 +9,7 @@ import { databaseOptions } from './data-source.js';
 import type { DatabaseConfig } from '../../config/types.js';
 import { ApHostLease1792815498061 } from './ap/host-migration.js';
 import { ApRecipientSnapshot1792734340852 } from './ap/migration.js';
+import { noteChartEntities } from './chart/schema.js';
 import { notificationEntities } from './notification/schema.js';
 import { PostNotification1792732433541 } from './notification/migration.js';
 import { PollEndedNotification1793706223869 } from './notification/poll-ended-migration.js';
@@ -24,7 +25,7 @@ export function migrationSources(config: DatabaseConfig) {
 		upstream: new DataSource({
 			...options,
 			schema: 'public',
-			entities,
+			entities: [...entities, ...noteChartEntities],
 			migrations,
 			migrationsTableName: 'migrations',
 			migrationsTransactionMode: process.env.MISSKEY_MIGRATION_CREATE_INDEX_CONCURRENTLY === '1' ? 'each' : 'all',

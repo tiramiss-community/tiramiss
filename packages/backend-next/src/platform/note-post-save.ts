@@ -9,6 +9,7 @@ import type { Logger } from './logger.js';
 
 /** 本家 NoteCreateService.postNoteCreated のうち、実装済みの後続処理をまとめる。 */
 export function createNotePostSaveWork(steps: {
+	charts?(input: NotePostSaveInput): Promise<void>;
 	instances?(input: NotePostSaveInput): Promise<void>;
 	counts(input: NotePostSaveInput): Promise<void>;
 	schedulePollEnded(job: { noteId: string; delayMs: number }): Promise<void>;
@@ -29,6 +30,9 @@ export function createNotePostSaveWork(steps: {
 				work.set(name, Promise.reject(error));
 			}
 		};
+		if (steps.charts) {
+			start('charts', () => steps.charts!(input));
+		}
 		if (steps.instances) {
 			start('instances', () => steps.instances!(input));
 		}

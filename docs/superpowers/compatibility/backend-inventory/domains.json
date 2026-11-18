@@ -1519,6 +1519,69 @@
     }
   ],
   "overrides": {
+    "api:charts/notes": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/chart/public.ts",
+        "packages/backend-next/src/modules/chart/note-charts.ts",
+        "packages/backend-next/src/platform/database/chart/schema.ts",
+        "packages/backend-next/src/platform/database/chart/store.ts",
+        "packages/backend-next/src/platform/note-chart-flush.ts",
+        "packages/backend-next/src/http/note-charts-api.ts",
+        "packages/backend-next/src/platform/connect-resources.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/chart/note-charts.test.ts",
+        "packages/backend-next/test/unit/chart/flush.test.ts",
+        "packages/backend-next/test/unit/chart/api.test.ts",
+        "packages/backend-next/test/integration/note-charts.test.ts",
+        "docs/superpowers/compatibility/note-charts/README.md"
+      ],
+      "note": "#274: notes/perUserNotesの実ローカル投稿・削除、既存4表、GET/POST、20分/終了flushを接続。固定source32 update/24 read・実PG/Redisを検証。remote/silent/quietの通常caller比較は未完了。Chart/ChartManagement全12系列・scheduler/保守は未完了。範囲と残作業はnote-charts/README.md。",
+      "evidenceRevision": "f1fafa83881c561532d823554d00b0c2f226581c"
+    },
+    "api:charts/user/notes": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/chart/public.ts",
+        "packages/backend-next/src/modules/chart/note-charts.ts",
+        "packages/backend-next/src/platform/database/chart/schema.ts",
+        "packages/backend-next/src/platform/database/chart/store.ts",
+        "packages/backend-next/src/platform/note-chart-flush.ts",
+        "packages/backend-next/src/http/note-charts-api.ts",
+        "packages/backend-next/src/platform/connect-resources.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/chart/note-charts.test.ts",
+        "packages/backend-next/test/unit/chart/flush.test.ts",
+        "packages/backend-next/test/unit/chart/api.test.ts",
+        "packages/backend-next/test/integration/note-charts.test.ts",
+        "docs/superpowers/compatibility/note-charts/README.md"
+      ],
+      "note": "#274: notes/perUserNotesの実ローカル投稿・削除、既存4表、GET/POST、20分/終了flushを接続。固定source32 update/24 read・実PG/Redisを検証。remote/silent/quietの通常caller比較は未完了。Chart/ChartManagement全12系列・scheduler/保守は未完了。範囲と残作業はnote-charts/README.md。",
+      "evidenceRevision": "f1fafa83881c561532d823554d00b0c2f226581c"
+    },
+    "capability:chart-flush": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/chart/public.ts",
+        "packages/backend-next/src/modules/chart/note-charts.ts",
+        "packages/backend-next/src/platform/database/chart/schema.ts",
+        "packages/backend-next/src/platform/database/chart/store.ts",
+        "packages/backend-next/src/platform/note-chart-flush.ts",
+        "packages/backend-next/src/http/note-charts-api.ts",
+        "packages/backend-next/src/platform/connect-resources.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/chart/note-charts.test.ts",
+        "packages/backend-next/test/unit/chart/flush.test.ts",
+        "packages/backend-next/test/unit/chart/api.test.ts",
+        "packages/backend-next/test/integration/note-charts.test.ts",
+        "docs/superpowers/compatibility/note-charts/README.md"
+      ],
+      "note": "#274: notes/perUserNotesの実ローカル投稿・削除、既存4表、GET/POST、20分/終了flushを接続。固定source32 update/24 read・実PG/Redisを検証。remote/silent/quietの通常caller比較は未完了。Chart/ChartManagement全12系列・scheduler/保守は未完了。範囲と残作業はnote-charts/README.md。",
+      "evidenceRevision": "f1fafa83881c561532d823554d00b0c2f226581c"
+    },
     "capability:roles": {
       "status": "partial",
       "implementation": [

@@ -5,6 +5,7 @@
 import 'reflect-metadata';
 import { DataSource, type DataSourceOptions } from 'typeorm';
 import { entities } from 'backend-upstream/entities';
+import { noteChartEntities } from './chart/schema.js';
 import { notificationEntities } from './notification/schema.js';
 import type { DatabaseConfig } from '../../config/types.js';
 
@@ -16,7 +17,7 @@ export function databaseOptions(
 		type: 'postgres',
 		...config,
 		extra: { ...config.extra, connectionTimeoutMillis: timeoutMs },
-		entities: [...entities, ...notificationEntities],
+		entities: [...entities, ...notificationEntities, ...noteChartEntities],
 		synchronize: false,
 		migrationsRun: false,
 		logging: false,

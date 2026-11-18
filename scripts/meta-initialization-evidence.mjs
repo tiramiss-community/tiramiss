@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectNoteChartsInput } from './note-charts-evidence.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -39,7 +40,7 @@ export function validateMetaInitializationEvidence(rawRead = read, optional = op
 		assert.equal(proof.noInputDrift, true);
 		for (const [path, digest] of Object.entries(binding.inputs)) {
 			assert.equal(proof.inputs[path], digest, 'Meta startup measured binding');
-			assert.equal(sha(rawRead(path)), digest, `Meta startup measured current input drift: ${path}`);
+			assert.equal(sha(projectNoteChartsInput(path, rawRead(path))), digest, `Meta startup measured current input drift: ${path}`);
 		}
 		for (const run of proof.runs) {
 			assert.equal(run.exitCode, 0);
