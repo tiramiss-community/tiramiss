@@ -1,0 +1,31 @@
+# Synthetic data only. The release image must contain backend-next and its dependencies.
+url: https://cutover.invalid
+port: 3000
+id: aidx
+db:
+  host: postgres
+  port: 5432
+  db: cutover
+  user: postgres
+  pass: cutover-fixture-only
+redis: &redis
+  host: redis
+  port: 6379
+  db: 0
+  prefix: cutover.invalid
+redisForPubsub:
+  <<: *redis
+  host: redis-pubsub
+redisForJobQueue:
+  <<: *redis
+  host: redis-jobs
+redisForTimelines:
+  <<: *redis
+  host: redis-timelines
+redisForReactions:
+  <<: *redis
+  host: redis-reactions
+backendNext:
+  workerCount: 1
+  startupTimeoutMs: 10000
+  shutdownTimeoutMs: 10000

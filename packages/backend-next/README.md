@@ -106,6 +106,8 @@ migration・schema 同期・業務処理・HTTP/worker 起動・Meilisearch 検�
 
 ## 停止下のqueue引継ぎ確認（#165）
 
+停止・backup/復元確認・migration・通知移行・旧binaryへの復帰判断は[切替runbookと隔離fixture（#581）](../../docs/backend-next/cutover-runbook.md)を参照する。
+
 ビルド後、旧新すべてのHTTP・worker・scheduler・scanner・補助producerを完全停止し、復元した隔離先を向く設定で実行する。
 
 ```sh
