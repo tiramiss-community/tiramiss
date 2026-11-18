@@ -43,7 +43,7 @@ function createChartsApi(charts: Pick<ReturnType<typeof createNoteCharts>, 'read
 					}
 				}
 				const input = route.parse(request.input);
-				const result = await charts.read(route.series, input.span, input.limit, input.offset, input.userId ?? null);
+				const result = await charts.read(route.series, input.span, input.limit, input.offset, route.series === 'perUserNotes' ? input.userId! : null);
 				if (context.req.method === 'GET' && !request.token && credential === null) {
 					context.header('Cache-Control', 'public, max-age=3600');
 				}

@@ -83,3 +83,17 @@ test('users chart exposes GET/POST with shared parameter, credential and cache r
 	authenticate.mockRejectedValueOnce(new AuthenticationFailed());
 	expect((await app.request('/api/charts/users?span=hour&i=bad')).status).toBe(401);
 });
+
+test.each(['notes', 'users'])('global %s ignores extra userId in GET and POST', async series => {
+	const read = vi.fn().mockResolvedValue({});
+	const factory = series === 'users' ? createUsersChartsApi : createNoteChartsApi;
+	const app = factory({ read }, { logger, authenticate: async () => null });
+	for (const response of [
+		await app.request(`/api/charts/${series}?span=hour&userId=ignored`),
+		await app.request(`/api/charts/${series}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ span: 'hour', userId: 'ignored' }) }),
+	]) {
+		expect(response.status).toBe(200);
+	}
+	expect(read).toHaveBeenNthCalledWith(1, series, 'hour', 30, null, null);
+	expect(read).toHaveBeenNthCalledWith(2, series, 'hour', 30, null, null);
+});

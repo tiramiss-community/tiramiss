@@ -41,7 +41,7 @@
       ]
     },
     "packages/backend-next/src/http/note-charts-api.ts": {
-      "currentSha256": "0236ada9ba621a57f1434fe24d4fa2ea657125dee0ee095f4c77b0fbd60f9b6d",
+      "currentSha256": "6c3024f600c0e91887e4a926b2b61c884c65c1850b4b5272e30d1ee6dd330f80",
       "previousSha256": "dfa0981c7195e8aebe884ec62caab7809f04a1810535d1fab890768cf29a125f",
       "patches": [
         {
@@ -61,11 +61,11 @@
         },
         {
           "offset": 2143,
-          "insert": "\t\t\t\tconst input = route.parse(request.input);\n\t\t\t\tconst result = await charts.read(route.series, input.span, input.limit, input.offset, input.userId ?? null);\n",
+          "insert": "\t\t\t\tconst input = route.parse(request.input);\n\t\t\t\tconst result = await charts.read(route.series, input.span, input.limit, input.offset, route.series === 'perUserNotes' ? input.userId! : null);\n",
           "previous": "\t\t\t\tconst input = (user ? parseUser : parseNotes)(request.input);\n\t\t\t\tconst result = await charts.read(user ? 'perUserNotes' : 'notes', input.span, input.limit, input.offset, user ? input.userId! : null);\n"
         },
         {
-          "offset": 2739,
+          "offset": 2773,
           "insert": "\nexport function createNoteChartsApi(charts: Pick<ReturnType<typeof createNoteCharts>, 'read'>, options: Omit<ApiEndpointsOptions, 'endpoints'>) {\n\treturn createChartsApi(charts, options, [\n\t\t{ path: '/api/charts/notes', series: 'notes', parse: parseNotes },\n\t\t{ path: '/api/charts/user/notes', series: 'perUserNotes', parse: parseUser },\n\t]);\n}\n\nexport function createUsersChartsApi(charts: Pick<ReturnType<typeof createNoteCharts>, 'read'>, options: Omit<ApiEndpointsOptions, 'endpoints'>) {\n\treturn createChartsApi(charts, options, [{ path: '/api/charts/users', series: 'users', parse: parseNotes }]);\n}\n",
           "previous": ""
         }
@@ -216,7 +216,7 @@
       ]
     },
     "packages/backend-next/test/unit/chart/api.test.ts": {
-      "currentSha256": "b5a38b0ba596116c2d8e9f2a05f4b5c4288aabb0f2e9b1c75b83f079d6959939",
+      "currentSha256": "2dae71592b2c0865887b66207ae026fd2013adc66d25caa0d8c444715217b5ee",
       "previousSha256": "203bd8b611120aa270fa4dd8a499c22506978a7fef97fb016788921a1a09ab7d",
       "patches": [
         {
@@ -226,13 +226,13 @@
         },
         {
           "offset": 3333,
-          "insert": "\ntest('users chart exposes GET/POST with shared parameter, credential and cache rules', async () => {\n\tconst read = vi.fn().mockResolvedValue({ local: { total: [1] }, remote: { total: [2] } });\n\tconst authenticate = vi.fn().mockResolvedValue(null);\n\tconst app = createUsersChartsApi({ read }, { logger, authenticate });\n\tconst response = await app.request('/api/charts/users?span=day&limit=2&offset=123');\n\texpect(response.status).toBe(200);\n\texpect(response.headers.get('Cache-Control')).toBe('public, max-age=3600');\n\texpect(read).toHaveBeenCalledWith('users', 'day', 2, 123, null);\n\tconst epoch = await app.request('/api/charts/users?span=hour&offset=0');\n\texpect(epoch.status).toBe(200);\n\texpect(read).toHaveBeenCalledWith('users', 'hour', 30, 0, null);\n\tconst optional = await app.request('/api/charts/users?span=hour&i=valid');\n\texpect(optional.status).toBe(200);\n\texpect(optional.headers.get('Cache-Control')).toBe('private, max-age=0, must-revalidate');\n\texpect((await app.request('/api/charts/users?span=bad')).status).toBe(400);\n\tconst posted = await app.request('/api/charts/users', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ span: 'hour' }) });\n\texpect(posted.status).toBe(200);\n\texpect(posted.headers.get('Cache-Control')).toBe('private, max-age=0, must-revalidate');\n\tauthenticate.mockRejectedValueOnce(new AuthenticationFailed());\n\texpect((await app.request('/api/charts/users?span=hour&i=bad')).status).toBe(401);\n});\n",
+          "insert": "\ntest('users chart exposes GET/POST with shared parameter, credential and cache rules', async () => {\n\tconst read = vi.fn().mockResolvedValue({ local: { total: [1] }, remote: { total: [2] } });\n\tconst authenticate = vi.fn().mockResolvedValue(null);\n\tconst app = createUsersChartsApi({ read }, { logger, authenticate });\n\tconst response = await app.request('/api/charts/users?span=day&limit=2&offset=123');\n\texpect(response.status).toBe(200);\n\texpect(response.headers.get('Cache-Control')).toBe('public, max-age=3600');\n\texpect(read).toHaveBeenCalledWith('users', 'day', 2, 123, null);\n\tconst epoch = await app.request('/api/charts/users?span=hour&offset=0');\n\texpect(epoch.status).toBe(200);\n\texpect(read).toHaveBeenCalledWith('users', 'hour', 30, 0, null);\n\tconst optional = await app.request('/api/charts/users?span=hour&i=valid');\n\texpect(optional.status).toBe(200);\n\texpect(optional.headers.get('Cache-Control')).toBe('private, max-age=0, must-revalidate');\n\texpect((await app.request('/api/charts/users?span=bad')).status).toBe(400);\n\tconst posted = await app.request('/api/charts/users', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ span: 'hour' }) });\n\texpect(posted.status).toBe(200);\n\texpect(posted.headers.get('Cache-Control')).toBe('private, max-age=0, must-revalidate');\n\tauthenticate.mockRejectedValueOnce(new AuthenticationFailed());\n\texpect((await app.request('/api/charts/users?span=hour&i=bad')).status).toBe(401);\n});\n\ntest.each(['notes', 'users'])('global %s ignores extra userId in GET and POST', async series => {\n\tconst read = vi.fn().mockResolvedValue({});\n\tconst factory = series === 'users' ? createUsersChartsApi : createNoteChartsApi;\n\tconst app = factory({ read }, { logger, authenticate: async () => null });\n\tfor (const response of [\n\t\tawait app.request(`/api/charts/${series}?span=hour&userId=ignored`),\n\t\tawait app.request(`/api/charts/${series}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ span: 'hour', userId: 'ignored' }) }),\n\t]) {\n\t\texpect(response.status).toBe(200);\n\t}\n\texpect(read).toHaveBeenNthCalledWith(1, series, 'hour', 30, null, null);\n\texpect(read).toHaveBeenNthCalledWith(2, series, 'hour', 30, null, null);\n});\n",
           "previous": ""
         }
       ]
     },
     "packages/backend-next/test/unit/composition/http-app.test.ts": {
-      "currentSha256": "9212b657842bb80feecf2b75cdab599f4d33b5b5261c91a9516afe43c78fba72",
+      "currentSha256": "8ee44506099698c31a104b7075793fb1ed43cd4119cff1c938d73634a7449584",
       "previousSha256": "859b3e8e5ec9547b4dceaabc24e4c3a0554984bf2677afecd0ed3d16c47af2fd",
       "patches": [
         {
@@ -242,8 +242,8 @@
         },
         {
           "offset": 2230,
-          "insert": "\t\t'/api/charts/users', '/api/charts/notes', '/api/charts/user/notes',\n",
-          "previous": "\t\t'/api/charts/notes', '/api/charts/user/notes',\n"
+          "insert": "\t\t'/api/charts/users',\n",
+          "previous": ""
         }
       ]
     },
