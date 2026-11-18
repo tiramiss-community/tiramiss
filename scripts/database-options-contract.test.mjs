@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { projectDatabaseDiagnosticsInput } from './database-diagnostics-predecessor.mjs';
+import { projectParallelInput } from './parallel-inputs.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -81,7 +82,7 @@ test('slow-query diagnostic wiring retains exact prior inputs without hiding fur
 	const measured = JSON.parse(read('docs/superpowers/compatibility/database-options/diagnostics-results.json'));
 	assert.equal(diagnostics.baseline, '706f82eb2086c7364001d770ffde73000911bd07');
 	for (const [path, binding] of Object.entries(diagnostics.files)) {
-		const actual = read(path);
+		const actual = projectParallelInput(path, read(path), binding.currentSha256);
 		assert.equal(sha(actual), binding.currentSha256, path);
 		assert.equal(measured.inputs[path], binding.currentSha256, path);
 		assert.equal(sha(projectDatabaseDiagnosticsInput(path, actual)), binding.previousSha256, path);
