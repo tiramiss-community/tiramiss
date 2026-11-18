@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Hono } from 'hono';
+import { createAvatarDecorationAdminHttp } from './avatar-decoration-admin-http.js';
 import { createAvatarDecorationsHttp } from './avatar-decorations-http.js';
 import { createHashtagCatalogHttp } from './hashtag-catalog-http.js';
 import { createNoteChartsApi, createUsersChartsApi } from '../http/note-charts-api.js';
@@ -39,6 +40,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 	const folders = createDriveFoldersHttp(resources, config);
 	const pages = createPagesHttp(resources, config);
 	const announcements = createAnnouncementsHttp(resources, config);
+	const avatarDecorationAdmin = createAvatarDecorationAdminHttp(resources, config);
 	const app = new Hono({ getPath: getAvatarImagesPath })
 		.route('/', createUsersChartsApi(resources.noteCharts, { authenticate: createTokenAuthenticator(resources.dataSource.manager, resources.logger), logger: resources.logger }))
 		.route('/', createNoteChartsApi(resources.noteCharts, { authenticate: createTokenAuthenticator(resources.dataSource.manager, resources.logger), logger: resources.logger }))
@@ -61,12 +63,13 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		.route('/', createEmojiHttp(resources, config))
 		.route('/', createPublicEmojisHttp(resources))
 		.route('/', createAvatarDecorationsHttp(resources))
+		.route('/', avatarDecorationAdmin.app)
 		.route('/', createPublicDocumentsHttp(resources, config))
 		.route('/', createEmojiImagesHttp())
 		.route('/', createAvatarImagesHttp(resources, config))
 		.route('/', folders.app);
 	registerHttpAppWork(app, async () => {
-		await Promise.all([folders.idle(), pages.idle(), announcements.idle()]);
+		await Promise.all([folders.idle(), pages.idle(), announcements.idle(), avatarDecorationAdmin.idle()]);
 	});
 	registerNoteRoutes(app, resources, note);
 	if (queueApi) {
