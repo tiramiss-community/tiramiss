@@ -85,7 +85,7 @@ for (const record of corpus.observations) {
 			create(context: Parameters<typeof definition.create>[0]) {
 				const channel = definition.create(context);
 				return { ...channel, dispose() {
-					channel.dispose?.();
+					channel?.dispose?.();
 					disposed.push(name);
 				} };
 			},

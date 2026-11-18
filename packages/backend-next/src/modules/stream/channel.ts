@@ -37,5 +37,5 @@ export interface StreamChannelDefinition {
 	requireCredential: boolean;
 	kind: string | null;
 	shouldShare: boolean;
-	create(context: { params: Record<string, unknown>; send(type: string, body: unknown): void }): StreamChannel;
+	create(context: { params: Record<string, unknown>; send(type: string, body: unknown): void }): StreamChannel | null;
 }
