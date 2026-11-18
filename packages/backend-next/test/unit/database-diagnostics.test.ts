@@ -38,7 +38,7 @@ test('slow diagnostics also work without a runner and cannot turn a completed qu
 	source.logger.logQuerySlow(301, 'SELECT 1');
 	expect(events).toEqual([{ level: 'warn', event: 'db.query-slow', durationMs: 301 }]);
 	const brokenSink = createDataSource(testConfig().database, 30000, { ...logger, warn: () => {
-		throw new Error('sink failed'); 
+		throw new Error('sink failed');
 	} });
 	expect(() => brokenSink.logger.logQuerySlow(301, 'INSERT INTO example VALUES ($1)', ['private-value'])).not.toThrow();
 });

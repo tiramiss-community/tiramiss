@@ -18,21 +18,21 @@ beforeAll(async () => {
 	await migrateDatabase(database.config.database);
 });
 afterAll(async () => {
-	await database?.close(); 
+	await database?.close();
 });
 
 for (const environment of ['development', 'production']) {
 	describe(environment, () => {
 		test('pinned source reports a real query above 300ms and keeps a short query quiet', async () => {
 			const warnings: unknown[] = [];
-			const consoleWarn = vi.spyOn(console, 'log').mockImplementation((...args) => {
-				warnings.push(args); 
-			});
 			const source = createPinnedDiagnosticSource(database.config, { environment, sink: {
 				info() {}, error() {}, warn: (query, parameters) => {
-					warnings.push({ query, parameters }); 
+					warnings.push({ query, parameters });
 				},
 			} });
+			const consoleLog = vi.spyOn(console, 'log').mockImplementation((...args) => {
+				warnings.push(args);
+			});
 			try {
 				await source.initialize();
 				warnings.length = 0;
@@ -43,15 +43,20 @@ for (const environment of ['development', 'production']) {
 				expect(JSON.stringify(warnings)).toContain('pg_sleep');
 				expect(JSON.stringify(warnings).includes('diagnostic-fixture-value')).toBe(environment === 'production');
 			} finally {
-				await source.destroy();
-				consoleWarn.mockRestore();
+				try {
+					if (source.isInitialized) {
+						await source.destroy();
+					}
+				} finally {
+					consoleLog.mockRestore();
+				}
 			}
 		});
 
 		test('next emits structured duration/routing and no query values even for production', async () => {
-			vi.stubEnv('NODE_ENV', environment);
 			const lines: string[] = [];
 			const source = createDataSource(database.config.database, 30000, createLogger('database-diagnostics-test', line => lines.push(line)));
+			vi.stubEnv('NODE_ENV', environment);
 			try {
 				await source.initialize();
 				lines.length = 0;
@@ -67,8 +72,13 @@ for (const environment of ['development', 'production']) {
 				await expect(source.query('SELECT missing_diagnostic_column')).rejects.toMatchObject({ driverError: { code: '42703' } });
 				expect(lines).toHaveLength(1);
 			} finally {
-				await source.destroy();
-				vi.unstubAllEnvs();
+				try {
+					if (source.isInitialized) {
+						await source.destroy();
+					}
+				} finally {
+					vi.unstubAllEnvs();
+				}
 			}
 		});
 	});
@@ -77,7 +87,7 @@ for (const environment of ['development', 'production']) {
 test('diagnostic failure does not reject an already executed write', async () => {
 	const source = createDataSource(database.config.database, 30000, {
 		info() {}, error() {}, warn: () => {
-			throw new Error('diagnostic sink rejected'); 
+			throw new Error('diagnostic sink rejected');
 		},
 	});
 	try {
@@ -86,7 +96,9 @@ test('diagnostic failure does not reject an already executed write', async () =>
 		await expect(source.query('INSERT INTO diagnostic_write SELECT 1 FROM pg_sleep(0.35)')).resolves.toBeDefined();
 		expect(await source.query('SELECT value FROM diagnostic_write')).toEqual([{ value: 1 }]);
 	} finally {
-		await source.destroy();
+		if (source.isInitialized) {
+			await source.destroy();
+		}
 	}
 });
 
@@ -138,9 +150,12 @@ test('pinned cache uses the query prefix, retains an explicitly cached count, an
 		expect((await redis.client('LIST') as string).trim().split('\n')).toHaveLength(clientsBefore);
 		await redis.del(...keys);
 	} finally {
-		if (source.isInitialized) {
-			await source.destroy();
+		try {
+			if (source.isInitialized) {
+				await source.destroy();
+			}
+		} finally {
+			await redis.quit();
 		}
-		await redis.quit();
 	}
 });

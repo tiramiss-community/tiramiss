@@ -20,7 +20,7 @@ PR #635 マージ後の `706f82eb2086c7364001d770ffde73000911bd07` を基準に�
 
 ## 実測と再実行
 
-[receipt](diagnostics-results.json) に入力とログの hash を記録する。Node 26.4.0 / pnpm 12.9.1 / pg 8.23.1 / TypeORM 1.1.1 / PostgreSQL 18.6 / Redis 8。build・typecheck・同期確認は PASS。全単体 **5,339 PASS / 既存1 SKIP、156 files**（外部本家 checkout 未指定の既存 Page source test）。新規11件を含む実 PG/Redis の DB・transaction **36 PASS / 3 files**。通常 startup logger の接続と解放、production/development、短い query、slow query、query エラー、sink 失敗後の保存結果を含む。実 standby の遅延・分散は再測定しておらず、#635 の実測を維持する。
+[receipt](diagnostics-results.json) に入力とログの hash を記録する。Node 26.4.0 / pnpm 12.9.1 / pg 8.23.1 / TypeORM 1.1.1 / PostgreSQL 18.6 / Redis 8。build・typecheck・同期確認は PASS。全単体 **5,339 PASS / 既存1 SKIP、156 files**（外部本家 checkout 未指定の既存 Page source test）。新規11件を含む実 PG/Redis の DB・transaction **36 PASS / 3 files**。通常 startup logger の接続と解放、production/development、短い query、slow query、query エラー、sink 失敗後の保存結果を含む。root contract は **815 PASS / 既存1 SKIP**、inventory と shipping は PASS。独立レビューでテストの終了処理を修正し、DB解放の成否と独立に console/環境変数を復元する。修正後に全単体5,339件・実依存36件を再実行して成功した。実 standby の遅延・分散は再測定しておらず、#635 の実測を維持する。
 
 初回の新規単体3件は閾値と診断が未実装で失敗した。最初の実依存試験は本家 production の出力先を `console.warn` と誤って捕捉して1件失敗した。TypeORM `PlatformTools.logWarn` が `console.log` へ書くことを確認し、観測先だけを修正した。成功ログと初回失敗を分けて保存する。既存 pg の同時 query deprecation warning、全単体の既存 WebFinger 失敗注入診断が出る。最初の2つの PostgreSQL 公開 port は Docker forwarding が拒否し、専用の空き port へ変更した。
 
