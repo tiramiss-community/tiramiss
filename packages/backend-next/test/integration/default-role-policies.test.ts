@@ -241,7 +241,9 @@ test('non-awaited audit can finish after HTTP while close waits for the started 
 	}
 });
 test('post-commit publish failures are diagnosed and cannot undo the saved policy or audit', async () => {
-	const logger = { info: vi.fn(), error: vi.fn() };
+	const logger = { info: vi.fn(), error: vi.fn((_message: string, _fields?: unknown) => {
+		throw new Error('diagnostics unavailable');
+	}) };
 	const publisher = { publish: vi.fn().mockRejectedValue(new Error('notification unavailable')) };
 	const application = createDefaultRolePolicies({ dataSource: resources.dataSource, meta: resources.meta, publisher, logger, ids: seeded.codec, url: database.config.url });
 	await application.updateDefaultPolicies(createAccessRequest({ requireCredential: true, requireAdmin: true, kind: 'write:admin:roles' }, { userId: seeded.actors.root.id, native: true }), { policies: {} });

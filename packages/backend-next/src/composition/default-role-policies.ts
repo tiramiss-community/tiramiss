@@ -8,11 +8,12 @@ import { replaceDefaultRolePolicies } from '../platform/database/default-role-po
 import { appendModerationLog } from '../platform/database/moderation-log.js';
 import type { DataSource } from 'typeorm';
 import type { Redis } from 'ioredis';
-import type { MetaReader } from '../platform/meta-cache.js';
+import { readMeta } from '../platform/database/meta.js';
+import type { createMetaCache } from '../platform/meta-cache.js';
 import type { Logger } from '../platform/logger.js';
 export function createDefaultRolePolicies(parts: {
 	dataSource: DataSource;
-	meta: MetaReader;
+	meta: Pick<ReturnType<typeof createMetaCache>, 'refresh'>;
 	publisher: Pick<Redis, 'publish'>;
 	url: string;
 	logger: Logger;
@@ -25,10 +26,12 @@ export function createDefaultRolePolicies(parts: {
 
 	function track(work: Promise<unknown>, stage: string): void {
 		const task = work.then(() => { }, error => {
-			parts.logger.error('default-role-policies.failed', { stage, error });
+			try {
+				parts.logger.error('default-role-policies.failed', { stage, error });
+			} catch { /* Diagnostics cannot leave accepted work undrained. */ }
 		});
 		pending.add(task);
-		void task.then(() => pending.delete(task));
+		void task.then(() => pending.delete(task), () => pending.delete(task));
 	}
 
 	function publish(type: string, body: object): void {
@@ -37,7 +40,7 @@ export function createDefaultRolePolicies(parts: {
 
 	const application = createUpdateDefaultPolicies({
 		authorizationFacts: async (actorId) => roleAccessFacts(actorId, await readRoleAuthorizationFacts(parts.dataSource.manager, actorId, parts.ids.createdAtFromId), Date.now()),
-		readPolicies: async () => structuredClone((await parts.meta.fetch(true)).policies),
+		readPolicies: async () => structuredClone((await parts.meta.refresh(() => parts.dataSource.transaction(readMeta))).policies),
 		replacePolicies: async (policies) => {
 			const { before, after } = await replaceDefaultRolePolicies(parts.dataSource, policies);
 			publish('metaUpdated', { before, after });

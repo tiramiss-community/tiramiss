@@ -31,7 +31,14 @@ export function createMetaCache(options: {
 		if (!noCache && value) {
 			return value;
 		}
-		const work = options.read().then(meta => {
+		return refresh(options.read);
+	}
+
+	async function refresh(read: () => Promise<MiMeta>): Promise<MiMeta> {
+		if (closed) {
+			throw new Error('Meta cache is closed');
+		}
+		const work = read().then(meta => {
 			// Source permits an in-flight fetch to replace an intervening notification.
 			value = meta;
 			return meta;
@@ -60,5 +67,5 @@ export function createMetaCache(options: {
 		return closing;
 	}
 
-	return { fetch, close };
+	return { fetch, refresh, close };
 }
