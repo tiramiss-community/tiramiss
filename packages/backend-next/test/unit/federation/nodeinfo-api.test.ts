@@ -24,16 +24,20 @@ for (const scenario of [...new Set(nodeInfoSource.observations.map(o => o.scenar
 			selfUrl: 'https://local.test:8443', softwareVersion: '2026.10.1-alpha.0', clock: () => now, logger,
 			federationEnabled: async () => current.meta.federation !== 'none',
 			readNotes: async () => {
-				invoke('notes', ['hour', 1, null]); return current.step.changed ? 52 : 42; 
+				invoke('notes', ['hour', 1, null]);
+				return current.step.changed ? 52 : 42;
 			},
 			readUsers: async () => {
-				invoke('users', ['hour', 1, null]); return current.step.changed ? 17 : 7; 
+				invoke('users', ['hour', 1, null]);
+				return current.step.changed ? 17 : 7;
 			},
 			readSettings: async () => {
-				invoke('meta', [true]); return { ...current.meta, ...(current.step.changed ? { name: 'Changed instance' } : {}) }; 
+				invoke('meta', [true]);
+				return { ...current.meta, ...(current.step.changed ? { name: 'Changed instance' } : {}) };
 			},
 			readProxyAccountName: async () => {
-				invoke('proxy', ['proxy']); return 'system.proxy'; 
+				invoke('proxy', ['proxy']);
+				return 'system.proxy';
 			},
 		});
 		for (current of observations) {
@@ -105,10 +109,11 @@ test.each(['all', 'none', 'fault'])('discovery uses federation=%s and common wel
 test('concurrent cold requests retain independent source-style reads and cache on completion', async () => {
 	let finish!: () => void;
 	const waiting = new Promise<void>(resolve => {
-		finish = resolve; 
+		finish = resolve;
 	});
 	const readNotes = vi.fn(async () => {
-		await waiting; return 1; 
+		await waiting;
+		return 1;
 	});
 	const sample = nodeInfoSource.observations[0].meta;
 	const app = createNodeInfoApi({ selfUrl: 'https://local.test', softwareVersion: 'test', clock: Date.now, federationEnabled: async () => true, logger: { error: vi.fn() }, readNotes, readUsers: async () => 2, readSettings: async () => sample, readProxyAccountName: async () => 'system.proxy' });
