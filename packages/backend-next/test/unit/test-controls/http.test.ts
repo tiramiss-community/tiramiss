@@ -58,18 +58,19 @@ test('reset preserves the literal pinned Redis/database/Meta/event order', async
 	const resources = {
 		logger,
 		redis: { flushdb: async () => {
- events.push('redis'); 
-} },
+			events.push('redis');
+		} },
 		dataSource: { manager: {}, transaction: async (run: (manager: unknown) => Promise<void>) => {
 			events.push('database');
 			await run({ query: async () => [] });
 		} },
 		meta: { fetch: async () => {
- events.push('meta'); return {}; 
-} },
+			events.push('meta');
+			return {};
+		} },
 		publishInternalEvent: async () => {
- events.push('event'); 
-},
+			events.push('event');
+		},
 	};
 	const response = await post(createTestControlsHttp(resources as never, config), 'reset-db', {});
 	expect(response.status).toBe(204);

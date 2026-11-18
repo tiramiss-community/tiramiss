@@ -27,23 +27,23 @@ test.each(['host', 'port', 'database', 'connectionString'])('rejects a database 
 test('stale binding, replica, sentinel and unix socket cannot redirect a bound reset', () => {
 	for (const change of [
 		(config: ReturnType<typeof testConfig>) => {
- config.database.port++; 
-},
+			config.database.port++;
+		},
 		(config: ReturnType<typeof testConfig>) => {
- config.redis.db = 1; 
-},
+			config.redis.db = 1;
+		},
 		(config: ReturnType<typeof testConfig>) => {
- config.database.replicas = [config.database]; 
-},
+			config.database.replicas = [config.database];
+		},
 		(config: ReturnType<typeof testConfig>) => {
- config.redis.tls = { host: 'other-host' } as never; 
-},
+			config.redis.tls = { host: 'other-host' } as never;
+		},
 		(config: ReturnType<typeof testConfig>) => {
- config.redis.path = '/tmp/redis.sock'; 
-},
+			config.redis.path = '/tmp/redis.sock';
+		},
 		(config: ReturnType<typeof testConfig>) => {
- config.redis.sentinels = [{ host: 'elsewhere', port: 26379 }]; 
-},
+			config.redis.sentinels = [{ host: 'elsewhere', port: 26379 }];
+		},
 	]) {
 		const config = testConfig();
 		const env = environment(config);

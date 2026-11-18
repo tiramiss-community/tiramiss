@@ -41,20 +41,21 @@ export async function pinnedResetEvents(environment: string): Promise<string[]> 
 	const context = {
 		loggerService: { getLogger: () => ({ info: () => {} }) },
 		redisClient: { flushdb: async () => {
- events.push('redis'); 
-} },
+			events.push('redis');
+		} },
 		db: {},
 		metaService: { fetch: async () => {
- events.push('meta'); return {}; 
-} },
+			events.push('meta');
+			return {};
+		} },
 		globalEventService: { publishInternalEvent: () => {
- events.push('event'); 
-} },
+			events.push('event');
+		} },
 	};
 	const execute = new Function('process', 'resetDb', 'setTimeout', `${javascript}\nreturn handler;`).call(context,
 		{ env: { NODE_ENV: environment } }, async () => {
- events.push('database'); 
-}, (callback: () => void) => callback(),
+			events.push('database');
+		}, (callback: () => void) => callback(),
 	);
 	await execute.call(context, {}, null);
 	return events;
