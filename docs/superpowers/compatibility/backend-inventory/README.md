@@ -685,3 +685,8 @@ This child evidence result does not complete posting or actor/effects work: #176
 ## #391 SQL補助・共有宣言の対応（2026-11-18）
 
 `responsibility:misc-utils:28` / `responsibility:misc-utils:39` の[宣言別利用者対応](../api-common/shared-contract-audit.md)を追加した。全18宣言・全参照・監査55種/57実producer・export9値/import6値に担当と比較残件を割り当て、未参照/コメント/型使用を実呼出しと区別した。元2行のstatus・監査A/Bと全体の固定基準は保持し、今回の静的監査を機能実装・挙動比較済みへ読み替えない。
+
+
+## #368 / #367 装飾公開取得と共有キャッシュ（2026-11-19）
+
+[限定比較・実測と残責任](../avatar-decorations/README.md)に基づき、公開 `get-avatar-decorations` と30分キャッシュ責任を `verified`、装飾 Entity / Service 全体と三種の internal event を `partial` とした。公開取得は本家と同じ `getAll(true)` で毎回更新する。実 HTTP/PG のロール公開制限・DB障害復帰と実 Redis の受信無効化を検証した。管理 writer / 実発行の証明 #541 / #582 と他 User 表示 consumer の移行は残り、親の完成を意味しない。各行は全体baselineを動かさず、この実装のimmutable revisionへ個別に根拠を結ぶ。
