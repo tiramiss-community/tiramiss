@@ -1,0 +1,101 @@
+{
+  "revision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "provenance": "literal-source-methods-with-repository-and-id-doubles",
+  "upstreamFullServerMeasured": false,
+  "sites": [
+    "packages/backend/src/core/NoteDeleteService.ts:120:deleteNote",
+    "packages/backend/src/core/RoleService.ts:713:updateRole"
+  ],
+  "upstreamInputs": {
+    "packages/backend/src/core/NoteDeleteService.ts": "f27dfc26664f39f9ade3366f46411ffe6ff5c189e5d97fb371dda5c3bf7d240c",
+    "packages/backend/src/core/RoleService.ts": "d92aab8651aa6682176998e34cbf95552e9863a98e240373ef518f7eecff93b3",
+    "packages/backend/src/types.ts": "9f8cd80a2a56aa36b11848f41e3bc02d20bff87603348c3f984bcfaf3290e307",
+    "packages/backend/src/core/ModerationLogService.ts": "e67d2d465c9d63f3cd3d173b92cb4d62358c49dfa31219a0f623d89612523678",
+    "packages/backend/src/core/IdService.ts": "237d9410066fb6acfe872e7e617e6f4ce7b0093989e88baad1c29066b69f4f65"
+  },
+  "currentInputs": {
+    "packages/backend-next/src/platform/database/moderation-log.ts": "9c36e573c6c18ce2ed06575bb792ffd24c917cc3e897a79c6356f3041456edd5",
+    "packages/backend-next/src/platform/database/note-deleter.ts": "4818af595ed943b168923e3f373a371c87ae19aa7aa6105e2c167da545c5edf5",
+    "packages/backend-next/src/platform/database/role-update-audit.ts": "17244001a3ea8a59ff3c6ef0cd061277681e5fc898afeb936535af565e501bb5"
+  },
+  "deleteInfo": {
+    "noteId": "note",
+    "noteUserId": "author",
+    "noteUserUsername": "名前",
+    "noteUserHost": "remote.example",
+    "note": {
+      "id": "note",
+      "userId": "author",
+      "replyId": null,
+      "text": "quote \" and 日本語",
+      "cw": null,
+      "visibility": "specified",
+      "localOnly": true,
+      "fileIds": [
+        "file"
+      ],
+      "mentionedRemoteUsers": "[]",
+      "reactions": {
+        ":emoji:": 2
+      },
+      "reactionAndUserPairCache": [
+        "user/like"
+      ],
+      "nested": {
+        "list": [
+          null,
+          true
+        ]
+      }
+    }
+  },
+  "roleInfo": {
+    "roleId": "role",
+    "before": {
+      "id": "role",
+      "name": "before",
+      "policies": {
+        "unknown": {
+          "value": null
+        }
+      },
+      "color": null,
+      "updatedAt": "2026-11-17T23:59:59.000Z",
+      "lastUsedAt": "2026-11-17T23:59:58.000Z"
+    },
+    "after": {
+      "id": "role",
+      "name": "after",
+      "policies": {
+        "unknown": {
+          "value": null
+        }
+      },
+      "color": null,
+      "updatedAt": "2026-11-18T00:00:00.000Z",
+      "lastUsedAt": "2026-11-17T23:59:58.000Z"
+    }
+  },
+  "boundaries": {
+    "sourceIdArguments": [
+      [],
+      []
+    ],
+    "nextIdArgument": 1794960000000,
+    "authorLookupProjection": {
+      "sourcePostDeleteUsername": "renamed-after-delete",
+      "nextPreDeleteSnapshotUsername": "名前"
+    },
+    "authorLookupProjectionIsDoubleControlled": true
+  },
+  "assertions": [
+    "full finite deleteNote info matches the existing adapter/appender",
+    "actor and type match",
+    "role before/after dates serialize to ISO",
+    "new appenders pass occurredAtMs to id generation",
+    "source delete succeeds before author lookup and log",
+    "source DELETE/author lookup failure omits audit",
+    "source author/absent deleter and absent Role moderator omit audit",
+    "source callers return before held log insert completes"
+  ]
+}

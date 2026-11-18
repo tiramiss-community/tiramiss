@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "issue": 546,
+  "parent": 194,
+  "date": "2026-11-18",
+  "baseline": "6af8cd5baa",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "runtimeChanged": false,
+  "upstreamFullServerMeasured": false,
+  "existingSuitesRerun": false,
+  "inventoryStatus": "partial",
+  "ids": [
+    "moderation-log-type:deleteNote",
+    "moderation-log-type:updateRole"
+  ],
+  "addedObservation": {
+    "file": "docs/superpowers/compatibility/moderation-log/source-observations.json",
+    "provenance": "literal-source-methods-with-repository-and-id-doubles",
+    "node": "v24.20.0",
+    "command": "SOURCE_PROBE_DEPENDENCY_ROOT=/home/osamu/develop/tiramiss node docs/superpowers/compatibility/moderation-log/source-probe.mjs",
+    "result": "PASS"
+  },
+  "historicalRecords": [
+    {
+      "file": "docs/superpowers/plans/2026-11-08-moderation-log-appender-194.md",
+      "implementationCommit": "e03c4fbf2920c8dbec5e798df702265af986d579",
+      "date": "2026-11-08",
+      "measurementTransferredToCurrentHead": false
+    },
+    {
+      "file": "docs/superpowers/compatibility/role/README.md",
+      "date": "2026-10-21",
+      "measurementTransferredToCurrentHead": false
+    },
+    {
+      "file": "docs/superpowers/compatibility/note/n7/posting-proof-272.json",
+      "runtimeBaseline": "b4f28f6ceef458575f203c19d4ede37d7311468c",
+      "date": "2026-11-14",
+      "measurementTransferredToCurrentHead": false
+    }
+  ],
+  "historicalByteComparison": {
+    "packages/backend-next/src/platform/database/moderation-log.ts": {
+      "historicalSha256": "9c36e573c6c18ce2ed06575bb792ffd24c917cc3e897a79c6356f3041456edd5",
+      "currentSha256": "9c36e573c6c18ce2ed06575bb792ffd24c917cc3e897a79c6356f3041456edd5",
+      "unchanged": true
+    },
+    "packages/backend-next/src/platform/database/note-deleter.ts": {
+      "historicalSha256": "4818af595ed943b168923e3f373a371c87ae19aa7aa6105e2c167da545c5edf5",
+      "currentSha256": "4818af595ed943b168923e3f373a371c87ae19aa7aa6105e2c167da545c5edf5",
+      "unchanged": true
+    },
+    "packages/backend-next/src/platform/database/role-update-audit.ts": {
+      "historicalSha256": "17244001a3ea8a59ff3c6ef0cd061277681e5fc898afeb936535af565e501bb5",
+      "currentSha256": "17244001a3ea8a59ff3c6ef0cd061277681e5fc898afeb936535af565e501bb5",
+      "unchanged": true
+    },
+    "packages/backend-next/test/unit/note/delete-note.test.ts": {
+      "historicalSha256": "94c13a06607d9959f5a054bcfd25606e4318286270eb3f622505136f7f28fe7a",
+      "currentSha256": "94c13a06607d9959f5a054bcfd25606e4318286270eb3f622505136f7f28fe7a",
+      "unchanged": true
+    },
+    "packages/backend-next/test/integration/moderation-log.test.ts": {
+      "historicalSha256": "469da2fa4f486b0c63c32d0dcc2fce180f3c956f860faeb4c1f90240f423ff73",
+      "currentSha256": "469da2fa4f486b0c63c32d0dcc2fce180f3c956f860faeb4c1f90240f423ff73",
+      "unchanged": true
+    },
+    "packages/backend-next/test/integration/role-update.test.ts": {
+      "historicalSha256": "dd22e39ca3ce5064288b8bcf8f1a1d0217bcf4b519303f8ea97e10996b2735ef",
+      "currentSha256": "7871bed75f8009859c597132457c09d2e089a07af602e16dfc66c386cab44676",
+      "unchanged": false
+    },
+    "packages/backend-next/test/integration/role-http.test.ts": {
+      "historicalSha256": "d0590dd87ce522e204fa455aef6dbd474ba07a3fb7420d9d0b756507d9363c50",
+      "currentSha256": "d0590dd87ce522e204fa455aef6dbd474ba07a3fb7420d9d0b756507d9363c50",
+      "unchanged": true
+    },
+    "packages/backend-next/test/integration/role-acceptance.test.ts": {
+      "historicalSha256": "778d3aa0b8ba19bd1d3b167e80ce146ef173be602b405c7d355b151917d70383",
+      "currentSha256": "778d3aa0b8ba19bd1d3b167e80ce146ef173be602b405c7d355b151917d70383",
+      "unchanged": true
+    },
+    "packages/backend-next/test/integration/note-delete.test.ts": {
+      "historicalSha256": "0bf4661d7e27c75ba1572aa28c460b4e0484f53479e27736dc724f3cb26f81ed",
+      "currentSha256": "ca37a4844b7e5de8099315017bc29a51d87f88869e6d30f676f35ad4e1e0fc1e",
+      "unchanged": false
+    },
+    "packages/backend-next/test/processes/note-delete-integration.test.ts": {
+      "historicalSha256": "702d073618dc46b2a65346283a472aee85192ef9ed6643eb16b1494c1956b135",
+      "currentSha256": "702d073618dc46b2a65346283a472aee85192ef9ed6643eb16b1494c1956b135",
+      "unchanged": true
+    }
+  },
+  "bindings": [
+    {
+      "file": "packages/backend-next/test/integration/moderation-log.test.ts",
+      "title": "an omitted info is stored as an empty object, like upstream ModerationLogService.log",
+      "projection": "exact empty object and ID time",
+      "executedFor546": false
+    },
+    {
+      "file": "packages/backend-next/test/integration/moderation-log.test.ts",
+      "title": "info is stored as JSON the way TypeORM serializes jsonb (Date to ISO, undefined keys dropped)",
+      "projection": "exact JSONB projection",
+      "executedFor546": false
+    },
+    {
+      "file": "packages/backend-next/test/integration/moderation-log.test.ts",
+      "title": "the caller decides the transaction: a rolled back caller transaction leaves no record",
+      "projection": "rollback omits record",
+      "executedFor546": false
+    },
+    {
+      "file": "packages/backend-next/test/integration/moderation-log.test.ts",
+      "title": "an insert failure is reported to the caller",
+      "projection": "FK failure rejection",
+      "executedFor546": false
+    },
+    {
+      "file": "packages/backend-next/test/integration/role-update.test.ts",
+      "title": "preserves omitted columns, clears nulls, replaces JSON, and audits full saved snapshots",
+      "projection": "actor/type/full snapshots/ID timestamp",
+      "executedFor546": false
+    },
+    {
+      "file": "packages/backend-next/test/integration/role-update.test.ts",
+      "title": "rolls back both writes on actual %s storage failure",
+      "projection": "role/audit CHECK failures rollback both",
+      "executedFor546": false
+    },
+    {
+      "file": "packages/backend-next/test/integration/role-http.test.ts",
+      "title": "partial update keeps unknown JSON, exact audit snapshots, nulls and no-op timestamps",
+      "projection": "HTTP exact snapshots",
+      "executedFor546": false
+    },
+    {
+      "file": "packages/backend-next/test/integration/role-acceptance.test.ts",
+      "title": "HTTP audit storage failure rolls back both writes and leaves warmed policies unchanged",
+      "projection": "HTTP 500/no row change",
+      "executedFor546": false
+    },
+    {
+      "file": "packages/backend-next/test/integration/role-acceptance.test.ts",
+      "title": "actual post-commit pre-publish process death preserves writes and recovers missed notification at TTL",
+      "projection": "committed audit survives process death",
+      "executedFor546": false
+    },
+    {
+      "file": "packages/backend-next/test/integration/note-delete.test.ts",
+      "title": "moderator audit retains the entire deleted row and author information",
+      "projection": "full PG snapshot plus historical normalized C10 actor/type/author projection",
+      "executedFor546": false
+    },
+    {
+      "file": "packages/backend-next/test/integration/note-delete.test.ts",
+      "title": "a failed DELETE leaves note and earlier reply decrement, without moderator audit",
+      "projection": "DELETE rejection omits audit",
+      "executedFor546": false
+    },
+    {
+      "file": "packages/backend-next/test/processes/note-delete-integration.test.ts",
+      "title": "ordinary processes preserve deletion boundaries across PG/Redis/Meili/WS/AP/webhooks (DELETE rejected: %s)",
+      "projection": "drain and audit count success/rejection",
+      "executedFor546": false
+    },
+    {
+      "file": "packages/backend-next/test/unit/note/delete-note.test.ts",
+      "title": "moderator audit starts only after successful deletion and retains original author",
+      "projection": "audit work actor and snapshot after DELETE",
+      "executedFor546": false
+    }
+  ],
+  "knownBoundaries": [
+    {
+      "id": "operation-time-id",
+      "disposition": "retained-recorded-difference",
+      "owner": 194,
+      "reference": "docs/superpowers/plans/2026-11-08-moderation-log-appender-194.md"
+    },
+    {
+      "id": "role-transactional-audit",
+      "disposition": "approved-difference",
+      "owner": 120,
+      "reference": "docs/superpowers/specs/2026-10-17-role-compatibility-contract.md"
+    },
+    {
+      "id": "author-lookup-before-versus-after-delete",
+      "disposition": "observed-source-and-adapter-boundary; real-concurrency-unproved; decision-open",
+      "owner": 194
+    }
+  ],
+  "entrypointBindings": [
+    {
+      "file": "packages/backend-next/src/platform/connect-resources.ts",
+      "assertion": "appendNoteDeleteAudit(dataSource.manager, input, createIdCodec(config.id).newId)"
+    },
+    {
+      "file": "packages/backend-next/src/platform/database/role-update.ts",
+      "assertion": "await appendRoleUpdateAudit(manager, record, ids.newAuditId);"
+    }
+  ],
+  "currentInputs": {
+    "packages/backend-next/src/platform/database/moderation-log.ts": "9c36e573c6c18ce2ed06575bb792ffd24c917cc3e897a79c6356f3041456edd5",
+    "packages/backend-next/src/platform/database/note-deleter.ts": "4818af595ed943b168923e3f373a371c87ae19aa7aa6105e2c167da545c5edf5",
+    "packages/backend-next/src/platform/database/role-update-audit.ts": "17244001a3ea8a59ff3c6ef0cd061277681e5fc898afeb936535af565e501bb5",
+    "packages/backend-next/src/modules/note/delete-note.ts": "06d5e28867c0074be5df4a9e9945384232f19a29d94de3ab1fad99052a221faf",
+    "packages/backend-next/src/modules/role/update-role.ts": "01e4845c3f5e46135c96493832048e2a2db3640823821e8bc55704c9c404fdc2",
+    "packages/backend-next/src/platform/id-codec.ts": "db0c48b61495e5d80e6c6a7434d69a635e6f338a15bc4b951c995285ccd5125f",
+    "packages/backend-next/src/platform/database/role-update.ts": "3e90e2ede43cb94ce17fe772a724a0f939eea306e68198e345deec5469a1e2f3",
+    "packages/backend-next/src/platform/note-post-delete.ts": "aa3a42da8c33f1980de7c53fe08fc1e1cd1e0305a29c8266ff3c796235e4f64a",
+    "packages/backend-next/test/unit/note/delete-note.test.ts": "94c13a06607d9959f5a054bcfd25606e4318286270eb3f622505136f7f28fe7a",
+    "packages/backend-next/test/integration/moderation-log.test.ts": "469da2fa4f486b0c63c32d0dcc2fce180f3c956f860faeb4c1f90240f423ff73",
+    "packages/backend-next/test/integration/role-update.test.ts": "7871bed75f8009859c597132457c09d2e089a07af602e16dfc66c386cab44676",
+    "packages/backend-next/test/integration/role-http.test.ts": "d0590dd87ce522e204fa455aef6dbd474ba07a3fb7420d9d0b756507d9363c50",
+    "packages/backend-next/test/integration/role-acceptance.test.ts": "778d3aa0b8ba19bd1d3b167e80ce146ef173be602b405c7d355b151917d70383",
+    "packages/backend-next/test/integration/note-delete.test.ts": "ca37a4844b7e5de8099315017bc29a51d87f88869e6d30f676f35ad4e1e0fc1e",
+    "packages/backend-next/test/processes/note-delete-integration.test.ts": "702d073618dc46b2a65346283a472aee85192ef9ed6643eb16b1494c1956b135",
+    "docs/superpowers/compatibility/role/reference-role.e2e.ts": "914bc94230ed89f12ae16d35fab8bfb0784a6da013ee8dcd7f65d7666392ecf9",
+    "docs/superpowers/compatibility/role/README.md": "38dac8bf999657e700c55bc7b1b1253d4ececfe4ed8949478e8dd1361cb8e084",
+    "docs/superpowers/specs/2026-10-17-role-compatibility-contract.md": "5ba13cf0982bdf2cfe5fda58b065116bc01c1919a41d49f95ce9894ac6b2fcfd",
+    "docs/superpowers/plans/2026-11-08-moderation-log-appender-194.md": "c4e29b6c8c09361de2233b5000c21f800051d806338c8939062953c6cbe8d4e6",
+    "docs/superpowers/compatibility/note/observations.json": "ba3d42b9648d3bb72a01394f54d61c9da442f9f8f7f5b71e60fa82646959a5f6",
+    "docs/superpowers/compatibility/note/n7/posting-proof-272.json": "41f87f127936dd84d8b818ce735b2ed5efa78f2b5cf366833227fdbe9f43d109",
+    "docs/superpowers/compatibility/moderation-log/source-probe.mjs": "2a1a71a41c3979e19f459c12346a0d7b221c2c3ce844426a88e968b0f777b8ef",
+    "docs/superpowers/compatibility/moderation-log/source-observations.json": "1f887b3940df1e396d20f0ecbb63ab50aece2a5cd9af07d33ae8852af1fd2606"
+  }
+}
