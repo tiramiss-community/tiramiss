@@ -943,6 +943,9 @@ importers:
       '@types/node':
         specifier: 26.6.4
         version: 26.6.4
+      '@types/pg':
+        specifier: 8.23.1
+        version: 8.23.1
       '@types/ratelimiter':
         specifier: 3.4.6
         version: 3.4.6

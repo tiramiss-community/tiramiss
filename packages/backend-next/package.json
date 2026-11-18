@@ -69,6 +69,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "26.6.4",
+		"@types/pg": "8.23.1",
 		"@types/random-seed": "0.3.5",
 		"typescript": "npm:@typescript/typescript6@6.0.2",
 		"eslint": "9.39.5",

@@ -1,0 +1,79 @@
+{
+  "scope": "database-timeout-int8-nullish-567",
+  "recordedAtUtc": "2026-11-18T05:29:55.667097+00:00",
+  "baseRevision": "fe1a8106c3",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "upstreamFullServerMeasured": false,
+  "issueComplete": false,
+  "environment": {
+    "node": "24.20.0",
+    "pnpm": "12.9.1",
+    "postgres": "18.6",
+    "pg": "8.23.1",
+    "typeorm": "1.1.1",
+    "composeProject": "backend-next-db567",
+    "postgresPort": 55675,
+    "redisPort": 57675
+  },
+  "inputs": {
+    "packages/backend-next/src/platform/database/data-source.ts": "6eff8f1135ccccd3311ce034a0fb89d8c00d6131b2bf9f3fdea487a23d0ff594",
+    "packages/backend-next/package.json": "43c4d758c98d154e88307cf78e8c7296cc3ba0204712fc549388acbefa093888",
+    "pnpm-lock.yaml": "fbdf4bfbb12f02d0cee063a5636bc1469afd104d35de54235a47dd30af23fd3c",
+    "packages/backend-next/test/fixtures/database-options/postgres.ts.txt": "c6879b6b23c5fb1e7518ff0eaa02397791470732389954648f42ab13c0eaaa74",
+    "packages/backend-next/test/helpers/pinned-database-source.ts": "dc68bf1955c9a92931ab0261621e6f43c6b1bb1213847701dc28e84b7af8b025",
+    "packages/backend-next/test/unit/database-options.test.ts": "ad6b2e3a624d35b5c1fa18df88ed62b931071f1f7012d1b388a335acd3cfdf54",
+    "packages/backend-next/test/integration/database-options.test.ts": "8205b7c1677f3cc876ed4452b7f8e07ceeb571603b93c53565fea4edfa08630f",
+    "packages/backend-next/src/config/load-config.ts": "6771450cf0ae420bff37bbbf677f6dc46b2e40d214f31b575b90688abc8d4213",
+    "packages/backend-next/src/platform/connect-resources.ts": "4891d4395cfa5bf193b0e2cc5ca9aeafd55b8e789fcef3c2efb48e29ec970504",
+    "packages/backend-next/src/platform/database/meta.ts": "f77d4ac67496a561ebbfa549ecf23be8f1e78d72d70cc8dbb079c030f657bc11",
+    "packages/backend-next/src/platform/database/transaction-runner.ts": "c04c5bfd4ac47e5ee8f87fe0f5d812a6c753be36cca11af55ef5eb9f30579050",
+    "packages/backend-upstream/src/models/Meta.ts": "27bd75b935886158a59b4126fa50e4687e6c38e3e91789cddf3438154d6ec38f",
+    "packages/backend-next/test/integration/transaction-runner.test.ts": "c6a6d77f1cd2e45e7e693f06bcdfc9f4799bc0786a7c2348df6ab5e1d5c87877",
+    "packages/backend-next/test/integration/meta.test.ts": "8366b35d99be000d2bb131d1f6791b166ab82d58ca05e97e3e116849f85b5c2d",
+    "packages/backend-next/test/integration/url-preview.test.ts": "1c524d9d750111146b5d415b4c5b07e5ba2e08389a10478132222972a2412a24"
+  },
+  "runs": [
+    {
+      "kind": "unit",
+      "log": "/tmp/db567-unit.log",
+      "sha256": "f8b9d94b325402174d847b765e5045578099e952a1e57f6a3bfbfa2513211fab",
+      "exitCode": 0,
+      "passed": 5077,
+      "skipped": 1,
+      "files": 147
+    },
+    {
+      "kind": "integration",
+      "log": "/tmp/db567-integration-frozen.log",
+      "sha256": "5ac5ca667ab007603ab6a87652d1e2a441952f8360cc1551f4739f8b101efd99",
+      "exitCode": 0,
+      "passed": 30,
+      "skipped": 0,
+      "files": 4
+    },
+    {
+      "kind": "build",
+      "log": "/tmp/db567-build-frozen.log",
+      "sha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
+      "exitCode": 0
+    },
+    {
+      "kind": "typecheck",
+      "log": "/tmp/db567-typecheck-frozen.log",
+      "sha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+      "exitCode": 0
+    },
+    {
+      "kind": "shipping",
+      "log": "/tmp/db567-shipping-frozen.log",
+      "sha256": "02f7c34f5a6e6c2d35a50880495b48b931567c9ed9ebaea2157a44e1a492b814",
+      "exitCode": 0
+    }
+  ],
+  "remaining": [
+    "dbReplications/dbSlaves routing",
+    "query cache and disableCache behavior",
+    "slow query diagnostics",
+    "full source server and business-operation comparison"
+  ]
+}
