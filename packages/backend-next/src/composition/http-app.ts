@@ -31,6 +31,7 @@ import { createFeaturedHttp } from './featured-http.js';
 import { createActorHttp } from './actor-http.js';
 import { prepareNoteRoutes, registerNoteRoutes } from './note-routes.js';
 import { createRoleHttpApp } from './role-http.js';
+import { createTestControlsHttp } from './test-controls-http.js';
 import type { RuntimeResources } from './create-runtime.js';
 import type { RuntimeConfig } from '../config/types.js';
 
@@ -69,6 +70,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		await Promise.all([folders.idle(), pages.idle(), announcements.idle()]);
 	});
 	registerNoteRoutes(app, resources, note);
+	app.route('/', createTestControlsHttp(resources, config));
 	if (queueApi) {
 		app.route('/', queueApi);
 	}
