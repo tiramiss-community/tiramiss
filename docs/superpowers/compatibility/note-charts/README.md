@@ -45,3 +45,19 @@ node scripts/check-shipping.mjs --base c0123d10df
 ```
 
 並行セッションでは専用Compose名・未使用portを使う。fixture更新はsource入力と観測差分をレビューしてから`--write`で明示実行する。
+
+## 既存比較記録の参照更新（PR #628 のCI修正）
+
+`773ba79f2fadc7eee8a61fb40975518e283eb446` の実コードで全unit 5032件成功・既存skip 1件（145 files）、投稿/削除/chart/通常HTTPの実PG/Redis結合86件（4 files）、Meta初期化の結合3件とプロセス5件を測定した。`compatibility-predecessor.json` はこの実測のログhash・現行23入力hashと、#274で変更した既存9ファイルから基準`c0123d10df`へ戻る有限なbyte patchを保持する。旧証跡の件数・receipt・runtimeRevisionを新しい測定へ書き換えない。
+
+既存のnotes pagination・actor/Meta・posting証跡を読む際だけ、この9ファイルの**正確に一致する現在hash**を基準のbyteへ投影し、それより古い各既存guardを通す。一致しない入力は変換せず既存guardへ渡して拒否させる。post-save idleの単独検証leafはbuiltins限定を維持し、chart dispatch追加の2箇所だけを固定hashとanchorで戻す。32 producer / 24 cursorのcase件数・一意な入力組・epoch異常4件も固定し、観測JSON・source probe・#273 schema manifestのhashを実測へ結び付ける。現在コードの検証は新しい`note-charts-contract.test.mjs`が独立して担当し、全23入力のdrift・新規記録seal・存在する実ログの改変を拒否する。Gitや過去checkoutがなくてもCIから検証できる。
+
+```sh
+node --test scripts/note-charts-contract.test.mjs
+node --test scripts/*-contract*.test.mjs
+node scripts/backend-contract-inventory.mjs --check
+```
+
+契約全体の初回失敗ログは`/tmp/tiramiss-274-contract-tests.log`、再検証ログは`/tmp/tiramiss-274-contract-tests-r4.log`。実測ログは新規JSONの`runs`に列挙する。host上のログがないCIでは、commitされた記録と固定hashで検証し、存在するログはhashを照合する。これによって未実装のremote/silent/quiet callerや本家full-server比較を完了扱いにはしない。
+
+契約全体R4は791件中790成功・既存skip 1件・失敗0（約187秒）。その後の観測corpus改変検知追加は新規contract3件で再検証し、空配列・1件欠落の両方を拒否した。

@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectNoteChartsInput } from './note-charts-evidence.mjs';
 import assert from 'node:assert/strict';
 import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 import { createHash } from 'node:crypto';
@@ -92,7 +93,7 @@ export function readPreAliasKey(path, encoding, rawRead = read) {
  return withEvidenceRequestedPath(path, () => {
  const readFile = path => readPreOutbox(path, undefined, rawRead);
  if (!successorFiles.includes(path)) {
-  const bytes = projectUserMemoEntityInput(path, readFile(path));
+  const bytes = projectUserMemoEntityInput(path, projectNoteChartsInput(path, readFile(path)));
   return encoding ? bytes.toString(encoding) : bytes;
  }
  const value = record(readFile);

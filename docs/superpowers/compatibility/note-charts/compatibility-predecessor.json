@@ -1,0 +1,276 @@
+{
+  "scope": "note-chart-274-finite-followup",
+  "runtimeRevision": "773ba79f2fadc7eee8a61fb40975518e283eb446",
+  "baseRevision": "c0123d10df9c7946a0bd0b65eeb12df7bff80776",
+  "postingComplete": false,
+  "upstreamFullServerMeasured": false,
+  "currentInputs": {
+    "packages/backend-next/src/composition/http-app.ts": "f7d0528722704c1de99af7a7e18c7ba28def85fe76ae2358a48859787e3fa20f",
+    "packages/backend-next/src/composition/posting-note-charts.ts": "f4f45dc140547cbe1651d95e7d1b9d36ccdbfcf3849b8c8a861831137d5393e4",
+    "packages/backend-next/src/http/note-charts-api.ts": "dfa0981c7195e8aebe884ec62caab7809f04a1810535d1fab890768cf29a125f",
+    "packages/backend-next/src/modules/chart/note-charts.ts": "0a19f52e7c165db72897a5a903a01ab0f46be81281515e183526f5379d876024",
+    "packages/backend-next/src/modules/chart/public.ts": "249678ad7cd076c50b96a0d80d1c72284221abfee40b3d8f58ae92fa0df60a64",
+    "packages/backend-next/src/modules/note/delete-note.ts": "a01e54bdc4ba8e166ca499304794e01a694093b609ad5391266d3c3f68985c07",
+    "packages/backend-next/src/platform/connect-resources.ts": "4891d4395cfa5bf193b0e2cc5ca9aeafd55b8e789fcef3c2efb48e29ec970504",
+    "packages/backend-next/src/platform/database/chart/schema.ts": "dce232095e4e64f6dbf659896817c90781acf99e477edd32bfaf0db0db92cc4b",
+    "packages/backend-next/src/platform/database/chart/store.ts": "4bd5dbd911151a459e880d7fc1b998e4a0ddbda3e9b706a2135f3db6642454e6",
+    "packages/backend-next/src/platform/database/data-source.ts": "176937d6f88f279b7f8eb08cc0e1d6c2f158cfebbc0ae9d9f7c1e890e287ff36",
+    "packages/backend-next/src/platform/database/migration-sources.ts": "8fc2960fe615cbccc5d960fce9fa9099f263a025ce857e300e1fe3b72ae6764b",
+    "packages/backend-next/src/platform/database/note-deleter.ts": "820c33f24acb3cb9390cfd7112b97a4e6ac38ec9024f264ba246ecf22f27e1fe",
+    "packages/backend-next/src/platform/note-chart-flush.ts": "7106c0d8dc67f779a310533123975eb2d706849e71bd7cde768a839d9edde305",
+    "packages/backend-next/src/platform/note-post-save.ts": "e70abe9b1693b2a7c681075fc674257c62f2ed7d6f373a8ec16175fd1e8873c0",
+    "packages/backend-next/test/integration/note-charts.test.ts": "de1c89598000ad6b867e4d23ac27d5518aea9dc7e48ff28cd6d8f97e40570e53",
+    "packages/backend-next/test/unit/chart/api.test.ts": "203bd8b611120aa270fa4dd8a499c22506978a7fef97fb016788921a1a09ab7d",
+    "packages/backend-next/test/unit/chart/flush.test.ts": "cce609aa80f06f5be9f764ab5ad84edbeb98a03b224c159df82a1194d6d1849a",
+    "packages/backend-next/test/unit/chart/note-charts.test.ts": "d058acf71124fd18b58e69bb5d17aa6c24d38360430e0d5a467489d4565c2732",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "d5e9fe68b5470eda715aaf6ae6f941eabd2eb6d6da8974ae8895f020f4246283",
+    "packages/backend-next/test/unit/note/delete-note.test.ts": "bf0202bbf9418617aa393206f51789966d91d27f5034e7a9a7a85184fb67a57d",
+    "docs/superpowers/compatibility/note-charts/source-observations.json": "0855ba044f30a71da20c6b3a0b7be469443cfe1b8c78f8f5dfd6835c4c8ba411",
+    "docs/superpowers/compatibility/note-charts/source-probe.mjs": "41099320b7ee03db6e4321dec47f11c7429ce3a1fe9d7132d102b01be13ca3ec",
+    "docs/superpowers/compatibility/chart-storage/schema-manifest.json": "8aa7a4f58a056073d5771ef8460562364f65cea3c14f367f6bdd4c2b9044c69b"
+  },
+  "predecessors": {
+    "packages/backend-next/src/composition/http-app.ts": {
+      "currentSha256": "f7d0528722704c1de99af7a7e18c7ba28def85fe76ae2358a48859787e3fa20f",
+      "previousSha256": "b54091a0049aa30a888c72227f5a3e568156eabb4804b11fd3b34a7ca9ed853d",
+      "patches": [
+        {
+          "offset": 129,
+          "insert": "';\nimport { createNoteChartsApi } from '../http/note-charts-api.js';\nimport { createTokenAuthenticator } from '../platform/database/authenticate.js",
+          "previous": ""
+        },
+        {
+          "offset": 2179,
+          "insert": "NoteChartsApi(resources.noteCharts, { authenticate: createTokenAuthenticator(resources.dataSource.manager, resources.logger), logger: resources.logger }))\n\t\t.route('/', create",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/modules/note/delete-note.ts": {
+      "currentSha256": "a01e54bdc4ba8e166ca499304794e01a694093b609ad5391266d3c3f68985c07",
+      "previousSha256": "06d5e28867c0074be5df4a9e9945384232f19a29d94de3ab1fad99052a221faf",
+      "patches": [
+        {
+          "offset": 774,
+          "insert": "noteHost: string | null;\n\t",
+          "previous": ""
+        },
+        {
+          "offset": 1044,
+          "insert": "\n | { kind: 'charts'; snapshot: DeletedNoteSnapshot }",
+          "previous": ""
+        },
+        {
+          "offset": 4161,
+          "insert": "ports.start({ kind: 'charts', snapshot });\n\t\t\t",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/connect-resources.ts": {
+      "currentSha256": "4891d4395cfa5bf193b0e2cc5ca9aeafd55b8e789fcef3c2efb48e29ec970504",
+      "previousSha256": "acb6aeb42f0d18f3c77184259573fba6f84ac5b60216f9b633c9385c1735a0e9",
+      "patches": [
+        {
+          "offset": 102,
+          "insert": "\nimport { createPostingNoteCharts } from '../composition/posting-note-charts.js';\nimport { createNoteCharts } from '../modules/chart/public.js';\nimport { createNoteChartStore } from './database/chart/store.js';\nimport { startNoteChartFlush } from './note-chart-flush.js';",
+          "previous": ""
+        },
+        {
+          "offset": 16645,
+          "insert": "Charts = createNoteCharts(createNoteChartStore(dataSource, redis, error => logger.error('note-charts.unlock-failed', { error })), Date.now);\n\t\tconst postingNoteCharts = createPostingNoteCharts(noteCharts, async () => (await meta.fetch()).enableChartsForRemoteUser);\n\t\tconst noteChartFlush = startNoteChartFlush(noteCharts.flush, error => logger.error('note-charts.flush-failed', { error }));\n\t\t// ResourceScope unwinds in reverse: accepted post-save/delete work must finish before the last flush.\n\t\tscope.defer(noteChartFlush.close);\n\t\tconst note",
+          "previous": ""
+        },
+        {
+          "offset": 17245,
+          "insert": "\n\t\t\tcharts: async input => {\n\t\t\t\tif (input.createdSnapshot) {\n\t\t\t\t\tawait postingNoteCharts(input.createdSnapshot.note, true, input.createdSnapshot.author ? input.createdSnapshot.author.host : input.createdSnapshot.note.userHost);\n\t\t\t\t}\n\t\t\t},",
+          "previous": ""
+        },
+        {
+          "offset": 19651,
+          "insert": "async ",
+          "previous": ""
+        },
+        {
+          "offset": 19665,
+          "insert": " input.kind === 'charts'\n\t\t\t? postingNoteCharts({ ...input.snapshot.note, userHost: input.snapshot.noteHost }, false, input.snapshot.authorHost)\n\t\t\t:",
+          "previous": ""
+        },
+        {
+          "offset": 20702,
+          "insert": " noteCharts,",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/data-source.ts": {
+      "currentSha256": "176937d6f88f279b7f8eb08cc0e1d6c2f158cfebbc0ae9d9f7c1e890e287ff36",
+      "previousSha256": "ffced6c8a1f3994cae8424ae4aae594aefdb52846461caadecad03cc9e1c8f90",
+      "patches": [
+        {
+          "offset": 242,
+          "insert": "s';\nimport { noteChartEntities } from './chart/schema.j",
+          "previous": ""
+        },
+        {
+          "offset": 718,
+          "insert": ", ...noteChartEntities",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/migration-sources.ts": {
+      "currentSha256": "8fc2960fe615cbccc5d960fce9fa9099f263a025ce857e300e1fe3b72ae6764b",
+      "previousSha256": "0eb0c0088149fb91636974fd9949b3afa3e9e2a75e4f67eee77306ede7ac6447",
+      "patches": [
+        {
+          "offset": 497,
+          "insert": ".js';\nimport { noteChartEntities } from './chart/schema",
+          "previous": ""
+        },
+        {
+          "offset": 1601,
+          "insert": ": [...entities, ...noteChartEntities]",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/note-deleter.ts": {
+      "currentSha256": "820c33f24acb3cb9390cfd7112b97a4e6ac38ec9024f264ba246ecf22f27e1fe",
+      "previousSha256": "4818af595ed943b168923e3f373a371c87ae19aa7aa6105e2c167da545c5edf5",
+      "patches": [
+        {
+          "offset": 1872,
+          "insert": "ost, noteHost: row.userH",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/note-post-save.ts": {
+      "currentSha256": "e70abe9b1693b2a7c681075fc674257c62f2ed7d6f373a8ec16175fd1e8873c0",
+      "previousSha256": "af4b441de6527947089c2b701a6b851b356e6bc2e5e1a144638fa305e86771b2",
+      "patches": [
+        {
+          "offset": 478,
+          "insert": "\n\tcharts?(input: NotePostSaveInput): Promise<void>;",
+          "previous": ""
+        },
+        {
+          "offset": 1398,
+          "insert": "\n\t\tif (steps.charts) {\n\t\t\tstart('charts', () => steps.charts!(input));\n\t\t}",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "currentSha256": "d5e9fe68b5470eda715aaf6ae6f941eabd2eb6d6da8974ae8895f020f4246283",
+      "previousSha256": "3a279a89e29ea382b95a8c6a7122fd0c50ee18c16ebbd49e7ca931556776a946",
+      "patches": [
+        {
+          "offset": 1419,
+          "insert": "Charts: { read: vi.fn(async () => ({ local: { total: [0] } })) },\n\t\tnote",
+          "previous": ""
+        },
+        {
+          "offset": 2112,
+          "insert": "\n\t\t'/api/charts/notes', '/api/charts/user/notes',",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/note/delete-note.test.ts": {
+      "currentSha256": "bf0202bbf9418617aa393206f51789966d91d27f5034e7a9a7a85184fb67a57d",
+      "previousSha256": "94c13a06607d9959f5a054bcfd25606e4318286270eb3f622505136f7f28fe7a",
+      "patches": [
+        {
+          "offset": 395,
+          "insert": "Host: null, note",
+          "previous": ""
+        },
+        {
+          "offset": 2415,
+          "insert": "charts', '",
+          "previous": ""
+        },
+        {
+          "offset": 2866,
+          "insert": "charts', '",
+          "previous": ""
+        },
+        {
+          "offset": 2925,
+          "insert": "3",
+          "previous": "2"
+        },
+        {
+          "offset": 3401,
+          "insert": "', 'charts",
+          "previous": ""
+        },
+        {
+          "offset": 4846,
+          "insert": "'charts', ",
+          "previous": ""
+        },
+        {
+          "offset": 5288,
+          "insert": "charts', '",
+          "previous": ""
+        },
+        {
+          "offset": 5356,
+          "insert": "1",
+          "previous": "0"
+        },
+        {
+          "offset": 6270,
+          "insert": "charts', '",
+          "previous": ""
+        },
+        {
+          "offset": 6433,
+          "insert": "2",
+          "previous": "1"
+        }
+      ]
+    }
+  },
+  "runs": [
+    {
+      "name": "unit",
+      "log": "/tmp/tiramiss-274-evidence-unit.log",
+      "logSha256": "073e61161e666de55604fce1eb37ded24c5c984b25bdf30b30d547e0ea6280a8",
+      "exitCode": 0,
+      "files": 145,
+      "passed": 5032,
+      "skipped": 1
+    },
+    {
+      "name": "integration",
+      "log": "/tmp/tiramiss-274-evidence-integration.log",
+      "logSha256": "c2dc3e3c7627fd826f8e8b088a3faa58d63ad625b0419614264f55c7bfae4859",
+      "exitCode": 0,
+      "files": 4,
+      "passed": 86,
+      "skipped": 0
+    },
+    {
+      "name": "meta-integration",
+      "log": "/tmp/tiramiss-274-evidence-meta-integration.log",
+      "logSha256": "0e775cf62f121544272879a7de1f80e50891a899bca749886c74bd0fda9aa73f",
+      "exitCode": 0,
+      "files": 1,
+      "passed": 3,
+      "skipped": 0
+    },
+    {
+      "name": "meta-process",
+      "log": "/tmp/tiramiss-274-evidence-meta-process.log",
+      "logSha256": "fbb64bca7549a67cd2df2834e79f96c1c3f47ca01378a2a1f557b23569300031",
+      "exitCode": 0,
+      "files": 1,
+      "passed": 5,
+      "skipped": 0
+    }
+  ]
+}
