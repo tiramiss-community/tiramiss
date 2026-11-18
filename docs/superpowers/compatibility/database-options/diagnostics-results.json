@@ -22,7 +22,7 @@
     "packages/backend-next/src/platform/database/query-diagnostics.ts": "02f3589b15b281fffa910994930c3f69010856585eaafa8cbaea63a8bb84433d",
     "packages/backend-next/src/platform/connect-resources.ts": "3a59947a796dd62d8f6c6cdd19b5873b508292038b8b3e171b38dd3ef447b9a3",
     "packages/backend-next/test/unit/database-diagnostics.test.ts": "44d5c5c77a9baafeb22411c2793dc27ae14ab8744fc855d27ae3529af1e63d27",
-    "packages/backend-next/test/integration/database-diagnostics.test.ts": "9ed3cba0e45111d96bc8a598c9c8fc51af688a70a8a26ca2bb8d6c7d1e7e2622",
+    "packages/backend-next/test/integration/database-diagnostics.test.ts": "5b41c309ba85aca66b34a8878b96b139c98a6a612a170ffa69f32d8f9e71db9c",
     "packages/backend-next/test/helpers/pinned-database-diagnostics.ts": "1a5c197a55f0f2827bf366105187b68b12e09ac89b3f2dd74017b6171d280c65",
     "packages/backend-next/test/fixtures/database-options/postgres.ts.txt": "c6879b6b23c5fb1e7518ff0eaa02397791470732389954648f42ab13c0eaaa74",
     "packages/backend-next/test/fixtures/database-options/stats.ts.txt": "be92712b4bc18caf4571ec198d995fca330103aac7a0ae1d970e8923603210e1",
@@ -40,13 +40,20 @@
     },
     "integration": {
       "passed": 36,
-      "files": 3
+      "files": 3,
+      "testInputSha256": "9ed3cba0e45111d96bc8a598c9c8fc51af688a70a8a26ca2bb8d6c7d1e7e2622"
     },
     "newIntegration": 11,
     "rootContracts": {
       "passed": 815,
       "skipped": 1,
       "total": 816
+    },
+    "integrationFollowup": {
+      "passed": 11,
+      "files": 1,
+      "testInputSha256": "5b41c309ba85aca66b34a8878b96b139c98a6a612a170ffa69f32d8f9e71db9c",
+      "reason": "Set NODE_ENV before constructing the next factory; afterEach restores all environment stubs and console spies even if construction or destruction fails."
     }
   },
   "logs": {
@@ -64,12 +71,14 @@
     "/tmp/db-diagnostics-target-contracts.log": "724cfd39bc1725dc9e1d25f53f0797c1923a7a4b3cd12d8ea14534578fc8fe8f",
     "/tmp/db-diagnostics-review-shipping.log": "d5c871e7ced1b3340f5c9212b48d977822a394e9f26852ea36c96c36c9113bcc",
     "/tmp/db-diagnostics-typecheck-reviewed.log": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
-    "/tmp/db-diagnostics-inventory.log": "9506ac89cde2b4c62b8c5dc1c5149e9424db0f4e35b248aa94a8ad3ab8d719d4"
+    "/tmp/db-diagnostics-inventory.log": "9506ac89cde2b4c62b8c5dc1c5149e9424db0f4e35b248aa94a8ad3ab8d719d4",
+    "/tmp/db-diagnostics-env-factory-final.log": "a83142d9041c82a0cfc37bd98cb932ee17802e860cbe858b6ba386d422c21728",
+    "/tmp/db-diagnostics-env-shipping-final.log": "d5c871e7ced1b3340f5c9212b48d977822a394e9f26852ea36c96c36c9113bcc"
   },
   "review": {
     "independentReviewer": "parent Codex agent",
     "runtimeAssessment": "PASS",
-    "followup": "Guard destruction by isInitialized and restore console/environment state even when destroy fails; remove trailing whitespace.",
+    "followup": "Guard destruction by isInitialized; afterEach restores console/environment state including construction and destruction failures; environment is set before factory creation; remove trailing whitespace.",
     "revalidation": {
       "unitPassed": 5339,
       "unitSkipped": 1,

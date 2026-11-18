@@ -4,13 +4,18 @@
  */
 import { MiMeta } from 'backend-upstream/entities';
 import { Redis } from 'ioredis';
-import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 import { createDataSource } from '../../src/platform/database/data-source.js';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { migrateDatabase } from '../../src/platform/database/migrate.js';
 import { createLogger } from '../../src/platform/logger.js';
 import { createTestDatabase, testConfig } from '../helpers/database.js';
 import { createPinnedDiagnosticSource } from '../helpers/pinned-database-diagnostics.js';
+
+afterEach(() => {
+	vi.restoreAllMocks();
+	vi.unstubAllEnvs();
+});
 
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 beforeAll(async () => {
@@ -30,7 +35,7 @@ for (const environment of ['development', 'production']) {
 					warnings.push({ query, parameters });
 				},
 			} });
-			const consoleLog = vi.spyOn(console, 'log').mockImplementation((...args) => {
+			vi.spyOn(console, 'log').mockImplementation((...args) => {
 				warnings.push(args);
 			});
 			try {
@@ -43,20 +48,16 @@ for (const environment of ['development', 'production']) {
 				expect(JSON.stringify(warnings)).toContain('pg_sleep');
 				expect(JSON.stringify(warnings).includes('diagnostic-fixture-value')).toBe(environment === 'production');
 			} finally {
-				try {
-					if (source.isInitialized) {
-						await source.destroy();
-					}
-				} finally {
-					consoleLog.mockRestore();
+				if (source.isInitialized) {
+					await source.destroy();
 				}
 			}
 		});
 
 		test('next emits structured duration/routing and no query values even for production', async () => {
 			const lines: string[] = [];
-			const source = createDataSource(database.config.database, 30000, createLogger('database-diagnostics-test', line => lines.push(line)));
 			vi.stubEnv('NODE_ENV', environment);
+			const source = createDataSource(database.config.database, 30000, createLogger('database-diagnostics-test', line => lines.push(line)));
 			try {
 				await source.initialize();
 				lines.length = 0;
@@ -72,12 +73,8 @@ for (const environment of ['development', 'production']) {
 				await expect(source.query('SELECT missing_diagnostic_column')).rejects.toMatchObject({ driverError: { code: '42703' } });
 				expect(lines).toHaveLength(1);
 			} finally {
-				try {
-					if (source.isInitialized) {
-						await source.destroy();
-					}
-				} finally {
-					vi.unstubAllEnvs();
+				if (source.isInitialized) {
+					await source.destroy();
 				}
 			}
 		});
