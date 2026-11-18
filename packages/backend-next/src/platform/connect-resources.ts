@@ -54,6 +54,7 @@ import { createAcceptedRelayReader } from './database/accepted-relays.js';
 import { signRsaSignature2017 } from './jsonld-signature.js';
 import { createNotePostSave, createNotePostSaveWork } from './note-post-save.js';
 import { createNotePostSaveCounts } from './database/note-post-save-counts.js';
+import { readFromPrimary } from './database/primary-read.js';
 import { createNoteActivityReader } from './database/note-activity.js';
 import { createDeliveryRecipientReader } from './database/delivery-recipients.js';
 import { createIdCodec } from './id-codec.js';
@@ -405,7 +406,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			schedulePollEnded: jobs.schedulePollEnded,
 			// 本家と同じく投稿を受けた子で表現と宛先を決め、送信は worker の子に任せる。
 			deliver: postingNotifications.createdEvents(createDeliverCreatedNote({
-				readNote: createNoteActivityReader(dataSource.manager, { ...config.noteMedia, url: config.url, createdAtFromId: createIdCodec(config.id).createdAtFromId }),
+				readNote: noteId => readFromPrimary(dataSource, manager => createNoteActivityReader(manager, { ...config.noteMedia, url: config.url, createdAtFromId: createIdCodec(config.id).createdAtFromId })(noteId)),
 				readUsers: recipients.readUsers,
 				readFollowerInboxes: recipients.readFollowerInboxes,
 				enqueue: jobs.deliverMany,

@@ -4,6 +4,7 @@
  */
 import 'reflect-metadata';
 import pg from 'pg';
+import { createRuntimeDataSource } from './runtime-data-source.js';
 import { DataSource, type DataSourceOptions } from 'typeorm';
 import { entities } from 'backend-upstream/entities';
 import { noteChartEntities } from './chart/schema.js';
@@ -33,7 +34,7 @@ export function databaseOptions(
 export function createDataSource(config: DatabaseConfig, timeoutMs = 30000): DataSource {
 	const options = databaseOptions(config, timeoutMs);
 	// Upstream's CLI ormconfig stays on the primary and inherits its timeout; replication and defaults are runtime-only.
-	return new DataSource({
+	return createRuntimeDataSource({
 		...options,
 		...(config.replicas === undefined ? {} : { replication: {
 			master: { host: config.host, port: config.port, database: config.database, username: config.username, password: config.password },

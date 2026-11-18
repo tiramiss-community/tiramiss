@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectDatabaseReplicationRuntimeInput } from './database-replication-runtime-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -13,6 +14,7 @@ const { files } = JSON.parse(record);
 
 // The measured replica adapter supersedes this one exact input, not its historical measurements.
 export function projectDatabaseReplicationInput(path, actual) {
+	actual = projectDatabaseReplicationRuntimeInput(path, actual);
 	const binding = files[path];
 	if (!binding || sha(actual) !== binding.currentSha256) {
 		return actual;

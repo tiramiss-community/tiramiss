@@ -6,6 +6,7 @@ import { createNoteCreatedEvents, readNotePlan, renderNote } from '../modules/no
 import { createNotePostSaveChannelCounts } from '../platform/database/note-post-save-counts.js';
 import { createNoteNotificationReader } from '../platform/database/note-notifications.js';
 import { createNotificationTransactions } from '../platform/database/poll-ended.js';
+import { readFromPrimary } from '../platform/database/primary-read.js';
 import { createNoteReader } from '../platform/database/note-reader.js';
 import { createIdCodec } from '../platform/id-codec.js';
 import type { ActorEmojiCache } from '../platform/actor-emoji-cache.js';
@@ -25,8 +26,8 @@ export function createPostingNotifications(resources: {
 	const codec = createIdCodec(config.id);
 	const manager: EntityManager = resources.dataSource.manager;
 	const facts = createNoteNotificationReader(manager);
-	const reader = createNoteReader(manager, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId }, resources.actorEmojis);
-	const render = async (noteId: string, viewerId: string | null, options: { skipHide?: boolean; withReactionAndUserPairCache?: boolean } = {}, snapshot?: NoteCreatedSnapshot) => {
+	const render = async (noteId: string, viewerId: string | null, options: { skipHide?: boolean; withReactionAndUserPairCache?: boolean } = {}, snapshot?: NoteCreatedSnapshot) => readFromPrimary(resources.dataSource, async primary => {
+		const reader = createNoteReader(primary, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId }, resources.actorEmojis);
 		const now = Date.now();
 		const snapshots = new Map<string, NoteFacts>();
 		if (snapshot) {
@@ -48,7 +49,7 @@ export function createPostingNotifications(resources: {
 		const materials = await reader.readMaterials(notes, viewerId, now);
 
 		return { note: renderNote(noteId, materials, viewerId, now, true, options), materials };
-	};
+	});
 	const afterNotificationSaved = async (notification: PostNotification): Promise<void> => {
 		if (!await facts.canPublish(notification.recipientId, notification.notifierId)) {
 			return;

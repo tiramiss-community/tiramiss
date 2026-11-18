@@ -7,12 +7,16 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { setTimeout } from 'node:timers/promises';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
+import { Queue } from 'bullmq';
+import { createBackendHttpApp } from '../../src/composition/note-http.js';
+import { createIdCodec } from '../../src/platform/id-codec.js';
 import { dump } from 'js-yaml';
-import { MiMeta } from 'backend-upstream/entities';
+import { MiMeta, MiUser, MiNote, MiFollowing } from 'backend-upstream/entities';
 import { DataSource, type EntityManager } from 'typeorm';
 import { loadConfig } from '../../src/config/load-config.js';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createLogger } from '../../src/platform/logger.js';
+import { readFromPrimary } from '../../src/platform/database/primary-read.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
 import { migrateDatabase } from '../../src/platform/database/migrate.js';
 import { migrationSources } from '../../src/platform/database/migration-sources.js';
@@ -113,6 +117,15 @@ for (const [name, create] of [['next', createDataSource], ['pinned-source', crea
 			expect(failed.isInitialized).toBe(false);
 		});
 
+		test('lets db.extra connection fields override replica credentials as upstream does', async () => {
+			const overridden = await create({ ...config, extra: { ...config.extra, port: config.port } }).initialize();
+			try {
+				expect(await location(overridden.manager)).toEqual({ standby: false, timeout: '500ms' });
+			} finally {
+				await overridden.destroy();
+			}
+		});
+
 		test('retains upstream primary fallback for an enabled empty slave list', async () => {
 			const empty = await create({ ...config, replicas: [] }).initialize();
 			try {
@@ -148,7 +161,7 @@ test('normal YAML → connectResources uses the standby while migrations stay on
 		const primary = await new DataSource({ type: 'postgres', ...database.config.database }).initialize();
 		try {
 			for (const connection of [primary, observer]) {
-				expect(await connection.query("SELECT count(*)::int AS sessions FROM pg_stat_activity WHERE application_name = 'db567-normal-runtime'"))
+				await expect.poll(() => connection.query("SELECT count(*)::int AS sessions FROM pg_stat_activity WHERE application_name = 'db567-normal-runtime'"), { timeout: 5000, interval: 25 })
 					.toEqual([{ sessions: 0 }]);
 			}
 		} finally {
@@ -165,5 +178,81 @@ test('normal YAML → connectResources uses the standby while migrations stay on
 	} finally {
 		await resources?.close();
 		await rm(directory, { recursive: true, force: true });
+	}
+});
+
+test.each(['primary', 'replica'] as const)('failed %s initialization closes every already opened pool', async failure => {
+	const applicationName = `db567-partial-${failure}`;
+	const failed = createDataSource({ ...config,
+		...(failure === 'primary' ? { password: 'incorrect-test-password' } : {}),
+		replicas: failure === 'primary' ? config.replicas : [config.replicas![0], { ...config.replicas![0], password: 'incorrect-test-password' }],
+		extra: { ...config.extra, idleTimeoutMillis: 0, application_name: applicationName },
+	});
+	try {
+		await expect(failed.initialize()).rejects.toMatchObject({ code: '28P01' });
+		expect(failed.isInitialized).toBe(false);
+		await expect.poll(() => observer.query('SELECT count(*)::int AS sessions FROM pg_stat_activity WHERE application_name = $1', [applicationName]), { timeout: 1000, interval: 25 })
+			.toEqual([{ sessions: 0 }]);
+	} finally {
+		// Keep the red reproduction isolated even before failed-initialization disposal exists.
+		await observer.query('SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE application_name = $1', [applicationName]);
+	}
+});
+
+test.each([false, true])('normal create response and post-save delivery survive paused replay (poll: %s)', async withPoll => {
+	const runtime = { ...database.config, database: config };
+	const resources = await connectResources(runtime, createLogger('database-replication-post-save', () => {}));
+	const codec = createIdCodec(runtime.id);
+	const author = codec.newId(Date.now());
+	const follower = codec.newId(Date.now());
+	const token = withPoll ? 'replica-native02' : 'replica-native01';
+	const inbox = 'https://replica-follower.test/inbox';
+	const jobs = new Queue('deliver', { connection: { host: runtime.redis.host, port: runtime.redis.port }, prefix: `${runtime.redis.prefix}:queue:deliver` });
+	try {
+		await resources.dataSource.getRepository(MiMeta).deleteAll();
+		await resources.dataSource.getRepository(MiMeta).insert({ id: 'singleton', federation: 'all' });
+		await resources.dataSource.getRepository(MiUser).insert([
+			{ id: author, username: `replicaAuthor${withPoll}`, usernameLower: `replicaauthor${withPoll}`, token },
+			{ id: follower, username: `replicaFollower${withPoll}`, usernameLower: `replicafollower${withPoll}`, host: 'replica-follower.test', inbox, sharedInbox: inbox },
+		]);
+		await resources.dataSource.getRepository(MiFollowing).insert({ id: codec.newId(Date.now()), followerId: follower, followeeId: author, followerHost: 'replica-follower.test', followerInbox: inbox, followerSharedInbox: inbox });
+		await replay();
+		const app = createBackendHttpApp(resources, runtime);
+		await observer.query('SELECT pg_wal_replay_pause()');
+		const response = await app.request('/api/notes/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ i: token, text: 'saved while replay is paused', ...(withPoll ? { poll: { choices: ['one', 'two'] } } : {}) }) });
+		const body = await response.json();
+		expect(response.status, JSON.stringify(body)).toBe(200);
+		expect(body.createdNote).toMatchObject({ text: 'saved while replay is paused', userId: author });
+		if (withPoll) {
+			expect(body.createdNote.poll.choices.map((choice: { text: string }) => choice.text)).toEqual(['one', 'two']);
+		}
+		const noteId = body.createdNote.id;
+		// Ordinary reads retain upstream replica lag; the write and post-save paths must not depend on replay.
+		expect(await resources.dataSource.getRepository(MiNote).findOneBy({ id: noteId })).toBeNull();
+		await resources.notePostSave.idle();
+		const queued = await jobs.getJobs(['waiting', 'delayed']);
+		expect(queued.map(job => job.data.to)).toContain(inbox);
+		expect(queued.some(job => JSON.stringify(job.data).includes(noteId))).toBe(true);
+	} finally {
+		await observer.query('SELECT pg_wal_replay_resume()');
+		await jobs.close();
+		await resources.close();
+		await replay();
+	}
+});
+
+test('primary read leases return their connection after success and failure without opening a transaction', async () => {
+	const source = await createDataSource({ ...config, extra: { ...config.extra, max: 1 } }, 500).initialize();
+	try {
+		expect(await readFromPrimary(source, manager => location(manager))).toEqual({ standby: false, timeout: '500ms' });
+		const error = new Error('primary-read-fixture');
+		await expect(readFromPrimary(source, async manager => {
+			expect(await location(manager)).toEqual({ standby: false, timeout: '500ms' });
+			expect(manager.queryRunner?.isTransactionActive).toBe(false);
+			throw error;
+		})).rejects.toBe(error);
+		expect(await source.query('SELECT 1 AS ready')).toEqual([{ ready: 1 }]);
+	} finally {
+		await source.destroy();
 	}
 });

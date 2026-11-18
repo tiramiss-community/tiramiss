@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { projectDatabaseReplicationRuntimeInput } from './database-replication-runtime-predecessor.mjs';
 import { projectDatabaseReplicationInput } from './database-replication-predecessor.mjs';
 import { projectDatabaseOptionsInput } from './database-options-predecessor.mjs';
 
@@ -29,7 +30,7 @@ test('measured replica input preserves its exact predecessor while fresh drift r
 	const replica = JSON.parse(read('docs/superpowers/compatibility/database-options/replication-predecessor.json'));
 	const measured = JSON.parse(read('docs/superpowers/compatibility/database-options/replication-results.json'));
 	for (const [path, binding] of Object.entries(replica.files)) {
-		const actual = read(path);
+		const actual = projectDatabaseReplicationRuntimeInput(path, read(path));
 		assert.equal(sha(actual), binding.currentSha256);
 		assert.equal(measured.inputs[path], binding.currentSha256);
 		assert.equal(sha(projectDatabaseReplicationInput(path, actual)), binding.previousSha256);
@@ -40,4 +41,19 @@ test('measured replica input preserves its exact predecessor while fresh drift r
 	}
 	const unrelated = Buffer.from('unrelated current bytes');
 	assert.equal(projectDatabaseReplicationInput('unrelated', unrelated), unrelated);
+});
+
+
+test('measured post-save and failed-initialization fixes preserve exact predecessors without accepting later drift', () => {
+	const runtime = JSON.parse(read('docs/superpowers/compatibility/database-options/replication-runtime-predecessor.json'));
+	const measured = JSON.parse(read('docs/superpowers/compatibility/database-options/replication-review-results.json'));
+	for (const [path, binding] of Object.entries(runtime.files)) {
+		const actual = read(path);
+		assert.equal(sha(actual), binding.currentSha256, path);
+		assert.equal(measured.inputs[path], binding.currentSha256, path);
+		assert.equal(sha(projectDatabaseReplicationRuntimeInput(path, actual)), binding.previousSha256, path);
+		const drift = Buffer.concat([actual, Buffer.from('\n')]);
+		assert.equal(projectDatabaseReplicationRuntimeInput(path, drift), drift);
+		assert.equal(projectDatabaseOptionsInput(path, drift), drift);
+	}
 });

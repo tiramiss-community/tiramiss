@@ -4,6 +4,8 @@ services:
     command: ['postgres', '-c', 'hba_file=/etc/postgresql/replication-test.pg_hba.conf']
     volumes:
       - ./test/fixtures/database-options/replication.pg_hba.conf:/etc/postgresql/replication-test.pg_hba.conf:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -h 127.0.0.1 -U postgres -d backend_next_test']
   postgres-replica:
     image: postgres:18
     depends_on:

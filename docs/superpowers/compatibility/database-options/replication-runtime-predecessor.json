@@ -1,0 +1,125 @@
+{
+  "baseline": "65a7c0b338574050544452748990c838b7b8af6c",
+  "measurement": "replication-review-results.json",
+  "files": {
+    "packages/backend-next/src/platform/database/data-source.ts": {
+      "currentSha256": "0ef647696a8b51f2ad257c4fb06dbc76f5d1b99efa7b39e35843c3c13787c39e",
+      "previousSha256": "554f8ada3917c3c062ba3c66832176ce5c416e378a5307b36358d5207450cd60",
+      "patches": [
+        {
+          "offset": 148,
+          "insert": "';\nimport { createRuntimeDataSource } from './runtime-data-source.js",
+          "previous": ""
+        },
+        {
+          "offset": 1385,
+          "insert": "createRu",
+          "previous": ""
+        },
+        {
+          "offset": 1394,
+          "insert": "tim",
+          "previous": ""
+        },
+        {
+          "offset": 1398,
+          "insert": "",
+          "previous": "w "
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/connect-resources.ts": {
+      "currentSha256": "5090fbe16ecca93ba9214594e5544794c8589d7f48b9634e9cb2384c5c8959d0",
+      "previousSha256": "b455014631be1536dca9ef0db5d8ecc29070a8f57e65ded7b692f407319313f2",
+      "patches": [
+        {
+          "offset": 3803,
+          "insert": ".js';\nimport { readFromPrimary } from './database/primary-read",
+          "previous": ""
+        },
+        {
+          "offset": 19253,
+          "insert": "noteId => readFromPrimary(dataSource, manager => ",
+          "previous": ""
+        },
+        {
+          "offset": 19327,
+          "insert": "",
+          "previous": "dataSource."
+        },
+        {
+          "offset": 19435,
+          "insert": ")(noteId)",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/composition/note-routes.ts": {
+      "currentSha256": "8e8925a80409b1cbebf1bcbbd0fa3f04acdd123a562564df24250a8dd81227c0",
+      "previousSha256": "2f7242d5d7b5ffcaf03a505c1ceabc2fedb1588bf88b49a1bc4ddbdf77e11b2a",
+      "patches": [
+        {
+          "offset": 1031,
+          "insert": ".js';\nimport { readFromPrimary } from '../platform/database/primary-read",
+          "previous": ""
+        },
+        {
+          "offset": 3079,
+          "insert": "const readCreatedNote = (id: string, viewerId: string, now: number) => readFromPrimary(resources.dataSource, async primary => {\n\t\t// The saved note and Poll may not have reached a replica when the create response is rendered.\n\t\tconst createdReader = createNoteReader(primary, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId }, resources.actorEmojis);\n\t\tconst notes = await readNotePlan([id], createdReader.readNotes);\n\t\treturn renderNote(id, await createdReader.readMaterials(notes, viewerId, now), viewerId, now);\n\t});\n\t",
+          "previous": ""
+        },
+        {
+          "offset": 3716,
+          "insert": ", readCreatedNote",
+          "previous": ""
+        },
+        {
+          "offset": 3991,
+          "insert": "Cr",
+          "previous": ""
+        },
+        {
+          "offset": 3994,
+          "insert": "atedNote",
+          "previous": "r"
+        },
+        {
+          "offset": 4515,
+          "insert": "",
+          "previous": ": async (id, viewerId, now) => {\n\t\t\t\tconst notes = await readNotePlan([id], reader.readNotes);\n\t\t\t\treturn renderNote(id, await reader.readMaterials(notes, viewerId, now), viewerId, now);\n\t\t\t}"
+        }
+      ]
+    },
+    "packages/backend-next/src/composition/posting-notifications.ts": {
+      "currentSha256": "18061f542bb3846b97ceea7b283ad479be423e2a13be9ec2f4132d860ea85927",
+      "previousSha256": "efbb6744090d3ae3900d13010b8f1a2b10444e37ef14060fccbeca534df1cb09",
+      "patches": [
+        {
+          "offset": 464,
+          "insert": "d.js';\nimport { readFromPrimary } from '../platform/database/primary-rea",
+          "previous": ""
+        },
+        {
+          "offset": 1784,
+          "insert": "",
+          "previous": "ader = createNoteReader(manager, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId }, resources.actorEmojis);\n\tconst re"
+        },
+        {
+          "offset": 1952,
+          "insert": "readFromPrimary(resources.dataSource, async primary => ",
+          "previous": ""
+        },
+        {
+          "offset": 2008,
+          "insert": "\n\t\tconst reader = createNoteReader(primary, resources.reactionsRedis, { ...config.noteMedia, url: config.url, createdAtFromId: codec.createdAtFromId }, resources.actorEmojis);",
+          "previous": ""
+        },
+        {
+          "offset": 3152,
+          "insert": ")",
+          "previous": ""
+        }
+      ]
+    }
+  }
+}
