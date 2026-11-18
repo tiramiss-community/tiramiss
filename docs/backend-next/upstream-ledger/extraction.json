@@ -1,0 +1,34 @@
+{
+  "from": "d43954b333045e6c5fbd7e1b47592088980d5912",
+  "to": "8e07cf085adf7009583d234a208e30436f020e26",
+  "scope": "repository-wide; no path filter",
+  "history": [
+    {
+      "commit": "9916f7350eff12e2a67bdd952c44370f3f9acfda",
+      "paths": [
+        { "path": "packages/backend/migration/1790477603333-UserProfilePasswordComment.js", "items": ["UL-001"] },
+        { "path": "packages/backend/src/models/UserProfile.ts", "items": ["UL-001"] }
+      ]
+    },
+    {
+      "commit": "8e07cf085adf7009583d234a208e30436f020e26",
+      "paths": [
+        { "path": "Dockerfile", "items": ["UL-002"] },
+        { "path": "packages/backend/test-federation/compose.tpl.yml", "items": ["UL-003"] }
+      ]
+    }
+  ],
+  "finalPaths": [
+    "Dockerfile",
+    "packages/backend/migration/1790477603333-UserProfilePasswordComment.js",
+    "packages/backend/src/models/UserProfile.ts",
+    "packages/backend/test-federation/compose.tpl.yml"
+  ],
+  "review": {
+    "date": "2026-11-18",
+    "by": "Codex; independent PR review required",
+    "evidence": "verification.md#extraction",
+    "result": "PASS",
+    "limit": "Paths and commits are complete for this pair; semantic splitting still requires human review."
+  }
+}
