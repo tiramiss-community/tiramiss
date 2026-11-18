@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Hono } from 'hono';
+import { createNoteChartsApi } from '../http/note-charts-api.js';
+import { createTokenAuthenticator } from '../platform/database/authenticate.js';
 import { createAnnouncementsHttp } from './announcements-http.js';
 import { getAvatarImagesPath } from '../http/avatar-images-api.js';
 import { createPublicEmojisHttp } from './public-emojis-http.js';
@@ -34,6 +36,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 	const pages = createPagesHttp(resources, config);
 	const announcements = createAnnouncementsHttp(resources, config);
 	const app = new Hono({ getPath: getAvatarImagesPath })
+		.route('/', createNoteChartsApi(resources.noteCharts, { authenticate: createTokenAuthenticator(resources.dataSource.manager, resources.logger), logger: resources.logger }))
 		.route('/', createRoleHttpApp(resources, config))
 		.route('/', createUserMemoHttp(resources, config))
 		.route('/', announcements.app)

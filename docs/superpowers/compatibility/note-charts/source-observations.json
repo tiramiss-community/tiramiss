@@ -1,0 +1,2492 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "method": "literal producer update methods and Chart.getChart with in-memory Repository read doubles; not a full upstream HTTP/PG comparison",
+  "inputs": [
+    {
+      "path": "packages/backend/src/core/chart/charts/notes.ts",
+      "sha256": "0f39262aabde9401ae09113e222ee90975b4b4758bb630c7d2bc854297fbfaeb"
+    },
+    {
+      "path": "packages/backend/src/core/chart/charts/per-user-notes.ts",
+      "sha256": "f2f1e5352562774a53ef617fe601d978fefa91e872ead89276c46cbe81131cb8"
+    },
+    {
+      "path": "packages/backend/src/core/chart/core.ts",
+      "sha256": "0fae5de0dcfb05018ffaf4f83bfc82e377d3fe316f05d4e057c3edc8c52bb6b3"
+    },
+    {
+      "path": "packages/backend/src/misc/prelude/time.ts",
+      "sha256": "bbd502e836812a15762a72a8e644bb2ef6a170773c7dc48e625676c38b338755"
+    }
+  ],
+  "updates": [
+    {
+      "series": "notes",
+      "note": {
+        "userId": "alice",
+        "userHost": null,
+        "visibility": "public",
+        "replyId": null,
+        "renoteId": null,
+        "fileIds": []
+      },
+      "additional": false,
+      "diff": {
+        "local.total": -1,
+        "local.inc": 0,
+        "local.dec": 1,
+        "local.diffs.normal": -1,
+        "local.diffs.renote": 0,
+        "local.diffs.reply": 0,
+        "local.diffs.withFile": 0
+      }
+    },
+    {
+      "series": "notes",
+      "note": {
+        "userId": "alice",
+        "userHost": null,
+        "visibility": "public",
+        "replyId": "r",
+        "renoteId": null,
+        "fileIds": []
+      },
+      "additional": false,
+      "diff": {
+        "local.total": -1,
+        "local.inc": 0,
+        "local.dec": 1,
+        "local.diffs.normal": 0,
+        "local.diffs.renote": 0,
+        "local.diffs.reply": -1,
+        "local.diffs.withFile": 0
+      }
+    },
+    {
+      "series": "notes",
+      "note": {
+        "userId": "alice",
+        "userHost": null,
+        "visibility": "public",
+        "replyId": null,
+        "renoteId": "n",
+        "fileIds": []
+      },
+      "additional": false,
+      "diff": {
+        "local.total": -1,
+        "local.inc": 0,
+        "local.dec": 1,
+        "local.diffs.normal": 0,
+        "local.diffs.renote": -1,
+        "local.diffs.reply": 0,
+        "local.diffs.withFile": 0
+      }
+    },
+    {
+      "series": "notes",
+      "note": {
+        "userId": "alice",
+        "userHost": null,
+        "visibility": "public",
+        "replyId": "r",
+        "renoteId": "n",
+        "fileIds": [
+          "a",
+          "b"
+        ]
+      },
+      "additional": false,
+      "diff": {
+        "local.total": -1,
+        "local.inc": 0,
+        "local.dec": 1,
+        "local.diffs.normal": 0,
+        "local.diffs.renote": -1,
+        "local.diffs.reply": -1,
+        "local.diffs.withFile": -1
+      }
+    },
+    {
+      "series": "notes",
+      "note": {
+        "userId": "alice",
+        "userHost": null,
+        "visibility": "public",
+        "replyId": null,
+        "renoteId": null,
+        "fileIds": []
+      },
+      "additional": true,
+      "diff": {
+        "local.total": 1,
+        "local.inc": 1,
+        "local.dec": 0,
+        "local.diffs.normal": 1,
+        "local.diffs.renote": 0,
+        "local.diffs.reply": 0,
+        "local.diffs.withFile": 0
+      }
+    },
+    {
+      "series": "notes",
+      "note": {
+        "userId": "alice",
+        "userHost": null,
+        "visibility": "public",
+        "replyId": "r",
+        "renoteId": null,
+        "fileIds": []
+      },
+      "additional": true,
+      "diff": {
+        "local.total": 1,
+        "local.inc": 1,
+        "local.dec": 0,
+        "local.diffs.normal": 0,
+        "local.diffs.renote": 0,
+        "local.diffs.reply": 1,
+        "local.diffs.withFile": 0
+      }
+    },
+    {
+      "series": "notes",
+      "note": {
+        "userId": "alice",
+        "userHost": null,
+        "visibility": "public",
+        "replyId": null,
+        "renoteId": "n",
+        "fileIds": []
+      },
+      "additional": true,
+      "diff": {
+        "local.total": 1,
+        "local.inc": 1,
+        "local.dec": 0,
+        "local.diffs.normal": 0,
+        "local.diffs.renote": 1,
+        "local.diffs.reply": 0,
+        "local.diffs.withFile": 0
+      }
+    },
+    {
+      "series": "notes",
+      "note": {
+        "userId": "alice",
+        "userHost": null,
+        "visibility": "public",
+        "replyId": "r",
+        "renoteId": "n",
+        "fileIds": [
+          "a",
+          "b"
+        ]
+      },
+      "additional": true,
+      "diff": {
+        "local.total": 1,
+        "local.inc": 1,
+        "local.dec": 0,
+        "local.diffs.normal": 0,
+        "local.diffs.renote": 1,
+        "local.diffs.reply": 1,
+        "local.diffs.withFile": 1
+      }
+    },
+    {
+      "series": "notes",
+      "note": {
+        "userId": "alice",
+        "userHost": "remote.test",
+        "visibility": "public",
+        "replyId": null,
+        "renoteId": null,
+        "fileIds": []
+      },
+      "additional": false,
+      "diff": {
+        "remote.total": -1,
+        "remote.inc": 0,
+        "remote.dec": 1,
+        "remote.diffs.normal": -1,
+        "remote.diffs.renote": 0,
+        "remote.diffs.reply": 0,
+        "remote.diffs.withFile": 0
+      }
+    },
+    {
+      "series": "notes",
+      "note": {
+        "userId": "alice",
+        "userHost": "remote.test",
+        "visibility": "public",
+        "replyId": "r",
+        "renoteId": null,
+        "fileIds": []
+      },
+      "additional": false,
+      "diff": {
+        "remote.total": -1,
+        "remote.inc": 0,
+        "remote.dec": 1,
+        "remote.diffs.normal": 0,
+        "remote.diffs.renote": 0,
+        "remote.diffs.reply": -1,
+        "remote.diffs.withFile": 0
+      }
+    },
+    {
+      "series": "notes",
+      "note": {
+        "userId": "alice",
+        "userHost": "remote.test",
+        "visibility": "public",
+        "replyId": null,
+        "renoteId": "n",
+        "fileIds": []
+      },
+      "additional": false,
+      "diff": {
+        "remote.total": -1,
+        "remote.inc": 0,
+        "remote.dec": 1,
+        "remote.diffs.normal": 0,
+        "remote.diffs.renote": -1,
+        "remote.diffs.reply": 0,
+        "remote.diffs.withFile": 0
+      }
+    },
+    {
+      "series": "notes",
+      "note": {
+        "userId": "alice",
+        "userHost": "remote.test",
+        "visibility": "public",
+        "replyId": "r",
+        "renoteId": "n",
+        "fileIds": [
+          "a",
+          "b"
+        ]
+      },
+      "additional": false,
+      "diff": {
+        "remote.total": -1,
+        "remote.inc": 0,
+        "remote.dec": 1,
+        "remote.diffs.normal": 0,
+        "remote.diffs.renote": -1,
+        "remote.diffs.reply": -1,
+        "remote.diffs.withFile": -1
+      }
+    },
+    {
+      "series": "notes",
+      "note": {
+        "userId": "alice",
+        "userHost": "remote.test",
+        "visibility": "public",
+        "replyId": null,
+        "renoteId": null,
+        "fileIds": []
+      },
+      "additional": true,
+      "diff": {
+        "remote.total": 1,
+        "remote.inc": 1,
+        "remote.dec": 0,
+        "remote.diffs.normal": 1,
+        "remote.diffs.renote": 0,
+        "remote.diffs.reply": 0,
+        "remote.diffs.withFile": 0
+      }
+    },
+    {
+      "series": "notes",
+      "note": {
+        "userId": "alice",
+        "userHost": "remote.test",
+        "visibility": "public",
+        "replyId": "r",
+        "renoteId": null,
+        "fileIds": []
+      },
+      "additional": true,
+      "diff": {
+        "remote.total": 1,
+        "remote.inc": 1,
+        "remote.dec": 0,
+        "remote.diffs.normal": 0,
+        "remote.diffs.renote": 0,
+        "remote.diffs.reply": 1,
+        "remote.diffs.withFile": 0
+      }
+    },
+    {
+      "series": "notes",
+      "note": {
+        "userId": "alice",
+        "userHost": "remote.test",
+        "visibility": "public",
+        "replyId": null,
+        "renoteId": "n",
+        "fileIds": []
+      },
+      "additional": true,
+      "diff": {
+        "remote.total": 1,
+        "remote.inc": 1,
+        "remote.dec": 0,
+        "remote.diffs.normal": 0,
+        "remote.diffs.renote": 1,
+        "remote.diffs.reply": 0,
+        "remote.diffs.withFile": 0
+      }
+    },
+    {
+      "series": "notes",
+      "note": {
+        "userId": "alice",
+        "userHost": "remote.test",
+        "visibility": "public",
+        "replyId": "r",
+        "renoteId": "n",
+        "fileIds": [
+          "a",
+          "b"
+        ]
+      },
+      "additional": true,
+      "diff": {
+        "remote.total": 1,
+        "remote.inc": 1,
+        "remote.dec": 0,
+        "remote.diffs.normal": 0,
+        "remote.diffs.renote": 1,
+        "remote.diffs.reply": 1,
+        "remote.diffs.withFile": 1
+      }
+    },
+    {
+      "series": "perUserNotes",
+      "note": {
+        "userId": "alice",
+        "userHost": null,
+        "visibility": "public",
+        "replyId": null,
+        "renoteId": null,
+        "fileIds": []
+      },
+      "additional": false,
+      "diff": {
+        "total": -1,
+        "inc": 0,
+        "dec": 1,
+        "diffs.normal": -1,
+        "diffs.renote": 0,
+        "diffs.reply": 0,
+        "diffs.withFile": 0
+      }
+    },
+    {
+      "series": "perUserNotes",
+      "note": {
+        "userId": "alice",
+        "userHost": null,
+        "visibility": "public",
+        "replyId": "r",
+        "renoteId": null,
+        "fileIds": []
+      },
+      "additional": false,
+      "diff": {
+        "total": -1,
+        "inc": 0,
+        "dec": 1,
+        "diffs.normal": 0,
+        "diffs.renote": 0,
+        "diffs.reply": -1,
+        "diffs.withFile": 0
+      }
+    },
+    {
+      "series": "perUserNotes",
+      "note": {
+        "userId": "alice",
+        "userHost": null,
+        "visibility": "public",
+        "replyId": null,
+        "renoteId": "n",
+        "fileIds": []
+      },
+      "additional": false,
+      "diff": {
+        "total": -1,
+        "inc": 0,
+        "dec": 1,
+        "diffs.normal": 0,
+        "diffs.renote": -1,
+        "diffs.reply": 0,
+        "diffs.withFile": 0
+      }
+    },
+    {
+      "series": "perUserNotes",
+      "note": {
+        "userId": "alice",
+        "userHost": null,
+        "visibility": "public",
+        "replyId": "r",
+        "renoteId": "n",
+        "fileIds": [
+          "a",
+          "b"
+        ]
+      },
+      "additional": false,
+      "diff": {
+        "total": -1,
+        "inc": 0,
+        "dec": 1,
+        "diffs.normal": 0,
+        "diffs.renote": -1,
+        "diffs.reply": -1,
+        "diffs.withFile": -1
+      }
+    },
+    {
+      "series": "perUserNotes",
+      "note": {
+        "userId": "alice",
+        "userHost": null,
+        "visibility": "public",
+        "replyId": null,
+        "renoteId": null,
+        "fileIds": []
+      },
+      "additional": true,
+      "diff": {
+        "total": 1,
+        "inc": 1,
+        "dec": 0,
+        "diffs.normal": 1,
+        "diffs.renote": 0,
+        "diffs.reply": 0,
+        "diffs.withFile": 0
+      }
+    },
+    {
+      "series": "perUserNotes",
+      "note": {
+        "userId": "alice",
+        "userHost": null,
+        "visibility": "public",
+        "replyId": "r",
+        "renoteId": null,
+        "fileIds": []
+      },
+      "additional": true,
+      "diff": {
+        "total": 1,
+        "inc": 1,
+        "dec": 0,
+        "diffs.normal": 0,
+        "diffs.renote": 0,
+        "diffs.reply": 1,
+        "diffs.withFile": 0
+      }
+    },
+    {
+      "series": "perUserNotes",
+      "note": {
+        "userId": "alice",
+        "userHost": null,
+        "visibility": "public",
+        "replyId": null,
+        "renoteId": "n",
+        "fileIds": []
+      },
+      "additional": true,
+      "diff": {
+        "total": 1,
+        "inc": 1,
+        "dec": 0,
+        "diffs.normal": 0,
+        "diffs.renote": 1,
+        "diffs.reply": 0,
+        "diffs.withFile": 0
+      }
+    },
+    {
+      "series": "perUserNotes",
+      "note": {
+        "userId": "alice",
+        "userHost": null,
+        "visibility": "public",
+        "replyId": "r",
+        "renoteId": "n",
+        "fileIds": [
+          "a",
+          "b"
+        ]
+      },
+      "additional": true,
+      "diff": {
+        "total": 1,
+        "inc": 1,
+        "dec": 0,
+        "diffs.normal": 0,
+        "diffs.renote": 1,
+        "diffs.reply": 1,
+        "diffs.withFile": 1
+      }
+    },
+    {
+      "series": "perUserNotes",
+      "note": {
+        "userId": "alice",
+        "userHost": "remote.test",
+        "visibility": "public",
+        "replyId": null,
+        "renoteId": null,
+        "fileIds": []
+      },
+      "additional": false,
+      "diff": {
+        "total": -1,
+        "inc": 0,
+        "dec": 1,
+        "diffs.normal": -1,
+        "diffs.renote": 0,
+        "diffs.reply": 0,
+        "diffs.withFile": 0
+      }
+    },
+    {
+      "series": "perUserNotes",
+      "note": {
+        "userId": "alice",
+        "userHost": "remote.test",
+        "visibility": "public",
+        "replyId": "r",
+        "renoteId": null,
+        "fileIds": []
+      },
+      "additional": false,
+      "diff": {
+        "total": -1,
+        "inc": 0,
+        "dec": 1,
+        "diffs.normal": 0,
+        "diffs.renote": 0,
+        "diffs.reply": -1,
+        "diffs.withFile": 0
+      }
+    },
+    {
+      "series": "perUserNotes",
+      "note": {
+        "userId": "alice",
+        "userHost": "remote.test",
+        "visibility": "public",
+        "replyId": null,
+        "renoteId": "n",
+        "fileIds": []
+      },
+      "additional": false,
+      "diff": {
+        "total": -1,
+        "inc": 0,
+        "dec": 1,
+        "diffs.normal": 0,
+        "diffs.renote": -1,
+        "diffs.reply": 0,
+        "diffs.withFile": 0
+      }
+    },
+    {
+      "series": "perUserNotes",
+      "note": {
+        "userId": "alice",
+        "userHost": "remote.test",
+        "visibility": "public",
+        "replyId": "r",
+        "renoteId": "n",
+        "fileIds": [
+          "a",
+          "b"
+        ]
+      },
+      "additional": false,
+      "diff": {
+        "total": -1,
+        "inc": 0,
+        "dec": 1,
+        "diffs.normal": 0,
+        "diffs.renote": -1,
+        "diffs.reply": -1,
+        "diffs.withFile": -1
+      }
+    },
+    {
+      "series": "perUserNotes",
+      "note": {
+        "userId": "alice",
+        "userHost": "remote.test",
+        "visibility": "public",
+        "replyId": null,
+        "renoteId": null,
+        "fileIds": []
+      },
+      "additional": true,
+      "diff": {
+        "total": 1,
+        "inc": 1,
+        "dec": 0,
+        "diffs.normal": 1,
+        "diffs.renote": 0,
+        "diffs.reply": 0,
+        "diffs.withFile": 0
+      }
+    },
+    {
+      "series": "perUserNotes",
+      "note": {
+        "userId": "alice",
+        "userHost": "remote.test",
+        "visibility": "public",
+        "replyId": "r",
+        "renoteId": null,
+        "fileIds": []
+      },
+      "additional": true,
+      "diff": {
+        "total": 1,
+        "inc": 1,
+        "dec": 0,
+        "diffs.normal": 0,
+        "diffs.renote": 0,
+        "diffs.reply": 1,
+        "diffs.withFile": 0
+      }
+    },
+    {
+      "series": "perUserNotes",
+      "note": {
+        "userId": "alice",
+        "userHost": "remote.test",
+        "visibility": "public",
+        "replyId": null,
+        "renoteId": "n",
+        "fileIds": []
+      },
+      "additional": true,
+      "diff": {
+        "total": 1,
+        "inc": 1,
+        "dec": 0,
+        "diffs.normal": 0,
+        "diffs.renote": 1,
+        "diffs.reply": 0,
+        "diffs.withFile": 0
+      }
+    },
+    {
+      "series": "perUserNotes",
+      "note": {
+        "userId": "alice",
+        "userHost": "remote.test",
+        "visibility": "public",
+        "replyId": "r",
+        "renoteId": "n",
+        "fileIds": [
+          "a",
+          "b"
+        ]
+      },
+      "additional": true,
+      "diff": {
+        "total": 1,
+        "inc": 1,
+        "dec": 0,
+        "diffs.normal": 0,
+        "diffs.renote": 1,
+        "diffs.reply": 1,
+        "diffs.withFile": 1
+      }
+    }
+  ],
+  "reads": [
+    {
+      "span": "hour",
+      "offset": null,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          12
+        ],
+        "inc": [
+          3
+        ],
+        "dec": [
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0
+          ],
+          "reply": [
+            0
+          ],
+          "renote": [
+            0
+          ],
+          "withFile": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": null,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          12,
+          11,
+          10,
+          10
+        ],
+        "inc": [
+          3,
+          2,
+          0,
+          1
+        ],
+        "dec": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reply": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "renote": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "withFile": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": -1,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expectedError": "wrong number of arguments"
+    },
+    {
+      "span": "hour",
+      "offset": -1,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expectedError": "wrong number of arguments"
+    },
+    {
+      "span": "hour",
+      "offset": 1795003200000,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          12
+        ],
+        "inc": [
+          3
+        ],
+        "dec": [
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0
+          ],
+          "reply": [
+            0
+          ],
+          "renote": [
+            0
+          ],
+          "withFile": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": 1795003200000,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          12,
+          11,
+          10,
+          10
+        ],
+        "inc": [
+          3,
+          2,
+          0,
+          1
+        ],
+        "dec": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reply": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "renote": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "withFile": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": 1795005000000,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          12
+        ],
+        "inc": [
+          0
+        ],
+        "dec": [
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0
+          ],
+          "reply": [
+            0
+          ],
+          "renote": [
+            0
+          ],
+          "withFile": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": 1795005000000,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          12,
+          12,
+          11,
+          10
+        ],
+        "inc": [
+          0,
+          3,
+          2,
+          0
+        ],
+        "dec": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reply": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "renote": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "withFile": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": 1794981600000,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          0
+        ],
+        "inc": [
+          0
+        ],
+        "dec": [
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0
+          ],
+          "reply": [
+            0
+          ],
+          "renote": [
+            0
+          ],
+          "withFile": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": 1794981600000,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "inc": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "dec": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reply": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "renote": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "withFile": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": 1795024800000,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          12
+        ],
+        "inc": [
+          0
+        ],
+        "dec": [
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0
+          ],
+          "reply": [
+            0
+          ],
+          "renote": [
+            0
+          ],
+          "withFile": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": 1795024800000,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          12,
+          12,
+          12,
+          12
+        ],
+        "inc": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "dec": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reply": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "renote": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "withFile": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": null,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          12
+        ],
+        "inc": [
+          3
+        ],
+        "dec": [
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0
+          ],
+          "reply": [
+            0
+          ],
+          "renote": [
+            0
+          ],
+          "withFile": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": null,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          12,
+          11,
+          10,
+          10
+        ],
+        "inc": [
+          3,
+          2,
+          0,
+          1
+        ],
+        "dec": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reply": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "renote": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "withFile": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": -1,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expectedError": "wrong number of arguments"
+    },
+    {
+      "span": "day",
+      "offset": -1,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expectedError": "wrong number of arguments"
+    },
+    {
+      "span": "day",
+      "offset": 1794960000000,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          12
+        ],
+        "inc": [
+          3
+        ],
+        "dec": [
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0
+          ],
+          "reply": [
+            0
+          ],
+          "renote": [
+            0
+          ],
+          "withFile": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": 1794960000000,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          12,
+          11,
+          10,
+          10
+        ],
+        "inc": [
+          3,
+          2,
+          0,
+          1
+        ],
+        "dec": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reply": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "renote": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "withFile": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": 1795003200000,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          12
+        ],
+        "inc": [
+          0
+        ],
+        "dec": [
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0
+          ],
+          "reply": [
+            0
+          ],
+          "renote": [
+            0
+          ],
+          "withFile": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": 1795003200000,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          12,
+          12,
+          11,
+          10
+        ],
+        "inc": [
+          0,
+          3,
+          2,
+          0
+        ],
+        "dec": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reply": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "renote": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "withFile": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": 1794441600000,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          0
+        ],
+        "inc": [
+          0
+        ],
+        "dec": [
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0
+          ],
+          "reply": [
+            0
+          ],
+          "renote": [
+            0
+          ],
+          "withFile": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": 1794441600000,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "inc": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "dec": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reply": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "renote": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "withFile": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": 1795478400000,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          12
+        ],
+        "inc": [
+          0
+        ],
+        "dec": [
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0
+          ],
+          "reply": [
+            0
+          ],
+          "renote": [
+            0
+          ],
+          "withFile": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": 1795478400000,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "total": 10,
+            "inc": 1,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "total": 11,
+            "inc": 2,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "total": 12,
+            "inc": 3,
+            "dec": 0,
+            "diffs.normal": 0,
+            "diffs.reply": 0,
+            "diffs.renote": 0,
+            "diffs.withFile": 0
+          }
+        }
+      ],
+      "expected": {
+        "total": [
+          12,
+          12,
+          12,
+          12
+        ],
+        "inc": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "dec": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "diffs": {
+          "normal": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reply": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "renote": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "withFile": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    }
+  ]
+}

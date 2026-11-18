@@ -30,7 +30,7 @@ export function createNoteDeleter(manager: EntityManager, createdAtFromId: (id: 
 			}
 			const author = await manager.getRepository(MiUser).findOneByOrFail({ id: row.userId });
 			return {
-				id: row.id, userId: row.userId, authorHost: author.host, authorUsername: author.username, localOnly: row.localOnly,
+				id: row.id, userId: row.userId, authorHost: author.host, noteHost: row.userHost, authorUsername: author.username, localOnly: row.localOnly,
 				replyId: row.replyId, renoteUserId: row.renoteUserId,
 				note: {
 					id: row.id, userId: row.userId, createdAtMs: createdAtFromId(row.id), text: row.text, cw: row.cw, visibility: row.visibility,
