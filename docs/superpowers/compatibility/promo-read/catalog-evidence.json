@@ -1,0 +1,21 @@
+{
+  "proofRevision": "9d2086451d97c05ec0e858abe2be202d912bcd0d",
+  "scope": "Metadata-only catalog evidence points to the immutable R4 product proof; no runtime bytes changed.",
+  "inputs": {
+    "docs/superpowers/compatibility/backend-inventory/domains.json": "314fee6e5bfdeb8524d573e5a862a6e6220a7860e5dab9f61845b93cd393b8f8",
+    "docs/superpowers/compatibility/backend-inventory/contracts.json": "bb3c952fd53fbdb4847bf629d667f713c5e1d8d60892398fca1836820ae83c66",
+    "docs/superpowers/compatibility/backend-inventory/contracts.md": "b4f0547ac049f0f0dca204818991f2cc63affa54ea105a40e437ebaaa43088a9"
+  },
+  "runs": [
+    {
+      "log": "/tmp/promo-read-r4-catalog.log",
+      "sha256": "e78e3d2cd6697d42aeb13b482b07c86add0f8c2af477f45b25c72f902162f8c3",
+      "status": "PASS"
+    },
+    {
+      "log": "/tmp/promo-read-r4-catalog-contracts.log",
+      "sha256": "08bfa654b8268776c2e751e4070c07cc8f396afedcf30fadf127fdcd6b4c7bf1",
+      "status": "PASS"
+    }
+  ]
+}

@@ -4076,8 +4076,8 @@
         "docs/superpowers/compatibility/promo-read/current-evidence.json",
         "scripts/promo-read-contract.test.mjs"
       ],
-      "note": "#530 limited promo/read slice: fixed-source14, ordinary listening HTTP/PG, viewer-specific storage, duplicate unchanged, auth/scope, missing Note, DB failure, unique key and CASCADE. Literal pinned callback/Getter runs with real PG, not full upstream HTTP/auth. Pinned-users/#297 and parent #530/#193/#114 remain unfinished.",
-      "evidenceRevision": "9330d03bf39a3cb51a2d4883e05b6a68365158ba"
+      "note": "#530 limited promo/read slice: fixed-source14, ordinary listening HTTP/PG, viewer-specific storage, duplicate unchanged, current suspension/scope, missing Note, DB failure operation/SQLSTATE/constraint, unique key and CASCADE. R4 build/typecheck, unit5350+existing skip1, HTTP/PG/schema42 and root23 PASS. Literal pinned callback/Getter runs with real PG, not full upstream HTTP/auth. Pinned-users/#297 and parent #530/#193/#114 remain unfinished.",
+      "evidenceRevision": "9d2086451d97c05ec0e858abe2be202d912bcd0d"
     },
     "entity:promo_read": {
       "status": "verified",
@@ -4098,8 +4098,8 @@
         "docs/superpowers/compatibility/promo-read/current-evidence.json",
         "scripts/promo-read-contract.test.mjs"
       ],
-      "note": "#530 limited promo/read slice: fixed-source14, ordinary listening HTTP/PG, viewer-specific storage, duplicate unchanged, auth/scope, missing Note, DB failure, unique key and CASCADE. Literal pinned callback/Getter runs with real PG, not full upstream HTTP/auth. Pinned-users/#297 and parent #530/#193/#114 remain unfinished.",
-      "evidenceRevision": "9330d03bf39a3cb51a2d4883e05b6a68365158ba"
+      "note": "#530 limited promo/read slice: fixed-source14, ordinary listening HTTP/PG, viewer-specific storage, duplicate unchanged, current suspension/scope, missing Note, DB failure operation/SQLSTATE/constraint, unique key and CASCADE. R4 build/typecheck, unit5350+existing skip1, HTTP/PG/schema42 and root23 PASS. Literal pinned callback/Getter runs with real PG, not full upstream HTTP/auth. Pinned-users/#297 and parent #530/#193/#114 remain unfinished.",
+      "evidenceRevision": "9d2086451d97c05ec0e858abe2be202d912bcd0d"
     }
   }
 }
