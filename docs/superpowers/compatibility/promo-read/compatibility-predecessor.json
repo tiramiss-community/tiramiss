@@ -1,0 +1,81 @@
+{
+  "baseRevision": "706f82eb2086c7364001d770ffde73000911bd07",
+  "scope": "Mechanically synchronized PromoRead addition, entity metadata and composition route assertions only; prior receipts are unchanged.",
+  "files": {
+    "packages/backend-upstream/upstream-sync.json": {
+      "previousSha256": "58707b07f611652ec2c407d5585976aed56e07dfaa4ef3adc5abef939fad5ff5",
+      "currentSha256": "6caa674a2ff9c859e1c30c3bf009da3d32334a630af2378057b9fe8a2821f584",
+      "patches": [
+        {
+          "offset": 1385,
+          "insert": ",\n\t\t\"src/models/PromoRead.ts\"",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-upstream/exports/entities.ts": {
+      "previousSha256": "fb04ee6f1bad620d55cd431896187e468631e4cc86c5b71fa28c0a32d2ac5f64",
+      "currentSha256": "420ce3794ec43c7e380f4a5cb0a2f2a667d889d7b2997d7c3a7e8f2a4b436edd",
+      "patches": [
+        {
+          "offset": 2649,
+          "insert": "import { MiPromoRead } from '../src/models/PromoRead.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 3299,
+          "insert": ", MiPromoRead",
+          "previous": ""
+        },
+        {
+          "offset": 3924,
+          "insert": ", MiPromoRead",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-upstream/.managed-files.json": {
+      "previousSha256": "7cb787f4da126af2645165006c3f9bda193ea114dc593435aaecdab435742f65",
+      "currentSha256": "40a6f528d0726495a28fddca507dfe8d86b2531e2a977102de79ac9a22f66795",
+      "patches": [
+        {
+          "offset": 17593,
+          "insert": "PromoRead.ts\",\n\t\"src/models/",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/package-imports.test.ts": {
+      "previousSha256": "3f52ff89a5c972a6beea4a0e744a9420c4d6103270cc7f52f67474928a1c8799",
+      "currentSha256": "a31d55df4b4f3e985964eb6353ea088cadfb57e013eb5bc97fdcf019d2b56c59",
+      "patches": [
+        {
+          "offset": 5177,
+          "insert": "const promoRead = source.getMetadata('MiPromoRead');\n\texpect(promoRead.tableName).toBe('promo_read');\n\texpect(promoRead.indices.some(index => index.isUnique && index.columns.map(column => column.propertyName).join(',') === 'userId,noteId')).toBe(true);\n\tfor (const property of ['user', 'note']) {\n\t\texpect(promoRead.relations.find(relation => relation.propertyName === property)?.onDelete).toBe('CASCADE');\n\t}\n\t",
+          "previous": ""
+        },
+        {
+          "offset": 5633,
+          "insert": "4",
+          "previous": "3"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "previousSha256": "65ab0f8c024f3ee776ce915cb46e459bdb5b69eadf2bc859432a6c9598e53517",
+      "currentSha256": "859b3e8e5ec9547b4dceaabc24e4c3a0554984bf2677afecd0ed3d16c47af2fd",
+      "patches": [
+        {
+          "offset": 2350,
+          "insert": "promo/read', '/api/",
+          "previous": ""
+        },
+        {
+          "offset": 3702,
+          "insert": "'promo/read', ",
+          "previous": ""
+        }
+      ]
+    }
+  }
+}

@@ -4056,6 +4056,50 @@
       ],
       "note": "#542: fixed-source18 and ordinary listening HTTP/PG validate Note existence, author/expiry storage, duplicate/missing/denied/DB failure. Literal pinned callback and GetterService.getNote also run with real PG; full upstream HTTP/auth server is not measured. Timeline selection and promo/read remain outside this slice; #194/#114 remain open.",
       "evidenceRevision": "3a2dbd3654330c424c324c74cf0ba1dad51222f4"
+    },
+    "api:promo/read": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/promo/public.ts",
+        "packages/backend-next/src/platform/database/promo.ts",
+        "packages/backend-next/src/http/promo-api.ts",
+        "packages/backend-next/src/composition/promo-http.ts",
+        "packages/backend-upstream/src/models/PromoRead.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/promo-read.test.ts",
+        "packages/backend-next/test/integration/promo-read.test.ts",
+        "packages/backend-next/test/integration/migrations.test.ts",
+        "docs/superpowers/compatibility/promo-read/source-probe.mjs",
+        "docs/superpowers/compatibility/promo-read/observations.json",
+        "docs/superpowers/compatibility/promo-read/README.md",
+        "docs/superpowers/compatibility/promo-read/current-evidence.json",
+        "scripts/promo-read-contract.test.mjs"
+      ],
+      "note": "#530 limited promo/read slice: fixed-source14, ordinary listening HTTP/PG, viewer-specific storage, duplicate unchanged, current suspension/scope, missing Note, DB failure operation/SQLSTATE/constraint, unique key and CASCADE. R4 build/typecheck, unit5350+existing skip1, HTTP/PG/schema42 and root23 PASS. Literal pinned callback/Getter runs with real PG, not full upstream HTTP/auth. Pinned-users/#297 and parent #530/#193/#114 remain unfinished.",
+      "evidenceRevision": "9d2086451d97c05ec0e858abe2be202d912bcd0d"
+    },
+    "entity:promo_read": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/promo/public.ts",
+        "packages/backend-next/src/platform/database/promo.ts",
+        "packages/backend-next/src/http/promo-api.ts",
+        "packages/backend-next/src/composition/promo-http.ts",
+        "packages/backend-upstream/src/models/PromoRead.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/promo-read.test.ts",
+        "packages/backend-next/test/integration/promo-read.test.ts",
+        "packages/backend-next/test/integration/migrations.test.ts",
+        "docs/superpowers/compatibility/promo-read/source-probe.mjs",
+        "docs/superpowers/compatibility/promo-read/observations.json",
+        "docs/superpowers/compatibility/promo-read/README.md",
+        "docs/superpowers/compatibility/promo-read/current-evidence.json",
+        "scripts/promo-read-contract.test.mjs"
+      ],
+      "note": "#530 limited promo/read slice: fixed-source14, ordinary listening HTTP/PG, viewer-specific storage, duplicate unchanged, current suspension/scope, missing Note, DB failure operation/SQLSTATE/constraint, unique key and CASCADE. R4 build/typecheck, unit5350+existing skip1, HTTP/PG/schema42 and root23 PASS. Literal pinned callback/Getter runs with real PG, not full upstream HTTP/auth. Pinned-users/#297 and parent #530/#193/#114 remain unfinished.",
+      "evidenceRevision": "9d2086451d97c05ec0e858abe2be202d912bcd0d"
     }
   }
 }

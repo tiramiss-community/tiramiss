@@ -51,3 +51,42 @@ export function createPromo(ports: PromoPorts) {
 		},
 	};
 }
+
+export interface PromoReadPorts {
+	readActor(userId: string): Promise<AccessFacts>;
+	noteExists(noteId: string): Promise<boolean>;
+	readExists(noteId: string, userId: string): Promise<boolean>;
+	insertRead(row: { id: string; noteId: string; userId: string }): Promise<void>;
+	newId(): string;
+}
+
+export class PromoReadNoteMissing extends Error {
+	readonly code = 'NO_SUCH_NOTE';
+	readonly id = 'd785b897-fcd3-4fe9-8fc3-b85c26e6c932';
+	constructor() {
+		super('No such note.');
+	}
+}
+
+const readInput = compileInput<{ noteId: string }>({
+	type: 'object',
+	properties: { noteId: { type: 'string', format: 'misskey:id' } },
+	required: ['noteId'],
+});
+
+export function createPromoRead(ports: PromoReadPorts) {
+	return {
+		async read(access: AccessRequest, raw: unknown): Promise<void> {
+			const actor = requireCredential(access.credential);
+			access.authorize(await ports.readActor(actor.userId));
+			const params = readInput(raw);
+			if (!await ports.noteExists(params.noteId)) {
+				throw new PromoReadNoteMissing();
+			}
+			if (await ports.readExists(params.noteId, actor.userId)) {
+				return;
+			}
+			await ports.insertRead({ id: ports.newId(), noteId: params.noteId, userId: actor.userId });
+		},
+	};
+}

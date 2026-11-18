@@ -1,0 +1,177 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "manifest": [
+    {
+      "path": "packages/backend/src/server/api/endpoints/promo/read.ts",
+      "sha256": "324474b7d1305c0ce4212c7a1e75d518f1d791e33f42175b0f878243f856bd01"
+    },
+    {
+      "path": "packages/backend/src/server/api/GetterService.ts",
+      "sha256": "8c8864d50e7524b3ff358e2bb4ff5aceda8e3f1e3a7ad8efe1e7ac9c1b4236c7"
+    },
+    {
+      "path": "packages/backend/src/models/PromoRead.ts",
+      "sha256": "f1a1d6c982b5347c10c9887607eeda0c545ebd3b64709344cffc4dd3dcf88bbd"
+    }
+  ],
+  "corpusSha256": "2b32036266ee8105597d5dcf0fe20906fd252a3689d6c04ff2340e0ed7759e73",
+  "doubles": "Literal pinned callback/Getter/schema with controlled repositories and deterministic generated ID; --pg binds real TypeORM repositories in a disposable migrated DB. HTTP auth is tested on backend-next separately.",
+  "access": {
+    "requireCredential": true,
+    "kind": "write:account"
+  },
+  "cases": [
+    {
+      "id": "public",
+      "rows": [
+        {
+          "id": "generated",
+          "noteId": "publicnote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "private",
+      "rows": [
+        {
+          "id": "generated",
+          "noteId": "privatenote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "followers",
+      "rows": [
+        {
+          "id": "generated",
+          "noteId": "followersnote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "unpromoted",
+      "rows": [
+        {
+          "id": "generated",
+          "noteId": "remotenote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "duplicate",
+      "rows": [
+        {
+          "id": "existing",
+          "noteId": "publicnote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "other-viewer",
+      "rows": [
+        {
+          "id": "generated",
+          "noteId": "publicnote",
+          "userId": "other"
+        },
+        {
+          "id": "existing",
+          "noteId": "publicnote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "unknown",
+      "error": {
+        "code": "NO_SUCH_NOTE",
+        "id": "d785b897-fcd3-4fe9-8fc3-b85c26e6c932"
+      },
+      "rows": [
+        {
+          "id": "existing",
+          "noteId": "publicnote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "missing",
+      "error": {
+        "code": "INVALID_PARAM"
+      },
+      "rows": [
+        {
+          "id": "existing",
+          "noteId": "publicnote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "null",
+      "error": {
+        "code": "INVALID_PARAM"
+      },
+      "rows": [
+        {
+          "id": "existing",
+          "noteId": "publicnote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "number",
+      "error": {
+        "code": "INVALID_PARAM"
+      },
+      "rows": [
+        {
+          "id": "existing",
+          "noteId": "publicnote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "punctuation",
+      "error": {
+        "code": "INVALID_PARAM"
+      },
+      "rows": [
+        {
+          "id": "existing",
+          "noteId": "publicnote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "note-failure",
+      "error": {
+        "message": "note unavailable"
+      },
+      "rows": []
+    },
+    {
+      "id": "exists-failure",
+      "error": {
+        "message": "exists unavailable"
+      },
+      "rows": []
+    },
+    {
+      "id": "insert-failure",
+      "error": {
+        "message": "insert unavailable"
+      },
+      "rows": []
+    }
+  ]
+}
