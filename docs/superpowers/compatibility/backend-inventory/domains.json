@@ -3990,7 +3990,7 @@
         "Fixed source literal callback with dependency doubles; canonical listening HTTP, migrated PostgreSQL, Redis and real outbound client with fake DeepL. Full upstream HTTP/RoleService/NoteEntityService not reexecuted. Existing Note D7 and Meta/cache boundaries retained. Transport/JSON exception messages fixed to avoid exposing key material; INTERNAL_ERROR/500 preserved."
       ],
       "note": "#486: authenticated read:account notes/translate; effective Role policy, visibility and packed hidden gate precede empty-text/key handling; CW, targetLang prefix, free/pro URL, auth/form/response, absent key and outbound failures verified. No translation persistence. Parent #183/#114 and posting partial remain unfinished.",
-      "evidenceRevision": "d1b0a8fa735dbc43a7e202b0f58613c5029e252e"
+      "evidenceRevision": "87a14fc0747702d22a2ab73d9fc69065c8954c07"
     },
     "meta-setting:deeplAuthKey": {
       "status": "verified",
@@ -4012,7 +4012,7 @@
         "Fixed source literal callback with dependency doubles; canonical listening HTTP, migrated PostgreSQL, Redis and real outbound client with fake DeepL. Full upstream HTTP/RoleService/NoteEntityService not reexecuted. Existing Note D7 and Meta/cache boundaries retained. Transport/JSON exception messages fixed to avoid exposing key material; INTERNAL_ERROR/500 preserved."
       ],
       "note": "#486: authenticated read:account notes/translate; effective Role policy, visibility and packed hidden gate precede empty-text/key handling; CW, targetLang prefix, free/pro URL, auth/form/response, absent key and outbound failures verified. No translation persistence. Parent #183/#114 and posting partial remain unfinished.",
-      "evidenceRevision": "d1b0a8fa735dbc43a7e202b0f58613c5029e252e"
+      "evidenceRevision": "87a14fc0747702d22a2ab73d9fc69065c8954c07"
     },
     "meta-setting:deeplIsPro": {
       "status": "verified",
@@ -4034,7 +4034,7 @@
         "Fixed source literal callback with dependency doubles; canonical listening HTTP, migrated PostgreSQL, Redis and real outbound client with fake DeepL. Full upstream HTTP/RoleService/NoteEntityService not reexecuted. Existing Note D7 and Meta/cache boundaries retained. Transport/JSON exception messages fixed to avoid exposing key material; INTERNAL_ERROR/500 preserved."
       ],
       "note": "#486: authenticated read:account notes/translate; effective Role policy, visibility and packed hidden gate precede empty-text/key handling; CW, targetLang prefix, free/pro URL, auth/form/response, absent key and outbound failures verified. No translation persistence. Parent #183/#114 and posting partial remain unfinished.",
-      "evidenceRevision": "d1b0a8fa735dbc43a7e202b0f58613c5029e252e"
+      "evidenceRevision": "87a14fc0747702d22a2ab73d9fc69065c8954c07"
     },
     "api:admin/promo/create": {
       "status": "verified",
