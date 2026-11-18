@@ -83,7 +83,7 @@ flowchart LR
 
 ## 有限の判断と保護する完了条件
 
-chartの未決事項は [200-chart-storage-contract · #273](https://github.com/tiramiss-community/tiramiss/issues/273) の12系列hour/day生成schema・既存履歴・同期境界に限定する。共有SQL補助・型宣言の対応は [178-shared-contract-audit · #391](https://github.com/tiramiss-community/tiramiss/issues/391) で未分類宣言を残さず閉じる。
+chartの未決事項は [200-chart-storage-contract · #273](https://github.com/tiramiss-community/tiramiss/issues/273) の12系列hour/day生成schema・既存履歴・同期境界に限定する。共有SQL補助・型宣言は [178-shared-contract-audit · #391](https://github.com/tiramiss-community/tiramiss/issues/391) の[全18宣言の対応表](../superpowers/compatibility/api-common/shared-contract-audit.md)で利用者・担当・比較残件を確定した。元snapshotのinvestigateは履歴として保持し、現在の宣言別選定は同表を参照する。#391の静的監査は各利用機能の実装・比較完了を意味しない。
 
 [132-data-authority · #132](https://github.com/tiramiss-community/tiramiss/issues/132) → [133-selected-rebuild · #133](https://github.com/tiramiss-community/tiramiss/issues/133) は投稿派生値・検索・TL・chartの正本と通常更新/保持を比較し、既存担当で充足しない最初の具体対象を確定して実装する。本家のresyncCharts（Drive・Notes・Users）と追加保守を区別し、履歴再現・Redis全損復旧など新保証や汎用再構築を追加しない。
 
