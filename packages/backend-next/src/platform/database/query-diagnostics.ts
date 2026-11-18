@@ -17,10 +17,10 @@ export function createQueryDiagnostics(logger: Logger): TypeOrmLogger {
 				// SQL literals and bindings can contain private content; the shared logger cannot sanitize their values.
 				logger.warn?.('db.query-slow', {
 					durationMs,
-					...(runner === undefined ? {} : { replicationMode: runner.getReplicationMode() }),
+					...(runner === undefined ? {} : { requestedReplicationMode: runner.getReplicationMode() }),
 				});
 			} catch {
-				// A diagnostic sink failure must not make a completed write look unsuccessful.
+				// A synchronous diagnostic sink exception must not make a completed write look unsuccessful.
 			}
 		},
 	};

@@ -67,9 +67,9 @@ for (const environment of ['development', 'production']) {
 				expect(await source.query(query, ['private-value'])).toEqual([{ pg_sleep: '', private_content: 'private-value' }]);
 				expect(lines).toHaveLength(1);
 				const event = JSON.parse(lines[0]);
-				expect(event).toMatchObject({ level: 'warn', event: 'db.query-slow', process: 'database-diagnostics-test', replicationMode: 'master' });
+				expect(event).toMatchObject({ level: 'warn', event: 'db.query-slow', process: 'database-diagnostics-test', requestedReplicationMode: 'master' });
 				expect(event.durationMs).toBeGreaterThan(300);
-				expect(Object.keys(event).sort()).toEqual(['durationMs', 'event', 'level', 'pid', 'process', 'replicationMode', 'timestamp']);
+				expect(Object.keys(event).sort()).toEqual(['durationMs', 'event', 'level', 'pid', 'process', 'requestedReplicationMode', 'timestamp']);
 				await expect(source.query('SELECT missing_diagnostic_column')).rejects.toMatchObject({ driverError: { code: '42703' } });
 				expect(lines).toHaveLength(1);
 			} finally {
@@ -82,15 +82,19 @@ for (const environment of ['development', 'production']) {
 }
 
 test('diagnostic failure does not reject an already executed write', async () => {
+	const warnings: unknown[] = [];
 	const source = createDataSource(database.config.database, 30000, {
-		info() {}, error() {}, warn: () => {
+		info() {}, error() {}, warn: (event, fields) => {
+			warnings.push({ event, ...fields });
 			throw new Error('diagnostic sink rejected');
 		},
 	});
 	try {
 		await source.initialize();
 		await source.query('CREATE TABLE diagnostic_write (value integer)');
+		warnings.length = 0;
 		await expect(source.query('INSERT INTO diagnostic_write SELECT 1 FROM pg_sleep(0.35)')).resolves.toBeDefined();
+		expect(warnings).toEqual([expect.objectContaining({ event: 'db.query-slow', durationMs: expect.any(Number) })]);
 		expect(await source.query('SELECT value FROM diagnostic_write')).toEqual([{ value: 1 }]);
 	} finally {
 		if (source.isInitialized) {
@@ -129,10 +133,11 @@ test('normal resource startup uses its process logger and releases the database 
 
 test('pinned cache uses the query prefix, retains an explicitly cached count, and closes its Redis connection', async () => {
 	const redis = new Redis({ ...database.config.redis, keyPrefix: '', lazyConnect: true });
-	const source = createPinnedDiagnosticSource(database.config, { environment: 'production', disableCache: false, sink: { info() {}, warn() {}, error() {} } });
+	const connectionName = `diagnostic-cache-${database.config.database.database}`;
+	const cacheConfig = { ...database.config, redis: { ...database.config.redis, connectionName } };
+	const source = createPinnedDiagnosticSource(cacheConfig, { environment: 'production', disableCache: false, sink: { info() {}, warn() {}, error() {} } });
 	try {
 		await redis.connect();
-		const clientsBefore = (await redis.client('LIST') as string).trim().split('\n').length;
 		await source.initialize();
 		await source.getRepository(MiMeta).deleteAll();
 		expect(await source.getRepository(MiMeta).count({ cache: 3600000 })).toBe(0);
@@ -142,9 +147,12 @@ test('pinned cache uses the query prefix, retains an explicitly cached count, an
 		const keys = await redis.keys(`${database.config.redis.prefix}:query:*`);
 		expect(keys).toHaveLength(1);
 		expect(await redis.pttl(keys[0])).toBeGreaterThan(3500000);
-		expect((await redis.client('LIST') as string).trim().split('\n')).toHaveLength(clientsBefore + 1);
+		const clients = (await redis.client('LIST') as string).trim().split('\n').map(line => Object.fromEntries(line.split(' ').map(field => field.split('='))));
+		const cacheClients = clients.filter(client => client.name === connectionName);
+		expect(cacheClients).toHaveLength(1);
+		const clientId = cacheClients[0].id;
 		await source.destroy();
-		expect((await redis.client('LIST') as string).trim().split('\n')).toHaveLength(clientsBefore);
+		expect((await redis.client('LIST') as string).split('\n').some(line => line.startsWith(`id=${clientId} `))).toBe(false);
 		await redis.del(...keys);
 	} finally {
 		try {
@@ -153,6 +161,40 @@ test('pinned cache uses the query prefix, retains an explicitly cached count, an
 			}
 		} finally {
 			await redis.quit();
+		}
+	}
+});
+
+test('ORM reads without replicas report the requested slave mode rather than claiming a replica connection', async () => {
+	const lines: string[] = [];
+	const source = createDataSource(database.config.database, 30000, createLogger('diagnostic-orm-mode', line => lines.push(line)));
+	try {
+		await source.initialize();
+		expect(source.options).not.toHaveProperty('replication');
+		await source.getRepository(MiMeta).save({ id: 'diagnostic-orm-mode' });
+		lines.length = 0;
+		await source.getRepository(MiMeta).createQueryBuilder('meta').select('pg_sleep(0.35)', 'wait').limit(1).getRawMany();
+		expect(lines.map(line => JSON.parse(line))).toEqual([
+			expect.objectContaining({ event: 'db.query-slow', requestedReplicationMode: 'slave' }),
+		]);
+	} finally {
+		if (source.isInitialized) {
+			await source.destroy();
+		}
+	}
+});
+
+test('a query that exceeds the slow threshold but fails with statement_timeout does not emit a successful-query diagnostic', async () => {
+	const lines: string[] = [];
+	const source = createDataSource({ ...database.config.database, extra: { statement_timeout: 350 } }, 30000, createLogger('diagnostic-timeout', line => lines.push(line)));
+	try {
+		await source.initialize();
+		lines.length = 0;
+		await expect(source.query('SELECT pg_sleep(0.6)')).rejects.toMatchObject({ driverError: { code: '57014' } });
+		expect(lines).toEqual([]);
+	} finally {
+		if (source.isInitialized) {
+			await source.destroy();
 		}
 	}
 });
