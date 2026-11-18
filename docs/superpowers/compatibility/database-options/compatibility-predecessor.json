@@ -1,0 +1,48 @@
+{
+  "baseline": "fe1a8106c3b3d5aba8ddf57de5e28e37e4e0e6ca",
+  "files": {
+    "packages/backend-next/src/platform/database/data-source.ts": {
+      "currentSha256": "6eff8f1135ccccd3311ce034a0fb89d8c00d6131b2bf9f3fdea487a23d0ff594",
+      "previousSha256": "176937d6f88f279b7f8eb08cc0e1d6c2f158cfebbc0ae9d9f7c1e890e287ff36",
+      "patches": [
+        {
+          "offset": 130,
+          "insert": "import pg from 'pg';\n",
+          "previous": ""
+        },
+        {
+          "offset": 449,
+          "insert": "// Match upstream's scalar conversion, including Number precision and unchanged int8 arrays.\npg.types.setTypeParser(20, Number);\n\n",
+          "previous": ""
+        },
+        {
+          "offset": 754,
+          "insert": "\t\textra: { statement_timeout: 10000, ...config.extra, connectionTimeoutMillis: timeoutMs },\n\t\tinvalidWhereValuesBehavior: { null: 'ignore', undefined: 'ignore' },\n",
+          "previous": "\t\textra: { ...config.extra, connectionTimeoutMillis: timeoutMs },\n"
+        }
+      ]
+    },
+    "packages/backend-next/package.json": {
+      "currentSha256": "43c4d758c98d154e88307cf78e8c7296cc3ba0204712fc549388acbefa093888",
+      "previousSha256": "5f630013c7328d447e9b433a5f77fd28ec0138548906508f123b2ba01ad66182",
+      "patches": [
+        {
+          "offset": 2243,
+          "insert": "\t\t\"@types/pg\": \"8.23.1\",\n",
+          "previous": ""
+        }
+      ]
+    },
+    "pnpm-lock.yaml": {
+      "currentSha256": "fbdf4bfbb12f02d0cee063a5636bc1469afd104d35de54235a47dd30af23fd3c",
+      "previousSha256": "7802badea4fb65c63c13c8678020a2e651f148c8b9c46289342082068c5f99aa",
+      "patches": [
+        {
+          "offset": 28250,
+          "insert": "      '@types/pg':\n        specifier: 8.23.1\n        version: 8.23.1\n",
+          "previous": ""
+        }
+      ]
+    }
+  }
+}

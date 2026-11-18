@@ -6,6 +6,8 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
+import { projectDatabaseOptionsInput } from './database-options-predecessor.mjs';
+
 const evidencePath = 'docs/superpowers/compatibility/note-charts/compatibility-predecessor.json';
 const seal = '42d3c7a95fda7526edbce733d53cb0d4a014fc25a46ce596bd9fa2381707816e';
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -26,7 +28,7 @@ export function validateNoteChartsEvidence(readFile = read, optional = optionalR
 	assert.equal(current.postingComplete, false);
 	assert.equal(current.upstreamFullServerMeasured, false);
 	for (const [path, digest] of Object.entries(current.currentInputs)) {
-		assert.equal(sha(readFile(path)), digest, `note charts measured current input drift: ${path}`);
+		assert.equal(sha(projectDatabaseOptionsInput(path, readFile(path))), digest, `note charts measured current input drift: ${path}`);
 	}
 	const corpus = JSON.parse(readFile('docs/superpowers/compatibility/note-charts/source-observations.json'));
 	assert.equal(corpus.upstreamCommit, '8e07cf085adf7009583d234a208e30436f020e26');
@@ -49,6 +51,7 @@ export function validateNoteChartsEvidence(readFile = read, optional = optionalR
 export function projectNoteChartsInput(path, actual) {
 	const binding = evidence.predecessors[path];
 	if (!binding) return actual;
+	actual = projectDatabaseOptionsInput(path, actual);
 	const digest = sha(actual);
 	// Older layers may already have removed other independently measured additions.
 	// Leave those bytes to their own exact guards; project only the current chart input.
