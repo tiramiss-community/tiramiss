@@ -1,0 +1,121 @@
+{
+  "scope": "database-physical-replication-567",
+  "base": "1613804464",
+  "measuredAt": "2026-11-18T07:59:57.491566+00:00",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "environment": {
+    "node": "26.4.0",
+    "typeorm": "1.1.1",
+    "pg": "8.23.1",
+    "postgres": "18.6",
+    "composeProject": "sol-db567-replica",
+    "primaryPort": 62532,
+    "standbyPort": 62533,
+    "redisPort": 62579,
+    "physicalStreamingReplica": true
+  },
+  "sourceFixture": {
+    "path": "packages/backend-next/test/fixtures/database-options/postgres.ts.txt",
+    "sha256": "c6879b6b23c5fb1e7518ff0eaa02397791470732389954648f42ab13c0eaaa74"
+  },
+  "inputs": {
+    ".github/workflows/test-backend-next.yml": "008c8b4c9a7fa6f859617fb34c12b9f4cb652de49c86c77cf4235056c1f693f2",
+    "docs/superpowers/compatibility/database-options/replication.md": "9095cc84c17b1fce843ef042daff7ea7d02ec3c5ba384dcaf05ec796ac1666a6",
+    "docs/superpowers/plans/2026-11-18-database-replication-567.md": "b1964eaa8fa58cfbcb4cb60f0b857dcd714bfb8817de1508d4214d0b1ac42c8c",
+    "packages/backend-next/README.md": "918efa7afb964b9c9baa6879bc5051c2b11c6ed3d483deef3a9f320a00167fee",
+    "packages/backend-next/compose.replication.test.yml": "e50fcef653cf19f20c6f0f8035019c206c8b6dd19c22a80532e3976711aec263",
+    "packages/backend-next/package.json": "467de9661621690f7c60b3fb72998e8cc5bbe8c918aff54e74d7333c3712d619",
+    "packages/backend-next/src/config/load-config.ts": "d33985f49a65acb6be0d1c1d39dae9adef052af747522178886c6109f8b89aec",
+    "packages/backend-next/src/config/types.ts": "68c3b12f2182934b5fd71b99ab37d5f4f27972c6dc4f82eea6bcb9b705378d9a",
+    "packages/backend-next/src/platform/database/data-source.ts": "554f8ada3917c3c062ba3c66832176ce5c416e378a5307b36358d5207450cd60",
+    "packages/backend-next/test/fixtures/database-options/replication.pg_hba.conf": "82dc688d104397b0486304c0d36519958930afff479c421eba2896cb4c4eeb5d",
+    "packages/backend-next/test/helpers/pinned-database-source.ts": "9c325360fe30012e0419bed4b4bd2354ec2c1f1b5ae2eb54b78dc0a9731b3969",
+    "packages/backend-next/test/replication/database.test.ts": "1bf9c3509a62d6bab12498f2e8d509a8bd25424d9554454aed54db2fd9154b04",
+    "packages/backend-next/test/unit/config.test.ts": "6457a1497fec7e44d14dc3651ca97a8c404cb9e88d0e12467e1519714326c9ad",
+    "packages/backend-next/test/unit/database-options.test.ts": "1ef0ef280dc126000c41f84485eb4ad5115c77885024893a237cf62e182f421a",
+    "packages/backend-next/vitest.replication.config.ts": "e3c4b1490f387d452d1ac2207af502c66edf2270e94f5a238edda748b2ef526f"
+  },
+  "measurements": [
+    {
+      "check": "build",
+      "result": "PASS",
+      "log": "/tmp/db567-replica-node26-build.log",
+      "sha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "check": "typecheck",
+      "result": "PASS",
+      "log": "/tmp/db567-replica-node26-typecheck.log",
+      "sha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "check": "unit",
+      "result": "5284 PASS; 1 existing source checkout SKIP; 151 files",
+      "log": "/tmp/db567-replica-node26-unit.log",
+      "sha256": "f37b321271bf2b18b94ee2c685e9288b4becde43c615e81f5529fbdae848a9e3"
+    },
+    {
+      "check": "physical-standby",
+      "result": "11 PASS; 1 file",
+      "log": "/tmp/db567-replica-node26-real.log",
+      "sha256": "02f3a2310daea0ab91e1d61931d422f8309ab2bc634b30ae9b7ad21e58fd25ec"
+    },
+    {
+      "check": "db-regression",
+      "result": "30 PASS; 3 files",
+      "log": "/tmp/db567-replica-node26-regression.log",
+      "sha256": "7a3ae0391c0d636b26c0e83547358b8e34011330feb128442bdb6799569b7d77"
+    },
+    {
+      "check": "shipping",
+      "result": "PASS",
+      "log": "/tmp/db567-replica-node26-shipping.log",
+      "sha256": "4bdd3d6b0f8537b04e0b3ec90b343525b8543fa4c321177aacab4892a1f80654"
+    },
+    {
+      "check": "expected-red",
+      "result": "7 FAIL / 58 PASS before implementation",
+      "log": "/tmp/db567-replica-red.log",
+      "sha256": "1757609931544fa355c85b8cc2a711f222239a163f347210887c763adfdda908"
+    },
+    {
+      "check": "standby-initial-failure",
+      "result": "replication HBA missing; fixture corrected",
+      "log": "/tmp/db567-replica-compose.log",
+      "sha256": "b96d16e8c701fd54d9d4e20cc7d07993ad20f4c018eed9ac7846304d6d6fbeed"
+    },
+    {
+      "check": "test-fixture-initial-failure",
+      "result": "9 FAIL / 2 PASS; missing QueryBuilder FROM alias",
+      "log": "/tmp/db567-replica-integration.log",
+      "sha256": "bb9a61b349a470bc5942db97f0751e0385e6d30443551f95bbd2f6fafb07f827"
+    },
+    {
+      "check": "preliminary-node24-unit",
+      "result": "5284 PASS / 1 SKIP; superseded by Node26 measurement",
+      "log": "/tmp/db567-replica-unit-final.log",
+      "sha256": "c1c70d699a34b18c9a67c03a7ef1bf7cf5a74657aae234ba8aa157bd1ccf0aba"
+    },
+    {
+      "check": "preliminary-node24-standby",
+      "result": "11 PASS; superseded by Node26 measurement",
+      "log": "/tmp/db567-replica-real-final2.log",
+      "sha256": "5fa589682f87cddaff5e6b900132f65643c97ff089d98b392bc01045b2028ad5"
+    },
+    {
+      "check": "public-contract-inventory",
+      "result": "PASS",
+      "log": "/tmp/db567-replica-inventory.log",
+      "sha256": "9506ac89cde2b4c62b8c5dc1c5149e9424db0f4e35b248aa94a8ad3ab8d719d4"
+    }
+  ],
+  "limitations": [
+    "No full upstream server/HTTP comparison; literal pinned factory with actual TypeORM/pg and synchronized Entity subset",
+    "No multiple-slave selection distribution, failover/promotion, or live replica disconnect/delay simulation",
+    "No Supervisor/worker process test for replica configuration",
+    "Query cache/disableCache/slow-query diagnostics remain in #567",
+    "Existing pg concurrent-query deprecation warning observed",
+    "Existing Page source test skips without external pinned checkout",
+    "Node26 ABI147 re2 1.27.0 binary copied only to this isolated worktree"
+  ]
+}

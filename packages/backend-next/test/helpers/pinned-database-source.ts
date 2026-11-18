@@ -28,7 +28,11 @@ export function createPinnedDatabaseSource(config: DatabaseConfig): DataSource {
 	const create = new Function('DataSource', 'entities', 'log', 'MyCustomLogger', 'process', `${javascript}\nreturn createPostgresDataSource;`)(
 		DataSource, entities, false, undefined, { env: { NODE_ENV: 'production' } },
 	);
-	return create({ db: { host: config.host, port: config.port, user: config.username, pass: config.password, db: config.database, extra: config.extra, disableCache: true } });
+	return create({
+		db: { host: config.host, port: config.port, user: config.username, pass: config.password, db: config.database, extra: config.extra, disableCache: true },
+		dbReplications: config.replicas !== undefined,
+		dbSlaves: config.replicas?.map(rep => ({ host: rep.host, port: rep.port, user: rep.username, pass: rep.password, db: rep.database })),
+	});
 }
 
 const migrationSource = readFileSync(new URL('../fixtures/database-options/ormconfig.js.txt', import.meta.url), 'utf8');

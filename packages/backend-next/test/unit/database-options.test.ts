@@ -30,3 +30,17 @@ test('shared migration options inherit the database timeout and leave runtime nu
 	expect(databaseOptions({ ...testConfig().database, extra: { statement_timeout: 77 } }, 123).extra)
 		.toEqual({ statement_timeout: 77, connectionTimeoutMillis: 123 });
 });
+
+test('routes runtime replication through configured slaves while migration options stay primary-only', () => {
+	const primary = testConfig().database;
+	const replica = { host: 'replica', port: 5433, database: 'replica-db', username: 'reader', password: '' };
+	const config = { ...primary, replicas: [replica] };
+	expect(createDataSource(config).options).toMatchObject({ replication: {
+		master: { host: primary.host, port: primary.port, database: primary.database, username: primary.username, password: primary.password },
+		slaves: [replica],
+	} });
+	expect(databaseOptions(config)).not.toHaveProperty('replication');
+	expect(databaseOptions(config)).not.toHaveProperty('replicas');
+	expect(createDataSource(primary).options).not.toHaveProperty('replication');
+	expect(createDataSource({ ...primary, replicas: [] }).options).toMatchObject({ replication: { slaves: [] } });
+});

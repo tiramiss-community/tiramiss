@@ -5,12 +5,16 @@
 import type { IdMethod } from '../platform/id-codec.js';
 import type { RedisOptions } from 'ioredis';
 
-export interface DatabaseConfig {
+export interface DatabaseConnectionConfig {
 	host: string;
 	port: number;
 	database: string;
 	username: string;
 	password: string;
+}
+
+export interface DatabaseConfig extends DatabaseConnectionConfig {
+	replicas?: DatabaseConnectionConfig[];
 	extra: Record<string, unknown>;
 }
 
