@@ -1,0 +1,195 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "corpusSha256": "deb2c2e87a3979305852a0866441e790e21f5461693022c411ea32bdf59dd0a4",
+  "sources": [
+    {
+      "path": "packages/backend/src/core/AnnouncementService.ts",
+      "gitBlob": "0f84e5f5aff121983bd1e1d3f22995d01df2f70c",
+      "sha256": "366d4647c93f9085f1aa6418589d98eed5dc938a4f1560fe7c7ce34c9c5314ac"
+    },
+    {
+      "path": "packages/backend/src/core/QueueService.ts",
+      "gitBlob": "c09fde4ce26238b4b10a4cde97363597b7a131ce",
+      "sha256": "abf3324184849ca3d1dbcd27004535eb42a835f36fd54d8b6b5a47d41d0b2333"
+    },
+    {
+      "path": "packages/backend/src/queue/processors/ArchiveAnnouncementProcessorService.ts",
+      "gitBlob": "e60537425e6570e8cf29ecdfa782df1381df3c3e",
+      "sha256": "7557fb581b878d0d69501df81533c272457353a6bba8516fc4c2b7836145f09e"
+    }
+  ],
+  "cases": [
+    {
+      "id": "due",
+      "outcomes": [
+        true
+      ],
+      "rows": [
+        {
+          "id": "target",
+          "updatedAt": "2026-11-18T00:00:00.000Z",
+          "isActive": false,
+          "autoArchiveAt": "2026-11-17T23:59:59.000Z"
+        }
+      ]
+    },
+    {
+      "id": "exact-deadline",
+      "outcomes": [
+        true
+      ],
+      "rows": [
+        {
+          "id": "target",
+          "updatedAt": "2026-11-18T00:00:00.000Z",
+          "isActive": false,
+          "autoArchiveAt": "2026-11-18T00:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "future",
+      "outcomes": [
+        false
+      ],
+      "rows": [
+        {
+          "id": "target",
+          "updatedAt": null,
+          "isActive": true,
+          "autoArchiveAt": "2026-11-18T00:00:00.001Z"
+        }
+      ]
+    },
+    {
+      "id": "changed-date",
+      "outcomes": [
+        false
+      ],
+      "rows": [
+        {
+          "id": "target",
+          "updatedAt": null,
+          "isActive": true,
+          "autoArchiveAt": "2026-11-17T23:59:58.000Z"
+        }
+      ]
+    },
+    {
+      "id": "inactive",
+      "outcomes": [
+        false
+      ],
+      "rows": [
+        {
+          "id": "target",
+          "updatedAt": null,
+          "isActive": false,
+          "autoArchiveAt": "2026-11-17T23:59:59.000Z"
+        }
+      ]
+    },
+    {
+      "id": "removed-date",
+      "outcomes": [
+        false
+      ],
+      "rows": [
+        {
+          "id": "target",
+          "updatedAt": null,
+          "isActive": true,
+          "autoArchiveAt": null
+        }
+      ]
+    },
+    {
+      "id": "wrong-id",
+      "outcomes": [
+        false
+      ],
+      "rows": [
+        {
+          "id": "target",
+          "updatedAt": null,
+          "isActive": true,
+          "autoArchiveAt": "2026-11-17T23:59:59.000Z"
+        }
+      ]
+    },
+    {
+      "id": "deleted",
+      "outcomes": [
+        false
+      ],
+      "rows": []
+    },
+    {
+      "id": "duplicate",
+      "outcomes": [
+        true,
+        false
+      ],
+      "rows": [
+        {
+          "id": "target",
+          "updatedAt": "2026-11-18T00:00:00.000Z",
+          "isActive": false,
+          "autoArchiveAt": "2026-11-17T23:59:59.000Z"
+        }
+      ]
+    }
+  ],
+  "restoration": [
+    {
+      "id": "archiveAnnouncement-due-1794959999999",
+      "name": "archiveAnnouncement",
+      "data": {
+        "announcementId": "due",
+        "autoArchiveAt": 1794959999999
+      },
+      "delay": 0,
+      "retention": {
+        "complete": {
+          "age": 604800,
+          "count": 30
+        },
+        "failed": {
+          "age": 604800,
+          "count": 100
+        }
+      },
+      "attempts": 0
+    },
+    {
+      "id": "archiveAnnouncement-future-1794960060000",
+      "name": "archiveAnnouncement",
+      "data": {
+        "announcementId": "future",
+        "autoArchiveAt": 1794960060000
+      },
+      "delay": 60000,
+      "retention": {
+        "complete": {
+          "age": 604800,
+          "count": 30
+        },
+        "failed": {
+          "age": 604800,
+          "count": 100
+        }
+      },
+      "attempts": 0
+    }
+  ],
+  "queue": {
+    "originalState": "completed",
+    "archived": true,
+    "completedReplaced": true,
+    "logs": [
+      "archived"
+    ],
+    "originalAttempts": 1,
+    "failedReplaced": true
+  }
+}

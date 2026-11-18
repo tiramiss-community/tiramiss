@@ -7,6 +7,7 @@ import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { createTestDatabase } from '../helpers/database.js';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createLogger } from '../../src/platform/logger.js';
+import { migrateDatabase } from '../../src/platform/database/migrate.js';
 
 const runtimeHooks = vi.hoisted(() => ({
 	afterReady: undefined as undefined | (() => Promise<void>),
@@ -34,6 +35,7 @@ vi.mock('../../src/platform/job-queue/runtime.js', async (importOriginal) => {
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 beforeAll(async () => {
 	database = await createTestDatabase();
+	await migrateDatabase(database.config.database);
 });
 afterAll(async () => {
 	await database?.close();
@@ -124,7 +126,7 @@ test('fails startup on connection loss after producer readiness while later init
 			}, (error: unknown) => error);
 		expect(outcome).toMatchObject({
 			code: 'JOB_QUEUE_REDIS_ENDED',
-			details: { queue: expect.stringMatching(/^(endedPollNotification|deliver|userWebhookDeliver)$/) },
+			details: { queue: expect.stringMatching(/^(endedPollNotification|deliver|userWebhookDeliver|system)$/) },
 		});
 	} finally {
 		runtimeHooks.afterReady = undefined;

@@ -50,7 +50,7 @@ test('distinguishes fulfilled close with emitted error from rejected close', asy
 	expect(await owner.closedWorkerQueues()).toEqual(new Set(['deliver']));
 });
 
-test('prepares exactly three queues without creating workers', async () => {
+test('prepares exactly four queues without creating workers', async () => {
 	const prepared: string[] = [];
 	vi.spyOn(BullMQQueueManager.prototype, 'getOrCreateQueue').mockImplementation(definition => {
 		prepared.push(definition.name);
@@ -62,7 +62,7 @@ test('prepares exactly three queues without creating workers', async () => {
 	const workers = vi.spyOn(BullMQQueueManager.prototype, 'createWorker');
 	const owner = createBusinessJobRuntime({ ...config, onError: () => {} });
 	await owner.runtime.ready(createBusinessJobDefinitions(config).queues, { timeout: config.connectTimeoutMs });
-	expect(prepared).toEqual(['endedPollNotification', 'deliver', 'userWebhookDeliver']);
+	expect(prepared).toEqual(['endedPollNotification', 'deliver', 'userWebhookDeliver', 'system']);
 	expect(workers).not.toHaveBeenCalled();
 	await owner.stop();
 });

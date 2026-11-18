@@ -4,6 +4,8 @@
  */
 import { createPostingNoteCharts } from '../composition/posting-note-charts.js';
 import { createNoteCharts } from '../modules/chart/public.js';
+import { createAnnouncementArchives } from '../modules/announcement/public.js';
+import { createAnnouncementArchiveStore } from './database/announcement-archive.js';
 import { createNoteChartStore } from './database/chart/store.js';
 import { startNoteChartFlush } from './note-chart-flush.js';
 import { randomBytes } from 'node:crypto';
@@ -281,6 +283,13 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw timeout;
 		}
 		const jobs = createBusinessJobProducers(producer, definitions, jobConfig);
+		const announcementArchives = createAnnouncementArchives({
+			...createAnnouncementArchiveStore(dataSource.manager), schedule: jobs.scheduleAnnouncementArchive, now: () => new Date(),
+		});
+		await announcementArchives.restore();
+		if (cancelled) {
+			throw timeout;
+		}
 		const webhooks = await openUserWebhooks({ events: internalEvents, manager: dataSource.manager, redis: config.redisForPubsub, url: config.url, timeoutMs: config.processes.startupTimeoutMs, enqueue: jobs.enqueueWebhook, registerCleanup: cleanup => scope.defer(cleanup) });
 		if (cancelled) {
 			await webhooks.close();
@@ -437,7 +446,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw new DiagnosticError('TIMELINES_REDIS_ENDED', {});
 		}
 		active = true;
-		return { noteCharts, actorEmojis, meta, urlPreview, instanceAdministration, dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, remoteEmojis, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
+		return { announcementArchives, noteCharts, actorEmojis, meta, urlPreview, instanceAdministration, dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, remoteEmojis, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
 	};
 
 	try {

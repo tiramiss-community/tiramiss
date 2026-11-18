@@ -112,3 +112,6 @@ export function createAnnouncements(ports: AnnouncementPorts) {
 		},
 	};
 }
+
+export { createAnnouncementArchives } from './archive.js';
+export type { AnnouncementArchivePorts, AnnouncementArchiveReservation } from './archive.js';

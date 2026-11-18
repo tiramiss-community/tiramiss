@@ -6,6 +6,7 @@ import { MiWebhook } from 'backend-upstream/entities';
 import { createUserWebhookJobProcessor, createUserWebhookProcessor } from '../platform/job-queue/user-webhook.js';
 import { createDeliverProcessor } from '../platform/job-queue/deliver.js';
 import { createPollEndedProcessor } from '../platform/job-queue/ended-poll-notification.js';
+import { createAnnouncementArchiveProcessor } from '../platform/job-queue/announcement-archive.js';
 import { createBusinessJobDefinitions } from '../platform/job-queue/business-jobs.js';
 import { createBusinessJobRuntime } from '../platform/job-queue/runtime.js';
 import { DiagnosticError } from '../platform/diagnostic-error.js';
@@ -86,6 +87,7 @@ export async function startQueueWorkers(resources: RuntimeResources, config: Run
 		owner.runtime.handle(definitions.pollEnded, createPollEndedProcessor(poll, resources.logger), { defaultForQueue: true });
 		owner.runtime.handle(definitions.userWebhook, createUserWebhookJobProcessor(webhook.process, resources.logger), { defaultForQueue: true });
 		owner.runtime.handle(definitions.deliver, createDeliverProcessor(deliver.process, resources.logger), { defaultForQueue: true });
+		owner.runtime.handle(definitions.announcementArchive, createAnnouncementArchiveProcessor(resources.announcementArchives.archive, resources.logger));
 		await owner.runtime.start({ timeout: config.processes.startupTimeoutMs });
 		if (startupFailure) {
 			throw startupFailure;
