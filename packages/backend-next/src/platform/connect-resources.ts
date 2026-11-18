@@ -407,7 +407,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			// 本家と同じく投稿を受けた子で表現と宛先を決め、送信は worker の子に任せる。
 			deliver: postingNotifications.createdEvents(createDeliverCreatedNote({
 				readNote: noteId => readFromPrimary(dataSource, manager => createNoteActivityReader(manager, { ...config.noteMedia, url: config.url, createdAtFromId: createIdCodec(config.id).createdAtFromId })(noteId)),
-				readUsers: recipients.readUsers,
+				readUsers: ids => readFromPrimary(dataSource, manager => createDeliveryRecipientReader(manager).readUsers(ids)),
 				readFollowerInboxes: recipients.readFollowerInboxes,
 				enqueue: jobs.deliverMany,
 				deliverToRelays,

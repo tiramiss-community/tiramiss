@@ -44,8 +44,8 @@ test('preserves an empty enabled slave list for TypeORM primary fallback', async
 	expect(value.database).toMatchObject({ replicas: [] });
 });
 
-test.each(['dbReplications: true', 'dbReplications: true\ndbSlaves: {}', 'dbReplications: true\ndbSlaves: [{host: replica, port: 0}]', 'dbReplications: yes'])(
-	'rejects malformed enabled replica configuration: %s', async extra => {
-		await expect(loadConfig({ configFile: await config(extra), env: { DATABASE_DB: 'primary', DATABASE_USER: 'writer' } })).rejects.toThrow();
+test.each([['dbReplications: true', 'dbSlaves'], ['dbReplications: true\ndbSlaves: {}', 'dbSlaves'], ['dbReplications: true\ndbSlaves: [{host: replica, port: 0}]', 'dbSlaves[0].port'], ['dbReplications: yes', 'dbReplications']])(
+	'rejects malformed enabled replica configuration: %s', async (extra, field) => {
+		await expect(loadConfig({ configFile: await config(extra), env: { DATABASE_DB: 'primary', DATABASE_USER: 'writer' } })).rejects.toMatchObject({ code: 'INVALID_CONFIG', details: { field } });
 	},
 );

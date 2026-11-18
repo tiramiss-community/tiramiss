@@ -1,0 +1,170 @@
+{
+  "baseline": "4c1ed2264b64669dc9fd6bac02554e8bc0ee9a2c",
+  "measurement": "replication-final-results.json",
+  "files": {
+    "packages/backend-next/src/composition/note.ts": {
+      "currentSha256": "9e495fd35325ef6661799eddbf256eb8dbcf05517654a76b6db7d3c06ccf2275",
+      "previousSha256": "e44f4289afbbb2754f88b9c731fd85fcf6cdff6714b9a5ed755078dbd392e0cd",
+      "patches": [
+        {
+          "offset": 173,
+          "insert": ".js';\nimport { readFromPrimary } from '../platform/database/primary-read",
+          "previous": ""
+        },
+        {
+          "offset": 1243,
+          "insert": "// Mention resolution may have inserted these actors during this same operation.\n\t\treadMentionedRemoteUsers: ids => readFromPrimary(parts.dataSource, manager => createNoteWriter(manager, parts.roleMaterials, parts.ids.createdAtFromId).readMentionedRemoteUsers(ids)),\n\t\t",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/connect-resources.ts": {
+      "currentSha256": "be9ba81cbfcdd1d9b650d0606f6b8927562967a2ea76395bf000a21383f4be52",
+      "previousSha256": "5090fbe16ecca93ba9214594e5544794c8589d7f48b9634e9cb2384c5c8959d0",
+      "patches": [
+        {
+          "offset": 19462,
+          "insert": "ids => ",
+          "previous": ""
+        },
+        {
+          "offset": 19470,
+          "insert": "eadFromPrimary(dataSource, manager => createDeliveryR",
+          "previous": ""
+        },
+        {
+          "offset": 19531,
+          "insert": "Reader(manager)",
+          "previous": "s"
+        },
+        {
+          "offset": 19556,
+          "insert": "(ids))",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/primary-read.ts": {
+      "currentSha256": "dfdbfc9ed0887b20f5d48572c1b690a5a60ecba4f90a6922eaa462cdd8ea9c23",
+      "previousSha256": "1f2a36983891581322979a34543e9d37ee567c8d592532081ff1f66cf317a311",
+      "patches": [
+        {
+          "offset": 110,
+          "insert": "{ EntityManager, SelectQueryBuilder } from 'typeorm';\nimport ",
+          "previous": ""
+        },
+        {
+          "offset": 196,
+          "insert": "T",
+          "previous": "M"
+        },
+        {
+          "offset": 198,
+          "insert": "rget, ObjectLiteral, QueryRu",
+          "previous": ""
+        },
+        {
+          "offset": 227,
+          "insert": "n",
+          "previous": "ag"
+        },
+        {
+          "offset": 248,
+          "insert": "\n\nclass PrimarySelectQueryBuilder<Entity extends ObjectLiteral> extends SelectQueryBuilder<Entity> {\n\tprotected override obtainQueryRunner(): QueryRunner {\n\t\treturn this.queryRunner ?? this.dataSource.createQueryRunner('master');\n\t}\n}\n\nclass PrimaryReadManager extends EntityManager {\n\toverride createQueryBuilder<Entity extends ObjectLiteral>(entity: EntityTarget<Entity>, alias: string, runner?: QueryRunner): SelectQueryBuilder<Entity>;\n\toverride createQueryBuilder(runner?: QueryRunner): SelectQueryBuilder<ObjectLiteral>;\n\toverride createQueryBuilder<Entity extends ObjectLiteral>(entityOrRunner?: EntityTarget<Entity> | QueryRunner, alias?: string, runner?: QueryRunner): SelectQueryBuilder<Entity> {\n\t\tconst query = alias\n\t\t\t? super.createQueryBuilder(entityOrRunner as EntityTarget<Entity>, alias, runner)\n\t\t\t: super.createQueryBuilder(entityOrRunner as QueryRunner | undefined);\n\t\t// Without an explicit runner, TypeORM owns and releases each SELECT's runner itself.\n\t\treturn new PrimarySelectQueryBuilder<Entity>(query);\n\t}\n}",
+          "previous": ""
+        },
+        {
+          "offset": 1407,
+          "insert": "return",
+          "previous": "if"
+        },
+        {
+          "offset": 1414,
+          "insert": "read",
+          "previous": ""
+        },
+        {
+          "offset": 1419,
+          "insert": "",
+          "previous": "!"
+        },
+        {
+          "offset": 1445,
+          "insert": "",
+          "previous": ")"
+        },
+        {
+          "offset": 1446,
+          "insert": "? new P",
+          "previous": "{\n\t\t"
+        },
+        {
+          "offset": 1454,
+          "insert": "ima",
+          "previous": "etu"
+        },
+        {
+          "offset": 1458,
+          "insert": "yR",
+          "previous": "n r"
+        },
+        {
+          "offset": 1463,
+          "insert": "Manager",
+          "previous": ""
+        },
+        {
+          "offset": 1471,
+          "insert": "source) : ",
+          "previous": ""
+        },
+        {
+          "offset": 1498,
+          "insert": "",
+          "previous": "\t"
+        },
+        {
+          "offset": 1500,
+          "insert": "",
+          "previous": "\tconst runner = source.createQueryRunner('master');\n\ttry {\n\t\treturn await read(runner.manager);\n\t} finally {\n\t\tawait runner.release();\n\t}\n}\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/runtime-data-source.ts": {
+      "currentSha256": "d33a94ef6567e01106a2eb0368fa5790de395e658276d745546903147f1a6075",
+      "previousSha256": "4298a6d4655537e54d0c24bc791d15f310038c1dbc04a15bfb0c1e523b900894",
+      "patches": [
+        {
+          "offset": 133,
+          "insert": "CannotConnectAlreadyConnectedError, ",
+          "previous": ""
+        },
+        {
+          "offset": 245,
+          "insert": "';\nimport type { PostgresDriver } from 'typeorm/driver/postgres/PostgresDriver.js",
+          "previous": ""
+        },
+        {
+          "offset": 667,
+          "insert": "private initializing = false;\n\n\t\t",
+          "previous": ""
+        },
+        {
+          "offset": 744,
+          "insert": "\n\t\t\tif (this.isInitialized || this.initializing) {\n\t\t\t\tthrow new CannotConnectAlreadyConnectedError();\n\t\t\t}\n\t\t\tthis.initializing = true;",
+          "previous": ""
+        },
+        {
+          "offset": 976,
+          "insert": "\n\t\t\t\t// Failed connect() metadata queries can leave a borrowed runner; pg end() waits for its return.\n\t\t\t\tconst driver = this.driver as PostgresDriver;\n\t\t\t\tawait Promise.allSettled([...driver.connectedQueryRunners].map(runner => runner.release()));",
+          "previous": ""
+        },
+        {
+          "offset": 1553,
+          "insert": " finally {\n\t\t\t\tthis.initializing = false;\n\t\t\t}",
+          "previous": ""
+        }
+      ]
+    }
+  }
+}

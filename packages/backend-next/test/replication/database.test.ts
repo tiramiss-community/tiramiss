@@ -6,8 +6,9 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { setTimeout } from 'node:timers/promises';
-import { afterAll, beforeAll, describe, expect, test } from 'vitest';
+import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
 import { Queue } from 'bullmq';
+import { startRemotePeer, plainActor, deferred } from '../helpers/remote-peer.js';
 import { createBackendHttpApp } from '../../src/composition/note-http.js';
 import { createIdCodec } from '../../src/platform/id-codec.js';
 import { dump } from 'js-yaml';
@@ -219,6 +220,7 @@ test.each([false, true])('normal create response and post-save delivery survive 
 		await replay();
 		const app = createBackendHttpApp(resources, runtime);
 		await observer.query('SELECT pg_wal_replay_pause()');
+		await expect.poll(() => observer.query("SELECT pg_get_wal_replay_pause_state() AS state"), { timeout: 5000, interval: 25 }).toEqual([{ state: 'paused' }]);
 		const response = await app.request('/api/notes/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ i: token, text: 'saved while replay is paused', ...(withPoll ? { poll: { choices: ['one', 'two'] } } : {}) }) });
 		const body = await response.json();
 		expect(response.status, JSON.stringify(body)).toBe(200);
@@ -231,27 +233,120 @@ test.each([false, true])('normal create response and post-save delivery survive 
 		expect(await resources.dataSource.getRepository(MiNote).findOneBy({ id: noteId })).toBeNull();
 		await resources.notePostSave.idle();
 		const queued = await jobs.getJobs(['waiting', 'delayed']);
-		expect(queued.map(job => job.data.to)).toContain(inbox);
-		expect(queued.some(job => JSON.stringify(job.data).includes(noteId))).toBe(true);
+		expect(queued.some(job => job.data.to === inbox && JSON.parse(job.data.content).object.id === `${runtime.url}/notes/${noteId}`)).toBe(true);
 	} finally {
-		await observer.query('SELECT pg_wal_replay_resume()');
-		await jobs.close();
-		await resources.close();
-		await replay();
+		let resumed = false;
+		try {
+			await observer.query('SELECT pg_wal_replay_resume()');
+			resumed = true;
+		} finally {
+			try {
+				await jobs.close();
+			} finally {
+				await resources.close();
+			}
+		}
+		if (resumed) {
+			await replay();
+		}
 	}
 });
 
-test('primary read leases return their connection after success and failure without opening a transaction', async () => {
+test('primary reads return each query connection after success and failure without opening a transaction', async () => {
 	const source = await createDataSource({ ...config, extra: { ...config.extra, max: 1 } }, 500).initialize();
 	try {
 		expect(await readFromPrimary(source, manager => location(manager))).toEqual({ standby: false, timeout: '500ms' });
 		const error = new Error('primary-read-fixture');
 		await expect(readFromPrimary(source, async manager => {
 			expect(await location(manager)).toEqual({ standby: false, timeout: '500ms' });
-			expect(manager.queryRunner?.isTransactionActive).toBe(false);
+			expect(manager.queryRunner?.isTransactionActive ?? false).toBe(false);
 			throw error;
 		})).rejects.toBe(error);
 		expect(await source.query('SELECT 1 AS ready')).toEqual([{ ready: 1 }]);
+	} finally {
+		await source.destroy();
+	}
+});
+
+test('primary reads release their query connection while waiting for non-DB work', async () => {
+	const source = await createDataSource({ ...config, extra: { ...config.extra, max: 1 } }, 500).initialize();
+	const entered = deferred();
+	const resume = deferred();
+	const reading = readFromPrimary(source, async manager => {
+		await location(manager);
+		entered.resolve();
+		await resume.promise;
+		return location(manager);
+	});
+	try {
+		await entered.promise;
+		expect(await source.query('SELECT 1 AS ready')).toEqual([{ ready: 1 }]);
+		expect(await location(source.manager)).toEqual({ standby: true, timeout: '500ms' });
+	} finally {
+		resume.resolve();
+		await reading;
+		await source.destroy();
+	}
+});
+
+test('newly resolved remote mention retains its stored URI and direct delivery before WAL replay', async () => {
+	const peer = await startRemotePeer();
+	const actor = plainActor(peer.origin, 'freshreplica');
+	peer.respond(async request => request.path.startsWith('/.well-known/webfinger')
+		? { type: 'application/jrd+json', body: { links: [{ rel: 'self', type: 'application/activity+json', href: actor.id }] } }
+		: request.path === '/users/freshreplica' ? { body: actor } : { status: 404, body: {} });
+	vi.stubEnv('MISSKEY_WEBFINGER_USE_HTTP', 'true');
+	const runtime = { ...database.config, database: config, outboundHttp: { ...database.config.outboundHttp, proxy: peer.proxy } };
+	const resources = await connectResources(runtime, createLogger('database-replication-mention', () => {}));
+	const codec = createIdCodec(runtime.id);
+	const author = codec.newId(Date.now());
+	const token = 'replica-native03';
+	const jobs = new Queue('deliver', { connection: { host: runtime.redis.host, port: runtime.redis.port }, prefix: `${runtime.redis.prefix}:queue:deliver` });
+	try {
+		await resources.dataSource.getRepository(MiMeta).deleteAll();
+		await resources.dataSource.getRepository(MiMeta).insert({ id: 'singleton', federation: 'all', signToActivityPubGet: false });
+		await resources.dataSource.getRepository(MiUser).insert({ id: author, username: 'replicaMention', usernameLower: 'replicamention', token });
+		await replay();
+		await observer.query('SELECT pg_wal_replay_pause()');
+		await expect.poll(() => observer.query("SELECT pg_get_wal_replay_pause_state() AS state"), { timeout: 5000, interval: 25 }).toEqual([{ state: 'paused' }]);
+		const app = createBackendHttpApp(resources, runtime);
+		const response = await app.request('/api/notes/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ i: token, text: `hello @freshreplica@${new URL(peer.origin).host}` }) });
+		const body = await response.json();
+		expect(response.status, JSON.stringify(body)).toBe(200);
+		const [stored] = await resources.dataSource.query('SELECT id, mentions, "mentionedRemoteUsers" FROM note WHERE id=$1', [body.createdNote.id]);
+		expect(stored.mentions).toHaveLength(1);
+		expect(JSON.parse(stored.mentionedRemoteUsers)).toContainEqual(expect.objectContaining({ uri: actor.id }));
+		await resources.notePostSave.idle();
+		const queued = await jobs.getJobs(['waiting', 'delayed']);
+		const job = queued.find(job => job.data.to === actor.inbox && JSON.parse(job.data.content).object.id === `${runtime.url}/notes/${stored.id}`);
+		expect(job).toBeDefined();
+		const activity = JSON.parse(job!.data.content);
+		expect([...activity.object.to, ...activity.object.cc]).toContain(actor.id);
+	} finally {
+		try {
+			await observer.query('SELECT pg_wal_replay_resume()');
+		} finally {
+			await Promise.allSettled([jobs.close(), resources.close(), peer.close()]);
+			vi.unstubAllEnvs();
+		}
+		await replay();
+	}
+});
+
+test('primary reader keeps an explicitly selected transaction runner', async () => {
+	const source = await createDataSource({ ...config, extra: { ...config.extra, max: 1 } }, 500).initialize();
+	const error = new Error('transaction-fixture-rollback');
+	try {
+		await expect(source.transaction(async manager => {
+			await manager.getRepository(MiMeta).insert({ id: 'primary-transaction', name: 'uncommitted' });
+			await readFromPrimary(source, async primary => {
+				const row = await primary.createQueryBuilder(MiMeta, 'meta', manager.queryRunner)
+					.where('meta.id = :id', { id: 'primary-transaction' }).getOneOrFail();
+				expect(row.name).toBe('uncommitted');
+				expect(manager.queryRunner?.isReleased).toBe(false);
+			});
+			throw error;
+		})).rejects.toBe(error);
 	} finally {
 		await source.destroy();
 	}

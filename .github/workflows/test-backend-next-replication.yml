@@ -5,6 +5,8 @@ on:
     paths:
       - 'packages/backend-next/**'
       - 'packages/backend-upstream/**'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
       - 'pnpm-lock.yaml'
       - '.node-version'
       - '.github/workflows/test-backend-next-replication.yml'
@@ -13,6 +15,8 @@ on:
     paths:
       - 'packages/backend-next/**'
       - 'packages/backend-upstream/**'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
       - 'pnpm-lock.yaml'
       - '.node-version'
       - '.github/workflows/test-backend-next-replication.yml'

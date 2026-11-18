@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectDatabaseReplicationFinalInput } from './database-replication-final-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -13,6 +14,7 @@ const { files } = JSON.parse(record);
 
 // Only the measured post-save and runtime disposal changes project to their exact prior inputs.
 export function projectDatabaseReplicationRuntimeInput(path, actual) {
+	actual = projectDatabaseReplicationFinalInput(path, actual);
 	const binding = files[path];
 	if (!binding || sha(actual) !== binding.currentSha256) {
 		return actual;
