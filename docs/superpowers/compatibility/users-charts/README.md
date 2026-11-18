@@ -29,3 +29,5 @@ node scripts/check-shipping.mjs --base 63854ab4c0
 ```
 
 2026-11-19 R4検証: unit **5510成功・既存skip 1件 / 159 files**、実PG/Redis・通常listening HTTPと既存note chartの結合 **124成功 / 3 files**。build/typecheck、source 4 update・2 resync・24 read、変更ファイルlint・SPDX・locale safetyを実行する。個々の実ログと入力hashはcurrent-evidenceへ記録し、旧note chartやremote actorの過去receiptを書き換えない。比較記録の互換投影は正確に一致した入力だけを基準のbyteへ戻し、未知の追加変更を同じ測定結果として扱わない。
+
+独立レビュー後のR5ではglobal notes/usersへ余分なuserIdを渡してもgroup検索しないよう修正し、GET/POSTの赤→緑を確認した。R5はchart/通常root unit51件、最後の同root/API36件、HTTP/PG124件、build/typecheck、shippingが成功。上記R4全単体5510件は修正前runtime33cef1f8bbの歴史として残し、R5の全単体再測定とは扱わない。
