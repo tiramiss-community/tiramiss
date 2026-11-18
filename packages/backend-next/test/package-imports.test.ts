@@ -76,7 +76,11 @@ test('loads copied entities without eagerly loading migration dependencies', asy
 	for (const property of ['user', 'announcement']) {
 		expect(announcementRead.relations.find(value => value.propertyName === property)?.onDelete).toBe('CASCADE');
 	}
-	expect(source.entityMetadatas).toHaveLength(42);
+	const promo = source.getMetadata('MiPromoNote');
+	expect(promo.tableName).toBe('promo_note');
+	expect(promo.primaryColumns.map(column => column.propertyName)).toEqual(['noteId']);
+	expect(promo.relations.find(relation => relation.propertyName === 'note')?.onDelete).toBe('CASCADE');
+	expect(source.entityMetadatas).toHaveLength(43);
 	expect(source.getMetadata('MiWebhook').tableName).toBe('webhook');
 	expect(source.getMetadata('MiWebhook').relations.find(value => value.propertyName === 'user')?.inverseEntityMetadata.tableName).toBe('user');
 	for (const [model, table, relation] of [['MiMuting', 'muting', 'muter'], ['MiRenoteMuting', 'renote_muting', 'mutee'], ['MiNoteThreadMuting', 'note_thread_muting', 'user'], ['MiUserListMembership', 'user_list_membership', 'user']] as const) {

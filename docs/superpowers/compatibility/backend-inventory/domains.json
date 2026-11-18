@@ -3969,6 +3969,27 @@
       ],
       "evidenceRevision": "4597043a15692a1a35f60bbc4490a66afef76edd",
       "note": "#449/#450: normal child startup after migration checks restores active dated announcements; named system archiveAnnouncement worker preserves pinned identity, delay and retention and atomically checks ID/active/exact saved deadline/due time. Fixed source9 PostgreSQL cases and source producer/processor with real Redis/BullMQ match saved observations; normal startup/worker tests cover stale/deleted/cancelled dates, duplication, DB retry, failed/completed replacement and enqueue failure; ordinary process restart restores lost reservations. Admin CRUD/cancellation #194, other system handlers/schedulers #199/#200, conservative cutover system rejection #526, parent #193/#199/#114 remain unfinished. Full upstream Nest server not measured."
+    },
+    "api:admin/promo/create": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/promo/public.ts",
+        "packages/backend-next/src/platform/database/promo.ts",
+        "packages/backend-next/src/http/promo-api.ts",
+        "packages/backend-next/src/composition/promo-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/promo.test.ts",
+        "packages/backend-next/test/integration/promo.test.ts",
+        "docs/superpowers/compatibility/promo/source-probe.mjs",
+        "docs/superpowers/compatibility/promo/observations.json",
+        "docs/superpowers/compatibility/promo/README.md",
+        "docs/superpowers/compatibility/promo/current-evidence.json",
+        "scripts/promo-contract.test.mjs"
+      ],
+      "note": "#542: fixed-source18 and ordinary listening HTTP/PG validate Note existence, author/expiry storage, duplicate/missing/denied/DB failure. Literal pinned callback and GetterService.getNote also run with real PG; full upstream HTTP/auth server is not measured. Timeline selection and promo/read remain outside this slice; #194/#114 remain open.",
+      "evidenceRevision": "3a2dbd3654330c424c324c74cf0ba1dad51222f4"
     }
   }
 }

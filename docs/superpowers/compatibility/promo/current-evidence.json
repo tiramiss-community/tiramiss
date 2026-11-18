@@ -1,0 +1,98 @@
+{
+  "scope": "promo-create-542",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "baseRevision": "161380446434f3c8e8a912c0266270f8bb285b50",
+  "runtimeSourceRevision": "e13fc9364de505f46479a429b66cbf19f5aa8b01",
+  "nodeVersion": "v26.4.0",
+  "pnpmVersion": "12.9.1",
+  "upstreamFullServerMeasured": false,
+  "limits": "Literal upstream callback/Getter over doubles and real PG; ordinary backend-next listening HTTP; no upstream full HTTP/auth startup, exact internal DB diagnostics or timeline/promo-read completeness.",
+  "measurement": "R2 test/docs hardening after CodeRabbit CLI",
+  "productChanged": false,
+  "r1Evidence": {
+    "path": "docs/superpowers/compatibility/promo/r1-current-evidence.json",
+    "sha256": "3ab27926b04697ff94453dba9c9b6a8d391555152f261c1ae1f418d33c843dc2"
+  },
+  "r1BroaderMeasurements": {
+    "unit": {
+      "passed": 5293,
+      "skipped": 1
+    },
+    "root": {
+      "passed": 808,
+      "skipped": 1
+    },
+    "note": "R1 tests and frozen root are historical runs of their exact inputs. R2 changes only the integration harness, probe PG guard, manifest contract assertions and reproduction docs; no rerun of those full suites is claimed."
+  },
+  "inputHashesRecordedAfterRuns": {
+    "docs/superpowers/compatibility/promo/compatibility-predecessor.json": "e1305fb12f8ea8f2a5ac5856ab47f5ad0cab2ec9a52a89ff42cba472f2dfd089",
+    "docs/superpowers/compatibility/promo/corpus.json": "b1aff58e347c20eb4f253d7a4cf3f72435294e71c3cd7dfb6a2c2575f42d6c34",
+    "docs/superpowers/compatibility/promo/observations.json": "f910d19013d7d401b1c37c660575db91b1b3902b502680d0c21eb067c152d823",
+    "docs/superpowers/compatibility/promo/source-probe.mjs": "35b9b0cf031898f3dd6918f9c90d44540f6de60a020612aa08722d6c95c21d5e",
+    "packages/backend-next/src/composition/http-app.ts": "0af728aaf5942450d8066540a1ab83a29b4bc16cdb3ba51ecca3df395c366b7c",
+    "packages/backend-next/src/composition/promo-http.ts": "ee0085b7c4cbc674d7d950bf972dd2d46aaa73734536801a08aa575c8342056e",
+    "packages/backend-next/src/http/promo-api.ts": "bda8aa004d29f58795425278b564805352bd5376dc4ca8f7c42f34b34ed05e1a",
+    "packages/backend-next/src/modules/promo/public.ts": "8126cce85e2b0b5dd8a0d6f08840bc7404f4465363855b1095aedae4cfd0c6b9",
+    "packages/backend-next/src/platform/database/promo.ts": "be65be0b7c65ea4e3ebc8204836ccc5ccf58a7a89827550eae4374aaabd9a8d5",
+    "packages/backend-next/test/integration/promo.test.ts": "b8e58a002c9d1ba39f515a41a10b8a888220a58c1f27fa562b67fa73bbcbfd7e",
+    "packages/backend-next/test/package-imports.test.ts": "3f52ff89a5c972a6beea4a0e744a9420c4d6103270cc7f52f67474928a1c8799",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "cadc10344ec0024592e4aeb73730d369fe10b53a1de4d4dfa4ef88b1a38e203b",
+    "packages/backend-next/test/unit/promo.test.ts": "6661898c46385492e8d79eef39322f56161916d109381a9639b8409c8d7e9174",
+    "packages/backend-upstream/.managed-files.json": "7cb787f4da126af2645165006c3f9bda193ea114dc593435aaecdab435742f65",
+    "packages/backend-upstream/exports/entities.ts": "fb04ee6f1bad620d55cd431896187e468631e4cc86c5b71fa28c0a32d2ac5f64",
+    "packages/backend-upstream/src/models/PromoNote.ts": "a71dbb5bb9846a681c0995715d21f35309c64d3ef7388cf40d84506d5fc3138e",
+    "packages/backend-upstream/upstream-sync.json": "58707b07f611652ec2c407d5585976aed56e07dfaa4ef3adc5abef939fad5ff5",
+    "scripts/notes-pagination-evidence.mjs": "e42b0913ec1d5e5a85f800c5c030e595d8301aa33fb4710ec27597489d23a2d8",
+    "scripts/package-imports-evidence.mjs": "afdb18d89cfa5deb9e306891c83e963f4c6bb554fc5e69d879421ce4edf8aa48",
+    "scripts/promo-contract.test.mjs": "f1fe50b0eafb817b8a3535502458b9d4ff38566f994473d214eb5d50fe400053",
+    "scripts/promo-predecessor.mjs": "1c09e74a79f5c76a3e63584b5a4387f90474a39e783e21f6056d5d9e3476355a",
+    "scripts/well-known-contract.test.mjs": "0637b0c23767a72c9c36b13b079f572ed3fa7547f6b963775745f362290aded2",
+    "scripts/well-known-predecessor.mjs": "12eac3ded6ee526d0b83beeff96544252d08793cf5a4eb2a222ec4c1c4265e00"
+  },
+  "runs": [
+    {
+      "name": "typecheck",
+      "log": "/tmp/promo542-r2-typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+      "exitCode": 0
+    },
+    {
+      "name": "source",
+      "log": "/tmp/promo542-r2-source.log",
+      "logSha256": "74e5555063cd45dcded5b12bbdadf5058a7db871038b937886a067c8008d625d",
+      "exitCode": 0,
+      "passed": 18,
+      "skipped": 0
+    },
+    {
+      "name": "http-pg-schema",
+      "log": "/tmp/promo542-r2-integration.log",
+      "logSha256": "ca589cc0edf99d69b3c2a0cc1f788df69cd1b96625a9c69997e684c776b3bdfa",
+      "exitCode": 0,
+      "passed": 26,
+      "skipped": 0
+    },
+    {
+      "name": "nearest-contracts",
+      "log": "/tmp/promo542-r2-contracts.log",
+      "logSha256": "5ba7ba897cf29fb73e6fd220fbe6204c4993f4907bb16e434a38dec0a2416dcb",
+      "exitCode": 0,
+      "passed": 22,
+      "skipped": 0
+    },
+    {
+      "name": "shipping",
+      "log": "/tmp/promo542-r2-shipping.log",
+      "logSha256": "418301bfaaba1b2f189be64eddfffc05cc8801166ca202fa68cb9f5ddcedeff4",
+      "exitCode": 0
+    }
+  ],
+  "review": {
+    "log": "/tmp/promo542-coderabbit.log",
+    "logSha256": "239a1877c82f143ccb046349634b612021e13591580e4a237ed6975a1539c7ec",
+    "reviewedRevision": "e13fc9364de505f46479a429b66cbf19f5aa8b01",
+    "reviewedFiles": 23,
+    "findings": 5,
+    "resolution": "All five verified minor findings addressed: persistent Node PATH, child timeout/SIGKILL, cleanup attempts each stage and aggregates failures, exact pinned manifest path/hash expectations, disposable local test database guard with rejection tests."
+  }
+}

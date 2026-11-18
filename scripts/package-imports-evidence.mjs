@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectPromoInput } from './promo-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -292,6 +293,7 @@ const announcementEntityProjection = {
   }
 };
 export function projectAnnouncementEntityInput(path, actual) {
+	actual = projectPromoInput(path, actual);
 	const binding = Object.hasOwn(announcementEntityProjection, path) ? announcementEntityProjection[path] : undefined;
 	if (!binding || sha(actual) !== binding.currentSha256) return actual;
 	let before = Buffer.from(actual);

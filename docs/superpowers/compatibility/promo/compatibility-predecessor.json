@@ -1,0 +1,92 @@
+{
+  "baseRevision": "161380446434f3c8e8a912c0266270f8bb285b50",
+  "scope": "Additive promo registration and mechanically synced PromoNote; prior receipts remain historical.",
+  "files": {
+    "packages/backend-next/src/composition/http-app.ts": {
+      "previousSha256": "594985a0ffdf279344959a60f87e2715691c72052af658c81f3221a220309358",
+      "currentSha256": "0af728aaf5942450d8066540a1ab83a29b4bc16cdb3ba51ecca3df395c366b7c",
+      "patches": [
+        {
+          "offset": 605,
+          "insert": "-http.js';\nimport { createPromoHttp } from './promo",
+          "previous": ""
+        },
+        {
+          "offset": 2580,
+          "insert": "PromoHttp(resources, config))\n\t\t.route('/', create",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "previousSha256": "558a1971b05356e7f3073d52037636a945dcb5f1f4f6214d2502b61fb2fcb383",
+      "currentSha256": "cadc10344ec0024592e4aeb73730d369fe10b53a1de4d4dfa4ef88b1a38e203b",
+      "patches": [
+        {
+          "offset": 2279,
+          "insert": "', '/api/admin/promo/create",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/package-imports.test.ts": {
+      "previousSha256": "79286cf3f69d3e1cf40e06fa95c9a2af9e6b940391c4dcfeade2aac1127acfa6",
+      "currentSha256": "3f52ff89a5c972a6beea4a0e744a9420c4d6103270cc7f52f67474928a1c8799",
+      "patches": [
+        {
+          "offset": 4893,
+          "insert": "const promo = source.getMetadata('MiPromoNote');\n\texpect(promo.tableName).toBe('promo_note');\n\texpect(promo.primaryColumns.map(column => column.propertyName)).toEqual(['noteId']);\n\texpect(promo.relations.find(relation => relation.propertyName === 'note')?.onDelete).toBe('CASCADE');\n\t",
+          "previous": ""
+        },
+        {
+          "offset": 5222,
+          "insert": "3",
+          "previous": "2"
+        }
+      ]
+    },
+    "packages/backend-upstream/upstream-sync.json": {
+      "previousSha256": "97f4c47a784ab71693bcdae889ac2eed81e862659473a07a722fe292ade1a5fd",
+      "currentSha256": "58707b07f611652ec2c407d5585976aed56e07dfaa4ef3adc5abef939fad5ff5",
+      "patches": [
+        {
+          "offset": 1356,
+          "insert": ",\n\t\t\"src/models/PromoNote.ts\"",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-upstream/exports/entities.ts": {
+      "previousSha256": "3ce5640083ad0003d38037fbb563476045492062e0f820c26de8c3427653c804",
+      "currentSha256": "fb04ee6f1bad620d55cd431896187e468631e4cc86c5b71fa28c0a32d2ac5f64",
+      "patches": [
+        {
+          "offset": 2591,
+          "insert": "import { MiPromoNote } from '../src/models/PromoNote.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 3228,
+          "insert": ", MiPromoNote",
+          "previous": ""
+        },
+        {
+          "offset": 3840,
+          "insert": ", MiPromoNote",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-upstream/.managed-files.json": {
+      "previousSha256": "12b58d1dfb82ba6c15f476ed804ff8b0e025f16003a31274f7ac651a4aab14d5",
+      "currentSha256": "7cb787f4da126af2645165006c3f9bda193ea114dc593435aaecdab435742f65",
+      "patches": [
+        {
+          "offset": 17565,
+          "insert": "PromoNote.ts\",\n\t\"src/models/",
+          "previous": ""
+        }
+      ]
+    }
+  }
+}
