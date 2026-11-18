@@ -53,7 +53,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 		'/api/admin/federation/update-instance', '/api/admin/federation/refresh-remote-instance-metadata', '/url', '/.well-known/*', '/.well-known/host-meta', '/.well-known/host-meta.json', '/.well-known/webfinger',
 		'/users/:id/collections/featured', '/notes/:id', '/users/:id/followers', '/users/:id/following',
 		'/users/:user/outbox', '/users//outbox', '/notes/:note/activity', '/notes//activity',
-		'/emojis/:emoji', '/emojis/', '/api/emoji', '/api/emojis',
+		'/emojis/:emoji', '/emojis/', '/api/emoji', '/api/emojis', '/api/get-avatar-decorations',
 		'/manifest.json', '/robots.txt', '/opensearch.xml',
 		'/fluent-emoji/*', '/twemoji/*', '/twemoji-badge/*',
 		'/emoji/*', '/avatar/*', '/identicon/*',
@@ -227,4 +227,15 @@ test('ordinary composition exposes host-meta and well-known preflight without Me
 		expect(await response.text()).toBe('');
 	}
 	expect(repository.find).not.toHaveBeenCalled();
+});
+
+test('ordinary HTTP exposes public avatar decorations', async () => {
+	const { resources } = fixture();
+	Object.assign(resources, { avatarDecorations: { getAll: async () => [] } });
+	Object.assign(resources.roleMaterials, { readRoles: async () => [] });
+	const response = await createBackendHttpApp(resources, testConfig()).request('/api/get-avatar-decorations', {
+		method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}',
+	});
+	expect(response.status).toBe(200);
+	expect(await response.json()).toEqual([]);
 });

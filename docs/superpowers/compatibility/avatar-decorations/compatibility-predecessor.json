@@ -1,0 +1,57 @@
+{
+  "files": {
+    "packages/backend-next/src/platform/connect-resources.ts": {
+      "previousSha256": "3fb32e36f9fce98728d59ee3adae9724b1085977cf8a3baee85b01c86491144c",
+      "currentSha256": "7154ff2caa8f800b67415f7b8560e3f4ebb70e1a6189621d5b94b2ba9e60b8a5",
+      "patches": [
+        {
+          "offset": 2632,
+          "previous": "",
+          "insert": "import { createAvatarDecorationCache } from './avatar-decoration-cache.js';\nimport { createAvatarDecorationReader } from './database/avatar-decorations.js';\n"
+        },
+        {
+          "offset": 10300,
+          "previous": "",
+          "insert": "\t\tconst avatarDecorations = createAvatarDecorationCache({ events: internalEvents, read: createAvatarDecorationReader(dataSource.manager) });\n\t\tscope.defer(avatarDecorations.close);\n"
+        },
+        {
+          "offset": 21650,
+          "previous": "",
+          "insert": "\t\t\tavatarDecorations,\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/composition/http-app.ts": {
+      "previousSha256": "3747f04e5de5e43d5eda0ac7ef856ce7a369cb818e31d159eb85320a7ee7e08a",
+      "currentSha256": "d91b5d9f9aa6dfc557148545993005354e0a89f846e7107b5da314d9946e931b",
+      "patches": [
+        {
+          "offset": 132,
+          "previous": "",
+          "insert": "import { createAvatarDecorationsHttp } from './avatar-decorations-http.js';\n"
+        },
+        {
+          "offset": 3491,
+          "previous": "",
+          "insert": "\t\t.route('/', createAvatarDecorationsHttp(resources))\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "previousSha256": "859b3e8e5ec9547b4dceaabc24e4c3a0554984bf2677afecd0ed3d16c47af2fd",
+      "currentSha256": "af0e4de509dfaf858e3111112c48b4b8a742c52ae7fa330ec8b73c6919c48c07",
+      "patches": [
+        {
+          "offset": 3189,
+          "previous": "\t\t'/emojis/:emoji', '/emojis/', '/api/emoji', '/api/emojis',\n",
+          "insert": "\t\t'/emojis/:emoji', '/emojis/', '/api/emoji', '/api/emojis', '/api/get-avatar-decorations',\n"
+        },
+        {
+          "offset": 13525,
+          "previous": "",
+          "insert": "\ntest('ordinary HTTP exposes public avatar decorations', async () => {\n\tconst { resources } = fixture();\n\tObject.assign(resources, { avatarDecorations: { getAll: async () => [] } });\n\tObject.assign(resources.roleMaterials, { readRoles: async () => [] });\n\tconst response = await createBackendHttpApp(resources, testConfig()).request('/api/get-avatar-decorations', {\n\t\tmethod: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}',\n\t});\n\texpect(response.status).toBe(200);\n\texpect(await response.json()).toEqual([]);\n});\n"
+        }
+      ]
+    }
+  }
+}

@@ -4100,6 +4100,146 @@
       ],
       "note": "#530 limited promo/read slice: fixed-source14, ordinary listening HTTP/PG, viewer-specific storage, duplicate unchanged, current suspension/scope, missing Note, DB failure operation/SQLSTATE/constraint, unique key and CASCADE. R4 build/typecheck, unit5350+existing skip1, HTTP/PG/schema42 and root23 PASS. Literal pinned callback/Getter runs with real PG, not full upstream HTTP/auth. Pinned-users/#297 and parent #530/#193/#114 remain unfinished.",
       "evidenceRevision": "9d2086451d97c05ec0e858abe2be202d912bcd0d"
+    },
+    "api:get-avatar-decorations": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/avatar-decoration/public.ts",
+        "packages/backend-next/src/platform/avatar-decoration-cache.ts",
+        "packages/backend-next/src/platform/database/avatar-decorations.ts",
+        "packages/backend-next/src/http/avatar-decorations-api.ts",
+        "packages/backend-next/src/composition/avatar-decorations-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-decoration/cache.test.ts",
+        "packages/backend-next/test/unit/avatar-decoration/public.test.ts",
+        "packages/backend-next/test/integration/avatar-decorations.test.ts",
+        "docs/superpowers/compatibility/avatar-decorations/source-probe.mjs",
+        "docs/superpowers/compatibility/avatar-decorations/observations.json",
+        "docs/superpowers/compatibility/avatar-decorations/README.md"
+      ],
+      "note": "#368/#367: fixed-source literal callback/cache comparison2 projections+9 observations; unit31, ordinary listening HTTP/PG/Redis9, adjacent shared HTTP/Meta/events integration7+unit8, build/typecheck/shipping PASS. Public getAll(true), guest role visibility/order, exact30m TTL, three invalidation receivers and shutdown verified. Source uses repository/RoleService doubles, not upstream full HTTP/PG; pinned RoleService1h freshness is not claimed. Admin writers and publication proof remain #541/#582; other User display consumers and #193/#217/#114 remain unfinished.",
+      "evidenceRevision": "cd6c3f33b803ce123f06f27c139c399871ece103"
+    },
+    "entity:avatar_decoration": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/avatar-decoration/public.ts",
+        "packages/backend-next/src/platform/avatar-decoration-cache.ts",
+        "packages/backend-next/src/platform/database/avatar-decorations.ts",
+        "packages/backend-next/src/http/avatar-decorations-api.ts",
+        "packages/backend-next/src/composition/avatar-decorations-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-decoration/cache.test.ts",
+        "packages/backend-next/test/unit/avatar-decoration/public.test.ts",
+        "packages/backend-next/test/integration/avatar-decorations.test.ts",
+        "docs/superpowers/compatibility/avatar-decorations/source-probe.mjs",
+        "docs/superpowers/compatibility/avatar-decorations/observations.json",
+        "docs/superpowers/compatibility/avatar-decorations/README.md"
+      ],
+      "note": "#368/#367: fixed-source literal callback/cache comparison2 projections+9 observations; unit31, ordinary listening HTTP/PG/Redis9, adjacent shared HTTP/Meta/events integration7+unit8, build/typecheck/shipping PASS. Public getAll(true), guest role visibility/order, exact30m TTL, three invalidation receivers and shutdown verified. Source uses repository/RoleService doubles, not upstream full HTTP/PG; pinned RoleService1h freshness is not claimed. Admin writers and publication proof remain #541/#582; other User display consumers and #193/#217/#114 remain unfinished.",
+      "evidenceRevision": "cd6c3f33b803ce123f06f27c139c399871ece103"
+    },
+    "responsibility:instance-moderation:39": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/avatar-decoration/public.ts",
+        "packages/backend-next/src/platform/avatar-decoration-cache.ts",
+        "packages/backend-next/src/platform/database/avatar-decorations.ts",
+        "packages/backend-next/src/http/avatar-decorations-api.ts",
+        "packages/backend-next/src/composition/avatar-decorations-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-decoration/cache.test.ts",
+        "packages/backend-next/test/unit/avatar-decoration/public.test.ts",
+        "packages/backend-next/test/integration/avatar-decorations.test.ts",
+        "docs/superpowers/compatibility/avatar-decorations/source-probe.mjs",
+        "docs/superpowers/compatibility/avatar-decorations/observations.json",
+        "docs/superpowers/compatibility/avatar-decorations/README.md"
+      ],
+      "note": "#368/#367: fixed-source literal callback/cache comparison2 projections+9 observations; unit31, ordinary listening HTTP/PG/Redis9, adjacent shared HTTP/Meta/events integration7+unit8, build/typecheck/shipping PASS. Public getAll(true), guest role visibility/order, exact30m TTL, three invalidation receivers and shutdown verified. Source uses repository/RoleService doubles, not upstream full HTTP/PG; pinned RoleService1h freshness is not claimed. Admin writers and publication proof remain #541/#582; other User display consumers and #193/#217/#114 remain unfinished.",
+      "evidenceRevision": "cd6c3f33b803ce123f06f27c139c399871ece103"
+    },
+    "service:AvatarDecorationService": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/avatar-decoration/public.ts",
+        "packages/backend-next/src/platform/avatar-decoration-cache.ts",
+        "packages/backend-next/src/platform/database/avatar-decorations.ts",
+        "packages/backend-next/src/http/avatar-decorations-api.ts",
+        "packages/backend-next/src/composition/avatar-decorations-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-decoration/cache.test.ts",
+        "packages/backend-next/test/unit/avatar-decoration/public.test.ts",
+        "packages/backend-next/test/integration/avatar-decorations.test.ts",
+        "docs/superpowers/compatibility/avatar-decorations/source-probe.mjs",
+        "docs/superpowers/compatibility/avatar-decorations/observations.json",
+        "docs/superpowers/compatibility/avatar-decorations/README.md"
+      ],
+      "note": "#368/#367: fixed-source literal callback/cache comparison2 projections+9 observations; unit31, ordinary listening HTTP/PG/Redis9, adjacent shared HTTP/Meta/events integration7+unit8, build/typecheck/shipping PASS. Public getAll(true), guest role visibility/order, exact30m TTL, three invalidation receivers and shutdown verified. Source uses repository/RoleService doubles, not upstream full HTTP/PG; pinned RoleService1h freshness is not claimed. Admin writers and publication proof remain #541/#582; other User display consumers and #193/#217/#114 remain unfinished.",
+      "evidenceRevision": "cd6c3f33b803ce123f06f27c139c399871ece103"
+    },
+    "stream-event:InternalEvent.avatarDecorationCreated": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/avatar-decoration/public.ts",
+        "packages/backend-next/src/platform/avatar-decoration-cache.ts",
+        "packages/backend-next/src/platform/database/avatar-decorations.ts",
+        "packages/backend-next/src/http/avatar-decorations-api.ts",
+        "packages/backend-next/src/composition/avatar-decorations-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-decoration/cache.test.ts",
+        "packages/backend-next/test/unit/avatar-decoration/public.test.ts",
+        "packages/backend-next/test/integration/avatar-decorations.test.ts",
+        "docs/superpowers/compatibility/avatar-decorations/source-probe.mjs",
+        "docs/superpowers/compatibility/avatar-decorations/observations.json",
+        "docs/superpowers/compatibility/avatar-decorations/README.md"
+      ],
+      "note": "#368/#367: fixed-source literal callback/cache comparison2 projections+9 observations; unit31, ordinary listening HTTP/PG/Redis9, adjacent shared HTTP/Meta/events integration7+unit8, build/typecheck/shipping PASS. Public getAll(true), guest role visibility/order, exact30m TTL, three invalidation receivers and shutdown verified. Source uses repository/RoleService doubles, not upstream full HTTP/PG; pinned RoleService1h freshness is not claimed. Admin writers and publication proof remain #541/#582; other User display consumers and #193/#217/#114 remain unfinished.",
+      "evidenceRevision": "cd6c3f33b803ce123f06f27c139c399871ece103"
+    },
+    "stream-event:InternalEvent.avatarDecorationUpdated": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/avatar-decoration/public.ts",
+        "packages/backend-next/src/platform/avatar-decoration-cache.ts",
+        "packages/backend-next/src/platform/database/avatar-decorations.ts",
+        "packages/backend-next/src/http/avatar-decorations-api.ts",
+        "packages/backend-next/src/composition/avatar-decorations-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-decoration/cache.test.ts",
+        "packages/backend-next/test/unit/avatar-decoration/public.test.ts",
+        "packages/backend-next/test/integration/avatar-decorations.test.ts",
+        "docs/superpowers/compatibility/avatar-decorations/source-probe.mjs",
+        "docs/superpowers/compatibility/avatar-decorations/observations.json",
+        "docs/superpowers/compatibility/avatar-decorations/README.md"
+      ],
+      "note": "#368/#367: fixed-source literal callback/cache comparison2 projections+9 observations; unit31, ordinary listening HTTP/PG/Redis9, adjacent shared HTTP/Meta/events integration7+unit8, build/typecheck/shipping PASS. Public getAll(true), guest role visibility/order, exact30m TTL, three invalidation receivers and shutdown verified. Source uses repository/RoleService doubles, not upstream full HTTP/PG; pinned RoleService1h freshness is not claimed. Admin writers and publication proof remain #541/#582; other User display consumers and #193/#217/#114 remain unfinished.",
+      "evidenceRevision": "cd6c3f33b803ce123f06f27c139c399871ece103"
+    },
+    "stream-event:InternalEvent.avatarDecorationDeleted": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/avatar-decoration/public.ts",
+        "packages/backend-next/src/platform/avatar-decoration-cache.ts",
+        "packages/backend-next/src/platform/database/avatar-decorations.ts",
+        "packages/backend-next/src/http/avatar-decorations-api.ts",
+        "packages/backend-next/src/composition/avatar-decorations-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-decoration/cache.test.ts",
+        "packages/backend-next/test/unit/avatar-decoration/public.test.ts",
+        "packages/backend-next/test/integration/avatar-decorations.test.ts",
+        "docs/superpowers/compatibility/avatar-decorations/source-probe.mjs",
+        "docs/superpowers/compatibility/avatar-decorations/observations.json",
+        "docs/superpowers/compatibility/avatar-decorations/README.md"
+      ],
+      "note": "#368/#367: fixed-source literal callback/cache comparison2 projections+9 observations; unit31, ordinary listening HTTP/PG/Redis9, adjacent shared HTTP/Meta/events integration7+unit8, build/typecheck/shipping PASS. Public getAll(true), guest role visibility/order, exact30m TTL, three invalidation receivers and shutdown verified. Source uses repository/RoleService doubles, not upstream full HTTP/PG; pinned RoleService1h freshness is not claimed. Admin writers and publication proof remain #541/#582; other User display consumers and #193/#217/#114 remain unfinished.",
+      "evidenceRevision": "cd6c3f33b803ce123f06f27c139c399871ece103"
     }
   }
 }

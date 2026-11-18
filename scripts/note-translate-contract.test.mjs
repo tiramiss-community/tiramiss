@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectParallelInput } from './parallel-inputs.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -14,7 +15,7 @@ const read = file => readFileSync(new URL('../' + file, import.meta.url));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 
 test('central translation registration restores only the exact previous promo composition bytes', () => {
-	const current = read(path);
+	const current = projectParallelInput(path, read(path));
 	const previous = projectNoteTranslationInput(path, current);
 	assert.equal(sha(current), '3747f04e5de5e43d5eda0ac7ef856ce7a369cb818e31d159eb85320a7ee7e08a');
 	assert.equal(sha(previous), '0af728aaf5942450d8066540a1ab83a29b4bc16cdb3ba51ecca3df395c366b7c');

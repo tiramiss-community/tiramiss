@@ -385,3 +385,8 @@ Supervisor自然retry試験は通常の60–72秒backoffを待つ（test timeout
 ## host-meta と well-known 共通応答（#531 の一部）
 
 通常HTTPから `GET` / `HEAD /.well-known/host-meta` と `host-meta.json` を提供し、既存Meta cacheの連合設定で判定する。`OPTIONS /.well-known/*` は未知パスを含め204とCORSを返し、Metaを参照しない。既存WebFinger、後から登録されるwell-knownハンドラーのCORSと、未知GET/HEADの既存404を維持する。[固定本家との比較・検証範囲](../../docs/superpowers/compatibility/well-known/README.md)。NodeInfo 2.0/2.1・人数集計・文書キャッシュと `/.well-known/nodeinfo` は #531 の残作業。
+
+
+## アバター装飾の公開取得とキャッシュ（#368 / #367）
+
+通常 HTTP の `POST /api/get-avatar-decorations` は保存済み装飾を返し、ゲストには公開ロール ID だけを含める。本家と同じく公開 API は毎回共有キャッシュを再取得する。通常 reader は30分の TTL と作成・更新・削除の internal event による無効化を持つ。[固定本家との比較・実測と残責任](../../docs/superpowers/compatibility/avatar-decorations/README.md)を参照。管理 writer の実更新・通知と他の User 表示 consumer の移行は、この公開取得の検証には含まれない。

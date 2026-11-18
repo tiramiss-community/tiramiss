@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectParallelInput } from './parallel-inputs.mjs';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -32,7 +33,7 @@ test('only the five exact synchronized additions project to historical bytes; un
 	const { files } = JSON.parse(read(directory + 'compatibility-predecessor.json'));
 	assert.equal(Object.keys(files).length, 5);
 	for (const [path, binding] of Object.entries(files)) {
-		const current = read(path);
+		const current = projectParallelInput(path, read(path), binding.currentSha256);
 		assert.equal(sha(current), binding.currentSha256);
 		const previous = projectPromoReadInput(path, current);
 		assert.equal(sha(previous), binding.previousSha256);
