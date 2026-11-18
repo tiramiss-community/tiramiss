@@ -1,0 +1,282 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "validationCases": [
+    {
+      "id": "oauth-client-url-https-domain",
+      "url": "https://client.example",
+      "nodeEnv": "production"
+    },
+    {
+      "id": "oauth-client-url-http-production",
+      "url": "http://client.example/",
+      "nodeEnv": "production"
+    },
+    {
+      "id": "oauth-client-url-http-test",
+      "url": "http://client.example/",
+      "nodeEnv": "test"
+    },
+    {
+      "id": "oauth-client-url-invalid-url",
+      "url": "client.example",
+      "nodeEnv": "production"
+    },
+    {
+      "id": "oauth-client-url-unsupported-scheme",
+      "url": "ftp://client.example/",
+      "nodeEnv": "test"
+    },
+    {
+      "id": "oauth-client-url-fragment",
+      "url": "https://client.example/#part",
+      "nodeEnv": "production"
+    },
+    {
+      "id": "oauth-client-url-username",
+      "url": "https://user@client.example/",
+      "nodeEnv": "production"
+    },
+    {
+      "id": "oauth-client-url-password",
+      "url": "https://:pass@client.example/",
+      "nodeEnv": "production"
+    },
+    {
+      "id": "oauth-client-url-single-host",
+      "url": "https://client/",
+      "nodeEnv": "production"
+    },
+    {
+      "id": "oauth-client-url-localhost",
+      "url": "https://localhost/",
+      "nodeEnv": "production"
+    },
+    {
+      "id": "oauth-client-url-loopback-ipv4",
+      "url": "https://127.0.0.1/",
+      "nodeEnv": "production"
+    },
+    {
+      "id": "oauth-client-url-loopback-ipv6",
+      "url": "https://[::1]/",
+      "nodeEnv": "production"
+    },
+    {
+      "id": "oauth-client-url-query-port",
+      "url": "https://CLIENT.example:8443/app?x=1",
+      "nodeEnv": "production"
+    },
+    {
+      "id": "oauth-client-url-empty-fragment",
+      "url": "https://client.example/#",
+      "nodeEnv": "production"
+    },
+    {
+      "id": "oauth-client-url-normalized-path",
+      "url": "https://client.example/a/../b/./c",
+      "nodeEnv": "production"
+    }
+  ],
+  "discoveryCases": [
+    {
+      "id": "oauth-client-discovery-json-basic",
+      "contentType": "application/json",
+      "json": {
+        "client_id": "{{origin}}/client",
+        "client_uri": "{{origin}}/",
+        "redirect_uris": [
+          "/callback"
+        ],
+        "client_name": "Fake client",
+        "logo_uri": "/logo.png"
+      }
+    },
+    {
+      "id": "oauth-client-discovery-json-relative",
+      "contentType": "application/json",
+      "json": {
+        "client_id": "{{origin}}/client",
+        "client_uri": "{{origin}}/",
+        "redirect_uris": [
+          "callback",
+          "/callback?x=1",
+          "#callback"
+        ],
+        "logo_uri": "logo.png"
+      }
+    },
+    {
+      "id": "oauth-client-discovery-json-header-merge",
+      "contentType": "application/json",
+      "json": {
+        "client_id": "{{origin}}/client",
+        "client_uri": "{{origin}}/",
+        "redirect_uris": [
+          "/callback",
+          "/callback"
+        ]
+      },
+      "link": "</header>; rel=\"redirect_uri\", </ignored>; rel=\"alternate\", </callback>; rel=\"redirect_uri\""
+    },
+    {
+      "id": "oauth-client-discovery-json-no-redirect",
+      "contentType": "application/json",
+      "json": {
+        "client_id": "{{origin}}/client",
+        "client_uri": "{{origin}}/",
+        "redirect_uris": []
+      }
+    },
+    {
+      "id": "oauth-client-discovery-json-filter-types",
+      "contentType": "application/json",
+      "json": {
+        "client_id": "{{origin}}/client",
+        "client_uri": "{{origin}}/",
+        "redirect_uris": [
+          null,
+          1,
+          {},
+          "/callback"
+        ],
+        "client_name": 10,
+        "logo_uri": 10
+      }
+    },
+    {
+      "id": "oauth-client-discovery-json-empty-name",
+      "contentType": "application/json",
+      "json": {
+        "client_id": "{{origin}}/client",
+        "client_uri": "{{origin}}/",
+        "redirect_uris": [
+          "/callback"
+        ],
+        "client_name": ""
+      }
+    },
+    {
+      "id": "oauth-client-discovery-json-wrong-id",
+      "contentType": "application/json",
+      "json": {
+        "client_id": "{{origin}}/other",
+        "client_uri": "{{origin}}/",
+        "redirect_uris": [
+          "/callback"
+        ]
+      }
+    },
+    {
+      "id": "oauth-client-discovery-json-prefix-failure",
+      "contentType": "application/json",
+      "json": {
+        "client_id": "{{origin}}/client",
+        "client_uri": "{{origin}}/elsewhere/",
+        "redirect_uris": [
+          "/callback"
+        ]
+      }
+    },
+    {
+      "id": "oauth-client-discovery-json-missing-prefix",
+      "contentType": "application/json",
+      "json": {
+        "client_id": "{{origin}}/client",
+        "client_uri": "",
+        "redirect_uris": [
+          "/callback"
+        ]
+      }
+    },
+    {
+      "id": "oauth-client-discovery-json-invalid",
+      "contentType": "application/json",
+      "body": "{"
+    },
+    {
+      "id": "oauth-client-discovery-json-null",
+      "contentType": "application/json",
+      "body": "null"
+    },
+    {
+      "id": "oauth-client-discovery-json-charset",
+      "contentType": "application/json; charset=utf-8",
+      "json": {
+        "client_id": "{{origin}}/client",
+        "client_uri": "{{origin}}/",
+        "redirect_uris": [
+          "/callback"
+        ],
+        "client_name": "Charset"
+      }
+    },
+    {
+      "id": "oauth-client-discovery-json-media-type-case",
+      "contentType": "Application/JSON",
+      "body": "{\"client_id\": \"{{origin}}/client\", \"client_uri\": \"{{origin}}/\", \"redirect_uris\": [\"/callback\"]}"
+    },
+    {
+      "id": "oauth-client-discovery-html-basic",
+      "contentType": "text/html",
+      "body": "<link rel=\"redirect_uri\" href=\"/callback\"><div class=\"h-app\"><a class=\"p-name\" href=\"/client\"> Fake client </a><img class=\"u-logo\" src=\"logo.png\"></div>"
+    },
+    {
+      "id": "oauth-client-discovery-html-name-mismatch",
+      "body": "<div class=\"h-app\"><a class=\"p-name\" href=\"/elsewhere\">Other</a><img class=\"u-logo\" src=\"/logo.png\"></div>",
+      "contentType": "text/html"
+    },
+    {
+      "id": "oauth-client-discovery-html-name-no-url",
+      "body": "<div class=\"h-app\"><span class=\"p-name\">No URL</span></div>",
+      "contentType": "text/html"
+    },
+    {
+      "id": "oauth-client-discovery-html-src-name",
+      "body": "<div class=\"h-app\"><span class=\"p-name\" src=\"/client\"> Src name </span></div>",
+      "contentType": "text/html"
+    },
+    {
+      "id": "oauth-client-discovery-html-first-app",
+      "body": "<div class=\"h-app\"><a class=\"p-name\" href=\"/other\">Other</a></div><div class=\"h-app\"><a class=\"p-name\" href=\"/client\">Later</a></div>",
+      "contentType": "text/html"
+    },
+    {
+      "id": "oauth-client-discovery-html-header-merge",
+      "body": "<link rel=\"redirect_uri\" href=\"/callback\"><link rel=\"redirect_uri\" href=\"other\"><link rel=\"redirect_uri alternate\" href=\"/ignored\">",
+      "link": "</header>; rel=\"redirect_uri\", </ignored>; rel=\"alternate\", </callback>; rel=\"redirect_uri\"",
+      "contentType": "text/html"
+    },
+    {
+      "id": "oauth-client-discovery-html-empty",
+      "body": "",
+      "contentType": "text/html"
+    },
+    {
+      "id": "oauth-client-discovery-html-content-type-absent",
+      "body": "<link rel=\"redirect_uri\" href=\"/callback\">"
+    },
+    {
+      "id": "oauth-client-discovery-http-redirect",
+      "httpRedirect": "/moved/document",
+      "contentType": "text/html",
+      "body": "<link rel=\"redirect_uri\" href=\"callback\"><div class=\"h-app\"><a class=\"p-name\" href=\"/client\">Moved</a><img class=\"u-logo\" src=\"logo.png\"></div>"
+    },
+    {
+      "id": "oauth-client-discovery-http-not-found",
+      "status": 404,
+      "body": "not found",
+      "contentType": "text/html"
+    },
+    {
+      "id": "oauth-client-discovery-http-unavailable",
+      "status": 503,
+      "body": "unavailable",
+      "contentType": "text/html"
+    },
+    {
+      "id": "oauth-client-discovery-http-disconnect",
+      "disconnect": true,
+      "contentType": "text/html"
+    }
+  ]
+}

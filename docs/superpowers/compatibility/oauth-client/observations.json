@@ -1,0 +1,528 @@
+{
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "corpusSha256": "0575fde7bcae7cf01e0c8705fb32a293db89cc21651eed0384ef4ff671caf910",
+  "probeSha256": "80f41204f79589d62c6946b86f2d03c39ea7cfb18595c3e1252cee62b02f8d19",
+  "sources": [
+    {
+      "path": "packages/backend/src/server/oauth/OAuth2ProviderService.ts",
+      "sha256": "81ea9f4e61e797a0c7b7f1125f5bb389af7754ef4b24f8bc4e5400a1ca808b3a"
+    },
+    {
+      "path": "packages/backend/src/server/oauth/errors.ts",
+      "sha256": "f354b0d9d7897d18904dc449360a87a64ccedb68f543d401110401650bfcfb2b"
+    },
+    {
+      "path": "packages/backend/src/misc/status-error.ts",
+      "sha256": "81df1c128374e740d337e4b8167d1eca5cf62083a23005be68c5277aceacb49a"
+    },
+    {
+      "path": "packages/backend/test/e2e/oauth.ts",
+      "sha256": "487710105356ad8c6a269c1e2bea3a59cda824340c33bb1ac67844e15285f1d9"
+    }
+  ],
+  "dependencyVersions": {
+    "typescript": "6.0.2",
+    "node-html-parser": "9.0.4",
+    "http-link-header": "1.1.4"
+  },
+  "observationKind": "literal pinned source functions / real listening loopback fake clients / controlled native-fetch acquisition adapter",
+  "runtimeImplemented": false,
+  "validationCases": [
+    {
+      "id": "oauth-client-url-https-domain",
+      "url": "https://client.example/"
+    },
+    {
+      "id": "oauth-client-url-http-production",
+      "error": {
+        "name": "InvalidRequestError",
+        "error": "invalid_request",
+        "error_description": "client_id must be a valid HTTPS URL",
+        "status": 400,
+        "statusCode": 400,
+        "expose": true,
+        "allow_redirect": true
+      }
+    },
+    {
+      "id": "oauth-client-url-http-test",
+      "url": "http://client.example/"
+    },
+    {
+      "id": "oauth-client-url-invalid-url",
+      "error": {
+        "name": "InvalidRequestError",
+        "error": "invalid_request",
+        "error_description": "client_id must be a valid URL",
+        "status": 400,
+        "statusCode": 400,
+        "expose": true,
+        "allow_redirect": true
+      }
+    },
+    {
+      "id": "oauth-client-url-unsupported-scheme",
+      "error": {
+        "name": "InvalidRequestError",
+        "error": "invalid_request",
+        "error_description": "client_id must be a valid HTTPS URL",
+        "status": 400,
+        "statusCode": 400,
+        "expose": true,
+        "allow_redirect": true
+      }
+    },
+    {
+      "id": "oauth-client-url-fragment",
+      "error": {
+        "name": "InvalidRequestError",
+        "error": "invalid_request",
+        "error_description": "client_id must not contain a fragment component",
+        "status": 400,
+        "statusCode": 400,
+        "expose": true,
+        "allow_redirect": true
+      }
+    },
+    {
+      "id": "oauth-client-url-username",
+      "error": {
+        "name": "InvalidRequestError",
+        "error": "invalid_request",
+        "error_description": "client_id must not contain a username or a password",
+        "status": 400,
+        "statusCode": 400,
+        "expose": true,
+        "allow_redirect": true
+      }
+    },
+    {
+      "id": "oauth-client-url-password",
+      "error": {
+        "name": "InvalidRequestError",
+        "error": "invalid_request",
+        "error_description": "client_id must not contain a username or a password",
+        "status": 400,
+        "statusCode": 400,
+        "expose": true,
+        "allow_redirect": true
+      }
+    },
+    {
+      "id": "oauth-client-url-single-host",
+      "error": {
+        "name": "InvalidRequestError",
+        "error": "invalid_request",
+        "error_description": "client_id must have a domain name as a host name",
+        "status": 400,
+        "statusCode": 400,
+        "expose": true,
+        "allow_redirect": true
+      }
+    },
+    {
+      "id": "oauth-client-url-localhost",
+      "url": "https://localhost/"
+    },
+    {
+      "id": "oauth-client-url-loopback-ipv4",
+      "url": "https://127.0.0.1/"
+    },
+    {
+      "id": "oauth-client-url-loopback-ipv6",
+      "url": "https://[::1]/"
+    },
+    {
+      "id": "oauth-client-url-query-port",
+      "url": "https://client.example:8443/app?x=1"
+    },
+    {
+      "id": "oauth-client-url-empty-fragment",
+      "url": "https://client.example/#"
+    },
+    {
+      "id": "oauth-client-url-normalized-path",
+      "url": "https://client.example/b/c"
+    }
+  ],
+  "discoveryCases": [
+    {
+      "id": "oauth-client-discovery-json-basic",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [
+          "{{origin}}/callback"
+        ],
+        "name": "Fake client",
+        "logo": "{{origin}}/logo.png"
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-json-relative",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [
+          "{{origin}}/callback",
+          "{{origin}}/callback?x=1",
+          "{{origin}}/client#callback"
+        ],
+        "name": "{{origin}}/client",
+        "logo": "{{origin}}/logo.png"
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-json-header-merge",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [
+          "{{origin}}/header",
+          "{{origin}}/callback",
+          "{{origin}}/callback",
+          "{{origin}}/callback"
+        ],
+        "name": "{{origin}}/client",
+        "logo": null
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-json-no-redirect",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [],
+        "name": "{{origin}}/client",
+        "logo": null
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-json-filter-types",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [
+          "{{origin}}/callback"
+        ],
+        "name": "{{origin}}/client",
+        "logo": null
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-json-empty-name",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [
+          "{{origin}}/callback"
+        ],
+        "name": "",
+        "logo": null
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-json-wrong-id",
+      "error": {
+        "name": "InvalidRequestError",
+        "error": "invalid_request",
+        "error_description": "client_id in the document does not match the client_id URL",
+        "status": 400,
+        "statusCode": 400,
+        "expose": true,
+        "allow_redirect": true
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 1
+    },
+    {
+      "id": "oauth-client-discovery-json-prefix-failure",
+      "error": {
+        "name": "InvalidRequestError",
+        "error": "invalid_request",
+        "error_description": "client_uri is not a prefix of client_id",
+        "status": 400,
+        "statusCode": 400,
+        "expose": true,
+        "allow_redirect": true
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 1
+    },
+    {
+      "id": "oauth-client-discovery-json-missing-prefix",
+      "error": {
+        "name": "InvalidRequestError",
+        "error": "invalid_request",
+        "error_description": "client_uri is not a prefix of client_id",
+        "status": 400,
+        "statusCode": 400,
+        "expose": true,
+        "allow_redirect": true
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 1
+    },
+    {
+      "id": "oauth-client-discovery-json-invalid",
+      "error": {
+        "name": "InvalidRequestError",
+        "error": "server_error",
+        "error_description": "Failed to parse client information",
+        "status": 500,
+        "statusCode": 500,
+        "expose": true,
+        "allow_redirect": true
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 1
+    },
+    {
+      "id": "oauth-client-discovery-json-null",
+      "error": {
+        "name": "InvalidRequestError",
+        "error": "server_error",
+        "error_description": "Failed to parse client information",
+        "status": 500,
+        "statusCode": 500,
+        "expose": true,
+        "allow_redirect": true
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 1
+    },
+    {
+      "id": "oauth-client-discovery-json-charset",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [
+          "{{origin}}/callback"
+        ],
+        "name": "Charset",
+        "logo": null
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-json-media-type-case",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [],
+        "name": "{{origin}}/client",
+        "logo": null
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-html-basic",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [
+          "{{origin}}/callback"
+        ],
+        "name": "Fake client",
+        "logo": "{{origin}}/logo.png"
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-html-name-mismatch",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [],
+        "name": "{{origin}}/client",
+        "logo": "{{origin}}/logo.png"
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-html-name-no-url",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [],
+        "name": "{{origin}}/client",
+        "logo": null
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-html-src-name",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [],
+        "name": "Src name",
+        "logo": null
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-html-first-app",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [],
+        "name": "{{origin}}/client",
+        "logo": null
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-html-header-merge",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [
+          "{{origin}}/header",
+          "{{origin}}/callback",
+          "{{origin}}/callback",
+          "{{origin}}/other"
+        ],
+        "name": "{{origin}}/client",
+        "logo": null
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-html-empty",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [],
+        "name": "{{origin}}/client",
+        "logo": null
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-html-content-type-absent",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [
+          "{{origin}}/callback"
+        ],
+        "name": "{{origin}}/client",
+        "logo": null
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-http-redirect",
+      "result": {
+        "id": "{{origin}}/client",
+        "redirectUris": [
+          "{{origin}}/moved/callback"
+        ],
+        "name": "Moved",
+        "logo": "{{origin}}/moved/logo.png"
+      },
+      "requests": [
+        "/client",
+        "/moved/document"
+      ],
+      "loggedErrors": 0
+    },
+    {
+      "id": "oauth-client-discovery-http-not-found",
+      "error": {
+        "name": "InvalidRequestError",
+        "error": "invalid_request",
+        "error_description": "Failed to fetch client information",
+        "status": 400,
+        "statusCode": 400,
+        "expose": true,
+        "allow_redirect": true
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 1
+    },
+    {
+      "id": "oauth-client-discovery-http-unavailable",
+      "error": {
+        "name": "InvalidRequestError",
+        "error": "invalid_request",
+        "error_description": "Failed to fetch client information",
+        "status": 400,
+        "statusCode": 400,
+        "expose": true,
+        "allow_redirect": true
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 1
+    },
+    {
+      "id": "oauth-client-discovery-http-disconnect",
+      "error": {
+        "name": "InvalidRequestError",
+        "error": "server_error",
+        "error_description": "Failed to parse client information",
+        "status": 500,
+        "statusCode": 500,
+        "expose": true,
+        "allow_redirect": true
+      },
+      "requests": [
+        "/client"
+      ],
+      "loggedErrors": 1
+    }
+  ]
+}
