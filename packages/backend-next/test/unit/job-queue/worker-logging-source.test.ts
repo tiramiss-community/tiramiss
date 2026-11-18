@@ -4,6 +4,7 @@
  */
 import { EventEmitter } from 'node:events';
 import { readFileSync } from 'node:fs';
+import { UnrecoverableError } from 'bullmq';
 import { afterEach, expect, test, vi } from 'vitest';
 import { createDeliverProcessor } from '../../../src/platform/job-queue/deliver.js';
 import { createUserWebhookJobProcessor } from '../../../src/platform/job-queue/user-webhook.js';
@@ -30,7 +31,7 @@ function projectSource(log: SourceLog, queue: string) {
 		level: log.level,
 		...(id ? { jobId: id } : {}),
 		...(attempts ? { attemptsMade: Number(attempts[1]), ...(delivery ? { maxAttempts: Number(attempts[2]), ageMs: Number(/age=(\d+)ms/.exec(info)?.[1]) } : {}) } : {}),
-		...(delivery && / to=/.test(log.message) ? { to: log.message.split(' to=')[1] } : {}),
+		...(delivery && / to=/.test(log.message) ? { to: new URL(log.message.split(' to=')[1]).origin } : {}),
 		...(event === 'completed' ? { result: /^completed\((.*?)\)/.exec(log.message)?.[1] } : {}),
 		...(log.fields?.e ? { error: { name: log.fields.e.name } } : {}),
 	};
@@ -54,7 +55,7 @@ test.each(source.observations)('compares fixed-source event selection, severity,
 	worker.emit('stalled', '7');
 	const context: JobHandlerContext = { jobId: '7', jobName: 'fixture-job', attempt: 3, timestamp: new Date(98000), rawJob: job };
 	const fail = async () => {
-		throw failure; 
+		throw failure;
 	};
 	if (row.queue === 'deliver') {
 		await expect(createDeliverProcessor(fail, logger)({ user: { id: 'u' }, content: '{}', digest: 'SHA-256=x', to: job.data.to, isSharedInbox: false }, context)).rejects.toBe(failure);
@@ -71,8 +72,43 @@ test.each([
 	[undefined, undefined],
 	['not-a-url private-secret', '[INVALID_URL]'],
 	['javascript:private-secret', '[INVALID_URL]'],
-	['https://user:private-secret@remote.test/inbox?token=private-token#private-fragment', 'https://remote.test/inbox'],
+	['https://user:private-secret@remote.test/private-path-secret?token=private-token#private-fragment', 'https://remote.test'],
 ])('logging removes credentials or rejects unusable destinations: %s', async (input, expected) => {
 	const { safeJobDestination } = await import('../../../src/platform/job-queue/worker-logging.js');
 	expect(safeJobDestination(input)).toBe(expected);
+});
+
+test('throwing lifecycle diagnostics cannot interrupt event dispatch', () => {
+	const failure = new Error('sink failed');
+	const fail = () => {
+		throw failure;
+	};
+	const worker = new EventEmitter();
+	observeDeliveryWorker('deliver', worker as Worker, { info: fail, error: fail, debug: fail, warn: fail });
+	const reached: string[] = [];
+	for (const event of ['active', 'completed', 'error', 'stalled']) {
+		worker.on(event, () => reached.push(event));
+	}
+	const job = { id: '7', attemptsMade: 0, opts: {}, timestamp: 0, data: { to: 'https://remote.test/private-secret' } };
+	expect(() => {
+		worker.emit('active', job);
+		worker.emit('completed', job, 'Success');
+		worker.emit('error', failure);
+		worker.emit('stalled', '7');
+	}).not.toThrow();
+	expect(reached).toEqual(['active', 'completed', 'error', 'stalled']);
+});
+
+test.each(['deliver', 'userWebhookDeliver', 'endedPollNotification'].flatMap(queue => ['serialization', 'sink'].map(fault => [queue, fault])))('failed %s logging (%s) preserves the original processor throw', async (queue, fault) => {
+	const failure = Object.assign(new UnrecoverableError('original terminal error'), { code: fault === 'serialization' ? 1n : 'TERMINAL' });
+	const logger = createLogger('worker', () => {
+		throw new Error('sink failed');
+	});
+	const fail = async () => {
+		throw failure;
+	};
+	const context = { jobId: '7', jobName: 'hook', attempt: 1, timestamp: new Date() };
+	const process = queue === 'deliver' ? createDeliverProcessor(fail, logger) : queue === 'userWebhookDeliver' ? createUserWebhookJobProcessor(fail, logger) : createPollEndedProcessor(fail, logger);
+	const job = { user: { id: 'u' }, content: '{}', digest: 'x', to: 'https://remote.test', isSharedInbox: false, noteId: 'note' };
+	await expect(process(job as never, context)).rejects.toBe(failure);
 });

@@ -6,9 +6,30 @@
     },
     "packages/backend/src/queue/queue-job-runner.ts": {
       "sha256": "5a0ff768aa0aedd2adc8ad3518772f1243a3f4a15d69590d13263a32d49aa1dd"
+    },
+    "packages/backend/src/logging/LogManager.ts": {
+      "sha256": "fdc6c898791b76f3f7d53d5a25ba61f6de83d4fc3f434db7c9ce3643ea030bd6"
     }
   },
   "now": 100000,
+  "defaultLevels": [
+    {
+      "env": null,
+      "threshold": "debug"
+    },
+    {
+      "env": "production",
+      "threshold": "info"
+    },
+    {
+      "env": "development",
+      "threshold": "debug"
+    },
+    {
+      "env": "test",
+      "threshold": "debug"
+    }
+  ],
   "observations": [
     {
       "queue": "deliver",

@@ -61,7 +61,7 @@ test('failed attempts are logged without the job secret or body', async () => {
 	}, createLogger('test', line => lines.push(line)));
 	const data = userWebhookJob({ id: 'h', userId: 'u', url: 'https://old.test', secret: 'private-secret' }, 'note', { note: { text: 'private-body' } }, 1, 'event').data;
 	await expect(process(data, { jobId: 'job', jobName: 'h', attempt: 2, timestamp: new Date(0), rawJob: { opts: { attempts: 4 } } })).rejects.toThrow('failure');
-	expect(JSON.parse(lines[0])).toMatchObject({ event: 'job.failed', queue: 'userWebhookDeliver', to: 'https://old.test/', attemptsMade: 1, maxAttempts: 4, ageMs: expect.any(Number), error: { name: 'Error' } });
+	expect(JSON.parse(lines[0])).toMatchObject({ event: 'job.failed', queue: 'userWebhookDeliver', to: 'https://old.test', attemptsMade: 1, maxAttempts: 4, ageMs: expect.any(Number), error: { name: 'Error' } });
 	expect(lines.join('\n')).not.toContain('private-secret');
 	expect(lines.join('\n')).not.toContain('private-body');
 });

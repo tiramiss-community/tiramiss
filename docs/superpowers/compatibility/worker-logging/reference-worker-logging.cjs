@@ -29,6 +29,15 @@ const regions = ['deliver', 'user-webhook deliver', 'ended poll notification'].m
 }).join('\n');
 const runnerFile = 'packages/backend/src/queue/queue-job-runner.ts';
 const runner = execFileSync('git', ['-C', upstream, 'show', `${commit}:${runnerFile}`], { encoding: 'utf8' });
+const loggingFile = 'packages/backend/src/logging/LogManager.ts';
+const loggingSource = execFileSync('git', ['-C', upstream, 'show', `${commit}:${loggingFile}`], { encoding: 'utf8' });
+const loggingTree = ts.createSourceFile(loggingFile, loggingSource, ts.ScriptTarget.Latest, true);
+const loggingClass = loggingTree.statements.find(node => ts.isClassDeclaration(node) && node.name.text === 'LogManager');
+const defaultLevelMethod = loggingClass.members.find(node => node.name?.getText(loggingTree) === 'getDefaultLevel').getText(loggingTree);
+const defaultsContext = {};
+const defaults = ts.transpileModule(`class Defaults { ${defaultLevelMethod} } globalThis.defaultLevel = (env) => { const value = new Defaults(); value.dependencies = { isVerbose: () => false, getNodeEnv: () => env }; return value.getDefaultLevel(); };`, { compilerOptions: { target: ts.ScriptTarget.ES2022 } }).outputText;
+vm.runInNewContext(defaults, defaultsContext);
+const defaultLevels = [null, 'production', 'development', 'test'].map(env => ({ env, threshold: defaultsContext.defaultLevel(env ?? undefined) }));
 const workers = new Map();
 const logs = [];
 const now = 100000;
@@ -69,5 +78,5 @@ context.setup.call(service);
 		await assert.rejects(worker.processor(job), error => error === failure);
 		observations.push({ queue, registeredEvents, logs: logs.slice(start) });
 	}
-	process.stdout.write(`${JSON.stringify({ commit, sources: Object.fromEntries([[file, source], [runnerFile, runner]].map(([name, text]) => [name, { sha256: createHash('sha256').update(text).digest('hex') }])), now, observations }, null, 2)}\n`);
+	process.stdout.write(`${JSON.stringify({ commit, sources: Object.fromEntries([[file, source], [runnerFile, runner], [loggingFile, loggingSource]].map(([name, text]) => [name, { sha256: createHash('sha256').update(text).digest('hex') }])), now, defaultLevels, observations }, null, 2)}\n`);
 })().catch(error => { console.error(error); process.exitCode = 1; });

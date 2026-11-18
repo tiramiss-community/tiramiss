@@ -7,15 +7,19 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
 const evidencePath = 'docs/superpowers/compatibility/worker-logging/runtime-evidence.json';
-const seal = 'a4bc590f7c83fc424cd0afd074a8d8b8bf0e9ae3cd25c169deeb46165ae9531e';
+const seal = 'd8bc30f8ea3cf0c8e75bb57e1e57fe638764e3ca03907e1fc2af7396891a1c7a';
 const predecessorPaths = [
 	'packages/backend-next/src/composition/queue-workers.ts',
 	'packages/backend-next/src/platform/job-queue/deliver.ts',
+	'packages/backend-next/src/platform/job-queue/ended-poll-notification.ts',
 	'packages/backend-next/src/platform/job-queue/runtime.ts',
 	'packages/backend-next/src/platform/job-queue/user-webhook.ts',
 	'packages/backend-next/src/platform/logger.ts',
+	'packages/backend-next/test/unit/composition/queue-workers.test.ts',
+	'packages/backend-next/test/unit/job-queue/deliver.test.ts',
 	'packages/backend-next/test/unit/job-queue/runtime.test.ts',
 	'packages/backend-next/test/unit/job-queue/user-webhook.test.ts',
+	'packages/backend-next/test/unit/logger.test.ts',
 ];
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const read = path => readFileSync(new URL('../' + path, import.meta.url));
@@ -34,6 +38,7 @@ function record(readFile) {
 export function validateWorkerLoggingEvidence(readFile = read, optional = optionalRead) {
 	const current = record(readFile);
 	assert.equal(current.issueComplete, false, '#578 stays open');
+	assert.equal(sha(readFile(current.previousEvidence.path)), current.previousEvidence.sha256, 'worker logging R1 archive identity');
 	assert.equal(current.upstreamFullServerMeasured, false);
 	assert.deepEqual(Object.keys(current.predecessors), predecessorPaths, 'worker logging finite predecessor scope');
 	assert.equal(current.baseRevision, 'fe1a8106c3b3d5aba8ddf57de5e28e37e4e0e6ca');

@@ -1,68 +1,163 @@
 {
   "schemaVersion": 1,
+  "revision": "r2-review-fixes",
   "scope": "578-delivery-worker-event-logging",
   "baseRevision": "fe1a8106c3b3d5aba8ddf57de5e28e37e4e0e6ca",
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
   "issueComplete": false,
   "upstreamFullServerMeasured": false,
+  "previousEvidence": {
+    "path": "docs/superpowers/compatibility/worker-logging/runtime-evidence-r1.json",
+    "sha256": "a4bc590f7c83fc424cd0afd074a8d8b8bf0e9ae3cd25c169deeb46165ae9531e"
+  },
   "currentInputs": {
-    "packages/backend-next/src/composition/queue-workers.ts": "4bcae6ac577515173407c0a9e5ba8899aabde2f168cf1da56b5e47f8f34c9934",
-    "packages/backend-next/src/platform/job-queue/deliver.ts": "c72f9d77c2f1941795fde7ed5c2f2531eb7806356b1d38c080d8f192616e74ec",
+    "packages/backend-next/src/composition/queue-workers.ts": "65c27fc3a218ebc33cbd4ea212ab638846bc035c50bb411550793d812625bc1f",
+    "packages/backend-next/src/platform/job-queue/deliver.ts": "4cc81eb73a8d669f8f8e1e35dae50fb4a4769ab0353a0faff261e94835f3ed42",
+    "packages/backend-next/src/platform/job-queue/ended-poll-notification.ts": "9753b39d0b49481dcab0858aaaf6cd6281eaa7a7e367265ecf4972e8d25db008",
     "packages/backend-next/src/platform/job-queue/runtime.ts": "798762b440a5774c5f694576cd67765f75a90cfdc5231d0a12aebaa0fd7b2719",
-    "packages/backend-next/src/platform/job-queue/user-webhook.ts": "ac26578c86b950a62b13e5c8d57c51f4b50f3390911fba934b978250eda482bb",
-    "packages/backend-next/src/platform/logger.ts": "82ff69e1fd9dcbd7744abaf1803e5b7957c0945d632e892c25f5a95e4bf8e918",
-    "packages/backend-next/test/unit/job-queue/runtime.test.ts": "450fc9eae13e1d4b8533409b1ba7d7de6c7264addf70bc1ec74688184c1a141e",
-    "packages/backend-next/test/unit/job-queue/user-webhook.test.ts": "0140277992f5a8afe8a4f80523ad87ddd0d87dfbd232e8291b49c85d44105b0c",
-    "packages/backend-next/src/platform/job-queue/worker-logging.ts": "50748421fe19835b5984eccb5eb34249b9a6027c9a3e842feeca6bcd7cb5c1c9",
-    "packages/backend-next/test/unit/job-queue/worker-logging-source.test.ts": "9c669161d971244f154fc2b469e2047c10050cddc6ceda519be63001d6238d98",
-    "packages/backend-next/test/processes/worker-logging.test.ts": "424d86a4edd370a00395c77b17589a3adbe38734e06374222f2f459e41bf9c24",
-    "docs/superpowers/compatibility/worker-logging/reference-worker-logging.cjs": "c42369d66e292d69ac0cef02bfbee2dd4fea8ce8a193598cb005d02cf6b3ae8d",
-    "docs/superpowers/compatibility/worker-logging/observations.json": "702f9236bc1d1e29643c79cd60926fc6cb83b311a950a06965c50c519b85df6d"
+    "packages/backend-next/src/platform/job-queue/user-webhook.ts": "33ed7b2813be648fee21ee0dc6d4ed46e58039b0ad46c1018513308f3b3622af",
+    "packages/backend-next/src/platform/logger.ts": "683c468226db1acc37744c74af1978f0e0937670980052c6710ee810375650ae",
+    "packages/backend-next/test/unit/composition/queue-workers.test.ts": "0a857edf1a5e69d8ab0fe14d0e26cbe3adbe6c1d29fbfc6ae4f7f69fb7e5f302",
+    "packages/backend-next/test/unit/job-queue/deliver.test.ts": "c7097148a0a9e7ec1350e80836fa847fa6e2c62091cf3f0b605bbb3950b8f514",
+    "packages/backend-next/test/unit/job-queue/runtime.test.ts": "1004ac49da547a01b0ec74b8cb63293c280b013e01e80c4707a79f84cb569d1b",
+    "packages/backend-next/test/unit/job-queue/user-webhook.test.ts": "8654389dd5e580ceac4cf1bddf6b72d6aa4115b80c13e04dd70545346e9fae0a",
+    "packages/backend-next/test/unit/logger.test.ts": "b242f939c2ce122aea4be1309ccb5a0e9b207d7969ef36810f8b4172d03e0288",
+    "packages/backend-next/src/platform/job-queue/worker-logging.ts": "e79c8153460e756fe9ac5d43ec0bcace39b91279364c01965d57fdb845d3cdf4",
+    "packages/backend-next/test/unit/job-queue/worker-logging-source.test.ts": "9d224756417ccad4c15592e838b264e2ed38129c9249c29802b8cd0c3e33974a",
+    "packages/backend-next/test/processes/worker-logging.test.ts": "11f26ac53c2d5ceb629b8d74ce1d39657e973a47c6c4c604e033483e7579f454",
+    "docs/superpowers/compatibility/worker-logging/reference-worker-logging.cjs": "93a810e8a067d36ab388fb2829345c5e78ed95cacc4d12aa7402ac720afec370",
+    "docs/superpowers/compatibility/worker-logging/observations.json": "80311c5720e9d11cf693820e428c4cf1e54814b6389bab92d33e6b337f9ea5b2"
   },
   "predecessors": {
     "packages/backend-next/src/composition/queue-workers.ts": {
       "previousSha256": "bccd03c9dae269c47634ac9ae458cd819ea5af1d933ccd4bae679c9d32f7d7e8",
-      "currentSha256": "4bcae6ac577515173407c0a9e5ba8899aabde2f168cf1da56b5e47f8f34c9934",
+      "currentSha256": "65c27fc3a218ebc33cbd4ea212ab638846bc035c50bb411550793d812625bc1f",
       "patches": [
         {
-          "offset": 1643,
-          "insert": ",\n\t\tlogger: resources.logger",
+          "offset": 1647,
+          "insert": "logger: resources.logger,\n\t\t",
+          "previous": ""
+        },
+        {
+          "offset": 1695,
+          "insert": "\t\t\tconst workerEventLogged = event.resource === 'worker' && event.reason === 'error' && (event.queue === 'deliver' || event.queue === 'userWebhookDeliver');\n\t\t\tif (!workerEventLogged) {\n\t",
+          "previous": ""
+        },
+        {
+          "offset": 1971,
+          "insert": "\n\t\t\t}",
           "previous": ""
         }
       ]
     },
     "packages/backend-next/src/platform/job-queue/deliver.ts": {
       "previousSha256": "6f283e3361c401b29b040ef4cf5c6c7e2bc9ba0c7435d56839bb7dd1fa59d2f3",
-      "currentSha256": "c72f9d77c2f1941795fde7ed5c2f2531eb7806356b1d38c080d8f192616e74ec",
+      "currentSha256": "4cc81eb73a8d669f8f8e1e35dae50fb4a4769ab0353a0faff261e94835f3ed42",
       "patches": [
         {
           "offset": 102,
-          "insert": "\nimport { failedJobFields, safeJobDestination } from './worker-logging.js';",
+          "insert": "\nimport { failedJobFields, safeJobDestination, writeWorkerLog } from './worker-logging.js';",
           "previous": ""
         },
         {
-          "offset": 4721,
+          "offset": 4334,
+          "insert": "hostGone ? 're",
+          "previous": ""
+        },
+        {
+          "offset": 4349,
+          "insert": "ot",
+          "previous": ""
+        },
+        {
+          "offset": 4352,
+          "insert": "-",
+          "previous": "ssa"
+        },
+        {
+          "offset": 4354,
+          "insert": "on",
+          "previous": ""
+        },
+        {
+          "offset": 4357,
+          "insert": "' : 'delivery-rejected'",
+          "previous": ""
+        },
+        {
+          "offset": 4556,
+          "insert": "Remote status text may contain reflected secrets; ",
+          "previous": ""
+        },
+        {
+          "offset": 4609,
+          "insert": " only the locally selected cate",
+          "previous": ""
+        },
+        {
+          "offset": 4641,
+          "insert": "o",
+          "previous": "e"
+        },
+        {
+          "offset": 4643,
+          "insert": "y.",
+          "previous": " は例外のメッセージを出さないため、自分で作った停止の理由だけを別に残す。"
+        },
+        {
+          "offset": 4705,
+          "insert": "writeWorkerLog(() => ",
+          "previous": ""
+        },
+        {
+          "offset": 4771,
           "insert": "...failedJ",
           "previous": "j"
         },
         {
-          "offset": 4733,
+          "offset": 4783,
           "insert": "Fiel",
           "previous": "I"
         },
         {
-          "offset": 4738,
+          "offset": 4788,
           "insert": "s(",
           "previous": ": "
         },
         {
-          "offset": 4747,
+          "offset": 4797,
           "insert": ")",
           "previous": ".jobId, jobName: context.jobName, attemptsMade: context.attempt - 1"
         },
         {
-          "offset": 4752,
+          "offset": 4802,
           "insert": ": safeJobDestination(to)",
+          "previous": ""
+        },
+        {
+          "offset": 4843,
+          "insert": ")",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/job-queue/ended-poll-notification.ts": {
+      "previousSha256": "c601432e75daff37798a88897fbe8ed8bc1ef59a3d9626576d4221f1cf612061",
+      "currentSha256": "9753b39d0b49481dcab0858aaaf6cd6281eaa7a7e367265ecf4972e8d25db008",
+      "patches": [
+        {
+          "offset": 102,
+          "insert": "\nimport { writeWorkerLog } from './worker-logging.js';",
+          "previous": ""
+        },
+        {
+          "offset": 1917,
+          "insert": "writeWorkerLog(() => ",
+          "previous": ""
+        },
+        {
+          "offset": 2090,
+          "insert": ")",
           "previous": ""
         }
       ]
@@ -100,98 +195,103 @@
     },
     "packages/backend-next/src/platform/job-queue/user-webhook.ts": {
       "previousSha256": "3b5128a0b19cabe7d4b227b52ea9b957f73fc8448fdf4d6e83fb776e933e4427",
-      "currentSha256": "ac26578c86b950a62b13e5c8d57c51f4b50f3390911fba934b978250eda482bb",
+      "currentSha256": "33ed7b2813be648fee21ee0dc6d4ed46e58039b0ad46c1018513308f3b3622af",
       "patches": [
         {
           "offset": 102,
-          "insert": "\nimport { failedJobFields, safeJobDestination } from './worker-logging.js';",
+          "insert": "\nimport { failedJobFields, safeJobDestination, writeWorkerLog } from './worker-logging.js';",
           "previous": ""
         },
         {
-          "offset": 3379,
+          "offset": 3337,
+          "insert": "writeWorkerLog(() => ",
+          "previous": ""
+        },
+        {
+          "offset": 3416,
           "insert": "...failedJ",
           "previous": "j"
         },
         {
-          "offset": 3391,
+          "offset": 3428,
           "insert": "Fiel",
           "previous": "I"
         },
         {
-          "offset": 3396,
+          "offset": 3433,
           "insert": "s(",
           "previous": ": "
         },
         {
-          "offset": 3405,
+          "offset": 3442,
           "insert": ")",
           "previous": ".jobId"
         },
         {
-          "offset": 3434,
+          "offset": 3471,
           "insert": "to: safeJobDestin",
           "previous": ""
         },
         {
-          "offset": 3453,
+          "offset": 3490,
           "insert": "ion((",
           "previous": "tem"
         },
         {
-          "offset": 3459,
+          "offset": 3496,
           "insert": "aylo",
           "previous": "tsM"
         },
         {
-          "offset": 3465,
+          "offset": 3502,
           "insert": " as { to?",
           "previous": "e"
         },
         {
-          "offset": 3476,
+          "offset": 3513,
           "insert": "unkn",
           "previous": "c"
         },
         {
-          "offset": 3481,
+          "offset": 3518,
           "insert": "w",
           "previous": ""
         },
         {
-          "offset": 3483,
+          "offset": 3520,
           "insert": " } | null)?.",
           "previous": ""
         },
         {
-          "offset": 3496,
+          "offset": 3533,
           "insert": "o)",
           "previous": "ext.attempt - 1"
         },
         {
-          "offset": 3505,
+          "offset": 3542,
           "insert": "",
           "previous": "Name"
         },
         {
-          "offset": 3537,
+          "offset": 3574,
           "insert": " : { ",
           "previous": "."
         },
         {
-          "offset": 3546,
+          "offset": 3583,
           "insert": "",
           "previous": " "
         },
         {
-          "offset": 3562,
-          "insert": " }",
+          "offset": 3601,
+          "insert": " })",
           "previous": ""
         }
       ]
     },
     "packages/backend-next/src/platform/logger.ts": {
       "previousSha256": "09c6d55f99d8a1a02a232623c5f3efadc686148861ffc7c076fc34be13f3507b",
-      "currentSha256": "82ff69e1fd9dcbd7744abaf1803e5b7957c0945d632e892c25f5a95e4bf8e918",
+      "currentSha256": "683c468226db1acc37744c74af1978f0e0937670980052c6710ee810375650ae",
       "patches": [
         {
           "offset": 186,
@@ -204,15 +304,97 @@
           "previous": ""
         },
         {
-          "offset": 1751,
+          "offset": 1553,
+          "insert": "\n\t\tif (level === 'debug' && process.env.NODE_ENV === 'production') {\n\t\t\treturn;\n\t\t}",
+          "previous": ""
+        },
+        {
+          "offset": 1834,
           "insert": "debug: (event, fields) => {\n\t\t\temit('debug', event, fields);\n\t\t},\n\t\twarn: (event, fields) => {\n\t\t\temit('warn', event, fields);\n\t\t},\n\t\t",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/queue-workers.test.ts": {
+      "previousSha256": "46c6629da794191d08b16f00c96d0bbd2b4f5aca48de64b88cef78e6d7cda6d9",
+      "currentSha256": "0a857edf1a5e69d8ab0fe14d0e26cbe3adbe6c1d29fbfc6ae4f7f69fb7e5f302",
+      "patches": [
+        {
+          "offset": 3457,
+          "insert": "not.",
+          "previous": ""
+        },
+        {
+          "offset": 3477,
+          "insert": "",
+          "previous": "With"
+        },
+        {
+          "offset": 3478,
+          "insert": "",
+          "previous": "'job-queue.error', expect.objectContaining({ queue: 'deliver' })"
+        },
+        {
+          "offset": 6116,
+          "insert": "\ntest.each([\n\t['deliver', 'worker', 'error', false],\n\t['userWebhookDeliver', 'worker', 'error', false],\n\t['endedPollNotification', 'worker', 'error', true],\n\t['deliver', 'queue', 'error', true],\n\t['deliver', 'worker', 'cleanup', true],\n\t['deliver', 'worker', 'connection-ended', true],\n] as const)('manager diagnostic %s/%s/%s logged=%s preserves nonduplicate diagnostics', async (queue, resource, reason, expected) => {\n\tconst stop = await startQueueWorkers(resources, testConfig(), () => {});\n\tstate.onError!({ ...event(reason), queue, resource } as BullmqManagerError);\n\texpect(logger.error.mock.calls.some(([name]) => name === 'job-queue.error')).toBe(expected);\n\tawait stop();\n});\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/job-queue/deliver.test.ts": {
+      "previousSha256": "b61efb1edde2f0605cc094305d15fc47fa46f8389f21dd76a337b9fcd6846c35",
+      "currentSha256": "c7097148a0a9e7ec1350e80836fa847fa6e2c62091cf3f0b605bbb3950b8f514",
+      "patches": [
+        {
+          "offset": 9278,
+          "insert": "'https://rem",
+          "previous": "j"
+        },
+        {
+          "offset": 9291,
+          "insert": "te",
+          "previous": "b"
+        },
+        {
+          "offset": 9294,
+          "insert": "example'",
+          "previous": "to"
+        },
+        {
+          "offset": 9313,
+          "insert": "delivery-rejec",
+          "previous": "404 No"
+        },
+        {
+          "offset": 9328,
+          "insert": "e",
+          "previous": " Foun"
+        },
+        {
+          "offset": 9452,
+          "insert": "'https://rem",
+          "previous": "j"
+        },
+        {
+          "offset": 9465,
+          "insert": "te",
+          "previous": "b"
+        },
+        {
+          "offset": 9468,
+          "insert": "example'",
+          "previous": "to"
+        },
+        {
+          "offset": 10911,
+          "insert": "\ntest('stop reasons retain the original queue error without logging remote status text', async () => {\n\tconst lines: string[] = [];\n\tconst processor = createDeliverProcessor(async () => ({ kind: 'stop', message: '400 private-secret', hostGone: false }), createLogger('worker', line => lines.push(line)));\n\tawait expect(processor(job, { jobId: '7', jobName: 'remote', attempt: 1, timestamp: new Date() })).rejects.toThrow('400 private-secret');\n\texpect(JSON.parse(lines[0])).toMatchObject({ reason: 'delivery-rejected' });\n\texpect(lines.join('\\n')).not.toContain('private-secret');\n});\n",
           "previous": ""
         }
       ]
     },
     "packages/backend-next/test/unit/job-queue/runtime.test.ts": {
       "previousSha256": "4f6f924e76e6c68ad5176436f954d5ed8e5d826a7ecf652685cbcddbffbb621f",
-      "currentSha256": "450fc9eae13e1d4b8533409b1ba7d7de6c7264addf70bc1ec74688184c1a141e",
+      "currentSha256": "1004ac49da547a01b0ec74b8cb63293c280b013e01e80c4707a79f84cb569d1b",
       "patches": [
         {
           "offset": 102,
@@ -226,14 +408,14 @@
         },
         {
           "offset": 3510,
-          "insert": "\ntest('logs actual delivery worker events with upstream attempt offsets, destination and severity; poll stays silent', async () => {\n\tconst workers = new Map<string, EventEmitter>();\n\tvi.spyOn(BullMQQueueManager.prototype, 'createWorker').mockImplementation(async definition => {\n\t\tconst worker = new EventEmitter();\n\t\tworker.on('error', () => {});\n\t\tworkers.set(definition.name, worker);\n\t\treturn worker as Worker;\n\t});\n\tvi.spyOn(BullMQQueueManager.prototype, 'getOrCreateQueue').mockReturnValue({} as never);\n\tvi.spyOn(BullMQQueueManager.prototype, 'waitForReady').mockImplementation(async (_signal, begin) => {\n\t\tawait begin?.();\n\t});\n\tvi.spyOn(BullMQQueueManager.prototype, 'startWorkers').mockResolvedValue();\n\tvi.spyOn(BullMQQueueManager.prototype, 'closeAll').mockResolvedValue();\n\tvi.spyOn(Date, 'now').mockReturnValue(100000);\n\tconst logs: Record<string, unknown>[] = [];\n\tconst owner = createBusinessJobRuntime({ ...config, onError: () => {}, logger: createLogger('worker', line => logs.push(JSON.parse(line))) });\n\tconst definitions = createBusinessJobDefinitions(config);\n\towner.runtime.handle(definitions.deliver, async () => '', { defaultForQueue: true });\n\towner.runtime.handle(definitions.userWebhook, async () => '', { defaultForQueue: true });\n\towner.runtime.handle(definitions.pollEnded, async () => {}, { defaultForQueue: true });\n\tawait owner.runtime.start();\n\tfor (const queue of ['deliver', 'userWebhookDeliver']) {\n\t\tconst worker = workers.get(queue)!;\n\t\tconst job = { id: '7', name: 'untrusted-name', attemptsMade: 2, opts: { attempts: 4 }, timestamp: 98000, data: { to: 'https://user:private-pass@remote.test/inbox?token=private-token#private-fragment', secret: 'private-secret', content: 'private-body' } };\n\t\tworker.emit('active', job);\n\t\tworker.emit('completed', job, 'Success');\n\t\tworker.emit('error', new Error('private-error'));\n\t\tworker.emit('stalled', '7');\n\t\texpect(logs.filter(line => line.queue === queue)).toEqual([\n\t\t\texpect.objectContaining({ level: 'debug', event: 'job.active', jobId: '7', attemptsMade: 3, maxAttempts: 4, ageMs: 2000, to: 'https://remote.test/inbox' }),\n\t\t\texpect.objectContaining({ level: 'debug', event: 'job.completed', jobId: '7', attemptsMade: 3, maxAttempts: 4, ageMs: 2000, to: 'https://remote.test/inbox', result: 'Success' }),\n\t\t\texpect.objectContaining({ level: 'error', event: 'job.worker-error', error: { name: 'Error' } }),\n\t\t\texpect.objectContaining({ level: 'warn', event: 'job.stalled', jobId: '7' }),\n\t\t]);\n\t}\n\tconst poll = workers.get('endedPollNotification')!;\n\texpect(poll.listenerCount('active')).toBe(0);\n\texpect(poll.listenerCount('completed')).toBe(0);\n\texpect(poll.listenerCount('stalled')).toBe(0);\n\texpect(logs.some(line => line.queue === 'endedPollNotification')).toBe(false);\n\texpect(JSON.stringify(logs)).not.toContain('private-');\n\tawait owner.stop();\n});\n",
+          "insert": "\ntest('logs actual delivery worker events with upstream attempt offsets, destination and severity; poll stays silent', async () => {\n\tconst workers = new Map<string, EventEmitter>();\n\tvi.spyOn(BullMQQueueManager.prototype, 'createWorker').mockImplementation(async definition => {\n\t\tconst worker = new EventEmitter();\n\t\tworker.on('error', () => {});\n\t\tworkers.set(definition.name, worker);\n\t\treturn worker as Worker;\n\t});\n\tvi.spyOn(BullMQQueueManager.prototype, 'getOrCreateQueue').mockReturnValue({} as never);\n\tvi.spyOn(BullMQQueueManager.prototype, 'waitForReady').mockImplementation(async (_signal, begin) => {\n\t\tawait begin?.();\n\t});\n\tvi.spyOn(BullMQQueueManager.prototype, 'startWorkers').mockResolvedValue();\n\tvi.spyOn(BullMQQueueManager.prototype, 'closeAll').mockResolvedValue();\n\tvi.spyOn(Date, 'now').mockReturnValue(100000);\n\tconst logs: Record<string, unknown>[] = [];\n\tconst owner = createBusinessJobRuntime({ ...config, onError: () => {}, logger: createLogger('worker', line => logs.push(JSON.parse(line))) });\n\tconst definitions = createBusinessJobDefinitions(config);\n\towner.runtime.handle(definitions.deliver, async () => '', { defaultForQueue: true });\n\towner.runtime.handle(definitions.userWebhook, async () => '', { defaultForQueue: true });\n\towner.runtime.handle(definitions.pollEnded, async () => {}, { defaultForQueue: true });\n\tawait owner.runtime.start();\n\tfor (const queue of ['deliver', 'userWebhookDeliver']) {\n\t\tconst worker = workers.get(queue)!;\n\t\tconst job = { id: '7', name: 'untrusted-name', attemptsMade: 2, opts: { attempts: 4 }, timestamp: 98000, data: { to: 'https://user:private-pass@remote.test/private-path-secret?token=private-token#private-fragment', secret: 'private-secret', content: 'private-body' } };\n\t\tworker.emit('active', job);\n\t\tworker.emit('completed', job, 'Success');\n\t\tworker.emit('error', new Error('private-error'));\n\t\tworker.emit('stalled', '7');\n\t\texpect(logs.filter(line => line.queue === queue)).toEqual([\n\t\t\texpect.objectContaining({ level: 'debug', event: 'job.active', jobId: '7', attemptsMade: 3, maxAttempts: 4, ageMs: 2000, to: 'https://remote.test' }),\n\t\t\texpect.objectContaining({ level: 'debug', event: 'job.completed', jobId: '7', attemptsMade: 3, maxAttempts: 4, ageMs: 2000, to: 'https://remote.test', result: 'Success' }),\n\t\t\texpect.objectContaining({ level: 'error', event: 'job.worker-error', error: { name: 'Error' } }),\n\t\t\texpect.objectContaining({ level: 'warn', event: 'job.stalled', jobId: '7' }),\n\t\t]);\n\t}\n\tconst poll = workers.get('endedPollNotification')!;\n\texpect(poll.listenerCount('active')).toBe(0);\n\texpect(poll.listenerCount('completed')).toBe(0);\n\texpect(poll.listenerCount('stalled')).toBe(0);\n\texpect(logs.some(line => line.queue === 'endedPollNotification')).toBe(false);\n\texpect(JSON.stringify(logs)).not.toContain('private-');\n\tawait owner.stop();\n});\n",
           "previous": ""
         }
       ]
     },
     "packages/backend-next/test/unit/job-queue/user-webhook.test.ts": {
       "previousSha256": "62627028d43c7089d48078a959084b25df8b77b65a83b8f9ac7ba6cdcb32fc9c",
-      "currentSha256": "0140277992f5a8afe8a4f80523ad87ddd0d87dfbd232e8291b49c85d44105b0c",
+      "currentSha256": "8654389dd5e580ceac4cf1bddf6b72d6aa4115b80c13e04dd70545346e9fae0a",
       "patches": [
         {
           "offset": 3944,
@@ -267,12 +449,33 @@
         },
         {
           "offset": 4079,
-          "insert": ", queue: 'userWebhookDeliver', to: 'https://old.test/', attemptsMade: 1, maxAttempts: 4, ageMs: expect.any(Number), error: { name: 'Error' } }",
+          "insert": ", queue: 'userWebhookDeliver', to: 'https://old.test', attemptsMade: 1, maxAttempts: 4, ageMs: expect.any(Number), error: { name: 'Error' } }",
           "previous": ""
         },
         {
-          "offset": 4344,
+          "offset": 4343,
           "insert": "\ntest('diagnostics for a malformed saved payload preserve the processor error', async () => {\n\tconst { createUserWebhookJobProcessor } = await import('../../../src/platform/job-queue/user-webhook.js');\n\tconst failure = new Error('controlled invalid payload');\n\tconst processor = createUserWebhookJobProcessor(async () => {\n\t\tthrow failure;\n\t}, { info() {}, error() {} });\n\tawait expect(processor(null as never, { jobId: 'bad', jobName: 'hook', attempt: 1, timestamp: new Date() })).rejects.toBe(failure);\n});\n\ntest.each(['private-secret', { message: 'private-secret' }])('non-Error failures are classified without serializing the thrown value', async failure => {\n\tconst { createUserWebhookJobProcessor } = await import('../../../src/platform/job-queue/user-webhook.js');\n\tconst { createLogger } = await import('../../../src/platform/logger.js');\n\tconst lines: string[] = [];\n\tconst processor = createUserWebhookJobProcessor(async () => {\n\t\tthrow failure;\n\t}, createLogger('worker', line => lines.push(line)));\n\tconst data = userWebhookJob({ id: 'h', userId: 'u', url: 'https://old.test', secret: '' }, 'note', { note: {} }, 0, 'event').data;\n\tawait expect(processor(data, { jobId: 'bad', jobName: 'hook', attempt: 1, timestamp: new Date() })).rejects.toBe(failure);\n\texpect(JSON.parse(lines[0])).toMatchObject({ error: { name: 'UnknownError' } });\n\texpect(lines.join('\\n')).not.toContain('private-secret');\n});\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/logger.test.ts": {
+      "previousSha256": "6aa6a41c8d5910d37938dd4a5c920c7746809837ecef4400744f72ac1819f37a",
+      "currentSha256": "b242f939c2ce122aea4be1309ccb5a0e9b207d7969ef36810f8b4172d03e0288",
+      "patches": [
+        {
+          "offset": 112,
+          "insert": "readFileSync } from 'node:fs';\nimport { afterEach, ",
+          "previous": ""
+        },
+        {
+          "offset": 175,
+          "insert": ", vi",
+          "previous": ""
+        },
+        {
+          "offset": 1485,
+          "insert": "\nafterEach(() => vi.unstubAllEnvs());\n\nconst defaults = JSON.parse(readFileSync(new URL('../../../../docs/superpowers/compatibility/worker-logging/observations.json', import.meta.url), 'utf8')) as { defaultLevels: { env: string | null; threshold: string }[] };\n\ntest.each(defaults.defaultLevels)('default debug threshold follows pinned NODE_ENV=$env without suppressing higher levels', ({ env, threshold }) => {\n\tvi.stubEnv('NODE_ENV', env ?? undefined);\n\tconst lines: Record<string, unknown>[] = [];\n\tconst logger = createLogger('worker', line => lines.push(JSON.parse(line)));\n\tlogger.debug('job.active');\n\tlogger.info('ready');\n\tlogger.warn('job.stalled');\n\tlogger.error('job.failed');\n\texpect(lines.map(line => line.level)).toEqual(threshold === 'info' ? ['info', 'warn', 'error'] : ['debug', 'info', 'warn', 'error']);\n});\n",
           "previous": ""
         }
       ]
@@ -283,51 +486,51 @@
       "name": "typecheck",
       "command": "pnpm --filter backend-next... typecheck",
       "exitCode": 0,
-      "log": "/tmp/578-typecheck.log",
+      "log": "/tmp/578-r2-typecheck.log",
       "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
     },
     {
       "name": "build",
       "command": "pnpm --filter backend-next build",
       "exitCode": 0,
-      "log": "/tmp/578-build.log",
+      "log": "/tmp/578-r2-build.log",
       "logSha256": "29c5ee0f6b0b20dbb259b99d01276198c3d28190090706394608d4deda6d2c0b"
     },
     {
       "name": "focused",
-      "command": "pnpm --filter backend-next test test/unit/job-queue/runtime.test.ts test/unit/job-queue/user-webhook.test.ts test/unit/job-queue/deliver.test.ts test/unit/job-queue/ended-poll-notification.test.ts test/unit/job-queue/worker-logging-source.test.ts test/unit/logger.test.ts test/unit/composition/queue-workers.test.ts --reporter=json --outputFile=/tmp/578-focused.json",
+      "command": "pnpm --filter backend-next test test/unit/job-queue/runtime.test.ts test/unit/job-queue/user-webhook.test.ts test/unit/job-queue/deliver.test.ts test/unit/job-queue/ended-poll-notification.test.ts test/unit/job-queue/worker-logging-source.test.ts test/unit/logger.test.ts test/unit/composition/queue-workers.test.ts --reporter=json --outputFile=/tmp/578-r2-focused.json",
       "exitCode": 0,
-      "log": "/tmp/578-focused.log",
-      "logSha256": "11964a06b6e929faba1d466fc735958b0fbfc7470afba0996c8cfa64b59ffa7c",
-      "artifact": "/tmp/578-focused.json",
-      "artifactSha256": "708e3f513c4736bf2e24de058a62f873d0e77bb629a9b94df75c4e4faec04305",
-      "passed": 95,
+      "log": "/tmp/578-r2-focused.log",
+      "logSha256": "3ef5932a59cea716cc1c77a63e038f0d6105242cf0f9e6e50d0aa3348a9540ac",
+      "artifact": "/tmp/578-r2-focused.json",
+      "artifactSha256": "f55086681922afb146f4c6640f36be5abba7c5d8bbe4aae7013c433b40c5f5d3",
+      "passed": 113,
       "skipped": 0
     },
     {
       "name": "process",
-      "command": "BACKEND_NEXT_TEST_DB_PORT=55578 BACKEND_NEXT_TEST_REDIS_PORT=56578 pnpm --filter backend-next test:process test/processes/worker-logging.test.ts --reporter=json --outputFile=/tmp/578-process.json",
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55578 BACKEND_NEXT_TEST_REDIS_PORT=56578 pnpm --filter backend-next test:process test/processes/worker-logging.test.ts --reporter=json --outputFile=/tmp/578-r2-process.json",
       "exitCode": 0,
-      "log": "/tmp/578-process.log",
-      "logSha256": "ad5356f4eb922dbe3de0149dcc76bd08397ff5296e3bebd8ff3406e2d9752b9e",
-      "artifact": "/tmp/578-process.json",
-      "artifactSha256": "32bb7660a08bccc73ff43cb5ea4898827c9d96ef8ab837038dc220e2c719b060",
-      "passed": 5,
+      "log": "/tmp/578-r2-process.log",
+      "logSha256": "3ab01bb10f10243f1a19b7a1ed10beb608beedc4f7b854331c6a1f22a66a9da0",
+      "artifact": "/tmp/578-r2-process.json",
+      "artifactSha256": "1d4215dfdf295ea7abcdb693d7be29cfcecbcc6700da44e53ce0c56b0a22e73d",
+      "passed": 8,
       "skipped": 0
     },
     {
       "name": "source-check",
-      "command": "node docs/superpowers/compatibility/worker-logging/reference-worker-logging.cjs /tmp/tiramiss-relay171-upstream > /tmp/578-source.json && cmp /tmp/578-source.json docs/superpowers/compatibility/worker-logging/observations.json",
+      "command": "node docs/superpowers/compatibility/worker-logging/reference-worker-logging.cjs /tmp/tiramiss-relay171-upstream > /tmp/578-r2-source.json && cmp /tmp/578-r2-source.json docs/superpowers/compatibility/worker-logging/observations.json",
       "exitCode": 0,
-      "log": "/tmp/578-source-check.log",
+      "log": "/tmp/578-r2-source-check.log",
       "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "name": "shipping",
       "command": "node scripts/check-shipping.mjs --base fe1a8106c3",
       "exitCode": 0,
-      "log": "/tmp/578-shipping.log",
-      "logSha256": "05380b3b074eccfbba28871120cac9478400a94213dbb44dc8ec99d0c3c1fdcb"
+      "log": "/tmp/578-r2-shipping.log",
+      "logSha256": "ee49f235deb5f4a31c2f5693014b71045d2f5f2a54e63e9bda7e9e0e46378481"
     }
   ]
 }

@@ -15,8 +15,8 @@ const offline = () => null;
 test('worker logging successor has actual focused and process measurements, while historical bytes remain historical', () => {
 	const value = validateWorkerLoggingEvidence(read, offline);
 	assert.equal(value.upstreamCommit, '8e07cf085adf7009583d234a208e30436f020e26');
-	assert.equal(Object.keys(value.predecessors).length, 7);
-	assert.deepEqual(value.runs.filter(run => run.artifact).map(run => [run.name, run.passed, run.skipped]), [['focused', 95, 0], ['process', 5, 0]]);
+	assert.equal(Object.keys(value.predecessors).length, 11);
+	assert.deepEqual(value.runs.filter(run => run.artifact).map(run => [run.name, run.passed, run.skipped]), [['focused', 113, 0], ['process', 8, 0]]);
 	for (const [path, binding] of Object.entries(value.predecessors)) {
 		assert.equal(sha(projectWorkerLoggingInput(path, read(path))), binding.previousSha256);
 		const drift = Buffer.concat([read(path), Buffer.from('\n')]);
@@ -32,6 +32,7 @@ test('worker logging measured files, record and available raw logs reject corrup
 		assert.throws(() => validateWorkerLoggingEvidence(file => file === path ? Buffer.concat([read(file), Buffer.from('\n')]) : read(file), offline), /worker logging measured input drift/);
 	}
 	assert.throws(() => validateWorkerLoggingEvidence(path => path.endsWith('runtime-evidence.json') ? Buffer.from('{}') : read(path), offline), /worker logging evidence seal/);
+	assert.throws(() => validateWorkerLoggingEvidence(path => path === value.previousEvidence.path ? Buffer.from('{}') : read(path), offline), /R1 archive identity/);
 	for (const run of value.runs) {
 		assert.throws(() => validateWorkerLoggingEvidence(read, path => path === run.log ? Buffer.from('forged') : null), /actual log drift/);
 		if (run.artifact) {

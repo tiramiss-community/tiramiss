@@ -159,8 +159,8 @@ test('a failed attempt is logged with the inbox and the stop reason, and the err
 	await expect(process({} as never, { jobId: '3', jobName: 'x', attempt: 1, timestamp: new Date() })).rejects.toMatchObject({ code: 'INVALID_JOB_PAYLOAD' });
 
 	expect(logs.filter(line => line.event === 'job.failed')).toEqual([
-		expect.objectContaining({ queue: DELIVER, jobId: '1', to: job.to, reason: '404 Not Found', error: { name: 'UnrecoverableError' } }),
-		expect.objectContaining({ queue: DELIVER, jobId: '2', attemptsMade: 3, to: job.to, error: { name: 'Error', code: 'ENOTFOUND' } }),
+		expect.objectContaining({ queue: DELIVER, jobId: '1', to: 'https://remote.example', reason: 'delivery-rejected', error: { name: 'UnrecoverableError' } }),
+		expect.objectContaining({ queue: DELIVER, jobId: '2', attemptsMade: 3, to: 'https://remote.example', error: { name: 'Error', code: 'ENOTFOUND' } }),
 		expect.objectContaining({ queue: DELIVER, jobId: '3', error: expect.objectContaining({ code: 'INVALID_JOB_PAYLOAD' }) }),
 	]);
 	expect(logs.some(line => JSON.stringify(line).includes('ENOTFOUND remote.example'))).toBe(false);
@@ -187,4 +187,12 @@ test.for(inputs.configs.map((input, index) => [input.id, input, cases.enqueue[in
 		add.mockRestore();
 		await owner.stop();
 	}
+});
+
+test('stop reasons retain the original queue error without logging remote status text', async () => {
+	const lines: string[] = [];
+	const processor = createDeliverProcessor(async () => ({ kind: 'stop', message: '400 private-secret', hostGone: false }), createLogger('worker', line => lines.push(line)));
+	await expect(processor(job, { jobId: '7', jobName: 'remote', attempt: 1, timestamp: new Date() })).rejects.toThrow('400 private-secret');
+	expect(JSON.parse(lines[0])).toMatchObject({ reason: 'delivery-rejected' });
+	expect(lines.join('\n')).not.toContain('private-secret');
 });

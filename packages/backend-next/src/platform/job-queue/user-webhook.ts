@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { failedJobFields, safeJobDestination } from './worker-logging.js';
+import { failedJobFields, safeJobDestination, writeWorkerLog } from './worker-logging.js';
 import { UnrecoverableError } from 'bullmq';
 import { OutboundStatusError } from '../../application/outbound-http.js';
 import type { JobHandler } from '@mokurokujs/core';
@@ -64,7 +64,7 @@ export function createUserWebhookJobProcessor(process: (job: StoredUserWebhookJo
 		try {
 			return await process(payload);
 		} catch (error) {
-			logger.error('job.failed', { queue: USER_WEBHOOK_DELIVER, ...failedJobFields(context), jobName: context.jobName, to: safeJobDestination((payload as { to?: unknown } | null)?.to), error: error instanceof Error ? error : { name: 'UnknownError' } });
+			writeWorkerLog(() => logger.error('job.failed', { queue: USER_WEBHOOK_DELIVER, ...failedJobFields(context), jobName: context.jobName, to: safeJobDestination((payload as { to?: unknown } | null)?.to), error: error instanceof Error ? error : { name: 'UnknownError' } }));
 			throw error;
 		}
 	};

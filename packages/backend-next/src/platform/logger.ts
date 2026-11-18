@@ -41,6 +41,9 @@ export function createLogger(
 	},
 ): Logger & Required<Pick<Logger, 'debug' | 'warn'>> {
 	const emit = (level: string, event: string, fields: Record<string, unknown> = {}) => {
+		if (level === 'debug' && process.env.NODE_ENV === 'production') {
+			return;
+		}
 		sink(
 			JSON.stringify({
 				...(sanitize(fields) as object),

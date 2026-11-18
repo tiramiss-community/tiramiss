@@ -15,13 +15,17 @@ export function safeJobDestination(value: unknown): string | undefined {
 		if (url.protocol !== 'http:' && url.protocol !== 'https:') {
 			return '[INVALID_URL]';
 		}
-		url.username = '';
-		url.password = '';
-		url.search = '';
-		url.hash = '';
-		return url.href;
+		return url.origin;
 	} catch {
 		return '[INVALID_URL]';
+	}
+}
+
+export function writeWorkerLog(write: () => void): void {
+	try {
+		write();
+	} catch {
+		// Diagnostics must not change the processor's outcome or manufacture a Worker error.
 	}
 }
 
@@ -53,8 +57,8 @@ export function observeDeliveryWorker(queue: string, worker: Worker, logger: Log
 		return;
 	}
 	worker
-		.on('active', job => logger.debug?.('job.active', deliveryFields(queue, job)))
-		.on('completed', (job, result: unknown) => logger.debug?.('job.completed', { ...deliveryFields(queue, job), result }))
-		.on('error', error => logger.error('job.worker-error', { queue, error }))
-		.on('stalled', jobId => logger.warn?.('job.stalled', { queue, jobId }));
+		.on('active', job => writeWorkerLog(() => logger.debug?.('job.active', deliveryFields(queue, job))))
+		.on('completed', (job, result: unknown) => writeWorkerLog(() => logger.debug?.('job.completed', { ...deliveryFields(queue, job), result })))
+		.on('error', error => writeWorkerLog(() => logger.error('job.worker-error', { queue, error })))
+		.on('stalled', jobId => writeWorkerLog(() => logger.warn?.('job.stalled', { queue, jobId })));
 }

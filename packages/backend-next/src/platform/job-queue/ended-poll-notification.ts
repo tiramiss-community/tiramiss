@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { writeWorkerLog } from './worker-logging.js';
 import { DiagnosticError } from '../diagnostic-error.js';
 import type { JobHandler } from '@mokurokujs/core';
 import type { Logger } from '../logger.js';
@@ -44,7 +45,7 @@ export function createPollEndedProcessor(handle: (job: PollEndedJob) => Promise<
 			await handle(parsePollEndedJob(payload));
 		} catch (error) {
 			// 本家 runQueueJob と同じく試行ごとに記録し、元の例外のまま BullMQ へ返して失敗として残す。
-			logger.error('job.failed', { queue: ENDED_POLL_NOTIFICATION, jobId: context.jobId, jobName: context.jobName, attemptsMade: context.attempt - 1, error });
+			writeWorkerLog(() => logger.error('job.failed', { queue: ENDED_POLL_NOTIFICATION, jobId: context.jobId, jobName: context.jobName, attemptsMade: context.attempt - 1, error }));
 			throw error;
 		}
 	};

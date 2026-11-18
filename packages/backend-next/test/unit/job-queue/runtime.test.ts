@@ -91,14 +91,14 @@ test('logs actual delivery worker events with upstream attempt offsets, destinat
 	await owner.runtime.start();
 	for (const queue of ['deliver', 'userWebhookDeliver']) {
 		const worker = workers.get(queue)!;
-		const job = { id: '7', name: 'untrusted-name', attemptsMade: 2, opts: { attempts: 4 }, timestamp: 98000, data: { to: 'https://user:private-pass@remote.test/inbox?token=private-token#private-fragment', secret: 'private-secret', content: 'private-body' } };
+		const job = { id: '7', name: 'untrusted-name', attemptsMade: 2, opts: { attempts: 4 }, timestamp: 98000, data: { to: 'https://user:private-pass@remote.test/private-path-secret?token=private-token#private-fragment', secret: 'private-secret', content: 'private-body' } };
 		worker.emit('active', job);
 		worker.emit('completed', job, 'Success');
 		worker.emit('error', new Error('private-error'));
 		worker.emit('stalled', '7');
 		expect(logs.filter(line => line.queue === queue)).toEqual([
-			expect.objectContaining({ level: 'debug', event: 'job.active', jobId: '7', attemptsMade: 3, maxAttempts: 4, ageMs: 2000, to: 'https://remote.test/inbox' }),
-			expect.objectContaining({ level: 'debug', event: 'job.completed', jobId: '7', attemptsMade: 3, maxAttempts: 4, ageMs: 2000, to: 'https://remote.test/inbox', result: 'Success' }),
+			expect.objectContaining({ level: 'debug', event: 'job.active', jobId: '7', attemptsMade: 3, maxAttempts: 4, ageMs: 2000, to: 'https://remote.test' }),
+			expect.objectContaining({ level: 'debug', event: 'job.completed', jobId: '7', attemptsMade: 3, maxAttempts: 4, ageMs: 2000, to: 'https://remote.test', result: 'Success' }),
 			expect.objectContaining({ level: 'error', event: 'job.worker-error', error: { name: 'Error' } }),
 			expect.objectContaining({ level: 'warn', event: 'job.stalled', jobId: '7' }),
 		]);

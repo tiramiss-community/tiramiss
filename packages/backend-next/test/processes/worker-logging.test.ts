@@ -38,7 +38,7 @@ beforeAll(async () => {
 		const path = new URL(req.url!, 'http://localhost').pathname;
 		const count = (requests.get(path) ?? 0) + 1;
 		requests.set(path, count);
-		res.writeHead(path.includes('terminal') ? 400 : count === 1 ? 500 : 204).end();
+		res.writeHead(path.includes('terminal') ? 400 : count === 1 ? 500 : 204, 'private-status-secret').end();
 	});
 	server.listen(0, '127.0.0.1');
 	await once(server, 'listening');
@@ -64,16 +64,16 @@ function logs(child: ReturnType<typeof launch>): Record<string, unknown>[] {
 }
 
 test.each([
-	['deliver', 'retry'], ['userWebhookDeliver', 'retry'], ['deliver', 'terminal'], ['userWebhookDeliver', 'terminal'],
-] as const)('normal %s worker records every %s attempt and preserves the queue result', async (name, mode) => {
+	['deliver', 'retry', 'test'], ['userWebhookDeliver', 'retry', 'test'], ['deliver', 'terminal', 'test'], ['userWebhookDeliver', 'terminal', 'test'], ['userWebhookDeliver', 'retry', 'production'],
+] as const)('normal %s worker records every %s attempt with NODE_ENV=%s and preserves the queue result', async (name, mode, env) => {
 	const prefix = `worker-logs-${randomUUID()}`;
-	const config = { ...database.config, http: { port: await freePort() }, redisForJobQueue: { ...database.config.redisForJobQueue, prefix } };
+	const config = { ...database.config, outboundHttp: { ...database.config.outboundHttp, allowedPrivateNetworks: ['127.0.0.1/32'] }, http: { port: await freePort() }, redisForJobQueue: { ...database.config.redisForJobQueue, prefix } };
 	const file = await configuration(config);
 	const queue = new Queue(name, baseQueueOptions(config.redisForJobQueue, name, 5000));
-	const child = launch('built/entrypoints/worker.js', file.path);
-	const path = `/${name}-${mode}`;
+	const child = launch('built/entrypoints/worker.js', file.path, { NODE_ENV: env });
+	const path = `/${name}-${mode}-${env}/private-path-secret`;
 	const to = `${origin}${path}?token=private-token#private-fragment`;
-	const hookId = `hook-${name}-${mode}`;
+	const hookId = randomUUID().replaceAll('-', '');
 	try {
 		await child.ready;
 		if (name === 'userWebhookDeliver') {
@@ -85,13 +85,13 @@ test.each([
 		// Exercise real BullMQ timed retries quickly; production's custom backoff is compared separately.
 		const saved = await queue.add(job.name, job.data, { ...job.opts, attempts: 2, backoff: { type: 'fixed', delay: 25 } });
 		await vi.waitFor(async () => expect(await saved.getState()).toBe(mode === 'retry' ? 'completed' : 'failed'), { timeout: 10000 });
-		await vi.waitFor(() => expect(logs(child).filter(line => line.queue === name && line.event === (mode === 'retry' ? 'job.completed' : 'job.failed'))).toHaveLength(1), { timeout: 5000 });
+		await vi.waitFor(() => expect(logs(child).filter(line => line.queue === name && line.event === (mode === 'retry' && env !== 'production' ? 'job.completed' : 'job.failed'))).toHaveLength(1), { timeout: 5000 });
 		const events = logs(child).filter(line => line.queue === name);
-		expect(events.map(line => [line.level, line.event, line.attemptsMade])).toEqual(mode === 'retry'
+		expect(events.map(line => [line.level, line.event, line.attemptsMade])).toEqual(env === 'production' ? [['error', 'job.failed', 0]] : mode === 'retry'
 			? [['debug', 'job.active', 1], ['error', 'job.failed', 0], ['debug', 'job.active', 2], ['debug', 'job.completed', 3]]
 			: [['debug', 'job.active', 1], ['error', 'job.failed', 0]]);
 		for (const event of events) {
-			expect(event).toMatchObject({ process: 'worker', pid: child.child.pid, jobId: saved.id, maxAttempts: 2, ageMs: expect.any(Number), to: `${origin}${path}` });
+			expect(event).toMatchObject({ process: 'worker', pid: child.child.pid, jobId: saved.id, maxAttempts: 2, ageMs: expect.any(Number), to: origin });
 		}
 		expect(requests.get(path)).toBe(mode === 'retry' ? 2 : 1);
 		const stored = await queue.getJob(saved.id!);
@@ -114,7 +114,7 @@ test.each([
 
 test('normal poll worker records the failed attempt without delivery lifecycle events', async () => {
 	const prefix = `poll-logs-${randomUUID()}`;
-	const config = { ...database.config, http: { port: await freePort() }, redisForJobQueue: { ...database.config.redisForJobQueue, prefix } };
+	const config = { ...database.config, outboundHttp: { ...database.config.outboundHttp, allowedPrivateNetworks: ['127.0.0.1/32'] }, http: { port: await freePort() }, redisForJobQueue: { ...database.config.redisForJobQueue, prefix } };
 	const file = await configuration(config);
 	const queue = new Queue('endedPollNotification', baseQueueOptions(config.redisForJobQueue, 'endedPollNotification', 5000));
 	const child = launch('built/entrypoints/worker.js', file.path);
@@ -132,6 +132,26 @@ test('normal poll worker records the failed attempt without delivery lifecycle e
 		await child.close();
 		await queue.obliterate({ force: true });
 		await queue.close();
+		await file.close();
+	}
+});
+
+test.each(['deliver', 'userWebhookDeliver'])('normal %s worker errors emit one record without stopping the worker', async name => {
+	const prefix = `worker-error-logs-${randomUUID()}`;
+	const config = { ...database.config, outboundHttp: { ...database.config.outboundHttp, allowedPrivateNetworks: ['127.0.0.1/32'] }, http: { port: await freePort() }, redisForJobQueue: { ...database.config.redisForJobQueue, prefix } };
+	const file = await configuration(config);
+	const child = launch('test/fixtures/queue-runtime-failure.mjs', file.path, { NODE_ENV: 'production', QUEUE_RUNTIME_FAILURE: 'diagnostic', QUEUE_RUNTIME_QUEUE: name });
+	try {
+		await child.ready;
+		child.child.send({ type: 'emit-diagnostic' });
+		await vi.waitFor(() => expect(child.messages).toContainEqual({ type: 'fixture-diagnostic', queue: name }), { timeout: 5000 });
+		await vi.waitFor(() => expect(logs(child).filter(line => line.queue === name && line.level === 'error')).toHaveLength(1), { timeout: 5000 });
+		expect(logs(child).filter(line => line.queue === name && line.level === 'error').map(line => line.event)).toEqual(['job.worker-error']);
+		expect(child.child.exitCode).toBeNull();
+		child.child.kill('SIGTERM');
+		expect((await child.exit).code, child.output()).toBe(0);
+	} finally {
+		await child.close();
 		await file.close();
 	}
 });
