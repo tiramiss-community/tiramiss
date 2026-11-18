@@ -1,0 +1,161 @@
+{
+  "scope": "promo-create-542",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "baseRevision": "161380446434f3c8e8a912c0266270f8bb285b50",
+  "runtimeSourceRevision": "e13fc9364de505f46479a429b66cbf19f5aa8b01",
+  "nodeVersion": "v26.4.0",
+  "pnpmVersion": "12.9.1",
+  "upstreamFullServerMeasured": false,
+  "limits": "Literal upstream callback/Getter over doubles and real PG; ordinary backend-next listening HTTP; no upstream full HTTP/auth startup, exact internal DB diagnostics or timeline/promo-read completeness.",
+  "runs": [
+    {
+      "name": "sync-check",
+      "log": "/tmp/promo542-sync.log",
+      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd",
+      "exitCode": 0
+    },
+    {
+      "name": "upstream-test",
+      "log": "/tmp/promo542-upstream-test.log",
+      "logSha256": "2786093ce7818a0fa566465e699bfa3d4b0260ac5fc3a30e2610a85fddc344c9",
+      "exitCode": 0,
+      "passed": 5,
+      "skipped": 0
+    },
+    {
+      "name": "build",
+      "log": "/tmp/promo542-build-final.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
+      "exitCode": 0
+    },
+    {
+      "name": "typecheck",
+      "log": "/tmp/promo542-typecheck-final.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+      "exitCode": 0
+    },
+    {
+      "name": "unit",
+      "log": "/tmp/promo542-all-unit2.log",
+      "logSha256": "a659aa325495de2fd8d78d7b13f75e7298e3ebb57b92297a4c11336ad2687279",
+      "exitCode": 0,
+      "passed": 5293,
+      "skipped": 1
+    },
+    {
+      "name": "http-pg-schema",
+      "log": "/tmp/promo542-integration.log",
+      "logSha256": "2bc549f910ca455df0f3b99d1a87e21817af04fa27313d83699f581c180b3969",
+      "exitCode": 0,
+      "passed": 26,
+      "skipped": 0
+    },
+    {
+      "name": "source",
+      "log": "/tmp/promo542-source.log",
+      "logSha256": "74e5555063cd45dcded5b12bbdadf5058a7db871038b937886a067c8008d625d",
+      "exitCode": 0,
+      "passed": 18,
+      "skipped": 0
+    },
+    {
+      "name": "root",
+      "log": "/tmp/promo542-root-frozen.log",
+      "logSha256": "fd47d871c180814b81758324c5402f21e85bbeaef7dec412f72929ccd51bff05",
+      "exitCode": 0,
+      "passed": 808,
+      "skipped": 1
+    },
+    {
+      "name": "shipping",
+      "log": "/tmp/promo542-shipping-final.log",
+      "logSha256": "418301bfaaba1b2f189be64eddfffc05cc8801166ca202fa68cb9f5ddcedeff4",
+      "exitCode": 0
+    }
+  ],
+  "rootWindow": {
+    "startedAt": "2026-11-18T08:02:13.045188+00:00",
+    "completedAt": "2026-11-18T08:05:21.514910+00:00",
+    "inputsBefore": {
+      "docs/superpowers/compatibility/promo/compatibility-predecessor.json": "e1305fb12f8ea8f2a5ac5856ab47f5ad0cab2ec9a52a89ff42cba472f2dfd089",
+      "docs/superpowers/compatibility/promo/corpus.json": "b1aff58e347c20eb4f253d7a4cf3f72435294e71c3cd7dfb6a2c2575f42d6c34",
+      "docs/superpowers/compatibility/promo/observations.json": "f910d19013d7d401b1c37c660575db91b1b3902b502680d0c21eb067c152d823",
+      "docs/superpowers/compatibility/promo/source-probe.mjs": "4d66c184da53447bfd795970fd932a2c5683b7631f3aae44a74ded828d4d6cce",
+      "packages/backend-next/src/composition/http-app.ts": "0af728aaf5942450d8066540a1ab83a29b4bc16cdb3ba51ecca3df395c366b7c",
+      "packages/backend-next/src/composition/promo-http.ts": "ee0085b7c4cbc674d7d950bf972dd2d46aaa73734536801a08aa575c8342056e",
+      "packages/backend-next/src/http/promo-api.ts": "bda8aa004d29f58795425278b564805352bd5376dc4ca8f7c42f34b34ed05e1a",
+      "packages/backend-next/src/modules/promo/public.ts": "8126cce85e2b0b5dd8a0d6f08840bc7404f4465363855b1095aedae4cfd0c6b9",
+      "packages/backend-next/src/platform/database/promo.ts": "be65be0b7c65ea4e3ebc8204836ccc5ccf58a7a89827550eae4374aaabd9a8d5",
+      "packages/backend-next/test/integration/promo.test.ts": "0a83ac812262d3a17e83c895acd1468df33906b0c371dc527f9c516cb7f81846",
+      "packages/backend-next/test/package-imports.test.ts": "3f52ff89a5c972a6beea4a0e744a9420c4d6103270cc7f52f67474928a1c8799",
+      "packages/backend-next/test/unit/composition/http-app.test.ts": "cadc10344ec0024592e4aeb73730d369fe10b53a1de4d4dfa4ef88b1a38e203b",
+      "packages/backend-next/test/unit/promo.test.ts": "6661898c46385492e8d79eef39322f56161916d109381a9639b8409c8d7e9174",
+      "packages/backend-upstream/.managed-files.json": "7cb787f4da126af2645165006c3f9bda193ea114dc593435aaecdab435742f65",
+      "packages/backend-upstream/exports/entities.ts": "fb04ee6f1bad620d55cd431896187e468631e4cc86c5b71fa28c0a32d2ac5f64",
+      "packages/backend-upstream/src/models/PromoNote.ts": "a71dbb5bb9846a681c0995715d21f35309c64d3ef7388cf40d84506d5fc3138e",
+      "packages/backend-upstream/upstream-sync.json": "58707b07f611652ec2c407d5585976aed56e07dfaa4ef3adc5abef939fad5ff5",
+      "scripts/notes-pagination-evidence.mjs": "e42b0913ec1d5e5a85f800c5c030e595d8301aa33fb4710ec27597489d23a2d8",
+      "scripts/package-imports-evidence.mjs": "afdb18d89cfa5deb9e306891c83e963f4c6bb554fc5e69d879421ce4edf8aa48",
+      "scripts/promo-contract.test.mjs": "a8b15e4043d19426da32c6f848ec99de43d51c9886e4f54e6f59e6f4348b645a",
+      "scripts/promo-predecessor.mjs": "1c09e74a79f5c76a3e63584b5a4387f90474a39e783e21f6056d5d9e3476355a",
+      "scripts/well-known-contract.test.mjs": "0637b0c23767a72c9c36b13b079f572ed3fa7547f6b963775745f362290aded2",
+      "scripts/well-known-predecessor.mjs": "12eac3ded6ee526d0b83beeff96544252d08793cf5a4eb2a222ec4c1c4265e00"
+    },
+    "inputsAfter": {
+      "docs/superpowers/compatibility/promo/compatibility-predecessor.json": "e1305fb12f8ea8f2a5ac5856ab47f5ad0cab2ec9a52a89ff42cba472f2dfd089",
+      "docs/superpowers/compatibility/promo/corpus.json": "b1aff58e347c20eb4f253d7a4cf3f72435294e71c3cd7dfb6a2c2575f42d6c34",
+      "docs/superpowers/compatibility/promo/observations.json": "f910d19013d7d401b1c37c660575db91b1b3902b502680d0c21eb067c152d823",
+      "docs/superpowers/compatibility/promo/source-probe.mjs": "4d66c184da53447bfd795970fd932a2c5683b7631f3aae44a74ded828d4d6cce",
+      "packages/backend-next/src/composition/http-app.ts": "0af728aaf5942450d8066540a1ab83a29b4bc16cdb3ba51ecca3df395c366b7c",
+      "packages/backend-next/src/composition/promo-http.ts": "ee0085b7c4cbc674d7d950bf972dd2d46aaa73734536801a08aa575c8342056e",
+      "packages/backend-next/src/http/promo-api.ts": "bda8aa004d29f58795425278b564805352bd5376dc4ca8f7c42f34b34ed05e1a",
+      "packages/backend-next/src/modules/promo/public.ts": "8126cce85e2b0b5dd8a0d6f08840bc7404f4465363855b1095aedae4cfd0c6b9",
+      "packages/backend-next/src/platform/database/promo.ts": "be65be0b7c65ea4e3ebc8204836ccc5ccf58a7a89827550eae4374aaabd9a8d5",
+      "packages/backend-next/test/integration/promo.test.ts": "0a83ac812262d3a17e83c895acd1468df33906b0c371dc527f9c516cb7f81846",
+      "packages/backend-next/test/package-imports.test.ts": "3f52ff89a5c972a6beea4a0e744a9420c4d6103270cc7f52f67474928a1c8799",
+      "packages/backend-next/test/unit/composition/http-app.test.ts": "cadc10344ec0024592e4aeb73730d369fe10b53a1de4d4dfa4ef88b1a38e203b",
+      "packages/backend-next/test/unit/promo.test.ts": "6661898c46385492e8d79eef39322f56161916d109381a9639b8409c8d7e9174",
+      "packages/backend-upstream/.managed-files.json": "7cb787f4da126af2645165006c3f9bda193ea114dc593435aaecdab435742f65",
+      "packages/backend-upstream/exports/entities.ts": "fb04ee6f1bad620d55cd431896187e468631e4cc86c5b71fa28c0a32d2ac5f64",
+      "packages/backend-upstream/src/models/PromoNote.ts": "a71dbb5bb9846a681c0995715d21f35309c64d3ef7388cf40d84506d5fc3138e",
+      "packages/backend-upstream/upstream-sync.json": "58707b07f611652ec2c407d5585976aed56e07dfaa4ef3adc5abef939fad5ff5",
+      "scripts/notes-pagination-evidence.mjs": "e42b0913ec1d5e5a85f800c5c030e595d8301aa33fb4710ec27597489d23a2d8",
+      "scripts/package-imports-evidence.mjs": "afdb18d89cfa5deb9e306891c83e963f4c6bb554fc5e69d879421ce4edf8aa48",
+      "scripts/promo-contract.test.mjs": "a8b15e4043d19426da32c6f848ec99de43d51c9886e4f54e6f59e6f4348b645a",
+      "scripts/promo-predecessor.mjs": "1c09e74a79f5c76a3e63584b5a4387f90474a39e783e21f6056d5d9e3476355a",
+      "scripts/well-known-contract.test.mjs": "0637b0c23767a72c9c36b13b079f572ed3fa7547f6b963775745f362290aded2",
+      "scripts/well-known-predecessor.mjs": "12eac3ded6ee526d0b83beeff96544252d08793cf5a4eb2a222ec4c1c4265e00"
+    }
+  },
+  "existingSkips": {
+    "unit": "Optional pinned Page source replay requires BACKEND_NEXT_UPSTREAM_PATH.",
+    "root": "Optional migration-proof upstream checkout comparison."
+  },
+  "history": [
+    {
+      "log": "/tmp/promo542-red.log",
+      "logSha256": "4bc929bbd93b01a3a98b880ffda7c74848eaee18f2d1d92baf2b14f9b0c8e61d",
+      "note": "Expected missing-route RED (404 vs 401)."
+    },
+    {
+      "log": "/tmp/promo542-all-unit.log",
+      "logSha256": "08eeb704eddc7877b76ad0528e907a358dd06bad09b169f11e48f71bda561eec",
+      "note": "5291 pass / 2 fail / 1 skip: route list and Entity-count assertions corrected."
+    },
+    {
+      "log": "/tmp/promo542-root.log",
+      "logSha256": "6fc304db5538f8dbf6fdcfb80ab2b1b320483c2e3987f7ef076c7ef4008667c1",
+      "note": "Historical consumers rejected new registration/Entity input bytes before finite successor."
+    },
+    {
+      "log": "/tmp/promo542-root2.log",
+      "logSha256": "ec798d86800f79fe8de6339f672d6b77acd44451f9be9288e8b35b48131d6d86",
+      "note": "801 pass / 5 fail / 1 skip: direct catalog/chart/well-known consumers required successor."
+    },
+    {
+      "log": "/tmp/promo542-root-final.log",
+      "logSha256": "7b2089974604adf70eebeb3a9891c029c63c736407065cc16b908739435330df",
+      "note": "807 pass / 1 fail / 1 skip: mixed-start run retained only as history; fresh frozen run supersedes it."
+    }
+  ]
+}

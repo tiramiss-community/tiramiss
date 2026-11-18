@@ -34,3 +34,5 @@ node scripts/check-shipping.mjs --base 1613804464
 Keep the specified Node at the front of PATH for every command. `current-evidence.json` records actual final logs/input hashes, including unsuccessful earlier runs. The additive predecessor projects only six exact changed inputs to their historical bytes; existing receipts are not relabeled as new measurements. Shared helper entrypoints remove this finite addition before earlier guards. Unknown bytes remain subject to those guards.
 
 CHANGELOG candidate: backend-next supports moderator creation of promotion posts.
+
+Final measured result: dependency build/typecheck, upstream sync5, source18, all unit5293/1 existing optional skip, real HTTP/PG/schema26, root808/1 existing optional skip, and shipping PASS. Root input hashes matched before/after the frozen run. Logs are under `/tmp/promo542-*`; the durable input/log hashes and unsuccessful run history are in `current-evidence.json`. Independent product review approved runtime `e13fc9364d`; proof delta and CLI/web review are separate gates.
