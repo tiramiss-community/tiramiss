@@ -17,3 +17,4 @@ export { RoleNotFound } from './errors.js';
 export { roleAccessFacts } from './access.js';
 export { createShowRole, type RoleShowData } from './show-role.js';
 export { createPublicRoles, userRoleMaterials } from './public-roles.js';
+export { createUpdateDefaultPolicies } from './update-default-policies.js';

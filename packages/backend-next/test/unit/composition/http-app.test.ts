@@ -14,6 +14,7 @@ function fixture() {
 	const events: string[] = [];
 	const repository = { find: vi.fn(async () => [{ federation: 'all' }]), findOne: vi.fn(async () => null), findOneBy: vi.fn(async () => null), findOneByOrFail: vi.fn(async () => ({ federation: 'all' })), findBy: vi.fn(async () => []) };
 	const resources = {
+		defaultRolePolicies: { updateDefaultPolicies: vi.fn() },
 		meta: { fetch: async () => (await repository.find())[0] },
 		outboundHttp: { send: vi.fn() },
 		instanceAdministration: { updateInstance: vi.fn(), refreshMetadata: vi.fn() },
@@ -46,7 +47,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 	expect(legacy).toBe(createBackendHttpApp);
 	expect([...new Set(app.routes.map(route => route.path))]).toEqual([
 		'/api/charts/notes', '/api/charts/user/notes',
-		'/api/admin/roles/show', '/api/admin/roles/update', '/api/roles/list', '/api/roles/show',
+		'/api/admin/roles/show', '/api/admin/roles/update', '/api/admin/roles/update-default-policies', '/api/roles/list', '/api/roles/show',
 		'/api/users/update-memo', '/api/admin/promo/create', '/api/promo/read', '/api/notes/translate', '/api/hashtags/list', '/api/hashtags/search', '/api/hashtags/show', '/api/announcements', '/api/announcements/show', '/api/i/read-announcement', '/api/users/relation',
 		'/api/drive/files/show', '/api/drive/files/find', '/api/drive/files/find-by-hash', '/api/drive/files/check-existence', '/api/admin/drive/show-file', '/api/pages/show',
 		'/users/:id', '/:acct{@[^/]*}', '/users/:user{[^/]*}/publickey',

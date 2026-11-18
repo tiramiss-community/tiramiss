@@ -11,7 +11,7 @@ import type { RuntimeResources } from './create-runtime.js';
 import type { RuntimeConfig } from '../config/types.js';
 
 export function createRoleHttpApp(
-	resources: Pick<RuntimeResources, 'dataSource' | 'logger'> & {
+	resources: Pick<RuntimeResources, 'dataSource' | 'logger' | 'defaultRolePolicies'> & {
 		roleMaterials: Pick<RuntimeResources['roleMaterials'], 'changes'>;
 	},
 	config: Pick<RuntimeConfig, 'id'>,
@@ -24,7 +24,15 @@ export function createRoleHttpApp(
 		changes: resources.roleMaterials.changes,
 	});
 	return createApiEndpoints({
-		endpoints: [...createRoleEndpoints(application), ...createPublicRoleEndpoints(application)],
+		endpoints: [
+			...createRoleEndpoints(application),
+			{
+				name: 'admin/roles/update-default-policies',
+				access: { requireCredential: true, requireAdmin: true, kind: 'write:admin:roles' },
+				handle: resources.defaultRolePolicies.updateDefaultPolicies,
+			},
+			...createPublicRoleEndpoints(application),
+		],
 		authenticate: createTokenAuthenticator(resources.dataSource.manager, resources.logger),
 		logger: resources.logger,
 	});
