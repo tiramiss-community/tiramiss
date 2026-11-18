@@ -25,7 +25,13 @@ export function createTestControlsHttp(resources: Pick<RuntimeResources, 'dataSo
 				await resources.redis.flushdb();
 				await resetTestDatabase(resources.dataSource);
 				const meta = await resources.meta.fetch(true);
-				await resources.publishInternalEvent('metaUpdated', { after: meta });
+				try {
+					await resources.publishInternalEvent('metaUpdated', { after: meta });
+				} catch {
+					try {
+						resources.logger.error('reset-db.publish-failed');
+					} catch { /* Diagnostics cannot turn a committed reset into a failure. */ }
+				}
 				await setTimeout(1000);
 			},
 		}],

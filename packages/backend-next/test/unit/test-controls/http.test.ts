@@ -46,17 +46,20 @@ test('test endpoint accepts and rejects the same finite inputs as the literal pi
 	}
 });
 
-test('reset preserves the literal pinned Redis/database/Meta/event order', async () => {
+test.each([false, true])('reset preserves pinned operation order and succeeds with publication failure=%s', async publicationFails => {
 	const { pinnedResetEvents } = await import('../../helpers/pinned-test-controls.js');
 	vi.stubEnv('NODE_ENV', 'test');
 	const config = testConfig();
 	vi.stubEnv('BACKEND_NEXT_TEST_RESET_TARGET', JSON.stringify({
 		database: { host: config.database.host, port: config.database.port, database: config.database.database },
 		redis: { host: config.redis.host, port: config.redis.port, db: config.redis.db ?? 0 },
+		pubsub: { host: config.redisForPubsub.host, port: config.redisForPubsub.port, db: config.redisForPubsub.db ?? 0, topic: new URL(config.url).host },
 	}));
 	const events: string[] = [];
 	const resources = {
-		logger,
+		logger: publicationFails ? { error: () => {
+			throw new Error('diagnostic sink failure');
+		} } : logger,
 		redis: { flushdb: async () => {
 			events.push('redis');
 		} },
@@ -70,6 +73,9 @@ test('reset preserves the literal pinned Redis/database/Meta/event order', async
 		} },
 		publishInternalEvent: async () => {
 			events.push('event');
+			if (publicationFails) {
+				throw new Error('publication unavailable');
+			}
 		},
 	};
 	const response = await post(createTestControlsHttp(resources as never, config), 'reset-db', {});

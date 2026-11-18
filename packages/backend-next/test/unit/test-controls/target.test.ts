@@ -10,6 +10,7 @@ function environment(config = testConfig()): NodeJS.ProcessEnv {
 	return { NODE_ENV: 'test', BACKEND_NEXT_TEST_RESET_TARGET: JSON.stringify({
 		database: { host: config.database.host, port: config.database.port, database: config.database.database },
 		redis: { host: config.redis.host, port: config.redis.port, db: config.redis.db ?? 0 },
+		pubsub: { host: config.redisForPubsub.host, port: config.redisForPubsub.port, db: config.redisForPubsub.db ?? 0, topic: new URL(config.url).host },
 	}) };
 }
 
@@ -50,4 +51,13 @@ test('stale binding, replica, sentinel and unix socket cannot redirect a bound r
 		change(config);
 		expect(() => assertTestResetTarget(config, env)).toThrow();
 	}
+});
+
+test.each(['host', 'port', 'db', 'topic'])('reset rejects stale pubsub %s binding', field => {
+	const config = testConfig();
+	const env = environment(config);
+	const target = JSON.parse(env.BACKEND_NEXT_TEST_RESET_TARGET!);
+	target.pubsub[field] = 'different';
+	env.BACKEND_NEXT_TEST_RESET_TARGET = JSON.stringify(target);
+	expect(() => assertTestResetTarget(config, env)).toThrow();
 });

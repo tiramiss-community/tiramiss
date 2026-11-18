@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { afterAll, afterEach, beforeAll, expect, test, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 import { Redis } from 'ioredis';
 import { createBackendHttpApp } from '../../src/composition/http-app.js';
 import { connectResources } from '../../src/platform/connect-resources.js';
@@ -26,6 +26,7 @@ const post = (name: string, input: unknown = {}) => fetch(`http://127.0.0.1:${po
 const bind = () => vi.stubEnv('BACKEND_NEXT_TEST_RESET_TARGET', JSON.stringify({
 	database: { host: database.config.database.host, port: database.config.database.port, database: database.config.database.database },
 	redis: { host: database.config.redis.host, port: database.config.redis.port, db: database.config.redis.db ?? 0 },
+	pubsub: { host: database.config.redisForPubsub.host, port: database.config.redisForPubsub.port, db: database.config.redisForPubsub.db ?? 0, topic: new URL(database.config.url).host },
 }));
 const stored = () => resources.dataSource.query('SELECT * FROM ONLY public.reset_sentinel');
 const history = () => resources.dataSource.query('SELECT \'public\' AS schema, * FROM public.migrations UNION ALL SELECT \'backend_internal\' AS schema, * FROM backend_internal.migrations ORDER BY schema, id');
@@ -59,7 +60,22 @@ beforeAll(async () => {
 	server = await listenHttp(createBackendHttpApp(resources, database.config), { port: 0 });
 	port = (server.address() as { port: number }).port;
 });
-afterEach(() => vi.unstubAllEnvs());
+beforeEach(async () => {
+	await resources.dataSource.query('INSERT INTO public.reset_sentinel VALUES (1)');
+	await resources.dataSource.query('INSERT INTO backend_internal.reset_sentinel VALUES (1)');
+	await resources.redis.set('reset-sentinel', 'retained');
+	notifications.length = 0;
+});
+afterEach(async () => {
+	vi.unstubAllEnvs();
+	vi.restoreAllMocks();
+	await resources.dataSource.query('DROP TABLE IF EXISTS unrelated.reference');
+	await resources.dataSource.query('DELETE FROM ONLY public.reset_sentinel');
+	await resources.dataSource.query('DELETE FROM backend_internal.reset_sentinel');
+	if (resources.redis.status === 'ready') {
+		await resources.redis.del('reset-sentinel');
+	}
+});
 afterAll(async () => {
 	try {
 		if (server) {
@@ -83,9 +99,6 @@ afterAll(async () => {
 test('normal HTTP input validation works and production reset leaves PostgreSQL and Redis untouched', async () => {
 	vi.stubEnv('NODE_ENV', 'production');
 	bind();
-	await resources.dataSource.query('INSERT INTO public.reset_sentinel VALUES (1)');
-	await resources.dataSource.query('INSERT INTO backend_internal.reset_sentinel VALUES (1)');
-	await resources.redis.set('reset-sentinel', 'retained');
 	const valid = await post('test', { required: false });
 	expect(valid.status).toBe(200);
 	expect(await valid.json()).toEqual({ required: false, default: 'hello', nullableDefault: 'hello' });
@@ -98,7 +111,10 @@ test('normal HTTP input validation works and production reset leaves PostgreSQL 
 
 test('NODE_ENV=test alone and stale target bindings cannot flush the configured storage', async () => {
 	vi.stubEnv('NODE_ENV', 'test');
-	for (const target of ['', JSON.stringify({ database: {}, redis: {} })]) {
+	bind();
+	const stalePubsub = JSON.parse(process.env.BACKEND_NEXT_TEST_RESET_TARGET!);
+	stalePubsub.pubsub.topic = 'other-environment.test';
+	for (const target of ['', JSON.stringify({ database: {}, redis: {} }), JSON.stringify(stalePubsub)]) {
 		vi.stubEnv('BACKEND_NEXT_TEST_RESET_TARGET', target);
 		expect((await post('reset-db')).status).toBe(500);
 		expect(await stored()).toEqual([{ id: 1 }]);
@@ -138,6 +154,7 @@ test('reset clears both runtime schemas, preserves histories and other storage, 
 test('cross-schema references fail atomically without CASCADE after the upstream-ordered Redis flush; retry recovers', async () => {
 	vi.stubEnv('NODE_ENV', 'test');
 	bind();
+	await resources.dataSource.query('UPDATE ONLY public.reset_sentinel SET id = 2');
 	await resources.dataSource.query('CREATE TABLE unrelated.reference (id integer REFERENCES public.reset_sentinel(id))');
 	await resources.dataSource.query('INSERT INTO unrelated.reference VALUES (2)');
 	await resources.redis.set('reset-sentinel', 'will be cleared');
@@ -151,12 +168,27 @@ test('cross-schema references fail atomically without CASCADE after the upstream
 	expect(await stored()).toEqual([]);
 });
 
+test('publication failure leaves reset committed and the HTTP response successful', async () => {
+	vi.stubEnv('NODE_ENV', 'test');
+	bind();
+	vi.spyOn(resources, 'publishInternalEvent').mockRejectedValueOnce(new Error('publication unavailable'));
+	expect((await post('reset-db')).status).toBe(204);
+	expect(await stored()).toEqual([]);
+	expect(await resources.dataSource.query('SELECT * FROM backend_internal.reset_sentinel')).toEqual([]);
+	expect(await history()).toEqual(histories);
+	expect((await resources.meta.fetch()).name).toBe(null);
+});
+
 test('Redis failure stops before database reset', async () => {
 	vi.stubEnv('NODE_ENV', 'test');
 	bind();
-	await resources.dataSource.query('INSERT INTO public.reset_sentinel VALUES (3)');
-	resources.redis.disconnect();
-	expect((await post('reset-db')).status).toBe(500);
-	expect(await stored()).toEqual([{ id: 3 }]);
-	expect(await history()).toEqual(histories);
+	await resources.dataSource.query('UPDATE ONLY public.reset_sentinel SET id = 3');
+	await resources.redis.call('ACL', 'SETUSER', 'default', '-flushdb');
+	try {
+		expect((await post('reset-db')).status).toBe(500);
+		expect(await stored()).toEqual([{ id: 3 }]);
+		expect(await history()).toEqual(histories);
+	} finally {
+		await resources.redis.call('ACL', 'SETUSER', 'default', '+flushdb');
+	}
 });
