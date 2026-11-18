@@ -10,12 +10,14 @@
     {
       "log": "/tmp/promo-read-r4-catalog.log",
       "sha256": "e78e3d2cd6697d42aeb13b482b07c86add0f8c2af477f45b25c72f902162f8c3",
-      "status": "PASS"
+      "status": "PASS",
+      "command": "node scripts/backend-contract-inventory.mjs --write && node scripts/backend-contract-inventory.mjs --check"
     },
     {
       "log": "/tmp/promo-read-r4-catalog-contracts.log",
       "sha256": "08bfa654b8268776c2e751e4070c07cc8f396afedcf30fadf127fdcd6b4c7bf1",
-      "status": "PASS"
+      "status": "PASS",
+      "command": "node --test scripts/backend-contract-inventory.test.mjs scripts/promo-read-contract.test.mjs"
     }
   ]
 }

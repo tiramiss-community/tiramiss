@@ -148,7 +148,12 @@ test('database lookup/existence/insert failures match pinned callback and preser
 test('promo/read uses current suspension without loading Role or Meta authorization data', async () => {
 	await resources.dataSource.query('ALTER TABLE role RENAME TO role_unavailable');
 	try {
-		expect((await call({ noteId: 'privatenote' }, seed.actors.ordinary.token)).status).toBe(204);
+		await resources.dataSource.query('ALTER TABLE meta RENAME TO meta_unavailable');
+		try {
+			expect((await call({ noteId: 'privatenote' }, seed.actors.ordinary.token)).status).toBe(204);
+		} finally {
+			await resources.dataSource.query('ALTER TABLE meta_unavailable RENAME TO meta');
+		}
 	} finally {
 		await resources.dataSource.query('ALTER TABLE role_unavailable RENAME TO role');
 	}

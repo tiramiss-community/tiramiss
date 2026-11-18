@@ -26,6 +26,9 @@ pnpm --filter backend-upstream sync:check
 pnpm --filter backend-upstream test
 pnpm --filter backend-next... build
 pnpm --filter backend-next... typecheck
+# Complete unit suite (reproduces the R4 all-unit measurement):
+pnpm --filter backend-next test
+# Optional short check for this slice:
 pnpm --filter backend-next test test/unit/promo-read.test.ts test/unit/promo.test.ts
 BACKEND_NEXT_TEST_DB_PORT=63432 BACKEND_NEXT_TEST_REDIS_PORT=63379 pnpm --filter backend-next test:integration test/integration/promo-read.test.ts test/integration/promo.test.ts test/integration/migrations.test.ts
 node docs/superpowers/compatibility/promo-read/source-probe.mjs --check
@@ -46,3 +49,5 @@ Web review follow-up: promo/read now reloads only the current User suspension fa
 R4 measured build/typecheck, all unit5350/one existing skip, source14, HTTP/PG/schema42 and nearest root23 PASS. The final catalog metadata step points to this immutable proof commit and is validated separately; it is excluded from runtime input hashes.
 
 R5 strengthens INSERT-failure HTTP `INTERNAL_ERROR` and the raw-byte entry to composed historical projections. Runtime remains R4; normal HTTP/PG/schema42, nearest root23 and shipping PASS. Full concurrent HTTP race, production-scale index benchmarking and a new test-DB lease mechanism were not added to this fixed-upstream slice; no such measurements are claimed.
+
+R6 adds exact catalog commands, distinguishes full-unit reproduction from the optional short check, and verifies normal promo/read with both Role and Meta tables unavailable (restored in nested finally blocks). Runtime remains R4; HTTP/PG/schema42, nearest root23 and shipping PASS.
