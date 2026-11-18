@@ -44,7 +44,7 @@ function ports(meta: Partial<MiMeta> = {}, selfUrl = 'http://local.test') {
 	})]);
 	const outboundHttp = createOutboundHttpClient(config);
 	clients.push(outboundHttp);
-	return createRemoteUsers({
+	return createRemoteUsers({ noteCharts: { users: { update: () => {} } },
 		meta: { fetch: () => readMeta(dataSource.manager) },
 		logger: { info() { }, error() { } }, remoteEmojis: { extract: async () => [] }, actorInstanceRegistration: { start: () => { } }, userHashtags: {
 			start: () => {

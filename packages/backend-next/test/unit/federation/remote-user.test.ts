@@ -29,7 +29,7 @@ test.each([
 	const config = testConfig();
 	config.url = 'http://local.test';
 	const dataSource = createDataSource(config.database);
-	const ports = createRemoteUsers({
+	const ports = createRemoteUsers({ noteCharts: { users: { update: () => {} } },
 		meta: { fetch: () => readMeta(dataSource.manager) },
 		logger: { info() { }, error() { } }, remoteEmojis: { extract: async () => [] }, dataSource, actorInstanceRegistration: { start: () => { } }, userHashtags: {
 			start: () => {
@@ -59,7 +59,7 @@ for (const fixture of cases) {
 		let entryRead = row !== null;
 		const ports: RemoteUserPorts = {
 			clearActorImages: async () => {}, reportActorImageFailure: () => {},
-			startActorInstanceRegistration: () => {}, startUserHashtags: () => {},
+			updateUsersChart: () => {}, startActorInstanceRegistration: () => {}, startUserHashtags: () => {},
 			selfHost: 'local.test', localId: uri => uri.startsWith('https://local.test/users/') ? 'local' : null,
 			readByAccount: async value => {
 				events.push({ op: 'User.find', args: { usernameLower: value.username, host: value.host } });

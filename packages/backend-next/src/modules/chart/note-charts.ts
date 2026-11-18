@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-export type ChartSeries = 'notes' | 'perUserNotes';
+export type ChartSeries = 'notes' | 'perUserNotes' | 'users';
 export type ChartSpan = 'hour' | 'day';
 export type ChartValues = Record<string, number>;
 export interface ChartRow { date: number; values: ChartValues }
@@ -11,13 +11,13 @@ export interface ChartNote {
 	replyId: string | null; renoteId: string | null; fileIds: readonly string[];
 }
 export interface NoteChartStore {
-	save(input: { series: ChartSeries; group: string | null; diff: ChartValues; now: number }): Promise<void>;
+	save(input: { series: ChartSeries; group: string | null; diff: ChartValues; now: number; absolute?: ChartValues }): Promise<void>;
 	read(series: ChartSeries, group: string | null, span: ChartSpan, from: number, to: number): Promise<ChartRow[]>;
 }
 
 export const noteMetrics = ['total', 'inc', 'dec', 'diffs.normal', 'diffs.reply', 'diffs.renote', 'diffs.withFile'] as const;
 export function chartKeys(series: ChartSeries): string[] {
-	return series === 'notes' ? ['local', 'remote'].flatMap(prefix => noteMetrics.map(key => `${prefix}.${key}`)) : [...noteMetrics];
+	return series === 'users' ? ['local', 'remote'].flatMap(prefix => ['total', 'inc', 'dec'].map(key => `${prefix}.${key}`)) : series === 'notes' ? ['local', 'remote'].flatMap(prefix => noteMetrics.map(key => `${prefix}.${key}`)) : [...noteMetrics];
 }
 
 export function interpolateChart(series: ChartSeries, rows: ChartRow[], span: ChartSpan, amount: number, endMs: number): Record<string, number[]> {

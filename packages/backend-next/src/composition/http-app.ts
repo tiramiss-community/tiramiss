@@ -4,7 +4,7 @@
  */
 import { Hono } from 'hono';
 import { createHashtagCatalogHttp } from './hashtag-catalog-http.js';
-import { createNoteChartsApi } from '../http/note-charts-api.js';
+import { createNoteChartsApi, createUsersChartsApi } from '../http/note-charts-api.js';
 import { createTokenAuthenticator } from '../platform/database/authenticate.js';
 import { createAnnouncementsHttp } from './announcements-http.js';
 import { getAvatarImagesPath } from '../http/avatar-images-api.js';
@@ -39,6 +39,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 	const pages = createPagesHttp(resources, config);
 	const announcements = createAnnouncementsHttp(resources, config);
 	const app = new Hono({ getPath: getAvatarImagesPath })
+		.route('/', createUsersChartsApi(resources.noteCharts, { authenticate: createTokenAuthenticator(resources.dataSource.manager, resources.logger), logger: resources.logger }))
 		.route('/', createNoteChartsApi(resources.noteCharts, { authenticate: createTokenAuthenticator(resources.dataSource.manager, resources.logger), logger: resources.logger }))
 		.route('/', createRoleHttpApp(resources, config))
 		.route('/', createUserMemoHttp(resources, config))

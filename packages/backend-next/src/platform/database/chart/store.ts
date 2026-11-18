@@ -32,7 +32,7 @@ export function createNoteChartStore(db: DataSource, redis: Redis, reportUnlockF
 		throw new Error(`Failed to acquire chart insert lock ${name}`);
 	};
 	return {
-		async save({ series, group, diff, now }) {
+		async save({ series, group, diff, now, absolute }) {
 			const claimed = await Promise.allSettled((['hour', 'day'] as const).map(async span => {
 				const repository = db.getRepository(noteChartSchemas[series][span]);
 				const step = span === 'hour' ? 3600 : 86400;
@@ -72,13 +72,18 @@ export function createNoteChartStore(db: DataSource, redis: Redis, reportUnlockF
 				for (const [key, value] of Object.entries(diff)) {
 					if (value !== 0) {
 						const column = '___' + key.replaceAll('.', '_');
-						const min = series === 'perUserNotes' && key !== 'total' ? -32768 : -2147483648;
-						const max = series === 'perUserNotes' && key !== 'total' ? 32767 : 2147483647;
+						const min = (series === 'perUserNotes' || series === 'users') && !key.endsWith('total') ? -32768 : -2147483648;
+						const max = (series === 'perUserNotes' || series === 'users') && !key.endsWith('total') ? 32767 : 2147483647;
 						// Widen before arithmetic: PostgreSQL integer overflow occurs before LEAST/GREATEST.
 						update[column] = () => value > 0
 							? `LEAST("${column}"::bigint + ${value}, ${max})`
 							: `GREATEST("${column}"::bigint - ${Math.abs(value)}, ${min})`;
 					}
+				}
+				for (const [key, value] of Object.entries(absolute ?? {})) {
+					const column = '___' + key.replaceAll('.', '_');
+					const clamped = Math.max(-2147483648, Math.min(2147483647, value));
+					update[column] = () => String(clamped);
 				}
 				if (Object.keys(update).length > 0) {
 					await repository.createQueryBuilder().update().set(update).where({ id: row.id }).execute();

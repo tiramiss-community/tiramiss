@@ -220,7 +220,7 @@ function acquisition(patch: Record<string, unknown> = {}, fail = false, extracto
 	const events: string[] = []; const config = testConfig(); config.url = 'https://local.test';
 	const dataSource = createDataSource(config.database);
 	vi.spyOn(dataSource.getRepository(MiMeta), 'find').mockResolvedValue([Object.assign(new MiMeta(), { federation: 'all', signToActivityPubGet: false, blockedHosts: [], federationHosts: [], silencedHosts: [], mediaSilencedHosts: [], deliverSuspendedSoftware: [] })]);
-	const ports = createRemoteUsers({
+	const ports = createRemoteUsers({ noteCharts: { users: { update: () => {} } },
 		meta: { fetch: () => readMeta(dataSource.manager) },
 		logger: { info() { }, error() { } }, dataSource, userHashtags: { start() { } }, actorInstanceRegistration: { start() { } },
 		remoteEmojis: {

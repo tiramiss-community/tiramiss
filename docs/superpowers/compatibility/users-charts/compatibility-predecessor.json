@@ -1,0 +1,322 @@
+{
+  "baseRevision": "bb1822c301736ba3809658a028d7af824421db6e",
+  "scope": "users-chart-319",
+  "upstreamFullServerMeasured": false,
+  "files": {
+    "packages/backend-next/src/composition/http-app.ts": {
+      "currentSha256": "a427c183d0de622abf522a1e145aeb684c8f3cb589844ce614f7326d2a0ca3b2",
+      "previousSha256": "3747f04e5de5e43d5eda0ac7ef856ce7a369cb818e31d159eb85320a7ee7e08a",
+      "patches": [
+        {
+          "offset": 202,
+          "insert": "import { createNoteChartsApi, createUsersChartsApi } from '../http/note-charts-api.js';\n",
+          "previous": "import { createNoteChartsApi } from '../http/note-charts-api.js';\n"
+        },
+        {
+          "offset": 2370,
+          "insert": "\t\t.route('/', createUsersChartsApi(resources.noteCharts, { authenticate: createTokenAuthenticator(resources.dataSource.manager, resources.logger), logger: resources.logger }))\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/composition/remote-users.ts": {
+      "currentSha256": "494c8a3ee6239e1e8b05d6da774332b43f9ece81aa8567a46f95dd9265127637",
+      "previousSha256": "7d8de31c198b075ae52860a8b2c7c5a2da25560db6aadc63d501841cf7e354e3",
+      "patches": [
+        {
+          "offset": 857,
+          "insert": "import type { createUsersCharts } from '../modules/chart/public.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 1528,
+          "insert": "\tnoteCharts: { users: Pick<ReturnType<typeof createUsersCharts>, 'update'> };\n",
+          "previous": ""
+        },
+        {
+          "offset": 3985,
+          "insert": "\t\tupdateUsersChart: parts.noteCharts.users.update,\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/http/note-charts-api.ts": {
+      "currentSha256": "0236ada9ba621a57f1434fe24d4fa2ea657125dee0ee095f4c77b0fbd60f9b6d",
+      "previousSha256": "dfa0981c7195e8aebe884ec62caab7809f04a1810535d1fab890768cf29a125f",
+      "patches": [
+        {
+          "offset": 344,
+          "insert": "import type { createNoteCharts, ChartSeries } from '../modules/chart/public.js';\n",
+          "previous": "import type { createNoteCharts } from '../modules/chart/public.js';\n"
+        },
+        {
+          "offset": 1050,
+          "insert": "interface ChartRoute { path: string; series: ChartSeries; parse: (input: unknown) => Input }\n\nfunction createChartsApi(charts: Pick<ReturnType<typeof createNoteCharts>, 'read'>, options: Omit<ApiEndpointsOptions, 'endpoints'>, routes: ChartRoute[]) {\n",
+          "previous": "export function createNoteChartsApi(charts: Pick<ReturnType<typeof createNoteCharts>, 'read'>, options: Omit<ApiEndpointsOptions, 'endpoints'>) {\n"
+        },
+        {
+          "offset": 1326,
+          "insert": "\tfor (const route of routes) {\n\t\tregisterApiRoute(app, route.path, async context => {\n",
+          "previous": "\tfor (const user of [false, true]) {\n\t\tregisterApiRoute(app, user ? '/api/charts/user/notes' : '/api/charts/notes', async context => {\n"
+        },
+        {
+          "offset": 2143,
+          "insert": "\t\t\t\tconst input = route.parse(request.input);\n\t\t\t\tconst result = await charts.read(route.series, input.span, input.limit, input.offset, input.userId ?? null);\n",
+          "previous": "\t\t\t\tconst input = (user ? parseUser : parseNotes)(request.input);\n\t\t\t\tconst result = await charts.read(user ? 'perUserNotes' : 'notes', input.span, input.limit, input.offset, user ? input.userId! : null);\n"
+        },
+        {
+          "offset": 2739,
+          "insert": "\nexport function createNoteChartsApi(charts: Pick<ReturnType<typeof createNoteCharts>, 'read'>, options: Omit<ApiEndpointsOptions, 'endpoints'>) {\n\treturn createChartsApi(charts, options, [\n\t\t{ path: '/api/charts/notes', series: 'notes', parse: parseNotes },\n\t\t{ path: '/api/charts/user/notes', series: 'perUserNotes', parse: parseUser },\n\t]);\n}\n\nexport function createUsersChartsApi(charts: Pick<ReturnType<typeof createNoteCharts>, 'read'>, options: Omit<ApiEndpointsOptions, 'endpoints'>) {\n\treturn createChartsApi(charts, options, [{ path: '/api/charts/users', series: 'users', parse: parseNotes }]);\n}\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/modules/chart/note-charts.ts": {
+      "currentSha256": "305884aa86a972c558864942ecde7f87eaf17d50f455541f4a69d4e437319356",
+      "previousSha256": "0a19f52e7c165db72897a5a903a01ab0f46be81281515e183526f5379d876024",
+      "patches": [
+        {
+          "offset": 103,
+          "insert": "export type ChartSeries = 'notes' | 'perUserNotes' | 'users';\n",
+          "previous": "export type ChartSeries = 'notes' | 'perUserNotes';\n"
+        },
+        {
+          "offset": 524,
+          "insert": "\tsave(input: { series: ChartSeries; group: string | null; diff: ChartValues; now: number; absolute?: ChartValues }): Promise<void>;\n",
+          "previous": "\tsave(input: { series: ChartSeries; group: string | null; diff: ChartValues; now: number }): Promise<void>;\n"
+        },
+        {
+          "offset": 958,
+          "insert": "\treturn series === 'users' ? ['local', 'remote'].flatMap(prefix => ['total', 'inc', 'dec'].map(key => `${prefix}.${key}`)) : series === 'notes' ? ['local', 'remote'].flatMap(prefix => noteMetrics.map(key => `${prefix}.${key}`)) : [...noteMetrics];\n",
+          "previous": "\treturn series === 'notes' ? ['local', 'remote'].flatMap(prefix => noteMetrics.map(key => `${prefix}.${key}`)) : [...noteMetrics];\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/modules/chart/public.ts": {
+      "currentSha256": "8fa9156ed760735f56e283a82ac557bb74a5ea3576dbd731a372e1ea7a301bf8",
+      "previousSha256": "249678ad7cd076c50b96a0d80d1c72284221abfee40b3d8f58ae92fa0df60a64",
+      "patches": [
+        {
+          "offset": 312,
+          "insert": "export { createUsersCharts } from './users-charts.js';\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/modules/federation/remote-user.ts": {
+      "currentSha256": "a4bc4a9ace1e443e538bd2656746df5fcc9b85304678d304dfd7a74ebea60a88",
+      "previousSha256": "fe93f7368950d85e07b3c2899a212d6d7f96ed20f30193f44294e978cf43e1b5",
+      "patches": [
+        {
+          "offset": 1421,
+          "insert": "\tupdateUsersChart(user: ResolvedUser, additional: boolean): void;\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/modules/note/create-note.ts": {
+      "currentSha256": "693e2d76757d28e5db3ae888240e804d862506c703bafe3b099823884e0dbdcc",
+      "previousSha256": "825fcd052cabd009f41fefe7595a6d8d2bef224e17e393d311682cfdc59b1f85",
+      "patches": [
+        {
+          "offset": 12073,
+          "insert": "\t\tports.updateUsersChart(created, true);\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/connect-resources.ts": {
+      "currentSha256": "a80562d9de75e6347731291256a465eff7e86c2780287fb568b934b833101fff",
+      "previousSha256": "3fb32e36f9fce98728d59ee3adae9724b1085977cf8a3baee85b01c86491144c",
+      "patches": [
+        {
+          "offset": 184,
+          "insert": "import { createNoteCharts, createUsersCharts } from '../modules/chart/public.js';\n",
+          "previous": "import { createNoteCharts } from '../modules/chart/public.js';\n"
+        },
+        {
+          "offset": 497,
+          "insert": "import { createUserChartCounts } from './database/user-chart-counts.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 17151,
+          "insert": "\t\tconst chartStore = createNoteChartStore(dataSource, redis, error => logger.error('charts.unlock-failed', { error }));\n\t\tconst noteCharts = {\n\t\t\t...createNoteCharts(chartStore, Date.now),\n\t\t\tusers: createUsersCharts(chartStore, Date.now, createUserChartCounts(dataSource.manager)),\n\t\t};\n",
+          "previous": "\t\tconst noteCharts = createNoteCharts(createNoteChartStore(dataSource, redis, error => logger.error('note-charts.unlock-failed', { error })), Date.now);\n"
+        },
+        {
+          "offset": 17564,
+          "insert": "\t\tconst noteChartFlush = startNoteChartFlush(async () => {\n\t\t\tconst saved = await Promise.allSettled([noteCharts.flush(), noteCharts.users.flush()]);\n\t\t\tconst failures = saved.flatMap(result => result.status === 'rejected' ? [result.reason] : []);\n\t\t\tif (failures.length > 0) {\n\t\t\t\tthrow new AggregateError(failures, 'Chart flush failed');\n\t\t\t}\n\t\t}, error => logger.error('note-charts.flush-failed', { error }));\n",
+          "previous": "\t\tconst noteChartFlush = startNoteChartFlush(noteCharts.flush, error => logger.error('note-charts.flush-failed', { error }));\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/chart/schema.ts": {
+      "currentSha256": "0b1bd6565bcdc1550456da9bb94e433885263ef5e1c7890e02f2f10880b88467",
+      "previousSha256": "dce232095e4e64f6dbf659896817c90781acf99e477edd32bfaf0db0db92cc4b",
+      "patches": [
+        {
+          "offset": 861,
+          "insert": "\t\tcolumns['___' + key.replaceAll('.', '_')] = { type: (series === 'perUserNotes' || series === 'users') && !key.endsWith('total') ? 'smallint' : 'integer', default: 0 };\n",
+          "previous": "\t\tcolumns['___' + key.replaceAll('.', '_')] = { type: series === 'perUserNotes' && key !== 'total' ? 'smallint' : 'integer', default: 0 };\n"
+        },
+        {
+          "offset": 1477,
+          "insert": "\tusers: { hour: createNoteChartSchema('users', 'hour'), day: createNoteChartSchema('users', 'day') },\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/chart/store.ts": {
+      "currentSha256": "b0fa6860264a0b1cf0b072c34b29e71e9fa82fdb5c9940269c6236c1771c9486",
+      "previousSha256": "4bd5dbd911151a459e880d7fc1b998e4a0ddbda3e9b706a2135f3db6642454e6",
+      "patches": [
+        {
+          "offset": 1542,
+          "insert": "\t\tasync save({ series, group, diff, now, absolute }) {\n",
+          "previous": "\t\tasync save({ series, group, diff, now }) {\n"
+        },
+        {
+          "offset": 3449,
+          "insert": "\t\t\t\t\t\tconst min = (series === 'perUserNotes' || series === 'users') && !key.endsWith('total') ? -32768 : -2147483648;\n\t\t\t\t\t\tconst max = (series === 'perUserNotes' || series === 'users') && !key.endsWith('total') ? 32767 : 2147483647;\n",
+          "previous": "\t\t\t\t\t\tconst min = series === 'perUserNotes' && key !== 'total' ? -32768 : -2147483648;\n\t\t\t\t\t\tconst max = series === 'perUserNotes' && key !== 'total' ? 32767 : 2147483647;\n"
+        },
+        {
+          "offset": 3949,
+          "insert": "\t\t\t\t}\n\t\t\t\tfor (const [key, value] of Object.entries(absolute ?? {})) {\n\t\t\t\t\tconst column = '___' + key.replaceAll('.', '_');\n\t\t\t\t\tconst clamped = Math.max(-2147483648, Math.min(2147483647, value));\n\t\t\t\t\tupdate[column] = () => String(clamped);\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/integration/note-application.test.ts": {
+      "currentSha256": "58ed1170485aef6edc312545b1f7201081aef086cfc72f0d54c6efdf38387c84",
+      "previousSha256": "d5ad463ca81af52b857db2cc606b4cc21bea8479992a85d415806ec35b107e48",
+      "patches": [
+        {
+          "offset": 1255,
+          "insert": "\tupdateUsersChart: () => {}, startActorInstanceRegistration: () => {}, startUserHashtags: () => {\n",
+          "previous": "\tstartActorInstanceRegistration: () => {}, startUserHashtags: () => {\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/integration/remote-user.test.ts": {
+      "currentSha256": "4aa57bd807c56140c4877ece5a8a1e097c1395425be3ad2e24dfe274528a7f9c",
+      "previousSha256": "e6f1e3fabc937cd2bff5d74a98042049b9661af7362f62b59c20f27b5f833126",
+      "patches": [
+        {
+          "offset": 377,
+          "insert": "import { noteChartSchemas } from '../../src/platform/database/chart/schema.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 75695,
+          "insert": "\nasync function resetUsersChart() {\n\tawait resources.noteCharts.users.flush();\n\tfor (const span of ['hour', 'day'] as const) {\n\t\tawait resources.dataSource.getRepository(noteChartSchemas.users[span]).clear();\n\t}\n}\n\nasync function readUsersChart() {\n\tconst response = await fetch(`http://127.0.0.1:${port}/api/charts/users?span=hour&limit=1`);\n\texpect(response.status).toBe(200);\n\texpect(response.headers.get('cache-control')).toBe('public, max-age=3600');\n\treturn response.json() as Promise<any>;\n}\n\ntest('users chart tracks real public actor acquisition, canonical recovery, fresh/stale lookups and failed insertion', async () => {\n\tawait resetUsersChart();\n\tregister('users_chart');\n\texpect((await post({ text: '@users_chart@remote.test' })).status).toBe(200);\n\texpect((await readUsersChart()).remote.total).toEqual([0]);\n\tawait resources.noteCharts.users.flush();\n\texpect((await readUsersChart()).remote).toEqual({ total: [1], inc: [1], dec: [0] });\n\t// Existing account lookups and refreshes do not repeat registration's increment.\n\tawait post({ text: '@users_chart@remote.test' });\n\tawait stale((await remote('users_chart')).id);\n\tawait post({ text: '@users_chart@remote.test' });\n\tawait resources.noteCharts.users.flush();\n\texpect((await readUsersChart()).remote.total).toEqual([1]);\n\t// Pinned createPerson counts canonical duplicate recovery even though no row is inserted.\n\taliases.set('users_chart_alias', 'users_chart');\n\tawait post({ text: '@users_chart_alias@remote.test' });\n\tawait resources.noteCharts.users.flush();\n\texpect((await readUsersChart()).remote).toEqual({ total: [2], inc: [2], dec: [0] });\n\tregister('users_chart_failure');\n\tconst restore = await failWrites('user_profile');\n\ttry {\n\t\texpect((await post({ text: '@users_chart_failure@remote.test' })).status).toBe(200);\n\t} finally {\n\t\tawait restore();\n\t}\n\tawait resources.noteCharts.users.flush();\n\texpect((await readUsersChart()).remote.total).toEqual([2]);\n\texpect(await resources.dataSource.getRepository(MiUser).countBy({ usernameLower: 'users_chart_failure' })).toBe(0);\n\t// Resync corrects the duplicate increment from actual rows, without replaying history.\n\tawait resources.noteCharts.users.resync();\n\tconst users = resources.dataSource.getRepository(MiUser);\n\tconst rows = await users.find();\n\texpect((await readUsersChart()).remote.total).toEqual([rows.filter(row => row.host !== null).length]);\n\texpect((await readUsersChart()).remote.inc).toEqual([2]);\n});\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/chart/api.test.ts": {
+      "currentSha256": "b5a38b0ba596116c2d8e9f2a05f4b5c4288aabb0f2e9b1c75b83f079d6959939",
+      "previousSha256": "203bd8b611120aa270fa4dd8a499c22506978a7fef97fb016788921a1a09ab7d",
+      "patches": [
+        {
+          "offset": 146,
+          "insert": "import { createNoteChartsApi, createUsersChartsApi } from '../../../src/http/note-charts-api.js';\n",
+          "previous": "import { createNoteChartsApi } from '../../../src/http/note-charts-api.js';\n"
+        },
+        {
+          "offset": 3333,
+          "insert": "\ntest('users chart exposes GET/POST with shared parameter, credential and cache rules', async () => {\n\tconst read = vi.fn().mockResolvedValue({ local: { total: [1] }, remote: { total: [2] } });\n\tconst authenticate = vi.fn().mockResolvedValue(null);\n\tconst app = createUsersChartsApi({ read }, { logger, authenticate });\n\tconst response = await app.request('/api/charts/users?span=day&limit=2&offset=123');\n\texpect(response.status).toBe(200);\n\texpect(response.headers.get('Cache-Control')).toBe('public, max-age=3600');\n\texpect(read).toHaveBeenCalledWith('users', 'day', 2, 123, null);\n\tconst epoch = await app.request('/api/charts/users?span=hour&offset=0');\n\texpect(epoch.status).toBe(200);\n\texpect(read).toHaveBeenCalledWith('users', 'hour', 30, 0, null);\n\tconst optional = await app.request('/api/charts/users?span=hour&i=valid');\n\texpect(optional.status).toBe(200);\n\texpect(optional.headers.get('Cache-Control')).toBe('private, max-age=0, must-revalidate');\n\texpect((await app.request('/api/charts/users?span=bad')).status).toBe(400);\n\tconst posted = await app.request('/api/charts/users', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ span: 'hour' }) });\n\texpect(posted.status).toBe(200);\n\texpect(posted.headers.get('Cache-Control')).toBe('private, max-age=0, must-revalidate');\n\tauthenticate.mockRejectedValueOnce(new AuthenticationFailed());\n\texpect((await app.request('/api/charts/users?span=hour&i=bad')).status).toBe(401);\n});\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "currentSha256": "9212b657842bb80feecf2b75cdab599f4d33b5b5261c91a9516afe43c78fba72",
+      "previousSha256": "859b3e8e5ec9547b4dceaabc24e4c3a0554984bf2677afecd0ed3d16c47af2fd",
+      "patches": [
+        {
+          "offset": 1448,
+          "insert": "\t\tnoteCharts: { users: { update: vi.fn(), read: vi.fn(async () => ({ local: { total: [0] } })) }, read: vi.fn(async () => ({ local: { total: [0] } })) },\n",
+          "previous": "\t\tnoteCharts: { read: vi.fn(async () => ({ local: { total: [0] } })) },\n"
+        },
+        {
+          "offset": 2230,
+          "insert": "\t\t'/api/charts/users', '/api/charts/notes', '/api/charts/user/notes',\n",
+          "previous": "\t\t'/api/charts/notes', '/api/charts/user/notes',\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/federation/acquisition-policy.test.ts": {
+      "currentSha256": "dde8a2c3848fb3cc57c0f305050dbaa45a5d4efdaded7c1ca3a5c0a66405f64c",
+      "previousSha256": "1e2c3434e095cfe3574ee205fef7f8699eca4a1ebac2b926792a8acdb0ae2626",
+      "patches": [
+        {
+          "offset": 2148,
+          "insert": "\treturn createRemoteUsers({ noteCharts: { users: { update: () => {} } },\n",
+          "previous": "\treturn createRemoteUsers({\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/federation/local-featured-red.test.ts": {
+      "currentSha256": "072f41f4c2e9a067463b5d40b4c7b31273634faf70e138fa60ea9bbe190becf3",
+      "previousSha256": "9a5b9410665f3b75c0bc92745e5e5c4b23e9edfecb92dc815ae0ee1ddcbbc139",
+      "patches": [
+        {
+          "offset": 1804,
+          "insert": "\t\tnoteCharts: { users: { update: vi.fn(), read: vi.fn() } },\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/federation/remote-emojis.test.ts": {
+      "currentSha256": "b418b94c2c89be06e8c11e663cd4f4367ee4dff47e76f115a72fda04671c9fa0",
+      "previousSha256": "f49c60dd240d499479f2893e720a6bf03f77aea8b5f647a6dd10e108b8bf28ad",
+      "patches": [
+        {
+          "offset": 8746,
+          "insert": "\tconst ports = createRemoteUsers({ noteCharts: { users: { update: () => {} } },\n",
+          "previous": "\tconst ports = createRemoteUsers({\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/federation/remote-profile.test.ts": {
+      "currentSha256": "7e6d2085a088b3a4f6e5f362d8f9bbf5ebf6885c20d3dda8d08543bbfe600fbb",
+      "previousSha256": "0a76db04131d178de841911b323fec6ad07a64d8dc08cbae7bbf58b3498e2cb7",
+      "patches": [
+        {
+          "offset": 1855,
+          "insert": "\tconst ports = createRemoteUsers({ noteCharts: { users: { update: () => {} } },\n",
+          "previous": "\tconst ports = createRemoteUsers({\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/federation/remote-user.test.ts": {
+      "currentSha256": "b3ac9555441f15169bd5c8f6bcb9d9e68e7cdeebc9619f1af207155305a55109",
+      "previousSha256": "f986d52c124eb4ec94729faeaaad1062ea32d70d9ab5b3b454373f425ab9d586",
+      "patches": [
+        {
+          "offset": 1776,
+          "insert": "\tconst ports = createRemoteUsers({ noteCharts: { users: { update: () => {} } },\n",
+          "previous": "\tconst ports = createRemoteUsers({\n"
+        },
+        {
+          "offset": 3341,
+          "insert": "\t\t\tupdateUsersChart: () => {}, startActorInstanceRegistration: () => {}, startUserHashtags: () => {},\n",
+          "previous": "\t\t\tstartActorInstanceRegistration: () => {}, startUserHashtags: () => {},\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/note/create-note.test.ts": {
+      "currentSha256": "9bacbd6dd35128df8cdec5f377abfb496ecb8ed4f58de91b3cc55cdcc68cde48",
+      "previousSha256": "55f6a7f536aab24c130a238af0cfc85b8d714cce5859d61fdb70d4c1abbb0091",
+      "patches": [
+        {
+          "offset": 1524,
+          "insert": "\tupdateUsersChart: () => {}, startActorInstanceRegistration: () => {},\n",
+          "previous": "\tstartActorInstanceRegistration: () => {},\n"
+        }
+      ]
+    }
+  }
+}

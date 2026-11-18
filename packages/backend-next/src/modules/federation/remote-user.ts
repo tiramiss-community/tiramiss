@@ -36,6 +36,7 @@ export interface RemoteUserPorts {
 	clearActorImages(id: string): Promise<void>;
 	reportActorImageFailure(id: string, error: unknown): void;
 	startActorInstanceRegistration(host: string): void;
+	updateUsersChart(user: ResolvedUser, additional: boolean): void;
 	startUserHashtags: StartUserHashtags;
 	localId(uri: string): string | null;
 	readByAccount(account: Account): Promise<RemoteUserFacts | null>;

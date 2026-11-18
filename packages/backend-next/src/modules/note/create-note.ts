@@ -278,6 +278,7 @@ export function createCreateNote(dependencies: {
 			}
 		}
 		ports.startActorInstanceRegistration(punyHost(uri));
+		ports.updateUsersChart(created, true);
 		ports.startUserHashtags(hashtagUser, plan.user.tags);
 		// A present image can suppress both updates under upstream media policy.
 		if (plan.bothImagesAbsent) {

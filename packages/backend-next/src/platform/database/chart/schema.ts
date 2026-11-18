@@ -14,7 +14,7 @@ export function createNoteChartSchema(series: ChartSeries, span: ChartSpan): Ent
 		...(series === 'perUserNotes' ? { group: { type: 'varchar' as const, length: 128 } } : {}),
 	};
 	for (const key of chartKeys(series)) {
-		columns['___' + key.replaceAll('.', '_')] = { type: series === 'perUserNotes' && key !== 'total' ? 'smallint' : 'integer', default: 0 };
+		columns['___' + key.replaceAll('.', '_')] = { type: (series === 'perUserNotes' || series === 'users') && !key.endsWith('total') ? 'smallint' : 'integer', default: 0 };
 	}
 	const indexed = series === 'perUserNotes' ? ['date', 'group'] : ['date'];
 	return new EntitySchema<NoteChartRecord>({
@@ -24,6 +24,7 @@ export function createNoteChartSchema(series: ChartSeries, span: ChartSpan): Ent
 	});
 }
 export const noteChartSchemas = {
+	users: { hour: createNoteChartSchema('users', 'hour'), day: createNoteChartSchema('users', 'day') },
 	notes: { hour: createNoteChartSchema('notes', 'hour'), day: createNoteChartSchema('notes', 'day') },
 	perUserNotes: { hour: createNoteChartSchema('perUserNotes', 'hour'), day: createNoteChartSchema('perUserNotes', 'day') },
 };

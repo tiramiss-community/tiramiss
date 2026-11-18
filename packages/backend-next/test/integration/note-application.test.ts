@@ -25,7 +25,7 @@ const unavailable = async (): Promise<never> => {
 };
 const remoteUsers: RemoteUserPorts = {
 	clearActorImages: async () => {}, reportActorImageFailure: () => {},
-	startActorInstanceRegistration: () => {}, startUserHashtags: () => {
+	updateUsersChart: () => {}, startActorInstanceRegistration: () => {}, startUserHashtags: () => {
 		throw Error('unexpected actor mutation');
 	},
 	selfHost: 'example.test', localId: () => null,
