@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { projectIdCodecInput } from './id-codec-predecessor.mjs';
 import { validateDriveFolderPubsubSuccessor } from './drive-folder-pubsub-evidence.mjs';
-import { validateDriveFoldersSuccessor } from './drive-folders-evidence.mjs';
+import { assertDriveFolderInputHashes, validateDriveFoldersSuccessor } from './drive-folders-evidence.mjs';
 const read = path => readFileSync(new URL('../' + path, import.meta.url));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const file = 'packages/backend-next/src/platform/id-codec.ts';
@@ -45,6 +45,17 @@ test('folder input reads reject ID drift after the pubsub input validation has c
 		assert(pubsubInputsValidated && folderInputs, 'pubsub inputs pass before the folder input changes');
 		assert.equal(error.message.split('\n')[0], `measured current input drift: ${file}`);
 		assert(!error.message.includes('pubsub successor'));
+		return true;
+	});
+});
+
+
+test('the folder hash comparison itself rejects drift after projecting the exact ID successor', () => {
+	const inputs = { [file]: record.files[file].previousSha256 };
+	const view = path => projectIdCodecInput(path, read(path));
+	assert.doesNotThrow(() => assertDriveFolderInputHashes(inputs, view));
+	assert.throws(() => assertDriveFolderInputHashes(inputs, path => projectIdCodecInput(path, Buffer.concat([read(path), Buffer.from('\n')]))), error => {
+		assert.equal(error.message.split('\n')[0], `folder measured current input drift: ${file}`);
 		return true;
 	});
 });

@@ -57,6 +57,8 @@ node scripts/check-shipping.mjs --base origin/develop
 
 2026-11-19 Webレビュー追補: 138生成・既存12件の期待値を維持し、非ゼロ接尾辞を持つ17文字objectidを1件追加した。現在の近傍単体は209件/3files、HTTP/PGは6件がPASS。HTTP fixtureは同じ通常appとHonoのNode listenerを直接127.0.0.1へ接続し、実TCPの保存後読取を維持する。Vitestのキャンセルと10秒のfetch期限を渡し、ケース終了hookで時計復元・リクエスト中断・受付停止・受理済み処理とapp workの待機を行う。後片付けの待機は15秒、hookは20秒を上限とする。productionのHTTP helperと運用設定は変えていない。
 
-追加のroot contractは、pubsubの入力検証後にfolder側の読取だけへ変更を入れて拒否を確認する。folder自身の入力照合ループを意図的に外したcounterexampleで新規テストが失敗し、復元後3件がPASSした。固定SHAのGitオブジェクト取得・事前存在確認も再現手順へ追加した。
+追加のroot contractは、pubsubの入力検証後にfolder側の読取だけへ変更を入れて拒否を確認する。このテストは読取が主処理へ接続されていることを確認するが、scopeの再読取検査が先に働くため、folder固有の比較だけを証明するものではない。後続では、validatorが使うhash照合を`assertDriveFolderInputHashes`へ分離し、scopeを介さず`folder measured current input drift`自体を検証した。読取とsha計算を残してassert比較だけを外すcounterexampleで新規テストが失敗し、復元後4件がPASSした。固定SHAのGitオブジェクト取得・事前存在確認も再現手順へ追加した。
 
 追補後も`node --test scripts/*-contract*.test.mjs`は818件中817成功・0失敗・既存1skipでPASS。typecheck・変更ファイルlint・SPDX・locale safetyもPASSした。前述の817件の結果は追補前の測定として保持する。
+
+比較部分を分離した追補では、全root contractsを再実行して819件中818成功・0失敗・既存1skipでPASSした。元のscopeによる拒否とは別に、folder固有のhash不一致と比較だけを除去したcounterexampleの拒否を確認している。productionとHTTP fixtureは前の追補から変更していない。

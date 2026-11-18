@@ -29,6 +29,9 @@ export const successorFiles = Object.freeze([
  'packages/backend-next/src/composition/http-app.ts',
  'packages/backend-next/test/unit/composition/http-app.test.ts',
 ]);
+export function assertDriveFolderInputHashes(inputs, readFile) {
+ for (const [path, digest] of Object.entries(inputs)) assert.equal(sha(readFile(path)), digest, `folder measured current input drift: ${path}`);
+}
 export function validateDriveFoldersSuccessor(value, rawRead = read, optional = optionalRead) {
  return scopedEvidenceValidation(validateDriveFoldersSuccessor, value, rawRead, optional, (rawRead, optional) => {
  const beforeMeta = createValidatedMetaPredecessorReader(rawRead, optional);
@@ -46,7 +49,7 @@ export function validateDriveFoldersSuccessor(value, rawRead = read, optional = 
  assert.equal(value.noInputDrift, true);
  assert.deepEqual(value.inputsAfter, value.inputs);
  assert.equal(Object.keys(value.inputs).length, 20);
- for (const [path, digest] of Object.entries(value.inputs)) assert.equal(sha(readFile(path)), digest, `folder measured current input drift: ${path}`);
+ assertDriveFolderInputHashes(value.inputs, readFile);
  const bytes = readFile(predecessorPath);
  assert.equal(sha(bytes), predecessorSeal, 'folder predecessor seal');
  const previous = JSON.parse(bytes);
