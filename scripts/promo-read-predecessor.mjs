@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectParallelInput } from './parallel-inputs.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -12,6 +13,7 @@ const { files } = JSON.parse(record);
 
 // Preserve earlier measurements through only the exact additive #530 inputs.
 export function projectPromoReadInput(path, actual) {
+	actual = projectParallelInput(path, actual);
 	const binding = Object.hasOwn(files, path) ? files[path] : undefined;
 	if (!binding || sha(actual) !== binding.currentSha256) return actual;
 	let before = Buffer.from(actual);

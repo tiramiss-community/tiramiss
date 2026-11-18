@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectParallelInput } from './parallel-inputs.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -13,6 +14,7 @@ const { files } = JSON.parse(record);
 
 // Only these exact measured diagnostic changes project to the prior input; later drift remains visible.
 export function projectDatabaseDiagnosticsInput(path, actual) {
+	actual = projectParallelInput(path, actual);
 	const binding = files[path];
 	if (!binding || sha(actual) !== binding.currentSha256) {
 		return actual;
