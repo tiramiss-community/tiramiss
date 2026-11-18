@@ -1,0 +1,87 @@
+{
+  "id": "example-d43954b333-8e07cf085a",
+  "purpose": "固定範囲での形式・判定の試行。製品全体の追従台帳ではない。",
+  "from": "d43954b333045e6c5fbd7e1b47592088980d5912",
+  "to": "8e07cf085adf7009583d234a208e30436f020e26",
+  "forkSnapshot": "741478fdba",
+  "mechanicalSync": {
+    "pinnedCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+    "manifest": "packages/backend-upstream/upstream-sync.json",
+    "note": "既存の固定元。今回の試行でSHAを更新・本家をmergeしたものではない。"
+  },
+  "carryIn": [
+    {
+      "id": "BASE-138",
+      "status": "要対応",
+      "source": "https://github.com/tiramiss-community/tiramiss/issues/138",
+      "note": "既存の配布物残責任を取込前スナップショットとして入力した例。過去の差分台帳が存在したという主張ではない。"
+    }
+  ],
+  "items": [
+    {
+      "id": "UL-001",
+      "commits": ["9916f7350eff12e2a67bdd952c44370f3f9acfda"],
+      "contract": "UserProfile.passwordのDBコメントはremote userのときnullと記述する。値・null許容・認証動作の変更はない。",
+      "impact": "複製Entityのschema metadataと全migration履歴。",
+      "status": "対応済み",
+      "owner": "backend-upstream",
+      "acceptance": [
+        "複製Entityとmigrationが固定本家のGit blobと一致する。",
+        "upはremote、downはlocalへコメントだけを変更する。DB適用済みという判定はしない。"
+      ],
+      "implementation": [
+        "packages/backend-upstream/src/models/UserProfile.ts:148",
+        "packages/backend-upstream/migration/1790477603333-UserProfilePasswordComment.js"
+      ],
+      "verification": [
+        { "result": "PASS", "evidence": "verification.md#ul-001", "kind": "Git blob比較とDDL読解; DB実行なし" }
+      ],
+      "intentionalDifference": false
+    },
+    {
+      "id": "UL-002",
+      "commits": ["8e07cf085adf7009583d234a208e30436f020e26"],
+      "contract": "Dockerfile frontend 1.23→1.27、Node image 26.4.0-trixie→26.10.0-trixie。",
+      "impact": "backend-next配布物のbuild/runtimeとの対応付けが必要。旧Dockerfileの更新だけでは完了しない。",
+      "status": "未評価",
+      "owner": "#138 / #134",
+      "acceptance": ["採用するbuild/runtimeと新backendの配布物を照合し、必要なbuild・起動検証を記録する。"],
+      "implementation": [],
+      "verification": [],
+      "next": "#138の配布方式と結び付けて影響評価する。対象外とする場合も判断根拠を残す。"
+    },
+    {
+      "id": "UL-003",
+      "commits": ["8e07cf085adf7009583d234a208e30436f020e26"],
+      "contract": "本家の連合テストfixtureのnginx imageを1.30→1.31へ更新する。",
+      "impact": "採用する新backend連合テスト環境で比較・実行が未了。",
+      "status": "要対応",
+      "owner": "#134 / #136",
+      "acceptance": ["新実装の連合テストfixtureへの要否を判断し、採用時は対象版で連合テストを実行する。"],
+      "implementation": [],
+      "verification": [],
+      "next": "既存fixtureの文字列一致を連合動作の検証に代用しない。"
+    },
+    {
+      "id": "BASE-138",
+      "commits": [],
+      "carriedFrom": "https://github.com/tiramiss-community/tiramiss/issues/138",
+      "contract": "新backendの配布物・起動方式を整備し、配布物から起動検証する。",
+      "impact": "以前からの配布物残責任。今回の4 pathの処理だけでは消えない。",
+      "status": "要対応",
+      "owner": "#138",
+      "acceptance": ["#138の受入条件を満たし、配布物からの起動結果を記録する。"],
+      "implementation": [],
+      "verification": [],
+      "next": "#138で継続。UL-002と重なる場合も元IDと判断履歴を残して統合する。"
+    }
+  ],
+  "releaseDecision": {
+    "target": "8e07cf085adf7009583d234a208e30436f020e26",
+    "result": "BLOCKED",
+    "blockers": ["UL-002", "UL-003", "BASE-138"],
+    "productReleaseApproved": false,
+    "reason": "この差分と持越しに未評価・要対応が残る。全体#114/#139の機能・比較・停止切替検証も別途必要。",
+    "date": "2026-11-18"
+  }
+}
