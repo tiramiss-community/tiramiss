@@ -21,7 +21,7 @@ export function createNoteTranslateHttp(resources: RuntimeResources, config: Run
 			const { deeplAuthKey, deeplIsPro } = await resources.meta.fetch();
 			return { deeplAuthKey, deeplIsPro };
 		},
-		send: resources.outboundHttp.send,
+		send: (...args) => resources.outboundHttp.send(...args),
 	});
 	return createNoteTranslateApi({ ...application, authenticate: createTokenAuthenticator(manager, resources.logger), logger: resources.logger });
 }

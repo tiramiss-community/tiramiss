@@ -15,6 +15,7 @@ function fixture() {
 	const repository = { find: vi.fn(async () => [{ federation: 'all' }]), findOne: vi.fn(async () => null), findOneBy: vi.fn(async () => null), findOneByOrFail: vi.fn(async () => ({ federation: 'all' })), findBy: vi.fn(async () => []) };
 	const resources = {
 		meta: { fetch: async () => (await repository.find())[0] },
+		outboundHttp: { send: vi.fn() },
 		instanceAdministration: { updateInstance: vi.fn(), refreshMetadata: vi.fn() },
 		dataSource: { manager: { getRepository: () => repository } },
 		logger: { error: vi.fn() },
@@ -57,9 +58,9 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 		'/fluent-emoji/*', '/twemoji/*', '/twemoji-badge/*',
 		'/emoji/*', '/avatar/*', '/identicon/*',
 		'/api/drive/folders/create', '/api/drive/folders/delete', '/api/drive/folders/find', '/api/drive/folders/show', '/api/drive/folders/update',
-		'/api/notes/polls/recommendation', '/api/notes', '/api/notes/delete', '/api/notes/show', '/api/notes/create', '/api/test-queue',
+		'/api/notes/polls/recommendation', '/api/notes/translate', '/api/notes', '/api/notes/delete', '/api/notes/show', '/api/notes/create', '/api/test-queue',
 	]);
-	for (const path of ['notes/polls/recommendation', 'admin/roles/show', 'admin/roles/update', 'notes/delete', 'notes/create', 'drive/files/show', 'drive/files/find', 'drive/files/find-by-hash', 'drive/files/check-existence', 'admin/drive/show-file', 'drive/folders/create', 'drive/folders/delete', 'drive/folders/find', 'drive/folders/show', 'drive/folders/update']) {
+	for (const path of ['notes/translate', 'notes/polls/recommendation', 'admin/roles/show', 'admin/roles/update', 'notes/delete', 'notes/create', 'drive/files/show', 'drive/files/find', 'drive/files/find-by-hash', 'drive/files/check-existence', 'admin/drive/show-file', 'drive/folders/create', 'drive/folders/delete', 'drive/folders/find', 'drive/folders/show', 'drive/folders/update']) {
 		const response = await app.request(`/api/${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
 		expect(response.status).toBe(401);
 		expect(await response.json()).toHaveProperty('error.code', 'CREDENTIAL_REQUIRED');

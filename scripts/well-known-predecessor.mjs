@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectNoteTranslationInput } from './note-translate-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -14,6 +15,7 @@ const { files } = JSON.parse(record);
 // Preserve old measurements through only these exact two composition changes.
 // Unknown bytes still reach the existing historical validators' drift guards.
 export function projectWellKnownInput(path, actual) {
+	actual = projectNoteTranslationInput(path, actual);
 	if (!Object.hasOwn(files, path)) {
 		return actual;
 	}

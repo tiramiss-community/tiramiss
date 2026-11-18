@@ -51,3 +51,9 @@ BACKEND_NEXT_TEST_DB_PORT=55486 BACKEND_NEXT_TEST_REDIS_PORT=56486 BACKEND_NEXT_
 2026-11-18 の限定検証: translation unit 34 / integration 16、build / typecheck、inventory、shipping は実行結果を PR に記録する。
 unit は通常 CI の glob、integration は `test:integration` の glob に含まれる。
 本家の `HttpRequestService.send` は既定で非 2xx を拒否し、新 client の既定 `okOnly: true` と一致する。
+
+## 共有入口の履歴参照
+
+`note-routes.ts` の import・prepared field・route 登録と、既存 composition unit の outbound client fixture・route/認証期待値だけを追加した。`scripts/note-translate-predecessor.mjs` はこの 2 ファイルの追加前後の固定 hash と、各 3 断片の一意一致を検査して前の bytes を復元する。既存 notes-pagination / well-known の有限な入口投影へ接続し、未知の bytes は下流の既存 drift 検査へ渡す。`note-translate-contract.test.mjs` が両共有ファイルの正常投影と、通常の notes validator による未知の変更の拒否を検証する。過去の receipt / 測定件数 / source 結果は書き換えず、古い製品テストを今回再測定したとは主張しない。
+
+translation unit 34 件に加え、既存 composition unit 16 件も今回実行し成功した。

@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { projectPollRecommendationInput, projectPageReadInput, validateNotesPaginationEvidence } from './notes-pagination-evidence.mjs';
+import { projectNoteTranslationInput, projectPollRecommendationInput, projectPageReadInput, validateNotesPaginationEvidence } from './notes-pagination-evidence.mjs';
 
 const read = path => readFileSync(new URL('../' + path, import.meta.url));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -14,7 +14,7 @@ const directory = 'docs/superpowers/compatibility/poll-recommendation/';
 
 const shared = 'packages/backend-next/test/unit/composition/http-app.test.ts';
 function pollOnly(path, bytes) {
-	bytes = projectPageReadInput(path, bytes);
+	bytes = projectNoteTranslationInput(path, projectPageReadInput(path, bytes));
 	if (path === shared) bytes = Buffer.from(bytes.toString().replace(", '/api/users/relation'", ''));
 	if (path !== shared || sha(bytes) !== 'cdcc4eb0be344bbafde0b45f85072cd570d17850f81e275908836290ca8589d2') return bytes;
 	const memoLine = "\t\t'/api/users/update-memo',\n";
