@@ -286,10 +286,6 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		const announcementArchives = createAnnouncementArchives({
 			...createAnnouncementArchiveStore(dataSource.manager), schedule: jobs.scheduleAnnouncementArchive, now: () => new Date(),
 		});
-		await announcementArchives.restore();
-		if (cancelled) {
-			throw timeout;
-		}
 		const webhooks = await openUserWebhooks({ events: internalEvents, manager: dataSource.manager, redis: config.redisForPubsub, url: config.url, timeoutMs: config.processes.startupTimeoutMs, enqueue: jobs.enqueueWebhook, registerCleanup: cleanup => scope.defer(cleanup) });
 		if (cancelled) {
 			await webhooks.close();

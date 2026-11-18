@@ -18,7 +18,7 @@ const state = vi.hoisted(() => ({
 	releaseResources: vi.fn(async () => {}),
 }));
 vi.mock('../../src/composition/create-runtime.js', () => ({ createRuntime: async () => ({
-	announcementArchives: { archive: async () => false },
+	announcementArchives: { archive: async () => false, restore: async () => {} },
 	federationKeys: { readUserKeypair: async () => {
 		throw new Error('key unavailable');
 	} }, outboundHttp: { send: vi.fn(async () => {

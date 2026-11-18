@@ -26,6 +26,17 @@ let queue: Queue;
 let control: Redis;
 const logger = createLogger('archive-test', () => {});
 
+async function restoredResources() {
+	const resources = await connectResources(database.config, logger);
+	try {
+		await resources.announcementArchives.restore();
+		return resources;
+	} catch (error) {
+		await resources.close();
+		throw error;
+	}
+}
+
 beforeAll(async () => {
 	database = await createTestDatabase();
 	await migrateDatabase(database.config.database);
@@ -42,7 +53,7 @@ afterAll(async () => {
 	await database?.close();
 });
 
-test('normal resource startup restores only active dated announcements and normal worker archives them', async () => {
+test('assembled archive restoration restores only active dated announcements and normal worker archives them', async () => {
 	const due = new Date(Date.now() - 1000);
 	const future = new Date(Date.now() + 60000);
 	await source.getRepository(MiAnnouncement).insert([
@@ -51,13 +62,13 @@ test('normal resource startup restores only active dated announcements and norma
 		{ id: 'inactive', title: 'Inactive', text: 'Inactive', isActive: false, autoArchiveAt: due },
 		{ id: 'undated', title: 'Undated', text: 'Undated' },
 	]);
-	const resources = await connectResources(database.config, logger);
+	const resources = await restoredResources();
 	let stop: (() => Promise<void>) | undefined;
 	try {
 		const saved = await queue.getJobs(['waiting', 'delayed']);
 		expect(saved.map(job => job.data.announcementId).sort()).toEqual(['due', 'future']);
 		stop = await startQueueWorkers(resources, database.config, error => {
-			throw error; 
+			throw error;
 		});
 		await vi.waitFor(async () => expect(await source.getRepository(MiAnnouncement).findOneByOrFail({ id: 'due' })).toMatchObject({ isActive: false, updatedAt: expect.any(Date) }));
 		expect(await source.getRepository(MiAnnouncement).findOneByOrFail({ id: 'future' })).toMatchObject({ isActive: true, updatedAt: null });
@@ -82,9 +93,9 @@ test('saved old payloads, changed dates, removed dates and deleted rows complete
 	const originals = await Promise.all(['changed', 'removeddate', 'inactive', 'deleted'].map(announcementId => queue.add('archiveAnnouncement', { announcementId, autoArchiveAt: due.getTime() }, { jobId: `old-${announcementId}` })));
 	const unknown = await queue.add('unimplementedSystemJob', {}, { jobId: 'unknown' });
 	const invalid = await queue.add('archiveAnnouncement', { announcementId: 'changed' }, { jobId: 'invalid' });
-	const resources = await connectResources(database.config, logger);
+	const resources = await restoredResources();
 	const stop = await startQueueWorkers(resources, database.config, error => {
-		throw error; 
+		throw error;
 	});
 	try {
 		await vi.waitFor(async () => {
@@ -108,7 +119,7 @@ test('future jobs wait, duplicates coalesce, failures can be retried and complet
 	await source.getRepository(MiAnnouncement).createQueryBuilder().delete().execute();
 	const due = new Date(Date.now() + 700);
 	await source.getRepository(MiAnnouncement).insert({ id: 'delayed', title: 'Delayed', text: 'Delayed', autoArchiveAt: due });
-	const resources = await connectResources(database.config, logger);
+	const resources = await restoredResources();
 	let stop: (() => Promise<void>) | undefined;
 	try {
 		const id = `archiveAnnouncement-delayed-${due.getTime()}`;
@@ -120,7 +131,7 @@ test('future jobs wait, duplicates coalesce, failures can be retried and complet
 		expect(await queue.getJobs(['delayed', 'waiting'])).toHaveLength(1);
 		await source.query('ALTER TABLE announcement RENAME TO announcement_unavailable');
 		stop = await startQueueWorkers(resources, database.config, error => {
-			throw error; 
+			throw error;
 		});
 		await vi.waitFor(async () => expect(await job.getState()).toBe('failed'), { timeout: 10000 });
 		await source.query('ALTER TABLE announcement_unavailable RENAME TO announcement');
@@ -149,7 +160,7 @@ test('concurrent matching jobs update once and later retries preserve updatedAt'
 	await source.getRepository(MiAnnouncement).createQueryBuilder().delete().execute();
 	const due = new Date(Date.now() - 1000);
 	await source.getRepository(MiAnnouncement).insert({ id: 'race', title: 'Race', text: 'Race', autoArchiveAt: due });
-	const resources = await connectResources(database.config, logger);
+	const resources = await restoredResources();
 	try {
 		const outcomes = await Promise.all(Array.from({ length: 5 }, () => resources.announcementArchives.archive('race', due)));
 		expect(outcomes.filter(Boolean)).toHaveLength(1);
@@ -169,7 +180,7 @@ test('enqueue rejection fails startup and a later normal start restores the rese
 	const client = control;
 	await client.acl('SETUSER', 'default', '-evalsha', '-eval');
 	try {
-		const failed = await connectResources(database.config, logger).then(async resources => {
+		const failed = await restoredResources().then(async resources => {
 			await resources.close();
 			return false;
 		}, () => true);
@@ -178,7 +189,7 @@ test('enqueue rejection fails startup and a later normal start restores the rese
 	} finally {
 		await client.acl('SETUSER', 'default', '+evalsha', '+eval');
 	}
-	const resources = await connectResources(database.config, logger);
+	const resources = await restoredResources();
 	try {
 		expect(await queue.getJob(`archiveAnnouncement-enqueuefailure-${date.getTime()}`)).toMatchObject({ data: { announcementId: 'enqueuefailure', autoArchiveAt: date.getTime() } });
 	} finally {
@@ -209,12 +220,12 @@ test('failed saved identity is removed and re-enqueued by the next startup resto
 	await source.getRepository(MiAnnouncement).createQueryBuilder().delete().execute();
 	const date = new Date(Date.now() - 1000);
 	await source.getRepository(MiAnnouncement).insert({ id: 'failedidentity', title: 'Failed', text: 'Failed', autoArchiveAt: date });
-	const resources = await connectResources(database.config, logger);
+	const resources = await restoredResources();
 	let stop: (() => Promise<void>) | undefined;
 	const archive = vi.spyOn(resources.announcementArchives, 'archive').mockRejectedValueOnce(Error('temporary database failure'));
 	try {
 		stop = await startQueueWorkers(resources, database.config, error => {
-			throw error; 
+			throw error;
 		});
 		const jobId = `archiveAnnouncement-failedidentity-${date.getTime()}`;
 		await vi.waitFor(async () => expect(await (await queue.getJob(jobId))!.getState()).toBe('failed'));
@@ -225,7 +236,7 @@ test('failed saved identity is removed and re-enqueued by the next startup resto
 		expect(await (await queue.getJob(jobId))!.getState()).toBe('waiting');
 		expect((await queue.getJob(jobId))!.attemptsMade).toBe(0);
 		stop = await startQueueWorkers(resources, database.config, error => {
-			throw error; 
+			throw error;
 		});
 		await vi.waitFor(async () => expect(await (await queue.getJob(jobId))!.getState()).toBe('completed'));
 		expect(await source.getRepository(MiAnnouncement).findOneByOrFail({ id: 'failedidentity' })).toMatchObject({ isActive: false });

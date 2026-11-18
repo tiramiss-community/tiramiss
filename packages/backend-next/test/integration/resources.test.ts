@@ -7,7 +7,6 @@ import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { createTestDatabase } from '../helpers/database.js';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createLogger } from '../../src/platform/logger.js';
-import { migrateDatabase } from '../../src/platform/database/migrate.js';
 
 const runtimeHooks = vi.hoisted(() => ({
 	afterReady: undefined as undefined | (() => Promise<void>),
@@ -35,7 +34,6 @@ vi.mock('../../src/platform/job-queue/runtime.js', async (importOriginal) => {
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 beforeAll(async () => {
 	database = await createTestDatabase();
-	await migrateDatabase(database.config.database);
 });
 afterAll(async () => {
 	await database?.close();

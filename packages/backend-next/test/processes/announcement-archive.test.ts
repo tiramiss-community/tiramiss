@@ -56,3 +56,45 @@ test('ordinary worker entrypoint restores persisted reservations, honors deadlin
 		await file.close();
 	}
 });
+
+test.each(['http', 'worker'])('%s with pending migrations cannot enqueue archive reservations', async role => {
+	await queue.obliterate({ force: true });
+	await source.getRepository(MiAnnouncement).createQueryBuilder().delete().execute();
+	const date = new Date(Date.now() + 60000);
+	const id = `pending${role}`;
+	await source.getRepository(MiAnnouncement).insert({ id, title: 'Pending', text: 'Pending', autoArchiveAt: date });
+	const [missing] = await source.query('DELETE FROM migrations WHERE id = (SELECT max(id) FROM migrations) RETURNING *');
+	const file = await configuration({ ...database.config, http: { port: await freePort() } });
+	const child = launch(`built/entrypoints/${role}.js`, file.path);
+	try {
+		expect((await child.exit).code, child.output()).toBe(1);
+		expect(child.output()).toContain('PENDING_MIGRATIONS');
+		expect(child.messages.some((message: any) => message.type === 'ready')).toBe(false);
+		expect(await queue.getJob(`archiveAnnouncement-${id}-${date.getTime()}`)).toBeUndefined();
+	} finally {
+		await child.close();
+		await file.close();
+		await source.createQueryBuilder().insert().into('migrations').values(missing).execute();
+	}
+});
+
+test('a blocked archive restoration stays inside the ordinary child startup deadline', async () => {
+	await queue.obliterate({ force: true });
+	const lock = source.createQueryRunner();
+	await lock.connect();
+	await lock.startTransaction();
+	await lock.query('LOCK TABLE announcement IN ACCESS EXCLUSIVE MODE');
+	const file = await configuration({ ...database.config, http: { port: await freePort() }, processes: { ...database.config.processes, startupTimeoutMs: 1500 } });
+	const child = launch('built/entrypoints/worker.js', file.path);
+	try {
+		expect((await child.exit).code, child.output()).toBe(1);
+		expect(child.output()).toContain('startup.timeout');
+		expect(child.messages.some((message: any) => message.type === 'ready')).toBe(false);
+		expect(await queue.getJobs(['waiting', 'delayed'])).toEqual([]);
+	} finally {
+		await child.close();
+		await file.close();
+		await lock.rollbackTransaction();
+		await lock.release();
+	}
+});

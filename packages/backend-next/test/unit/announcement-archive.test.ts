@@ -45,9 +45,9 @@ test('valid persisted payload is processed with explicit time, failure is retain
 	const ports = { reservations: async () => [], schedule: async () => {}, archive: vi.fn(async () => true), now: () => now };
 	const archives = createAnnouncementArchives(ports);
 	const logger = { info: () => {
-		throw Error('logger'); 
+		throw Error('logger');
 	}, debug: () => {
-		throw Error('logger'); 
+		throw Error('logger');
 	}, error: vi.fn() };
 	const process = createAnnouncementArchiveProcessor(archives.archive, logger);
 	const payload = { announcementId: 'id', autoArchiveAt: now.getTime() };

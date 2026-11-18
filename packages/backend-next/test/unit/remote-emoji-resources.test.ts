@@ -4,7 +4,7 @@
  */
 import { EventEmitter } from 'node:events';
 import { JobRuntime } from '@mokurokujs/core';
-import { MiAnnouncement, MiEmoji } from 'backend-upstream/entities';
+import { MiEmoji } from 'backend-upstream/entities';
 import { afterEach, expect, test, vi } from 'vitest';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import * as database from '../../src/platform/database/data-source.js';
@@ -52,7 +52,6 @@ test('public actor emoji resources insert distinct aid IDs within one millisecon
 	vi.spyOn(JobRuntime.prototype, 'stop').mockResolvedValue();
 	vi.spyOn(Date, 'now').mockReturnValue(1800000000000);
 	vi.spyOn(repository, 'findBy').mockResolvedValue([]);
-	vi.spyOn(source.getRepository(MiAnnouncement), 'find').mockResolvedValue([]);
 	vi.spyOn(repository, 'insert').mockImplementation(async input => {
 		const row = input as MiEmoji;
 		if (rows.has(row.id)) {
