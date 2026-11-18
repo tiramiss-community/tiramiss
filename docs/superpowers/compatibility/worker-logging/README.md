@@ -44,3 +44,12 @@ node --test scripts/worker-logging-contract.test.mjs
 ## 残る #578
 
 明示的な logging 設定、verbose/quiet/domain/off、pretty/json 選択、API/client/chart の各設定、bootstrap・環境・マシン情報、未処理拒否/例外、長大値・期限付きflushは本 slice の完了範囲に含めない。全体の設定別互換性や #135 の logging 関係行の昇格・#578 close を主張しない。既存の実行3 queue以外のworker移植は各担当に残る。
+
+
+## 既存試験のログ期待値の追補（PR #631）
+
+CI で既存 `deliver-queue.test.ts` の2件が、変更前の完全URL・HTTP status text をログへ求めて失敗した。ログの期待値だけを origin と `delivery-rejected` に合わせ、実HTTPの配送先、503の待ち時間・再試行・成功、404の元の `failedReason`・試行数は保持する。N7の terminal AP 404 の通常Supervisor試験にも同じ分類の期待値を適用した。Webhook結合試験に古いログ期待値はなかった。
+
+[追補の入力・実測](integration-followup.json)は配信/Webhook結合11件とN7の対象process1件を記録する。processの他7件は名前による選択でskipしたもので、全N7の再実測を主張しない。R2の16入力・113/8件・runtime recordは変更しない。
+
+Meta cache CI fixtureの既存hash検査で配信試験の差分による失敗を再現した。現在の配信試験の正確なhashだけを認識してR2時点のbytesを復元し、その後は元のMeta cache検査と履歴復元へ渡す。元のreceipt・期待hash・測定結果は書き換えない。未知のbytesは元の検査で拒否され、追補も現在の2試験・R2記録・raw logとJSON結果の改変を拒否する。

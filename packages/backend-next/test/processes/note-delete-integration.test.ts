@@ -846,7 +846,7 @@ test('N7 Supervisor keeps terminal AP 404 failed without recreating the post', a
 		expect(await jobs[0].getState()).toBe('failed');
 		expect(jobs[0].attemptsMade).toBe(1); expect(jobs[0].opts.attempts).toBe(12);
 		expect(jobs[0].failedReason).toBe('404 Not Found');
-		expect(jobFailures(graph)).toEqual([expect.objectContaining({ queue: 'deliver', reason: '404 Not Found', error: expect.objectContaining({ name: 'UnrecoverableError' }) })]);
+		expect(jobFailures(graph)).toEqual([expect.objectContaining({ queue: 'deliver', reason: 'delivery-rejected', error: expect.objectContaining({ name: 'UnrecoverableError' }) })]);
 		expect(deliveries(noteId)).toHaveLength(1);
 		expect(deliveries(noteId)[0].verify(publicKeyPem)).toEqual({ signature: true, digest: true });
 		expect(await source.getRepository(MiNote).findOneByOrFail({ id: noteId })).toMatchObject({ text, userId: seeded.actors.ordinary.id });

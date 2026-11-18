@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "scope": "worker-logging-existing-runtime-assertions",
+  "baseRevision": "0fd9068da5cfde3f9a6a027e2959aa39db7f3bb4",
+  "issueComplete": false,
+  "r2": {
+    "path": "docs/superpowers/compatibility/worker-logging/runtime-evidence.json",
+    "sha256": "d8bc30f8ea3cf0c8e75bb57e1e57fe638764e3ca03907e1fc2af7396891a1c7a"
+  },
+  "files": {
+    "packages/backend-next/test/integration/deliver-queue.test.ts": {
+      "sha256": "bdf5fbc4d81ed1a2e7e18f44ac53f587905f7b817709992aa7e41f036f548ac8",
+      "previousSha256": "aec7ff85ffa2aa739a299ed27f8350e263db13f20ecd02681af9e3059518f230",
+      "patches": [
+        {
+          "offset": 6193,
+          "insert": "",
+          "previous": "`${"
+        },
+        {
+          "offset": 6205,
+          "insert": "",
+          "previous": "}/inbox/flaky`"
+        },
+        {
+          "offset": 6823,
+          "insert": "delivery-rejec",
+          "previous": "404 No"
+        },
+        {
+          "offset": 6838,
+          "insert": "e",
+          "previous": " Foun"
+        }
+      ]
+    },
+    "packages/backend-next/test/processes/note-delete-integration.test.ts": {
+      "sha256": "89ce86a83f847db0017bd1adbf0bae9c2b4df9cfbf9b8a0aaf2aef2aa2233fad",
+      "previousSha256": "702d073618dc46b2a65346283a472aee85192ef9ed6643eb16b1494c1956b135",
+      "patches": [
+        {
+          "offset": 46230,
+          "insert": "delivery-rejec",
+          "previous": "404 No"
+        },
+        {
+          "offset": 46245,
+          "insert": "e",
+          "previous": " Foun"
+        }
+      ]
+    }
+  },
+  "runs": [
+    {
+      "name": "integration",
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55578 BACKEND_NEXT_TEST_REDIS_PORT=56578 pnpm --filter backend-next test:integration test/integration/deliver-queue.test.ts test/integration/user-webhook.test.ts --reporter=json --outputFile=/tmp/578-r3-integration.json",
+      "exitCode": 0,
+      "log": "/tmp/578-r3-integration.log",
+      "logSha256": "b09ade6bb0226be71ffcabce1406760c689f329bc756b5ed2066096cdc7e03eb",
+      "artifact": "/tmp/578-r3-integration.json",
+      "artifactSha256": "7cbcbe07f8d9c3dc4e795166ef7106865f44e0304ffd1ca84c6b063d29e2af55",
+      "passed": 11,
+      "skipped": 0
+    },
+    {
+      "name": "process",
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55578 BACKEND_NEXT_TEST_REDIS_PORT=56578 BACKEND_NEXT_TEST_MEILI_PORT=57578 pnpm --filter backend-next test:process test/processes/note-delete-integration.test.ts -t 'N7 Supervisor keeps terminal AP 404 failed without recreating the post' --reporter=json --outputFile=/tmp/578-r3-process.json",
+      "exitCode": 0,
+      "log": "/tmp/578-r3-process.log",
+      "logSha256": "37f14958655d299a8613d42dc6b83c8243062f88c40b861968b4cb0959a690c9",
+      "artifact": "/tmp/578-r3-process.json",
+      "artifactSha256": "bacc4e0eaede515d85cf8b9d5e474fb23ca649a16ade3f264d13b572f2fb16e7",
+      "passed": 1,
+      "skipped": 7
+    },
+    {
+      "name": "shipping",
+      "command": "node scripts/check-shipping.mjs --base 0fd9068da5",
+      "exitCode": 0,
+      "log": "/tmp/578-r3-shipping.log",
+      "logSha256": "96ae725fdef73ad2445ec6d89afb1a2f5f5c9579e9510408be84c0cab1eced16"
+    }
+  ],
+  "observedContractFailure": {
+    "command": "node --test scripts/meta-cache-ci-fixtures-contract.test.mjs scripts/note-contract-posting.test.mjs",
+    "exitCode": 1,
+    "failure": "Meta cache measured current input drift (CI fixtures): packages/backend-next/test/integration/deliver-queue.test.ts",
+    "log": "/tmp/578-r3-contract-red.log",
+    "logSha256": "8da662ba0998ddffee4a4b221ece879f3ce003dec234a7665f05abfdf135dd35"
+  }
+}
