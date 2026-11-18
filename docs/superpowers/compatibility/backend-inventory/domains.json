@@ -3970,6 +3970,72 @@
       "evidenceRevision": "4597043a15692a1a35f60bbc4490a66afef76edd",
       "note": "#449/#450: normal child startup after migration checks restores active dated announcements; named system archiveAnnouncement worker preserves pinned identity, delay and retention and atomically checks ID/active/exact saved deadline/due time. Fixed source9 PostgreSQL cases and source producer/processor with real Redis/BullMQ match saved observations; normal startup/worker tests cover stale/deleted/cancelled dates, duplication, DB retry, failed/completed replacement and enqueue failure; ordinary process restart restores lost reservations. Admin CRUD/cancellation #194, other system handlers/schedulers #199/#200, conservative cutover system rejection #526, parent #193/#199/#114 remain unfinished. Full upstream Nest server not measured."
     },
+    "api:notes/translate": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/note-translate/public.ts",
+        "packages/backend-next/src/platform/database/note-translate.ts",
+        "packages/backend-next/src/http/note-translate-api.ts",
+        "packages/backend-next/src/composition/note-translate-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/note-translate/translate.test.ts",
+        "packages/backend-next/test/unit/note-translate/source.test.ts",
+        "packages/backend-next/test/fixtures/note-translate/translate.ts.txt",
+        "packages/backend-next/test/integration/note-translate.test.ts",
+        "docs/superpowers/compatibility/note-translate/README.md"
+      ],
+      "differences": [
+        "Fixed source literal callback with dependency doubles; canonical listening HTTP, migrated PostgreSQL, Redis and real outbound client with fake DeepL. Full upstream HTTP/RoleService/NoteEntityService not reexecuted. Existing Note D7 and Meta/cache boundaries retained. Transport/JSON exception messages fixed to avoid exposing key material; INTERNAL_ERROR/500 preserved."
+      ],
+      "note": "#486: authenticated read:account notes/translate; effective Role policy, visibility and packed hidden gate precede empty-text/key handling; CW, targetLang prefix, free/pro URL, auth/form/response, absent key and outbound failures verified. No translation persistence. Parent #183/#114 and posting partial remain unfinished.",
+      "evidenceRevision": "025bb539b8a6c0f519b3b899da46df357d13d9a3"
+    },
+    "meta-setting:deeplAuthKey": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/note-translate/public.ts",
+        "packages/backend-next/src/platform/database/note-translate.ts",
+        "packages/backend-next/src/http/note-translate-api.ts",
+        "packages/backend-next/src/composition/note-translate-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/note-translate/translate.test.ts",
+        "packages/backend-next/test/unit/note-translate/source.test.ts",
+        "packages/backend-next/test/fixtures/note-translate/translate.ts.txt",
+        "packages/backend-next/test/integration/note-translate.test.ts",
+        "docs/superpowers/compatibility/note-translate/README.md"
+      ],
+      "differences": [
+        "Fixed source literal callback with dependency doubles; canonical listening HTTP, migrated PostgreSQL, Redis and real outbound client with fake DeepL. Full upstream HTTP/RoleService/NoteEntityService not reexecuted. Existing Note D7 and Meta/cache boundaries retained. Transport/JSON exception messages fixed to avoid exposing key material; INTERNAL_ERROR/500 preserved."
+      ],
+      "note": "#486: authenticated read:account notes/translate; effective Role policy, visibility and packed hidden gate precede empty-text/key handling; CW, targetLang prefix, free/pro URL, auth/form/response, absent key and outbound failures verified. No translation persistence. Parent #183/#114 and posting partial remain unfinished.",
+      "evidenceRevision": "025bb539b8a6c0f519b3b899da46df357d13d9a3"
+    },
+    "meta-setting:deeplIsPro": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/note-translate/public.ts",
+        "packages/backend-next/src/platform/database/note-translate.ts",
+        "packages/backend-next/src/http/note-translate-api.ts",
+        "packages/backend-next/src/composition/note-translate-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/note-translate/translate.test.ts",
+        "packages/backend-next/test/unit/note-translate/source.test.ts",
+        "packages/backend-next/test/fixtures/note-translate/translate.ts.txt",
+        "packages/backend-next/test/integration/note-translate.test.ts",
+        "docs/superpowers/compatibility/note-translate/README.md"
+      ],
+      "differences": [
+        "Fixed source literal callback with dependency doubles; canonical listening HTTP, migrated PostgreSQL, Redis and real outbound client with fake DeepL. Full upstream HTTP/RoleService/NoteEntityService not reexecuted. Existing Note D7 and Meta/cache boundaries retained. Transport/JSON exception messages fixed to avoid exposing key material; INTERNAL_ERROR/500 preserved."
+      ],
+      "note": "#486: authenticated read:account notes/translate; effective Role policy, visibility and packed hidden gate precede empty-text/key handling; CW, targetLang prefix, free/pro URL, auth/form/response, absent key and outbound failures verified. No translation persistence. Parent #183/#114 and posting partial remain unfinished.",
+      "evidenceRevision": "025bb539b8a6c0f519b3b899da46df357d13d9a3"
+    },
     "api:admin/promo/create": {
       "status": "verified",
       "implementation": [

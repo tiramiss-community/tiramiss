@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { projectNoteTranslationInput } from './note-translate-predecessor.mjs';
 import { projectPromoInput } from './promo-predecessor.mjs';
 const read = path => readFileSync(new URL('../' + path, import.meta.url));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -42,7 +43,7 @@ test('promo additive inputs preserve exact historical bytes and pass unknown dri
 	const { files } = JSON.parse(read(directory + 'compatibility-predecessor.json'));
 	assert.equal(Object.keys(files).length, 6);
 	for (const [path, binding] of Object.entries(files)) {
-		const current = read(path);
+		const current = projectNoteTranslationInput(path, read(path));
 		assert.equal(sha(current), binding.currentSha256);
 		assert.equal(sha(projectPromoInput(path, current)), binding.previousSha256);
 		const drift = Buffer.concat([current, Buffer.from('\n')]);

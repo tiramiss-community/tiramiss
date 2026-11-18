@@ -11,6 +11,7 @@ import { getAvatarImagesPath } from '../http/avatar-images-api.js';
 import { createPublicEmojisHttp } from './public-emojis-http.js';
 import { createUserRelationHttp } from './user-relation-http.js';
 import { createPromoHttp } from './promo-http.js';
+import { createNoteTranslateHttp } from './note-translate-http.js';
 import { createUserMemoHttp } from './user-memo-http.js';
 import { createPagesHttp } from './pages-http.js';
 import { createDriveFilesHttp } from './drive-files-http.js';
@@ -42,6 +43,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		.route('/', createRoleHttpApp(resources, config))
 		.route('/', createUserMemoHttp(resources, config))
 		.route('/', createPromoHttp(resources, config))
+		.route('/', createNoteTranslateHttp(resources, config))
 		.route('/', createHashtagCatalogHttp(resources))
 		.route('/', announcements.app)
 		.route('/', createUserRelationHttp(resources))
