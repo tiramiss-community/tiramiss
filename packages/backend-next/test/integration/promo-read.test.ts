@@ -136,7 +136,9 @@ test('database lookup/existence/insert failures match pinned callback and preser
 	await resources.dataSource.query('ALTER TABLE promo_read ADD CONSTRAINT promo_read_test_reject CHECK ("noteId" <> \'publicnote\')');
 	try {
 		const input = { noteId: 'publicnote' };
-		expect((await call(input)).status).toBe(500);
+		const response = await call(input);
+		expect(response.status).toBe(500);
+		expect((await response.json()).error.code).toBe('INTERNAL_ERROR');
 		expect(sourcePg([{ id: 'insert', input, rows: [] }], true)).toEqual([{ id: 'insert', error: { code: 'INTERNAL_ERROR' }, databaseFailure: { operation: 'insert', sqlstate: '23514', constraint: 'promo_read_test_reject' } }]);
 	} finally {
 		await resources.dataSource.query('ALTER TABLE promo_read DROP CONSTRAINT promo_read_test_reject');

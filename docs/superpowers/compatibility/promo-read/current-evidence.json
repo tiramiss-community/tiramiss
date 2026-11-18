@@ -8,19 +8,21 @@
     "redisPort": 63379
   },
   "inputs": {
-    "docs/superpowers/compatibility/promo-read/README.md": "62137b919387e7405d8b06a62e84c3c399d07ebb48c2f0a4e82db20fa17185c4",
+    "docs/superpowers/compatibility/promo-read/README.md": "374dd5dd72d67bf8401df0dc3fe9760768f2e47854a1b141550a5ac8f54eb473",
+    "docs/superpowers/compatibility/promo-read/catalog-evidence.json": "33ae8acf596283b7fc1f616fce926c38bd9e142ae0e82f4ecb2e68895ee8e558",
     "docs/superpowers/compatibility/promo-read/compatibility-predecessor.json": "bd03977dd7f02413127a7df086529823c23e9026426e4af9c3aa29ffb405b8cc",
     "docs/superpowers/compatibility/promo-read/corpus.json": "2b32036266ee8105597d5dcf0fe20906fd252a3689d6c04ff2340e0ed7759e73",
     "docs/superpowers/compatibility/promo-read/observations.json": "9c9fcb5cc7992e1773005051a026480fc3e60c95fac57dc1eca59cbf5a3466b7",
     "docs/superpowers/compatibility/promo-read/r1-current-evidence.json": "4c0a63b6778f374e3850a8378138dcf86448cfeace14793f827b9c919519361c",
     "docs/superpowers/compatibility/promo-read/r2-current-evidence.json": "193c932cb8c053b11b4e3a6a67b9f21e5a1f8885237b946930ebdac97c9296f4",
     "docs/superpowers/compatibility/promo-read/r3-current-evidence.json": "a9a5dc5a69163b2d2bcb7e5792a5daf299ad9de4d7545356e878927d9e38dde2",
+    "docs/superpowers/compatibility/promo-read/r4-current-evidence.json": "17832545707ca450b61455decab1f72897a157cb736c4bcf3159a051197b17aa",
     "docs/superpowers/compatibility/promo-read/source-probe.mjs": "801525158462dcbecf830b56242f1044db099656f7aa2fce2f644118021b170d",
     "packages/backend-next/src/composition/promo-http.ts": "0da58cc142352372133a40614fe8a1f6c4ad0dd2edaf658939359ac092b524e9",
     "packages/backend-next/src/http/promo-api.ts": "d06035ae14c09cb462ffeb43e8501991713ef0487d607a6c42235ec53a4d8fd3",
     "packages/backend-next/src/modules/promo/public.ts": "1f84b9c54c3558e04015a849668c441613d5acbdee18c850a0073959ac263b3d",
     "packages/backend-next/src/platform/database/promo.ts": "8e807bcd73f83b2b1637ccb018ed2bb8618ba65e60da0fa3713693fdfee19ab2",
-    "packages/backend-next/test/integration/promo-read.test.ts": "9849a4f22c92d62320c7ffb4b4a87d9d0c84268f22f65c82f8fdefc8c0c71d22",
+    "packages/backend-next/test/integration/promo-read.test.ts": "2fe8a881da2db342e87fd7b9aa4b6fb9505b5199cd479c6043a13607834c1ac3",
     "packages/backend-next/test/package-imports.test.ts": "a31d55df4b4f3e985964eb6353ea088cadfb57e013eb5bc97fdcf019d2b56c59",
     "packages/backend-next/test/unit/composition/http-app.test.ts": "859b3e8e5ec9547b4dceaabc24e4c3a0554984bf2677afecd0ed3d16c47af2fd",
     "packages/backend-next/test/unit/promo-read.test.ts": "237b40ec7abde80c41783b6684071076fd3a0890712f1e8a1c5d2c46762aacb8",
@@ -29,46 +31,22 @@
     "packages/backend-upstream/src/models/PromoRead.ts": "f1a1d6c982b5347c10c9887607eeda0c545ebd3b64709344cffc4dd3dcf88bbd",
     "packages/backend-upstream/upstream-sync.json": "6caa674a2ff9c859e1c30c3bf009da3d32334a630af2378057b9fe8a2821f584",
     "scripts/note-translate-predecessor.mjs": "b2d8e73d02fcf5dabeebfb82173e5d30883aa42108d01854b6b422bce29b45cc",
-    "scripts/promo-contract.test.mjs": "1e132dbf9e3701c55e60a297a9f08468b9ab94e55fbc680a9d2614821105cf2e",
+    "scripts/promo-contract.test.mjs": "b37d68b4a7e82c1d0f33b2b4106d5eaf5251bdb71be8a9b1e2e48a565b1fd8e7",
     "scripts/promo-read-contract.test.mjs": "b43ab651243a4c08ba8fe7127ec6c449222d7e3f972e4b163e7a299c0c7da9ee",
     "scripts/promo-read-predecessor.mjs": "89673262690b3e47deff9715fea703c589ab3f3ea80da3f19b21ea7a1ec83aab"
   },
   "runs": [
     {
-      "command": "pnpm --filter backend-next... build",
-      "status": "PASS",
-      "log": "/tmp/promo-read-r4-build.log",
-      "sha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
-    },
-    {
-      "command": "pnpm --filter backend-next... typecheck",
-      "status": "PASS",
-      "log": "/tmp/promo-read-r4-typecheck.log",
-      "sha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
-    },
-    {
-      "command": "pnpm --filter backend-next test",
-      "status": "PASS",
-      "log": "/tmp/promo-read-r4-unit-all.log",
-      "sha256": "b5d271e8f3d974ee96ba6fed42a4e8caf95ab7ac93f358f2ce9de229fb56c073"
-    },
-    {
       "command": "BACKEND_NEXT_TEST_DB_PORT=63432 BACKEND_NEXT_TEST_REDIS_PORT=63379 pnpm --filter backend-next test:integration test/integration/promo-read.test.ts test/integration/promo.test.ts test/integration/migrations.test.ts",
       "status": "PASS",
-      "log": "/tmp/promo-read-r4-integration.log",
-      "sha256": "011fe2e47dfa8da67d320141346347176f4cb076e4fca5fb6f1e9b5bd5355000"
-    },
-    {
-      "command": "node docs/superpowers/compatibility/promo-read/source-probe.mjs --check",
-      "status": "PASS",
-      "log": "/tmp/promo-read-r4-source.log",
-      "sha256": "1a653a9ef1fd2f829fae13fcc158c0c1160b3ffe7478bffc4d715d28d518f6c4"
+      "log": "/tmp/promo-read-r5-integration.log",
+      "sha256": "721ea306042c9ef6ba36fab0ff9605b142cb9314982ead0b379eda24394807b4"
     },
     {
       "command": "node --test scripts/backend-contract-inventory.test.mjs scripts/promo-read-contract.test.mjs scripts/promo-contract.test.mjs scripts/note-translate-contract.test.mjs scripts/role-public-contract.test.mjs",
       "status": "PASS",
-      "log": "/tmp/promo-read-r4-root-near.log",
-      "sha256": "81f01005d969b170c8ae344fbea38f5268e3e7517dc656c336e790afa42d5db3"
+      "log": "/tmp/promo-read-r5-root-near.log",
+      "sha256": "bf94fd8b0c131e0d3f1e7e705bef2136ecb4908a9ee9934f3d47bc1dfe5dc506"
     },
     {
       "command": "node scripts/check-shipping.mjs --base 706f82eb20",
@@ -78,25 +56,19 @@
     }
   ],
   "results": {
-    "allUnit": {
-      "passed": 5350,
-      "skipped": 1,
-      "files": 156
-    },
-    "source": 14,
     "realHttpPgSchema": 42,
     "nearestRoot": 23
   },
   "limits": [
-    "Full upstream HTTP/auth server not executed; literal callback/Getter uses doubles or real PG.",
-    "R4 product/helper/build/typecheck/unit5350/source14/HTTP-PG42/root23 are measured above. Earlier broad-root817+skip1 remains historical in the receipt chain, not relabeled as a new broad run.",
-    "Generated backend-inventory catalog metadata is separately validated after this proof commit and excluded from these runtime input hashes.",
-    "CodeRabbit CLI egress was rejected by auto-review; independent Codex and Web review are tracked on PR639. Replica lag remains the pinned upstream ordinary-read contract; no primary override or upsert is introduced."
+    "R5 changes test assertions only: insert HTTP INTERNAL_ERROR and raw-byte composed predecessor entry. Product runtime remains immutable R4 proof9d2086451d; R4 full build/typecheck/unit5350+existing skip1/source14 are preserved, not rerun or relabeled.",
+    "Full upstream HTTP/auth server and concurrent HTTP race/physical replica-lag replay are not measured. Separate exists/insert and the original unique constraint remain.",
+    "Production-scale index benchmarks and a new test-DB lease mechanism are outside this fixed-upstream slice; no schema changes were added.",
+    "Catalog metadata remains separately bound to the R4 product proof in catalog-evidence.json."
   ],
   "predecessor": {
-    "path": "docs/superpowers/compatibility/promo-read/r3-current-evidence.json",
-    "sha256": "a9a5dc5a69163b2d2bcb7e5792a5daf299ad9de4d7545356e878927d9e38dde2",
-    "scope": "Byte-identical R3 receipt; R4 measures the Web-review product/helper follow-up."
+    "path": "docs/superpowers/compatibility/promo-read/r4-current-evidence.json",
+    "sha256": "17832545707ca450b61455decab1f72897a157cb736c4bcf3159a051197b17aa",
+    "scope": "Byte-identical R4 product proof; R5 strengthens two test assertions only."
   },
   "exploratoryFailures": [
     {

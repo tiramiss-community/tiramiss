@@ -44,6 +44,8 @@ test('promo additive inputs preserve exact historical bytes and pass unknown dri
 	const { files } = JSON.parse(read(directory + 'compatibility-predecessor.json'));
 	assert.equal(Object.keys(files).length, 6);
 	for (const [path, binding] of Object.entries(files)) {
+		const raw = readFileSync(new URL('../' + path, import.meta.url));
+		assert.equal(sha(projectPromoInput(path, raw)), binding.previousSha256);
 		const current = projectNoteTranslationInput(path, read(path));
 		assert.equal(sha(current), binding.currentSha256);
 		assert.equal(sha(projectPromoInput(path, current)), binding.previousSha256);
