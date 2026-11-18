@@ -36,7 +36,7 @@ function record(readFile) {
 export function validateActorEmojiCacheEvidence(value, rawRead = read, optional = optionalRead) {
  return scopedEvidenceValidation(validateActorEmojiCacheEvidence, value, rawRead, optional, (rawRead, optional) => {
   const currentRead = rawRead;
-  rawRead = path => actorEmojiBatchFiles.includes(path) ? readBeforeActorEmojiBatch(path, currentRead, optional) : projectNotesPaginationInput(path, currentRead(path));
+  rawRead = path => actorEmojiBatchFiles.includes(path) ? readBeforeActorEmojiBatch(path, currentRead, optional) : projectNotesPaginationInput(path, projectStreamCredentialInput(path, currentRead(path)));
   if (value === undefined) value = record(rawRead);
   assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'actor emoji cache receipt seal');
   assert.equal(value.scope, 'actor-emoji-cache-303');
@@ -150,4 +150,17 @@ export function validateActorEmojiBatchEvidence(value, rawRead = read, optional 
 }
 function readBeforeActorEmojiBatch(path, rawRead, optional) {
  return withEvidenceRequestedPath(path, () => actorEmojiBatchFiles.includes(path) ? Buffer.from(validateActorEmojiBatchEvidence(undefined, rawRead, optional)[path]) : rawRead(path));
+}
+
+// #354 changes only authentication output metadata. Preserve the archived emoji
+// read/render measurement without accepting unmeasured adapter bytes as current.
+function projectStreamCredentialInput(path, actual) {
+ if (path !== 'packages/backend-next/src/platform/database/streaming.ts') return actual;
+ assert.equal(sha(actual), 'dbf359bfdff8923bff5b3ff805dca326808576d91ef14362c69ba842350dd17e', `Meta cache measured current input drift (stream credential): ${path}`);
+ const addition = '\t\t\t\ttokenPermissions: caller.credential.native ? undefined : [...caller.credential.permissions],\n';
+ const current = actual.toString();
+ assert.equal(current.split(addition).length, 2, 'stream credential exact predecessor anchor');
+ const previous = Buffer.from(current.replace(addition, ''));
+ assert.equal(sha(previous), '812f422e05bb98b4f73214ac4531bceede66f17a43c035bf4da9ce1e7add2f4a', 'stream credential exact predecessor identity');
+ return previous;
 }
