@@ -6,9 +6,6 @@ import { readFileSync } from 'node:fs';
 import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 import { Redis } from 'ioredis';
 import { MiFollowing, MiMeta, MiMuting, MiNote, MiNoteThreadMuting, MiPoll, MiPollVote, MiRenoteMuting, MiUser, MiUserList, MiUserListMembership, MiUserProfile } from 'backend-upstream/entities';
-import { createPostingNotifications } from '../../src/composition/posting-notifications.js';
-import * as notificationTransactions from '../../src/platform/database/poll-ended.js';
-import type { PostNotificationWrites } from '../../src/modules/notification/public.js';
 import { createBackendHttpApp } from '../../src/composition/note-http.js';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { migrateDatabase } from '../../src/platform/database/migrate.js';
@@ -286,45 +283,4 @@ test('subscription selection does not filter existing normal notify rows by foll
 	await resources.dataSource.getRepository(MiFollowing).insert({ id: id(), followerId: remote, followeeId: users.alice.id, followerHost: 'remote.example', notify: 'normal' });
 	const note = await create({ text: 'subscribed' });
 	expect((await bodies(note.id)).map((n: any) => [n.recipient_id, n.notification_type])).toEqual([[remote, 'note']]);
-});
-
-test('posting caller expires save capabilities before publication and later notifications keep working', async () => {
-	const { note, saved } = await deferredCreate({ text: '@bob lifetime' });
-	const createTransactions = notificationTransactions.createNotificationTransactions;
-	const scopes: PostNotificationWrites[] = [];
-	const factory = vi.spyOn(notificationTransactions, 'createNotificationTransactions').mockImplementation(db => {
-		const transactions = createTransactions(db);
-		return { run: work => transactions.run(writes => {
-			scopes.push(writes);
-			return work(writes);
-		}) };
-	});
-	const publish = resources.postingStream.main;
-	const publication = vi.spyOn(resources.postingStream, 'main').mockImplementation(async (recipientId, type, body) => {
-		if (type === 'notification') {
-			await expect(scopes.at(-1)!.save({ id: 'escaped-posting', recipientId, type: 'mention', notifierId: users.alice.id,
-				noteId: note.id, targetNoteId: null, createdAtMs: Date.now() })).rejects.toThrow('The transaction has ended');
-		}
-		await publish(recipientId, type, body);
-	});
-	try {
-		const posting = createPostingNotifications(resources, database.config);
-		await posting.createdEvents(async () => {})(note.id, saved);
-		expect(scopes).toHaveLength(1);
-		expect(await bodies(note.id)).toHaveLength(1);
-		await vi.waitFor(() => expect(main('bob', 'notification')).toHaveLength(1));
-		const first = scopes[0];
-		await notificationTransactions.createNotificationTransactions(resources.dataSource).run(async writes => {
-			await expect(first.save({ id: 'escaped-later', recipientId: users.bob.id, type: 'mention', notifierId: users.alice.id,
-				noteId: note.id, targetNoteId: null, createdAtMs: Date.now() })).rejects.toThrow('The transaction has ended');
-			await writes.save({ id: 'accepted-later', recipientId: users.bob.id, type: 'mention', notifierId: users.alice.id,
-				noteId: note.id, targetNoteId: null, createdAtMs: Date.now() });
-		});
-		expect((await bodies(note.id)).map((row: { notification_id: string }) => row.notification_id)).toContain('accepted-later');
-		expect(await resources.dataSource.query("SELECT notification_id FROM backend_internal.notification WHERE notification_id LIKE 'escaped-%'"))
-			.toEqual([]);
-	} finally {
-		publication.mockRestore();
-		factory.mockRestore();
-	}
 });

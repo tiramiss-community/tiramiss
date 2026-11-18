@@ -8,7 +8,7 @@
 
 - 実 PG transaction の callback が戻った後、COMMIT/ROLLBACK 開始前も DB transaction は有効だが、持ち出した save は拒否する。修正前はこの2ケースが保存に成功して失敗した。
 - commit/rollback 完了後、別 transaction の実行中も古い save は拒否し、新しい scope の save は成功する。rollback は元の例外オブジェクトを保持する。
-- 投稿の `createPostingNotifications` と pollEnded の `createPollEndedHandler` で実 scope を取得し、保存後の配信時には save が失効していることと、確定した保存・別受信者への保存を確認する。投稿テストは既存の HTTP 投稿と後続の composition を使う。pollEnded テストは通常 handler を直接呼び、既存の producer/worker テストも同時に実行する。
+- 投稿の `createPostingNotifications` と pollEnded の `createPollEndedHandler` で実 scope を取得し、保存後の配信時には save が失効していることと、確定した保存・別受信者への保存を確認する。投稿テストは通常の HTTP 投稿から組み立て済みの後続処理までを使う。pollEnded テストは通常 handler を直接呼び、既存の producer/worker テストも同時に実行する。
 - 既存の受信者別保持、並列追加、flush/save 直列化、保持削除の rollback に加え、flush 削除の rollback と元例外の保持を確認する。
 
 ## 固定本家との比較範囲
@@ -26,8 +26,11 @@ Node `24.20.0` / pnpm `12.9.1`。独立 worktree に filtered frozen install を
 | `pnpm --filter backend-upstream build` | PASS |
 | `pnpm --filter backend-next build` / `typecheck` | PASS |
 | `pnpm --filter backend-next test test/unit/transaction-runner.test.ts test/unit/notification test/unit/note/created-events.test.ts` | PASS: 3 files / 51 tests |
-| `BACKEND_NEXT_TEST_DB_PORT=55435 BACKEND_NEXT_TEST_REDIS_PORT=56385 pnpm --filter backend-next test:integration test/integration/notification.test.ts test/integration/poll-ended-job.test.ts test/integration/note-notifications.test.ts test/integration/transaction-runner.test.ts` | PASS: 4 files / 52 tests |
-| `node scripts/check-shipping.mjs --base 6af8cd5baa` | PASS: 変更 TS 4 files の quiet lint、SPDX、locale safety |
+| `BACKEND_NEXT_TEST_DB_PORT=55435 BACKEND_NEXT_TEST_REDIS_PORT=56385 pnpm --filter backend-next test:integration test/integration/notification.test.ts test/integration/notification-transaction-lifetime.test.ts test/integration/poll-ended-job.test.ts test/integration/note-notifications.test.ts test/integration/transaction-runner.test.ts` | PASS: 5 files / 52 tests |
+| `node scripts/check-shipping.mjs --base 6af8cd5baa` | PASS: 変更 TS の quiet lint、SPDX、locale safety |
+| `node --test scripts/note-contract-posting.test.mjs scripts/note-contract-posting-proof.test.mjs` | PASS: 107 tests |
 | `git diff --check` | PASS |
 
 初回 offline install は pnpm metadata cache 不足で失敗し、通常の frozen install で解消した。初回 typecheck で新しい pollEnded テストの未使用 composition stub が不足し、fixture を補って解消した。PG の既存 client.query 並行利用 deprecation warning は出るが、テスト失敗・skip はない。全体 unit/integration/process と本家 full server 比較は今回の検証範囲外。最新 head の CI・Web レビューは PR で別途追跡する。
+
+初回 CI では `note-notifications.test.ts` への寿命ケース追加が、既存 C10 比較 consumer の whole-file hash 検査を失敗させた。新ケースを専用 `notification-transaction-lifetime.test.ts` へ移し、既存 consumer は基点のバイト列へ戻した。過去の測定値・hash・validator を更新しておらず、上記の最終5ファイル実行で通常 HTTP の新ケースと従来通知の両方を確認した。
