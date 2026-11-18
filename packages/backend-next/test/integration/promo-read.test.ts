@@ -14,6 +14,8 @@ import { migrateDatabase } from '../../src/platform/database/migrate.js';
 import { createLogger } from '../../src/platform/logger.js';
 import { closeHttp, listenHttp } from '../../src/processes/http.js';
 import { createTestDatabase } from '../helpers/database.js';
+import { AuthenticationFailed } from '../../src/modules/access/public.js';
+import { createPromoReadStore } from '../../src/platform/database/promo.js';
 import { seedRoleHttp } from '../helpers/role-http.js';
 import type { Server } from 'node:http';
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
@@ -125,7 +127,7 @@ test('database lookup/existence/insert failures match pinned callback and preser
 			const response = await call(input);
 			expect(response.status).toBe(500);
 			expect((await response.json()).error.code).toBe('INTERNAL_ERROR');
-			expect(sourcePg([{ id: table, input, rows: [] }], true)).toEqual([{ id: table, error: { code: 'INTERNAL_ERROR' } }]);
+			expect(sourcePg([{ id: table, input, rows: [] }], true)).toEqual([{ id: table, error: { code: 'INTERNAL_ERROR' }, databaseFailure: { operation: table === 'note' ? 'findOneBy' : 'exists', sqlstate: '42P01' } }]);
 		} finally {
 			await resources.dataSource.query(`ALTER TABLE ${table}_unavailable RENAME TO ${table}`);
 		}
@@ -135,11 +137,20 @@ test('database lookup/existence/insert failures match pinned callback and preser
 	try {
 		const input = { noteId: 'publicnote' };
 		expect((await call(input)).status).toBe(500);
-		expect(sourcePg([{ id: 'insert', input, rows: [] }], true)).toEqual([{ id: 'insert', error: { code: 'INTERNAL_ERROR' } }]);
+		expect(sourcePg([{ id: 'insert', input, rows: [] }], true)).toEqual([{ id: 'insert', error: { code: 'INTERNAL_ERROR' }, databaseFailure: { operation: 'insert', sqlstate: '23514', constraint: 'promo_read_test_reject' } }]);
 	} finally {
 		await resources.dataSource.query('ALTER TABLE promo_read DROP CONSTRAINT promo_read_test_reject');
 	}
 	expect(await readRows()).toEqual(previous);
+});
+test('promo/read uses current suspension without loading Role or Meta authorization data', async () => {
+	await resources.dataSource.query('ALTER TABLE role RENAME TO role_unavailable');
+	try {
+		expect((await call({ noteId: 'privatenote' }, seed.actors.ordinary.token)).status).toBe(204);
+	} finally {
+		await resources.dataSource.query('ALTER TABLE role_unavailable RENAME TO role');
+	}
+	await expect(createPromoReadStore(resources.dataSource.manager).readActor('unknown')).rejects.toBeInstanceOf(AuthenticationFailed);
 });
 test('unique viewer/note key rejects races; deleting Note or viewer cascades read rows', async () => {
 	const reads = resources.dataSource.getRepository(MiPromoRead);

@@ -16,9 +16,10 @@ This implements only promo/read within #530. Pinned users await detailed-user su
 
 ## Reproduction
 
-Use repository-supported Node and pnpm. Install isolated dependencies and start only the dedicated Compose project:
+Use repository-supported Node and pnpm. A checkout containing the pinned upstream Git object is required; with a shallow clone, fetch full history or the pinned commit before continuing. Check the object before starting Compose. Install isolated dependencies and start only the dedicated Compose project:
 
 ```sh
+git cat-file -e 8e07cf085adf7009583d234a208e30436f020e26^{commit}
 pnpm install --frozen-lockfile --filter backend-next...
 BACKEND_NEXT_TEST_DB_PORT=63432 BACKEND_NEXT_TEST_REDIS_PORT=63379 docker compose -p sol-promo-read530 -f packages/backend-next/compose.test.yml up -d --wait postgres redis
 pnpm --filter backend-upstream sync:check
@@ -39,3 +40,7 @@ BACKEND_NEXT_TEST_DB_PORT=63432 BACKEND_NEXT_TEST_REDIS_PORT=63379 docker compos
 Initial build/typecheck, upstream5, source14, near-unit32 and real HTTP/PG/schema41 passed. The helper follow-up passed source14, normal HTTP/PG15, entity import1 and catalog/nearest-root17. R1 evidence is archived byte-for-byte. A broad root run passed817/skipped1 (818 total) before the final fourth metadata-test projection was added; nearest17 and import1 cover that final addition. Independent Codex review confirmed the helper connection boundary fix. The initial exploratory root run failed136 before finite successor wiring; its log is retained and is not claimed as a successful measurement.
 
 CI follow-up: the first full unit run found the canonical composition route inventory still lacked `/api/promo/read` (one failed,5349 passed,one existing skip). Added that route and its credential gate assertion, extending the finite predecessor to five inputs. The final local full unit run passed5350/skipped1 across156 files; targeted composition/promo/import49 and root23 passed. Product runtime is unchanged. `r2-current-evidence.json` preserves the preceding receipt byte-for-byte.
+
+Web review follow-up: promo/read now reloads only the current User suspension fact and keeps missing-actor AuthenticationFailed, matching the endpoint's non-role gate. Admin promotion creation keeps its full role facts. PG probe failures also record the failing repository operation, SQLSTATE, and constraint name; integration assertions distinguish missing-table42P01 from insert CHECK23514. Ordinary transaction-free reads remain on the configured replica, as in pinned upstream postgres configuration and the existing README replication contract; this slice does not add primary reads or an upsert for replica lag.
+
+R4 measured build/typecheck, all unit5350/one existing skip, source14, HTTP/PG/schema42 and nearest root23 PASS. The final catalog metadata step points to this immutable proof commit and is validated separately; it is excluded from runtime input hashes.

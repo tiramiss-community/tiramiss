@@ -85,7 +85,17 @@ try {
 				throw Error(`${operation} unavailable`);
 			}
 		};
-		const promos = dataSource?.getRepository('promo_read') ?? {
+		let databaseFailure;
+		const observeDatabase = (repository, methods) => Object.fromEntries(methods.map(operation => [operation, async (...args) => {
+			try {
+				return await repository[operation](...args);
+			} catch (error) {
+				const driver = error.driverError ?? error;
+				databaseFailure = { operation, sqlstate: driver.code, ...(driver.constraint ? { constraint: driver.constraint } : {}) };
+				throw error;
+			}
+		}]));
+		const promos = (dataSource ? observeDatabase(dataSource.getRepository('promo_read'), ['exists', 'insert', 'clear', 'find']) : null) ?? {
 			async exists({ where }) {
 				fail('exists');
 				return rows.some(row => row.noteId === where.noteId && row.userId === where.userId);
@@ -95,7 +105,7 @@ try {
 				rows.push(row);
 			},
 		};
-		const notes = dataSource?.getRepository('note') ?? {
+		const notes = (dataSource ? observeDatabase(dataSource.getRepository('note'), ['findOneBy']) : null) ?? {
 			async findOneBy({ id }) {
 				fail('note');
 				return corpus.notes.find(note => note.id === id) ?? null;
@@ -123,7 +133,7 @@ try {
 			rows = (await promos.find()).map(row => ({ id: row.id, noteId: row.noteId, userId: row.userId }));
 		}
 		rows.sort((a, b) => a.noteId.localeCompare(b.noteId) || a.userId.localeCompare(b.userId));
-		cases.push({ id: item.id, ...(error ? { error } : {}), ...(!preserve ? { rows } : {}) });
+		cases.push({ id: item.id, ...(error ? { error } : {}), ...(databaseFailure ? { databaseFailure } : {}), ...(!preserve ? { rows } : {}) });
 	}
 } finally {
 	await dataSource?.destroy();

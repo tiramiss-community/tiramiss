@@ -21,7 +21,7 @@ export function createPromoHttp(resources: Pick<RuntimeResources, 'dataSource' |
 		...createPromoStore(manager),
 		readActor,
 	});
-	const read = createPromoRead({ ...createPromoReadStore(manager), readActor, newId: () => ids.newId(Date.now()) });
+	const read = createPromoRead({ ...createPromoReadStore(manager), newId: () => ids.newId(Date.now()) });
 	return createApiEndpoints({
 		authenticate: createTokenAuthenticator(manager, resources.logger),
 		endpoints: [...createPromoEndpoints(application), ...createPromoReadEndpoints(read)], logger: resources.logger,
