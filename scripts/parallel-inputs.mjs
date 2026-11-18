@@ -93,18 +93,20 @@ function restoreComponent(before, entry) {
 }
 
 function project(entries, actual, expectedSha256) {
-	let current = actual;
+	const input = Buffer.isBuffer(actual) ? actual : Buffer.from(actual);
+	let current = input;
+	const result = bytes => bytes === input ? actual : typeof actual === 'string' ? bytes.toString('utf8') : bytes;
 	// Each step consumes a recorded transition, e.g. features then formatting.
 	for (let i = 0; i < entries.length; i++) {
 		const identity = digest(current);
-		if (identity === expectedSha256) return current;
+		if (identity === expectedSha256) return result(current);
 		const step = predecessor(current, entries, identity);
 		if (!step) break;
 		const component = step.selected.find(entry => entry.currentSha256 === expectedSha256);
-		if (component) return restoreComponent(step.before, component);
+		if (component) return result(restoreComponent(step.before, component));
 		current = step.before;
 	}
-	return expectedSha256 && digest(current) !== expectedSha256 ? actual : current;
+	return expectedSha256 && digest(current) !== expectedSha256 ? actual : result(current);
 }
 
 export function projectParallelInput(path, actual, expectedSha256) {
