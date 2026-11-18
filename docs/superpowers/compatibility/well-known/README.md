@@ -1,6 +1,6 @@
 # host-meta and well-known OPTIONS/CORS (#531 slice)
 
-Fixed upstream: `8e07cf085adf7009583d234a208e30436f020e26`. This slice adds the normal HTTP composition's `GET`/`HEAD /.well-known/host-meta` and `host-meta.json`, plus `OPTIONS /.well-known/*`. #531 remains open for NodeInfo 2.0/2.1, its statistics/cache and `/.well-known/nodeinfo`; #193 remains open.
+Fixed upstream: `8e07cf085adf7009583d234a208e30436f020e26`. This slice adds the normal HTTP composition's `GET`/`HEAD /.well-known/host-meta` and `host-meta.json`, plus `OPTIONS /.well-known/*`. This historical slice left NodeInfo 2.0/2.1, its statistics/cache and `/.well-known/nodeinfo` to the [NodeInfo completion](../nodeinfo/README.md). #193 remains open.
 
 The existing shared Meta cache gates host-meta on `federation !== 'none'`. XML attributes preserve the pinned XML helper's first-occurrence escaping, including repeated special characters. Existing WebFinger value escaping and all discovery behavior retain their regression tests. Successful host-meta responses have no Cache-Control or Vary. XML has `application/xrd+xml`; JSON has `application/json; charset=utf-8`. Disabled federation returns empty403; Meta failures return empty500 with CORS, no cache/Vary and a fixed `host-meta.failed` JSON diagnostic through the runtime logger.
 

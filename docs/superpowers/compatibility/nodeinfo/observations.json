@@ -1,0 +1,2891 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "sources": [
+    [
+      "packages/backend/src/server/NodeinfoServerService.ts",
+      "3a92eb2b6d14124ed8908b5ef4a3affed95360cdb0aaaf9ae1c17c74ba5f429c"
+    ],
+    [
+      "packages/backend/src/misc/cache.ts",
+      "99ea27bbf1287bbc6b2fc08fb7ce083395f30cdca7d6f5d9aca6048d5d9ef95c"
+    ],
+    [
+      "packages/backend/src/server/WellKnownServerService.ts",
+      "a95eae39e0a03afa7ace1c9902394923f753ee4ba578783b15bc2ddc40a38d02"
+    ],
+    [
+      "packages/backend/src/misc/prelude/xml.ts",
+      "43e37baa00eb7c9d3a84d1484c0b5be84a33a5fe70bbdeaada27bb868e45eb9c"
+    ],
+    [
+      "packages/backend/src/const.ts",
+      "fbc65ab901b483490836f659cb1844c73bdfba8e18957ea4e2cd2038985b6324"
+    ],
+    [
+      "packages/backend/src/core/RoleService.ts",
+      "d92aab8651aa6682176998e34cbf95552e9863a98e240373ef518f7eecff93b3"
+    ]
+  ],
+  "discovery": [
+    {
+      "federation": "all",
+      "method": "GET",
+      "status": 200,
+      "metaReads": 1,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body": "{\"links\":[{\"rel\":\"http://nodeinfo.diaspora.software/ns/schema/2.1\",\"href\":\"https://local.test:8443/nodeinfo/2.1\"},{\"rel\":\"http://nodeinfo.diaspora.software/ns/schema/2.0\",\"href\":\"https://local.test:8443/nodeinfo/2.0\"}]}"
+    },
+    {
+      "federation": "all",
+      "method": "HEAD",
+      "status": 200,
+      "metaReads": 1,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body": ""
+    },
+    {
+      "federation": "all",
+      "method": "OPTIONS",
+      "status": 204,
+      "metaReads": 0,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null
+      },
+      "body": ""
+    },
+    {
+      "federation": "none",
+      "method": "GET",
+      "status": 403,
+      "metaReads": 1,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null
+      },
+      "body": ""
+    },
+    {
+      "federation": "none",
+      "method": "HEAD",
+      "status": 403,
+      "metaReads": 1,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null
+      },
+      "body": ""
+    },
+    {
+      "federation": "none",
+      "method": "OPTIONS",
+      "status": 204,
+      "metaReads": 0,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null
+      },
+      "body": ""
+    },
+    {
+      "federation": "fault",
+      "method": "GET",
+      "status": 500,
+      "metaReads": 1,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body": "{\"statusCode\":500,\"error\":\"Internal Server Error\",\"message\":\"injected Meta failure\"}"
+    },
+    {
+      "federation": "fault",
+      "method": "HEAD",
+      "status": 500,
+      "metaReads": 1,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body": ""
+    },
+    {
+      "federation": "fault",
+      "method": "OPTIONS",
+      "status": 204,
+      "metaReads": 0,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null
+      },
+      "body": ""
+    }
+  ],
+  "method": "Literal NodeinfoServerService, MemorySingleCache and WellKnownServerService discovery, listening Fastify; chart/Meta/proxy doubles, no upstream DB/full app",
+  "dependencies": {
+    "fastify": "5.12.5"
+  },
+  "observations": [
+    {
+      "scenario": "21-first",
+      "step": {
+        "path": "/nodeinfo/2.1"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.1#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.1",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": "https://source.test/fork",
+          "repository": "https://source.test/fork"
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": true,
+        "usage": {
+          "users": {
+            "total": 7,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 42,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": "Local & instance",
+          "nodeDescription": "<p>hello</p>",
+          "nodeAdmins": [
+            {
+              "name": "Admin",
+              "email": "admin@local.test"
+            }
+          ],
+          "maintainer": {
+            "name": "Admin",
+            "email": "admin@local.test"
+          },
+          "langs": [
+            "ja-JP",
+            "en-US"
+          ],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": "https://source.test/fork",
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": false,
+          "disableLocalTimeline": true,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": "#86b300"
+        }
+      },
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "users",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "meta",
+          true
+        ],
+        [
+          "proxy",
+          "proxy"
+        ]
+      ]
+    },
+    {
+      "scenario": "21-first",
+      "step": {
+        "path": "/nodeinfo/2.0"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.0#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.0",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": "https://source.test/fork"
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": true,
+        "usage": {
+          "users": {
+            "total": 7,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 42,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": "Local & instance",
+          "nodeDescription": "<p>hello</p>",
+          "nodeAdmins": [
+            {
+              "name": "Admin",
+              "email": "admin@local.test"
+            }
+          ],
+          "maintainer": {
+            "name": "Admin",
+            "email": "admin@local.test"
+          },
+          "langs": [
+            "ja-JP",
+            "en-US"
+          ],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": "https://source.test/fork",
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": false,
+          "disableLocalTimeline": true,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": "#86b300"
+        }
+      },
+      "calls": []
+    },
+    {
+      "scenario": "21-first",
+      "step": {
+        "path": "/nodeinfo/2.1"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.1#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.1",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": "https://source.test/fork"
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": true,
+        "usage": {
+          "users": {
+            "total": 7,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 42,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": "Local & instance",
+          "nodeDescription": "<p>hello</p>",
+          "nodeAdmins": [
+            {
+              "name": "Admin",
+              "email": "admin@local.test"
+            }
+          ],
+          "maintainer": {
+            "name": "Admin",
+            "email": "admin@local.test"
+          },
+          "langs": [
+            "ja-JP",
+            "en-US"
+          ],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": "https://source.test/fork",
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": false,
+          "disableLocalTimeline": true,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": "#86b300"
+        }
+      },
+      "calls": []
+    },
+    {
+      "scenario": "21-first",
+      "step": {
+        "path": "/nodeinfo/2.1",
+        "method": "HEAD"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.1#\"; charset=utf-8"
+      },
+      "body": null,
+      "calls": []
+    },
+    {
+      "scenario": "21-first",
+      "step": {
+        "path": "/nodeinfo/2.0",
+        "method": "HEAD"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.0#\"; charset=utf-8"
+      },
+      "body": null,
+      "calls": []
+    },
+    {
+      "scenario": "21-first",
+      "step": {
+        "path": "/nodeinfo/2.1",
+        "method": "OPTIONS"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body": null,
+      "calls": []
+    },
+    {
+      "scenario": "21-first",
+      "step": {
+        "path": "/nodeinfo/unknown"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body": null,
+      "calls": []
+    },
+    {
+      "scenario": "20-first-expiry",
+      "step": {
+        "path": "/nodeinfo/2.0"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.0#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.0",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": "https://misskey-hub.net"
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": true,
+        "usage": {
+          "users": {
+            "total": 7,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 42,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": "Local & instance",
+          "nodeDescription": "<p>hello</p>",
+          "nodeAdmins": [
+            {
+              "name": "Admin",
+              "email": "admin@local.test"
+            }
+          ],
+          "maintainer": {
+            "name": "Admin",
+            "email": "admin@local.test"
+          },
+          "langs": [
+            "ja-JP",
+            "en-US"
+          ],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": "https://source.test/fork",
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": false,
+          "disableLocalTimeline": true,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": "#86b300"
+        }
+      },
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "users",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "meta",
+          true
+        ],
+        [
+          "proxy",
+          "proxy"
+        ]
+      ]
+    },
+    {
+      "scenario": "20-first-expiry",
+      "step": {
+        "path": "/nodeinfo/2.1"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.1#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.1",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": "https://misskey-hub.net"
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": true,
+        "usage": {
+          "users": {
+            "total": 7,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 42,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": "Local & instance",
+          "nodeDescription": "<p>hello</p>",
+          "nodeAdmins": [
+            {
+              "name": "Admin",
+              "email": "admin@local.test"
+            }
+          ],
+          "maintainer": {
+            "name": "Admin",
+            "email": "admin@local.test"
+          },
+          "langs": [
+            "ja-JP",
+            "en-US"
+          ],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": "https://source.test/fork",
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": false,
+          "disableLocalTimeline": true,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": "#86b300"
+        }
+      },
+      "calls": []
+    },
+    {
+      "scenario": "20-first-expiry",
+      "step": {
+        "path": "/nodeinfo/2.1",
+        "advance": 600000,
+        "changed": true
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.1#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.1",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": "https://misskey-hub.net"
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": true,
+        "usage": {
+          "users": {
+            "total": 7,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 42,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": "Local & instance",
+          "nodeDescription": "<p>hello</p>",
+          "nodeAdmins": [
+            {
+              "name": "Admin",
+              "email": "admin@local.test"
+            }
+          ],
+          "maintainer": {
+            "name": "Admin",
+            "email": "admin@local.test"
+          },
+          "langs": [
+            "ja-JP",
+            "en-US"
+          ],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": "https://source.test/fork",
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": false,
+          "disableLocalTimeline": true,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": "#86b300"
+        }
+      },
+      "calls": []
+    },
+    {
+      "scenario": "20-first-expiry",
+      "step": {
+        "path": "/nodeinfo/2.1",
+        "advance": 1,
+        "changed": true
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.1#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.1",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": "https://source.test/fork",
+          "repository": "https://source.test/fork"
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": true,
+        "usage": {
+          "users": {
+            "total": 17,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 52,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": "Changed instance",
+          "nodeDescription": "<p>hello</p>",
+          "nodeAdmins": [
+            {
+              "name": "Admin",
+              "email": "admin@local.test"
+            }
+          ],
+          "maintainer": {
+            "name": "Admin",
+            "email": "admin@local.test"
+          },
+          "langs": [
+            "ja-JP",
+            "en-US"
+          ],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": "https://source.test/fork",
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": false,
+          "disableLocalTimeline": true,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": "#86b300"
+        }
+      },
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "users",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "meta",
+          true
+        ],
+        [
+          "proxy",
+          "proxy"
+        ]
+      ]
+    },
+    {
+      "scenario": "head-first",
+      "step": {
+        "path": "/nodeinfo/2.0",
+        "method": "HEAD"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.0#\"; charset=utf-8"
+      },
+      "body": null,
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "users",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "meta",
+          true
+        ],
+        [
+          "proxy",
+          "proxy"
+        ]
+      ]
+    },
+    {
+      "scenario": "head-first",
+      "step": {
+        "path": "/nodeinfo/2.1"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.1#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.1",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": "https://misskey-hub.net"
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": true,
+        "usage": {
+          "users": {
+            "total": 7,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 42,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": "Local & instance",
+          "nodeDescription": "<p>hello</p>",
+          "nodeAdmins": [
+            {
+              "name": "Admin",
+              "email": "admin@local.test"
+            }
+          ],
+          "maintainer": {
+            "name": "Admin",
+            "email": "admin@local.test"
+          },
+          "langs": [
+            "ja-JP",
+            "en-US"
+          ],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": "https://source.test/fork",
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": false,
+          "disableLocalTimeline": true,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": "#86b300"
+        }
+      },
+      "calls": []
+    },
+    {
+      "scenario": "null-settings",
+      "step": {
+        "path": "/nodeinfo/2.1"
+      },
+      "meta": {
+        "name": null,
+        "description": null,
+        "maintainerName": null,
+        "maintainerEmail": null,
+        "langs": [],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": null,
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": "",
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.1#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.1",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": null,
+          "repository": null
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": true,
+        "usage": {
+          "users": {
+            "total": 7,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 42,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": null,
+          "nodeDescription": null,
+          "nodeAdmins": [
+            {
+              "name": null,
+              "email": null
+            }
+          ],
+          "maintainer": {
+            "name": null,
+            "email": null
+          },
+          "langs": [],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": null,
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": false,
+          "disableLocalTimeline": true,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": ""
+        }
+      },
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "users",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "meta",
+          true
+        ],
+        [
+          "proxy",
+          "proxy"
+        ]
+      ]
+    },
+    {
+      "scenario": "failed-refresh",
+      "step": {
+        "path": "/nodeinfo/2.1"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.1#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.1",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": "https://source.test/fork",
+          "repository": "https://source.test/fork"
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": true,
+        "usage": {
+          "users": {
+            "total": 7,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 42,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": "Local & instance",
+          "nodeDescription": "<p>hello</p>",
+          "nodeAdmins": [
+            {
+              "name": "Admin",
+              "email": "admin@local.test"
+            }
+          ],
+          "maintainer": {
+            "name": "Admin",
+            "email": "admin@local.test"
+          },
+          "langs": [
+            "ja-JP",
+            "en-US"
+          ],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": "https://source.test/fork",
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": false,
+          "disableLocalTimeline": true,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": "#86b300"
+        }
+      },
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "users",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "meta",
+          true
+        ],
+        [
+          "proxy",
+          "proxy"
+        ]
+      ]
+    },
+    {
+      "scenario": "failed-refresh",
+      "step": {
+        "path": "/nodeinfo/2.1",
+        "advance": 600001,
+        "fault": "notes"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 500,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body": null,
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ]
+      ]
+    },
+    {
+      "scenario": "failed-refresh",
+      "step": {
+        "path": "/nodeinfo/2.1",
+        "changed": true
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.1#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.1",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": "https://source.test/fork",
+          "repository": "https://source.test/fork"
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": true,
+        "usage": {
+          "users": {
+            "total": 17,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 52,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": "Changed instance",
+          "nodeDescription": "<p>hello</p>",
+          "nodeAdmins": [
+            {
+              "name": "Admin",
+              "email": "admin@local.test"
+            }
+          ],
+          "maintainer": {
+            "name": "Admin",
+            "email": "admin@local.test"
+          },
+          "langs": [
+            "ja-JP",
+            "en-US"
+          ],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": "https://source.test/fork",
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": false,
+          "disableLocalTimeline": true,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": "#86b300"
+        }
+      },
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "users",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "meta",
+          true
+        ],
+        [
+          "proxy",
+          "proxy"
+        ]
+      ]
+    },
+    {
+      "scenario": "federation-none",
+      "step": {
+        "path": "/nodeinfo/2.1"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": true,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": "#abcdef",
+        "policies": {},
+        "federation": "none"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.1#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.1",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": "https://source.test/fork",
+          "repository": "https://source.test/fork"
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": false,
+        "usage": {
+          "users": {
+            "total": 7,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 42,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": "Local & instance",
+          "nodeDescription": "<p>hello</p>",
+          "nodeAdmins": [
+            {
+              "name": "Admin",
+              "email": "admin@local.test"
+            }
+          ],
+          "maintainer": {
+            "name": "Admin",
+            "email": "admin@local.test"
+          },
+          "langs": [
+            "ja-JP",
+            "en-US"
+          ],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": "https://source.test/fork",
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": true,
+          "disableLocalTimeline": false,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": "#abcdef"
+        }
+      },
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "users",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "meta",
+          true
+        ],
+        [
+          "proxy",
+          "proxy"
+        ]
+      ]
+    },
+    {
+      "scenario": "federation-none",
+      "step": {
+        "path": "/nodeinfo/2.0"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": true,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": "#abcdef",
+        "policies": {},
+        "federation": "none"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.0#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.0",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": "https://source.test/fork"
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": false,
+        "usage": {
+          "users": {
+            "total": 7,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 42,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": "Local & instance",
+          "nodeDescription": "<p>hello</p>",
+          "nodeAdmins": [
+            {
+              "name": "Admin",
+              "email": "admin@local.test"
+            }
+          ],
+          "maintainer": {
+            "name": "Admin",
+            "email": "admin@local.test"
+          },
+          "langs": [
+            "ja-JP",
+            "en-US"
+          ],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": "https://source.test/fork",
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": true,
+          "disableLocalTimeline": false,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": "#abcdef"
+        }
+      },
+      "calls": []
+    },
+    {
+      "scenario": "fault-notes",
+      "step": {
+        "path": "/nodeinfo/2.1",
+        "fault": "notes"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 500,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body": null,
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ]
+      ]
+    },
+    {
+      "scenario": "fault-notes",
+      "step": {
+        "path": "/nodeinfo/2.0"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.0#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.0",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": "https://misskey-hub.net"
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": true,
+        "usage": {
+          "users": {
+            "total": 7,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 42,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": "Local & instance",
+          "nodeDescription": "<p>hello</p>",
+          "nodeAdmins": [
+            {
+              "name": "Admin",
+              "email": "admin@local.test"
+            }
+          ],
+          "maintainer": {
+            "name": "Admin",
+            "email": "admin@local.test"
+          },
+          "langs": [
+            "ja-JP",
+            "en-US"
+          ],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": "https://source.test/fork",
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": false,
+          "disableLocalTimeline": true,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": "#86b300"
+        }
+      },
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "users",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "meta",
+          true
+        ],
+        [
+          "proxy",
+          "proxy"
+        ]
+      ]
+    },
+    {
+      "scenario": "fault-users",
+      "step": {
+        "path": "/nodeinfo/2.1",
+        "fault": "users"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 500,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body": null,
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "users",
+          "hour",
+          1,
+          null
+        ]
+      ]
+    },
+    {
+      "scenario": "fault-users",
+      "step": {
+        "path": "/nodeinfo/2.0"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.0#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.0",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": "https://misskey-hub.net"
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": true,
+        "usage": {
+          "users": {
+            "total": 7,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 42,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": "Local & instance",
+          "nodeDescription": "<p>hello</p>",
+          "nodeAdmins": [
+            {
+              "name": "Admin",
+              "email": "admin@local.test"
+            }
+          ],
+          "maintainer": {
+            "name": "Admin",
+            "email": "admin@local.test"
+          },
+          "langs": [
+            "ja-JP",
+            "en-US"
+          ],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": "https://source.test/fork",
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": false,
+          "disableLocalTimeline": true,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": "#86b300"
+        }
+      },
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "users",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "meta",
+          true
+        ],
+        [
+          "proxy",
+          "proxy"
+        ]
+      ]
+    },
+    {
+      "scenario": "fault-meta",
+      "step": {
+        "path": "/nodeinfo/2.1",
+        "fault": "meta"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 500,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body": null,
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "users",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "meta",
+          true
+        ]
+      ]
+    },
+    {
+      "scenario": "fault-meta",
+      "step": {
+        "path": "/nodeinfo/2.0"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.0#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.0",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": "https://misskey-hub.net"
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": true,
+        "usage": {
+          "users": {
+            "total": 7,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 42,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": "Local & instance",
+          "nodeDescription": "<p>hello</p>",
+          "nodeAdmins": [
+            {
+              "name": "Admin",
+              "email": "admin@local.test"
+            }
+          ],
+          "maintainer": {
+            "name": "Admin",
+            "email": "admin@local.test"
+          },
+          "langs": [
+            "ja-JP",
+            "en-US"
+          ],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": "https://source.test/fork",
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": false,
+          "disableLocalTimeline": true,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": "#86b300"
+        }
+      },
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "users",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "meta",
+          true
+        ],
+        [
+          "proxy",
+          "proxy"
+        ]
+      ]
+    },
+    {
+      "scenario": "fault-proxy",
+      "step": {
+        "path": "/nodeinfo/2.1",
+        "fault": "proxy"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 500,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body": null,
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "users",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "meta",
+          true
+        ],
+        [
+          "proxy",
+          "proxy"
+        ]
+      ]
+    },
+    {
+      "scenario": "fault-proxy",
+      "step": {
+        "path": "/nodeinfo/2.0"
+      },
+      "meta": {
+        "name": "Local & instance",
+        "description": "<p>hello</p>",
+        "maintainerName": "Admin",
+        "maintainerEmail": "admin@local.test",
+        "langs": [
+          "ja-JP",
+          "en-US"
+        ],
+        "termsOfServiceUrl": null,
+        "privacyPolicyUrl": "https://local.test/privacy",
+        "inquiryUrl": null,
+        "impressumUrl": null,
+        "repositoryUrl": "https://source.test/fork",
+        "feedbackUrl": "https://local.test/feedback",
+        "disableRegistration": false,
+        "emailRequiredForSignup": true,
+        "enableHcaptcha": false,
+        "enableRecaptcha": false,
+        "enableMcaptcha": true,
+        "enableTurnstile": false,
+        "enableEmail": true,
+        "enableServiceWorker": false,
+        "themeColor": null,
+        "policies": {
+          "ltlAvailable": false,
+          "gtlAvailable": true
+        },
+        "federation": "all"
+      },
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": "public, max-age=600",
+        "vary": null,
+        "content-type": "application/json; profile=\"http://nodeinfo.diaspora.software/ns/schema/2.0#\"; charset=utf-8"
+      },
+      "body": {
+        "version": "2.0",
+        "software": {
+          "name": "misskey",
+          "version": "2026.10.1-alpha.0",
+          "homepage": "https://misskey-hub.net"
+        },
+        "protocols": [
+          "activitypub"
+        ],
+        "services": {
+          "inbound": [],
+          "outbound": [
+            "atom1.0",
+            "rss2.0"
+          ]
+        },
+        "openRegistrations": true,
+        "usage": {
+          "users": {
+            "total": 7,
+            "activeHalfyear": null,
+            "activeMonth": null
+          },
+          "localPosts": 42,
+          "localComments": 0
+        },
+        "metadata": {
+          "nodeName": "Local & instance",
+          "nodeDescription": "<p>hello</p>",
+          "nodeAdmins": [
+            {
+              "name": "Admin",
+              "email": "admin@local.test"
+            }
+          ],
+          "maintainer": {
+            "name": "Admin",
+            "email": "admin@local.test"
+          },
+          "langs": [
+            "ja-JP",
+            "en-US"
+          ],
+          "tosUrl": null,
+          "privacyPolicyUrl": "https://local.test/privacy",
+          "inquiryUrl": null,
+          "impressumUrl": null,
+          "repositoryUrl": "https://source.test/fork",
+          "feedbackUrl": "https://local.test/feedback",
+          "disableRegistration": false,
+          "disableLocalTimeline": true,
+          "disableGlobalTimeline": false,
+          "emailRequiredForSignup": true,
+          "enableHcaptcha": false,
+          "enableRecaptcha": false,
+          "enableMcaptcha": true,
+          "enableTurnstile": false,
+          "maxNoteTextLength": 3000,
+          "enableEmail": true,
+          "enableServiceWorker": false,
+          "proxyAccountName": "system.proxy",
+          "themeColor": "#86b300"
+        }
+      },
+      "calls": [
+        [
+          "notes",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "users",
+          "hour",
+          1,
+          null
+        ],
+        [
+          "meta",
+          true
+        ],
+        [
+          "proxy",
+          "proxy"
+        ]
+      ]
+    }
+  ]
+}

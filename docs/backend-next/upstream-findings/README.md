@@ -59,3 +59,4 @@
 | [UF-016](packages/backend/src/core/QueueService.md#uf-016-アーカイブ予約の存在確認後に削除されると再投入しない) | `core/QueueService.ts` | 存在確認後に削除されたアーカイブ予約を再投入しない | 引き継いだ（#449/#450） | 未報告 |
 | [UF-017](packages/backend/src/core/chart/core.md#uf-017-空の過去区間では現在の最新行により既存totalの補間を失う) | `core/chart/core.ts` | 空の過去区間が最新行を使い既存totalの補間を失う | 引き継いだ（#319） | 未報告 |
 | [UF-018](packages/backend/src/core/chart/core.md#uf-018-resyncは未flushのtotal差分をそのまま再適用する) | `core/chart/core.ts`・`charts/users.ts` | resync後に保留total差分が再適用される | 引き継いだ（#319） | 未報告 |
+| [UF-019](packages/backend/src/server/NodeinfoServerService.md#uf-019-共有文書キャッシュがnodeinfoの版間で書き換わる) | `server/NodeinfoServerService.ts` | 共有cacheで2.0が2.1のrepositoryを削除し、最初の版がhomepageを決める | 引き継いだ（#531） | 未報告 |

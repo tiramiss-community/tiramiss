@@ -52,7 +52,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 		'/api/users/update-memo', '/api/admin/promo/create', '/api/promo/read', '/api/notes/translate', '/api/hashtags/list', '/api/hashtags/search', '/api/hashtags/show', '/api/announcements', '/api/announcements/show', '/api/i/read-announcement', '/api/users/relation',
 		'/api/drive/files/show', '/api/drive/files/find', '/api/drive/files/find-by-hash', '/api/drive/files/check-existence', '/api/admin/drive/show-file', '/api/pages/show',
 		'/users/:id', '/:acct{@[^/]*}', '/users/:user{[^/]*}/publickey',
-		'/api/admin/federation/update-instance', '/api/admin/federation/refresh-remote-instance-metadata', '/url', '/.well-known/*', '/.well-known/host-meta', '/.well-known/host-meta.json', '/.well-known/webfinger',
+		'/api/admin/federation/update-instance', '/api/admin/federation/refresh-remote-instance-metadata', '/url', '/.well-known/*', '/.well-known/host-meta', '/.well-known/host-meta.json', '/.well-known/webfinger', '/.well-known/nodeinfo', '/nodeinfo/2.1', '/nodeinfo/2.0',
 		'/users/:id/collections/featured', '/notes/:id', '/users/:id/followers', '/users/:id/following',
 		'/users/:user/outbox', '/users//outbox', '/notes/:note/activity', '/notes//activity',
 		'/emojis/:emoji', '/emojis/', '/api/emoji', '/api/emojis', '/api/get-avatar-decorations',
@@ -240,4 +240,15 @@ test('ordinary HTTP exposes public avatar decorations', async () => {
 	});
 	expect(response.status).toBe(200);
 	expect(await response.json()).toEqual([]);
+});
+
+test('ordinary composition exposes NodeInfo discovery without chart or proxy reads', async () => {
+	const { resources } = fixture();
+	const response = await createBackendHttpApp(resources, testConfig()).request('/.well-known/nodeinfo');
+	expect(response.status).toBe(200);
+	expect(await response.json()).toEqual({ links: [
+		{ rel: 'http://nodeinfo.diaspora.software/ns/schema/2.1', href: 'http://example.test/nodeinfo/2.1' },
+		{ rel: 'http://nodeinfo.diaspora.software/ns/schema/2.0', href: 'http://example.test/nodeinfo/2.0' },
+	] });
+	expect(resources.noteCharts.read).not.toHaveBeenCalled();
 });
