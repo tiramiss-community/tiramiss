@@ -1534,7 +1534,7 @@
         "docs/superpowers/compatibility/default-role-policies/README.md"
       ],
       "note": "#415: default-policy update, raw JSON replacement, audit and metaUpdated/policiesUpdated notifications; subsequent anonymous/normal-user evaluation and warm remote Meta cache. Pinned literal endpoint comparison uses service doubles; full upstream server/PG and individual policy consumers are outside this slice.",
-      "evidenceRevision": "04916a394507942348b27b4eb85f2a00274d6f09"
+      "evidenceRevision": "391dec7dff0beb74e99e187175bd4331a066b6c1"
     },
     "api:charts/notes": {
       "status": "partial",
