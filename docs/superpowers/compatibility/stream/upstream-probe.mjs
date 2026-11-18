@@ -38,7 +38,7 @@ function source(relative) {
   }
   return blobs.get(full).text;
 }
-const actualFiles = new Set(['decorators.ts','misc/is-renote.ts','misc/is-instance-muted.ts','misc/is-user-related.ts','misc/is-channel-related.ts','misc/clone.ts','misc/should-hide-note-by-time.ts','server/api/stream/channel.ts','server/api/stream/NoteStreamingHidingService.ts','server/api/stream/Connection.ts','server/api/StreamingApiServerService.ts',...['main','home-timeline','local-timeline','global-timeline','hybrid-timeline'].map(n=>`server/api/stream/channels/${n}.ts`)]);
+const actualFiles = new Set(['decorators.ts','misc/is-renote.ts','misc/is-instance-muted.ts','misc/is-user-related.ts','misc/is-channel-related.ts','misc/clone.ts','misc/should-hide-note-by-time.ts','server/api/stream/channels/queue-stats.ts','server/api/stream/channel.ts','server/api/stream/NoteStreamingHidingService.ts','server/api/stream/Connection.ts','server/api/StreamingApiServerService.ts',...['main','home-timeline','local-timeline','global-timeline','hybrid-timeline'].map(n=>`server/api/stream/channels/${n}.ts`)]);
 function load(relative, customSource) {
   if (!customSource && modules.has(relative)) return modules.get(relative).exports;
   const module = {exports:{}};
@@ -49,6 +49,7 @@ function load(relative, customSource) {
     if (specifier === '@nestjs/core') return {ContextIdFactory:{create:()=>({})},ModuleRef:EmptyService,REQUEST:Symbol('request')};
     if (specifier === '@/di-symbols.js') return {DI:{}};
     if (specifier === 'ws') return {WebSocket:{OPEN:1},WebSocketServer:FakeWebSocketServer};
+    if (specifier === 'xev') return {__esModule:true,default:EventEmitter};
     if (specifier === 'events') return {EventEmitter};
     if (specifier === 'promise-limit') return ()=>fn=>Promise.resolve().then(fn);
     if (specifier === '@/misc/json-value.js') return {isJsonObject:x=>x!==null&&typeof x==='object'&&!Array.isArray(x)};
@@ -229,6 +230,28 @@ for(const [id,user,token,ch,pong] of [['main-anon',null,null,'main',true],['main
  observed.push({id:`connect-${id}`,kind:'connect',input:{user,token,channel:ch,pong},sent,channels:conn.channels.size});conn.dispose();
 }
 
+
+
+// Execute fixed Connection methods with real channel metadata and a narrow DI lifecycle double.
+for (const [id, user, token, operations] of [
+ ['native-shared', {id:'viewer'}, null, [['a','main'],['b','main'],['h1','homeTimeline'],['h2','homeTimeline'],['q','queueStats'],['q2','queueStats']]],
+ ['guest', null, null, [['a','main'],['h','homeTimeline'],['q','queueStats']]],
+ ['missing-kind', {id:'viewer'}, {permission:[]}, [['a','main'],['h','homeTimeline'],['q','queueStats']]],
+ ['granted-kind', {id:'viewer'}, {permission:['read:account']}, [['a','main'],['h','homeTimeline'],['q','queueStats']]],
+ ['replace-unknown', {id:'viewer'}, null, [['a','queueStats'],['a','unknown']]],
+ ['replace-denied', null, null, [['a','queueStats'],['a','main']]],
+ ['same-id', {id:'viewer'}, null, [['a','main'],['a','main'],['a','queueStats'],['a','homeTimeline']]],
+ ['limit-replacement', {id:'viewer'}, null, [...Array.from({length:32},(_,i)=>[String(i),'homeTimeline']),['overflow','queueStats'],['0','queueStats']]],
+]) {
+ const {conn,sent}=realConnection(facts({user}));conn.token=token;
+ const disposed=[];const errors=[];let request;
+ conn.moduleRef={registerRequestByContextId:r=>{request=r;},create:async C=>({id:request.id,chName:C===classes.main?'main':C===classes.homeTimeline?'homeTimeline':'queueStats',init:async()=>true,dispose(){disposed.push(this.chName);}})};
+ for(const [channelId,channel] of operations) {
+  try { await conn.connectChannel(channelId,{},channel,true); } catch(error) { errors.push(error.message); }
+ }
+ conn.dispose();
+ observed.push({id:`registry-${id}`,kind:'registry',input:{user,token,operations},sent,disposed,errors});
+}
 
 for(const alias of ['subNote','s','sr']) {
  const {conn,sent}=realConnection();

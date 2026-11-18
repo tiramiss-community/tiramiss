@@ -42,3 +42,15 @@ pnpm --filter backend-next test test/unit/stream/source-compat.test.ts
 `test/processes/posting-websocket.test.ts` は通常HTTP子と通常workerを起動し、実HTTP作成→main/home受信→pollEnded通知WS受信とPG保存→実HTTP削除→noteUpdated、再接続、接続中SIGTERMを測定する。別子でpending認証中のTCP resetを再現し、未処理例外がないことを確認する。本家full processの同時比較とは区別する。
 
 #189は他17channel・channel書込・chat/game/admin等、#177は通知API/既読/未読/push/移行、#174は検索等、#172は検索等の削除連携、#176は投稿全体の縦断が残る。今回の完了条件をこれらの完了に換算しない。
+
+## 既存3channelのregistry化（#354）
+
+`createStreamChannelRegistry` が main・homeTimeline・queueStats の実装と、`requireCredential` / `kind` / `shouldShare` を登録する。queueStats は実readerがある場合だけ登録する。追加実装は `StreamChannelDefinition` の同期factoryから `publish`・`onMessage`・`dispose` を提供し、`createStreamConnection` の第2引数へ登録mapを渡せる。HTTPの標準registryへ追加する場合はregistry factoryを更新する。未実装channelの空登録はない。homeの本文hide用following取得は任意capabilityであり、提供された場合はpublication内でPromiseを共有する。
+
+upgradeでの `read:account` 検査を維持したうえで、channelの資格はregistryのmetadataで別途検査する。nativeは全kindを許可し、app/miauthは保存permissionをreceiverへ渡す。guestは公開queueStatsを購読できるが、read:accountのないtokenは公開channelを使う前のupgradeで401となる。
+
+同一IDの切断→上限→channel資格→共有channel重複抑止→生成→任意ackの順序を固定本家と照合した。`upstream-probe.mjs` の `kind: registry` 8ケースをそのまま `registry-cases.json` に保存し、`registry.test.ts` がackとdispose結果を比較する。main/home/queueStatsの資格metadataとConnection本体は固定Git blobを実行するが、DI生成・channel init/disposeは狭いlifecycle doubleである。channel業務の比較は既存のsource-casesとqueue-admin observationsを併用する。本家全サーバーを起動した比較ではない。
+
+未知channelは本家がthrowする一方、新実装は従来どおり無視する。同一IDの古い購読はどちらも先に破棄する。非同期renderや外部callbackが破棄後に完了した場合は旧購読へ送信しない。通常WS adapterは処理を直列化し、終了時には送信を停止して開始済みrenderを待つ既存契約を維持する。queueStats履歴のXevとのtransport差異や1 MiBの既存差異、他channelと#189/#177の残範囲は変わらない。
+
+2026-11-18の限定検証（base `741478fdba`）: stream単体102件、全単体5,004 PASS / 1既存skip（追加の切断中render回帰前）、実Redis/WS lifecycle8件、build/typecheck・upstream sync・shippingがPASS。追加の切断中render回帰を含む近傍23件もPASS。実依存は専用Compose `tiramiss-registry354`、Redis port57454を使用した。PG保存・通常worker・本家full HTTP/PGを再測定した結果ではない。

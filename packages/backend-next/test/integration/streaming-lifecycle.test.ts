@@ -10,6 +10,7 @@ import { emptyStreamFacts } from '../../src/modules/stream/public.js';
 import { openStreamingServer } from '../../src/platform/streaming-server.js';
 import { closeHttp, listenHttp, registerHttpDrain } from '../../src/processes/http.js';
 import { testConfig } from '../helpers/database.js';
+import type { QueueStatsReader } from '../../src/modules/queue/public.js';
 import type { StreamingPorts } from '../../src/platform/streaming-server.js';
 
 const logger = { info() {}, error() {} };
@@ -27,10 +28,10 @@ function ports(overrides: Partial<StreamingPorts> = {}): StreamingPorts {
 	return { authenticate: async () => ({ userId: 'me', canReadAccount: true, isSuspended: false }), readFacts: async () => emptyStreamFacts('me'), hidingFollowing: async () => new Set(), repack: async () => null, reaction: async () => undefined, touchActivity: async () => {}, ...overrides };
 }
 
-async function start(port: StreamingPorts) {
+async function start(port: StreamingPorts, queueStats?: QueueStatsReader) {
 	const config = testConfig();
 	const server = await listenHttp(new Hono(), config.http);
-	const stream = await openStreamingServer(server, { redis: config.redisForPubsub, selfUrl: config.url, ports: port, logger, onFailure: () => {} });
+	const stream = await openStreamingServer(server, { redis: config.redisForPubsub, selfUrl: config.url, ports: port, queueStats, logger, onFailure: () => {} });
 	registerHttpDrain(server, stream.close);
 	const address = (server.address() as { port: number }).port;
 	let closing: Promise<void> | undefined;
@@ -176,4 +177,46 @@ test('shutdown with a pending hidden main render waits before releasing dependen
 	} finally {
  redis.disconnect(); client.socket.terminate(); await running.close(); 
 }
+});
+
+test('guest queueStats shares one listener and denied same-ID main replacement disposes it', async () => {
+	const listeners = new Set<(sample: any) => void>();
+	const running = await start(ports({ authenticate: async () => null, readFacts: async () => emptyStreamFacts(null) }), {
+		subscribe(listener) {
+			listeners.add(listener);
+			return () => {
+				listeners.delete(listener);
+			};
+		},
+		readLog: () => [],
+	});
+	const client = await connect(running.address);
+	try {
+		client.socket.send(JSON.stringify({ type: 'connect', body: { id: 'q', channel: 'queueStats', pong: true } }));
+		await vi.waitFor(() => expect(client.messages).toEqual([{ type: 'connected', body: { id: 'q' } }]));
+		client.socket.send(JSON.stringify({ type: 'connect', body: { id: 'duplicate', channel: 'queueStats', pong: true } }));
+		client.socket.send(JSON.stringify({ type: 'ch', body: { id: 'q', type: 'requestLog', body: { id: 'request', length: 1 } } }));
+		await vi.waitFor(() => expect(client.messages).toHaveLength(2));
+		expect(listeners.size).toBe(1);
+		expect(client.messages[1]).toEqual({ type: 'channel', body: { id: 'q', type: 'statsLog', body: [] } });
+		client.socket.send(JSON.stringify({ type: 'connect', body: { id: 'q', channel: 'main', pong: true } }));
+		await vi.waitFor(() => expect(listeners.size).toBe(0));
+		expect(client.messages).toHaveLength(2);
+		client.socket.send(JSON.stringify({ type: 'connect', body: { id: 'q', channel: 'queueStats', pong: true } }));
+		await vi.waitFor(() => expect(client.messages).toHaveLength(3));
+		await running.close();
+		expect(listeners.size).toBe(0);
+	} finally {
+		client.socket.terminate();
+		await running.close();
+	}
+});
+
+test('upgrade rejects a token without read account before public channel subscription', async () => {
+	const running = await start(ports({ authenticate: async () => ({ userId: 'me', canReadAccount: false, isSuspended: false, tokenPermissions: [] }) }));
+	try {
+		await expect(connect(running.address)).rejects.toThrow('Unexpected server response: 401');
+	} finally {
+		await running.close();
+	}
 });

@@ -1,0 +1,790 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "executedFromGitObjects": true,
+  "limitations": [
+    "Narrow DI/cache/transport doubles; no old HTTP server or DB/Redis/worker execution.",
+    "pack and populateMyReaction are doubles; their return calls are observed, not old pack equivalence.",
+    "NoteEntityService shouldHideNote/hideNote bodies extracted verbatim from pinned source; imports bindThis/time helper execute literal pinned modules.",
+    "Fake timer registrations only; heartbeat timing not executed."
+  ],
+  "blobs": [
+    {
+      "file": "packages/backend/src/core/entities/NoteEntityService.ts",
+      "blob": "f648e5769409b5af17fc762803ae98bf0c17036a"
+    },
+    {
+      "file": "packages/backend/src/decorators.ts",
+      "blob": "42f925e1251cf8d5eb48caeb96d5a72fb203c017"
+    },
+    {
+      "file": "packages/backend/src/misc/should-hide-note-by-time.ts",
+      "blob": "ea1951e66cd41326c1752f639d067d06f187eae5"
+    },
+    {
+      "file": "packages/backend/src/server/api/stream/NoteStreamingHidingService.ts",
+      "blob": "56fc63b8c7501aa02f3ef6b338b71002343be4c4"
+    },
+    {
+      "file": "packages/backend/src/misc/clone.ts",
+      "blob": "ed0548564922658d31c7f6f9f92f8b12558e5796"
+    },
+    {
+      "file": "packages/backend/src/misc/is-renote.ts",
+      "blob": "f4bb329d8038ffaa8da7ff79260ff99c09029623"
+    },
+    {
+      "file": "packages/backend/src/server/api/stream/channels/main.ts",
+      "blob": "9c01c7e7b106f0b1146b4309520e37f976bef04a"
+    },
+    {
+      "file": "packages/backend/src/misc/is-instance-muted.ts",
+      "blob": "096a8b39c72b307814c7905920428af8e8a9edfa"
+    },
+    {
+      "file": "packages/backend/src/server/api/stream/channel.ts",
+      "blob": "010d47a7ff31d5249046e3084a716807832a83c3"
+    },
+    {
+      "file": "packages/backend/src/misc/is-user-related.ts",
+      "blob": "6f72082733fe1c9af0df923e8ed4878fdb8a57a7"
+    },
+    {
+      "file": "packages/backend/src/misc/is-channel-related.ts",
+      "blob": "fef736dad6e0374cdddad30ee15fb3bd942621e1"
+    },
+    {
+      "file": "packages/backend/src/server/api/stream/channels/home-timeline.ts",
+      "blob": "5b6dbb24b0ee68fbeb899f9875078627c4a47d33"
+    },
+    {
+      "file": "packages/backend/src/server/api/stream/channels/local-timeline.ts",
+      "blob": "5df9b7902b71e83edf88695a3b5ed9ad5f9f8a04"
+    },
+    {
+      "file": "packages/backend/src/server/api/stream/channels/global-timeline.ts",
+      "blob": "7d310bd875514e85f44a3cf2bdd19b43b3251b41"
+    },
+    {
+      "file": "packages/backend/src/server/api/stream/channels/hybrid-timeline.ts",
+      "blob": "f81e880018c3a092d49101f5bd795cde71d8d21b"
+    },
+    {
+      "file": "packages/backend/src/server/api/stream/Connection.ts",
+      "blob": "2fcea97f68edf31a4a1a8bdeb151a183cf9891db"
+    },
+    {
+      "file": "packages/backend/src/server/api/stream/channels/queue-stats.ts",
+      "blob": "a87863f26cca7a960836c232bc9ca57b9da85c1c"
+    },
+    {
+      "file": "packages/backend/src/server/api/StreamingApiServerService.ts",
+      "blob": "8a317bdc4eadc3493e671cf756179cc61c5be4ee"
+    }
+  ],
+  "observations": [
+    {
+      "id": "registry-native-shared",
+      "kind": "registry",
+      "input": {
+        "user": {
+          "id": "viewer"
+        },
+        "token": null,
+        "operations": [
+          [
+            "a",
+            "main"
+          ],
+          [
+            "b",
+            "main"
+          ],
+          [
+            "h1",
+            "homeTimeline"
+          ],
+          [
+            "h2",
+            "homeTimeline"
+          ],
+          [
+            "q",
+            "queueStats"
+          ],
+          [
+            "q2",
+            "queueStats"
+          ]
+        ]
+      },
+      "sent": [
+        {
+          "type": "connected",
+          "body": {
+            "id": "a"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "h1"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "h2"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "q"
+          }
+        }
+      ],
+      "disposed": [
+        "main",
+        "homeTimeline",
+        "homeTimeline",
+        "queueStats"
+      ],
+      "errors": []
+    },
+    {
+      "id": "registry-guest",
+      "kind": "registry",
+      "input": {
+        "user": null,
+        "token": null,
+        "operations": [
+          [
+            "a",
+            "main"
+          ],
+          [
+            "h",
+            "homeTimeline"
+          ],
+          [
+            "q",
+            "queueStats"
+          ]
+        ]
+      },
+      "sent": [
+        {
+          "type": "connected",
+          "body": {
+            "id": "q"
+          }
+        }
+      ],
+      "disposed": [
+        "queueStats"
+      ],
+      "errors": []
+    },
+    {
+      "id": "registry-missing-kind",
+      "kind": "registry",
+      "input": {
+        "user": {
+          "id": "viewer"
+        },
+        "token": {
+          "permission": []
+        },
+        "operations": [
+          [
+            "a",
+            "main"
+          ],
+          [
+            "h",
+            "homeTimeline"
+          ],
+          [
+            "q",
+            "queueStats"
+          ]
+        ]
+      },
+      "sent": [
+        {
+          "type": "connected",
+          "body": {
+            "id": "q"
+          }
+        }
+      ],
+      "disposed": [
+        "queueStats"
+      ],
+      "errors": []
+    },
+    {
+      "id": "registry-granted-kind",
+      "kind": "registry",
+      "input": {
+        "user": {
+          "id": "viewer"
+        },
+        "token": {
+          "permission": [
+            "read:account"
+          ]
+        },
+        "operations": [
+          [
+            "a",
+            "main"
+          ],
+          [
+            "h",
+            "homeTimeline"
+          ],
+          [
+            "q",
+            "queueStats"
+          ]
+        ]
+      },
+      "sent": [
+        {
+          "type": "connected",
+          "body": {
+            "id": "a"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "h"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "q"
+          }
+        }
+      ],
+      "disposed": [
+        "main",
+        "homeTimeline",
+        "queueStats"
+      ],
+      "errors": []
+    },
+    {
+      "id": "registry-replace-unknown",
+      "kind": "registry",
+      "input": {
+        "user": {
+          "id": "viewer"
+        },
+        "token": null,
+        "operations": [
+          [
+            "a",
+            "queueStats"
+          ],
+          [
+            "a",
+            "unknown"
+          ]
+        ]
+      },
+      "sent": [
+        {
+          "type": "connected",
+          "body": {
+            "id": "a"
+          }
+        }
+      ],
+      "disposed": [
+        "queueStats"
+      ],
+      "errors": [
+        "no such channel: unknown"
+      ]
+    },
+    {
+      "id": "registry-replace-denied",
+      "kind": "registry",
+      "input": {
+        "user": null,
+        "token": null,
+        "operations": [
+          [
+            "a",
+            "queueStats"
+          ],
+          [
+            "a",
+            "main"
+          ]
+        ]
+      },
+      "sent": [
+        {
+          "type": "connected",
+          "body": {
+            "id": "a"
+          }
+        }
+      ],
+      "disposed": [
+        "queueStats"
+      ],
+      "errors": []
+    },
+    {
+      "id": "registry-same-id",
+      "kind": "registry",
+      "input": {
+        "user": {
+          "id": "viewer"
+        },
+        "token": null,
+        "operations": [
+          [
+            "a",
+            "main"
+          ],
+          [
+            "a",
+            "main"
+          ],
+          [
+            "a",
+            "queueStats"
+          ],
+          [
+            "a",
+            "homeTimeline"
+          ]
+        ]
+      },
+      "sent": [
+        {
+          "type": "connected",
+          "body": {
+            "id": "a"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "a"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "a"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "a"
+          }
+        }
+      ],
+      "disposed": [
+        "main",
+        "main",
+        "queueStats",
+        "homeTimeline"
+      ],
+      "errors": []
+    },
+    {
+      "id": "registry-limit-replacement",
+      "kind": "registry",
+      "input": {
+        "user": {
+          "id": "viewer"
+        },
+        "token": null,
+        "operations": [
+          [
+            "0",
+            "homeTimeline"
+          ],
+          [
+            "1",
+            "homeTimeline"
+          ],
+          [
+            "2",
+            "homeTimeline"
+          ],
+          [
+            "3",
+            "homeTimeline"
+          ],
+          [
+            "4",
+            "homeTimeline"
+          ],
+          [
+            "5",
+            "homeTimeline"
+          ],
+          [
+            "6",
+            "homeTimeline"
+          ],
+          [
+            "7",
+            "homeTimeline"
+          ],
+          [
+            "8",
+            "homeTimeline"
+          ],
+          [
+            "9",
+            "homeTimeline"
+          ],
+          [
+            "10",
+            "homeTimeline"
+          ],
+          [
+            "11",
+            "homeTimeline"
+          ],
+          [
+            "12",
+            "homeTimeline"
+          ],
+          [
+            "13",
+            "homeTimeline"
+          ],
+          [
+            "14",
+            "homeTimeline"
+          ],
+          [
+            "15",
+            "homeTimeline"
+          ],
+          [
+            "16",
+            "homeTimeline"
+          ],
+          [
+            "17",
+            "homeTimeline"
+          ],
+          [
+            "18",
+            "homeTimeline"
+          ],
+          [
+            "19",
+            "homeTimeline"
+          ],
+          [
+            "20",
+            "homeTimeline"
+          ],
+          [
+            "21",
+            "homeTimeline"
+          ],
+          [
+            "22",
+            "homeTimeline"
+          ],
+          [
+            "23",
+            "homeTimeline"
+          ],
+          [
+            "24",
+            "homeTimeline"
+          ],
+          [
+            "25",
+            "homeTimeline"
+          ],
+          [
+            "26",
+            "homeTimeline"
+          ],
+          [
+            "27",
+            "homeTimeline"
+          ],
+          [
+            "28",
+            "homeTimeline"
+          ],
+          [
+            "29",
+            "homeTimeline"
+          ],
+          [
+            "30",
+            "homeTimeline"
+          ],
+          [
+            "31",
+            "homeTimeline"
+          ],
+          [
+            "overflow",
+            "queueStats"
+          ],
+          [
+            "0",
+            "queueStats"
+          ]
+        ]
+      },
+      "sent": [
+        {
+          "type": "connected",
+          "body": {
+            "id": "0"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "1"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "2"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "3"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "4"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "5"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "6"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "7"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "8"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "9"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "10"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "11"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "12"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "13"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "14"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "15"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "16"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "17"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "18"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "19"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "20"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "21"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "22"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "23"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "24"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "25"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "26"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "27"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "28"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "29"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "30"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "31"
+          }
+        },
+        {
+          "type": "connected",
+          "body": {
+            "id": "0"
+          }
+        }
+      ],
+      "disposed": [
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "homeTimeline",
+        "queueStats"
+      ],
+      "errors": []
+    }
+  ]
+}
