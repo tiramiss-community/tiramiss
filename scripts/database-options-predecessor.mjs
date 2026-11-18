@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs';
 
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const record = readFileSync(new URL('../docs/superpowers/compatibility/database-options/compatibility-predecessor.json', import.meta.url));
-assert.equal(sha(record), '43d50b7e54a269fbf4bdc97e59ee73f9e4dbb6ac57d33d3d73fd0007e8981148', 'database options predecessor seal');
+assert.equal(sha(record), '26ff7ae9a5bc8af1a359c91e164ece8277468e430a988ed018d66007313dd71e', 'database options predecessor seal');
 const { files } = JSON.parse(record);
 
 // Historical validators compare their original inputs. Only the three exact

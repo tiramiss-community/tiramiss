@@ -2,7 +2,7 @@
   "baseline": "fe1a8106c3b3d5aba8ddf57de5e28e37e4e0e6ca",
   "files": {
     "packages/backend-next/src/platform/database/data-source.ts": {
-      "currentSha256": "6eff8f1135ccccd3311ce034a0fb89d8c00d6131b2bf9f3fdea487a23d0ff594",
+      "currentSha256": "4615353f9ee1405851593914ed4f9246e467e8183d4ef2560a41686cd3edd056",
       "previousSha256": "176937d6f88f279b7f8eb08cc0e1d6c2f158cfebbc0ae9d9f7c1e890e287ff36",
       "patches": [
         {
@@ -16,9 +16,9 @@
           "previous": ""
         },
         {
-          "offset": 754,
-          "insert": "\t\textra: { statement_timeout: 10000, ...config.extra, connectionTimeoutMillis: timeoutMs },\n\t\tinvalidWhereValuesBehavior: { null: 'ignore', undefined: 'ignore' },\n",
-          "previous": "\t\textra: { ...config.extra, connectionTimeoutMillis: timeoutMs },\n"
+          "offset": 1083,
+          "insert": "\tconst options = databaseOptions(config, timeoutMs);\n\t// Upstream's CLI ormconfig inherits the database timeout; only the runtime factory supplies these defaults.\n\treturn new DataSource({\n\t\t...options,\n\t\textra: { statement_timeout: 10000, ...options.extra },\n\t\tinvalidWhereValuesBehavior: { null: 'ignore', undefined: 'ignore' },\n\t});\n",
+          "previous": "\treturn new DataSource(databaseOptions(config, timeoutMs));\n"
         }
       ]
     },
