@@ -200,7 +200,7 @@
       "assertion": "await appendRoleUpdateAudit(manager, record, ids.newAuditId);"
     }
   ],
-  "currentInputs": {
+  "inspectedInputs": {
     "packages/backend-next/src/platform/database/moderation-log.ts": "9c36e573c6c18ce2ed06575bb792ffd24c917cc3e897a79c6356f3041456edd5",
     "packages/backend-next/src/platform/database/note-deleter.ts": "4818af595ed943b168923e3f373a371c87ae19aa7aa6105e2c167da545c5edf5",
     "packages/backend-next/src/platform/database/role-update-audit.ts": "17244001a3ea8a59ff3c6ef0cd061277681e5fc898afeb936535af565e501bb5",
@@ -224,5 +224,6 @@
     "docs/superpowers/compatibility/note/n7/posting-proof-272.json": "41f87f127936dd84d8b818ce735b2ed5efa78f2b5cf366833227fdbe9f43d109",
     "docs/superpowers/compatibility/moderation-log/source-probe.mjs": "2a1a71a41c3979e19f459c12346a0d7b221c2c3ce844426a88e968b0f777b8ef",
     "docs/superpowers/compatibility/moderation-log/source-observations.json": "1f887b3940df1e396d20f0ecbb63ab50aece2a5cd9af07d33ae8852af1fd2606"
-  }
+  },
+  "inspectedSourceRevision": "4199ff8e3b7596753b5faf2e2bd6b11ccfc55054"
 }

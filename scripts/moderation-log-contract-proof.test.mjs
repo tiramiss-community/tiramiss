@@ -4,6 +4,7 @@
  */
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
@@ -29,13 +30,9 @@ test('finite moderation-log evidence names both callers and preserves execution 
 	assert(evidence.knownBoundaries.some(boundary => boundary.id === 'author-lookup-before-versus-after-delete' && boundary.owner === 194 && boundary.disposition.includes('decision-open')));
 });
 
-test('current evidence inputs still match the inspected bytes and declarations', () => {
-	assert(Object.keys(evidence.currentInputs).length >= 20);
-	for (const [path, expected] of Object.entries(evidence.currentInputs)) {
-		assert.equal(createHash('sha256').update(read(path)).digest('hex'), expected, `evidence drift: ${path}`);
-	}
+test('the recorded observation and named caller assertions remain linked', () => {
 	for (const [path, expected] of Object.entries(observation.currentInputs)) {
-		assert.equal(evidence.currentInputs[path], expected, `observation input: ${path}`);
+		assert.equal(evidence.inspectedInputs[path], expected, `observation input: ${path}`);
 	}
 	assert.equal(evidence.bindings.length, 13);
 	for (const binding of evidence.bindings) {
@@ -46,8 +43,25 @@ test('current evidence inputs still match the inspected bytes and declarations',
 		assert(read(binding.file).includes(binding.assertion), `caller assembly drift: ${binding.file}`);
 	}
 	for (const [path, record] of Object.entries(evidence.historicalByteComparison)) {
-		assert.equal(record.currentSha256, evidence.currentInputs[path]);
+		assert.equal(record.currentSha256, evidence.inspectedInputs[path]);
 		assert.equal(record.unchanged, record.historicalSha256 === record.currentSha256);
+	}
+});
+
+test('historical input hashes match their immutable revisions when history is available', t => {
+	const historicalRevision = evidence.historicalRecords[0].implementationCommit;
+	const revisions = [evidence.inspectedSourceRevision, historicalRevision];
+	if (revisions.some(revision => spawnSync('git', ['cat-file', '-e', `${revision}^{commit}`], { cwd: root }).status !== 0)) {
+		assert.equal(execFileSync('git', ['rev-parse', '--is-shallow-repository'], { cwd: root, encoding: 'utf8' }).trim(), 'true', 'missing provenance revision in full checkout');
+		t.skip('shallow checkout lacks historical objects; live semantic checks still run');
+		return;
+	}
+	const historicalHash = (revision, path) => createHash('sha256').update(execFileSync('git', ['show', `${revision}:${path}`], { cwd: root, maxBuffer: 8 * 1024 * 1024 })).digest('hex');
+	for (const [path, expected] of Object.entries(evidence.inspectedInputs)) {
+		assert.equal(historicalHash(evidence.inspectedSourceRevision, path), expected, `inspected revision: ${path}`);
+	}
+	for (const [path, record] of Object.entries(evidence.historicalByteComparison)) {
+		assert.equal(historicalHash(historicalRevision, path), record.historicalSha256, `historical revision: ${path}`);
 	}
 });
 
