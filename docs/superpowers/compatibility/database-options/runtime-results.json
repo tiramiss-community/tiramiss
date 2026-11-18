@@ -1,28 +1,30 @@
 {
   "scope": "database-timeout-int8-nullish-567",
-  "recordedAtUtc": "2026-11-18T05:29:55.667097+00:00",
+  "recordedAtUtc": "2026-11-18T05:38:03.164876+00:00",
   "baseRevision": "fe1a8106c3",
   "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
   "upstreamFullServerMeasured": false,
   "issueComplete": false,
   "environment": {
-    "node": "24.20.0",
+    "node": "26.4.0",
     "pnpm": "12.9.1",
     "postgres": "18.6",
     "pg": "8.23.1",
     "typeorm": "1.1.1",
     "composeProject": "backend-next-db567",
     "postgresPort": 55675,
-    "redisPort": 57675
+    "redisPort": 57675,
+    "re2": "1.27.0",
+    "nodeModuleAbi": 147
   },
   "inputs": {
-    "packages/backend-next/src/platform/database/data-source.ts": "6eff8f1135ccccd3311ce034a0fb89d8c00d6131b2bf9f3fdea487a23d0ff594",
+    "packages/backend-next/src/platform/database/data-source.ts": "4615353f9ee1405851593914ed4f9246e467e8183d4ef2560a41686cd3edd056",
     "packages/backend-next/package.json": "43c4d758c98d154e88307cf78e8c7296cc3ba0204712fc549388acbefa093888",
     "pnpm-lock.yaml": "fbdf4bfbb12f02d0cee063a5636bc1469afd104d35de54235a47dd30af23fd3c",
     "packages/backend-next/test/fixtures/database-options/postgres.ts.txt": "c6879b6b23c5fb1e7518ff0eaa02397791470732389954648f42ab13c0eaaa74",
-    "packages/backend-next/test/helpers/pinned-database-source.ts": "dc68bf1955c9a92931ab0261621e6f43c6b1bb1213847701dc28e84b7af8b025",
-    "packages/backend-next/test/unit/database-options.test.ts": "ad6b2e3a624d35b5c1fa18df88ed62b931071f1f7012d1b388a335acd3cfdf54",
-    "packages/backend-next/test/integration/database-options.test.ts": "8205b7c1677f3cc876ed4452b7f8e07ceeb571603b93c53565fea4edfa08630f",
+    "packages/backend-next/test/helpers/pinned-database-source.ts": "c5fcec8526108c293e0f6bf44271f417b976d57c2473e798b370a3b06cd065b6",
+    "packages/backend-next/test/unit/database-options.test.ts": "5e56dd9901350c6105e8383d7883d6842ffe922a7b66e5327bc7d7874ad66e8c",
+    "packages/backend-next/test/integration/database-options.test.ts": "e4539e874dddfb5ec9a77322ef8fbd07751f165825d78b3f62b746c1ed5664d3",
     "packages/backend-next/src/config/load-config.ts": "6771450cf0ae420bff37bbbf677f6dc46b2e40d214f31b575b90688abc8d4213",
     "packages/backend-next/src/platform/connect-resources.ts": "4891d4395cfa5bf193b0e2cc5ca9aeafd55b8e789fcef3c2efb48e29ec970504",
     "packages/backend-next/src/platform/database/meta.ts": "f77d4ac67496a561ebbfa549ecf23be8f1e78d72d70cc8dbb079c030f657bc11",
@@ -30,42 +32,45 @@
     "packages/backend-upstream/src/models/Meta.ts": "27bd75b935886158a59b4126fa50e4687e6c38e3e91789cddf3438154d6ec38f",
     "packages/backend-next/test/integration/transaction-runner.test.ts": "c6a6d77f1cd2e45e7e693f06bcdfc9f4799bc0786a7c2348df6ab5e1d5c87877",
     "packages/backend-next/test/integration/meta.test.ts": "8366b35d99be000d2bb131d1f6791b166ab82d58ca05e97e3e116849f85b5c2d",
-    "packages/backend-next/test/integration/url-preview.test.ts": "1c524d9d750111146b5d415b4c5b07e5ba2e08389a10478132222972a2412a24"
+    "packages/backend-next/test/integration/url-preview.test.ts": "1c524d9d750111146b5d415b4c5b07e5ba2e08389a10478132222972a2412a24",
+    "packages/backend-next/test/fixtures/database-options/ormconfig.js.txt": "3c7af5a6115c87e4816ac7241823b76a6f4a15e3b1bb119429a12e3ad998177e",
+    "packages/backend-next/src/platform/database/migration-sources.ts": "8fc2960fe615cbccc5d960fce9fa9099f263a025ce857e300e1fe3b72ae6764b",
+    "packages/backend-next/test/integration/migrations.test.ts": "0a8d8c410c8719c6495a15f79d53f277065cd1eef245c4b5ab68b6e95f1ef6fc"
   },
   "runs": [
     {
       "kind": "unit",
-      "log": "/tmp/db567-unit.log",
-      "sha256": "f8b9d94b325402174d847b765e5045578099e952a1e57f6a3bfbfa2513211fab",
+      "log": "/tmp/db567-r2-unit-node26.log",
+      "sha256": "1f7583131f3262a4072b61a6c45d7c4036c1bd08e0f839c498e4450f1ee27887",
       "exitCode": 0,
-      "passed": 5077,
+      "passed": 5078,
       "skipped": 1,
       "files": 147
     },
     {
       "kind": "integration",
-      "log": "/tmp/db567-integration-frozen.log",
-      "sha256": "5ac5ca667ab007603ab6a87652d1e2a441952f8360cc1551f4739f8b101efd99",
+      "log": "/tmp/db567-r2-integration-final-node26.log",
+      "sha256": "2dc11f1ecceb3cc8bc25113f67f546733821ef8b2891f2f4e26bee4fd5c7e32b",
       "exitCode": 0,
-      "passed": 30,
+      "passed": 38,
       "skipped": 0,
-      "files": 4
+      "files": 5
     },
     {
       "kind": "build",
-      "log": "/tmp/db567-build-frozen.log",
+      "log": "/tmp/db567-r2-build.log",
       "sha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
       "exitCode": 0
     },
     {
       "kind": "typecheck",
-      "log": "/tmp/db567-typecheck-frozen.log",
+      "log": "/tmp/db567-r2-typecheck-final.log",
       "sha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
       "exitCode": 0
     },
     {
       "kind": "shipping",
-      "log": "/tmp/db567-shipping-frozen.log",
+      "log": "/tmp/db567-r2-shipping-final.log",
       "sha256": "02f7c34f5a6e6c2d35a50880495b48b931567c9ed9ebaea2157a44e1a492b814",
       "exitCode": 0
     }
@@ -75,5 +80,53 @@
     "query cache and disableCache behavior",
     "slow query diagnostics",
     "full source server and business-operation comparison"
-  ]
+  ],
+  "revision": "R2-runtime-defaults-exclude-migrations",
+  "workingTreeBaseRevision": "f7e2898d42",
+  "history": {
+    "r1": "runtime-results-r1.json",
+    "sha256": "ce241336ebc3677373881c3f415a5d07cfcc573232cb385bd1ecb4ec56209734",
+    "limitation": "R1 runtime passed but did not test CLI migration default inheritance"
+  },
+  "failedAttempts": [
+    {
+      "kind": "expected-regression",
+      "log": "/tmp/db567-r2-red.log",
+      "sha256": "7e80f9e8c225bd0f9978e6c8664144e45ff889fda6762f91a967ae8f1876bf2a",
+      "exitCode": 1,
+      "reason": "Shared migration options incorrectly contained runtime10s timeout before fix;1 failed3 passed"
+    },
+    {
+      "kind": "environment-unit",
+      "log": "/tmp/db567-r2-unit.log",
+      "sha256": "ec95aa77b3a02eefaeefa994f517a564d35a995a40fce971970e995c81f0a01e",
+      "exitCode": 1,
+      "reason": "re2 installed for Node24 ABI137;17 files failed before worktree-only Node26 binary replacement"
+    },
+    {
+      "kind": "environment-integration",
+      "log": "/tmp/db567-r2-integration.log",
+      "sha256": "3d3d3a604c4619d06a2a41b525161acd40964b9e33568fc7a891479c43a36fdc",
+      "exitCode": 1,
+      "reason": "re2 installed for Node24 ABI137;4 files failed1 passed"
+    },
+    {
+      "kind": "source-characterization",
+      "log": "/tmp/db567-r2-integration-node26.log",
+      "sha256": "ed671d23b3adc609d4fbc5ad44ebdbbcbdd00264208786db7dfc7467fd0d1aec",
+      "exitCode": 1,
+      "reason": "2 assertions incorrectly expected numeric0 to override nonzero DB default;pg omits0 startup parameter;fixed expectations after inspecting literal source and driver,36 passed2 failed"
+    }
+  ],
+  "migrationObservations": {
+    "databaseDefaultMs": 1750,
+    "unsetStatementTimeout": "1750ms",
+    "numericZeroStatementTimeout": "1750ms",
+    "explicit75StatementTimeout": "75ms",
+    "sources": [
+      "upstream",
+      "internal",
+      "pinned ormconfig.js"
+    ]
+  }
 }

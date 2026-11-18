@@ -30,3 +30,13 @@ export function createPinnedDatabaseSource(config: DatabaseConfig): DataSource {
 	);
 	return create({ db: { host: config.host, port: config.port, user: config.username, pass: config.password, db: config.database, extra: config.extra, disableCache: true } });
 }
+
+const migrationSource = readFileSync(new URL('../fixtures/database-options/ormconfig.js.txt', import.meta.url), 'utf8');
+assert.equal(createHash('sha256').update(migrationSource).digest('hex'), '3c7af5a6115c87e4816ac7241823b76a6f4a15e3b1bb119429a12e3ad998177e');
+const migrationFactory = new Function('DataSource', 'loadConfig', 'entities', 'process', migrationSource.replace(/^import .*\n/gm, '').replace('export default', 'return'));
+
+export function createPinnedMigrationSource(config: DatabaseConfig): DataSource {
+	return migrationFactory(DataSource, () => ({ db: {
+		host: config.host, port: config.port, user: config.username, pass: config.password, db: config.database, extra: config.extra,
+	} }), entities, { env: {} });
+}

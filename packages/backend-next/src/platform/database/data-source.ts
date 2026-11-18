@@ -20,8 +20,7 @@ export function databaseOptions(
 	return {
 		type: 'postgres',
 		...config,
-		extra: { statement_timeout: 10000, ...config.extra, connectionTimeoutMillis: timeoutMs },
-		invalidWhereValuesBehavior: { null: 'ignore', undefined: 'ignore' },
+		extra: { ...config.extra, connectionTimeoutMillis: timeoutMs },
 		entities: [...entities, ...notificationEntities, ...noteChartEntities],
 		synchronize: false,
 		migrationsRun: false,
@@ -31,5 +30,11 @@ export function databaseOptions(
 }
 
 export function createDataSource(config: DatabaseConfig, timeoutMs = 30000): DataSource {
-	return new DataSource(databaseOptions(config, timeoutMs));
+	const options = databaseOptions(config, timeoutMs);
+	// Upstream's CLI ormconfig inherits the database timeout; only the runtime factory supplies these defaults.
+	return new DataSource({
+		...options,
+		extra: { statement_timeout: 10000, ...options.extra },
+		invalidWhereValuesBehavior: { null: 'ignore', undefined: 'ignore' },
+	});
 }

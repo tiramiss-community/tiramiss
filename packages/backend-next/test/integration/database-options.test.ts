@@ -8,16 +8,17 @@ import { tmpdir } from 'node:os';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { dump } from 'js-yaml';
 import { MiMeta } from 'backend-upstream/entities';
-import { IsNull, type DataSource, type FindOptionsWhere } from 'typeorm';
+import { DataSource, IsNull, type FindOptionsWhere } from 'typeorm';
 import { loadConfig } from '../../src/config/load-config.js';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createLogger } from '../../src/platform/logger.js';
 import { createDataSource } from '../../src/platform/database/data-source.js';
 import { migrateDatabase } from '../../src/platform/database/migrate.js';
+import { migrationSources } from '../../src/platform/database/migration-sources.js';
 import { readMeta } from '../../src/platform/database/meta.js';
 import { createTransactionRunner } from '../../src/platform/database/transaction-runner.js';
 import { createTestDatabase } from '../helpers/database.js';
-import { createPinnedDatabaseSource } from '../helpers/pinned-database-source.js';
+import { createPinnedDatabaseSource, createPinnedMigrationSource } from '../helpers/pinned-database-source.js';
 
 let database: Awaited<ReturnType<typeof createTestDatabase>>;
 beforeAll(async () => {
@@ -131,4 +132,39 @@ test.each([undefined, 250])('normal YAML startup applies timeout %s and supplies
 		await resources?.close();
 		await rm(directory, { recursive: true, force: true });
 	}
+});
+
+describe('migration timeout matches pinned ormconfig independently of runtime defaults', () => {
+	beforeAll(async () => {
+		const admin = await new DataSource({ type: 'postgres', ...database.config.database }).initialize();
+		try {
+			// A nonzero DB default distinguishes inheritance from forcing either zero or the runtime's ten seconds.
+			await admin.query(`ALTER DATABASE "${database.config.database.database}" SET statement_timeout = '1750ms'`);
+		} finally {
+			await admin.destroy();
+		}
+	});
+
+	test.each(['upstream', 'internal'] as const)('%s migration source inherits the database timeout and respects explicit overrides', async kind => {
+		for (const timeout of [undefined, 0, 75]) {
+			const config = { ...database.config.database, extra: timeout === undefined ? {} : { statement_timeout: timeout } };
+			const next = migrationSources(config)[kind];
+			const pinned = createPinnedMigrationSource(config);
+			try {
+				await next.initialize();
+				await pinned.initialize();
+				// pg omits zero from startup parameters, so explicit zero also inherits the DB setting.
+				const expected = [{ statement_timeout: timeout === 75 ? '75ms' : '1750ms' }];
+				expect(await pinned.query('SHOW statement_timeout')).toEqual(expected);
+				expect(await next.query('SHOW statement_timeout')).toEqual(expected);
+			} finally {
+				if (next.isInitialized) {
+					await next.destroy();
+				}
+				if (pinned.isInitialized) {
+					await pinned.destroy();
+				}
+			}
+		}
+	});
 });
