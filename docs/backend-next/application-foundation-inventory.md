@@ -1,5 +1,9 @@
 # Application foundation operational inventory
 
+## 通知 transaction の寿命（#335、2026-11-18）
+
+`createNotificationTransactions` に共通 runner の `assertActive` を接続し、callback 終了後から COMMIT/ROLLBACK 前の有効な DB transaction でも、持ち出した save を拒否する。既存 persistence guard・受信者別保持/flush lock は維持する。[変更・固定本家との差異・実 PG/Redis の52件と単体51件の検証](notification-transaction-lifetime-335.md)。以下の stage 1/2 表で notification を deferred とした行は当時の履歴であり、この限定 slice が寿命検証だけを満たす。通知全体 #177 と remote-user/system-account の残責任は維持し、完了済み #251 の判定は変更しない。
+
 ## 現在のstage 3（#255、2026-11-10）
 
 公開mokuroku core/adapter `0.2.0` へ既存3業務queueの実装を移行した。BullMQ `6.3.11` / ioredis `5.11.1` を維持し、旧wrapper・静的registry・重複process starterを撤去した。[採用receipt・経路・所有者](../superpowers/compatibility/queue-runtime/README.md)。以下のstage 1/2の実測表・隔離workerの記録は当時の履歴として保持する。
