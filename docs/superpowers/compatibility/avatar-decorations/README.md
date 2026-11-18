@@ -27,3 +27,7 @@ The source probe reads Git objects at the fixed SHA, records complete SHA256 for
 - Dependency-order build/typecheck PASS; changed-file lint, SPDX and locale safety PASS. No entity or migration changes; no legacy API schema or misskey-js generated type changes.
 
 CHANGELOG was not edited. Candidate: “backend-next: アバター装飾の公開取得と変更通知に対応する共有キャッシュを追加”. #531 remains unchanged pending users-chart #319; #193 / #217 / #114 and admin writer proof remain open.
+
+The parent-provided shared resource formatting commit `bb1822c301` is an actual ancestor. The final implementation shape was rechecked in `/tmp/b368-{unit,integration,build,types,shipping}-final.log` with unit31 / listening HTTP9 / build / typecheck / shipping PASS. Adjacent shared HTTP, Meta and internal-event integration passed7 in three files, with transport/Meta unit8 in two files (`/tmp/b368-shared-{integration,unit}.log`). These separate executions are not added to the finite source-method observation count.
+
+[compatibility-predecessor.json](compatibility-predecessor.json) and its sealed descriptor preserve only exact prior bytes for three shared runtime/composition inputs. The resource file projects to the actual shared formatter parent, then its parent record projects to `63854ab4c0`; the HTTP composition and its route-list test project directly to `63854ab4c0`. This is historical-input continuity, not renewed execution of historical receipts. Unknown byte changes retain the historical drift checks.
