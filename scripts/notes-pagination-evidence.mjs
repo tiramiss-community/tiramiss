@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectPromoInput } from './promo-predecessor.mjs';
 import { projectNoteChartsInput } from './note-charts-evidence.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
@@ -454,6 +455,7 @@ const announcementReadProjection = {
   ]
 };
 export function projectAnnouncementReadInput(path, actual) {
+	actual = projectPromoInput(path, actual);
 	actual = projectNoteChartsInput(path, actual);
 	const variants = Object.hasOwn(announcementReadProjection, path) ? announcementReadProjection[path] : [];
 	const binding = variants.find(value => sha(actual) === value.currentSha256);

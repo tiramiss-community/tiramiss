@@ -377,6 +377,7 @@
 	"src/models/PageLike.ts",
 	"src/models/Poll.ts",
 	"src/models/PollVote.ts",
+	"src/models/PromoNote.ts",
 	"src/models/Relay.ts",
 	"src/models/RenoteMuting.ts",
 	"src/models/Role.ts",

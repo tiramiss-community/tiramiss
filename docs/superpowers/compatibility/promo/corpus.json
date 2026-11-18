@@ -1,0 +1,179 @@
+{
+  "doubles": "Literal pinned endpoint callback, schema/meta and GetterService.getNote; controlled repositories in source observations; --pg uses real TypeORM repositories. Neither mode runs full upstream HTTP/auth server.",
+  "notes": [
+    {
+      "id": "publicnote",
+      "userId": "author",
+      "visibility": "public"
+    },
+    {
+      "id": "privatenote",
+      "userId": "author",
+      "visibility": "specified"
+    },
+    {
+      "id": "remotenote",
+      "userId": "remote",
+      "visibility": "followers"
+    }
+  ],
+  "cases": [
+    {
+      "id": "create",
+      "input": {
+        "noteId": "publicnote",
+        "expiresAt": 1800000000123
+      },
+      "rows": []
+    },
+    {
+      "id": "private-note",
+      "input": {
+        "noteId": "privatenote",
+        "expiresAt": 1800000000123
+      },
+      "rows": []
+    },
+    {
+      "id": "remote-note",
+      "input": {
+        "noteId": "remotenote",
+        "expiresAt": 1800000000123
+      },
+      "rows": []
+    },
+    {
+      "id": "past-expiry",
+      "input": {
+        "noteId": "publicnote",
+        "expiresAt": -1
+      },
+      "rows": []
+    },
+    {
+      "id": "zero-expiry",
+      "input": {
+        "noteId": "publicnote",
+        "expiresAt": 0
+      },
+      "rows": []
+    },
+    {
+      "id": "date-limit",
+      "input": {
+        "noteId": "publicnote",
+        "expiresAt": 8640000000000000
+      },
+      "rows": []
+    },
+    {
+      "id": "already-promoted",
+      "input": {
+        "noteId": "publicnote",
+        "expiresAt": 1800000000123
+      },
+      "rows": [
+        {
+          "noteId": "publicnote",
+          "userId": "author",
+          "expiresAt": 0
+        }
+      ]
+    },
+    {
+      "id": "expired-still-registered",
+      "input": {
+        "noteId": "publicnote",
+        "expiresAt": 1800000000123
+      },
+      "rows": [
+        {
+          "noteId": "publicnote",
+          "userId": "author",
+          "expiresAt": -1
+        }
+      ]
+    },
+    {
+      "id": "missing-note",
+      "input": {
+        "noteId": "unknown",
+        "expiresAt": 0
+      },
+      "rows": []
+    },
+    {
+      "id": "missing-id",
+      "input": {
+        "expiresAt": 0
+      },
+      "rows": []
+    },
+    {
+      "id": "missing-expiry",
+      "input": {
+        "noteId": "publicnote"
+      },
+      "rows": []
+    },
+    {
+      "id": "invalid-id",
+      "input": {
+        "noteId": "bad-id",
+        "expiresAt": 0
+      },
+      "rows": []
+    },
+    {
+      "id": "fractional-expiry",
+      "input": {
+        "noteId": "publicnote",
+        "expiresAt": 0.5
+      },
+      "rows": []
+    },
+    {
+      "id": "string-expiry",
+      "input": {
+        "noteId": "publicnote",
+        "expiresAt": "0"
+      },
+      "rows": []
+    },
+    {
+      "id": "null-expiry",
+      "input": {
+        "noteId": "publicnote",
+        "expiresAt": null
+      },
+      "rows": []
+    },
+    {
+      "id": "note-failure",
+      "input": {
+        "noteId": "publicnote",
+        "expiresAt": 0
+      },
+      "rows": [],
+      "fail": "note"
+    },
+    {
+      "id": "exists-failure",
+      "input": {
+        "noteId": "publicnote",
+        "expiresAt": 0
+      },
+      "rows": [],
+      "fail": "exists"
+    },
+    {
+      "id": "insert-failure",
+      "input": {
+        "noteId": "publicnote",
+        "expiresAt": 0
+      },
+      "rows": [],
+      "fail": "insert"
+    }
+  ]
+}

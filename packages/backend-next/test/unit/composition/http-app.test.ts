@@ -46,7 +46,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 	expect([...new Set(app.routes.map(route => route.path))]).toEqual([
 		'/api/charts/notes', '/api/charts/user/notes',
 		'/api/admin/roles/show', '/api/admin/roles/update', '/api/roles/list', '/api/roles/show',
-		'/api/users/update-memo', '/api/hashtags/list', '/api/hashtags/search', '/api/hashtags/show', '/api/announcements', '/api/announcements/show', '/api/i/read-announcement', '/api/users/relation',
+		'/api/users/update-memo', '/api/admin/promo/create', '/api/hashtags/list', '/api/hashtags/search', '/api/hashtags/show', '/api/announcements', '/api/announcements/show', '/api/i/read-announcement', '/api/users/relation',
 		'/api/drive/files/show', '/api/drive/files/find', '/api/drive/files/find-by-hash', '/api/drive/files/check-existence', '/api/admin/drive/show-file', '/api/pages/show',
 		'/users/:id', '/:acct{@[^/]*}', '/users/:user{[^/]*}/publickey',
 		'/api/admin/federation/update-instance', '/api/admin/federation/refresh-remote-instance-metadata', '/url', '/.well-known/*', '/.well-known/host-meta', '/.well-known/host-meta.json', '/.well-known/webfinger',
