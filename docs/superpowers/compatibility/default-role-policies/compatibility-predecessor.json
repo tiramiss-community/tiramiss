@@ -101,6 +101,17 @@
           "insert": "\ntest('producer refresh uses its primary reader, updates the ordinary cache and drains on close', async () => {\n\tconst h = harness(); await h.cache.fetch();\n\tlet release!: (value: MiMeta) => void;\n\tconst primary = vi.fn(() => new Promise<MiMeta>(resolve => {\n\t\trelease = resolve;\n\t}));\n\tconst pending = h.cache.refresh(primary);\n\tlet closed = false;\n\tconst closing = h.cache.close().then(() => {\n\t\tclosed = true;\n\t});\n\tawait Promise.resolve(); expect(closed).toBe(false);\n\trelease({ id: 'z', name: 'primary' } as MiMeta); expect(await pending).toMatchObject({ name: 'primary' });\n\tawait closing; expect(closed).toBe(true); expect(primary).toHaveBeenCalledOnce(); expect(h.reads()).toBe(1);\n\tconst other = harness(); await other.cache.fetch();\n\tawait other.cache.refresh(async () => ({ id: 'z', name: 'fresh' } as MiMeta));\n\texpect((await other.cache.fetch()).name).toBe('fresh'); expect(other.reads()).toBe(1);\n\tawait expect(other.cache.refresh(async () => {\n\t\tthrow new Error('failed primary');\n\t})).rejects.toThrow('failed primary');\n\texpect((await other.cache.fetch()).name).toBe('fresh'); await other.cache.close();\n});\n"
         }
       ]
+    },
+    "packages/backend-next/test/unit/federation/local-featured-red.test.ts": {
+      "previousSha256": "9a5b9410665f3b75c0bc92745e5e5c4b23e9edfecb92dc815ae0ee1ddcbbc139",
+      "currentSha256": "1d4c07031c15397508c909a4cf926f699fa6e388207731ccf4647296b2a6f2c9",
+      "patches": [
+        {
+          "offset": 1865,
+          "previous": "",
+          "insert": "\t\tdefaultRolePolicies: { updateDefaultPolicies: vi.fn() },\n"
+        }
+      ]
     }
   }
 }
