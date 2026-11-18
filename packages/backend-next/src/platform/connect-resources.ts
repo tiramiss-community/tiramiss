@@ -443,7 +443,33 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			throw new DiagnosticError('TIMELINES_REDIS_ENDED', {});
 		}
 		active = true;
-		return { announcementArchives, noteCharts, actorEmojis, meta, urlPreview, instanceAdministration, dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, remoteEmojis, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };
+		return {
+			announcementArchives,
+			noteCharts,
+			actorEmojis,
+			meta,
+			urlPreview,
+			instanceAdministration,
+			dataSource,
+			redis,
+			reactionsRedis,
+			timelinesRedis,
+			roleMaterials,
+			userHashtags,
+			remoteEmojis,
+			actorInstanceRegistration,
+			notePostSave,
+			notePostDelete,
+			postingNotifications,
+			postingStream,
+			noteAntennas: antennas,
+			noteInstanceCounts,
+			federationKeys,
+			outboundHttp,
+			logger,
+			close,
+			failure,
+		};
 	};
 
 	try {
