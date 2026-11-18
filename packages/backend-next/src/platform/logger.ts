@@ -5,6 +5,8 @@
 import { DiagnosticError } from './diagnostic-error.js';
 
 export interface Logger {
+	debug?(event: string, fields?: Record<string, unknown>): void;
+	warn?(event: string, fields?: Record<string, unknown>): void;
 	info(event: string, fields?: Record<string, unknown>): void;
 	error(event: string, fields?: Record<string, unknown>): void;
 }
@@ -37,7 +39,7 @@ export function createLogger(
 	sink: (line: string) => void = (line) => {
 		process.stdout.write(`${line}\n`);
 	},
-): Logger {
+): Logger & Required<Pick<Logger, 'debug' | 'warn'>> {
 	const emit = (level: string, event: string, fields: Record<string, unknown> = {}) => {
 		sink(
 			JSON.stringify({
@@ -51,6 +53,12 @@ export function createLogger(
 		);
 	};
 	return {
+		debug: (event, fields) => {
+			emit('debug', event, fields);
+		},
+		warn: (event, fields) => {
+			emit('warn', event, fields);
+		},
 		info: (event, fields) => {
 			emit('info', event, fields);
 		},

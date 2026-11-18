@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { failedJobFields, safeJobDestination } from './worker-logging.js';
 import { UnrecoverableError } from 'bullmq';
 import { createDigest } from '../../modules/federation/public.js';
 import { DiagnosticError } from '../diagnostic-error.js';
@@ -96,7 +97,7 @@ export function createDeliverProcessor(process: (job: DeliverJob) => Promise<Del
 			// 本家 runQueueJob と同じく試行ごとに記録し、元の例外のまま BullMQ へ返す。
 			// logger は例外のメッセージを出さないため、自分で作った停止の理由だけを別に残す。
 			const to = (payload as { to?: unknown } | null)?.to;
-			logger.error('job.failed', { queue: DELIVER, jobId: context.jobId, jobName: context.jobName, attemptsMade: context.attempt - 1, to, reason, error });
+			logger.error('job.failed', { queue: DELIVER, ...failedJobFields(context), to: safeJobDestination(to), reason, error });
 			throw error;
 		}
 	};

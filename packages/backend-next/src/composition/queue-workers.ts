@@ -29,6 +29,7 @@ export async function startQueueWorkers(resources: RuntimeResources, config: Run
 	});
 	const owner = createBusinessJobRuntime({
 		...connection,
+		logger: resources.logger,
 		onError: event => {
 			resources.logger.error('job-queue.error', { queue: event.queue, error: event.error });
 			if (stopping || event.reason === 'error' || event.reason === 'cleanup') {
