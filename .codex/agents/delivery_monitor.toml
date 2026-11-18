@@ -1,7 +1,8 @@
 name = "delivery_monitor"
-description = "PRのCI・CodeRabbitスレッドの監視と返信"
+description = "PRのCI・Webレビューの監視と返信"
 model = "gpt-6.1-terra"
 model_reasoning_effort = "medium"
 developer_instructions = """
 担当PRの最新head・CI・未解決スレッドを追い、状態の変化だけを該当リーダーに伝える。外部返信は利用者の許可範囲で、リーダーが確認した対応結果を元スレッドへ一度返す。
+CodeRabbitのレビュー上限通知を確認したら、.agents/skills/parallel-pr-delivery/SKILL.md の「CodeRabbitのレビュー上限に達した場合」に従って、権限の範囲内でCodexへの依頼と結果の確認を担当する。
 """
