@@ -1,0 +1,144 @@
+{
+  "pin": "8e07cf085adf7009583d234a208e30436f020e26",
+  "sources": {
+    "packages/backend/src/misc/cache.ts": "99ea27bbf1287bbc6b2fc08fb7ce083395f30cdca7d6f5d9aca6048d5d9ef95c",
+    "packages/backend/src/core/AvatarDecorationService.ts": "cc89e8630799358f6a486a1c0ec8fc6708d1f313aa7d1413b68bbff3f9c83d72",
+    "packages/backend/src/server/api/endpoints/get-avatar-decorations.ts": "1d3403d205acad1cf30a9a8ce70cf2a6b2d395a92063a779a68fc40488a19622"
+  },
+  "scope": "Literal pinned getAll/onMessage, MemorySingleCache methods and endpoint callback; repository and RoleService doubles; no upstream HTTP/PG",
+  "rows": [
+    {
+      "id": "second",
+      "name": "星 & 🌟",
+      "description": "",
+      "url": "https://local.test/two",
+      "category": null,
+      "roleIdsThatCanBeUsedThisDecoration": [
+        "private",
+        "public",
+        "missing",
+        "public"
+      ],
+      "updatedAt": null
+    },
+    {
+      "id": "first",
+      "name": "First",
+      "description": "<description>",
+      "url": "https://local.test/one",
+      "category": "category",
+      "roleIdsThatCanBeUsedThisDecoration": [],
+      "updatedAt": "2000-01-01"
+    }
+  ],
+  "roles": [
+    {
+      "id": "public",
+      "isPublic": true
+    },
+    {
+      "id": "private",
+      "isPublic": false
+    }
+  ],
+  "projection": [
+    {
+      "authenticated": false,
+      "result": [
+        {
+          "id": "second",
+          "name": "星 & 🌟",
+          "description": "",
+          "url": "https://local.test/two",
+          "roleIdsThatCanBeUsedThisDecoration": [
+            "public",
+            "public"
+          ],
+          "category": null
+        },
+        {
+          "id": "first",
+          "name": "First",
+          "description": "<description>",
+          "url": "https://local.test/one",
+          "roleIdsThatCanBeUsedThisDecoration": [],
+          "category": "category"
+        }
+      ],
+      "reads": 1
+    },
+    {
+      "authenticated": true,
+      "result": [
+        {
+          "id": "second",
+          "name": "星 & 🌟",
+          "description": "",
+          "url": "https://local.test/two",
+          "roleIdsThatCanBeUsedThisDecoration": [
+            "private",
+            "public",
+            "public"
+          ],
+          "category": null
+        },
+        {
+          "id": "first",
+          "name": "First",
+          "description": "<description>",
+          "url": "https://local.test/one",
+          "roleIdsThatCanBeUsedThisDecoration": [],
+          "category": "category"
+        }
+      ],
+      "reads": 1
+    }
+  ],
+  "timeline": [
+    {
+      "label": "cold",
+      "reads": 1,
+      "error": null
+    },
+    {
+      "label": "exact TTL",
+      "reads": 1,
+      "error": null
+    },
+    {
+      "label": "expired",
+      "reads": 2,
+      "error": null
+    },
+    {
+      "label": "unrelated",
+      "reads": 2,
+      "error": null
+    },
+    {
+      "label": "avatarDecorationCreated",
+      "reads": 3,
+      "error": null
+    },
+    {
+      "label": "avatarDecorationUpdated",
+      "reads": 4,
+      "error": null
+    },
+    {
+      "label": "avatarDecorationDeleted",
+      "reads": 5,
+      "error": null
+    },
+    {
+      "label": "forced failure",
+      "reads": 6,
+      "error": "DB unavailable"
+    },
+    {
+      "label": "retry",
+      "reads": 7,
+      "error": null
+    }
+  ]
+}

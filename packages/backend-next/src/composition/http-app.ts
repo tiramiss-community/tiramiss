@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Hono } from 'hono';
+import { createAvatarDecorationsHttp } from './avatar-decorations-http.js';
 import { createHashtagCatalogHttp } from './hashtag-catalog-http.js';
 import { createNoteChartsApi } from '../http/note-charts-api.js';
 import { createTokenAuthenticator } from '../platform/database/authenticate.js';
@@ -58,6 +59,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		.route('/', createOutboxHttp(resources, config))
 		.route('/', createEmojiHttp(resources, config))
 		.route('/', createPublicEmojisHttp(resources))
+		.route('/', createAvatarDecorationsHttp(resources))
 		.route('/', createPublicDocumentsHttp(resources, config))
 		.route('/', createEmojiImagesHttp())
 		.route('/', createAvatarImagesHttp(resources, config))

@@ -355,3 +355,6 @@ media/emoji #188/#195、user hashtag関係 #195、actor由来instance usersCount
 2026-11-14: #323のactor acct別名/公開鍵は `43e72c7b6f1394fe6685eeca2ff368a6bd641d6f` の実装と有限証跡を完了し、PR #587でマージ済み・#323 CLOSED。#324の現在地は冒頭を参照。[実測・境界](../superpowers/compatibility/remote-user/local-actor-alias-key-results.md): 単体1927、実HTTP/PG216、source-method172、構造5。旧614の回帰はed83098での別測定。親#176/#127/#195はOPEN、投稿partial・D7 64/256・PG通知保存/強い順序保留と正式な対応順を維持する。
 
 2026-11-17: #294では通常HTTPのusers/update-memoと固定本家UserMemo同期、閲覧者を明示する狭いprivate読取材料を追加した。保存・更新・null/空削除・未知user・閲覧者分離とDB/schemaを比較する。[範囲・実測・限界](../superpowers/compatibility/user-memo/README.md)。UserDetailed全体と親#180の完成は含まない。
+
+
+2026-11-19: #368 / #367 の公開装飾一覧と共有 reader cache を通常 HTTP / 既存 internal events へ接続した。[固定本家の literal method 比較・実 HTTP/PG/Redis 検証と残責任](../superpowers/compatibility/avatar-decorations/README.md)。公開 API の `getAll(true)`、ゲストの公開ロール制限、30分 TTL・三種の通知・障害復帰を確認する。管理 writer の実更新証明と他 User 表示 consumer は既存所有者に残り、#193 / #217 / #114 全体を完了とはしない。#531 は人数 chart #319 待ちで変更していない。

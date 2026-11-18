@@ -37,6 +37,8 @@ import { createHashtagRanking } from './hashtag-ranking.js';
 import { createNoteAntennaReader } from './database/note-antennas.js';
 import { readMeta } from './database/meta.js';
 import { createActorEmojiCache } from './actor-emoji-cache.js';
+import { createAvatarDecorationCache } from './avatar-decoration-cache.js';
+import { createAvatarDecorationReader } from './database/avatar-decorations.js';
 import { createMetaCache } from './meta-cache.js';
 import { createInstanceMetadata } from './instance-metadata.js';
 import { createInstanceLedger } from './instance-ledger.js';
@@ -250,6 +252,8 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		if (cancelled) {
 			throw timeout;
 		}
+		const avatarDecorations = createAvatarDecorationCache({ events: internalEvents, read: createAvatarDecorationReader(dataSource.manager) });
+		scope.defer(avatarDecorations.close);
 		const meta = createMetaCache({ events: internalEvents, read: () => readMeta(dataSource.manager), onError: error => logger.error('meta-cache.reload-failed', { error }) });
 		scope.defer(meta.close);
 		const roleMaterials = await openRoleMaterials({
@@ -447,6 +451,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			announcementArchives,
 			noteCharts,
 			actorEmojis,
+			avatarDecorations,
 			meta,
 			urlPreview,
 			instanceAdministration,
