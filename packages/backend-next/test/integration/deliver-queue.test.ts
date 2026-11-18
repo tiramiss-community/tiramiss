@@ -129,7 +129,7 @@ test('a 5xx is retried after the httpRelatedBackoff delay and the next attempt i
 	// 1 回目の失敗の後は 1 分に 0〜20% の揺らぎを足した待ち時間。
 	expect(delayed.delay).toBeGreaterThanOrEqual(60000);
 	expect(delayed.delay).toBeLessThanOrEqual(72000);
-	expect(logs.filter(line => line.event === 'job.failed')).toEqual([expect.objectContaining({ queue: DELIVER, to: `${inbox.origin}/inbox/flaky`, attemptsMade: 0 })]);
+	expect(logs.filter(line => line.event === 'job.failed')).toEqual([expect.objectContaining({ queue: DELIVER, to: inbox.origin, attemptsMade: 0 })]);
 
 	inbox.respond('/inbox/flaky', 202);
 	await delayed.promote();
@@ -145,7 +145,7 @@ test('a 4xx stops the job without retrying', async () => {
 	const [failed] = await settled('failed', 1);
 	expect(failed.failedReason).toBe('404 Not Found');
 	expect(failed.attemptsMade).toBe(1);
-	expect(logs.filter(line => line.event === 'job.failed')).toEqual([expect.objectContaining({ reason: '404 Not Found', error: { name: 'UnrecoverableError' } })]);
+	expect(logs.filter(line => line.event === 'job.failed')).toEqual([expect.objectContaining({ reason: 'delivery-rejected', error: { name: 'UnrecoverableError' } })]);
 });
 
 test('a 410 from a shared inbox stops the job and suspends the host as gone', async () => {

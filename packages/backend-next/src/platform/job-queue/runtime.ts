@@ -4,17 +4,23 @@
  */
 import { JobRuntime } from '@mokurokujs/core';
 import { BullMQQueueManager, createBullmqBackend } from '@mokurokujs/bullmq-adapter';
+import { observeDeliveryWorker } from './worker-logging.js';
+import type { Logger } from '../logger.js';
 import { baseQueueOptions } from './connection.js';
 import type { BullmqManagerError } from '@mokurokujs/bullmq-adapter';
 import type { RedisConfig } from '../../config/types.js';
 import type { BusinessQueueName } from './business-jobs.js';
 
 class ObservedQueueManager extends BullMQQueueManager {
+	workerLogger?: Logger;
 	private readonly observedWorkers = new Map<string, Awaited<ReturnType<BullMQQueueManager['createWorker']>>>();
 
 	override async createWorker(...args: Parameters<BullMQQueueManager['createWorker']>): ReturnType<BullMQQueueManager['createWorker']> {
 		const worker = await super.createWorker(...args);
 		this.observedWorkers.set(args[0].name, worker);
+		if (this.workerLogger) {
+			observeDeliveryWorker(args[0].name, worker, this.workerLogger);
+		}
 		return worker;
 	}
 
@@ -44,8 +50,9 @@ export interface OwnedBusinessJobRuntime {
 	closedWorkerQueues(): Promise<ReadonlySet<BusinessQueueName>>;
 }
 
-export function createBusinessJobRuntime(options: { redis: RedisConfig; connectTimeoutMs: number; onError(event: BullmqManagerError): void }): OwnedBusinessJobRuntime {
+export function createBusinessJobRuntime(options: { redis: RedisConfig; connectTimeoutMs: number; logger?: Logger; onError(event: BullmqManagerError): void }): OwnedBusinessJobRuntime {
 	const manager = new ObservedQueueManager(baseQueueOptions(options.redis, 'deliver', options.connectTimeoutMs).connection, { onError: options.onError });
+	manager.workerLogger = options.logger;
 	const runtime = new JobRuntime(createBullmqBackend({ queueManager: manager }));
 	let terminal = false;
 	let stopping: Promise<void> | undefined;

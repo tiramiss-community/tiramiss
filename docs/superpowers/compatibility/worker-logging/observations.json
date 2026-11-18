@@ -1,0 +1,167 @@
+{
+  "commit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "sources": {
+    "packages/backend/src/queue/QueueProcessorService.ts": {
+      "sha256": "571cdd8a7135819035cc509c2589d9e157d28ac4f84b3e042f4e688bb378740d"
+    },
+    "packages/backend/src/queue/queue-job-runner.ts": {
+      "sha256": "5a0ff768aa0aedd2adc8ad3518772f1243a3f4a15d69590d13263a32d49aa1dd"
+    },
+    "packages/backend/src/logging/LogManager.ts": {
+      "sha256": "fdc6c898791b76f3f7d53d5a25ba61f6de83d4fc3f434db7c9ce3643ea030bd6"
+    }
+  },
+  "now": 100000,
+  "defaultLevels": [
+    {
+      "env": null,
+      "threshold": "debug"
+    },
+    {
+      "env": "production",
+      "threshold": "info"
+    },
+    {
+      "env": "development",
+      "threshold": "debug"
+    },
+    {
+      "env": "test",
+      "threshold": "debug"
+    }
+  ],
+  "observations": [
+    {
+      "queue": "deliver",
+      "registeredEvents": [
+        "active",
+        "completed",
+        "error",
+        "stalled"
+      ],
+      "logs": [
+        {
+          "domain": "deliver",
+          "level": "debug",
+          "message": "active id=7 attempts=3/4 age=2000ms to=https://remote.test/inbox",
+          "fields": null
+        },
+        {
+          "domain": "deliver",
+          "level": "debug",
+          "message": "completed(Success) id=7 attempts=3/4 age=2000ms to=https://remote.test/inbox",
+          "fields": null
+        },
+        {
+          "domain": "deliver",
+          "level": "error",
+          "message": "error Error: controlled retry",
+          "fields": {
+            "e": {
+              "stack": "controlled-stack",
+              "message": "controlled retry",
+              "name": "Error"
+            }
+          }
+        },
+        {
+          "domain": "deliver",
+          "level": "warn",
+          "message": "stalled id=7",
+          "fields": null
+        },
+        {
+          "domain": "deliver",
+          "level": "error",
+          "message": "failed(Error: controlled retry) id=7 attempts=2/4 age=2000ms to=https://remote.test/inbox",
+          "fields": {
+            "e": {
+              "stack": "controlled-stack",
+              "message": "controlled retry",
+              "name": "Error"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "queue": "userWebhookDeliver",
+      "registeredEvents": [
+        "active",
+        "completed",
+        "error",
+        "stalled"
+      ],
+      "logs": [
+        {
+          "domain": "user-webhook",
+          "level": "debug",
+          "message": "active id=7 attempts=3/4 age=2000ms to=https://remote.test/inbox",
+          "fields": null
+        },
+        {
+          "domain": "user-webhook",
+          "level": "debug",
+          "message": "completed(Success) id=7 attempts=3/4 age=2000ms to=https://remote.test/inbox",
+          "fields": null
+        },
+        {
+          "domain": "user-webhook",
+          "level": "error",
+          "message": "error Error: controlled retry",
+          "fields": {
+            "e": {
+              "stack": "controlled-stack",
+              "message": "controlled retry",
+              "name": "Error"
+            }
+          }
+        },
+        {
+          "domain": "user-webhook",
+          "level": "warn",
+          "message": "stalled id=7",
+          "fields": null
+        },
+        {
+          "domain": "user-webhook",
+          "level": "error",
+          "message": "failed(Error: controlled retry) id=7 attempts=2/4 age=2000ms to=https://remote.test/inbox",
+          "fields": {
+            "e": {
+              "stack": "controlled-stack",
+              "message": "controlled retry",
+              "name": "Error"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "queue": "endedPollNotification",
+      "registeredEvents": [],
+      "logs": [
+        {
+          "domain": "ended-poll-notification",
+          "level": "error",
+          "message": "failed(Error: controlled retry) id=7",
+          "fields": {
+            "job": {
+              "name": "fixture-job",
+              "info": "id=7 attempts=2/4 age=2000ms",
+              "data": {
+                "to": "https://remote.test/inbox",
+                "noteId": "note"
+              }
+            },
+            "e": {
+              "stack": "controlled-stack",
+              "message": "controlled retry",
+              "name": "Error"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

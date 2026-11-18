@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectWorkerLoggingIntegrationInput } from './worker-logging-integration-evidence.mjs';
 import { projectNoteChartsInput } from './note-charts-evidence.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
@@ -16,7 +17,15 @@ test('finite #272 posting proof artifact exists', () => {
 	assert.ok(existsSync(artifact), 'missing current posting-proof-272.json artifact');
 });
 
-const read = file => file === postSaveFixturePath ? readPrePreviewFixture(file, 'utf8') : projectNoteChartsInput(file, readFileSync(new URL(file, root))).toString('utf8');
+const processLogFixture = 'packages/backend-next/test/processes/note-delete-integration.test.ts';
+const read = file => {
+	if (file === postSaveFixturePath) {
+		return readPrePreviewFixture(file, 'utf8');
+	}
+	const actual = readFileSync(new URL(file, root));
+	const beforeLogAssertion = file === processLogFixture ? projectWorkerLoggingIntegrationInput(file, actual) : actual;
+	return projectNoteChartsInput(file, beforeLogAssertion).toString('utf8');
+};
 const digest = value => createHash('sha256').update(value).digest('hex');
 const historicalSource = (commit, file) => execFileSync('git', ['show', `${commit}:${file}`], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 16 * 1024 * 1024 });
 const load = () => JSON.parse(readFileSync(artifact, 'utf8'));
@@ -69,6 +78,12 @@ test('rejects actual declaration drift in the consumer', () => {
 test('rejects actual source drift with an unchanged declaration', () => {
 	assert.throws(() => validate(load(), file => file.endsWith('/integration/note-create.test.ts')
 		? read(file) + '\n// unreviewed consumer change\n' : read(file)), /source hash/);
+});
+
+test('rejects unreviewed live process-source drift after the measured logging assertion transition', () => {
+	assert.throws(() => validate(load(), file => file === processLogFixture
+		? projectWorkerLoggingIntegrationInput(file, Buffer.concat([readFileSync(new URL(file, root)), Buffer.from('\n// unreviewed process assertion\n')])).toString('utf8')
+		: read(file)), /source hash/);
 });
 
 test('rejects false direct-runtime provenance for a source-only deletion case', () => {

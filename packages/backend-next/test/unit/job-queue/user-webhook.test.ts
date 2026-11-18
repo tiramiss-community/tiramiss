@@ -60,8 +60,30 @@ test('failed attempts are logged without the job secret or body', async () => {
 		throw new Error('failure');
 	}, createLogger('test', line => lines.push(line)));
 	const data = userWebhookJob({ id: 'h', userId: 'u', url: 'https://old.test', secret: 'private-secret' }, 'note', { note: { text: 'private-body' } }, 1, 'event').data;
-	await expect(process(data, { jobId: 'job', jobName: 'h', attempt: 2, timestamp: new Date() })).rejects.toThrow('failure');
-	expect(lines.join('\n')).toContain('job.failed');
+	await expect(process(data, { jobId: 'job', jobName: 'h', attempt: 2, timestamp: new Date(0), rawJob: { opts: { attempts: 4 } } })).rejects.toThrow('failure');
+	expect(JSON.parse(lines[0])).toMatchObject({ event: 'job.failed', queue: 'userWebhookDeliver', to: 'https://old.test', attemptsMade: 1, maxAttempts: 4, ageMs: expect.any(Number), error: { name: 'Error' } });
 	expect(lines.join('\n')).not.toContain('private-secret');
 	expect(lines.join('\n')).not.toContain('private-body');
+});
+
+test('diagnostics for a malformed saved payload preserve the processor error', async () => {
+	const { createUserWebhookJobProcessor } = await import('../../../src/platform/job-queue/user-webhook.js');
+	const failure = new Error('controlled invalid payload');
+	const processor = createUserWebhookJobProcessor(async () => {
+		throw failure;
+	}, { info() {}, error() {} });
+	await expect(processor(null as never, { jobId: 'bad', jobName: 'hook', attempt: 1, timestamp: new Date() })).rejects.toBe(failure);
+});
+
+test.each(['private-secret', { message: 'private-secret' }])('non-Error failures are classified without serializing the thrown value', async failure => {
+	const { createUserWebhookJobProcessor } = await import('../../../src/platform/job-queue/user-webhook.js');
+	const { createLogger } = await import('../../../src/platform/logger.js');
+	const lines: string[] = [];
+	const processor = createUserWebhookJobProcessor(async () => {
+		throw failure;
+	}, createLogger('worker', line => lines.push(line)));
+	const data = userWebhookJob({ id: 'h', userId: 'u', url: 'https://old.test', secret: '' }, 'note', { note: {} }, 0, 'event').data;
+	await expect(processor(data, { jobId: 'bad', jobName: 'hook', attempt: 1, timestamp: new Date() })).rejects.toBe(failure);
+	expect(JSON.parse(lines[0])).toMatchObject({ error: { name: 'UnknownError' } });
+	expect(lines.join('\n')).not.toContain('private-secret');
 });

@@ -66,7 +66,7 @@ test.each([
 	const stop = await startQueueWorkers(resources, testConfig(), failed);
 	state.onError!(event('error'));
 	expect(failed).not.toHaveBeenCalled();
-	expect(logger.error).toHaveBeenCalledWith('job-queue.error', expect.objectContaining({ queue: 'deliver' }));
+	expect(logger.error).not.toHaveBeenCalled();
 	state.onError!(event(reason));
 	expect(failed).toHaveBeenCalledWith(expect.objectContaining({ code, details: expect.objectContaining({ queue: 'deliver' }) }));
 	await stop();
@@ -123,4 +123,18 @@ test('worker close rejection skips only that worker drain', async () => {
 	await expect(stop()).rejects.toBeInstanceOf(AggregateError);
 	expect(state.deliverIdle).not.toHaveBeenCalled();
 	expect(state.webhookIdle).toHaveBeenCalledOnce();
+});
+
+test.each([
+	['deliver', 'worker', 'error', false],
+	['userWebhookDeliver', 'worker', 'error', false],
+	['endedPollNotification', 'worker', 'error', true],
+	['deliver', 'queue', 'error', true],
+	['deliver', 'worker', 'cleanup', true],
+	['deliver', 'worker', 'connection-ended', true],
+] as const)('manager diagnostic %s/%s/%s logged=%s preserves nonduplicate diagnostics', async (queue, resource, reason, expected) => {
+	const stop = await startQueueWorkers(resources, testConfig(), () => {});
+	state.onError!({ ...event(reason), queue, resource } as BullmqManagerError);
+	expect(logger.error.mock.calls.some(([name]) => name === 'job-queue.error')).toBe(expected);
+	await stop();
 });
