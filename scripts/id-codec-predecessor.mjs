@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectParallelInput } from './parallel-inputs.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -13,6 +14,7 @@ assert.deepEqual(Object.keys(files), ['packages/backend-next/src/platform/id-cod
 
 // Only this measured boundary change projects to its exact historical input.
 export function projectIdCodecInput(path, actual) {
+	actual = projectParallelInput(path, actual);
 	const binding = Object.hasOwn(files, path) ? files[path] : undefined;
 	if (!binding || sha(actual) !== binding.currentSha256) return actual;
 	let previous = Buffer.from(actual);

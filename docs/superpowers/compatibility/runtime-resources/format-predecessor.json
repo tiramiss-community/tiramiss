@@ -1,0 +1,15 @@
+{
+  "files": {
+    "packages/backend-next/src/platform/connect-resources.ts": {
+      "previousSha256": "3a59947a796dd62d8f6c6cdd19b5873b508292038b8b3e171b38dd3ef447b9a3",
+      "currentSha256": "3fb32e36f9fce98728d59ee3adae9724b1085977cf8a3baee85b01c86491144c",
+      "patches": [
+        {
+          "offset": 21245,
+          "previous": "\t\treturn { announcementArchives, noteCharts, actorEmojis, meta, urlPreview, instanceAdministration, dataSource, redis, reactionsRedis, timelinesRedis, roleMaterials, userHashtags, remoteEmojis, actorInstanceRegistration, notePostSave, notePostDelete, postingNotifications, postingStream, noteAntennas: antennas, noteInstanceCounts, federationKeys, outboundHttp, logger, close, failure };\n",
+          "insert": "\t\treturn {\n\t\t\tannouncementArchives,\n\t\t\tnoteCharts,\n\t\t\tactorEmojis,\n\t\t\tmeta,\n\t\t\turlPreview,\n\t\t\tinstanceAdministration,\n\t\t\tdataSource,\n\t\t\tredis,\n\t\t\treactionsRedis,\n\t\t\ttimelinesRedis,\n\t\t\troleMaterials,\n\t\t\tuserHashtags,\n\t\t\tremoteEmojis,\n\t\t\tactorInstanceRegistration,\n\t\t\tnotePostSave,\n\t\t\tnotePostDelete,\n\t\t\tpostingNotifications,\n\t\t\tpostingStream,\n\t\t\tnoteAntennas: antennas,\n\t\t\tnoteInstanceCounts,\n\t\t\tfederationKeys,\n\t\t\toutboundHttp,\n\t\t\tlogger,\n\t\t\tclose,\n\t\t\tfailure,\n\t\t};\n"
+        }
+      ]
+    }
+  }
+}
