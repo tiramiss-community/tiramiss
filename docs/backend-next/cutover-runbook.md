@@ -27,7 +27,7 @@ Redisの用途別設定を省略するとbase Redisを使う。実体が同じ�
 | S0 準備 | 上表と#135/#138/#165/#177・各handlerの完成条件を照合。別環境で下記fixtureと実backup復元を実施 | 対象SHA・旧新配布物・通知方針・全復元手順が確定 | 未実装/未検証・未承認は切替延期。稼働中の旧版を維持 |
 | S1 受付と全process停止 | ingress/streamをメンテナンスへ変更。process manager/cronの自動起動を止め、棚卸しした旧新HTTP/worker/scheduler/scanner/producerを停止 | 全ホストのservice/container/PID状態と終了コード、PG接続/Redis client一覧を照合し、更新主体がいない。期限超過終了は結果不明として記録 | 停止未確認・active/lock残存・外部producerがあれば進めない。旧版へ戻す場合も起動主体を1組に限定 |
 | S2 同期backup・復元確認 | 停止状態を維持し、PG全schema（`public.migrations`/`backend_internal.migrations`を含む）・各Redis・外部保存を取得。hash/ID/時刻を記録。別の空の依存先へrestoreし、件数/履歴・queue payload/options/TTL・保存物hashを照合 | 全依存先が同じ停止復旧点へ戻り、復元した旧版の起動/読取を外向き隔離下で確認して再停止 | backup不完全・復元/照合失敗なら元の停止済み依存先を保持しR0。不可逆操作へ進まない |
-| S3 残job検査 | 復元先設定で `pnpm --filter backend-next check-queue-handoff --stopped`。下記の別prefix・通知も照合 | exit0、`ready:true`、全queue/全体blockerなし。reportと停止確認証跡を対に保存 | exit1・検査不能・未対応job/schedulerは旧版/担当で解決後S1から新backupで再実施するか延期。clearで通さない。R0 |
+| S3 残job検査 | 旧版の起動確認で worker が queue を消費し得るため、全 process の再停止後、S2 と同一の backup から PG・全 Redis・必要な外部保存を空の復元先に再展開する。件数・履歴・queue・保存物の照合後、その設定で `pnpm --filter backend-next check-queue-handoff --stopped`。下記の別prefix・通知も照合 | exit0、`ready:true`、全queue/全体blockerなし。reportと停止確認証跡を対に保存 | exit1・検査不能・未対応job/schedulerは旧版/担当で解決後S1から新backupで再実施するか延期。clearで通さない。R0 |
 | S4 migration | 外向き隔離した復元先で `pnpm --filter backend-next migrate` → `pnpm --filter backend-next check-migrations` → `pnpm --filter backend-next check-schema` | 本家public→独自schemaの順に適用、両履歴一致・登録Entity範囲のschema差分0 | 非0/応答不明/履歴・schema不一致はR1。通常起動で自動修復しない |
 | S5 通知移行 | #177の承認済み専用手順を実行し、旧Redis通知/未読とPG通知の件数・ID・時刻・既読・未読を照合 | 承認した保持/移行/打切りと一致。旧Redisから暗黙の破棄・二重保存がない | 専用手順未実装/未承認/不一致なら中止、R1。`migrate`だけで移行済みとしない |
 | S6 新版の隔離起動 | `pnpm --filter backend-next check:connect`、全停止下でcheckerを再実行し、その後 `pnpm --filter backend-next start`。通常HTTP/worker・delayed retry・通知・停止/再開を確認 | 全子ready、期待する保存結果/副作用と一致、外部配送は隔離先のみ。正常停止も確認 | 起動・実処理・停止失敗や未知の外部効果はR2。checker成功を全機能完成に数えない |
@@ -71,7 +71,7 @@ AP/webhook/mail/pushの送信やobject storageへの外部変更はDB/Redis復�
 
 ## 外部配送を隔離するfixture
 
-[Compose](../../packages/backend-next/test/fixtures/cutover/compose.yml)は専用PG・5用途のRedis・保存領域を持ち、全serviceを`internal:true`の1 networkへ閉じる。公開port・host network・Docker socket・本番volumeを持たない。送信先のURLを書き換え忘れても外へ配送できない構成とし、[probe](../../packages/backend-next/test/fixtures/cutover/probe.mjs)で内部接続成功と公開IPへのTCP失敗を確認する。実配送の成功比較には、このnetwork上の受信sinkを対象handlerのfixtureで追加してURLを向ける。proxy・mail・push・storage認証は本番値を使わない。
+[Compose](../../packages/backend-next/test/fixtures/cutover/compose.yml)は専用PG・5用途のRedis・保存領域を持ち、全serviceを`internal:true`の1 networkへ閉じる。公開port・host network・Docker socket・本番volumeを持たない。送信先のURLを書き換え忘れても外へ配送できない構成とし、[probe](../../packages/backend-next/test/fixtures/cutover/probe.mjs)で内部接続成功と公開IPへの経路不在（`ENETUNREACH`）を確認する。実配送の成功比較には、このnetwork上の受信sinkを対象handlerのfixtureで追加してURLを向ける。proxy・mail・push・storage認証は本番値を使わない。
 
 ```sh
 # repo root。自分専用のproject名を使い、実施中は同名を他作業と共有しない。
