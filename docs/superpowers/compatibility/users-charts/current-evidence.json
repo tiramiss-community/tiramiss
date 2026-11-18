@@ -1,0 +1,107 @@
+{
+  "scope": "users-chart-319",
+  "measurement": "R5",
+  "runtimeRevision": "ce4f8f416993cbe2bd32be810ad48d98a38ce0e7",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "upstreamFullServerMeasured": false,
+  "postingComplete": false,
+  "inputs": {
+    "packages/backend-next/src/composition/http-app.ts": "a427c183d0de622abf522a1e145aeb684c8f3cb589844ce614f7326d2a0ca3b2",
+    "packages/backend-next/src/composition/remote-users.ts": "494c8a3ee6239e1e8b05d6da774332b43f9ece81aa8567a46f95dd9265127637",
+    "packages/backend-next/src/http/note-charts-api.ts": "6c3024f600c0e91887e4a926b2b61c884c65c1850b4b5272e30d1ee6dd330f80",
+    "packages/backend-next/src/modules/chart/note-charts.ts": "305884aa86a972c558864942ecde7f87eaf17d50f455541f4a69d4e437319356",
+    "packages/backend-next/src/modules/chart/public.ts": "8fa9156ed760735f56e283a82ac557bb74a5ea3576dbd731a372e1ea7a301bf8",
+    "packages/backend-next/src/modules/chart/users-charts.ts": "278f40d484d03c2a2a06b80b930d96a78dd03cb02635dd5a4db59f45029caa0b",
+    "packages/backend-next/src/modules/federation/remote-user.ts": "a4bc4a9ace1e443e538bd2656746df5fcc9b85304678d304dfd7a74ebea60a88",
+    "packages/backend-next/src/modules/note/create-note.ts": "693e2d76757d28e5db3ae888240e804d862506c703bafe3b099823884e0dbdcc",
+    "packages/backend-next/src/platform/connect-resources.ts": "a80562d9de75e6347731291256a465eff7e86c2780287fb568b934b833101fff",
+    "packages/backend-next/src/platform/database/chart/schema.ts": "0b1bd6565bcdc1550456da9bb94e433885263ef5e1c7890e02f2f10880b88467",
+    "packages/backend-next/src/platform/database/chart/store.ts": "b0fa6860264a0b1cf0b072c34b29e71e9fa82fdb5c9940269c6236c1771c9486",
+    "packages/backend-next/src/platform/database/user-chart-counts.ts": "ef70076d99180626e3639c342e469f4870d7d804b1bb2777fddbcd9e26d198c8",
+    "packages/backend-next/test/integration/note-application.test.ts": "58ed1170485aef6edc312545b1f7201081aef086cfc72f0d54c6efdf38387c84",
+    "packages/backend-next/test/integration/remote-user.test.ts": "4aa57bd807c56140c4877ece5a8a1e097c1395425be3ad2e24dfe274528a7f9c",
+    "packages/backend-next/test/integration/users-charts.test.ts": "9ddd86558091ac143e949cbf983fbc77a1436dbaea1e8bf738d4de2c9d2c97fd",
+    "packages/backend-next/test/unit/chart/api.test.ts": "2dae71592b2c0865887b66207ae026fd2013adc66d25caa0d8c444715217b5ee",
+    "packages/backend-next/test/unit/chart/users-charts.test.ts": "e881b4b0993b78bd58e97f3e535718850a3ce3e0d80d566505d937f9870594ad",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "8ee44506099698c31a104b7075793fb1ed43cd4119cff1c938d73634a7449584",
+    "packages/backend-next/test/unit/federation/acquisition-policy.test.ts": "dde8a2c3848fb3cc57c0f305050dbaa45a5d4efdaded7c1ca3a5c0a66405f64c",
+    "packages/backend-next/test/unit/federation/local-featured-red.test.ts": "072f41f4c2e9a067463b5d40b4c7b31273634faf70e138fa60ea9bbe190becf3",
+    "packages/backend-next/test/unit/federation/remote-emojis.test.ts": "b418b94c2c89be06e8c11e663cd4f4367ee4dff47e76f115a72fda04671c9fa0",
+    "packages/backend-next/test/unit/federation/remote-profile.test.ts": "7e6d2085a088b3a4f6e5f362d8f9bbf5ebf6885c20d3dda8d08543bbfe600fbb",
+    "packages/backend-next/test/unit/federation/remote-user.test.ts": "b3ac9555441f15169bd5c8f6bcb9d9e68e7cdeebc9619f1af207155305a55109",
+    "packages/backend-next/test/unit/note/create-note.test.ts": "9bacbd6dd35128df8cdec5f377abfb496ecb8ed4f58de91b3cc55cdcc68cde48",
+    "docs/superpowers/compatibility/users-charts/source-probe.mjs": "2e895bb96a955af6443c9761b069590cb719d9ec374cb40d07ff306cee071168",
+    "docs/superpowers/compatibility/users-charts/source-observations.json": "b4db00456cd91a9ab013ef2cf3ed6305ad0cce3295edfbca428f4a75baa6765a",
+    "docs/superpowers/compatibility/chart-storage/schema-manifest.json": "8aa7a4f58a056073d5771ef8460562364f65cea3c14f367f6bdd4c2b9044c69b",
+    "docs/superpowers/compatibility/users-charts/compatibility-predecessor.json": "c886aac2e59c2bf87781d83c9aaaf43d68ed69e388d4bb9547a8eeda3ad877a8"
+  },
+  "runs": [
+    {
+      "name": "unit",
+      "log": "/tmp/b319-r5-unit.log",
+      "logSha256": "b1a1b5ef499a9b88f64705a9afba7858d458f1eb350ee0828dcd733828b0edb1",
+      "passed": 51,
+      "exitCode": 0
+    },
+    {
+      "name": "http-pg",
+      "log": "/tmp/b319-integration-r5.log",
+      "logSha256": "6b80e50ea8c960672d207c1e7b1bfdd85d4b638ad6e4909842d744028b9fef95",
+      "passed": 124,
+      "exitCode": 0
+    },
+    {
+      "name": "build",
+      "log": "/tmp/b319-build-r5.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
+      "passed": null,
+      "exitCode": 0
+    },
+    {
+      "name": "typecheck",
+      "log": "/tmp/b319-typecheck-r5.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+      "passed": null,
+      "exitCode": 0
+    },
+    {
+      "name": "source",
+      "log": "/tmp/b319-source-r4.log",
+      "logSha256": "ae0d3f6d5354d2525674819b11a81f2c7c487d795c05763d31dd9b7e330f83d6",
+      "passed": 30,
+      "exitCode": 0
+    },
+    {
+      "name": "shipping",
+      "log": "/tmp/b319-shipping-r5.log",
+      "logSha256": "47dc1f17aa59a9e89f8946d2579d720f2c313a50201b2dedd6f8a0f16d681f25",
+      "passed": null,
+      "exitCode": 0
+    },
+    {
+      "name": "regression-final",
+      "log": "/tmp/b319-r5-regression-final.log",
+      "logSha256": "8a91116d6a30abc4470de7e5ba34ee37d82a5caf251f5c93349cd7a8541fe960",
+      "passed": 36,
+      "exitCode": 0
+    }
+  ],
+  "sourceCases": {
+    "updates": 4,
+    "resyncs": 2,
+    "reads": 24
+  },
+  "deferred": [
+    "local signup #402",
+    "deleteAccount #341",
+    "producer proof #583",
+    "system scheduler #478"
+  ],
+  "historicalR4": {
+    "runtimeRevision": "33cef1f8bb846c3c585f2de3f0f74cebb63135c4",
+    "unitPassed": 5510,
+    "existingSkipped": 1,
+    "log": "/tmp/b319-all-unit-r4.log",
+    "logSha256": "9d5a14c22228b49cbb13adde3d5f7322130d4021ff309d11d36c2739f38d4030"
+  }
+}

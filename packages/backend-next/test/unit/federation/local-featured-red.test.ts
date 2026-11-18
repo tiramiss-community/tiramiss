@@ -21,6 +21,7 @@ test('default AP Note rendering embeds a prepared local reply', () => {
 test.each(['/users/alice/collections/featured', '/notes/at3hjq77note0001'])('ordinary root exposes %s and checks federation', async (path) => {
 	const repository = { find: async () => [{ federation: 'none' }] };
 	const resources = {
+		noteCharts: { users: { update: vi.fn(), read: vi.fn() } },
 		meta: { fetch: async () => (await repository.find())[0] },
 		instanceAdministration: { updateInstance: vi.fn(), refreshMetadata: vi.fn() }, dataSource: { manager: { getRepository: () => repository } }, logger: { error: vi.fn() }, roleMaterials: { changes: {} }, userHashtags: { start: vi.fn() }, actorInstanceRegistration: { start: vi.fn() }, notePostSave: { start: vi.fn() }, notePostDelete: { start: vi.fn() } } as unknown as RuntimeResources;
 	const response = await createBackendHttpApp(resources, testConfig()).request(path, { headers: { Accept: 'application/activity+json' } });

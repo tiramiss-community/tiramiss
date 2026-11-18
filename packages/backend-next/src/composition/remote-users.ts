@@ -9,6 +9,7 @@ import { createRemoteUserRepository, createRemoteActorTransactions } from '../pl
 import { createActorReader } from '../platform/database/local-actors.js';
 import { toFederationPolicy } from '../platform/database/meta.js';
 import { renderLocalActor } from '../modules/federation/public.js';
+import type { createUsersCharts } from '../modules/chart/public.js';
 import type { ActorEmojiCache } from '../platform/actor-emoji-cache.js';
 import type { MetaReader } from '../platform/meta-cache.js';
 import type { DataSource } from 'typeorm';
@@ -19,6 +20,7 @@ import type { Logger } from '../platform/logger.js';
 import type { RuntimeConfig } from '../config/types.js';
 export function createRemoteUsers(parts: {
 	dataSource: DataSource;
+	noteCharts: { users: Pick<ReturnType<typeof createUsersCharts>, 'update'> };
 	meta: MetaReader;
 	actorEmojis?: ActorEmojiCache;
 	logger: Logger;
@@ -69,6 +71,7 @@ export function createRemoteUsers(parts: {
 		},
 		startUserHashtags: parts.userHashtags.start,
 		startActorInstanceRegistration: parts.actorInstanceRegistration.start,
+		updateUsersChart: parts.noteCharts.users.update,
 		actorTransactions: createRemoteActorTransactions(parts.dataSource),
 		async webfinger(account) {
 			const acct = `${account.username}@${account.host}`;

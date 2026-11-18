@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { expect, test, vi } from 'vitest';
-import { createNoteChartsApi } from '../../../src/http/note-charts-api.js';
+import { createNoteChartsApi, createUsersChartsApi } from '../../../src/http/note-charts-api.js';
 import { AuthenticationFailed } from '../../../src/modules/access/public.js';
 import { createLogger } from '../../../src/platform/logger.js';
 
@@ -60,4 +60,40 @@ test('malformed GET numbers use the pinned casting error rather than Ajv validat
 	const { app } = setup();
 	const response = await app.request('/api/charts/notes?span=hour&limit=01');
 	expect(await response.json()).toMatchObject({ error: { id: '0b5f1631-7c1a-41a6-b399-cce335f34d85', info: { param: 'limit', reason: 'cannot cast to integer' } } });
+});
+
+test('users chart exposes GET/POST with shared parameter, credential and cache rules', async () => {
+	const read = vi.fn().mockResolvedValue({ local: { total: [1] }, remote: { total: [2] } });
+	const authenticate = vi.fn().mockResolvedValue(null);
+	const app = createUsersChartsApi({ read }, { logger, authenticate });
+	const response = await app.request('/api/charts/users?span=day&limit=2&offset=123');
+	expect(response.status).toBe(200);
+	expect(response.headers.get('Cache-Control')).toBe('public, max-age=3600');
+	expect(read).toHaveBeenCalledWith('users', 'day', 2, 123, null);
+	const epoch = await app.request('/api/charts/users?span=hour&offset=0');
+	expect(epoch.status).toBe(200);
+	expect(read).toHaveBeenCalledWith('users', 'hour', 30, 0, null);
+	const optional = await app.request('/api/charts/users?span=hour&i=valid');
+	expect(optional.status).toBe(200);
+	expect(optional.headers.get('Cache-Control')).toBe('private, max-age=0, must-revalidate');
+	expect((await app.request('/api/charts/users?span=bad')).status).toBe(400);
+	const posted = await app.request('/api/charts/users', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ span: 'hour' }) });
+	expect(posted.status).toBe(200);
+	expect(posted.headers.get('Cache-Control')).toBe('private, max-age=0, must-revalidate');
+	authenticate.mockRejectedValueOnce(new AuthenticationFailed());
+	expect((await app.request('/api/charts/users?span=hour&i=bad')).status).toBe(401);
+});
+
+test.each(['notes', 'users'])('global %s ignores extra userId in GET and POST', async series => {
+	const read = vi.fn().mockResolvedValue({});
+	const factory = series === 'users' ? createUsersChartsApi : createNoteChartsApi;
+	const app = factory({ read }, { logger, authenticate: async () => null });
+	for (const response of [
+		await app.request(`/api/charts/${series}?span=hour&userId=ignored`),
+		await app.request(`/api/charts/${series}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ span: 'hour', userId: 'ignored' }) }),
+	]) {
+		expect(response.status).toBe(200);
+	}
+	expect(read).toHaveBeenNthCalledWith(1, series, 'hour', 30, null, null);
+	expect(read).toHaveBeenNthCalledWith(2, series, 'hour', 30, null, null);
 });

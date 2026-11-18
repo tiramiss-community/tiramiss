@@ -35,3 +35,9 @@ test('unrecorded changes remain visible on individual and combined results', () 
 		assert.equal(projectRecordedChanges(records, actual), actual);
 	}
 });
+
+test('historical readers retain the text representation for UTF-8 inputs', () => {
+	assert.equal(projectRecordedChanges(records, 'a猫AAde猫'), original);
+	assert.equal(projectRecordedChanges(records, 'a猫AAde猫', sha(changes[0].current)), changes[0].current);
+	assert.equal(projectRecordedChanges(records, 'a猫AAdeg'), 'a猫AAdeg');
+});

@@ -4,3 +4,4 @@
  */
 export { createNoteCharts, interpolateChart, noteMetrics, chartKeys } from './note-charts.js';
 export type { ChartSeries, ChartSpan, ChartValues, ChartRow, NoteChartStore, ChartNote } from './note-charts.js';
+export { createUsersCharts } from './users-charts.js';

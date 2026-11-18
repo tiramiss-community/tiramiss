@@ -6,7 +6,7 @@ import { Hono } from 'hono';
 import { compileInput } from '../modules/access/public.js';
 import { apiErrorResponse, commonApiError, INTERNAL_ERROR } from './api-error.js';
 import { readApiRequest, registerApiRoute } from './api-request.js';
-import type { createNoteCharts } from '../modules/chart/public.js';
+import type { createNoteCharts, ChartSeries } from '../modules/chart/public.js';
 import type { ApiEndpointsOptions } from './api-endpoint.js';
 
 interface Input { span: 'hour' | 'day'; limit: number; offset: number | null; userId?: string }
@@ -18,10 +18,12 @@ const properties = {
 const parseNotes = compileInput<Input>({ type: 'object', properties, required: ['span'] });
 const parseUser = compileInput<Input>({ type: 'object', properties: { ...properties, userId: { type: 'string', format: 'misskey:id' } }, required: ['span', 'userId'] });
 
-export function createNoteChartsApi(charts: Pick<ReturnType<typeof createNoteCharts>, 'read'>, options: Omit<ApiEndpointsOptions, 'endpoints'>) {
+interface ChartRoute { path: string; series: ChartSeries; parse: (input: unknown) => Input }
+
+function createChartsApi(charts: Pick<ReturnType<typeof createNoteCharts>, 'read'>, options: Omit<ApiEndpointsOptions, 'endpoints'>, routes: ChartRoute[]) {
 	const app = new Hono();
-	for (const user of [false, true]) {
-		registerApiRoute(app, user ? '/api/charts/user/notes' : '/api/charts/notes', async context => {
+	for (const route of routes) {
+		registerApiRoute(app, route.path, async context => {
 			const request = await readApiRequest(context, true);
 			if (request instanceof Response) {
 				return request;
@@ -40,8 +42,8 @@ export function createNoteChartsApi(charts: Pick<ReturnType<typeof createNoteCha
 						}
 					}
 				}
-				const input = (user ? parseUser : parseNotes)(request.input);
-				const result = await charts.read(user ? 'perUserNotes' : 'notes', input.span, input.limit, input.offset, user ? input.userId! : null);
+				const input = route.parse(request.input);
+				const result = await charts.read(route.series, input.span, input.limit, input.offset, route.series === 'perUserNotes' ? input.userId! : null);
 				if (context.req.method === 'GET' && !request.token && credential === null) {
 					context.header('Cache-Control', 'public, max-age=3600');
 				}
@@ -57,4 +59,15 @@ export function createNoteChartsApi(charts: Pick<ReturnType<typeof createNoteCha
 		});
 	}
 	return app;
+}
+
+export function createNoteChartsApi(charts: Pick<ReturnType<typeof createNoteCharts>, 'read'>, options: Omit<ApiEndpointsOptions, 'endpoints'>) {
+	return createChartsApi(charts, options, [
+		{ path: '/api/charts/notes', series: 'notes', parse: parseNotes },
+		{ path: '/api/charts/user/notes', series: 'perUserNotes', parse: parseUser },
+	]);
+}
+
+export function createUsersChartsApi(charts: Pick<ReturnType<typeof createNoteCharts>, 'read'>, options: Omit<ApiEndpointsOptions, 'endpoints'>) {
+	return createChartsApi(charts, options, [{ path: '/api/charts/users', series: 'users', parse: parseNotes }]);
 }

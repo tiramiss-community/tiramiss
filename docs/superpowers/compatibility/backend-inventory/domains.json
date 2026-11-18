@@ -1540,6 +1540,52 @@
       "note": "#274: notes/perUserNotesの実ローカル投稿・削除、既存4表、GET/POST、20分/終了flushを接続。固定source32 update/24 read・実PG/Redisを検証。remote/silent/quietの通常caller比較は未完了。Chart/ChartManagement全12系列・scheduler/保守は未完了。範囲と残作業はnote-charts/README.md。",
       "evidenceRevision": "f1fafa83881c561532d823554d00b0c2f226581c"
     },
+    "chart:users": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/chart/users-charts.ts",
+        "packages/backend-next/src/platform/database/chart/schema.ts",
+        "packages/backend-next/src/platform/database/chart/store.ts",
+        "packages/backend-next/src/platform/database/user-chart-counts.ts",
+        "packages/backend-next/src/http/note-charts-api.ts",
+        "packages/backend-next/src/modules/note/create-note.ts",
+        "packages/backend-next/src/platform/connect-resources.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/chart/users-charts.test.ts",
+        "packages/backend-next/test/unit/chart/api.test.ts",
+        "packages/backend-next/test/integration/users-charts.test.ts",
+        "packages/backend-next/test/integration/remote-user.test.ts",
+        "docs/superpowers/compatibility/users-charts/source-probe.mjs",
+        "docs/superpowers/compatibility/users-charts/source-observations.json",
+        "docs/superpowers/compatibility/users-charts/README.md"
+      ],
+      "note": "#319: usersのtotal/inc/dec・hour/day・既存履歴・GET/POST・20分/終了flush・実データresync。実公開remote actor登録とcanonical重複復帰を接続。固定source4 update/2 tickMajor/24 readと通常listening HTTP/PG/Redisを比較。local signup/deleteAccount callerは#402/#341/#583、system schedulerは#478へ残す。本家full server/PG比較ではない。",
+      "evidenceRevision": "ce4f8f416993cbe2bd32be810ad48d98a38ce0e7"
+    },
+    "api:charts/users": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/chart/users-charts.ts",
+        "packages/backend-next/src/platform/database/chart/schema.ts",
+        "packages/backend-next/src/platform/database/chart/store.ts",
+        "packages/backend-next/src/platform/database/user-chart-counts.ts",
+        "packages/backend-next/src/http/note-charts-api.ts",
+        "packages/backend-next/src/modules/note/create-note.ts",
+        "packages/backend-next/src/platform/connect-resources.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/chart/users-charts.test.ts",
+        "packages/backend-next/test/unit/chart/api.test.ts",
+        "packages/backend-next/test/integration/users-charts.test.ts",
+        "packages/backend-next/test/integration/remote-user.test.ts",
+        "docs/superpowers/compatibility/users-charts/source-probe.mjs",
+        "docs/superpowers/compatibility/users-charts/source-observations.json",
+        "docs/superpowers/compatibility/users-charts/README.md"
+      ],
+      "note": "#319: usersのtotal/inc/dec・hour/day・既存履歴・GET/POST・20分/終了flush・実データresync。実公開remote actor登録とcanonical重複復帰を接続。固定source4 update/2 tickMajor/24 readと通常listening HTTP/PG/Redisを比較。local signup/deleteAccount callerは#402/#341/#583、system schedulerは#478へ残す。本家full server/PG比較ではない。",
+      "evidenceRevision": "ce4f8f416993cbe2bd32be810ad48d98a38ce0e7"
+    },
     "api:charts/user/notes": {
       "status": "partial",
       "implementation": [

@@ -21,7 +21,7 @@ const actorScope: RemoteActorCreateScope = { insertUser: unavailable, insertProf
 const remotePorts: RemoteUserPorts = {
 	clearActorImages: async () => {},
 	reportActorImageFailure: () => {},
-	startActorInstanceRegistration: () => {},
+	updateUsersChart: () => {}, startActorInstanceRegistration: () => {},
 	startUserHashtags: () => {},
 	selfHost: 'example.com', localId: () => null, readByAccount: async () => null, readByUri: async () => null, readLocal: async () => null,
 	markAttempt: unavailable, repairUri: unavailable, webfinger: unavailable, acquireActor: unavailable, insertActor: unavailable, refreshActor: unavailable,

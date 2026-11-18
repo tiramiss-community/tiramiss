@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { createPostingNoteCharts } from '../composition/posting-note-charts.js';
-import { createNoteCharts } from '../modules/chart/public.js';
+import { createNoteCharts, createUsersCharts } from '../modules/chart/public.js';
 import { createAnnouncementArchives } from '../modules/announcement/public.js';
 import { createAnnouncementArchiveStore } from './database/announcement-archive.js';
 import { createNoteChartStore } from './database/chart/store.js';
+import { createUserChartCounts } from './database/user-chart-counts.js';
 import { startNoteChartFlush } from './note-chart-flush.js';
 import { randomBytes } from 'node:crypto';
 import { MiInstance } from 'backend-upstream/entities';
@@ -379,9 +380,19 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			readSettings: () => readHashtagRankingSettings(dataSource.manager),
 		}, logger);
 		scope.defer(userHashtags.close);
-		const noteCharts = createNoteCharts(createNoteChartStore(dataSource, redis, error => logger.error('note-charts.unlock-failed', { error })), Date.now);
+		const chartStore = createNoteChartStore(dataSource, redis, error => logger.error('charts.unlock-failed', { error }));
+		const noteCharts = {
+			...createNoteCharts(chartStore, Date.now),
+			users: createUsersCharts(chartStore, Date.now, createUserChartCounts(dataSource.manager)),
+		};
 		const postingNoteCharts = createPostingNoteCharts(noteCharts, async () => (await meta.fetch()).enableChartsForRemoteUser);
-		const noteChartFlush = startNoteChartFlush(noteCharts.flush, error => logger.error('note-charts.flush-failed', { error }));
+		const noteChartFlush = startNoteChartFlush(async () => {
+			const saved = await Promise.allSettled([noteCharts.flush(), noteCharts.users.flush()]);
+			const failures = saved.flatMap(result => result.status === 'rejected' ? [result.reason] : []);
+			if (failures.length > 0) {
+				throw new AggregateError(failures, 'Chart flush failed');
+			}
+		}, error => logger.error('note-charts.flush-failed', { error }));
 		// ResourceScope unwinds in reverse: accepted post-save/delete work must finish before the last flush.
 		scope.defer(noteChartFlush.close);
 		const notePostSave = createNotePostSave(createNotePostSaveWork({

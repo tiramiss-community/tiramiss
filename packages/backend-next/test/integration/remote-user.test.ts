@@ -5,6 +5,7 @@
 import { readFileSync } from 'node:fs';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { MiDriveFile, MiEmoji, MiInstance, MiFollowing, MiMeta, MiNote, MiPoll, MiUser, MiUserProfile, MiUserPublickey, MiUserKeypair } from 'backend-upstream/entities';
+import { noteChartSchemas } from '../../src/platform/database/chart/schema.js';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createBackendHttpApp } from '../../src/composition/note-http.js';
 import { listenHttp, closeHttp } from '../../src/processes/http.js';
@@ -1098,4 +1099,54 @@ test('canonical recovery clears images by ID even for a deleted canonical actor'
 	expect(result.status).toBe(200);
 	expect(await remote('image_deleted')).toMatchObject({ ...clearedActorImages, isDeleted: true });
 	expect((await resources.dataSource.getRepository(MiNote).findOneByOrFail({ id: result.body.createdNote.id })).mentions).toEqual([seeded.user.id]);
+});
+
+async function resetUsersChart() {
+	await resources.noteCharts.users.flush();
+	for (const span of ['hour', 'day'] as const) {
+		await resources.dataSource.getRepository(noteChartSchemas.users[span]).clear();
+	}
+}
+
+async function readUsersChart() {
+	const response = await fetch(`http://127.0.0.1:${port}/api/charts/users?span=hour&limit=1`);
+	expect(response.status).toBe(200);
+	expect(response.headers.get('cache-control')).toBe('public, max-age=3600');
+	return response.json() as Promise<any>;
+}
+
+test('users chart tracks real public actor acquisition, canonical recovery, fresh/stale lookups and failed insertion', async () => {
+	await resetUsersChart();
+	register('users_chart');
+	expect((await post({ text: '@users_chart@remote.test' })).status).toBe(200);
+	expect((await readUsersChart()).remote.total).toEqual([0]);
+	await resources.noteCharts.users.flush();
+	expect((await readUsersChart()).remote).toEqual({ total: [1], inc: [1], dec: [0] });
+	// Existing account lookups and refreshes do not repeat registration's increment.
+	await post({ text: '@users_chart@remote.test' });
+	await stale((await remote('users_chart')).id);
+	await post({ text: '@users_chart@remote.test' });
+	await resources.noteCharts.users.flush();
+	expect((await readUsersChart()).remote.total).toEqual([1]);
+	// Pinned createPerson counts canonical duplicate recovery even though no row is inserted.
+	aliases.set('users_chart_alias', 'users_chart');
+	await post({ text: '@users_chart_alias@remote.test' });
+	await resources.noteCharts.users.flush();
+	expect((await readUsersChart()).remote).toEqual({ total: [2], inc: [2], dec: [0] });
+	register('users_chart_failure');
+	const restore = await failWrites('user_profile');
+	try {
+		expect((await post({ text: '@users_chart_failure@remote.test' })).status).toBe(200);
+	} finally {
+		await restore();
+	}
+	await resources.noteCharts.users.flush();
+	expect((await readUsersChart()).remote.total).toEqual([2]);
+	expect(await resources.dataSource.getRepository(MiUser).countBy({ usernameLower: 'users_chart_failure' })).toBe(0);
+	// Resync corrects the duplicate increment from actual rows, without replaying history.
+	await resources.noteCharts.users.resync();
+	const users = resources.dataSource.getRepository(MiUser);
+	const rows = await users.find();
+	expect((await readUsersChart()).remote.total).toEqual([rows.filter(row => row.host !== null).length]);
+	expect((await readUsersChart()).remote.inc).toEqual([2]);
 });

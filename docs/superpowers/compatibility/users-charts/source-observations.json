@@ -1,0 +1,1748 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "method": "literal producer update methods and Chart.getChart with in-memory Repository read doubles; not a full upstream HTTP/PG comparison",
+  "inputs": [
+    {
+      "path": "packages/backend/src/core/chart/charts/users.ts",
+      "sha256": "e4ecef6cc72159a68c98e02b54fc553e8e5110ff764367e7947f14ffb3f354ed"
+    },
+    {
+      "path": "packages/backend/src/core/chart/core.ts",
+      "sha256": "0fae5de0dcfb05018ffaf4f83bfc82e377d3fe316f05d4e057c3edc8c52bb6b3"
+    },
+    {
+      "path": "packages/backend/src/misc/prelude/time.ts",
+      "sha256": "bbd502e836812a15762a72a8e644bb2ef6a170773c7dc48e625676c38b338755"
+    }
+  ],
+  "updates": [
+    {
+      "host": null,
+      "additional": false,
+      "diff": {
+        "local.total": -1,
+        "local.inc": 0,
+        "local.dec": 1
+      }
+    },
+    {
+      "host": null,
+      "additional": true,
+      "diff": {
+        "local.total": 1,
+        "local.inc": 1,
+        "local.dec": 0
+      }
+    },
+    {
+      "host": "remote.test",
+      "additional": false,
+      "diff": {
+        "remote.total": -1,
+        "remote.inc": 0,
+        "remote.dec": 1
+      }
+    },
+    {
+      "host": "remote.test",
+      "additional": true,
+      "diff": {
+        "remote.total": 1,
+        "remote.inc": 1,
+        "remote.dec": 0
+      }
+    }
+  ],
+  "resyncs": [
+    {
+      "counts": [
+        0,
+        0
+      ],
+      "expected": {
+        "local.total": 0,
+        "remote.total": 0
+      },
+      "queries": [
+        {
+          "host": null
+        },
+        {
+          "host": {
+            "not": null
+          }
+        }
+      ]
+    },
+    {
+      "counts": [
+        7,
+        9
+      ],
+      "expected": {
+        "local.total": 7,
+        "remote.total": 9
+      },
+      "queries": [
+        {
+          "host": null
+        },
+        {
+          "host": {
+            "not": null
+          }
+        }
+      ]
+    }
+  ],
+  "reads": [
+    {
+      "span": "hour",
+      "offset": null,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            12
+          ],
+          "inc": [
+            3
+          ],
+          "dec": [
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            12
+          ],
+          "inc": [
+            3
+          ],
+          "dec": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": null,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            12,
+            11,
+            10,
+            10
+          ],
+          "inc": [
+            3,
+            2,
+            0,
+            1
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            12,
+            11,
+            10,
+            10
+          ],
+          "inc": [
+            3,
+            2,
+            0,
+            1
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": -1,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expectedError": "wrong number of arguments"
+    },
+    {
+      "span": "hour",
+      "offset": -1,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expectedError": "wrong number of arguments"
+    },
+    {
+      "span": "hour",
+      "offset": 1795003200000,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            12
+          ],
+          "inc": [
+            3
+          ],
+          "dec": [
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            12
+          ],
+          "inc": [
+            3
+          ],
+          "dec": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": 1795003200000,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            12,
+            11,
+            10,
+            10
+          ],
+          "inc": [
+            3,
+            2,
+            0,
+            1
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            12,
+            11,
+            10,
+            10
+          ],
+          "inc": [
+            3,
+            2,
+            0,
+            1
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": 1795005000000,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            12
+          ],
+          "inc": [
+            0
+          ],
+          "dec": [
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            12
+          ],
+          "inc": [
+            0
+          ],
+          "dec": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": 1795005000000,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            12,
+            12,
+            11,
+            10
+          ],
+          "inc": [
+            0,
+            3,
+            2,
+            0
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            12,
+            12,
+            11,
+            10
+          ],
+          "inc": [
+            0,
+            3,
+            2,
+            0
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": 1794981600000,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            0
+          ],
+          "inc": [
+            0
+          ],
+          "dec": [
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            0
+          ],
+          "inc": [
+            0
+          ],
+          "dec": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": 1794981600000,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "inc": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "inc": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": 1795024800000,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            12
+          ],
+          "inc": [
+            0
+          ],
+          "dec": [
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            12
+          ],
+          "inc": [
+            0
+          ],
+          "dec": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "hour",
+      "offset": 1795024800000,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794992400,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794999600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1795003200,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            12,
+            12,
+            12,
+            12
+          ],
+          "inc": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            12,
+            12,
+            12,
+            12
+          ],
+          "inc": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": null,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            12
+          ],
+          "inc": [
+            3
+          ],
+          "dec": [
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            12
+          ],
+          "inc": [
+            3
+          ],
+          "dec": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": null,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            12,
+            11,
+            10,
+            10
+          ],
+          "inc": [
+            3,
+            2,
+            0,
+            1
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            12,
+            11,
+            10,
+            10
+          ],
+          "inc": [
+            3,
+            2,
+            0,
+            1
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": -1,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expectedError": "wrong number of arguments"
+    },
+    {
+      "span": "day",
+      "offset": -1,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expectedError": "wrong number of arguments"
+    },
+    {
+      "span": "day",
+      "offset": 1794960000000,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            12
+          ],
+          "inc": [
+            3
+          ],
+          "dec": [
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            12
+          ],
+          "inc": [
+            3
+          ],
+          "dec": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": 1794960000000,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            12,
+            11,
+            10,
+            10
+          ],
+          "inc": [
+            3,
+            2,
+            0,
+            1
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            12,
+            11,
+            10,
+            10
+          ],
+          "inc": [
+            3,
+            2,
+            0,
+            1
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": 1795003200000,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            12
+          ],
+          "inc": [
+            0
+          ],
+          "dec": [
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            12
+          ],
+          "inc": [
+            0
+          ],
+          "dec": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": 1795003200000,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            12,
+            12,
+            11,
+            10
+          ],
+          "inc": [
+            0,
+            3,
+            2,
+            0
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            12,
+            12,
+            11,
+            10
+          ],
+          "inc": [
+            0,
+            3,
+            2,
+            0
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": 1794441600000,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            0
+          ],
+          "inc": [
+            0
+          ],
+          "dec": [
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            0
+          ],
+          "inc": [
+            0
+          ],
+          "dec": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": 1794441600000,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "inc": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "inc": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": 1795478400000,
+      "limit": 1,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            12
+          ],
+          "inc": [
+            0
+          ],
+          "dec": [
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            12
+          ],
+          "inc": [
+            0
+          ],
+          "dec": [
+            0
+          ]
+        }
+      }
+    },
+    {
+      "span": "day",
+      "offset": 1795478400000,
+      "limit": 4,
+      "now": 1795005000000,
+      "rows": [
+        {
+          "date": 1794700800,
+          "values": {
+            "local.total": 10,
+            "local.inc": 1,
+            "local.dec": 0,
+            "remote.total": 10,
+            "remote.inc": 1,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794873600,
+          "values": {
+            "local.total": 11,
+            "local.inc": 2,
+            "local.dec": 0,
+            "remote.total": 11,
+            "remote.inc": 2,
+            "remote.dec": 0
+          }
+        },
+        {
+          "date": 1794960000,
+          "values": {
+            "local.total": 12,
+            "local.inc": 3,
+            "local.dec": 0,
+            "remote.total": 12,
+            "remote.inc": 3,
+            "remote.dec": 0
+          }
+        }
+      ],
+      "expected": {
+        "local": {
+          "total": [
+            12,
+            12,
+            12,
+            12
+          ],
+          "inc": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "remote": {
+          "total": [
+            12,
+            12,
+            12,
+            12
+          ],
+          "inc": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "dec": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    }
+  ]
+}
