@@ -4303,6 +4303,46 @@
       ],
       "note": "#368/#367: fixed-source literal callback/cache comparison2 projections+9 observations; unit31, ordinary listening HTTP/PG/Redis9, adjacent shared HTTP/Meta/events integration7+unit8, build/typecheck/shipping PASS. Public getAll(true), guest role visibility/order, exact30m TTL, three invalidation receivers and shutdown verified. Source uses repository/RoleService doubles, not upstream full HTTP/PG; pinned RoleService1h freshness is not claimed. Admin writers and publication proof remain #541/#582; other User display consumers and #193/#217/#114 remain unfinished.",
       "evidenceRevision": "cd6c3f33b803ce123f06f27c139c399871ece103"
+    },
+    "api:test": {
+      "status": "verified",
+      "evidenceRevision": "0b43587825171e0b2c0a93a854af06d5f32ced13",
+      "implementation": [
+        "packages/backend-next/src/composition/test-controls-http.ts",
+        "packages/backend-next/src/modules/test-controls/public.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/test-controls/http.test.ts",
+        "packages/backend-next/test/unit/test-controls/target.test.ts",
+        "packages/backend-next/test/integration/test-controls.test.ts",
+        "packages/backend-next/test/helpers/pinned-test-controls.ts",
+        "docs/superpowers/compatibility/test-controls/README.md"
+      ],
+      "note": "#390: ordinary listening HTTP test/reset-db; fixed source schema and callback order compared, near unit30 + owned ephemeral Redis/PostgreSQL integration5 PASS. Explicit target binding and NODE_ENV=test gate, both schema runtime tables reset, history/other schema/inherited child/other Redis role DB retained; DB/Redis failure boundaries and next operation verified. Parent #178/#114 remains incomplete.",
+      "differences": []
+    },
+    "api:reset-db": {
+      "status": "verified",
+      "evidenceRevision": "0b43587825171e0b2c0a93a854af06d5f32ced13",
+      "implementation": [
+        "packages/backend-next/src/composition/test-controls-http.ts",
+        "packages/backend-next/src/modules/test-controls/public.ts",
+        "packages/backend-next/src/composition/http-app.ts",
+        "packages/backend-next/src/platform/database/reset-test-storage.ts",
+        "packages/backend-next/src/platform/connect-resources.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/test-controls/http.test.ts",
+        "packages/backend-next/test/unit/test-controls/target.test.ts",
+        "packages/backend-next/test/integration/test-controls.test.ts",
+        "packages/backend-next/test/helpers/pinned-test-controls.ts",
+        "docs/superpowers/compatibility/test-controls/README.md"
+      ],
+      "note": "#390: ordinary listening HTTP test/reset-db; fixed source schema and callback order compared, near unit30 + owned ephemeral Redis/PostgreSQL integration5 PASS. Explicit target binding and NODE_ENV=test gate, both schema runtime tables reset, history/other schema/inherited child/other Redis role DB retained; DB/Redis failure boundaries and next operation verified. Parent #178/#114 remains incomplete.",
+      "differences": [
+        "Reset requires explicit operator binding of disposable PG/Redis host/port/database/db. Primary Redis flush remains first; atomic schema-qualified TRUNCATE ONLY in public/backend_internal preserves migrations/typeorm_metadata instead of upstream unqualified DELETE/retry over all schemas. See compatibility/test-controls/README.md; does not guarantee distributed atomicity or reset other memory caches."
+      ]
     }
   }
 }
