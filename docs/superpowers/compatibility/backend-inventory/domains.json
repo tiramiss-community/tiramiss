@@ -3764,6 +3764,24 @@
       ],
       "note": "#337: fixed literal source methods on migrated PostgreSQL (28 cases/63 steps) match canonical listening HTTP, PostgreSQL state and actual Redis messages. Audience/private visibility, existing-user unread condition, pagination, viewer read state, duplicate/no-such/non-target reads, individual deactivation, pack failure exclusion and readAllAnnouncements are covered. Admin mutations/archive scheduling #449 and parent #193/#114 remain unfinished. Full upstream HTTP/auth serializer not measured. Publication followup preserves HTTP204 and saved read/deactivation on actual Redis PUBLISH rejection, duplicate no-op and accepted-send HTTP shutdown drain; original receipt is immutable.",
       "evidenceRevision": "d4d119e0b1611f5e7b27c78dd233823d7af75b05"
+    },
+    "stream-channel:packages/backend/src/server/api/stream/Connection.ts:358": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/stream/hashtag.ts",
+        "packages/backend-next/src/modules/stream/registry.ts",
+        "packages/backend-next/src/modules/stream/channel.ts",
+        "packages/backend-next/src/modules/stream/connection.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/stream/hashtag.test.ts",
+        "packages/backend-next/test/integration/hashtag-websocket.test.ts",
+        "docs/superpowers/compatibility/stream/hashtag/README.md",
+        "docs/superpowers/compatibility/stream/hashtag/source-cases.json",
+        "docs/superpowers/compatibility/stream/hashtag/upstream-probe.mjs"
+      ],
+      "note": "#459で公開hashtag channelを標準registryへ登録。OR of AND・NFKC query・可視性・匿名・mute/block・reply/renote・本文hide/反応補完・不正query拒否と切断を固定本家40観測と新実装の実HTTP投稿/PG/Redis/WSで検証。本家full server比較ではない。hashtag集計producer・他channel・#186/#189全体と投稿完成は範囲外。",
+      "evidenceRevision": "f3dde21c0610c5ace48724508a1e223312bf1cea"
     }
   }
 }
