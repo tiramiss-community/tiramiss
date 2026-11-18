@@ -6,7 +6,7 @@
 ## 実装と比較範囲
 
 `modules/note-translate` が認可、入力、実効 `canUseTranslator`、Note 取得、可視性、描画後の `isHidden`、空本文、鍵、送信を順に扱う。
-DB 読み取りは既存の Role 評価・Note 材料取得を使う。HTTP は通常の `createBackendHttpApp` → `registerNoteRoutes` へ登録する。
+DB 読み取りは既存の Role 評価・Note 材料取得を使う。HTTP は中央の `createBackendHttpApp` へ直接登録する。
 `deeplAuthKey` / `deeplIsPro` は既存 Meta キャッシュの現在値から取得し、既存の外向き HTTP を使用する。
 
 `test/fixtures/note-translate/translate.ts.txt` は固定 Git オブジェクトの endpoint 全文。
@@ -54,9 +54,9 @@ unit は通常 CI の glob、integration は `test:integration` の glob に含�
 
 ## 共有入口の履歴参照
 
-`note-routes.ts` の import・prepared field・route 登録と、既存 composition unit の outbound client fixture・route/認証期待値だけを追加した。`scripts/note-translate-predecessor.mjs` はこの 2 ファイルの追加前後の固定 hash と、各 3 断片の一意一致を検査して前の bytes を復元する。既存 notes-pagination / well-known の有限な入口投影へ接続し、未知の bytes は下流の既存 drift 検査へ渡す。`note-translate-contract.test.mjs` が両共有ファイルの正常投影と、通常の notes validator による未知の変更の拒否を検証する。過去の receipt / 測定件数 / source 結果は書き換えず、古い製品テストを今回再測定したとは主張しない。
+中央の `http-app.ts` に import と route 登録を追加し、composition unit に outbound client fixture・route/認証期待値を追加した。`scripts/note-translate-predecessor.mjs` はこの 2 ファイルの追加前後の固定 hash と追加断片の一意一致を検査して前の bytes を復元する。既存 well-known / promo の有限な入口投影へ接続し、未知の bytes は下流の既存 drift 検査へ渡す。`note-translate-contract.test.mjs` が両共有ファイルの正常投影と、既存の履歴 reader / notes validator による未知の変更の拒否を検証する。過去の receipt / 測定件数 / source 結果は書き換えず、古い製品テストを今回再測定したとは主張しない。
 
-translation unit 34 件に加え、既存 composition unit 16 件も今回実行し成功した。
+`note-routes.ts` と notes-pagination / poll の補助処理は共通基準の bytes を維持する。#635 の独立した投稿ルート変更と翻訳の登録を分離するため、翻訳を中央 composition に登録した。translation unit 34 件に加え、既存 composition unit 16 件も実行し成功した。
 
 ## #636 との積み重ね
 

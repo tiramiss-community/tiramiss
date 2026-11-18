@@ -3977,7 +3977,7 @@
         "packages/backend-next/src/platform/database/note-translate.ts",
         "packages/backend-next/src/http/note-translate-api.ts",
         "packages/backend-next/src/composition/note-translate-http.ts",
-        "packages/backend-next/src/composition/note-routes.ts"
+        "packages/backend-next/src/composition/http-app.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/note-translate/translate.test.ts",
@@ -3999,7 +3999,7 @@
         "packages/backend-next/src/platform/database/note-translate.ts",
         "packages/backend-next/src/http/note-translate-api.ts",
         "packages/backend-next/src/composition/note-translate-http.ts",
-        "packages/backend-next/src/composition/note-routes.ts"
+        "packages/backend-next/src/composition/http-app.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/note-translate/translate.test.ts",
@@ -4021,7 +4021,7 @@
         "packages/backend-next/src/platform/database/note-translate.ts",
         "packages/backend-next/src/http/note-translate-api.ts",
         "packages/backend-next/src/composition/note-translate-http.ts",
-        "packages/backend-next/src/composition/note-routes.ts"
+        "packages/backend-next/src/composition/http-app.ts"
       ],
       "verification": [
         "packages/backend-next/test/unit/note-translate/translate.test.ts",

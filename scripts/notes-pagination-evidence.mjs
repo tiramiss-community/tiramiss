@@ -2,8 +2,6 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { projectNoteTranslationInput } from './note-translate-predecessor.mjs';
-export { projectNoteTranslationInput } from './note-translate-predecessor.mjs';
 import { projectNoteChartsInput } from './note-charts-evidence.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
@@ -249,7 +247,6 @@ export function projectUserMemoInput(path, actual) {
 
 // Only these measured #489 additions project to the immutable #305 R3 input.
 export function projectPollRecommendationInput(path, actual) {
-	actual = projectNoteTranslationInput(path, actual);
 	const binding = Object.hasOwn(pollRecommendationProjection, path) ? pollRecommendationProjection[path] : undefined;
 	if (!binding) return actual;
 	assert.equal(sha(actual), binding.currentSha256, `measured current input drift (notes pagination): ${path} (poll recommendation)`);

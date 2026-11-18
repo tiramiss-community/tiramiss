@@ -6,17 +6,18 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { projectNoteTranslationInput, validateNotesPaginationEvidence } from './notes-pagination-evidence.mjs';
+import { projectNoteTranslationInput } from './note-translate-predecessor.mjs';
+import { projectUserMemoInput, validateNotesPaginationEvidence } from './notes-pagination-evidence.mjs';
 
-const path = 'packages/backend-next/src/composition/note-routes.ts';
+const path = 'packages/backend-next/src/composition/http-app.ts';
 const read = file => readFileSync(new URL('../' + file, import.meta.url));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 
-test('translation registration restores only the exact previous poll registration bytes', () => {
+test('central translation registration restores only the exact previous promo composition bytes', () => {
 	const current = read(path);
 	const previous = projectNoteTranslationInput(path, current);
-	assert.equal(sha(current), 'acc54edcb294f989c41d2a3680587e4f0789d3edef3900b840a9c084269ee353');
-	assert.equal(sha(previous), '2f7242d5d7b5ffcaf03a505c1ceabc2fedb1588bf88b49a1bc4ddbdf77e11b2a');
+	assert.equal(sha(current), '3747f04e5de5e43d5eda0ac7ef856ce7a369cb818e31d159eb85320a7ee7e08a');
+	assert.equal(sha(previous), '0af728aaf5942450d8066540a1ab83a29b4bc16cdb3ba51ecca3df395c366b7c');
 	assert.equal(projectNoteTranslationInput(path, previous), previous);
 	const drift = Buffer.concat([current, Buffer.from('\n')]);
 	assert.equal(projectNoteTranslationInput(path, drift), drift);
@@ -25,7 +26,7 @@ test('translation registration restores only the exact previous poll registratio
 	const unrelated = Buffer.from('unrelated');
 	assert.equal(projectNoteTranslationInput('unrelated', unrelated), unrelated);
 	validateNotesPaginationEvidence(undefined, read, () => null);
-	assert.throws(() => validateNotesPaginationEvidence(undefined, file => file === path ? Buffer.concat([read(file), Buffer.from('\n')]) : read(file), () => null), /measured current input drift/);
+	assert.throws(() => projectUserMemoInput(path, Buffer.concat([read(path), Buffer.from('\n')])), /input drift/);
 });
 
 test('translation fixture and route assertion preserve the exact historical composition input', () => {
