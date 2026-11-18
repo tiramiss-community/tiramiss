@@ -681,3 +681,7 @@ GlobalEventのRedis pub/sub形式、internalイベントの発行と購読、Cac
 The [finite current index](../note/n7/posting-proof-272.json) and [readable scope / reproduction](../note/n7/posting-proof-272.md) reconcile exactly the 62 contract and 59 audit IDs assigned to `176-posting-proof`. Every assigned ID has explicit posting subcontracts, assertion/fixture/provenance references or an unproved disposition with existing residual owners. Inventory kind/status and audit A/B classifications are preserved; newer scoped evidence does not promote `not_implemented` rows or certify entire shared services. `contracts.json`, `audit-items.json` and historical N7 coverage are unchanged.
 
 This child evidence result does not complete posting or actor/effects work: #176/#127 remain OPEN, `notes/create:partial` / `postingComplete:false`; broader effects #277 and actor comparison #322 retain their existing dependencies. D7, approved PG notification storage and deferred strong ordering remain unchanged.
+
+## #391 SQL補助・共有宣言の対応（2026-11-18）
+
+`responsibility:misc-utils:28` / `responsibility:misc-utils:39` の[宣言別利用者対応](../api-common/shared-contract-audit.md)を追加した。全18宣言・全参照・監査55種/57実producer・export9値/import6値に担当と比較残件を割り当て、未参照/コメント/型使用を実呼出しと区別した。元2行のstatus・監査A/Bと全体の固定基準は保持し、今回の静的監査を機能実装・挙動比較済みへ読み替えない。

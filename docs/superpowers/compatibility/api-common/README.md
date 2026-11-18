@@ -51,3 +51,7 @@ Role APIは本sliceで、本家と同じCORS・Cache-Control（以前は無し�
 - note 3 APIをgateへ移す（`prohibitMoved`、rate limitをgateの段階として実行、`notes/create`・`notes/delete`の入力検証を共有Ajvへ、G8の解消）。資格不要の`notes/show`は、gateが作成時に認可を終える経路（`createAccessRequest`）を使う。
 - 未知endpointの404 `UNKNOWN_API_ENDPOINT`、`allowGet`とGETの型変換、`cacheSec`、`secure`、`requiredRolePolicy`、匿名のIP rate limit、`user_ip`記録、OpenAPI。
 - multipartは#188の最初の利用者と同じPRで入れる。
+
+## SQL補助・共有宣言の担当確定（#391）
+
+[全18宣言の利用者対応](shared-contract-audit.md)と[機械対応表](shared-contract-audit.json)に、SQL helperの全参照、types.tsの未参照宣言を含む値域、監査55種/57実producer、export9値/import6値の担当と比較残件を記録した。固定本家と新実装の静的照合であり、#178や各利用機能のruntime statusを昇格させない。Flash検索は191-flash-lists #424、通知は#177、監査は#194と実producer、export/importは#199の具体的な子へ対応する。

@@ -1,0 +1,2496 @@
+{
+  "schemaVersion": 1,
+  "issue": 391,
+  "parentIssue": 178,
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "implementationCommit": "6af8cd5baab289e684266cde7c3955129320c8c3",
+  "inventoryIds": [
+    "responsibility:misc-utils:28",
+    "responsibility:misc-utils:39"
+  ],
+  "scope": "Static declaration/reference/ownership audit. No runtime status promotion or new behavior comparison.",
+  "sources": [
+    {
+      "path": "packages/backend/src/misc/safe-for-sql.ts",
+      "sha256": "916358a46144e73cb3b9048e277693c132802d40b8b2705c6a00509860152e3d"
+    },
+    {
+      "path": "packages/backend/src/misc/sql-like-escape.ts",
+      "sha256": "9ef798e1cc6574bdce2105685d0f38b6ac9e40e800e2a78a2f1611b37f0f9253"
+    },
+    {
+      "path": "packages/backend/src/misc/sql-string-escape.ts",
+      "sha256": "717d956e7262144a19ab881d36336091aaefb2337bd9561bae4870e901746713"
+    },
+    {
+      "path": "packages/backend/src/types.ts",
+      "sha256": "9f8cd80a2a56aa36b11848f41e3bc02d20bff87603348c3f984bcfaf3290e307"
+    }
+  ],
+  "declarations": [
+    {
+      "name": "safeForSql",
+      "kind": "function",
+      "source": "packages/backend/src/misc/safe-for-sql.ts",
+      "line": 6,
+      "inventoryId": "responsibility:misc-utils:28",
+      "ownerIssues": [
+        499,
+        497
+      ],
+      "references": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/hashtags/users.ts",
+          "ownerIssues": [
+            499
+          ],
+          "matches": [
+            {
+              "line": 9,
+              "text": "import { safeForSql } from \"@/misc/safe-for-sql.js\";"
+            },
+            {
+              "line": 52,
+              "text": "if (!safeForSql(normalizeForSearch(ps.tag))) throw new Error('Injection');"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/notes/search-by-tag.ts",
+          "ownerIssues": [
+            497
+          ],
+          "matches": [
+            {
+              "line": 9,
+              "text": "import { safeForSql } from '@/misc/safe-for-sql.js';"
+            },
+            {
+              "line": 106,
+              "text": "if (!safeForSql(normalizeForSearch(ps.tag))) throw new Error('Injection');"
+            },
+            {
+              "line": 113,
+              "text": "if (!safeForSql(normalizeForSearch(tag))) throw new Error('Injection');"
+            }
+          ]
+        }
+      ],
+      "implementation": [],
+      "existingFixtures": [],
+      "remainingComparison": "未移植。正規化後の拒否文字、SQL配列検索、tag配列/空値/既定値を各検索APIで比較する。",
+      "internalReferences": []
+    },
+    {
+      "name": "sqlLikeEscape",
+      "kind": "function",
+      "source": "packages/backend/src/misc/sql-like-escape.ts",
+      "line": 6,
+      "inventoryId": "responsibility:misc-utils:28",
+      "ownerIssues": [
+        424,
+        190,
+        497,
+        499,
+        537,
+        532,
+        534,
+        505,
+        501,
+        361,
+        495
+      ],
+      "references": [
+        {
+          "path": "packages/backend/src/core/ChatService.ts",
+          "ownerIssues": [
+            190
+          ],
+          "matches": [
+            {
+              "line": 26,
+              "text": "import { sqlLikeEscape } from '@/misc/sql-like-escape.js';"
+            },
+            {
+              "line": 847,
+              "text": "q.andWhere('LOWER(message.text) LIKE :q', { q: `%${ sqlLikeEscape(query.toLowerCase()) }%` });"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/core/CustomEmojiService.ts",
+          "ownerIssues": [
+            537,
+            519,
+            304
+          ],
+          "matches": [
+            {
+              "line": 17,
+              "text": "import { sqlLikeEscape } from '@/misc/sql-like-escape.js';"
+            },
+            {
+              "line": 488,
+              "text": "return words.split(/\\s/).filter(x => x.length > 0).map(x => `%${sqlLikeEscape(x)}%`);"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/core/FlashService.ts",
+          "ownerIssues": [
+            424
+          ],
+          "matches": [
+            {
+              "line": 11,
+              "text": "import { sqlLikeEscape } from '@/misc/sql-like-escape.js';"
+            },
+            {
+              "line": 57,
+              "text": "qb.orWhere('flash.title ILIKE :search', { search: `%${sqlLikeEscape(word)}%` });"
+            },
+            {
+              "line": 58,
+              "text": "qb.orWhere('flash.summary ILIKE :search', { search: `%${sqlLikeEscape(word)}%` });"
+            },
+            {
+              "line": 76,
+              "text": "qb.orWhere('flash.title ILIKE :search', { search: `%${sqlLikeEscape(word)}%` });"
+            },
+            {
+              "line": 77,
+              "text": "qb.orWhere('flash.summary ILIKE :search', { search: `%${sqlLikeEscape(word)}%` });"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/core/SearchService.ts",
+          "ownerIssues": [
+            497
+          ],
+          "matches": [
+            {
+              "line": 14,
+              "text": "import { sqlLikeEscape } from '@/misc/sql-like-escape.js';"
+            },
+            {
+              "line": 229,
+              "text": "query.andWhere('LOWER(note.text) LIKE :q', { q: `%${ sqlLikeEscape(q.toLowerCase()) }%` });"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/core/UserSearchService.ts",
+          "ownerIssues": [
+            499
+          ],
+          "matches": [
+            {
+              "line": 11,
+              "text": "import { sqlLikeEscape } from '@/misc/sql-like-escape.js';"
+            },
+            {
+              "line": 197,
+              "text": "userQuery.andWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(params.username.toLowerCase()) + '%' });"
+            },
+            {
+              "line": 205,
+              "text": "host: sqlLikeEscape(params.host.toLowerCase()) + '%',"
+            },
+            {
+              "line": 233,
+              "text": "qb.where('user.name ILIKE :query', { query: '%' + sqlLikeEscape(query) + '%' });"
+            },
+            {
+              "line": 236,
+              "text": "qb.orWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(query.replace('@', '').toLowerCase()) + '%' });"
+            },
+            {
+              "line": 238,
+              "text": "qb.orWhere('user.usernameLower LIKE :username', { username: '%' + sqlLikeEscape(query.toLowerCase()) + '%' });"
+            },
+            {
+              "line": 268,
+              "text": ".where('prof.description ILIKE :query', { query: '%' + sqlLikeEscape(query) + '%' });"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/emoji/list-remote.ts",
+          "ownerIssues": [
+            537
+          ],
+          "matches": [
+            {
+              "line": 13,
+              "text": "import { sqlLikeEscape } from '@/misc/sql-like-escape.js';"
+            },
+            {
+              "line": 71,
+              "text": "q.andWhere('emoji.name like :query', { query: '%' + sqlLikeEscape(ps.query) + '%' });"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/emoji/list.ts",
+          "ownerIssues": [
+            537
+          ],
+          "matches": [
+            {
+              "line": 13,
+              "text": "//import { sqlLikeEscape } from '@/misc/sql-like-escape.js';"
+            },
+            {
+              "line": 61,
+              "text": "//q.andWhere('emoji.name ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` });"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/show-moderation-logs.ts",
+          "ownerIssues": [
+            532
+          ],
+          "matches": [
+            {
+              "line": 12,
+              "text": "import { sqlLikeEscape } from '@/misc/sql-like-escape.js';"
+            },
+            {
+              "line": 97,
+              "text": "const escapedSearch = sqlLikeEscape(ps.search);"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/show-users.ts",
+          "ownerIssues": [
+            534
+          ],
+          "matches": [
+            {
+              "line": 11,
+              "text": "import { sqlLikeEscape } from '@/misc/sql-like-escape.js';"
+            },
+            {
+              "line": 93,
+              "text": "query.andWhere('user.usernameLower like :username', { username: sqlLikeEscape(ps.username.toLowerCase()) + '%' });"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/channels/search.ts",
+          "ownerIssues": [
+            505
+          ],
+          "matches": [
+            {
+              "line": 13,
+              "text": "import { sqlLikeEscape } from '@/misc/sql-like-escape.js';"
+            },
+            {
+              "line": 62,
+              "text": ".where('channel.name ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` })"
+            },
+            {
+              "line": 63,
+              "text": ".orWhere('channel.description ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` });"
+            },
+            {
+              "line": 66,
+              "text": "query.andWhere('channel.name ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` });"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/clips/notes.ts",
+          "ownerIssues": [
+            501
+          ],
+          "matches": [
+            {
+              "line": 13,
+              "text": "import { sqlLikeEscape } from '@/misc/sql-like-escape.js';"
+            },
+            {
+              "line": 106,
+              "text": "qb.orWhere('note.text ILIKE :search', { search: `%${sqlLikeEscape(word)}%` });"
+            },
+            {
+              "line": 107,
+              "text": "qb.orWhere('note.cw ILIKE :search', { search: `%${sqlLikeEscape(word)}%` });"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/federation/instances.ts",
+          "ownerIssues": [
+            361
+          ],
+          "matches": [
+            {
+              "line": 12,
+              "text": "import { sqlLikeEscape } from '@/misc/sql-like-escape.js';"
+            },
+            {
+              "line": 168,
+              "text": "query.andWhere('instance.host like :host', { host: '%' + sqlLikeEscape(ps.host.toLowerCase()) + '%' });"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/hashtags/search.ts",
+          "ownerIssues": [
+            495
+          ],
+          "matches": [
+            {
+              "line": 10,
+              "text": "import { sqlLikeEscape } from '@/misc/sql-like-escape.js';"
+            },
+            {
+              "line": 45,
+              "text": ".where('tag.name like :q', { q: sqlLikeEscape(ps.query.toLowerCase()) + '%' })"
+            }
+          ]
+        }
+      ],
+      "implementation": [],
+      "existingFixtures": [],
+      "remainingComparison": "同名helperなし。各callerの大文字小文字・空白分割・AND/OR・wildcardとパラメータ束縛を比較。Flash検索は191-flash-lists #424。admin/emoji/listの2行はコメントのみ（読取#537）。",
+      "internalReferences": []
+    },
+    {
+      "name": "sqlStringEscape",
+      "kind": "function",
+      "source": "packages/backend/src/misc/sql-string-escape.ts",
+      "line": 15,
+      "inventoryId": "responsibility:misc-utils:28",
+      "ownerIssues": [
+        273
+      ],
+      "references": [
+        {
+          "path": "packages/backend/src/core/chart/core.ts",
+          "ownerIssues": [
+            273
+          ],
+          "matches": [
+            {
+              "line": 15,
+              "text": "import { sqlStringEscape } from '@/misc/sql-string-escape.js';"
+            },
+            {
+              "line": 506,
+              "text": "const itemsForHour = v.filter(item => !(logHour[tempColumnName] as unknown as string[]).includes(item)).map(item => sqlStringEscape(item));"
+            },
+            {
+              "line": 507,
+              "text": "const itemsForDay = v.filter(item => !(logDay[tempColumnName] as unknown as string[]).includes(item)).map(item => sqlStringEscape(item));"
+            }
+          ]
+        }
+      ],
+      "implementation": [],
+      "existingFixtures": [],
+      "remainingComparison": "chartのhour/day配列追加SQLが利用者。単引用符/空文字/バックスラッシュ/重複/NULLと保存結果は#273の保存方式確定後、chart各系列の単位で比較する。",
+      "internalReferences": []
+    },
+    {
+      "name": "notificationTypes",
+      "kind": "const",
+      "source": "packages/backend/src/types.ts",
+      "line": 28,
+      "inventoryId": "responsibility:misc-utils:39",
+      "ownerIssues": [
+        177,
+        298,
+        373,
+        436,
+        437,
+        441
+      ],
+      "references": [
+        {
+          "path": "packages/backend/src/models/Notification.ts",
+          "ownerIssues": [
+            298,
+            441
+          ],
+          "matches": [
+            {
+              "line": 14,
+              "text": "// misskey-js の notificationTypes と同期すべし"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/models/UserProfile.ts",
+          "ownerIssues": [
+            408,
+            177
+          ],
+          "matches": [
+            {
+              "line": 7,
+              "text": "import { obsoleteNotificationTypes, followingVisibilities, followersVisibilities, notificationTypes } from '@/types.js';"
+            },
+            {
+              "line": 256,
+              "text": "[notificationType in typeof notificationTypes[number]]?: {"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/models/json-schema/notification.ts",
+          "ownerIssues": [
+            298,
+            373,
+            441
+          ],
+          "matches": [
+            {
+              "line": 6,
+              "text": "import { notificationTypes, userExportableEntities } from '@/types.js';"
+            },
+            {
+              "line": 24,
+              "text": "enum: [...notificationTypes, 'reaction:grouped', 'renote:grouped'],"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/i/notifications-grouped.ts",
+          "ownerIssues": [
+            373
+          ],
+          "matches": [
+            {
+              "line": 14,
+              "text": "notificationTypes,"
+            },
+            {
+              "line": 57,
+              "text": "type: 'string', enum: [...notificationTypes, ...obsoleteNotificationTypes],"
+            },
+            {
+              "line": 60,
+              "text": "type: 'string', enum: [...notificationTypes, ...obsoleteNotificationTypes],"
+            },
+            {
+              "line": 82,
+              "text": "if (notificationTypes.every(type => ps.excludeTypes?.includes(type))) {"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/i/notifications.ts",
+          "ownerIssues": [
+            373
+          ],
+          "matches": [
+            {
+              "line": 10,
+              "text": "import { FilterUnionByProperty, notificationTypes, obsoleteNotificationTypes } from '@/types.js';"
+            },
+            {
+              "line": 52,
+              "text": "type: 'string', enum: [...notificationTypes, ...obsoleteNotificationTypes],"
+            },
+            {
+              "line": 55,
+              "text": "type: 'string', enum: [...notificationTypes, ...obsoleteNotificationTypes],"
+            },
+            {
+              "line": 77,
+              "text": "if (notificationTypes.every(type => ps.excludeTypes?.includes(type))) {"
+            },
+            {
+              "line": 81,
+              "text": "const includeTypes = ps.includeTypes && ps.includeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof notificationTypes[number][];"
+            },
+            {
+              "line": 82,
+              "text": "const excludeTypes = ps.excludeTypes && ps.excludeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof notificationTypes[number][];"
+            }
+          ]
+        }
+      ],
+      "implementation": [
+        "packages/backend-next/src/modules/notification/model.ts"
+      ],
+      "existingFixtures": [
+        "packages/backend-next/test/integration/note-notifications.test.ts"
+      ],
+      "remainingComparison": "投稿6種のみの部分実装。全20種、設定値域、読取include/exclude、通知payloadを#177各producer比較で閉じる。",
+      "internalReferences": [
+        {
+          "line": 52,
+          "text": "...notificationTypes,"
+        }
+      ],
+      "values": [
+        "note",
+        "follow",
+        "mention",
+        "reply",
+        "renote",
+        "quote",
+        "reaction",
+        "pollEnded",
+        "scheduledNotePosted",
+        "scheduledNotePostFailed",
+        "receiveFollowRequest",
+        "followRequestAccepted",
+        "roleAssigned",
+        "chatRoomInvitationReceived",
+        "achievementEarned",
+        "exportCompleted",
+        "login",
+        "createToken",
+        "app",
+        "test"
+      ]
+    },
+    {
+      "name": "groupedNotificationTypes",
+      "kind": "const",
+      "source": "packages/backend/src/types.ts",
+      "line": 51,
+      "inventoryId": "responsibility:misc-utils:39",
+      "ownerIssues": [
+        177,
+        298,
+        373
+      ],
+      "references": [
+        {
+          "path": "packages/backend/src/core/NotificationService.ts",
+          "ownerIssues": [
+            177,
+            298,
+            373
+          ],
+          "matches": [
+            {
+              "line": 23,
+              "text": "import { FilterUnionByProperty, groupedNotificationTypes, obsoleteNotificationTypes } from '@/types.js';"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/core/entities/NotificationEntityService.ts",
+          "ownerIssues": [
+            177,
+            298,
+            373
+          ],
+          "matches": [
+            {
+              "line": 16,
+              "text": "import { FilterUnionByProperty, groupedNotificationTypes } from '@/types.js';"
+            },
+            {
+              "line": 35,
+              "text": "] as (typeof groupedNotificationTypes[number])[]);"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/i/notifications-grouped.ts",
+          "ownerIssues": [
+            373
+          ],
+          "matches": [
+            {
+              "line": 12,
+              "text": "groupedNotificationTypes,"
+            },
+            {
+              "line": 86,
+              "text": "const includeTypes = ps.includeTypes && ps.includeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof groupedNotificationTypes[number][];"
+            },
+            {
+              "line": 87,
+              "text": "const excludeTypes = ps.excludeTypes && ps.excludeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof groupedNotificationTypes[number][];"
+            }
+          ]
+        }
+      ],
+      "implementation": [
+        "packages/backend-next/src/modules/notification/model.ts"
+      ],
+      "existingFixtures": [],
+      "remainingComparison": "投稿型は存在するがgrouped readerは未移植。reaction/renoteのgroup化と全22値を比較する。",
+      "internalReferences": [],
+      "values": [
+        "note",
+        "follow",
+        "mention",
+        "reply",
+        "renote",
+        "quote",
+        "reaction",
+        "pollEnded",
+        "scheduledNotePosted",
+        "scheduledNotePostFailed",
+        "receiveFollowRequest",
+        "followRequestAccepted",
+        "roleAssigned",
+        "chatRoomInvitationReceived",
+        "achievementEarned",
+        "exportCompleted",
+        "login",
+        "createToken",
+        "app",
+        "test",
+        "reaction:grouped",
+        "renote:grouped"
+      ]
+    },
+    {
+      "name": "obsoleteNotificationTypes",
+      "kind": "const",
+      "source": "packages/backend/src/types.ts",
+      "line": 57,
+      "inventoryId": "responsibility:misc-utils:39",
+      "ownerIssues": [
+        177,
+        298,
+        373,
+        442
+      ],
+      "references": [
+        {
+          "path": "packages/backend/src/core/NotificationService.ts",
+          "ownerIssues": [
+            177,
+            298,
+            373
+          ],
+          "matches": [
+            {
+              "line": 23,
+              "text": "import { FilterUnionByProperty, groupedNotificationTypes, obsoleteNotificationTypes } from '@/types.js';"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/models/UserProfile.ts",
+          "ownerIssues": [
+            408,
+            177
+          ],
+          "matches": [
+            {
+              "line": 7,
+              "text": "import { obsoleteNotificationTypes, followingVisibilities, followersVisibilities, notificationTypes } from '@/types.js';"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/i/notifications-grouped.ts",
+          "ownerIssues": [
+            373
+          ],
+          "matches": [
+            {
+              "line": 11,
+              "text": "obsoleteNotificationTypes,"
+            },
+            {
+              "line": 57,
+              "text": "type: 'string', enum: [...notificationTypes, ...obsoleteNotificationTypes],"
+            },
+            {
+              "line": 60,
+              "text": "type: 'string', enum: [...notificationTypes, ...obsoleteNotificationTypes],"
+            },
+            {
+              "line": 86,
+              "text": "const includeTypes = ps.includeTypes && ps.includeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof groupedNotificationTypes[number][];"
+            },
+            {
+              "line": 87,
+              "text": "const excludeTypes = ps.excludeTypes && ps.excludeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof groupedNotificationTypes[number][];"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/i/notifications.ts",
+          "ownerIssues": [
+            373
+          ],
+          "matches": [
+            {
+              "line": 10,
+              "text": "import { FilterUnionByProperty, notificationTypes, obsoleteNotificationTypes } from '@/types.js';"
+            },
+            {
+              "line": 52,
+              "text": "type: 'string', enum: [...notificationTypes, ...obsoleteNotificationTypes],"
+            },
+            {
+              "line": 55,
+              "text": "type: 'string', enum: [...notificationTypes, ...obsoleteNotificationTypes],"
+            },
+            {
+              "line": 81,
+              "text": "const includeTypes = ps.includeTypes && ps.includeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof notificationTypes[number][];"
+            },
+            {
+              "line": 82,
+              "text": "const excludeTypes = ps.excludeTypes && ps.excludeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof notificationTypes[number][];"
+            }
+          ]
+        }
+      ],
+      "implementation": [],
+      "existingFixtures": [],
+      "remainingComparison": "pollVote/groupInvitedの入力受理と除外、旧通知移行を比較。UserProfileとNotificationServiceのimportは未使用。",
+      "internalReferences": [],
+      "values": [
+        "pollVote",
+        "groupInvited"
+      ]
+    },
+    {
+      "name": "noteVisibilities",
+      "kind": "const",
+      "source": "packages/backend/src/types.ts",
+      "line": 59,
+      "inventoryId": "responsibility:misc-utils:39",
+      "ownerIssues": [
+        183,
+        438,
+        485
+      ],
+      "references": [
+        {
+          "path": "packages/backend/src/models/Note.ts",
+          "ownerIssues": [
+            183,
+            184
+          ],
+          "matches": [
+            {
+              "line": 7,
+              "text": "import { noteVisibilities, noteReactionAcceptances } from '@/types.js';"
+            },
+            {
+              "line": 135,
+              "text": "@Column('enum', { enum: noteVisibilities })"
+            },
+            {
+              "line": 136,
+              "text": "public visibility: typeof noteVisibilities[number];"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/models/NoteDraft.ts",
+          "ownerIssues": [
+            438,
+            485
+          ],
+          "matches": [
+            {
+              "line": 7,
+              "text": "import { noteVisibilities, noteReactionAcceptances } from '@/types.js';"
+            },
+            {
+              "line": 91,
+              "text": "@Column('enum', { enum: noteVisibilities })"
+            },
+            {
+              "line": 92,
+              "text": "public visibility: typeof noteVisibilities[number];"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/models/Poll.ts",
+          "ownerIssues": [
+            183
+          ],
+          "matches": [
+            {
+              "line": 7,
+              "text": "import { noteVisibilities } from '@/types.js';"
+            },
+            {
+              "line": 44,
+              "text": "enum: noteVisibilities,"
+            },
+            {
+              "line": 47,
+              "text": "public noteVisibility: typeof noteVisibilities[number];"
+            }
+          ]
+        }
+      ],
+      "implementation": [
+        "packages/backend-next/src/modules/note/create-contract.ts",
+        "packages/backend-next/src/modules/note/create-input.ts"
+      ],
+      "existingFixtures": [
+        "packages/backend-next/test/integration/note-create.test.ts"
+      ],
+      "remainingComparison": "Note作成/閲覧の既存4値を継承。NoteDraft/Pollの保存enumとdraft APIを担当sliceで比較する。",
+      "internalReferences": [],
+      "values": [
+        "public",
+        "home",
+        "followers",
+        "specified"
+      ]
+    },
+    {
+      "name": "noteReactionAcceptances",
+      "kind": "const",
+      "source": "packages/backend/src/types.ts",
+      "line": 61,
+      "inventoryId": "responsibility:misc-utils:39",
+      "ownerIssues": [
+        184,
+        306,
+        183,
+        438
+      ],
+      "references": [
+        {
+          "path": "packages/backend/src/models/Note.ts",
+          "ownerIssues": [
+            183,
+            184
+          ],
+          "matches": [
+            {
+              "line": 7,
+              "text": "import { noteVisibilities, noteReactionAcceptances } from '@/types.js';"
+            },
+            {
+              "line": 100,
+              "text": "public reactionAcceptance: typeof noteReactionAcceptances[number];"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/models/NoteDraft.ts",
+          "ownerIssues": [
+            438,
+            485
+          ],
+          "matches": [
+            {
+              "line": 7,
+              "text": "import { noteVisibilities, noteReactionAcceptances } from '@/types.js';"
+            },
+            {
+              "line": 83,
+              "text": "public reactionAcceptance: typeof noteReactionAcceptances[number];"
+            }
+          ]
+        }
+      ],
+      "implementation": [
+        "packages/backend-next/src/modules/note/create-contract.ts",
+        "packages/backend-next/src/modules/note/create-input.ts"
+      ],
+      "existingFixtures": [
+        "packages/backend-next/test/integration/note-create.test.ts"
+      ],
+      "remainingComparison": "作成入力は全5値を定義。入力定義だけでリアクション受付policy/remote挙動・draft保存の比較済みとしない。",
+      "internalReferences": [],
+      "values": [
+        "likeOnly",
+        "likeOnlyForRemote",
+        "nonSensitiveOnly",
+        "nonSensitiveOnlyForLocalLikeOnlyForRemote",
+        null
+      ]
+    },
+    {
+      "name": "mutedNoteReasons",
+      "kind": "const",
+      "source": "packages/backend/src/types.ts",
+      "line": 63,
+      "inventoryId": "responsibility:misc-utils:39",
+      "ownerIssues": [
+        182,
+        417
+      ],
+      "references": [],
+      "implementation": [],
+      "existingFixtures": [],
+      "remainingComparison": "固定本家srcに宣言以外の参照なし。未使用の値域を新helperとして移植しない。mute機能の実保存/判定で必要なら#417が利用者と同時に比較する。",
+      "internalReferences": [],
+      "values": [
+        "word",
+        "manual",
+        "spam",
+        "other"
+      ]
+    },
+    {
+      "name": "followingVisibilities",
+      "kind": "const",
+      "source": "packages/backend/src/types.ts",
+      "line": 65,
+      "inventoryId": "responsibility:misc-utils:39",
+      "ownerIssues": [
+        408,
+        296,
+        297,
+        338
+      ],
+      "references": [
+        {
+          "path": "packages/backend/src/models/UserProfile.ts",
+          "ownerIssues": [
+            408,
+            177
+          ],
+          "matches": [
+            {
+              "line": 7,
+              "text": "import { obsoleteNotificationTypes, followingVisibilities, followersVisibilities, notificationTypes } from '@/types.js';"
+            },
+            {
+              "line": 105,
+              "text": "enum: followingVisibilities,"
+            },
+            {
+              "line": 108,
+              "text": "public followingVisibility: typeof followingVisibilities[number];"
+            }
+          ]
+        }
+      ],
+      "implementation": [
+        "packages/backend-next/src/platform/database/local-follow-collections.ts"
+      ],
+      "existingFixtures": [
+        "packages/backend-next/test/integration/local-follow-collections-http.test.ts"
+      ],
+      "remainingComparison": "既存follow collectionの制限を継承。UserProfile更新/詳細表示の3値・自己/他者・認可を各担当で比較する。",
+      "internalReferences": [],
+      "values": [
+        "public",
+        "followers",
+        "private"
+      ]
+    },
+    {
+      "name": "followersVisibilities",
+      "kind": "const",
+      "source": "packages/backend/src/types.ts",
+      "line": 66,
+      "inventoryId": "responsibility:misc-utils:39",
+      "ownerIssues": [
+        408,
+        296,
+        297,
+        338
+      ],
+      "references": [
+        {
+          "path": "packages/backend/src/models/UserProfile.ts",
+          "ownerIssues": [
+            408,
+            177
+          ],
+          "matches": [
+            {
+              "line": 7,
+              "text": "import { obsoleteNotificationTypes, followingVisibilities, followersVisibilities, notificationTypes } from '@/types.js';"
+            },
+            {
+              "line": 111,
+              "text": "enum: followersVisibilities,"
+            },
+            {
+              "line": 114,
+              "text": "public followersVisibility: typeof followersVisibilities[number];"
+            }
+          ]
+        }
+      ],
+      "implementation": [
+        "packages/backend-next/src/platform/database/local-follow-collections.ts"
+      ],
+      "existingFixtures": [
+        "packages/backend-next/test/integration/local-follow-collections-http.test.ts"
+      ],
+      "remainingComparison": "followingと同じ値域でも独立設定。followers方向の保存と閲覧を別に比較する。",
+      "internalReferences": [],
+      "values": [
+        "public",
+        "followers",
+        "private"
+      ]
+    },
+    {
+      "name": "userExportableEntities",
+      "kind": "const",
+      "source": "packages/backend/src/types.ts",
+      "line": 73,
+      "inventoryId": "responsibility:misc-utils:39",
+      "ownerIssues": [
+        199,
+        177,
+        441,
+        440,
+        516,
+        517,
+        518
+      ],
+      "references": [
+        {
+          "path": "packages/backend/src/models/Notification.ts",
+          "ownerIssues": [
+            298,
+            441
+          ],
+          "matches": [
+            {
+              "line": 6,
+              "text": "import { userExportableEntities } from '@/types.js';"
+            },
+            {
+              "line": 105,
+              "text": "exportedEntity: typeof userExportableEntities[number];"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/models/json-schema/notification.ts",
+          "ownerIssues": [
+            298,
+            373,
+            441
+          ],
+          "matches": [
+            {
+              "line": 6,
+              "text": "import { notificationTypes, userExportableEntities } from '@/types.js';"
+            },
+            {
+              "line": 359,
+              "text": "enum: userExportableEntities,"
+            }
+          ]
+        }
+      ],
+      "implementation": [],
+      "existingFixtures": [],
+      "remainingComparison": "9値それぞれのexportCompleted producerと通知schemaをexportValuesへ対応。export job/通知は未移植。",
+      "internalReferences": [],
+      "values": [
+        "antenna",
+        "blocking",
+        "clip",
+        "customEmoji",
+        "favorite",
+        "following",
+        "muting",
+        "note",
+        "userList"
+      ]
+    },
+    {
+      "name": "userImportableEntities",
+      "kind": "const",
+      "source": "packages/backend/src/types.ts",
+      "line": 80,
+      "inventoryId": "responsibility:misc-utils:39",
+      "ownerIssues": [
+        199,
+        520,
+        521,
+        522,
+        523,
+        524
+      ],
+      "references": [],
+      "implementation": [],
+      "existingFixtures": [],
+      "remainingComparison": "固定本家srcに宣言以外の参照なし。6値を実import processorへimportValuesで対応。importCompleted通知は固定notificationTypesに存在せず、追加要件にしない。",
+      "internalReferences": [],
+      "values": [
+        "antenna",
+        "blocking",
+        "customEmoji",
+        "following",
+        "muting",
+        "userList"
+      ]
+    },
+    {
+      "name": "moderationLogTypes",
+      "kind": "const",
+      "source": "packages/backend/src/types.ts",
+      "line": 82,
+      "inventoryId": "responsibility:misc-utils:39",
+      "ownerIssues": [
+        194,
+        546,
+        547,
+        548,
+        549,
+        550,
+        551
+      ],
+      "references": [
+        {
+          "path": "packages/backend/src/core/ModerationLogService.ts",
+          "ownerIssues": [
+            194
+          ],
+          "matches": [
+            {
+              "line": 13,
+              "text": "import { moderationLogTypes } from '@/types.js';"
+            },
+            {
+              "line": 26,
+              "text": "public async log<T extends typeof moderationLogTypes[number]>(moderator: { id: MiUser['id'] }, type: T, info?: ModerationLogPayloads[T]) {"
+            }
+          ]
+        }
+      ],
+      "implementation": [
+        "packages/backend-next/src/modules/audit/public.ts"
+      ],
+      "existingFixtures": [
+        "packages/backend-next/test/integration/role-http.test.ts",
+        "packages/backend-next/test/integration/note-delete.test.ts",
+        "packages/backend-next/test/integration/queue-admin.test.ts",
+        "packages/backend-next/test/integration/instance-admin.test.ts"
+      ],
+      "remainingComparison": "55種の実producerと担当をmoderationProducersへ対応。新実装の9種を列挙した型のみで他46種を完了にしない。",
+      "internalReferences": [],
+      "values": [
+        "updateServerSettings",
+        "suspend",
+        "unsuspend",
+        "updateUserNote",
+        "addCustomEmoji",
+        "updateCustomEmoji",
+        "deleteCustomEmoji",
+        "assignRole",
+        "unassignRole",
+        "createRole",
+        "updateRole",
+        "deleteRole",
+        "clearQueue",
+        "promoteQueue",
+        "pauseQueue",
+        "resumeQueue",
+        "deleteDriveFile",
+        "deleteNote",
+        "createGlobalAnnouncement",
+        "createUserAnnouncement",
+        "updateGlobalAnnouncement",
+        "updateUserAnnouncement",
+        "deleteGlobalAnnouncement",
+        "deleteUserAnnouncement",
+        "resetPassword",
+        "suspendRemoteInstance",
+        "unsuspendRemoteInstance",
+        "updateRemoteInstanceNote",
+        "markSensitiveDriveFile",
+        "unmarkSensitiveDriveFile",
+        "resolveAbuseReport",
+        "forwardAbuseReport",
+        "updateAbuseReportNote",
+        "createInvitation",
+        "createAd",
+        "updateAd",
+        "deleteAd",
+        "createAvatarDecoration",
+        "updateAvatarDecoration",
+        "deleteAvatarDecoration",
+        "unsetMfa",
+        "unsetUserAvatar",
+        "unsetUserBanner",
+        "createSystemWebhook",
+        "updateSystemWebhook",
+        "deleteSystemWebhook",
+        "createAbuseReportNotificationRecipient",
+        "updateAbuseReportNotificationRecipient",
+        "deleteAbuseReportNotificationRecipient",
+        "deleteAccount",
+        "deletePage",
+        "deleteFlash",
+        "deleteGalleryPost",
+        "deleteChatRoom",
+        "updateProxyAccountDescription"
+      ]
+    },
+    {
+      "name": "ModerationLogPayloads",
+      "kind": "type",
+      "source": "packages/backend/src/types.ts",
+      "line": 140,
+      "inventoryId": "responsibility:misc-utils:39",
+      "ownerIssues": [
+        194,
+        546,
+        547,
+        548,
+        549,
+        550,
+        551
+      ],
+      "references": [
+        {
+          "path": "packages/backend/src/core/ModerationLogService.ts",
+          "ownerIssues": [
+            194
+          ],
+          "matches": [
+            {
+              "line": 12,
+              "text": "import type { ModerationLogPayloads } from '@/types.js';"
+            },
+            {
+              "line": 26,
+              "text": "public async log<T extends typeof moderationLogTypes[number]>(moderator: { id: MiUser['id'] }, type: T, info?: ModerationLogPayloads[T]) {"
+            }
+          ]
+        }
+      ],
+      "implementation": [
+        "packages/backend-next/src/modules/audit/public.ts"
+      ],
+      "existingFixtures": [
+        "packages/backend-next/test/integration/moderation-log.test.ts"
+      ],
+      "remainingComparison": "全55payload keyはmoderationLogTypesと一致。共通appenderのinfo省略/transaction/jsonb検証と、各producerのbefore/after・識別子・失敗境界の比較を分ける。",
+      "internalReferences": []
+    },
+    {
+      "name": "Serialized",
+      "kind": "type",
+      "source": "packages/backend/src/types.ts",
+      "line": 407,
+      "inventoryId": "responsibility:misc-utils:39",
+      "ownerIssues": [
+        217,
+        304,
+        519,
+        474,
+        215,
+        198
+      ],
+      "references": [
+        {
+          "path": "packages/backend/src/core/CustomEmojiService.ts",
+          "ownerIssues": [
+            537,
+            519,
+            304
+          ],
+          "matches": [
+            {
+              "line": 20,
+              "text": "import type { Serialized } from '@/types.js';"
+            },
+            {
+              "line": 84,
+              "text": "return new Map(JSON.parse(value).map((x: Serialized<MiEmoji>) => [x.name, {"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/core/GlobalEventService.ts",
+          "ownerIssues": [
+            217
+          ],
+          "matches": [
+            {
+              "line": 29,
+              "text": "import { Serialized } from '@/types.js';"
+            },
+            {
+              "line": 225,
+              "text": "[K in keyof T]: Serialized<T[K]>;"
+            },
+            {
+              "line": 318,
+              "text": "payload: Serialized<Packed<'Note'>>;"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/core/ReversiService.ts",
+          "ownerIssues": [
+            474
+          ],
+          "matches": [
+            {
+              "line": 24,
+              "text": "import { Serialized } from '@/types.js';"
+            },
+            {
+              "line": 581,
+              "text": "const parsed = JSON.parse(cached) as Serialized<MiReversiGame>;"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/models/SystemAccount.ts",
+          "ownerIssues": [
+            215
+          ],
+          "matches": [
+            {
+              "line": 7,
+              "text": "import { Serialized } from '@/types.js';"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/models/SystemWebhook.ts",
+          "ownerIssues": [
+            198,
+            350
+          ],
+          "matches": [
+            {
+              "line": 7,
+              "text": "import { Serialized } from '@/types.js';"
+            },
+            {
+              "line": 97,
+              "text": "static deserialize(obj: Serialized<MiSystemWebhook>): MiSystemWebhook {"
+            }
+          ]
+        }
+      ],
+      "implementation": [
+        "packages/backend-next/src/platform/actor-emoji-cache.ts",
+        "packages/backend-next/src/platform/posting-stream.ts"
+      ],
+      "existingFixtures": [
+        "packages/backend-next/test/unit/actor-emoji-cache.test.ts",
+        "packages/backend-next/test/unit/stream/source-compat.test.ts"
+      ],
+      "remainingComparison": "汎用型の移植はしない。各cache/event/systemWebhookのDate/null/undefinedとwire値を利用者ごとに比較。SystemAccountのimportは未使用。",
+      "internalReferences": [
+        {
+          "line": 414,
+          "text": "? Serialized<T[K]>"
+        },
+        {
+          "line": 416,
+          "text": "? (Serialized<T[K]> | null)"
+        },
+        {
+          "line": 418,
+          "text": "? (Serialized<T[K]> | undefined)"
+        }
+      ]
+    },
+    {
+      "name": "FilterUnionByProperty",
+      "kind": "type",
+      "source": "packages/backend/src/types.ts",
+      "line": 422,
+      "inventoryId": "responsibility:misc-utils:39",
+      "ownerIssues": [
+        177,
+        298,
+        373
+      ],
+      "references": [
+        {
+          "path": "packages/backend/src/core/NotificationService.ts",
+          "ownerIssues": [
+            177,
+            298,
+            373
+          ],
+          "matches": [
+            {
+              "line": 23,
+              "text": "import { FilterUnionByProperty, groupedNotificationTypes, obsoleteNotificationTypes } from '@/types.js';"
+            },
+            {
+              "line": 83,
+              "text": "data: Omit<FilterUnionByProperty<MiNotification, 'type', T>, 'type' | 'id' | 'createdAt' | 'notifierId'>,"
+            },
+            {
+              "line": 94,
+              "text": "data: Omit<FilterUnionByProperty<MiNotification, 'type', T>, 'type' | 'id' | 'createdAt' | 'notifierId'>,"
+            },
+            {
+              "line": 151,
+              "text": "let notification: FilterUnionByProperty<MiNotification, 'type', T>;"
+            },
+            {
+              "line": 163,
+              "text": "} as unknown as FilterUnionByProperty<MiNotification, 'type', T>;"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/core/entities/NotificationEntityService.ts",
+          "ownerIssues": [
+            177,
+            298,
+            373
+          ],
+          "matches": [
+            {
+              "line": 16,
+              "text": "import { FilterUnionByProperty, groupedNotificationTypes } from '@/types.js';"
+            },
+            {
+              "line": 243,
+              "text": "const followRequestNotifications = validNotifications.filter((x): x is FilterUnionByProperty<T, 'type', 'receiveFollowRequest'> => x.type === 'receiveFollowRequest');"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/i/notifications-grouped.ts",
+          "ownerIssues": [
+            373
+          ],
+          "matches": [
+            {
+              "line": 13,
+              "text": "FilterUnionByProperty,"
+            },
+            {
+              "line": 127,
+              "text": "(prevGroupedNotification as FilterUnionByProperty<MiGroupedNotification, 'type', 'reaction:grouped'>).reactions.push({"
+            },
+            {
+              "line": 145,
+              "text": "(prevGroupedNotification as FilterUnionByProperty<MiGroupedNotification, 'type', 'renote:grouped'>).userIds.push(notification.notifierId!);"
+            }
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/i/notifications.ts",
+          "ownerIssues": [
+            373
+          ],
+          "matches": [
+            {
+              "line": 10,
+              "text": "import { FilterUnionByProperty, notificationTypes, obsoleteNotificationTypes } from '@/types.js';"
+            }
+          ]
+        }
+      ],
+      "implementation": [
+        "packages/backend-next/src/modules/notification/model.ts"
+      ],
+      "existingFixtures": [],
+      "remainingComparison": "compile-time union選別。新notificationの型を各variant/payload比較へ接続し、不要な汎用型は追加しない。",
+      "internalReferences": []
+    },
+    {
+      "name": "Awaitable",
+      "kind": "type",
+      "source": "packages/backend/src/types.ts",
+      "line": 428,
+      "inventoryId": "responsibility:misc-utils:39",
+      "ownerIssues": [
+        189,
+        432
+      ],
+      "references": [
+        {
+          "path": "packages/backend/src/server/api/stream/channel.ts",
+          "ownerIssues": [
+            432
+          ],
+          "matches": [
+            {
+              "line": 11,
+              "text": "import type { Awaitable } from '@/types.js';"
+            },
+            {
+              "line": 152,
+              "text": "public abstract init(params: JsonObject): Awaitable<void | boolean>;"
+            }
+          ]
+        }
+      ],
+      "implementation": [
+        "packages/backend-next/src/modules/stream/connection.ts"
+      ],
+      "existingFixtures": [
+        "packages/backend-next/test/unit/stream/receiver.test.ts"
+      ],
+      "remainingComparison": "channel initの同期/非同期/false返却とsubscribe拒否はconnection protocol #432で比較する。",
+      "internalReferences": []
+    }
+  ],
+  "moderationProducers": [
+    {
+      "type": "updateServerSettings",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/roles/update-default-policies.ts",
+          "line": 49,
+          "ownerIssues": [
+            194,
+            415,
+            547
+          ]
+        },
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/update-meta.ts",
+          "line": 801,
+          "ownerIssues": [
+            194,
+            448,
+            551
+          ]
+        }
+      ]
+    },
+    {
+      "type": "suspend",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/UserSuspendService.ts",
+          "line": 45,
+          "ownerIssues": [
+            194,
+            535,
+            548
+          ]
+        }
+      ]
+    },
+    {
+      "type": "unsuspend",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/UserSuspendService.ts",
+          "line": 63,
+          "ownerIssues": [
+            194,
+            535,
+            548
+          ]
+        }
+      ]
+    },
+    {
+      "type": "updateUserNote",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/update-user-note.ts",
+          "line": 53,
+          "ownerIssues": [
+            194,
+            370,
+            548
+          ]
+        }
+      ]
+    },
+    {
+      "type": "addCustomEmoji",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/CustomEmojiService.ts",
+          "line": 130,
+          "ownerIssues": [
+            194,
+            519,
+            549
+          ]
+        }
+      ]
+    },
+    {
+      "type": "updateCustomEmoji",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/CustomEmojiService.ts",
+          "line": 205,
+          "ownerIssues": [
+            194,
+            519,
+            549
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deleteCustomEmoji",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/CustomEmojiService.ts",
+          "line": 315,
+          "ownerIssues": [
+            194,
+            519,
+            549
+          ]
+        },
+        {
+          "path": "packages/backend/src/core/CustomEmojiService.ts",
+          "line": 332,
+          "ownerIssues": [
+            194,
+            519,
+            549
+          ]
+        }
+      ]
+    },
+    {
+      "type": "assignRole",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/RoleService.ts",
+          "line": 602,
+          "ownerIssues": [
+            194,
+            181,
+            313,
+            547
+          ]
+        }
+      ]
+    },
+    {
+      "type": "unassignRole",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/RoleService.ts",
+          "line": 641,
+          "ownerIssues": [
+            194,
+            181,
+            313,
+            547
+          ]
+        }
+      ]
+    },
+    {
+      "type": "createRole",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/RoleService.ts",
+          "line": 692,
+          "ownerIssues": [
+            194,
+            181,
+            414,
+            547
+          ]
+        }
+      ]
+    },
+    {
+      "type": "updateRole",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/RoleService.ts",
+          "line": 713,
+          "ownerIssues": [
+            194,
+            181,
+            414,
+            547
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deleteRole",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/RoleService.ts",
+          "line": 727,
+          "ownerIssues": [
+            194,
+            181,
+            414,
+            547
+          ]
+        }
+      ]
+    },
+    {
+      "type": "clearQueue",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/queue/clear.ts",
+          "line": 37,
+          "ownerIssues": [
+            194,
+            163,
+            551
+          ]
+        }
+      ]
+    },
+    {
+      "type": "promoteQueue",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/queue/promote-jobs.ts",
+          "line": 36,
+          "ownerIssues": [
+            194,
+            163,
+            551
+          ]
+        }
+      ]
+    },
+    {
+      "type": "pauseQueue",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/queue/pause.ts",
+          "line": 36,
+          "ownerIssues": [
+            194,
+            163,
+            551
+          ]
+        }
+      ]
+    },
+    {
+      "type": "resumeQueue",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/queue/resume.ts",
+          "line": 36,
+          "ownerIssues": [
+            194,
+            163,
+            551
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deleteDriveFile",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/DriveService.ts",
+          "line": 848,
+          "ownerIssues": [
+            194,
+            188,
+            549
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deleteNote",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/NoteDeleteService.ts",
+          "line": 120,
+          "ownerIssues": [
+            194,
+            172,
+            550
+          ]
+        }
+      ]
+    },
+    {
+      "type": "createGlobalAnnouncement",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/AnnouncementService.ts",
+          "line": 138,
+          "ownerIssues": [
+            194,
+            451,
+            550
+          ]
+        }
+      ]
+    },
+    {
+      "type": "createUserAnnouncement",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/AnnouncementService.ts",
+          "line": 122,
+          "ownerIssues": [
+            194,
+            451,
+            550
+          ]
+        }
+      ]
+    },
+    {
+      "type": "updateGlobalAnnouncement",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/AnnouncementService.ts",
+          "line": 192,
+          "ownerIssues": [
+            194,
+            451,
+            550
+          ]
+        }
+      ]
+    },
+    {
+      "type": "updateUserAnnouncement",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/AnnouncementService.ts",
+          "line": 183,
+          "ownerIssues": [
+            194,
+            451,
+            550
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deleteGlobalAnnouncement",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/AnnouncementService.ts",
+          "line": 240,
+          "ownerIssues": [
+            194,
+            451,
+            550
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deleteUserAnnouncement",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/AnnouncementService.ts",
+          "line": 232,
+          "ownerIssues": [
+            194,
+            451,
+            550
+          ]
+        }
+      ]
+    },
+    {
+      "type": "resetPassword",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/reset-password.ts",
+          "line": 95,
+          "ownerIssues": [
+            194,
+            394,
+            548
+          ]
+        }
+      ]
+    },
+    {
+      "type": "suspendRemoteInstance",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/federation/update-instance.ts",
+          "line": 63,
+          "ownerIssues": [
+            194,
+            362,
+            551
+          ]
+        }
+      ]
+    },
+    {
+      "type": "unsuspendRemoteInstance",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/federation/update-instance.ts",
+          "line": 68,
+          "ownerIssues": [
+            194,
+            362,
+            551
+          ]
+        }
+      ]
+    },
+    {
+      "type": "updateRemoteInstanceNote",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/federation/update-instance.ts",
+          "line": 76,
+          "ownerIssues": [
+            194,
+            362,
+            551
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markSensitiveDriveFile",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/DriveService.ts",
+          "line": 720,
+          "ownerIssues": [
+            194,
+            188,
+            549
+          ]
+        }
+      ]
+    },
+    {
+      "type": "unmarkSensitiveDriveFile",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/DriveService.ts",
+          "line": 727,
+          "ownerIssues": [
+            194,
+            188,
+            549
+          ]
+        }
+      ]
+    },
+    {
+      "type": "resolveAbuseReport",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/AbuseReportService.ts",
+          "line": 109,
+          "ownerIssues": [
+            194,
+            447,
+            548
+          ]
+        }
+      ]
+    },
+    {
+      "type": "forwardAbuseReport",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/AbuseReportService.ts",
+          "line": 147,
+          "ownerIssues": [
+            194,
+            536,
+            548
+          ]
+        }
+      ]
+    },
+    {
+      "type": "updateAbuseReportNote",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/AbuseReportService.ts",
+          "line": 168,
+          "ownerIssues": [
+            194,
+            447,
+            548
+          ]
+        }
+      ]
+    },
+    {
+      "type": "createInvitation",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/invite/create.ts",
+          "line": 80,
+          "ownerIssues": [
+            194,
+            543,
+            548
+          ]
+        }
+      ]
+    },
+    {
+      "type": "createAd",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/ad/create.ts",
+          "line": 68,
+          "ownerIssues": [
+            194,
+            540,
+            550
+          ]
+        }
+      ]
+    },
+    {
+      "type": "updateAd",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/ad/update.ts",
+          "line": 75,
+          "ownerIssues": [
+            194,
+            540,
+            550
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deleteAd",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/ad/delete.ts",
+          "line": 52,
+          "ownerIssues": [
+            194,
+            540,
+            550
+          ]
+        }
+      ]
+    },
+    {
+      "type": "createAvatarDecoration",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/AvatarDecorationService.ts",
+          "line": 66,
+          "ownerIssues": [
+            194,
+            541,
+            549
+          ]
+        }
+      ]
+    },
+    {
+      "type": "updateAvatarDecoration",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/AvatarDecorationService.ts",
+          "line": 89,
+          "ownerIssues": [
+            194,
+            541,
+            549
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deleteAvatarDecoration",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/AvatarDecorationService.ts",
+          "line": 105,
+          "ownerIssues": [
+            194,
+            541,
+            549
+          ]
+        }
+      ]
+    },
+    {
+      "type": "unsetMfa",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/unset-mfa.ts",
+          "line": 81,
+          "ownerIssues": [
+            194,
+            370,
+            548
+          ]
+        }
+      ]
+    },
+    {
+      "type": "unsetUserAvatar",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/unset-user-avatar.ts",
+          "line": 53,
+          "ownerIssues": [
+            194,
+            370,
+            549
+          ]
+        }
+      ]
+    },
+    {
+      "type": "unsetUserBanner",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/unset-user-banner.ts",
+          "line": 53,
+          "ownerIssues": [
+            194,
+            370,
+            549
+          ]
+        }
+      ]
+    },
+    {
+      "type": "createSystemWebhook",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/SystemWebhookService.ts",
+          "line": 129,
+          "ownerIssues": [
+            194,
+            350,
+            551
+          ]
+        }
+      ]
+    },
+    {
+      "type": "updateSystemWebhook",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/SystemWebhookService.ts",
+          "line": 165,
+          "ownerIssues": [
+            194,
+            350,
+            551
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deleteSystemWebhook",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/SystemWebhookService.ts",
+          "line": 184,
+          "ownerIssues": [
+            194,
+            350,
+            551
+          ]
+        }
+      ]
+    },
+    {
+      "type": "createAbuseReportNotificationRecipient",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/AbuseReportNotificationService.ts",
+          "line": 288,
+          "ownerIssues": [
+            194,
+            352,
+            551
+          ]
+        }
+      ]
+    },
+    {
+      "type": "updateAbuseReportNotificationRecipient",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/AbuseReportNotificationService.ts",
+          "line": 325,
+          "ownerIssues": [
+            194,
+            352,
+            551
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deleteAbuseReportNotificationRecipient",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/AbuseReportNotificationService.ts",
+          "line": 347,
+          "ownerIssues": [
+            194,
+            352,
+            551
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deleteAccount",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/DeleteAccountService.ts",
+          "line": 53,
+          "ownerIssues": [
+            194,
+            341,
+            548
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deletePage",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/PageService.ts",
+          "line": 183,
+          "ownerIssues": [
+            194,
+            340,
+            550
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deleteFlash",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/flash/delete.ts",
+          "line": 71,
+          "ownerIssues": [
+            194,
+            423,
+            550
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deleteGalleryPost",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/gallery/posts/delete.ts",
+          "line": 71,
+          "ownerIssues": [
+            194,
+            425,
+            550
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deleteChatRoom",
+      "producers": [
+        {
+          "path": "packages/backend/src/core/ChatService.ts",
+          "line": 634,
+          "ownerIssues": [
+            194,
+            190,
+            550
+          ]
+        }
+      ]
+    },
+    {
+      "type": "updateProxyAccountDescription",
+      "producers": [
+        {
+          "path": "packages/backend/src/server/api/endpoints/admin/update-proxy-account.ts",
+          "line": 53,
+          "ownerIssues": [
+            194,
+            448,
+            551
+          ]
+        }
+      ]
+    }
+  ],
+  "exportValues": [
+    {
+      "value": "antenna",
+      "processor": "packages/backend/src/queue/processors/ExportAntennasProcessorService.ts",
+      "ownerIssues": [
+        199,
+        516,
+        441
+      ],
+      "notificationLines": [
+        104
+      ]
+    },
+    {
+      "value": "blocking",
+      "processor": "packages/backend/src/queue/processors/ExportBlockingProcessorService.ts",
+      "ownerIssues": [
+        199,
+        440,
+        441
+      ],
+      "notificationLines": [
+        116
+      ]
+    },
+    {
+      "value": "clip",
+      "processor": "packages/backend/src/queue/processors/ExportClipsProcessorService.ts",
+      "ownerIssues": [
+        199,
+        517,
+        441
+      ],
+      "notificationLines": [
+        86
+      ]
+    },
+    {
+      "value": "customEmoji",
+      "processor": "packages/backend/src/queue/processors/ExportCustomEmojisProcessorService.ts",
+      "ownerIssues": [
+        199,
+        518,
+        441
+      ],
+      "notificationLines": [
+        141
+      ]
+    },
+    {
+      "value": "favorite",
+      "processor": "packages/backend/src/queue/processors/ExportFavoritesProcessorService.ts",
+      "ownerIssues": [
+        199,
+        517,
+        441
+      ],
+      "notificationLines": [
+        140
+      ]
+    },
+    {
+      "value": "following",
+      "processor": "packages/backend/src/queue/processors/ExportFollowingProcessorService.ts",
+      "ownerIssues": [
+        199,
+        440,
+        441
+      ],
+      "notificationLines": [
+        121
+      ]
+    },
+    {
+      "value": "muting",
+      "processor": "packages/backend/src/queue/processors/ExportMutingProcessorService.ts",
+      "ownerIssues": [
+        199,
+        440,
+        441
+      ],
+      "notificationLines": [
+        117
+      ]
+    },
+    {
+      "value": "note",
+      "processor": "packages/backend/src/queue/processors/ExportNotesProcessorService.ts",
+      "ownerIssues": [
+        199,
+        517,
+        441
+      ],
+      "notificationLines": [
+        159
+      ]
+    },
+    {
+      "value": "userList",
+      "processor": "packages/backend/src/queue/processors/ExportUserListsProcessorService.ts",
+      "ownerIssues": [
+        199,
+        516,
+        441
+      ],
+      "notificationLines": [
+        98
+      ]
+    }
+  ],
+  "importValues": [
+    {
+      "value": "antenna",
+      "processor": "packages/backend/src/queue/processors/ImportAntennasProcessorService.ts",
+      "ownerIssues": [
+        199,
+        524
+      ],
+      "notificationLines": []
+    },
+    {
+      "value": "blocking",
+      "processor": "packages/backend/src/queue/processors/ImportBlockingProcessorService.ts",
+      "ownerIssues": [
+        199,
+        521
+      ],
+      "notificationLines": []
+    },
+    {
+      "value": "customEmoji",
+      "processor": "packages/backend/src/queue/processors/ImportCustomEmojisProcessorService.ts",
+      "ownerIssues": [
+        199,
+        520
+      ],
+      "notificationLines": []
+    },
+    {
+      "value": "following",
+      "processor": "packages/backend/src/queue/processors/ImportFollowingProcessorService.ts",
+      "ownerIssues": [
+        199,
+        521
+      ],
+      "notificationLines": []
+    },
+    {
+      "value": "muting",
+      "processor": "packages/backend/src/queue/processors/ImportMutingProcessorService.ts",
+      "ownerIssues": [
+        199,
+        522
+      ],
+      "notificationLines": []
+    },
+    {
+      "value": "userList",
+      "processor": "packages/backend/src/queue/processors/ImportUserListsProcessorService.ts",
+      "ownerIssues": [
+        199,
+        523
+      ],
+      "notificationLines": []
+    }
+  ]
+}
