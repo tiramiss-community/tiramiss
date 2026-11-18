@@ -1,0 +1,756 @@
+{
+  "rows": [
+    {
+      "id": "tag00",
+      "name": "alpha",
+      "mentionedUserIds": [
+        "private-mentioned"
+      ],
+      "mentionedUsersCount": 1,
+      "mentionedLocalUserIds": [
+        "private-local"
+      ],
+      "mentionedLocalUsersCount": 12,
+      "mentionedRemoteUserIds": [
+        "private-remote"
+      ],
+      "mentionedRemoteUsersCount": 0,
+      "attachedUserIds": [
+        "private-attached"
+      ],
+      "attachedUsersCount": 0,
+      "attachedLocalUserIds": [
+        "private-attached-local"
+      ],
+      "attachedLocalUsersCount": 0,
+      "attachedRemoteUserIds": [
+        "private-attached-remote"
+      ],
+      "attachedRemoteUsersCount": 1
+    },
+    {
+      "id": "tag01",
+      "name": "alphabet",
+      "mentionedUserIds": [
+        "private-mentioned"
+      ],
+      "mentionedUsersCount": 2,
+      "mentionedLocalUserIds": [
+        "private-local"
+      ],
+      "mentionedLocalUsersCount": 11,
+      "mentionedRemoteUserIds": [
+        "private-remote"
+      ],
+      "mentionedRemoteUsersCount": 2,
+      "attachedUserIds": [
+        "private-attached"
+      ],
+      "attachedUsersCount": 1,
+      "attachedLocalUserIds": [
+        "private-attached-local"
+      ],
+      "attachedLocalUsersCount": 1,
+      "attachedRemoteUserIds": [
+        "private-attached-remote"
+      ],
+      "attachedRemoteUsersCount": 0
+    },
+    {
+      "id": "tag02",
+      "name": "alpine",
+      "mentionedUserIds": [
+        "private-mentioned"
+      ],
+      "mentionedUsersCount": 3,
+      "mentionedLocalUserIds": [
+        "private-local"
+      ],
+      "mentionedLocalUsersCount": 11,
+      "mentionedRemoteUserIds": [
+        "private-remote"
+      ],
+      "mentionedRemoteUsersCount": 4,
+      "attachedUserIds": [
+        "private-attached"
+      ],
+      "attachedUsersCount": 2,
+      "attachedLocalUserIds": [
+        "private-attached-local"
+      ],
+      "attachedLocalUsersCount": 0,
+      "attachedRemoteUserIds": [
+        "private-attached-remote"
+      ],
+      "attachedRemoteUsersCount": 0
+    },
+    {
+      "id": "tag03",
+      "name": "a%literal",
+      "mentionedUserIds": [
+        "private-mentioned"
+      ],
+      "mentionedUsersCount": 4,
+      "mentionedLocalUserIds": [
+        "private-local"
+      ],
+      "mentionedLocalUsersCount": 9,
+      "mentionedRemoteUserIds": [
+        "private-remote"
+      ],
+      "mentionedRemoteUsersCount": 6,
+      "attachedUserIds": [
+        "private-attached"
+      ],
+      "attachedUsersCount": 0,
+      "attachedLocalUserIds": [
+        "private-attached-local"
+      ],
+      "attachedLocalUsersCount": 1,
+      "attachedRemoteUserIds": [
+        "private-attached-remote"
+      ],
+      "attachedRemoteUsersCount": 0
+    },
+    {
+      "id": "tag04",
+      "name": "a_literal",
+      "mentionedUserIds": [
+        "private-mentioned"
+      ],
+      "mentionedUsersCount": 5,
+      "mentionedLocalUserIds": [
+        "private-local"
+      ],
+      "mentionedLocalUsersCount": 8,
+      "mentionedRemoteUserIds": [
+        "private-remote"
+      ],
+      "mentionedRemoteUsersCount": 8,
+      "attachedUserIds": [
+        "private-attached"
+      ],
+      "attachedUsersCount": 1,
+      "attachedLocalUserIds": [
+        "private-attached-local"
+      ],
+      "attachedLocalUsersCount": 0,
+      "attachedRemoteUserIds": [
+        "private-attached-remote"
+      ],
+      "attachedRemoteUsersCount": 1
+    },
+    {
+      "id": "tag05",
+      "name": "a\\literal",
+      "mentionedUserIds": [
+        "private-mentioned"
+      ],
+      "mentionedUsersCount": 6,
+      "mentionedLocalUserIds": [
+        "private-local"
+      ],
+      "mentionedLocalUsersCount": 7,
+      "mentionedRemoteUserIds": [
+        "private-remote"
+      ],
+      "mentionedRemoteUsersCount": 10,
+      "attachedUserIds": [
+        "private-attached"
+      ],
+      "attachedUsersCount": 2,
+      "attachedLocalUserIds": [
+        "private-attached-local"
+      ],
+      "attachedLocalUsersCount": 1,
+      "attachedRemoteUserIds": [
+        "private-attached-remote"
+      ],
+      "attachedRemoteUsersCount": 0
+    },
+    {
+      "id": "tag06",
+      "name": "abc",
+      "mentionedUserIds": [
+        "private-mentioned"
+      ],
+      "mentionedUsersCount": 7,
+      "mentionedLocalUserIds": [
+        "private-local"
+      ],
+      "mentionedLocalUsersCount": 6,
+      "mentionedRemoteUserIds": [
+        "private-remote"
+      ],
+      "mentionedRemoteUsersCount": 12,
+      "attachedUserIds": [
+        "private-attached"
+      ],
+      "attachedUsersCount": 0,
+      "attachedLocalUserIds": [
+        "private-attached-local"
+      ],
+      "attachedLocalUsersCount": 0,
+      "attachedRemoteUserIds": [
+        "private-attached-remote"
+      ],
+      "attachedRemoteUsersCount": 0
+    },
+    {
+      "id": "tag07",
+      "name": "ａｂｃ",
+      "mentionedUserIds": [
+        "private-mentioned"
+      ],
+      "mentionedUsersCount": 8,
+      "mentionedLocalUserIds": [
+        "private-local"
+      ],
+      "mentionedLocalUsersCount": 5,
+      "mentionedRemoteUserIds": [
+        "private-remote"
+      ],
+      "mentionedRemoteUsersCount": 14,
+      "attachedUserIds": [
+        "private-attached"
+      ],
+      "attachedUsersCount": 1,
+      "attachedLocalUserIds": [
+        "private-attached-local"
+      ],
+      "attachedLocalUsersCount": 1,
+      "attachedRemoteUserIds": [
+        "private-attached-remote"
+      ],
+      "attachedRemoteUsersCount": 0
+    },
+    {
+      "id": "tag08",
+      "name": "éclair",
+      "mentionedUserIds": [
+        "private-mentioned"
+      ],
+      "mentionedUsersCount": 9,
+      "mentionedLocalUserIds": [
+        "private-local"
+      ],
+      "mentionedLocalUsersCount": 4,
+      "mentionedRemoteUserIds": [
+        "private-remote"
+      ],
+      "mentionedRemoteUsersCount": 16,
+      "attachedUserIds": [
+        "private-attached"
+      ],
+      "attachedUsersCount": 2,
+      "attachedLocalUserIds": [
+        "private-attached-local"
+      ],
+      "attachedLocalUsersCount": 0,
+      "attachedRemoteUserIds": [
+        "private-attached-remote"
+      ],
+      "attachedRemoteUsersCount": 1
+    },
+    {
+      "id": "tag09",
+      "name": "東京",
+      "mentionedUserIds": [
+        "private-mentioned"
+      ],
+      "mentionedUsersCount": 10,
+      "mentionedLocalUserIds": [
+        "private-local"
+      ],
+      "mentionedLocalUsersCount": 3,
+      "mentionedRemoteUserIds": [
+        "private-remote"
+      ],
+      "mentionedRemoteUsersCount": 18,
+      "attachedUserIds": [
+        "private-attached"
+      ],
+      "attachedUsersCount": 0,
+      "attachedLocalUserIds": [
+        "private-attached-local"
+      ],
+      "attachedLocalUsersCount": 1,
+      "attachedRemoteUserIds": [
+        "private-attached-remote"
+      ],
+      "attachedRemoteUsersCount": 0
+    },
+    {
+      "id": "tag10",
+      "name": "empty",
+      "mentionedUserIds": [
+        "private-mentioned"
+      ],
+      "mentionedUsersCount": 11,
+      "mentionedLocalUserIds": [
+        "private-local"
+      ],
+      "mentionedLocalUsersCount": 2,
+      "mentionedRemoteUserIds": [
+        "private-remote"
+      ],
+      "mentionedRemoteUsersCount": 20,
+      "attachedUserIds": [
+        "private-attached"
+      ],
+      "attachedUsersCount": 1,
+      "attachedLocalUserIds": [
+        "private-attached-local"
+      ],
+      "attachedLocalUsersCount": 0,
+      "attachedRemoteUserIds": [
+        "private-attached-remote"
+      ],
+      "attachedRemoteUsersCount": 0
+    },
+    {
+      "id": "tag11",
+      "name": "remoteonly",
+      "mentionedUserIds": [
+        "private-mentioned"
+      ],
+      "mentionedUsersCount": 12,
+      "mentionedLocalUserIds": [
+        "private-local"
+      ],
+      "mentionedLocalUsersCount": 1,
+      "mentionedRemoteUserIds": [
+        "private-remote"
+      ],
+      "mentionedRemoteUsersCount": 22,
+      "attachedUserIds": [
+        "private-attached"
+      ],
+      "attachedUsersCount": 2,
+      "attachedLocalUserIds": [
+        "private-attached-local"
+      ],
+      "attachedLocalUsersCount": 1,
+      "attachedRemoteUserIds": [
+        "private-attached-remote"
+      ],
+      "attachedRemoteUsersCount": 0
+    }
+  ],
+  "cases": [
+    {
+      "id": "sort-+mentionedUsers",
+      "endpoint": "list",
+      "input": {
+        "sort": "+mentionedUsers",
+        "limit": 100
+      }
+    },
+    {
+      "id": "sort--mentionedUsers",
+      "endpoint": "list",
+      "input": {
+        "sort": "-mentionedUsers",
+        "limit": 100
+      }
+    },
+    {
+      "id": "sort-+mentionedLocalUsers",
+      "endpoint": "list",
+      "input": {
+        "sort": "+mentionedLocalUsers",
+        "limit": 100
+      }
+    },
+    {
+      "id": "sort--mentionedLocalUsers",
+      "endpoint": "list",
+      "input": {
+        "sort": "-mentionedLocalUsers",
+        "limit": 100
+      }
+    },
+    {
+      "id": "sort-+mentionedRemoteUsers",
+      "endpoint": "list",
+      "input": {
+        "sort": "+mentionedRemoteUsers",
+        "limit": 100
+      }
+    },
+    {
+      "id": "sort--mentionedRemoteUsers",
+      "endpoint": "list",
+      "input": {
+        "sort": "-mentionedRemoteUsers",
+        "limit": 100
+      }
+    },
+    {
+      "id": "sort-+attachedUsers",
+      "endpoint": "list",
+      "input": {
+        "sort": "+attachedUsers",
+        "limit": 100
+      }
+    },
+    {
+      "id": "sort--attachedUsers",
+      "endpoint": "list",
+      "input": {
+        "sort": "-attachedUsers",
+        "limit": 100
+      }
+    },
+    {
+      "id": "sort-+attachedLocalUsers",
+      "endpoint": "list",
+      "input": {
+        "sort": "+attachedLocalUsers",
+        "limit": 100
+      }
+    },
+    {
+      "id": "sort--attachedLocalUsers",
+      "endpoint": "list",
+      "input": {
+        "sort": "-attachedLocalUsers",
+        "limit": 100
+      }
+    },
+    {
+      "id": "sort-+attachedRemoteUsers",
+      "endpoint": "list",
+      "input": {
+        "sort": "+attachedRemoteUsers",
+        "limit": 100
+      }
+    },
+    {
+      "id": "sort--attachedRemoteUsers",
+      "endpoint": "list",
+      "input": {
+        "sort": "-attachedRemoteUsers",
+        "limit": 100
+      }
+    },
+    {
+      "id": "attached-filters-0",
+      "endpoint": "list",
+      "input": {
+        "sort": "+mentionedUsers",
+        "attachedToUserOnly": false,
+        "attachedToLocalUserOnly": false,
+        "attachedToRemoteUserOnly": false
+      }
+    },
+    {
+      "id": "attached-filters-1",
+      "endpoint": "list",
+      "input": {
+        "sort": "+mentionedUsers",
+        "attachedToUserOnly": true,
+        "attachedToLocalUserOnly": false,
+        "attachedToRemoteUserOnly": false
+      }
+    },
+    {
+      "id": "attached-filters-2",
+      "endpoint": "list",
+      "input": {
+        "sort": "+mentionedUsers",
+        "attachedToUserOnly": false,
+        "attachedToLocalUserOnly": true,
+        "attachedToRemoteUserOnly": false
+      }
+    },
+    {
+      "id": "attached-filters-3",
+      "endpoint": "list",
+      "input": {
+        "sort": "+mentionedUsers",
+        "attachedToUserOnly": true,
+        "attachedToLocalUserOnly": true,
+        "attachedToRemoteUserOnly": false
+      }
+    },
+    {
+      "id": "attached-filters-4",
+      "endpoint": "list",
+      "input": {
+        "sort": "+mentionedUsers",
+        "attachedToUserOnly": false,
+        "attachedToLocalUserOnly": false,
+        "attachedToRemoteUserOnly": true
+      }
+    },
+    {
+      "id": "attached-filters-5",
+      "endpoint": "list",
+      "input": {
+        "sort": "+mentionedUsers",
+        "attachedToUserOnly": true,
+        "attachedToLocalUserOnly": false,
+        "attachedToRemoteUserOnly": true
+      }
+    },
+    {
+      "id": "attached-filters-6",
+      "endpoint": "list",
+      "input": {
+        "sort": "+mentionedUsers",
+        "attachedToUserOnly": false,
+        "attachedToLocalUserOnly": true,
+        "attachedToRemoteUserOnly": true
+      }
+    },
+    {
+      "id": "attached-filters-7",
+      "endpoint": "list",
+      "input": {
+        "sort": "+mentionedUsers",
+        "attachedToUserOnly": true,
+        "attachedToLocalUserOnly": true,
+        "attachedToRemoteUserOnly": true
+      }
+    },
+    {
+      "id": "default-limit",
+      "endpoint": "list",
+      "input": {
+        "sort": "+mentionedUsers"
+      }
+    },
+    {
+      "id": "list-limit-one",
+      "endpoint": "list",
+      "input": {
+        "sort": "-mentionedUsers",
+        "limit": 1
+      }
+    },
+    {
+      "id": "search-prefix",
+      "endpoint": "search",
+      "input": {
+        "query": "AL"
+      }
+    },
+    {
+      "id": "search-empty-query",
+      "endpoint": "search",
+      "input": {
+        "query": ""
+      }
+    },
+    {
+      "id": "search-percent",
+      "endpoint": "search",
+      "input": {
+        "query": "a%"
+      }
+    },
+    {
+      "id": "search-underscore",
+      "endpoint": "search",
+      "input": {
+        "query": "a_"
+      }
+    },
+    {
+      "id": "search-backslash",
+      "endpoint": "search",
+      "input": {
+        "query": "a\\"
+      }
+    },
+    {
+      "id": "search-fullwidth",
+      "endpoint": "search",
+      "input": {
+        "query": "ＡＢＣ"
+      }
+    },
+    {
+      "id": "search-compat-ascii",
+      "endpoint": "search",
+      "input": {
+        "query": "ABC"
+      }
+    },
+    {
+      "id": "search-unicode",
+      "endpoint": "search",
+      "input": {
+        "query": "東京"
+      }
+    },
+    {
+      "id": "search-combining",
+      "endpoint": "search",
+      "input": {
+        "query": "é"
+      }
+    },
+    {
+      "id": "search-unknown",
+      "endpoint": "search",
+      "input": {
+        "query": "missing"
+      }
+    },
+    {
+      "id": "offset-1",
+      "endpoint": "search",
+      "input": {
+        "query": "",
+        "offset": 1,
+        "limit": 2
+      }
+    },
+    {
+      "id": "offset-3",
+      "endpoint": "search",
+      "input": {
+        "query": "",
+        "offset": 3,
+        "limit": 2
+      }
+    },
+    {
+      "id": "offset-50",
+      "endpoint": "search",
+      "input": {
+        "query": "",
+        "offset": 50,
+        "limit": 2
+      }
+    },
+    {
+      "id": "offset--1",
+      "endpoint": "search",
+      "input": {
+        "query": "",
+        "offset": -1,
+        "limit": 2
+      }
+    },
+    {
+      "id": "show-fullwidth",
+      "endpoint": "show",
+      "input": {
+        "tag": "ＡＢＣ"
+      }
+    },
+    {
+      "id": "show-lowercase",
+      "endpoint": "show",
+      "input": {
+        "tag": "ABC"
+      }
+    },
+    {
+      "id": "show-combining",
+      "endpoint": "show",
+      "input": {
+        "tag": "éclair"
+      }
+    },
+    {
+      "id": "show-unicode",
+      "endpoint": "show",
+      "input": {
+        "tag": "東京"
+      }
+    },
+    {
+      "id": "show-literal-hash",
+      "endpoint": "show",
+      "input": {
+        "tag": "#alpha"
+      }
+    },
+    {
+      "id": "show-empty",
+      "endpoint": "show",
+      "input": {
+        "tag": ""
+      }
+    },
+    {
+      "id": "show-unknown",
+      "endpoint": "show",
+      "input": {
+        "tag": "missing"
+      }
+    },
+    {
+      "id": "invalid-43",
+      "endpoint": "list",
+      "input": {}
+    },
+    {
+      "id": "invalid-44",
+      "endpoint": "list",
+      "input": {
+        "sort": "invalid"
+      }
+    },
+    {
+      "id": "invalid-45",
+      "endpoint": "list",
+      "input": {
+        "sort": "+mentionedUsers",
+        "limit": 0
+      }
+    },
+    {
+      "id": "invalid-46",
+      "endpoint": "list",
+      "input": {
+        "sort": "+mentionedUsers",
+        "limit": 101
+      }
+    },
+    {
+      "id": "invalid-47",
+      "endpoint": "list",
+      "input": {
+        "sort": "+mentionedUsers",
+        "attachedToUserOnly": "true"
+      }
+    },
+    {
+      "id": "invalid-48",
+      "endpoint": "search",
+      "input": {}
+    },
+    {
+      "id": "invalid-49",
+      "endpoint": "search",
+      "input": {
+        "query": 4
+      }
+    },
+    {
+      "id": "invalid-50",
+      "endpoint": "search",
+      "input": {
+        "query": "",
+        "offset": 0.5
+      }
+    },
+    {
+      "id": "invalid-51",
+      "endpoint": "show",
+      "input": {}
+    },
+    {
+      "id": "invalid-52",
+      "endpoint": "show",
+      "input": {
+        "tag": null
+      }
+    }
+  ]
+}

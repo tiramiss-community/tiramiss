@@ -1,0 +1,87 @@
+{
+  "scope": "hashtag-catalog-495",
+  "baseRevision": "fe1a8106c3",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "measuredWorkingTree": true,
+  "upstreamFullServerMeasured": false,
+  "inputs": {
+    "packages/backend-next/src/composition/http-app.ts": "594985a0ffdf279344959a60f87e2715691c72052af658c81f3221a220309358",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "a2138bbd880e41809c82121384ad52e703ef984af83bb6f81c1a5298e6060b1f",
+    "packages/backend-next/src/composition/hashtag-catalog-http.ts": "6197c24e45254172be6dfd5abcb09d97c5501652009c926f1419804baa46b2be",
+    "packages/backend-next/src/http/hashtag-catalog-api.ts": "b9f4553ebb107cf6f542c72cbda3b010d5a974394f77108671da24065879977a",
+    "packages/backend-next/src/modules/hashtag/catalog.ts": "afeaa937d31643ddf00f135849a5469d6d89fefad73d719aaa9c3fcaac063e90",
+    "packages/backend-next/src/platform/database/hashtag-catalog.ts": "697403d6fa9b2de1321490d6c32091e91692796ff1043a4eaa580902b225a326",
+    "packages/backend-next/test/integration/hashtag-catalog.test.ts": "6469cf6c309b3fb578f98e7d5c9b146407a740fc8ce046e940a138c0a1b094ed",
+    "packages/backend-next/test/unit/hashtag-catalog.test.ts": "aae185f559559d12624aa1432b7f3e587a4333d1ac10e860f425f809b5d55291",
+    "docs/superpowers/compatibility/hashtag-catalog/corpus.json": "5d9d943198108439229a3dbd107399773e6373603e93ea081d0e7a1612fd3c3d",
+    "docs/superpowers/compatibility/hashtag-catalog/observations.json": "2d8db98d587a2eff5f139c5ba91b8195c4d6f3dc6933bc2d11b4b265c69bc2e5",
+    "docs/superpowers/compatibility/hashtag-catalog/source-probe.mjs": "f929d8e40fb786843101decb9dd9133d12104660205425169da6006fcfc3151b",
+    "docs/superpowers/compatibility/hashtag-catalog/predecessor.json": "40736f8ac99ebb1babb3140c05aa345ce3dcc4c8ca9ed6bbb96ebec71e557e13",
+    "docs/superpowers/compatibility/hashtag-catalog/comparison.mjs": "03694158728a39ee4227d196f86671ec85c604f7cbdf8ee80f9c89d68fd8f5d9",
+    "docs/superpowers/compatibility/hashtag-catalog/comparison.d.mts": "8676c32f0dadf25d43d9d4fd2a6f0093a64e7f72c55db09599b26073a31edcae",
+    "scripts/hashtag-catalog-comparison.test.mjs": "f4808a75179907b110c78c654edb3cd73b3ae3b9259367b9857a1372edf1f35b"
+  },
+  "inputsAfter": {
+    "packages/backend-next/src/composition/http-app.ts": "594985a0ffdf279344959a60f87e2715691c72052af658c81f3221a220309358",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "a2138bbd880e41809c82121384ad52e703ef984af83bb6f81c1a5298e6060b1f",
+    "packages/backend-next/src/composition/hashtag-catalog-http.ts": "6197c24e45254172be6dfd5abcb09d97c5501652009c926f1419804baa46b2be",
+    "packages/backend-next/src/http/hashtag-catalog-api.ts": "b9f4553ebb107cf6f542c72cbda3b010d5a974394f77108671da24065879977a",
+    "packages/backend-next/src/modules/hashtag/catalog.ts": "afeaa937d31643ddf00f135849a5469d6d89fefad73d719aaa9c3fcaac063e90",
+    "packages/backend-next/src/platform/database/hashtag-catalog.ts": "697403d6fa9b2de1321490d6c32091e91692796ff1043a4eaa580902b225a326",
+    "packages/backend-next/test/integration/hashtag-catalog.test.ts": "6469cf6c309b3fb578f98e7d5c9b146407a740fc8ce046e940a138c0a1b094ed",
+    "packages/backend-next/test/unit/hashtag-catalog.test.ts": "aae185f559559d12624aa1432b7f3e587a4333d1ac10e860f425f809b5d55291",
+    "docs/superpowers/compatibility/hashtag-catalog/corpus.json": "5d9d943198108439229a3dbd107399773e6373603e93ea081d0e7a1612fd3c3d",
+    "docs/superpowers/compatibility/hashtag-catalog/observations.json": "2d8db98d587a2eff5f139c5ba91b8195c4d6f3dc6933bc2d11b4b265c69bc2e5",
+    "docs/superpowers/compatibility/hashtag-catalog/source-probe.mjs": "f929d8e40fb786843101decb9dd9133d12104660205425169da6006fcfc3151b",
+    "docs/superpowers/compatibility/hashtag-catalog/predecessor.json": "40736f8ac99ebb1babb3140c05aa345ce3dcc4c8ca9ed6bbb96ebec71e557e13",
+    "docs/superpowers/compatibility/hashtag-catalog/comparison.mjs": "03694158728a39ee4227d196f86671ec85c604f7cbdf8ee80f9c89d68fd8f5d9",
+    "docs/superpowers/compatibility/hashtag-catalog/comparison.d.mts": "8676c32f0dadf25d43d9d4fd2a6f0093a64e7f72c55db09599b26073a31edcae",
+    "scripts/hashtag-catalog-comparison.test.mjs": "f4808a75179907b110c78c654edb3cd73b3ae3b9259367b9857a1372edf1f35b"
+  },
+  "runs": [
+    {
+      "name": "unit",
+      "log": "/tmp/hashtag495-r2-unit.log",
+      "logSha256": "2b8172e5321c307c769d2506dd8cb00c68e54df7bc0f6574ff7afa69b9a8b3c3",
+      "passed": 82,
+      "exitCode": 0
+    },
+    {
+      "name": "http-pg",
+      "log": "/tmp/hashtag495-r2-http-pg.log",
+      "logSha256": "c140473a06a8c3a63a905e661a4d7a6b2e180a140440e3540b9e84419e1efc95",
+      "passed": 58,
+      "exitCode": 0
+    },
+    {
+      "name": "producers-pg",
+      "log": "/tmp/hashtag495-r2-producers.log",
+      "logSha256": "afeb294e89ea2d2c6409c9f21a7eeeb18a5d5c4556d6a8d08a625699386dc087",
+      "passed": 29,
+      "exitCode": 0
+    },
+    {
+      "name": "source-pg",
+      "log": "/tmp/hashtag495-r2-source-check.log",
+      "logSha256": "d09a9658459c88d67eb057759f479189a29054f43b5251755d58948981fdcf2e",
+      "passed": 53,
+      "exitCode": 0
+    },
+    {
+      "name": "comparison",
+      "log": "/tmp/hashtag495-r2-comparison.log",
+      "logSha256": "8d61cbc5bce745b35975920714a700a1a2819e7ca2c9f30dd577ae3331bd9441",
+      "passed": 5,
+      "exitCode": 0
+    }
+  ],
+  "measurement": "R2",
+  "previousMeasurement": {
+    "revision": "f3af453ca4365e9d2d90837b58ba60bc906e806a",
+    "files": {
+      "docs/superpowers/compatibility/hashtag-catalog/history/r1/corpus.json": "d42dbdbd9bad159b7e73b77694a26b6a782211a143bf667ae5b3d21c38d23139",
+      "docs/superpowers/compatibility/hashtag-catalog/history/r1/observations.json": "ef063334997465ea837eb09b72275a2ced9409a13763ac8e2650b582ca22619c",
+      "docs/superpowers/compatibility/hashtag-catalog/history/r1/current-evidence.json": "9935f7249ead1fc37838b3cebd5662d44d590496fae727a56100d319f82dd458"
+    }
+  }
+}

@@ -1,0 +1,2071 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "manifest": [
+    {
+      "path": "packages/backend/src/misc/normalize-for-search.ts",
+      "sha256": "cf40aaf03e5a13d69abd4966256c2cb44ee29c7b7bd038b04271e35ffb150ca6"
+    },
+    {
+      "path": "packages/backend/src/misc/sql-like-escape.ts",
+      "sha256": "9ef798e1cc6574bdce2105685d0f38b6ac9e40e800e2a78a2f1611b37f0f9253"
+    },
+    {
+      "path": "packages/backend/src/core/entities/HashtagEntityService.ts",
+      "sha256": "f5cb6cfa4c2dad6f967abbeea373d7ceaeec9a2dc9bdbebf2ec1c5b6a453c1b7"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/hashtags/list.ts",
+      "sha256": "e5df05d6a3e4d39c0a9e8784a49c18bb9229783e07a9c20bcf102157007a2eff"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/hashtags/search.ts",
+      "sha256": "7e523ead622574fbb6178a57b66972e6ee80377bcba6910e94e35e3170fe0a53"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/hashtags/show.ts",
+      "sha256": "90714701b9e17cbab43abe42262c1b65eb9dc6e38eaf2f932a9d5366d76c58b5"
+    },
+    {
+      "path": "packages/backend/src/models/Hashtag.ts",
+      "sha256": "105c082a8fbd374c6990388a57125ae1b973ff5d8366032954399b046842b658"
+    }
+  ],
+  "corpusSha256": "5d9d943198108439229a3dbd107399773e6373603e93ea081d0e7a1612fd3c3d",
+  "method": "Literal fixed-source endpoint callbacks, schemas, normalizer, SQL escaping and packer; actual TypeORM repository and PostgreSQL; no Nest/whole upstream HTTP server.",
+  "access": {
+    "list": {
+      "requireCredential": false
+    },
+    "search": {
+      "requireCredential": false
+    },
+    "show": {
+      "requireCredential": false
+    }
+  },
+  "cases": [
+    {
+      "id": "sort-+mentionedUsers",
+      "result": [
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "empty",
+          "mentionedUsersCount": 11,
+          "mentionedLocalUsersCount": 2,
+          "mentionedRemoteUsersCount": 20,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "東京",
+          "mentionedUsersCount": 10,
+          "mentionedLocalUsersCount": 3,
+          "mentionedRemoteUsersCount": 18,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "abc",
+          "mentionedUsersCount": 7,
+          "mentionedLocalUsersCount": 6,
+          "mentionedRemoteUsersCount": 12,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "a%literal",
+          "mentionedUsersCount": 4,
+          "mentionedLocalUsersCount": 9,
+          "mentionedRemoteUsersCount": 6,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alpine",
+          "mentionedUsersCount": 3,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 4,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alphabet",
+          "mentionedUsersCount": 2,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 2,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alpha",
+          "mentionedUsersCount": 1,
+          "mentionedLocalUsersCount": 12,
+          "mentionedRemoteUsersCount": 0,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        }
+      ]
+    },
+    {
+      "id": "sort--mentionedUsers",
+      "result": [
+        {
+          "tag": "alpha",
+          "mentionedUsersCount": 1,
+          "mentionedLocalUsersCount": 12,
+          "mentionedRemoteUsersCount": 0,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "alphabet",
+          "mentionedUsersCount": 2,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 2,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alpine",
+          "mentionedUsersCount": 3,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 4,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a%literal",
+          "mentionedUsersCount": 4,
+          "mentionedLocalUsersCount": 9,
+          "mentionedRemoteUsersCount": 6,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "abc",
+          "mentionedUsersCount": 7,
+          "mentionedLocalUsersCount": 6,
+          "mentionedRemoteUsersCount": 12,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "東京",
+          "mentionedUsersCount": 10,
+          "mentionedLocalUsersCount": 3,
+          "mentionedRemoteUsersCount": 18,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "empty",
+          "mentionedUsersCount": 11,
+          "mentionedLocalUsersCount": 2,
+          "mentionedRemoteUsersCount": 20,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        }
+      ]
+    },
+    {
+      "id": "sort-+mentionedLocalUsers",
+      "result": [
+        {
+          "tag": "alpha",
+          "mentionedUsersCount": 1,
+          "mentionedLocalUsersCount": 12,
+          "mentionedRemoteUsersCount": 0,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "alphabet",
+          "mentionedUsersCount": 2,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 2,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alpine",
+          "mentionedUsersCount": 3,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 4,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a%literal",
+          "mentionedUsersCount": 4,
+          "mentionedLocalUsersCount": 9,
+          "mentionedRemoteUsersCount": 6,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "abc",
+          "mentionedUsersCount": 7,
+          "mentionedLocalUsersCount": 6,
+          "mentionedRemoteUsersCount": 12,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "東京",
+          "mentionedUsersCount": 10,
+          "mentionedLocalUsersCount": 3,
+          "mentionedRemoteUsersCount": 18,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "empty",
+          "mentionedUsersCount": 11,
+          "mentionedLocalUsersCount": 2,
+          "mentionedRemoteUsersCount": 20,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        }
+      ]
+    },
+    {
+      "id": "sort--mentionedLocalUsers",
+      "result": [
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "empty",
+          "mentionedUsersCount": 11,
+          "mentionedLocalUsersCount": 2,
+          "mentionedRemoteUsersCount": 20,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "東京",
+          "mentionedUsersCount": 10,
+          "mentionedLocalUsersCount": 3,
+          "mentionedRemoteUsersCount": 18,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "abc",
+          "mentionedUsersCount": 7,
+          "mentionedLocalUsersCount": 6,
+          "mentionedRemoteUsersCount": 12,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "a%literal",
+          "mentionedUsersCount": 4,
+          "mentionedLocalUsersCount": 9,
+          "mentionedRemoteUsersCount": 6,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alpine",
+          "mentionedUsersCount": 3,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 4,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alphabet",
+          "mentionedUsersCount": 2,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 2,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alpha",
+          "mentionedUsersCount": 1,
+          "mentionedLocalUsersCount": 12,
+          "mentionedRemoteUsersCount": 0,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        }
+      ]
+    },
+    {
+      "id": "sort-+mentionedRemoteUsers",
+      "result": [
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "empty",
+          "mentionedUsersCount": 11,
+          "mentionedLocalUsersCount": 2,
+          "mentionedRemoteUsersCount": 20,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "東京",
+          "mentionedUsersCount": 10,
+          "mentionedLocalUsersCount": 3,
+          "mentionedRemoteUsersCount": 18,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "abc",
+          "mentionedUsersCount": 7,
+          "mentionedLocalUsersCount": 6,
+          "mentionedRemoteUsersCount": 12,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "a%literal",
+          "mentionedUsersCount": 4,
+          "mentionedLocalUsersCount": 9,
+          "mentionedRemoteUsersCount": 6,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alpine",
+          "mentionedUsersCount": 3,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 4,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alphabet",
+          "mentionedUsersCount": 2,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 2,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alpha",
+          "mentionedUsersCount": 1,
+          "mentionedLocalUsersCount": 12,
+          "mentionedRemoteUsersCount": 0,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        }
+      ]
+    },
+    {
+      "id": "sort--mentionedRemoteUsers",
+      "result": [
+        {
+          "tag": "alpha",
+          "mentionedUsersCount": 1,
+          "mentionedLocalUsersCount": 12,
+          "mentionedRemoteUsersCount": 0,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "alphabet",
+          "mentionedUsersCount": 2,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 2,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alpine",
+          "mentionedUsersCount": 3,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 4,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a%literal",
+          "mentionedUsersCount": 4,
+          "mentionedLocalUsersCount": 9,
+          "mentionedRemoteUsersCount": 6,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "abc",
+          "mentionedUsersCount": 7,
+          "mentionedLocalUsersCount": 6,
+          "mentionedRemoteUsersCount": 12,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "東京",
+          "mentionedUsersCount": 10,
+          "mentionedLocalUsersCount": 3,
+          "mentionedRemoteUsersCount": 18,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "empty",
+          "mentionedUsersCount": 11,
+          "mentionedLocalUsersCount": 2,
+          "mentionedRemoteUsersCount": 20,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        }
+      ]
+    },
+    {
+      "id": "sort-+attachedUsers",
+      "result": [
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alpine",
+          "mentionedUsersCount": 3,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 4,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alphabet",
+          "mentionedUsersCount": 2,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 2,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "empty",
+          "mentionedUsersCount": 11,
+          "mentionedLocalUsersCount": 2,
+          "mentionedRemoteUsersCount": 20,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "abc",
+          "mentionedUsersCount": 7,
+          "mentionedLocalUsersCount": 6,
+          "mentionedRemoteUsersCount": 12,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a%literal",
+          "mentionedUsersCount": 4,
+          "mentionedLocalUsersCount": 9,
+          "mentionedRemoteUsersCount": 6,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alpha",
+          "mentionedUsersCount": 1,
+          "mentionedLocalUsersCount": 12,
+          "mentionedRemoteUsersCount": 0,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "東京",
+          "mentionedUsersCount": 10,
+          "mentionedLocalUsersCount": 3,
+          "mentionedRemoteUsersCount": 18,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        }
+      ]
+    },
+    {
+      "id": "sort--attachedUsers",
+      "result": [
+        {
+          "tag": "alpha",
+          "mentionedUsersCount": 1,
+          "mentionedLocalUsersCount": 12,
+          "mentionedRemoteUsersCount": 0,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "a%literal",
+          "mentionedUsersCount": 4,
+          "mentionedLocalUsersCount": 9,
+          "mentionedRemoteUsersCount": 6,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "abc",
+          "mentionedUsersCount": 7,
+          "mentionedLocalUsersCount": 6,
+          "mentionedRemoteUsersCount": 12,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "東京",
+          "mentionedUsersCount": 10,
+          "mentionedLocalUsersCount": 3,
+          "mentionedRemoteUsersCount": 18,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "empty",
+          "mentionedUsersCount": 11,
+          "mentionedLocalUsersCount": 2,
+          "mentionedRemoteUsersCount": 20,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alphabet",
+          "mentionedUsersCount": 2,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 2,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "alpine",
+          "mentionedUsersCount": 3,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 4,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        }
+      ]
+    },
+    {
+      "id": "sort-+attachedLocalUsers",
+      "result": [
+        {
+          "tag": "a%literal",
+          "mentionedUsersCount": 4,
+          "mentionedLocalUsersCount": 9,
+          "mentionedRemoteUsersCount": 6,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alphabet",
+          "mentionedUsersCount": 2,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 2,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "東京",
+          "mentionedUsersCount": 10,
+          "mentionedLocalUsersCount": 3,
+          "mentionedRemoteUsersCount": 18,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "abc",
+          "mentionedUsersCount": 7,
+          "mentionedLocalUsersCount": 6,
+          "mentionedRemoteUsersCount": 12,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alpine",
+          "mentionedUsersCount": 3,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 4,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "alpha",
+          "mentionedUsersCount": 1,
+          "mentionedLocalUsersCount": 12,
+          "mentionedRemoteUsersCount": 0,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "empty",
+          "mentionedUsersCount": 11,
+          "mentionedLocalUsersCount": 2,
+          "mentionedRemoteUsersCount": 20,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        }
+      ]
+    },
+    {
+      "id": "sort--attachedLocalUsers",
+      "result": [
+        {
+          "tag": "alpha",
+          "mentionedUsersCount": 1,
+          "mentionedLocalUsersCount": 12,
+          "mentionedRemoteUsersCount": 0,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "alpine",
+          "mentionedUsersCount": 3,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 4,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "abc",
+          "mentionedUsersCount": 7,
+          "mentionedLocalUsersCount": 6,
+          "mentionedRemoteUsersCount": 12,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "empty",
+          "mentionedUsersCount": 11,
+          "mentionedLocalUsersCount": 2,
+          "mentionedRemoteUsersCount": 20,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "東京",
+          "mentionedUsersCount": 10,
+          "mentionedLocalUsersCount": 3,
+          "mentionedRemoteUsersCount": 18,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alphabet",
+          "mentionedUsersCount": 2,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 2,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a%literal",
+          "mentionedUsersCount": 4,
+          "mentionedLocalUsersCount": 9,
+          "mentionedRemoteUsersCount": 6,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        }
+      ]
+    },
+    {
+      "id": "sort-+attachedRemoteUsers",
+      "result": [
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "alpha",
+          "mentionedUsersCount": 1,
+          "mentionedLocalUsersCount": 12,
+          "mentionedRemoteUsersCount": 0,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "a%literal",
+          "mentionedUsersCount": 4,
+          "mentionedLocalUsersCount": 9,
+          "mentionedRemoteUsersCount": 6,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "abc",
+          "mentionedUsersCount": 7,
+          "mentionedLocalUsersCount": 6,
+          "mentionedRemoteUsersCount": 12,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "東京",
+          "mentionedUsersCount": 10,
+          "mentionedLocalUsersCount": 3,
+          "mentionedRemoteUsersCount": 18,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "empty",
+          "mentionedUsersCount": 11,
+          "mentionedLocalUsersCount": 2,
+          "mentionedRemoteUsersCount": 20,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alphabet",
+          "mentionedUsersCount": 2,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 2,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alpine",
+          "mentionedUsersCount": 3,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 4,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        }
+      ]
+    },
+    {
+      "id": "sort--attachedRemoteUsers",
+      "result": [
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alphabet",
+          "mentionedUsersCount": 2,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 2,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alpine",
+          "mentionedUsersCount": 3,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 4,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a%literal",
+          "mentionedUsersCount": 4,
+          "mentionedLocalUsersCount": 9,
+          "mentionedRemoteUsersCount": 6,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "東京",
+          "mentionedUsersCount": 10,
+          "mentionedLocalUsersCount": 3,
+          "mentionedRemoteUsersCount": 18,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "empty",
+          "mentionedUsersCount": 11,
+          "mentionedLocalUsersCount": 2,
+          "mentionedRemoteUsersCount": 20,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "abc",
+          "mentionedUsersCount": 7,
+          "mentionedLocalUsersCount": 6,
+          "mentionedRemoteUsersCount": 12,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "alpha",
+          "mentionedUsersCount": 1,
+          "mentionedLocalUsersCount": 12,
+          "mentionedRemoteUsersCount": 0,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        }
+      ]
+    },
+    {
+      "id": "attached-filters-0",
+      "result": [
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "empty",
+          "mentionedUsersCount": 11,
+          "mentionedLocalUsersCount": 2,
+          "mentionedRemoteUsersCount": 20,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "東京",
+          "mentionedUsersCount": 10,
+          "mentionedLocalUsersCount": 3,
+          "mentionedRemoteUsersCount": 18,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "abc",
+          "mentionedUsersCount": 7,
+          "mentionedLocalUsersCount": 6,
+          "mentionedRemoteUsersCount": 12,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "a%literal",
+          "mentionedUsersCount": 4,
+          "mentionedLocalUsersCount": 9,
+          "mentionedRemoteUsersCount": 6,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alpine",
+          "mentionedUsersCount": 3,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 4,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attached-filters-1",
+      "result": [
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "empty",
+          "mentionedUsersCount": 11,
+          "mentionedLocalUsersCount": 2,
+          "mentionedRemoteUsersCount": 20,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "alpine",
+          "mentionedUsersCount": 3,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 4,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alphabet",
+          "mentionedUsersCount": 2,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 2,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attached-filters-2",
+      "result": [
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "東京",
+          "mentionedUsersCount": 10,
+          "mentionedLocalUsersCount": 3,
+          "mentionedRemoteUsersCount": 18,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a%literal",
+          "mentionedUsersCount": 4,
+          "mentionedLocalUsersCount": 9,
+          "mentionedRemoteUsersCount": 6,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alphabet",
+          "mentionedUsersCount": 2,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 2,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attached-filters-3",
+      "result": [
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alphabet",
+          "mentionedUsersCount": 2,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 2,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attached-filters-4",
+      "result": [
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "alpha",
+          "mentionedUsersCount": 1,
+          "mentionedLocalUsersCount": 12,
+          "mentionedRemoteUsersCount": 0,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        }
+      ]
+    },
+    {
+      "id": "attached-filters-5",
+      "result": [
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        }
+      ]
+    },
+    {
+      "id": "attached-filters-6",
+      "result": []
+    },
+    {
+      "id": "attached-filters-7",
+      "result": []
+    },
+    {
+      "id": "default-limit",
+      "result": [
+        {
+          "tag": "remoteonly",
+          "mentionedUsersCount": 12,
+          "mentionedLocalUsersCount": 1,
+          "mentionedRemoteUsersCount": 22,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "empty",
+          "mentionedUsersCount": 11,
+          "mentionedLocalUsersCount": 2,
+          "mentionedRemoteUsersCount": 20,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "東京",
+          "mentionedUsersCount": 10,
+          "mentionedLocalUsersCount": 3,
+          "mentionedRemoteUsersCount": 18,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "éclair",
+          "mentionedUsersCount": 9,
+          "mentionedLocalUsersCount": 4,
+          "mentionedRemoteUsersCount": 16,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "ａｂｃ",
+          "mentionedUsersCount": 8,
+          "mentionedLocalUsersCount": 5,
+          "mentionedRemoteUsersCount": 14,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "abc",
+          "mentionedUsersCount": 7,
+          "mentionedLocalUsersCount": 6,
+          "mentionedRemoteUsersCount": 12,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a\\literal",
+          "mentionedUsersCount": 6,
+          "mentionedLocalUsersCount": 7,
+          "mentionedRemoteUsersCount": 10,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "a_literal",
+          "mentionedUsersCount": 5,
+          "mentionedLocalUsersCount": 8,
+          "mentionedRemoteUsersCount": 8,
+          "attachedUsersCount": 1,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        },
+        {
+          "tag": "a%literal",
+          "mentionedUsersCount": 4,
+          "mentionedLocalUsersCount": 9,
+          "mentionedRemoteUsersCount": 6,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 1,
+          "attachedRemoteUsersCount": 0
+        },
+        {
+          "tag": "alpine",
+          "mentionedUsersCount": 3,
+          "mentionedLocalUsersCount": 11,
+          "mentionedRemoteUsersCount": 4,
+          "attachedUsersCount": 2,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 0
+        }
+      ]
+    },
+    {
+      "id": "list-limit-one",
+      "result": [
+        {
+          "tag": "alpha",
+          "mentionedUsersCount": 1,
+          "mentionedLocalUsersCount": 12,
+          "mentionedRemoteUsersCount": 0,
+          "attachedUsersCount": 0,
+          "attachedLocalUsersCount": 0,
+          "attachedRemoteUsersCount": 1
+        }
+      ]
+    },
+    {
+      "id": "search-prefix",
+      "result": [
+        "alpha",
+        "alphabet",
+        "alpine"
+      ]
+    },
+    {
+      "id": "search-empty-query",
+      "result": [
+        "alpha",
+        "alpine",
+        "alphabet",
+        "a%literal",
+        "a_literal",
+        "a\\literal",
+        "abc",
+        "ａｂｃ",
+        "éclair",
+        "東京"
+      ]
+    },
+    {
+      "id": "search-percent",
+      "result": [
+        "a%literal"
+      ]
+    },
+    {
+      "id": "search-underscore",
+      "result": [
+        "a_literal"
+      ]
+    },
+    {
+      "id": "search-backslash",
+      "result": [
+        "a\\literal"
+      ]
+    },
+    {
+      "id": "search-fullwidth",
+      "result": [
+        "ａｂｃ"
+      ]
+    },
+    {
+      "id": "search-compat-ascii",
+      "result": [
+        "abc"
+      ]
+    },
+    {
+      "id": "search-unicode",
+      "result": [
+        "東京"
+      ]
+    },
+    {
+      "id": "search-combining",
+      "result": []
+    },
+    {
+      "id": "search-unknown",
+      "result": []
+    },
+    {
+      "id": "offset-1",
+      "result": [
+        "alphabet",
+        "alpine"
+      ]
+    },
+    {
+      "id": "offset-3",
+      "result": [
+        "a%literal",
+        "a_literal"
+      ]
+    },
+    {
+      "id": "offset-50",
+      "result": []
+    },
+    {
+      "id": "offset--1",
+      "error": {
+        "code": "2201X"
+      }
+    },
+    {
+      "id": "show-fullwidth",
+      "result": {
+        "tag": "abc",
+        "mentionedUsersCount": 7,
+        "mentionedLocalUsersCount": 6,
+        "mentionedRemoteUsersCount": 12,
+        "attachedUsersCount": 0,
+        "attachedLocalUsersCount": 0,
+        "attachedRemoteUsersCount": 0
+      }
+    },
+    {
+      "id": "show-lowercase",
+      "result": {
+        "tag": "abc",
+        "mentionedUsersCount": 7,
+        "mentionedLocalUsersCount": 6,
+        "mentionedRemoteUsersCount": 12,
+        "attachedUsersCount": 0,
+        "attachedLocalUsersCount": 0,
+        "attachedRemoteUsersCount": 0
+      }
+    },
+    {
+      "id": "show-combining",
+      "result": {
+        "tag": "éclair",
+        "mentionedUsersCount": 9,
+        "mentionedLocalUsersCount": 4,
+        "mentionedRemoteUsersCount": 16,
+        "attachedUsersCount": 2,
+        "attachedLocalUsersCount": 0,
+        "attachedRemoteUsersCount": 1
+      }
+    },
+    {
+      "id": "show-unicode",
+      "result": {
+        "tag": "東京",
+        "mentionedUsersCount": 10,
+        "mentionedLocalUsersCount": 3,
+        "mentionedRemoteUsersCount": 18,
+        "attachedUsersCount": 0,
+        "attachedLocalUsersCount": 1,
+        "attachedRemoteUsersCount": 0
+      }
+    },
+    {
+      "id": "show-literal-hash",
+      "error": {
+        "code": "NO_SUCH_HASHTAG",
+        "id": "110ee688-193e-4a3a-9ecf-c167b2e6981e",
+        "message": "No such hashtag."
+      }
+    },
+    {
+      "id": "show-empty",
+      "error": {
+        "code": "NO_SUCH_HASHTAG",
+        "id": "110ee688-193e-4a3a-9ecf-c167b2e6981e",
+        "message": "No such hashtag."
+      }
+    },
+    {
+      "id": "show-unknown",
+      "error": {
+        "code": "NO_SUCH_HASHTAG",
+        "id": "110ee688-193e-4a3a-9ecf-c167b2e6981e",
+        "message": "No such hashtag."
+      }
+    },
+    {
+      "id": "invalid-43",
+      "error": {
+        "code": "INVALID_PARAM"
+      }
+    },
+    {
+      "id": "invalid-44",
+      "error": {
+        "code": "INVALID_PARAM"
+      }
+    },
+    {
+      "id": "invalid-45",
+      "error": {
+        "code": "INVALID_PARAM"
+      }
+    },
+    {
+      "id": "invalid-46",
+      "error": {
+        "code": "INVALID_PARAM"
+      }
+    },
+    {
+      "id": "invalid-47",
+      "error": {
+        "code": "INVALID_PARAM"
+      }
+    },
+    {
+      "id": "invalid-48",
+      "error": {
+        "code": "INVALID_PARAM"
+      }
+    },
+    {
+      "id": "invalid-49",
+      "error": {
+        "code": "INVALID_PARAM"
+      }
+    },
+    {
+      "id": "invalid-50",
+      "error": {
+        "code": "INVALID_PARAM"
+      }
+    },
+    {
+      "id": "invalid-51",
+      "error": {
+        "code": "INVALID_PARAM"
+      }
+    },
+    {
+      "id": "invalid-52",
+      "error": {
+        "code": "INVALID_PARAM"
+      }
+    }
+  ]
+}

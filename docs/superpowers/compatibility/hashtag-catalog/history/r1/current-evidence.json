@@ -1,0 +1,65 @@
+{
+  "scope": "hashtag-catalog-495",
+  "baseRevision": "fe1a8106c3",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "measuredWorkingTree": true,
+  "upstreamFullServerMeasured": false,
+  "inputs": {
+    "packages/backend-next/src/composition/http-app.ts": "594985a0ffdf279344959a60f87e2715691c72052af658c81f3221a220309358",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "a2138bbd880e41809c82121384ad52e703ef984af83bb6f81c1a5298e6060b1f",
+    "packages/backend-next/src/composition/hashtag-catalog-http.ts": "6197c24e45254172be6dfd5abcb09d97c5501652009c926f1419804baa46b2be",
+    "packages/backend-next/src/http/hashtag-catalog-api.ts": "b9f4553ebb107cf6f542c72cbda3b010d5a974394f77108671da24065879977a",
+    "packages/backend-next/src/modules/hashtag/catalog.ts": "afeaa937d31643ddf00f135849a5469d6d89fefad73d719aaa9c3fcaac063e90",
+    "packages/backend-next/src/platform/database/hashtag-catalog.ts": "7523a602dc219334836cd539eb4993de55bd00d0fbd919bac43698e734e8b259",
+    "packages/backend-next/test/integration/hashtag-catalog.test.ts": "fa8b77ad9cccbb92e1f29974386176937214b0d9935a17028638caabab9c2f9b",
+    "packages/backend-next/test/unit/hashtag-catalog.test.ts": "aae185f559559d12624aa1432b7f3e587a4333d1ac10e860f425f809b5d55291",
+    "docs/superpowers/compatibility/hashtag-catalog/corpus.json": "d42dbdbd9bad159b7e73b77694a26b6a782211a143bf667ae5b3d21c38d23139",
+    "docs/superpowers/compatibility/hashtag-catalog/observations.json": "ef063334997465ea837eb09b72275a2ced9409a13763ac8e2650b582ca22619c",
+    "docs/superpowers/compatibility/hashtag-catalog/source-probe.mjs": "9cc13d48e3d50b21bc6513183502d94b96a5aa160f7ca93eb38ffefbe33d0f24",
+    "docs/superpowers/compatibility/hashtag-catalog/predecessor.json": "40736f8ac99ebb1babb3140c05aa345ce3dcc4c8ca9ed6bbb96ebec71e557e13"
+  },
+  "inputsAfter": {
+    "packages/backend-next/src/composition/http-app.ts": "594985a0ffdf279344959a60f87e2715691c72052af658c81f3221a220309358",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "a2138bbd880e41809c82121384ad52e703ef984af83bb6f81c1a5298e6060b1f",
+    "packages/backend-next/src/composition/hashtag-catalog-http.ts": "6197c24e45254172be6dfd5abcb09d97c5501652009c926f1419804baa46b2be",
+    "packages/backend-next/src/http/hashtag-catalog-api.ts": "b9f4553ebb107cf6f542c72cbda3b010d5a974394f77108671da24065879977a",
+    "packages/backend-next/src/modules/hashtag/catalog.ts": "afeaa937d31643ddf00f135849a5469d6d89fefad73d719aaa9c3fcaac063e90",
+    "packages/backend-next/src/platform/database/hashtag-catalog.ts": "7523a602dc219334836cd539eb4993de55bd00d0fbd919bac43698e734e8b259",
+    "packages/backend-next/test/integration/hashtag-catalog.test.ts": "fa8b77ad9cccbb92e1f29974386176937214b0d9935a17028638caabab9c2f9b",
+    "packages/backend-next/test/unit/hashtag-catalog.test.ts": "aae185f559559d12624aa1432b7f3e587a4333d1ac10e860f425f809b5d55291",
+    "docs/superpowers/compatibility/hashtag-catalog/corpus.json": "d42dbdbd9bad159b7e73b77694a26b6a782211a143bf667ae5b3d21c38d23139",
+    "docs/superpowers/compatibility/hashtag-catalog/observations.json": "ef063334997465ea837eb09b72275a2ced9409a13763ac8e2650b582ca22619c",
+    "docs/superpowers/compatibility/hashtag-catalog/source-probe.mjs": "9cc13d48e3d50b21bc6513183502d94b96a5aa160f7ca93eb38ffefbe33d0f24",
+    "docs/superpowers/compatibility/hashtag-catalog/predecessor.json": "40736f8ac99ebb1babb3140c05aa345ce3dcc4c8ca9ed6bbb96ebec71e557e13"
+  },
+  "runs": [
+    {
+      "name": "unit",
+      "log": "/tmp/hashtag495-unit.log",
+      "logSha256": "1a22cd6d5d44818749dbcdcd11b7338605277c80ea0ddd110a5b7af3a7afda44",
+      "passed": 82,
+      "exitCode": 0
+    },
+    {
+      "name": "http-pg",
+      "log": "/tmp/hashtag495-http-pg.log",
+      "logSha256": "2c24d2db4d4677f08198536091579755f42758aa892e4860c26c2c3046f2d1fa",
+      "passed": 57,
+      "exitCode": 0
+    },
+    {
+      "name": "producers-pg",
+      "log": "/tmp/hashtag495-producers.log",
+      "logSha256": "ce54ee80657e75c993ee4d5a16ca55268b30880a6aa22261ef655eadc859a0b6",
+      "passed": 29,
+      "exitCode": 0
+    },
+    {
+      "name": "source-pg",
+      "log": "/tmp/hashtag495-source-check.log",
+      "logSha256": "d09a9658459c88d67eb057759f479189a29054f43b5251755d58948981fdcf2e",
+      "passed": 53,
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "scope": "hashtag-catalog-495",
+  "baseRevision": "fe1a8106c3",
+  "files": {
+    "packages/backend-next/src/composition/http-app.ts": {
+      "currentSha256": "594985a0ffdf279344959a60f87e2715691c72052af658c81f3221a220309358",
+      "previousSha256": "f7d0528722704c1de99af7a7e18c7ba28def85fe76ae2358a48859787e3fa20f",
+      "patches": [
+        {
+          "offset": 129,
+          "previous": "",
+          "insert": "';\nimport { createHashtagCatalogHttp } from './hashtag-catalog-http.js"
+        },
+        {
+          "offset": 2523,
+          "previous": "",
+          "insert": "createHashtagCatalogHttp(resources))\n\t\t.route('/', "
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "currentSha256": "a2138bbd880e41809c82121384ad52e703ef984af83bb6f81c1a5298e6060b1f",
+      "previousSha256": "d5e9fe68b5470eda715aaf6ae6f941eabd2eb6d6da8974ae8895f020f4246283",
+      "patches": [
+        {
+          "offset": 2279,
+          "previous": "",
+          "insert": "', '/api/hashtags/list', '/api/hashtags/search', '/api/hashtags/show"
+        }
+      ]
+    }
+  }
+}
