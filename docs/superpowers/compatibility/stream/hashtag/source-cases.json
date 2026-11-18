@@ -1,0 +1,3443 @@
+{
+  "upstream": "8e07cf085adf7009583d234a208e30436f020e26",
+  "blobs": {
+    "packages/backend/src/core/entities/NoteEntityService.ts": "f648e5769409b5af17fc762803ae98bf0c17036a",
+    "packages/backend/src/decorators.ts": "42f925e1251cf8d5eb48caeb96d5a72fb203c017",
+    "packages/backend/src/misc/should-hide-note-by-time.ts": "ea1951e66cd41326c1752f639d067d06f187eae5",
+    "packages/backend/src/server/api/stream/NoteStreamingHidingService.ts": "56fc63b8c7501aa02f3ef6b338b71002343be4c4",
+    "packages/backend/src/misc/clone.ts": "ed0548564922658d31c7f6f9f92f8b12558e5796",
+    "packages/backend/src/misc/is-renote.ts": "f4bb329d8038ffaa8da7ff79260ff99c09029623",
+    "packages/backend/src/server/api/stream/channels/hashtag.ts": "ccbe6a610c8a001d5380e2e407af934a011c4180",
+    "packages/backend/src/misc/normalize-for-search.ts": "3f19617e1480f14167f980f2bec85fd3438fd7c1",
+    "packages/backend/src/server/api/stream/channel.ts": "010d47a7ff31d5249046e3084a716807832a83c3",
+    "packages/backend/src/misc/is-instance-muted.ts": "096a8b39c72b307814c7905920428af8e8a9edfa",
+    "packages/backend/src/misc/is-user-related.ts": "6f72082733fe1c9af0df923e8ed4878fdb8a57a7",
+    "packages/backend/src/misc/is-channel-related.ts": "fef736dad6e0374cdddad30ee15fb3bd942621e1"
+  },
+  "observations": [
+    {
+      "id": "match",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": [
+        {
+          "type": "channel",
+          "body": {
+            "id": "channel-id",
+            "type": "note",
+            "body": {
+              "id": "note",
+              "userId": "author",
+              "user": {
+                "id": "author",
+                "host": null,
+                "requireSigninToViewContents": false,
+                "makeNotesHiddenBefore": null
+              },
+              "createdAt": "2026-11-06T23:59:00.000Z",
+              "text": "text",
+              "cw": null,
+              "visibility": "public",
+              "channelId": null,
+              "replyId": null,
+              "reply": null,
+              "renoteId": null,
+              "renote": null,
+              "poll": null,
+              "fileIds": [],
+              "files": [],
+              "reactions": {},
+              "tags": [
+                "misskey"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "anonymous",
+      "input": {
+        "facts": {
+          "user": null,
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": [
+        {
+          "type": "channel",
+          "body": {
+            "id": "channel-id",
+            "type": "note",
+            "body": {
+              "id": "note",
+              "userId": "author",
+              "user": {
+                "id": "author",
+                "host": null,
+                "requireSigninToViewContents": false,
+                "makeNotesHiddenBefore": null
+              },
+              "createdAt": "2026-11-06T23:59:00.000Z",
+              "text": "text",
+              "cw": null,
+              "visibility": "public",
+              "channelId": null,
+              "replyId": null,
+              "reply": null,
+              "renoteId": null,
+              "renote": null,
+              "poll": null,
+              "fileIds": [],
+              "files": [],
+              "reactions": {},
+              "tags": [
+                "misskey"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "and-or",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "missing"
+            ],
+            [
+              "MISSKEY",
+              "backend"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey",
+            "backend"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": [
+        {
+          "type": "channel",
+          "body": {
+            "id": "channel-id",
+            "type": "note",
+            "body": {
+              "id": "note",
+              "userId": "author",
+              "user": {
+                "id": "author",
+                "host": null,
+                "requireSigninToViewContents": false,
+                "makeNotesHiddenBefore": null
+              },
+              "createdAt": "2026-11-06T23:59:00.000Z",
+              "text": "text",
+              "cw": null,
+              "visibility": "public",
+              "channelId": null,
+              "replyId": null,
+              "reply": null,
+              "renoteId": null,
+              "renote": null,
+              "poll": null,
+              "fileIds": [],
+              "files": [],
+              "reactions": {},
+              "tags": [
+                "misskey",
+                "backend"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "and-unmatched",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey",
+              "backend"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "normalization",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "ＭＩＳＳＫＥＹ"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": [
+        {
+          "type": "channel",
+          "body": {
+            "id": "channel-id",
+            "type": "note",
+            "body": {
+              "id": "note",
+              "userId": "author",
+              "user": {
+                "id": "author",
+                "host": null,
+                "requireSigninToViewContents": false,
+                "makeNotesHiddenBefore": null
+              },
+              "createdAt": "2026-11-06T23:59:00.000Z",
+              "text": "text",
+              "cw": null,
+              "visibility": "public",
+              "channelId": null,
+              "replyId": null,
+              "reply": null,
+              "renoteId": null,
+              "renote": null,
+              "poll": null,
+              "fileIds": [],
+              "files": [],
+              "reactions": {},
+              "tags": [
+                "misskey"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "missing-tags",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {}
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "empty-query",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": []
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "invalid-missing",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {},
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": false,
+      "sent": []
+    },
+    {
+      "id": "invalid-scalar",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": "misskey"
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": false,
+      "sent": []
+    },
+    {
+      "id": "invalid-term",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey",
+              0
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": false,
+      "sent": []
+    },
+    {
+      "id": "invalid-conjunction",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            []
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": false,
+      "sent": []
+    },
+    {
+      "id": "invalid-null",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            null
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": false,
+      "sent": []
+    },
+    {
+      "id": "no-substring",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey-next"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "guest-signin",
+      "input": {
+        "facts": {
+          "user": null,
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "requireSigninToViewContents": true
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "guest-ugc-none",
+      "input": {
+        "facts": {
+          "user": null,
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "none",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "guest-ugc-local",
+      "input": {
+        "facts": {
+          "user": null,
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "local",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": "remote.example"
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "muted-author",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [
+            "author"
+          ],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "blocked-author",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [
+            "author"
+          ],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "muted-instance",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [
+            "remote.example"
+          ],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": "remote.example"
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "muted-channel",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [
+            "channel"
+          ],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": "channel",
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "private-other",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "specified",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ],
+          "visibleUserIds": [
+            "other"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "private-viewer",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "specified",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ],
+          "visibleUserIds": [
+            "viewer"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": [
+        {
+          "type": "channel",
+          "body": {
+            "id": "channel-id",
+            "type": "note",
+            "body": {
+              "id": "note",
+              "userId": "author",
+              "user": {
+                "id": "author",
+                "host": null,
+                "requireSigninToViewContents": false,
+                "makeNotesHiddenBefore": null
+              },
+              "createdAt": "2026-11-06T23:59:00.000Z",
+              "text": "text",
+              "cw": null,
+              "visibility": "specified",
+              "channelId": null,
+              "replyId": null,
+              "reply": null,
+              "renoteId": null,
+              "renote": null,
+              "poll": null,
+              "fileIds": [],
+              "files": [],
+              "reactions": {},
+              "tags": [
+                "misskey"
+              ],
+              "visibleUserIds": [
+                "viewer"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "followers-unfollowed",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {},
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "followers",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "followers-stale",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          },
+          "hidingFollowing": {}
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "followers",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": [
+        {
+          "type": "channel",
+          "body": {
+            "id": "channel-id",
+            "type": "note",
+            "body": {
+              "id": "note",
+              "userId": "author",
+              "user": {
+                "id": "author",
+                "host": null,
+                "requireSigninToViewContents": false,
+                "makeNotesHiddenBefore": null
+              },
+              "createdAt": "2026-11-06T23:59:00.000Z",
+              "text": null,
+              "cw": null,
+              "visibility": "followers",
+              "channelId": null,
+              "replyId": null,
+              "reply": null,
+              "renoteId": null,
+              "renote": null,
+              "fileIds": [],
+              "files": [],
+              "reactions": {},
+              "tags": [
+                "misskey"
+              ],
+              "isHidden": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "historical-hidden",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "makeNotesHiddenBefore": 0
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "text",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": [
+        {
+          "type": "channel",
+          "body": {
+            "id": "channel-id",
+            "type": "note",
+            "body": {
+              "id": "note",
+              "userId": "author",
+              "user": {
+                "id": "author",
+                "makeNotesHiddenBefore": 0
+              },
+              "createdAt": "2026-11-06T23:59:00.000Z",
+              "text": null,
+              "cw": null,
+              "visibility": "public",
+              "channelId": null,
+              "replyId": null,
+              "reply": null,
+              "renoteId": null,
+              "renote": null,
+              "fileIds": [],
+              "files": [],
+              "reactions": {},
+              "tags": [
+                "misskey"
+              ],
+              "isHidden": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "reply-ordinary",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": "reply",
+          "reply": {
+            "id": "reply",
+            "userId": "other",
+            "user": {
+              "id": "other",
+              "host": null
+            },
+            "createdAt": "2026-11-06T23:59:00.000Z",
+            "text": "text",
+            "cw": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null,
+            "reply": null,
+            "renoteId": null,
+            "renote": null,
+            "poll": null,
+            "fileIds": [],
+            "files": [],
+            "reactions": {
+              "like": 1
+            }
+          },
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": [
+        {
+          "type": "channel",
+          "body": {
+            "id": "channel-id",
+            "type": "note",
+            "body": {
+              "id": "note",
+              "userId": "author",
+              "user": {
+                "id": "author",
+                "host": null,
+                "requireSigninToViewContents": false,
+                "makeNotesHiddenBefore": null
+              },
+              "createdAt": "2026-11-06T23:59:00.000Z",
+              "text": "reply",
+              "cw": null,
+              "visibility": "public",
+              "channelId": null,
+              "replyId": "reply",
+              "reply": {
+                "id": "reply",
+                "userId": "other",
+                "user": {
+                  "id": "other",
+                  "host": null
+                },
+                "createdAt": "2026-11-06T23:59:00.000Z",
+                "text": "text",
+                "cw": null,
+                "visibility": "public",
+                "channelId": null,
+                "replyId": null,
+                "reply": null,
+                "renoteId": null,
+                "renote": null,
+                "poll": null,
+                "fileIds": [],
+                "files": [],
+                "reactions": {
+                  "like": 1
+                }
+              },
+              "renoteId": null,
+              "renote": null,
+              "poll": null,
+              "fileIds": [],
+              "files": [],
+              "reactions": {},
+              "tags": [
+                "misskey"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "reply-guest",
+      "input": {
+        "facts": {
+          "user": null,
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": "reply",
+          "reply": {
+            "id": "reply",
+            "userId": "other",
+            "user": {
+              "id": "other",
+              "host": null
+            },
+            "createdAt": "2026-11-06T23:59:00.000Z",
+            "text": "text",
+            "cw": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null,
+            "reply": null,
+            "renoteId": null,
+            "renote": null,
+            "poll": null,
+            "fileIds": [],
+            "files": [],
+            "reactions": {
+              "like": 1
+            }
+          },
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": [
+        {
+          "type": "channel",
+          "body": {
+            "id": "channel-id",
+            "type": "note",
+            "body": {
+              "id": "note",
+              "userId": "author",
+              "user": {
+                "id": "author",
+                "host": null,
+                "requireSigninToViewContents": false,
+                "makeNotesHiddenBefore": null
+              },
+              "createdAt": "2026-11-06T23:59:00.000Z",
+              "text": "reply",
+              "cw": null,
+              "visibility": "public",
+              "channelId": null,
+              "replyId": "reply",
+              "reply": {
+                "id": "reply",
+                "userId": "other",
+                "user": {
+                  "id": "other",
+                  "host": null
+                },
+                "createdAt": "2026-11-06T23:59:00.000Z",
+                "text": "text",
+                "cw": null,
+                "visibility": "public",
+                "channelId": null,
+                "replyId": null,
+                "reply": null,
+                "renoteId": null,
+                "renote": null,
+                "poll": null,
+                "fileIds": [],
+                "files": [],
+                "reactions": {
+                  "like": 1
+                }
+              },
+              "renoteId": null,
+              "renote": null,
+              "poll": null,
+              "fileIds": [],
+              "files": [],
+              "reactions": {},
+              "tags": [
+                "misskey"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "reply-quote",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "quote",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": "reply",
+          "reply": {
+            "id": "reply",
+            "userId": "other",
+            "user": {
+              "id": "other",
+              "host": null
+            },
+            "createdAt": "2026-11-06T23:59:00.000Z",
+            "text": "text",
+            "cw": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null,
+            "reply": null,
+            "renoteId": null,
+            "renote": null,
+            "poll": null,
+            "fileIds": [],
+            "files": [],
+            "reactions": {
+              "like": 1
+            }
+          },
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": [
+        {
+          "type": "channel",
+          "body": {
+            "id": "channel-id",
+            "type": "note",
+            "body": {
+              "id": "note",
+              "userId": "author",
+              "user": {
+                "id": "author",
+                "host": null,
+                "requireSigninToViewContents": false,
+                "makeNotesHiddenBefore": null
+              },
+              "createdAt": "2026-11-06T23:59:00.000Z",
+              "text": "quote",
+              "cw": null,
+              "visibility": "public",
+              "channelId": null,
+              "replyId": "reply",
+              "reply": {
+                "id": "reply",
+                "userId": "other",
+                "user": {
+                  "id": "other",
+                  "host": null
+                },
+                "createdAt": "2026-11-06T23:59:00.000Z",
+                "text": "text",
+                "cw": null,
+                "visibility": "public",
+                "channelId": null,
+                "replyId": null,
+                "reply": null,
+                "renoteId": null,
+                "renote": null,
+                "poll": null,
+                "fileIds": [],
+                "files": [],
+                "reactions": {
+                  "like": 1
+                }
+              },
+              "renoteId": null,
+              "renote": null,
+              "poll": null,
+              "fileIds": [],
+              "files": [],
+              "reactions": {},
+              "tags": [
+                "misskey"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "reply-muted",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [
+            "other"
+          ],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": "reply",
+          "reply": {
+            "id": "reply",
+            "userId": "other",
+            "user": {
+              "id": "other",
+              "host": null
+            },
+            "createdAt": "2026-11-06T23:59:00.000Z",
+            "text": "text",
+            "cw": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null,
+            "reply": null,
+            "renoteId": null,
+            "renote": null,
+            "poll": null,
+            "fileIds": [],
+            "files": [],
+            "reactions": {
+              "like": 1
+            }
+          },
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "reply-blocked",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [
+            "other"
+          ],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": "reply",
+          "reply": {
+            "id": "reply",
+            "userId": "other",
+            "user": {
+              "id": "other",
+              "host": null
+            },
+            "createdAt": "2026-11-06T23:59:00.000Z",
+            "text": "text",
+            "cw": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null,
+            "reply": null,
+            "renoteId": null,
+            "renote": null,
+            "poll": null,
+            "fileIds": [],
+            "files": [],
+            "reactions": {
+              "like": 1
+            }
+          },
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "reply-guest-signin",
+      "input": {
+        "facts": {
+          "user": null,
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": "reply",
+          "reply": {
+            "id": "reply",
+            "userId": "other",
+            "user": {
+              "id": "other",
+              "requireSigninToViewContents": true
+            },
+            "createdAt": "2026-11-06T23:59:00.000Z",
+            "text": "text",
+            "cw": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null,
+            "reply": null,
+            "renoteId": null,
+            "renote": null,
+            "poll": null,
+            "fileIds": [],
+            "files": [],
+            "reactions": {
+              "like": 1
+            }
+          },
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "reply-private",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "reply",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": "reply",
+          "reply": {
+            "id": "reply",
+            "userId": "other",
+            "user": {
+              "id": "other",
+              "host": null
+            },
+            "createdAt": "2026-11-06T23:59:00.000Z",
+            "text": "text",
+            "cw": null,
+            "visibility": "specified",
+            "channelId": null,
+            "replyId": null,
+            "reply": null,
+            "renoteId": null,
+            "renote": null,
+            "poll": null,
+            "fileIds": [],
+            "files": [],
+            "reactions": {
+              "like": 1
+            },
+            "visibleUserIds": [
+              "other"
+            ]
+          },
+          "renoteId": null,
+          "renote": null,
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": [
+        {
+          "type": "channel",
+          "body": {
+            "id": "channel-id",
+            "type": "note",
+            "body": {
+              "id": "note",
+              "userId": "author",
+              "user": {
+                "id": "author",
+                "host": null,
+                "requireSigninToViewContents": false,
+                "makeNotesHiddenBefore": null
+              },
+              "createdAt": "2026-11-06T23:59:00.000Z",
+              "text": "reply",
+              "cw": null,
+              "visibility": "public",
+              "channelId": null,
+              "replyId": "reply",
+              "reply": {
+                "id": "reply",
+                "userId": "other",
+                "user": {
+                  "id": "other",
+                  "host": null
+                },
+                "createdAt": "2026-11-06T23:59:00.000Z",
+                "text": null,
+                "cw": null,
+                "visibility": "specified",
+                "channelId": null,
+                "replyId": null,
+                "reply": null,
+                "renoteId": null,
+                "renote": null,
+                "fileIds": [],
+                "files": [],
+                "reactions": {
+                  "like": 1
+                },
+                "isHidden": true
+              },
+              "renoteId": null,
+              "renote": null,
+              "poll": null,
+              "fileIds": [],
+              "files": [],
+              "reactions": {},
+              "tags": [
+                "misskey"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "renote-ordinary",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": null,
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": "renote",
+          "renote": {
+            "id": "renote",
+            "userId": "other",
+            "user": {
+              "id": "other",
+              "host": null
+            },
+            "createdAt": "2026-11-06T23:59:00.000Z",
+            "text": "text",
+            "cw": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null,
+            "reply": null,
+            "renoteId": null,
+            "renote": null,
+            "poll": null,
+            "fileIds": [],
+            "files": [],
+            "reactions": {
+              "like": 1
+            }
+          },
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": [
+        {
+          "type": "channel",
+          "body": {
+            "id": "channel-id",
+            "type": "note",
+            "body": {
+              "id": "note",
+              "userId": "author",
+              "user": {
+                "id": "author",
+                "host": null,
+                "requireSigninToViewContents": false,
+                "makeNotesHiddenBefore": null
+              },
+              "createdAt": "2026-11-06T23:59:00.000Z",
+              "text": null,
+              "cw": null,
+              "visibility": "public",
+              "channelId": null,
+              "replyId": null,
+              "reply": null,
+              "renoteId": "renote",
+              "renote": {
+                "id": "renote",
+                "userId": "other",
+                "user": {
+                  "id": "other",
+                  "host": null
+                },
+                "createdAt": "2026-11-06T23:59:00.000Z",
+                "text": "text",
+                "cw": null,
+                "visibility": "public",
+                "channelId": null,
+                "replyId": null,
+                "reply": null,
+                "renoteId": null,
+                "renote": null,
+                "poll": null,
+                "fileIds": [],
+                "files": [],
+                "reactions": {
+                  "like": 1
+                },
+                "myReaction": ":own:"
+              },
+              "poll": null,
+              "fileIds": [],
+              "files": [],
+              "reactions": {},
+              "tags": [
+                "misskey"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "renote-guest",
+      "input": {
+        "facts": {
+          "user": null,
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": null,
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": "renote",
+          "renote": {
+            "id": "renote",
+            "userId": "other",
+            "user": {
+              "id": "other",
+              "host": null
+            },
+            "createdAt": "2026-11-06T23:59:00.000Z",
+            "text": "text",
+            "cw": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null,
+            "reply": null,
+            "renoteId": null,
+            "renote": null,
+            "poll": null,
+            "fileIds": [],
+            "files": [],
+            "reactions": {
+              "like": 1
+            }
+          },
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": [
+        {
+          "type": "channel",
+          "body": {
+            "id": "channel-id",
+            "type": "note",
+            "body": {
+              "id": "note",
+              "userId": "author",
+              "user": {
+                "id": "author",
+                "host": null,
+                "requireSigninToViewContents": false,
+                "makeNotesHiddenBefore": null
+              },
+              "createdAt": "2026-11-06T23:59:00.000Z",
+              "text": null,
+              "cw": null,
+              "visibility": "public",
+              "channelId": null,
+              "replyId": null,
+              "reply": null,
+              "renoteId": "renote",
+              "renote": {
+                "id": "renote",
+                "userId": "other",
+                "user": {
+                  "id": "other",
+                  "host": null
+                },
+                "createdAt": "2026-11-06T23:59:00.000Z",
+                "text": "text",
+                "cw": null,
+                "visibility": "public",
+                "channelId": null,
+                "replyId": null,
+                "reply": null,
+                "renoteId": null,
+                "renote": null,
+                "poll": null,
+                "fileIds": [],
+                "files": [],
+                "reactions": {
+                  "like": 1
+                }
+              },
+              "poll": null,
+              "fileIds": [],
+              "files": [],
+              "reactions": {},
+              "tags": [
+                "misskey"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "renote-quote",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": "quote",
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": "renote",
+          "renote": {
+            "id": "renote",
+            "userId": "other",
+            "user": {
+              "id": "other",
+              "host": null
+            },
+            "createdAt": "2026-11-06T23:59:00.000Z",
+            "text": "text",
+            "cw": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null,
+            "reply": null,
+            "renoteId": null,
+            "renote": null,
+            "poll": null,
+            "fileIds": [],
+            "files": [],
+            "reactions": {
+              "like": 1
+            }
+          },
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": [
+        {
+          "type": "channel",
+          "body": {
+            "id": "channel-id",
+            "type": "note",
+            "body": {
+              "id": "note",
+              "userId": "author",
+              "user": {
+                "id": "author",
+                "host": null,
+                "requireSigninToViewContents": false,
+                "makeNotesHiddenBefore": null
+              },
+              "createdAt": "2026-11-06T23:59:00.000Z",
+              "text": "quote",
+              "cw": null,
+              "visibility": "public",
+              "channelId": null,
+              "replyId": null,
+              "reply": null,
+              "renoteId": "renote",
+              "renote": {
+                "id": "renote",
+                "userId": "other",
+                "user": {
+                  "id": "other",
+                  "host": null
+                },
+                "createdAt": "2026-11-06T23:59:00.000Z",
+                "text": "text",
+                "cw": null,
+                "visibility": "public",
+                "channelId": null,
+                "replyId": null,
+                "reply": null,
+                "renoteId": null,
+                "renote": null,
+                "poll": null,
+                "fileIds": [],
+                "files": [],
+                "reactions": {
+                  "like": 1
+                }
+              },
+              "poll": null,
+              "fileIds": [],
+              "files": [],
+              "reactions": {},
+              "tags": [
+                "misskey"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "renote-muted",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [
+            "other"
+          ],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": null,
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": "renote",
+          "renote": {
+            "id": "renote",
+            "userId": "other",
+            "user": {
+              "id": "other",
+              "host": null
+            },
+            "createdAt": "2026-11-06T23:59:00.000Z",
+            "text": "text",
+            "cw": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null,
+            "reply": null,
+            "renoteId": null,
+            "renote": null,
+            "poll": null,
+            "fileIds": [],
+            "files": [],
+            "reactions": {
+              "like": 1
+            }
+          },
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "renote-blocked",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [
+            "other"
+          ],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": null,
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": "renote",
+          "renote": {
+            "id": "renote",
+            "userId": "other",
+            "user": {
+              "id": "other",
+              "host": null
+            },
+            "createdAt": "2026-11-06T23:59:00.000Z",
+            "text": "text",
+            "cw": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null,
+            "reply": null,
+            "renoteId": null,
+            "renote": null,
+            "poll": null,
+            "fileIds": [],
+            "files": [],
+            "reactions": {
+              "like": 1
+            }
+          },
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "renote-guest-signin",
+      "input": {
+        "facts": {
+          "user": null,
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": null,
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": "renote",
+          "renote": {
+            "id": "renote",
+            "userId": "other",
+            "user": {
+              "id": "other",
+              "requireSigninToViewContents": true
+            },
+            "createdAt": "2026-11-06T23:59:00.000Z",
+            "text": "text",
+            "cw": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null,
+            "reply": null,
+            "renoteId": null,
+            "renote": null,
+            "poll": null,
+            "fileIds": [],
+            "files": [],
+            "reactions": {
+              "like": 1
+            }
+          },
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "renote-private",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": null,
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": "renote",
+          "renote": {
+            "id": "renote",
+            "userId": "other",
+            "user": {
+              "id": "other",
+              "host": null
+            },
+            "createdAt": "2026-11-06T23:59:00.000Z",
+            "text": "text",
+            "cw": null,
+            "visibility": "specified",
+            "channelId": null,
+            "replyId": null,
+            "reply": null,
+            "renoteId": null,
+            "renote": null,
+            "poll": null,
+            "fileIds": [],
+            "files": [],
+            "reactions": {
+              "like": 1
+            },
+            "visibleUserIds": [
+              "other"
+            ]
+          },
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    },
+    {
+      "id": "renote-muted-author",
+      "input": {
+        "facts": {
+          "user": {
+            "id": "viewer",
+            "isHibernated": false
+          },
+          "following": {
+            "author": {
+              "withReplies": false
+            }
+          },
+          "followingChannels": [],
+          "mutingChannels": [],
+          "mutedInstances": [],
+          "muting": [],
+          "blockingMe": [],
+          "renoteMuting": [
+            "author"
+          ],
+          "ugc": "all",
+          "policies": {
+            "ltlAvailable": true,
+            "gtlAvailable": true
+          }
+        },
+        "params": {
+          "q": [
+            [
+              "misskey"
+            ]
+          ]
+        },
+        "payload": {
+          "id": "note",
+          "userId": "author",
+          "user": {
+            "id": "author",
+            "host": null,
+            "requireSigninToViewContents": false,
+            "makeNotesHiddenBefore": null
+          },
+          "createdAt": "2026-11-06T23:59:00.000Z",
+          "text": null,
+          "cw": null,
+          "visibility": "public",
+          "channelId": null,
+          "replyId": null,
+          "reply": null,
+          "renoteId": "renote",
+          "renote": {
+            "id": "renote",
+            "userId": "author",
+            "user": {
+              "id": "author",
+              "host": null,
+              "requireSigninToViewContents": false,
+              "makeNotesHiddenBefore": null
+            },
+            "createdAt": "2026-11-06T23:59:00.000Z",
+            "text": "text",
+            "cw": null,
+            "visibility": "public",
+            "channelId": null,
+            "replyId": null,
+            "reply": null,
+            "renoteId": null,
+            "renote": null,
+            "poll": null,
+            "fileIds": [],
+            "files": [],
+            "reactions": {}
+          },
+          "poll": null,
+          "fileIds": [],
+          "files": [],
+          "reactions": {},
+          "tags": [
+            "misskey"
+          ]
+        }
+      },
+      "accepted": true,
+      "sent": []
+    }
+  ]
+}

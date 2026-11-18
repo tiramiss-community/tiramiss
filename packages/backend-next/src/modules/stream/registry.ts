@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { object } from './channel.js';
+import { createHashtagChannel } from './hashtag.js';
 import { filterHomeNote, hideStreamNote, instanceMuted, noteMuted, noteVisible, pureRenote } from './policy.js';
 import type { StreamChannelDefinition, StreamPorts } from './channel.js';
 import type { StreamNote } from './policy.js';
 
 export function createStreamChannelRegistry(ports: StreamPorts): ReadonlyMap<string, StreamChannelDefinition> {
 	const registry = new Map<string, StreamChannelDefinition>([
+		['hashtag', createHashtagChannel(ports)],
 		['main', {
 			requireCredential: true, kind: 'read:account', shouldShare: true,
 			create: ({ send }) => ({
