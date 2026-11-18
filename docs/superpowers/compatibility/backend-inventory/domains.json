@@ -3989,7 +3989,7 @@
         "scripts/promo-contract.test.mjs"
       ],
       "note": "#542: fixed-source18 and ordinary listening HTTP/PG validate Note existence, author/expiry storage, duplicate/missing/denied/DB failure. Literal pinned callback and GetterService.getNote also run with real PG; full upstream HTTP/auth server is not measured. Timeline selection and promo/read remain outside this slice; #194/#114 remain open.",
-      "evidenceRevision": "ec99a6b97ce50ccc7afa843c66d9c8d41e886c97"
+      "evidenceRevision": "3a2dbd3654330c424c324c74cf0ba1dad51222f4"
     }
   }
 }

@@ -38,7 +38,7 @@ CHANGELOG candidate: backend-next supports moderator creation of promotion posts
 
 Final measured result: dependency build/typecheck, upstream sync5, source18, all unit5293/1 existing optional skip, real HTTP/PG/schema26, root808/1 existing optional skip, and shipping PASS. Root input hashes matched before/after the frozen run. Logs are under `/tmp/promo542-*`; the durable input/log hashes and unsuccessful run history are in `current-evidence.json`. Independent product review approved runtime `e13fc9364d`; proof delta and CLI/web review are separate gates.
 
-Catalog `api:admin/promo/create` is updated from its immutable proof commit `ec99a6b97c`; generation/check and inventory+promo contracts13 PASS. The metadata-only catalog step follows the recorded frozen root measurement and does not claim that historical run included later catalog text.
+The initial catalog used immutable R1 proof commit `ec99a6b97c`; R2 points to `3a2dbd3654`. Initial generation/check and inventory+promo contracts13 PASS; R2 generation/check and inventory+promo contracts14 PASS. The metadata-only catalog step follows the recorded frozen root measurement and does not claim that historical run included later catalog text.
 
 
 ## R2 review follow-up
