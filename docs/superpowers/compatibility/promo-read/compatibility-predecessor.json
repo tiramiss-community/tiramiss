@@ -1,6 +1,6 @@
 {
   "baseRevision": "706f82eb2086c7364001d770ffde73000911bd07",
-  "scope": "Mechanically synchronized PromoRead addition and entity metadata assertions only; prior receipts are unchanged.",
+  "scope": "Mechanically synchronized PromoRead addition, entity metadata and composition route assertions only; prior receipts are unchanged.",
   "files": {
     "packages/backend-upstream/upstream-sync.json": {
       "previousSha256": "58707b07f611652ec2c407d5585976aed56e07dfaa4ef3adc5abef939fad5ff5",
@@ -58,6 +58,22 @@
           "offset": 5633,
           "insert": "4",
           "previous": "3"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "previousSha256": "65ab0f8c024f3ee776ce915cb46e459bdb5b69eadf2bc859432a6c9598e53517",
+      "currentSha256": "859b3e8e5ec9547b4dceaabc24e4c3a0554984bf2677afecd0ed3d16c47af2fd",
+      "patches": [
+        {
+          "offset": 2350,
+          "insert": "promo/read', '/api/",
+          "previous": ""
+        },
+        {
+          "offset": 3702,
+          "insert": "'promo/read', ",
+          "previous": ""
         }
       ]
     }

@@ -10,7 +10,7 @@ Fixed upstream `8e07cf085adf7009583d234a208e30436f020e26`; implementation base `
 
 The integration suite uses the normal listening backend-next HTTP app, real tokens, PostgreSQL and Redis. It compares saved state/error codes with the pinned callback/PG execution; checks credential/suspension/scope-before-input, ordinary user and scoped write success, DB read/existence/insert errors, unique viewer/Note constraint and Note/user CASCADE. Exact internal DB messages/random error IDs and full upstream HTTP/auth infrastructure are outside this measurement. No upstream full server is claimed.
 
-`compatibility-predecessor.json` projects only four exact mechanically synced/metadata-test inputs to their previous bytes for historical receipts. Unknown input drift is passed to existing guards; old evidence is unchanged.
+`compatibility-predecessor.json` projects only five exact mechanically synced/metadata-test/route-test inputs to their previous bytes for historical receipts. Unknown input drift is passed to existing guards; old evidence is unchanged.
 
 This implements only promo/read within #530. Pinned users await detailed-user support #297; #530/#193/#114 remain open. Timeline promotion selection is outside this slice; admin creation is the separate #542 result.
 
@@ -37,3 +37,5 @@ BACKEND_NEXT_TEST_DB_PORT=63432 BACKEND_NEXT_TEST_REDIS_PORT=63379 docker compos
 `current-evidence.json` records measured commands, log hashes and input hashes. API type regeneration for the legacy backend is skipped: its metadata/schema have not changed; the new API reproduces the existing upstream contract. No CHANGELOG was edited. Candidate: backend-next supports viewer-specific promotion read tracking.
 
 Initial build/typecheck, upstream5, source14, near-unit32 and real HTTP/PG/schema41 passed. The helper follow-up passed source14, normal HTTP/PG15, entity import1 and catalog/nearest-root17. R1 evidence is archived byte-for-byte. A broad root run passed817/skipped1 (818 total) before the final fourth metadata-test projection was added; nearest17 and import1 cover that final addition. Independent Codex review confirmed the helper connection boundary fix. The initial exploratory root run failed136 before finite successor wiring; its log is retained and is not claimed as a successful measurement.
+
+CI follow-up: the first full unit run found the canonical composition route inventory still lacked `/api/promo/read` (one failed,5349 passed,one existing skip). Added that route and its credential gate assertion, extending the finite predecessor to five inputs. The final local full unit run passed5350/skipped1 across156 files; targeted composition/promo/import49 and root23 passed. Product runtime is unchanged. `r2-current-evidence.json` preserves the preceding receipt byte-for-byte.

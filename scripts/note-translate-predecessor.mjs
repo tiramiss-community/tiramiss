@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectPromoReadInput } from './promo-read-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 
@@ -29,6 +30,7 @@ const transitions = {
 // Restore only the measured translation registration and its unit fixture.
 // Unknown bytes continue to the historical validators' existing drift guards.
 export function projectNoteTranslationInput(path, actual) {
+	actual = projectPromoReadInput(path, actual);
 	const binding = Object.hasOwn(transitions, path) ? transitions[path] : undefined;
 	if (!binding || sha(actual) !== binding.current) return actual;
 	let before = actual.toString();

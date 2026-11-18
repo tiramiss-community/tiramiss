@@ -28,9 +28,9 @@ test('promo/read source observations bind the finite corpus, auth metadata and e
 	]);
 });
 
-test('only the four exact synchronized additions project to historical bytes; unknown drift passes through', () => {
+test('only the five exact synchronized additions project to historical bytes; unknown drift passes through', () => {
 	const { files } = JSON.parse(read(directory + 'compatibility-predecessor.json'));
-	assert.equal(Object.keys(files).length, 4);
+	assert.equal(Object.keys(files).length, 5);
 	for (const [path, binding] of Object.entries(files)) {
 		const current = read(path);
 		assert.equal(sha(current), binding.currentSha256);

@@ -11,11 +11,12 @@
     "docs/superpowers/compatibility/backend-inventory/contracts.json": "188ba681168f6413ea975ea2fd52c02bfd88434fb486ffccfe3d841e4c664786",
     "docs/superpowers/compatibility/backend-inventory/contracts.md": "a6e5693a8be6c5ce7f061750b1dc8901fed985847f118e580f276883c8db3d88",
     "docs/superpowers/compatibility/backend-inventory/domains.json": "7a654858c03007fbb09b86ad57bbf3b30904fc1a48b42a63d463c260f51f1d81",
-    "docs/superpowers/compatibility/promo-read/README.md": "58d3b2f8ad26687af252c42197b8912595ce818a323d433cedf0a05ee8724526",
-    "docs/superpowers/compatibility/promo-read/compatibility-predecessor.json": "97c45d601af5bf64bdead037f5c69851095ced6659b8c5b2998722d42806a36a",
+    "docs/superpowers/compatibility/promo-read/README.md": "95d38e644a2c4594f21f3c9e5acc9523b9599400588db97b66d4039e0a089cf9",
+    "docs/superpowers/compatibility/promo-read/compatibility-predecessor.json": "bd03977dd7f02413127a7df086529823c23e9026426e4af9c3aa29ffb405b8cc",
     "docs/superpowers/compatibility/promo-read/corpus.json": "2b32036266ee8105597d5dcf0fe20906fd252a3689d6c04ff2340e0ed7759e73",
     "docs/superpowers/compatibility/promo-read/observations.json": "9c9fcb5cc7992e1773005051a026480fc3e60c95fac57dc1eca59cbf5a3466b7",
     "docs/superpowers/compatibility/promo-read/r1-current-evidence.json": "4c0a63b6778f374e3850a8378138dcf86448cfeace14793f827b9c919519361c",
+    "docs/superpowers/compatibility/promo-read/r2-current-evidence.json": "193c932cb8c053b11b4e3a6a67b9f21e5a1f8885237b946930ebdac97c9296f4",
     "docs/superpowers/compatibility/promo-read/source-probe.mjs": "55687c6e8423134938f39c555ab260da92248f59ed23d6a5f221455f94f0e55a",
     "packages/backend-next/src/composition/promo-http.ts": "9876de281da352042a6c64b1be009eb31daad17ae1f011bd4d69fd75bca23afa",
     "packages/backend-next/src/http/promo-api.ts": "d06035ae14c09cb462ffeb43e8501991713ef0487d607a6c42235ec53a4d8fd3",
@@ -23,81 +24,61 @@
     "packages/backend-next/src/platform/database/promo.ts": "98c91f30fa8aae15c4a714c86bc6ee2e0d9482bcb37cff022eea73ea1b4f2fb3",
     "packages/backend-next/test/integration/promo-read.test.ts": "6a924a1f7f9d19ae544e16f1a60e7ee4582744f7f2a291e17871e41e464df192",
     "packages/backend-next/test/package-imports.test.ts": "a31d55df4b4f3e985964eb6353ea088cadfb57e013eb5bc97fdcf019d2b56c59",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "859b3e8e5ec9547b4dceaabc24e4c3a0554984bf2677afecd0ed3d16c47af2fd",
     "packages/backend-next/test/unit/promo-read.test.ts": "237b40ec7abde80c41783b6684071076fd3a0890712f1e8a1c5d2c46762aacb8",
     "packages/backend-upstream/.managed-files.json": "40a6f528d0726495a28fddca507dfe8d86b2531e2a977102de79ac9a22f66795",
     "packages/backend-upstream/exports/entities.ts": "420ce3794ec43c7e380f4a5cb0a2f2a667d889d7b2997d7c3a7e8f2a4b436edd",
     "packages/backend-upstream/src/models/PromoRead.ts": "f1a1d6c982b5347c10c9887607eeda0c545ebd3b64709344cffc4dd3dcf88bbd",
     "packages/backend-upstream/upstream-sync.json": "6caa674a2ff9c859e1c30c3bf009da3d32334a630af2378057b9fe8a2821f584",
+    "scripts/note-translate-predecessor.mjs": "b2d8e73d02fcf5dabeebfb82173e5d30883aa42108d01854b6b422bce29b45cc",
     "scripts/promo-contract.test.mjs": "1e132dbf9e3701c55e60a297a9f08468b9ab94e55fbc680a9d2614821105cf2e",
-    "scripts/promo-predecessor.mjs": "7e959a201acc2e06270043d815633100726665b25a31f5b5a453d136c2b9a1f6",
-    "scripts/promo-read-contract.test.mjs": "3ae0d2341fd2e3cf3f94f2a6fb13bcb6352ace8ae9618792537ee6d08013d5b3",
-    "scripts/promo-read-predecessor.mjs": "57c523a72d1599a9e6a5335c9cf8f0688af81207de486e38717b28c3bcca2782"
+    "scripts/promo-read-contract.test.mjs": "b43ab651243a4c08ba8fe7127ec6c449222d7e3f972e4b163e7a299c0c7da9ee",
+    "scripts/promo-read-predecessor.mjs": "89673262690b3e47deff9715fea703c589ab3f3ea80da3f19b21ea7a1ec83aab"
   },
   "runs": [
     {
-      "command": "node docs/superpowers/compatibility/promo-read/source-probe.mjs --check",
+      "command": "pnpm --filter backend-next test test/unit/composition/http-app.test.ts test/package-imports.test.ts test/unit/promo-read.test.ts test/unit/promo.test.ts",
       "status": "PASS",
-      "log": "/tmp/promo-read-source.log",
-      "sha256": "1a653a9ef1fd2f829fae13fcc158c0c1160b3ffe7478bffc4d715d28d518f6c4"
+      "log": "/tmp/promo-read-unit-ci-fix.log",
+      "sha256": "705040c1ea57dfab13120af56e907d0d457d1264461f0cc6efb728c11cb2b8df"
     },
     {
-      "command": "BACKEND_NEXT_TEST_DB_PORT=63432 BACKEND_NEXT_TEST_REDIS_PORT=63379 pnpm --filter backend-next test:integration test/integration/promo-read.test.ts",
+      "command": "node --test scripts/backend-contract-inventory.test.mjs scripts/promo-read-contract.test.mjs scripts/promo-contract.test.mjs scripts/note-translate-contract.test.mjs scripts/role-public-contract.test.mjs",
       "status": "PASS",
-      "log": "/tmp/promo-read-integration-format.log",
-      "sha256": "929e99f4d280942d5fb520a7ed5a373aa3c884f118bb40cb62164b8f3f0b0531"
+      "log": "/tmp/promo-read-root-ci-fix.log",
+      "sha256": "1ee6efccff1821646cd4d8fdfa45f89dfb2f16ffc46212788cc7f4850a7f564e"
     },
     {
-      "command": "pnpm --filter backend-next test test/package-imports.test.ts",
+      "command": "pnpm --filter backend-next test",
       "status": "PASS",
-      "log": "/tmp/promo-read-imports.log",
-      "sha256": "dd37f219063134ff201c43d894e7a7084566e46c369e474db0c4bdfa4c1f9d3c"
-    },
-    {
-      "command": "node --test scripts/backend-contract-inventory.test.mjs scripts/promo-read-contract.test.mjs scripts/promo-contract.test.mjs",
-      "status": "PASS",
-      "log": "/tmp/promo-read-inventory-contracts.log",
-      "sha256": "3ee4d4176111b8e5dbe1a980b2259f1d45f0785d21175c20572760bfa0d6c068"
-    },
-    {
-      "command": "node scripts/backend-contract-inventory.mjs --write && node scripts/backend-contract-inventory.mjs --check",
-      "status": "PASS",
-      "log": "/tmp/promo-read-inventory.log",
-      "sha256": "e78e3d2cd6697d42aeb13b482b07c86add0f8c2af477f45b25c72f902162f8c3"
+      "log": "/tmp/promo-read-unit-all.log",
+      "sha256": "9487d6297d88476e0d37a1f71714d90b37a5a8c70b2740443f0d8275b1cee38a"
     },
     {
       "command": "node scripts/check-shipping.mjs --base 706f82eb20",
       "status": "PASS",
       "log": "/tmp/promo-read-shipping.log",
-      "sha256": "d6c1b98ed5180b6bec90459d8734a4131761d9129d621428891e1da9d69bddad"
-    },
-    {
-      "command": "node --test scripts/*contract*.test.mjs",
-      "status": "PASS",
-      "log": "/tmp/promo-read-contracts.log",
-      "sha256": "b5cc11ae1a2d39d6540f5dbb485a45c61f93631c623e26893d40c994feb64df7",
-      "scope": "Broad run before final fourth metadata-test projection; final nearest17 checks that addition."
+      "sha256": "e1529cff600a9f3660ff11afc8fccbfa9a6e94b204cfb036cbbfa6aae6a8a534"
     }
   ],
   "results": {
-    "source": 14,
-    "integrationFollowup": 15,
-    "entityImport": 1,
-    "catalogAndNearestRootContracts": 17,
-    "broadRootBeforeFinalMetadataProjection": {
-      "passed": 817,
-      "skipped": 1
-    }
+    "allUnit": {
+      "passed": 5350,
+      "skipped": 1,
+      "files": 156
+    },
+    "nearestUnit": 49,
+    "nearestRoot": 23
   },
   "limits": [
     "Full upstream HTTP/auth server not executed; literal callback/Getter uses doubles or real PG.",
-    "R1 build/typecheck/unit32/HTTP-PG41/upstream5 remain archived, not rerun or relabeled for test-helper/catalog follow-up.",
-    "Broad root run predates the final fourth metadata-test projection; final nearest17 and import1 pass.",
-    "CodeRabbit CLI egress was rejected by auto-review; coordinator independent Codex review passed after helper connection config was restricted."
+    "R1 runtime build/typecheck/unit32/HTTP-PG41/upstream5 and R2 source14/HTTP-PG15/root818 are historical measurements preserved by the receipt chain; final follow-up changes only assertions and finite predecessor wiring.",
+    "CodeRabbit CLI egress was rejected by auto-review; coordinator independent Codex review passed after helper connection config was restricted. Web review and final-head CI are tracked on PR639."
   ],
   "predecessor": {
-    "path": "docs/superpowers/compatibility/promo-read/r1-current-evidence.json",
-    "sha256": "4c0a63b6778f374e3850a8378138dcf86448cfeace14793f827b9c919519361c",
-    "scope": "Byte-identical initial measured result; subsequent helper readability/connection-boundary, entity assertions and catalog changes use targeted follow-up checks."
+    "path": "docs/superpowers/compatibility/promo-read/r2-current-evidence.json",
+    "sha256": "193c932cb8c053b11b4e3a6a67b9f21e5a1f8885237b946930ebdac97c9296f4",
+    "scope": "Byte-identical R2 receipt; CI follow-up adds canonical route/auth assertions and fifth finite historical projection without runtime changes."
   },
   "exploratoryFailures": [
     {
@@ -105,6 +86,12 @@
       "sha256": "3599e82a94c266cf3422483bd5f904b3a7038557852c4e312d633691be2ef7ce",
       "failedTests": 136,
       "reason": "Before finite entity-sync predecessor projection was wired."
+    },
+    {
+      "log": "/tmp/promo-read-unit-all-initial.log",
+      "sha256": "3a823dd337792adf54b7f55a9d9ff75947d908b1e0f41920405bdc505e8cff87",
+      "failedTests": 1,
+      "reason": "Canonical route expectation omitted new promo/read; reproduced CI checks failure and corrected inventory/auth assertion."
     }
   ]
 }
