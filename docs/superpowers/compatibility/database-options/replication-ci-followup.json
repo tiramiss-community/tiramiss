@@ -1,0 +1,66 @@
+{
+  "scope": "database-replication-ci-followup-567",
+  "previousCommit": "70c55ad56d9ad47a9f068563e5a0ca7a497de662",
+  "measuredAt": "2026-11-18T08:12:51.892510+00:00",
+  "runtimeChanges": false,
+  "oldReceipt": "replication-results.json",
+  "oldReceiptSha256": "eabf70889962458bde8d42efa17eaab16dd56618dd6a7cc7d2714b172b0aca64",
+  "reason": "Preserve sealed package/workflow/existing-config-test bytes; invoke dedicated config directly; add an exact measured database-adapter predecessor hop. No historical measurement renewal.",
+  "inputs": {
+    ".github/workflows/test-backend-next-replication.yml": "1356c4598f4aabaeb06edda40d97609a45d262fc67b59bf7b456092519760776",
+    ".github/workflows/test-backend-next.yml": "e6fa376cc4e5ae9777126c18912ed9cd5ac0e678325a9728edd1c7c3458cb795",
+    "docs/superpowers/compatibility/database-options/replication-predecessor.json": "d9f7e9ca979b0e9cc53a306e494507803096568a1057c9da163a3f40069556dc",
+    "docs/superpowers/compatibility/database-options/replication.md": "7fb7c54b7688b9872afd9c16349f5853c6952a535de1d41164f24b91388bcae3",
+    "packages/backend-next/README.md": "d40ae8f078c4621292c23d74634347af9a20c40f367650d0f578821b55338e69",
+    "packages/backend-next/package.json": "43c4d758c98d154e88307cf78e8c7296cc3ba0204712fc549388acbefa093888",
+    "packages/backend-next/test/unit/config.test.ts": "9aa7a600d0fecf66f7743eb97916414d50c9d0973b45797a4124a8d722078a9d",
+    "packages/backend-next/test/unit/database-replication-config.test.ts": "a1f328bb0af87e612c3ffc3f825767d75d3d282d965f65109a07020317e66922",
+    "scripts/database-options-contract.test.mjs": "18809c46500f3de2389a2542aa546f5ed22e09ee270af59a0567c19948bb3ccd",
+    "scripts/database-options-predecessor.mjs": "a2db148a7d939979e132937674796cdedeb51c9b5dabb164ab9ea3fab4ee2741",
+    "scripts/database-replication-predecessor.mjs": "087ba8376dffde151971c3b7ff31318575256fa8004710efc6675a74f06be7f6"
+  },
+  "measurements": [
+    {
+      "check": "unit",
+      "result": "5284 PASS / 1 existing SKIP; 152 files",
+      "log": "/tmp/db567-replica-followup-unit.log",
+      "sha256": "ed88f7454fd4d4d4e15b0c7c7a8298178a8330ecce94d4d021c7746bcbf36987"
+    },
+    {
+      "check": "replica-direct-exec",
+      "result": "11 PASS",
+      "log": "/tmp/db567-replica-followup-real.log",
+      "sha256": "0ab3abff87451a4ae426e23b8330804ebd687ced188991c0e27c00259f88e83b"
+    },
+    {
+      "check": "nearby-unit",
+      "result": "13 PASS",
+      "log": "/tmp/db567-replica-followup-near.log",
+      "sha256": "a8213af91f69ecdb1be13fc95cfc13dba5c0afa418c43da80bb6afc0fe83c523"
+    },
+    {
+      "check": "database-and-ci-contracts",
+      "result": "31 PASS",
+      "log": "/tmp/db567-replica-followup-contracts.log",
+      "sha256": "1a183608871f9bf04bbcc09543c00149664a2b32f3db9caef2eba59a3be19e8c"
+    },
+    {
+      "check": "typecheck",
+      "result": "PASS",
+      "log": "/tmp/db567-replica-followup-typecheck.log",
+      "sha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "check": "shipping",
+      "result": "PASS",
+      "log": "/tmp/db567-replica-followup-shipping2.log",
+      "sha256": "f07d53166763987bd9ccab0016f51a151f977bcf7886efe5b4ba01211363b5f2"
+    }
+  ],
+  "ciInitialFailure": {
+    "url": "https://github.com/tiramiss-community/tiramiss/actions/runs/44263779988/job/134663202617",
+    "result": "FAIL",
+    "cause": "Expected historical byte guards rejected package/workflow/config-test/database-adapter changes before the finite successor correction."
+  },
+  "rootContractRerun": "Final full root contract run is tracked separately by CI. The interrupted-input local diagnostic run is not claimed PASS."
+}

@@ -29,14 +29,20 @@ docker compose -p sol-db567-replica -f packages/backend-next/compose.test.yml -f
 pnpm --filter backend-next... build
 pnpm --filter backend-next... typecheck
 pnpm --filter backend-next test
-pnpm --filter backend-next test:replication
+pnpm --filter backend-next exec vitest run --config vitest.replication.config.ts
 pnpm --filter backend-next test:integration test/integration/database-options.test.ts test/integration/transaction-runner.test.ts test/integration/meta.test.ts
 node scripts/check-shipping.mjs --base 1613804464
 docker compose -p sol-db567-replica -f packages/backend-next/compose.test.yml -f packages/backend-next/compose.replication.test.yml down
 ```
 
-CI の既存 integration lane に専用 Compose / `test:replication` / always cleanup を追加する。既存 service と異なる3ポートを使う。通常 `test:integration` に replica 依存を紛れ込ませない。
+専用 CI workflow `test-backend-next-replication.yml` で Compose / `vitest.replication.config.ts` / always cleanup を実行する。通常 `test:integration` に replica 依存を紛れ込ませない。
 
-[今回の receipt](replication-results.json) に入力と実ログの hash を残す。初回 unit は未実装により7件が期待どおり失敗した。初回 standby は専用 HBA の replication 許可が無く接続失敗し、専用 fixture へ追加した。初回実依存試験では QueryBuilder の FROM alias を欠いたテスト fixture により9件が失敗したため、TypeORM の `fromDummy()` に修正した。製品 routing の失敗として扱わない。Node24 での preliminary 成功と最終 Node26 の測定は分けて記録する。Node26 native re2 は同版1.27.0の既存 ABI147 binary をこの worktree にだけ配置した。実依存試験では pg の既存 concurrent query deprecation warning が出る。
+[初回の receipt](replication-results.json) は commit `70c55ad56d` の入力と実ログの hash を保持する。CI 導入の修正後は [追補 receipt](replication-ci-followup.json) に記録する。初回 unit は未実装により7件が期待どおり失敗した。初回 standby は専用 HBA の replication 許可が無く接続失敗し、専用 fixture へ追加した。初回実依存試験では QueryBuilder の FROM alias を欠いたテスト fixture により9件が失敗したため、TypeORM の `fromDummy()` に修正した。製品 routing の失敗として扱わない。Node24 での preliminary 成功と最終 Node26 の測定は分けて記録する。Node26 native re2 は同版1.27.0の既存 ABI147 binary をこの worktree にだけ配置した。実依存試験では pg の既存 concurrent query deprecation warning が出る。
 
 Changelog 候補: DB replica 設定を通常接続に反映し、読取と書込・transaction の接続先を本家に合わせる。
+
+PR 初回 CI の contracts lane は、専用 package script 追加による既存の sealed `package.json` 入力 drift で失敗した。不要な script 追加を取り除き、既存の `pnpm exec vitest` で専用 config を実行する。既存の比較証跡や checker は変更しない。
+
+既存 CI workflow も複数の歴史的比較入力として封印されているため、replica 試験は専用 workflow へ分け、既存 workflow のバイトと四つの検証 lane は維持する。
+
+既存 `config.test.ts` の追記も古い actor 比較の固定入力だったため、新規 replica 設定の検証を専用 `database-replication-config.test.ts` へ移し、既存のテストバイトを復元した。runtime adapter 一つだけは新しい実測済み SHA を確認して PR #630 後の正確なバイトへ戻す限定 predecessor を追加する。既存の測定結果・封印・期待 hash は変更せず、未知の差分は元の検査へ渡す。

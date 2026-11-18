@@ -189,26 +189,3 @@ test.each([
 	expect(value.url).toBe('https://local.test:8443');
 	expect(value.noteMedia).toMatchObject({ mediaProxy: proxy, externalMediaProxyEnabled: enabled });
 });
-
-test('normalizes enabled upstream database replicas without inheriting primary credentials', async () => {
-	const value = await loadConfig({ configFile: await config(`dbReplications: true
-dbSlaves:
-  - {host: replica, port: 5433, db: replica-db, user: reader, pass: ''}`), env: { DATABASE_DB: 'primary', DATABASE_USER: 'writer' } });
-	expect(value.database).toMatchObject({ replicas: [{ host: 'replica', port: 5433, database: 'replica-db', username: 'reader', password: '' }] });
-});
-
-test.each(['{}', 'dbReplications: false\ndbSlaves: invalid'])('ignores inactive upstream replica settings: %s', async extra => {
-	const value = await loadConfig({ configFile: await config(extra), env: { DATABASE_DB: 'primary', DATABASE_USER: 'writer' } });
-	expect(value.database).not.toHaveProperty('replicas');
-});
-
-test('preserves an empty enabled slave list for TypeORM primary fallback', async () => {
-	const value = await loadConfig({ configFile: await config('dbReplications: true\ndbSlaves: []'), env: { DATABASE_DB: 'primary', DATABASE_USER: 'writer' } });
-	expect(value.database).toMatchObject({ replicas: [] });
-});
-
-test.each(['dbReplications: true', 'dbReplications: true\ndbSlaves: {}', 'dbReplications: true\ndbSlaves: [{host: replica, port: 0}]', 'dbReplications: yes'])(
-	'rejects malformed enabled replica configuration: %s', async extra => {
-		await expect(loadConfig({ configFile: await config(extra), env: { DATABASE_DB: 'primary', DATABASE_USER: 'writer' } })).rejects.toThrow();
-	},
-);
