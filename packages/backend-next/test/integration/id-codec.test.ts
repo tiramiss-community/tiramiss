@@ -27,6 +27,8 @@ beforeAll(async () => {
 	directory = await mkdtemp(join(tmpdir(), 'id-codec-config-'));
 	database = await createTestDatabase();
 	await migrateDatabase(database.config.database);
+	// A client read timeout must retire its connection instead of returning pending protocol state to the pool.
+	database.config.database.extra = { ...database.config.database.extra, query_timeout: 10000, maxUses: 1 };
 	resources = await connectResources(database.config, createLogger('id-codec-test', () => {}));
 	await resources.dataSource.getRepository(MiMeta).insert({ id: 'singleton' });
 	await resources.dataSource.getRepository(MiUser).insert({ id: 'alice', username: 'alice', usernameLower: 'alice', token });

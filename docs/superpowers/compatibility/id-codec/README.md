@@ -31,6 +31,16 @@ BACKEND_NEXT_TEST_DB_PORT=58432 BACKEND_NEXT_TEST_REDIS_PORT=58379 \
   docker compose -p id-codec-575 -f packages/backend-next/compose.test.yml up -d --wait postgres redis
 BACKEND_NEXT_TEST_DB_PORT=58432 BACKEND_NEXT_TEST_REDIS_PORT=58379 \
   pnpm --filter backend-next test:integration test/integration/id-codec.test.ts
+```
+
+shippingは固定本家probeとは別に、PR先端と`origin/develop`の共通履歴を必要とする。浅いcloneではdevelopを取得し、現在の先端も含めて履歴を深くしてからmerge-baseの存在を確認する。共通履歴不足は比較テストの不一致と区別する。
+
+```sh
+git fetch --no-tags origin develop:refs/remotes/origin/develop
+if [ "$(git rev-parse --is-shallow-repository)" = true ]; then
+  git fetch --no-tags --unshallow origin "$(git rev-parse HEAD)" develop
+fi
+git merge-base origin/develop HEAD
 node scripts/check-shipping.mjs --base origin/develop
 ```
 
@@ -62,3 +72,5 @@ node scripts/check-shipping.mjs --base origin/develop
 追補後も`node --test scripts/*-contract*.test.mjs`は818件中817成功・0失敗・既存1skipでPASS。typecheck・変更ファイルlint・SPDX・locale safetyもPASSした。前述の817件の結果は追補前の測定として保持する。
 
 比較部分を分離した追補では、全root contractsを再実行して819件中818成功・0失敗・既存1skipでPASSした。元のscopeによる拒否とは別に、folder固有のhash不一致と比較だけを除去したcounterexampleの拒否を確認している。productionとHTTP fixtureは前の追補から変更していない。
+
+2026-11-19の追加確認で、shipping用の`origin/develop`取得とmerge-base事前確認をprobeの固定SHA取得から分けた。テスト専用runtime poolには既存pgの`query_timeout: 10000`と`maxUses: 1`を設定する。読取期限の後も残る接続を通常のreleaseで退役させるためであり、productionの設定・接続処理は変えていない。pgの公開Pool APIによる限定診断では、50msの読取期限で失敗したclientを通常releaseし、remove通知とpoolのtotalCount=0を確認した。実HTTP/PG6件とtypecheckも再実行してPASS。ネットワーク障害専用の接続ハーネスや新しい本番の取消保証は追加しない。
