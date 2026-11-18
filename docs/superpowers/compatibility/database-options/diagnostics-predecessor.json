@@ -1,0 +1,38 @@
+{
+  "baseline": "706f82eb2086c7364001d770ffde73000911bd07",
+  "measurement": "diagnostics-results.json",
+  "files": {
+    "packages/backend-next/src/platform/database/data-source.ts": {
+      "currentSha256": "6099f03bb992d2386d3170b794813113773ac3e63092574628c391d4f30db4cd",
+      "previousSha256": "0ef647696a8b51f2ad257c4fb06dbc76f5d1b99efa7b39e35843c3c13787c39e",
+      "patches": [
+        {
+          "offset": 449,
+          "insert": ".js';\nimport { createLogger, type Logger } from '../logger.js';\nimport { createQueryDiagnostics } from './query-diagnostics",
+          "previous": ""
+        },
+        {
+          "offset": 1312,
+          "insert": ", logger: Logger = createLogger('database')",
+          "previous": ""
+        },
+        {
+          "offset": 1950,
+          "insert": "\tmaxQueryExecutionTime: 300,\n\t\tlogger: createQueryDiagnostics(logger),\n\t",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/connect-resources.ts": {
+      "currentSha256": "3a59947a796dd62d8f6c6cdd19b5873b508292038b8b3e171b38dd3ef447b9a3",
+      "previousSha256": "be9ba81cbfcdd1d9b650d0606f6b8927562967a2ea76395bf000a21383f4be52",
+      "patches": [
+        {
+          "offset": 5819,
+          "insert": ", logger",
+          "previous": ""
+        }
+      ]
+    }
+  }
+}

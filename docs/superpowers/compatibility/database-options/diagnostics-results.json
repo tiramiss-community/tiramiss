@@ -1,0 +1,57 @@
+{
+  "scope": "database-slow-diagnostics-and-query-cache-inventory-567",
+  "recordedAtUtc": "2026-11-18T13:08:28.364961+00:00",
+  "baseRevision": "706f82eb2086c7364001d770ffde73000911bd07",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "upstreamFullServerMeasured": false,
+  "issueComplete": false,
+  "queryCacheImplemented": false,
+  "diagnosticContentDifferenceApprovedByUser": false,
+  "environment": {
+    "node": "26.4.0",
+    "pnpm": "12.9.1",
+    "postgres": "18.6",
+    "pg": "8.23.1",
+    "typeorm": "1.1.1",
+    "composeProject": "backend-next-db-diagnostics-567",
+    "postgresPort": 59675,
+    "redisPort": 57867
+  },
+  "inputs": {
+    "packages/backend-next/src/platform/database/data-source.ts": "6099f03bb992d2386d3170b794813113773ac3e63092574628c391d4f30db4cd",
+    "packages/backend-next/src/platform/database/query-diagnostics.ts": "02f3589b15b281fffa910994930c3f69010856585eaafa8cbaea63a8bb84433d",
+    "packages/backend-next/src/platform/connect-resources.ts": "3a59947a796dd62d8f6c6cdd19b5873b508292038b8b3e171b38dd3ef447b9a3",
+    "packages/backend-next/test/unit/database-diagnostics.test.ts": "3429f0fe8b66b4c878476094f7a98b1396a7065b370adc89e61f9da19b326a08",
+    "packages/backend-next/test/integration/database-diagnostics.test.ts": "c97a0fe9f8532554c30d66c6c9cf12c553d96f7b4d2e8267b371dd193479e2d8",
+    "packages/backend-next/test/helpers/pinned-database-diagnostics.ts": "1a5c197a55f0f2827bf366105187b68b12e09ac89b3f2dd74017b6171d280c65",
+    "packages/backend-next/test/fixtures/database-options/postgres.ts.txt": "c6879b6b23c5fb1e7518ff0eaa02397791470732389954648f42ab13c0eaaa74",
+    "packages/backend-next/test/fixtures/database-options/stats.ts.txt": "be92712b4bc18caf4571ec198d995fca330103aac7a0ae1d970e8923603210e1",
+    "packages/backend-next/test/integration/database-options.test.ts": "e4539e874dddfb5ec9a77322ef8fbd07751f165825d78b3f62b746c1ed5664d3",
+    "packages/backend-next/test/integration/transaction-runner.test.ts": "c6a6d77f1cd2e45e7e693f06bcdfc9f4799bc0786a7c2348df6ab5e1d5c87877",
+    "packages/backend-next/src/platform/logger.ts": "683c468226db1acc37744c74af1978f0e0937670980052c6710ee810375650ae",
+    "packages/backend-next/package.json": "43c4d758c98d154e88307cf78e8c7296cc3ba0204712fc549388acbefa093888",
+    "pnpm-lock.yaml": "fbdf4bfbb12f02d0cee063a5636bc1469afd104d35de54235a47dd30af23fd3c"
+  },
+  "results": {
+    "unit": {
+      "passed": 5339,
+      "skipped": 1,
+      "files": 156
+    },
+    "integration": {
+      "passed": 36,
+      "files": 3
+    },
+    "newIntegration": 11
+  },
+  "logs": {
+    "/tmp/db-diagnostics-red.log": "5425b40c3ab76746c3f484314ed9efe063bead6114717a960539f3f029c08f42",
+    "/tmp/db-diagnostics-integration.log": "321af1988309dd2478aaa2760edda7f81b530550045df27d8b6aa59a0e825d12",
+    "/tmp/db-diagnostics-unit-all.log": "0aad46d586c53f32334ac6ce70f34a4c836dc9a73918184495d1c55b4fe727b5",
+    "/tmp/db-diagnostics-build.log": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c",
+    "/tmp/db-diagnostics-typecheck-final.log": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+    "/tmp/db-diagnostics-sync.log": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd",
+    "/tmp/db-diagnostics-real-final.log": "b1aae791ce91096a4f50eca5169eeff8360d113915cb8f27bfefbd7897462f5d",
+    "/tmp/db-diagnostics-shipping.log": "e5a424618320432a0c36aef7d3134e9193ea010938482ece9ed85c95cb777e9c"
+  }
+}

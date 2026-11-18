@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectDatabaseDiagnosticsInput } from './database-diagnostics-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -64,7 +65,7 @@ test('per-query primary reads and initialization ownership keep exact prior inpu
 	const final = JSON.parse(read('docs/superpowers/compatibility/database-options/replication-final-predecessor.json'));
 	const measured = JSON.parse(read('docs/superpowers/compatibility/database-options/replication-final-results.json'));
 	for (const [path, binding] of Object.entries(final.files)) {
-		const actual = read(path);
+		const actual = projectDatabaseDiagnosticsInput(path, read(path));
 		assert.equal(sha(actual), binding.currentSha256, path);
 		assert.equal(measured.inputs[path], binding.currentSha256, path);
 		assert.equal(sha(projectDatabaseReplicationFinalInput(path, actual)), binding.previousSha256, path);
@@ -72,4 +73,22 @@ test('per-query primary reads and initialization ownership keep exact prior inpu
 		assert.equal(projectDatabaseReplicationFinalInput(path, drift), drift);
 		assert.equal(projectDatabaseOptionsInput(path, drift), drift);
 	}
+});
+
+
+test('slow-query diagnostic wiring retains exact prior inputs without hiding further drift', () => {
+	const diagnostics = JSON.parse(read('docs/superpowers/compatibility/database-options/diagnostics-predecessor.json'));
+	const measured = JSON.parse(read('docs/superpowers/compatibility/database-options/diagnostics-results.json'));
+	assert.equal(diagnostics.baseline, '706f82eb2086c7364001d770ffde73000911bd07');
+	for (const [path, binding] of Object.entries(diagnostics.files)) {
+		const actual = read(path);
+		assert.equal(sha(actual), binding.currentSha256, path);
+		assert.equal(measured.inputs[path], binding.currentSha256, path);
+		assert.equal(sha(projectDatabaseDiagnosticsInput(path, actual)), binding.previousSha256, path);
+		const drift = Buffer.concat([actual, Buffer.from('\n')]);
+		assert.equal(projectDatabaseDiagnosticsInput(path, drift), drift);
+		assert.equal(projectDatabaseOptionsInput(path, drift), drift);
+	}
+	const unrelated = Buffer.from('unrelated current bytes');
+	assert.equal(projectDatabaseDiagnosticsInput('unrelated', unrelated), unrelated);
 });

@@ -99,7 +99,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 	};
 
 	const initialize = async () => {
-		const dataSource = createDataSource(config.database, config.processes.startupTimeoutMs);
+		const dataSource = createDataSource(config.database, config.processes.startupTimeoutMs, logger);
 		scope.defer(async () => {
 			if (dataSource.isInitialized) {
 				await dataSource.destroy();
