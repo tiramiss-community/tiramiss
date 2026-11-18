@@ -12,13 +12,17 @@
 
 `source-probe.mjs`は固定コミットのIdServiceメソッドと6形式・bigint helperの宣言をASTで取り出して実行する。宣言の手書き置換は行わず、ファイルごとのSHA-256を`observations.json`へ記録する。本家のulid依存と同じ3.0.2を利用する。乱数は明示double（AID seed=0、AIDX node=0000、Math.random=0、ULID PRNG=0）であり、生成IDの乱数部分のバイト一致は要求しない。時計はケースごとに固定する。
 
-`observations.json`は138生成ケースと12既存IDを持つ。既存IDは各形式の追加部分が0/最大になるもの。`safe`と`full.date`/`full.additional`も本家の担当引継ぎ用に採取する。codecがこれらの未使用APIを実装・利用した証拠ではない。
+`observations.json`は138生成ケースと13既存IDを持つ。既存IDは各形式の追加部分が0/最大になるものと、短いobjectidに非ゼロ接尾辞を持つもの。`safe`と`full.date`/`full.additional`も本家の担当引継ぎ用に採取する。codecがこれらの未使用APIを実装・利用した証拠ではない。
 
 ## 再現と検証
 
 repo root、指定Node/pnpm、backend-nextとbackend-upstreamの依存導入後:
 
+浅いcloneなどで固定本家のGitオブジェクトがない場合は、先に固定SHAを取得する。probeは作業ツリーではなく、そのGitオブジェクトを読む。既に存在する環境ではfetchは省略できる。
+
 ```sh
+git fetch --no-tags https://github.com/misskey-dev/misskey.git 8e07cf085adf7009583d234a208e30436f020e26
+git cat-file -e '8e07cf085adf7009583d234a208e30436f020e26^{commit}'
 node docs/superpowers/compatibility/id-codec/source-probe.mjs --check
 pnpm --filter backend-next test test/unit/id-codec test/unit/config.test.ts
 pnpm --filter backend-next... build
@@ -50,3 +54,9 @@ node scripts/check-shipping.mjs --base origin/develop
 独立レビュー後、source probeの例外記録を生成時に限定した。解析時の例外はprobe自体を失敗させる。現コーパスの生成失敗はULIDの負日時2件と48bit超過1件だけで、単体では例外の名前も比較する。HTTPサーバー・DB・一時設定の後片付けは前段のcloseが失敗しても試みる。
 
 追補後のroot gate: `node --test scripts/*-contract*.test.mjs` が817件中816成功・0失敗・1skip（既存の条件付き項目）でPASS。追加前の既存`id-codec.test.ts`をhistorical receiptの元バイトで保持し、新規ケースは`id-codec-compatibility.test.ts`へ分離した。最初の全root実行では既存単体ファイルのhash差による3失敗があり、分離後に全件を再実行した。
+
+2026-11-19 Webレビュー追補: 138生成・既存12件の期待値を維持し、非ゼロ接尾辞を持つ17文字objectidを1件追加した。現在の近傍単体は209件/3files、HTTP/PGは6件がPASS。HTTP fixtureは同じ通常appとHonoのNode listenerを直接127.0.0.1へ接続し、実TCPの保存後読取を維持する。Vitestのキャンセルと10秒のfetch期限を渡し、ケース終了hookで時計復元・リクエスト中断・受付停止・受理済み処理とapp workの待機を行う。後片付けの待機は15秒、hookは20秒を上限とする。productionのHTTP helperと運用設定は変えていない。
+
+追加のroot contractは、pubsubの入力検証後にfolder側の読取だけへ変更を入れて拒否を確認する。folder自身の入力照合ループを意図的に外したcounterexampleで新規テストが失敗し、復元後3件がPASSした。固定SHAのGitオブジェクト取得・事前存在確認も再現手順へ追加した。
+
+追補後も`node --test scripts/*-contract*.test.mjs`は818件中817成功・0失敗・既存1skipでPASS。typecheck・変更ファイルlint・SPDX・locale safetyもPASSした。前述の817件の結果は追補前の測定として保持する。

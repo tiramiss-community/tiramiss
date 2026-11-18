@@ -30,3 +30,21 @@ test('historical folder receipts remain sealed and reject changed ID bytes throu
 		assert.throws(() => validate(undefined, path => path === file ? Buffer.concat([read(path), Buffer.from('\n')]) : read(path), () => null), /measured current input drift/);
 	}
 });
+
+
+test('folder input reads reject ID drift after the pubsub input validation has completed', () => {
+	const directory = 'docs/superpowers/compatibility/drive-folders/';
+	let pubsubInputsValidated = false;
+	let folderInputs = false;
+	const reader = path => {
+		if (path === directory + 'pubsub-fix-predecessor.json') pubsubInputsValidated = true;
+		if (pubsubInputsValidated && path === directory + 'current-evidence.json') folderInputs = true;
+		return folderInputs && path === file ? Buffer.concat([read(path), Buffer.from('\n')]) : read(path);
+	};
+	assert.throws(() => validateDriveFoldersSuccessor(undefined, reader, () => null), error => {
+		assert(pubsubInputsValidated && folderInputs, 'pubsub inputs pass before the folder input changes');
+		assert.equal(error.message.split('\n')[0], `measured current input drift: ${file}`);
+		assert(!error.message.includes('pubsub successor'));
+		return true;
+	});
+});

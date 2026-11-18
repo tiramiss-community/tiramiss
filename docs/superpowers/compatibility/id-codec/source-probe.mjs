@@ -58,6 +58,11 @@ for (const [method, file] of [['aid', 'aid', 8], ['aidx', 'aidx', 8], ['meid', '
 		const full = context.service.parseFull(id);
 		existingIds.push({ method, id, parsedAt: context.service.parse(id).date.getTime(), full: { date: full.date, additional: full.additional.toString() } });
 	}
+	if (method === 'objectid') {
+		const id = '0123456789abcdef0';
+		const full = context.service.parseFull(id);
+		existingIds.push({ method, id, parsedAt: context.service.parse(id).date.getTime(), full: { date: full.date, additional: full.additional.toString() } });
+	}
 	for (const [label, value] of inputs) {
 		clock = label === 'clock-zero' || label === 'clock-negative' ? value : label.includes('rollover') || label.startsWith('ulid-') ? value + 1 : now;
 		const input = label === 'omitted' ? undefined : label === 'nan' ? NaN : value;
