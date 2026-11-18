@@ -9,6 +9,8 @@ import { DataSource, type DataSourceOptions } from 'typeorm';
 import { entities } from 'backend-upstream/entities';
 import { noteChartEntities } from './chart/schema.js';
 import { notificationEntities } from './notification/schema.js';
+import { createLogger, type Logger } from '../logger.js';
+import { createQueryDiagnostics } from './query-diagnostics.js';
 import type { DatabaseConfig } from '../../config/types.js';
 
 // Match upstream's scalar conversion, including Number precision and unchanged int8 arrays.
@@ -31,7 +33,7 @@ export function databaseOptions(
 	};
 }
 
-export function createDataSource(config: DatabaseConfig, timeoutMs = 30000): DataSource {
+export function createDataSource(config: DatabaseConfig, timeoutMs = 30000, logger: Logger = createLogger('database')): DataSource {
 	const options = databaseOptions(config, timeoutMs);
 	// Upstream's CLI ormconfig stays on the primary and inherits its timeout; replication and defaults are runtime-only.
 	return createRuntimeDataSource({
@@ -42,5 +44,7 @@ export function createDataSource(config: DatabaseConfig, timeoutMs = 30000): Dat
 		} }),
 		extra: { statement_timeout: 10000, ...options.extra },
 		invalidWhereValuesBehavior: { null: 'ignore', undefined: 'ignore' },
+		maxQueryExecutionTime: 300,
+		logger: createQueryDiagnostics(logger),
 	});
 }

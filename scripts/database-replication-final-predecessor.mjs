@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectDatabaseDiagnosticsInput } from './database-diagnostics-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -13,6 +14,7 @@ const { files } = JSON.parse(record);
 
 // Only the measured per-query primary reads and initialization ownership changes project to their prior inputs.
 export function projectDatabaseReplicationFinalInput(path, actual) {
+	actual = projectDatabaseDiagnosticsInput(path, actual);
 	const binding = files[path];
 	if (!binding || sha(actual) !== binding.currentSha256) {
 		return actual;
