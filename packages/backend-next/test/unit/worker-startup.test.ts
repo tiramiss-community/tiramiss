@@ -18,6 +18,7 @@ const state = vi.hoisted(() => ({
 	releaseResources: vi.fn(async () => {}),
 }));
 vi.mock('../../src/composition/create-runtime.js', () => ({ createRuntime: async () => ({
+	announcementArchives: { archive: async () => false, restore: async () => {} },
 	federationKeys: { readUserKeypair: async () => {
 		throw new Error('key unavailable');
 	} }, outboundHttp: { send: vi.fn(async () => {
@@ -128,17 +129,17 @@ test('waits for readiness and every parallel stop before releasing resources', a
 	const ready = gate();
 	state.ready.set('endedPollNotification', () => ready.promise);
 	const pending = startWorker(testConfig());
-	await vi.waitFor(() => expect(state.workers).toHaveLength(3));
+	await vi.waitFor(() => expect(state.workers).toHaveLength(4));
 	ready.resolve();
 	const running = await pending;
-	expect(state.workers.map(w => w.name)).toEqual(['endedPollNotification', 'userWebhookDeliver', 'deliver']);
+	expect(state.workers.map(w => w.name)).toEqual(['endedPollNotification', 'userWebhookDeliver', 'deliver', 'system']);
 	const closing = gate();
 	state.close.set('userWebhookDeliver', () => closing.promise);
 	let stopped = false;
 	const stop = running.stop().then(() => {
 		stopped = true;
 	});
-	await vi.waitFor(() => expect(state.events.filter(e => e.startsWith('close:'))).toHaveLength(3));
+	await vi.waitFor(() => expect(state.events.filter(e => e.startsWith('close:'))).toHaveLength(4));
 	expect(stopped).toBe(false);
 	expect(state.releaseResources).not.toHaveBeenCalled();
 	closing.resolve();
@@ -168,7 +169,7 @@ test.each(['userWebhookDeliver', 'deliver'])('retains %s startup error after wai
 	closing.resolve();
 	expect(await result).toBe(failure);
 	expect(state.logger.error).toHaveBeenCalledWith('cleanup.failed', { error: expect.any(AggregateError) });
-	expect(state.events.filter(e => e.startsWith('close:'))).toHaveLength(3);
+	expect(state.events.filter(e => e.startsWith('close:'))).toHaveLength(4);
 	expect(state.releaseResources).toHaveBeenCalledOnce();
 });
 

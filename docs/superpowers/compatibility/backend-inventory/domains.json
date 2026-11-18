@@ -3921,6 +3921,54 @@
       ],
       "evidenceRevision": "0b687892de52469f97755dcf81f630e4e45035fc",
       "note": "#495: 固定本家literal callbacksと実PG53入力を通常HTTP/PGと比較。正規化・前方検索・offset/limit・全件数順・attached絞込み・不存在と全列不変を検証。利用者一覧#499・trend#496と親#186は未完了。 R2: 同数内だけの順序正規化、順位/対象/内容の破損拒否と同数を分断しないページ境界を検査。search nameのみ・show7列のみの実SQLと58 HTTP/PGを検証し、R1 raw/receiptを保持。"
+    },
+    "job:packages/backend/src/queue/QueueProcessorService.ts:175": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/announcement/public.ts",
+        "packages/backend-next/src/modules/announcement/archive.ts",
+        "packages/backend-next/src/platform/database/announcement-archive.ts",
+        "packages/backend-next/src/platform/job-queue/announcement-archive.ts",
+        "packages/backend-next/src/platform/job-queue/business-jobs.ts",
+        "packages/backend-next/src/platform/connect-resources.ts",
+        "packages/backend-next/src/composition/queue-workers.ts",
+        "packages/backend-next/src/processes/lifecycle.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/announcement-archive.test.ts",
+        "packages/backend-next/test/integration/announcement-archive.test.ts",
+        "packages/backend-next/test/processes/announcement-archive.test.ts",
+        "docs/superpowers/compatibility/announcement-archive/source-probe.mjs",
+        "docs/superpowers/compatibility/announcement-archive/corpus.json",
+        "docs/superpowers/compatibility/announcement-archive/observations.json",
+        "docs/superpowers/compatibility/announcement-archive/README.md"
+      ],
+      "evidenceRevision": "4597043a15692a1a35f60bbc4490a66afef76edd",
+      "note": "#449/#450: normal child startup after migration checks restores active dated announcements; named system archiveAnnouncement worker preserves pinned identity, delay and retention and atomically checks ID/active/exact saved deadline/due time. Fixed source9 PostgreSQL cases and source producer/processor with real Redis/BullMQ match saved observations; normal startup/worker tests cover stale/deleted/cancelled dates, duplication, DB retry, failed/completed replacement and enqueue failure; ordinary process restart restores lost reservations. Admin CRUD/cancellation #194, other system handlers/schedulers #199/#200, conservative cutover system rejection #526, parent #193/#199/#114 remain unfinished. Full upstream Nest server not measured."
+    },
+    "processor:ArchiveAnnouncement": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/announcement/public.ts",
+        "packages/backend-next/src/modules/announcement/archive.ts",
+        "packages/backend-next/src/platform/database/announcement-archive.ts",
+        "packages/backend-next/src/platform/job-queue/announcement-archive.ts",
+        "packages/backend-next/src/platform/job-queue/business-jobs.ts",
+        "packages/backend-next/src/platform/connect-resources.ts",
+        "packages/backend-next/src/composition/queue-workers.ts",
+        "packages/backend-next/src/processes/lifecycle.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/announcement-archive.test.ts",
+        "packages/backend-next/test/integration/announcement-archive.test.ts",
+        "packages/backend-next/test/processes/announcement-archive.test.ts",
+        "docs/superpowers/compatibility/announcement-archive/source-probe.mjs",
+        "docs/superpowers/compatibility/announcement-archive/corpus.json",
+        "docs/superpowers/compatibility/announcement-archive/observations.json",
+        "docs/superpowers/compatibility/announcement-archive/README.md"
+      ],
+      "evidenceRevision": "4597043a15692a1a35f60bbc4490a66afef76edd",
+      "note": "#449/#450: normal child startup after migration checks restores active dated announcements; named system archiveAnnouncement worker preserves pinned identity, delay and retention and atomically checks ID/active/exact saved deadline/due time. Fixed source9 PostgreSQL cases and source producer/processor with real Redis/BullMQ match saved observations; normal startup/worker tests cover stale/deleted/cancelled dates, duplication, DB retry, failed/completed replacement and enqueue failure; ordinary process restart restores lost reservations. Admin CRUD/cancellation #194, other system handlers/schedulers #199/#200, conservative cutover system rejection #526, parent #193/#199/#114 remain unfinished. Full upstream Nest server not measured."
     }
   }
 }

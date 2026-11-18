@@ -124,7 +124,7 @@ test('fails startup on connection loss after producer readiness while later init
 			}, (error: unknown) => error);
 		expect(outcome).toMatchObject({
 			code: 'JOB_QUEUE_REDIS_ENDED',
-			details: { queue: expect.stringMatching(/^(endedPollNotification|deliver|userWebhookDeliver)$/) },
+			details: { queue: expect.stringMatching(/^(endedPollNotification|deliver|userWebhookDeliver|system)$/) },
 		});
 	} finally {
 		runtimeHooks.afterReady = undefined;

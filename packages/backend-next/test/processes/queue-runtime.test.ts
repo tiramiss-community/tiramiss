@@ -210,7 +210,7 @@ test.each(['deliver', 'all'])('rejected %s worker cleanup still closes all real 
 		await child.ready;
 		child.child.kill('SIGTERM');
 		expect((await bounded(child.exit)).code, child.output()).toBe(1);
-		expect(new Set(child.messages.filter((m: any) => m.type === 'fixture-worker-closed').map((m: any) => m.queue))).toEqual(new Set(['endedPollNotification', 'deliver', 'userWebhookDeliver']));
+		expect(new Set(child.messages.filter((m: any) => m.type === 'fixture-worker-closed').map((m: any) => m.queue))).toEqual(new Set(['endedPollNotification', 'deliver', 'userWebhookDeliver', 'system']));
 		expect(child.output()).toContain('shutdown.failed');
 		expect((await clients(f.control)).some(line => line.includes(f.config.redisForJobQueue.prefix))).toBe(false);
 		await vi.waitFor(async () => {

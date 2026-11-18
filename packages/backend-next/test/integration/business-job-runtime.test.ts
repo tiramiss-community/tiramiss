@@ -36,14 +36,14 @@ function fixture() {
 	};
 }
 
-test('producer-only readiness prepares three queues, creates no workers and releases its clients', async () => {
+test('producer-only readiness prepares four queues, creates no workers and releases its clients', async () => {
 	const f = fixture();
 	try {
 		await Promise.all(f.queues.map(queue => queue.waitUntilReady()));
 		const namedClients = async () => String(await f.control.client('LIST')).split('\n').filter(line => line.includes(`name=${f.connectionName} `)).length;
 		const baseline = await namedClients();
 		await f.producer.runtime.ready(f.definitions.queues, { timeout: 5000 });
-		expect(await namedClients()).toBe(baseline + 3);
+		expect(await namedClients()).toBe(baseline + 4);
 		for (const queue of f.queues) {
 			expect(await queue.getWorkers()).toEqual([]);
 		}

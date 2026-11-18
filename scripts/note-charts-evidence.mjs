@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectAnnouncementArchiveInput } from './announcement-archive-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { projectHashtagCatalogInput } from './hashtag-catalog-evidence.mjs';
 import { createHash } from 'node:crypto';
@@ -73,5 +74,5 @@ export function validateNoteChartsEvidence(readFile = read, optional = optionalR
 }
 
 export function projectNoteChartsInput(path, actual) {
-	return projectPreviousNoteChartsInput(path, projectHashtagCatalogInput(path, actual));
+	return projectPreviousNoteChartsInput(path, projectHashtagCatalogInput(path, projectAnnouncementArchiveInput(path, actual)));
 }

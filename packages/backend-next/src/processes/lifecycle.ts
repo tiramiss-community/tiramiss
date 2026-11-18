@@ -29,6 +29,7 @@ export async function startManagedProcess(
 	try {
 		await assertMigrationsApplied(config.database);
 		await resources.meta.fetch();
+		await resources.announcementArchives.restore();
 		scope.defer(await start(resources, reportFailure));
 		return { stop: () => scope.close(), failure: Promise.race([resources.failure, roleFailure]) };
 	} catch (error) {

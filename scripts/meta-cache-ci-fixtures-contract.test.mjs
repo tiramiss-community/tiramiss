@@ -62,7 +62,7 @@ test('CI fixture follow-up preserves the earlier27/33 measured receipt and prede
 });
 test('CI fixture helper imports only builtins, scope and its worker-log successor leaf without Git or ancestor readers', () => {
  const source = read('scripts/meta-cache-ci-fixtures-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || ['./evidence-validation-scope.mjs', './worker-logging-integration-evidence.mjs'].includes(match[1])));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || ['./evidence-validation-scope.mjs', './worker-logging-integration-evidence.mjs', './announcement-archive-predecessor.mjs'].includes(match[1])));
  const successor = read('scripts/worker-logging-integration-evidence.mjs').toString();
  assert([...successor.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:')));
  assert(!/execFile|spawn|import\(/.test(source + successor));

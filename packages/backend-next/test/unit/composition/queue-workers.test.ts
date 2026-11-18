@@ -25,7 +25,7 @@ vi.mock('../../../src/platform/job-queue/user-webhook.js', async original => ({
 	createUserWebhookProcessor: () => ({ process: async () => 'Success', idle: state.webhookIdle }),
 }));
 const logger = { error: vi.fn() };
-const resources = { logger, outboundHttp: { send: vi.fn() }, dataSource: {} } as unknown as RuntimeResources;
+const resources = { announcementArchives: { archive: async () => false }, logger, outboundHttp: { send: vi.fn() }, dataSource: {} } as unknown as RuntimeResources;
 
 function event(reason: BullmqManagerError['reason']): BullmqManagerError {
 	return { queue: 'deliver', resource: 'worker', reason, error: new Error('diagnostic'), connection: 'command' } as BullmqManagerError;
@@ -38,7 +38,7 @@ beforeEach(() => {
 	state.closed = new Set(['deliver', 'userWebhookDeliver', 'endedPollNotification']);
 });
 
-test('registers three defaults before starting and waits for readiness', async () => {
+test('registers three defaults and a named system handler before starting and waits for readiness', async () => {
 	let release!: () => void;
 	state.start.mockImplementation(async () => {
 		await new Promise<void>(resolve => {
@@ -51,10 +51,12 @@ test('registers three defaults before starting and waits for readiness', async (
 	});
 	await vi.waitFor(() => expect(state.start).toHaveBeenCalledOnce());
 	expect(ready).toBe(false);
-	expect(state.handle.mock.calls.map(([definition]) => definition.options.queue.name)).toEqual(['endedPollNotification', 'userWebhookDeliver', 'deliver']);
-	for (const call of state.handle.mock.calls) {
+	expect(state.handle.mock.calls.map(([definition]) => definition.options.queue.name)).toEqual(['endedPollNotification', 'userWebhookDeliver', 'deliver', 'system']);
+	for (const call of state.handle.mock.calls.slice(0, 3)) {
 		expect(call[2]).toEqual({ defaultForQueue: true });
 	}
+	expect(state.handle.mock.calls[3][0].name).toBe('archiveAnnouncement');
+	expect(state.handle.mock.calls[3][2]).toBeUndefined();
 	release();
 	await (await pending)();
 });

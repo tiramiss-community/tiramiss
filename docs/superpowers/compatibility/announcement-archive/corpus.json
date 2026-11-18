@@ -1,0 +1,14 @@
+{
+  "now": "2026-11-18T00:00:00.000Z",
+  "cases": [
+    { "id": "due", "row": { "id": "target", "isActive": true, "autoArchiveAt": "2026-11-17T23:59:59.000Z" }, "announcementId": "target", "deadline": "2026-11-17T23:59:59.000Z", "calls": 1 },
+    { "id": "exact-deadline", "row": { "id": "target", "isActive": true, "autoArchiveAt": "2026-11-18T00:00:00.000Z" }, "announcementId": "target", "deadline": "2026-11-18T00:00:00.000Z", "calls": 1 },
+    { "id": "future", "row": { "id": "target", "isActive": true, "autoArchiveAt": "2026-11-18T00:00:00.001Z" }, "announcementId": "target", "deadline": "2026-11-18T00:00:00.001Z", "calls": 1 },
+    { "id": "changed-date", "row": { "id": "target", "isActive": true, "autoArchiveAt": "2026-11-17T23:59:58.000Z" }, "announcementId": "target", "deadline": "2026-11-17T23:59:59.000Z", "calls": 1 },
+    { "id": "inactive", "row": { "id": "target", "isActive": false, "autoArchiveAt": "2026-11-17T23:59:59.000Z" }, "announcementId": "target", "deadline": "2026-11-17T23:59:59.000Z", "calls": 1 },
+    { "id": "removed-date", "row": { "id": "target", "isActive": true, "autoArchiveAt": null }, "announcementId": "target", "deadline": "2026-11-17T23:59:59.000Z", "calls": 1 },
+    { "id": "wrong-id", "row": { "id": "target", "isActive": true, "autoArchiveAt": "2026-11-17T23:59:59.000Z" }, "announcementId": "other", "deadline": "2026-11-17T23:59:59.000Z", "calls": 1 },
+    { "id": "deleted", "row": null, "announcementId": "target", "deadline": "2026-11-17T23:59:59.000Z", "calls": 1 },
+    { "id": "duplicate", "row": { "id": "target", "isActive": true, "autoArchiveAt": "2026-11-17T23:59:59.000Z" }, "announcementId": "target", "deadline": "2026-11-17T23:59:59.000Z", "calls": 2 }
+  ]
+}

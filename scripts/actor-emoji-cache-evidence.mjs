@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectAnnouncementArchiveInput } from './announcement-archive-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -36,7 +37,7 @@ function record(readFile) {
 export function validateActorEmojiCacheEvidence(value, rawRead = read, optional = optionalRead) {
  return scopedEvidenceValidation(validateActorEmojiCacheEvidence, value, rawRead, optional, (rawRead, optional) => {
   const currentRead = rawRead;
-  rawRead = path => actorEmojiBatchFiles.includes(path) ? readBeforeActorEmojiBatch(path, currentRead, optional) : projectNotesPaginationInput(path, projectStreamCredentialInput(path, currentRead(path)));
+  rawRead = path => actorEmojiBatchFiles.includes(path) ? readBeforeActorEmojiBatch(path, currentRead, optional) : projectNotesPaginationInput(path, projectStreamCredentialInput(path, projectAnnouncementArchiveInput(path, currentRead(path))));
   if (value === undefined) value = record(rawRead);
   assert.equal(sha(Buffer.from(JSON.stringify(value, null, 2) + '\n')), seal, 'actor emoji cache receipt seal');
   assert.equal(value.scope, 'actor-emoji-cache-303');

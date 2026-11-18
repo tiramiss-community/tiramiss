@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectAnnouncementArchiveInput } from './announcement-archive-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { projectWorkerLoggingIntegrationInput } from './worker-logging-integration-evidence.mjs';
 import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
@@ -56,7 +57,7 @@ export function validateMetaCacheCiFixtures(value, readFile = read, optional = o
  assert.equal(value.postingComplete, false);
  assert.equal(value.upstreamFullServerMeasured, false);
  for (const path of ciFixtureFiles) {
-  assert.equal(sha(projectWorkerLoggingIntegrationInput(path, readFile(path), readFile)), value.inputs[path], `Meta cache measured current input drift (CI fixtures): ${path}`);
+  assert.equal(sha(projectWorkerLoggingIntegrationInput(path, projectAnnouncementArchiveInput(path, readFile(path)), readFile)), value.inputs[path], `Meta cache measured current input drift (CI fixtures): ${path}`);
   assert.deepEqual(value.validatedBy[path], path.includes('/unit/') ? ['worker-startup', 'unit', 'typecheck'] : ['near-integration', 'integration', 'typecheck']);
  }
  const previous = sealed(readFile(directory + 'ci-fixtures-predecessor.json'), predecessorSeal, 'predecessor');
@@ -89,7 +90,7 @@ export function readPreMetaCacheCiFixtures(path, encoding, readFile = read, opti
  }
  const previous = validateMetaCacheCiFixtures(undefined, readFile, optional);
  const current = sealed(readFile(directory + 'ci-fixtures-current-evidence.json'), seal, 'receipt');
- assert.equal(sha(projectWorkerLoggingIntegrationInput(path, readFile(path), readFile)), current.inputs[path], `Meta cache measured current input drift (CI fixtures): ${path}`);
+ assert.equal(sha(projectWorkerLoggingIntegrationInput(path, projectAnnouncementArchiveInput(path, readFile(path)), readFile)), current.inputs[path], `Meta cache measured current input drift (CI fixtures): ${path}`);
  const bytes = Buffer.from(previous[path]);
  return encoding ? bytes.toString(encoding) : bytes;
  });

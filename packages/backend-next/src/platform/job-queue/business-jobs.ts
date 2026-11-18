@@ -9,6 +9,8 @@ import { baseQueueOptions, baseWorkerOptions } from './connection.js';
 import { DELIVER, deliverJobs, deliverWorkerOptions, httpRelatedBackoff } from './deliver.js';
 import { ENDED_POLL_NOTIFICATION, pollEndedJobOptions } from './ended-poll-notification.js';
 import { USER_WEBHOOK_DELIVER, userWebhookJob } from './user-webhook.js';
+import { SYSTEM, ARCHIVE_ANNOUNCEMENT, announcementArchiveJob } from './announcement-archive.js';
+import type { AnnouncementArchiveJob } from './announcement-archive.js';
 import type { JobDefinition } from '@mokurokujs/core';
 import type { BullMQQueueDefinition } from '@mokurokujs/bullmq-adapter';
 import type { RedisConfig } from '../../config/types.js';
@@ -17,7 +19,7 @@ import type { PollEndedJob } from './ended-poll-notification.js';
 import type { StoredUserWebhookJob, UserWebhookEvent, UserWebhookTarget } from './user-webhook.js';
 import type { OwnedBusinessJobRuntime } from './runtime.js';
 
-export type BusinessQueueName = 'endedPollNotification' | 'deliver' | 'userWebhookDeliver';
+export type BusinessQueueName = 'endedPollNotification' | 'deliver' | 'userWebhookDeliver' | 'system';
 export interface BusinessJobConfig {
 	redis: RedisConfig;
 	connectTimeoutMs: number;
@@ -26,12 +28,14 @@ export interface BusinessJobConfig {
 	deliverJobPerSec?: number;
 }
 export interface BusinessJobDefinitions {
-	readonly queues: readonly [BullMQQueueDefinition, BullMQQueueDefinition, BullMQQueueDefinition];
+	readonly queues: readonly [BullMQQueueDefinition, BullMQQueueDefinition, BullMQQueueDefinition, BullMQQueueDefinition];
+	readonly announcementArchive: JobDefinition<AnnouncementArchiveJob, void>;
 	readonly pollEnded: JobDefinition<PollEndedJob, void>;
 	readonly deliver: JobDefinition<DeliverJob, string>;
 	readonly userWebhook: JobDefinition<StoredUserWebhookJob, string>;
 }
 export interface BusinessJobProducers {
+	scheduleAnnouncementArchive(announcementId: string, autoArchiveAt: Date): Promise<void>;
 	schedulePollEnded(input: { noteId: string; delayMs: number }): Promise<void>;
 	deliverMany(batch: DeliverBatch): Promise<void>;
 	deliverOne(input: DeliverOne): Promise<void>;
@@ -55,8 +59,13 @@ export function createBusinessJobDefinitions(config: BusinessJobConfig): Busines
 			concurrency: 64, limiter: { max: 64, duration: 1000 }, settings: { backoffStrategy: attempts => httpRelatedBackoff(attempts) },
 		},
 	}).build();
+	const system = defineQueueForBullMQ(SYSTEM, {
+		queueOptions: baseQueueOptions(redis, SYSTEM, connectTimeoutMs),
+		workerOptions: { ...baseWorkerOptions(redis, SYSTEM, connectTimeoutMs), autorun: false },
+	}).build();
 	return {
-		queues: [poll, deliver, webhook],
+		queues: [poll, deliver, webhook, system],
+		announcementArchive: defineJob<AnnouncementArchiveJob, void>(ARCHIVE_ANNOUNCEMENT, { queue: system }),
 		pollEnded: defineJob<PollEndedJob, void>(ENDED_POLL_NOTIFICATION, { queue: poll }),
 		deliver: defineJob<DeliverJob, string>(DELIVER, { queue: deliver }),
 		userWebhook: defineJob<StoredUserWebhookJob, string>(USER_WEBHOOK_DELIVER, { queue: webhook }),
@@ -65,6 +74,20 @@ export function createBusinessJobDefinitions(config: BusinessJobConfig): Busines
 
 export function createBusinessJobProducers(owner: OwnedBusinessJobRuntime, definitions: BusinessJobDefinitions, config: Pick<BusinessJobConfig, 'deliverJobMaxAttempts'>): BusinessJobProducers {
 	return {
+		async scheduleAnnouncementArchive(announcementId, autoArchiveAt) {
+			owner.assertOpen();
+			const { data, opts } = announcementArchiveJob(announcementId, autoArchiveAt, Date.now());
+			const queue = owner.queue(definitions.announcementArchive.options.queue!);
+			const existing = await queue.getJob(opts.jobId);
+			if (existing) {
+				const state = await existing.getState();
+				if (state !== 'completed' && state !== 'failed') {
+					return;
+				}
+				await queue.remove(opts.jobId);
+			}
+			await owner.runtime.enqueue(definitions.announcementArchive, data, { ...opts, jobName: ARCHIVE_ANNOUNCEMENT });
+		},
 		async schedulePollEnded(input) {
 			owner.assertOpen();
 			const { name, data, opts } = pollEndedJobOptions(input);

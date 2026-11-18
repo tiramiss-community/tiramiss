@@ -10,6 +10,8 @@ import { baseQueueOptions } from './connection.js';
 import type { BullmqManagerError } from '@mokurokujs/bullmq-adapter';
 import type { RedisConfig } from '../../config/types.js';
 import type { BusinessQueueName } from './business-jobs.js';
+import type { QueueDefinition } from '@mokurokujs/core';
+import type { Queue } from 'bullmq';
 
 class ObservedQueueManager extends BullMQQueueManager {
 	workerLogger?: Logger;
@@ -32,7 +34,7 @@ class ObservedQueueManager extends BullMQQueueManager {
 			}
 			try {
 				await worker.closing;
-				if (name === 'deliver' || name === 'endedPollNotification' || name === 'userWebhookDeliver') {
+				if (name === 'deliver' || name === 'endedPollNotification' || name === 'userWebhookDeliver' || name === 'system') {
 					closed.add(name);
 				}
 			} catch {
@@ -46,6 +48,7 @@ class ObservedQueueManager extends BullMQQueueManager {
 export interface OwnedBusinessJobRuntime {
 	readonly runtime: JobRuntime;
 	assertOpen(): void;
+	queue(definition: QueueDefinition): Pick<Queue, 'getJob' | 'remove'>;
 	stop(): Promise<void>;
 	closedWorkerQueues(): Promise<ReadonlySet<BusinessQueueName>>;
 }
@@ -62,6 +65,12 @@ export function createBusinessJobRuntime(options: { redis: RedisConfig; connectT
 			if (terminal) {
 				throw new Error('Business job runtime is closed');
 			}
+		},
+		queue(definition) {
+			if (terminal) {
+				throw new Error('Business job runtime is closed');
+			}
+			return manager.getOrCreateQueue(definition);
 		},
 		stop() {
 			terminal = true;

@@ -1,0 +1,231 @@
+{
+  "baseline": "e045cf2e70",
+  "productRevision": "4597043a15692a1a35f60bbc4490a66afef76edd",
+  "files": {
+    ".github/workflows/test-backend-next.yml": {
+      "currentSha256": "e6fa376cc4e5ae9777126c18912ed9cd5ac0e678325a9728edd1c7c3458cb795",
+      "previousSha256": "2d5591a5a03eae69eca95442a2e652d1ce220840683541eca4d3739c95885608",
+      "patches": [
+        {
+          "offset": 240,
+          "insert": "/**'\n      - 'docs/superpowers/compatibility/announcement-archive",
+          "previous": ""
+        },
+        {
+          "offset": 1157,
+          "insert": "/**'\n      - 'docs/superpowers/compatibility/announcement-archive",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/composition/queue-workers.ts": {
+      "currentSha256": "86162263dc8c17e3660a1b45b960f0478fb6b6c5262c18da4659fc26f194dbc9",
+      "previousSha256": "65c27fc3a218ebc33cbd4ea212ab638846bc035c50bb411550793d812625bc1f",
+      "patches": [
+        {
+          "offset": 435,
+          "insert": ".js';\nimport { createAnnouncementArchiveProcessor } from '../platform/job-queue/announcement-archive",
+          "previous": ""
+        },
+        {
+          "offset": 4221,
+          "insert": "owner.runtime.handle(definitions.announcementArchive, createAnnouncementArchiveProcessor(resources.announcementArchives.archive, resources.logger));\n\t\t",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/connect-resources.ts": {
+      "currentSha256": "b455014631be1536dca9ef0db5d8ecc29070a8f57e65ded7b692f407319313f2",
+      "previousSha256": "4891d4395cfa5bf193b0e2cc5ca9aeafd55b8e789fcef3c2efb48e29ec970504",
+      "patches": [
+        {
+          "offset": 241,
+          "insert": ".js';\nimport { createAnnouncementArchives } from '../modules/announcement/public.js';\nimport { createAnnouncementArchiveStore } from './database/announcement-archive",
+          "previous": ""
+        },
+        {
+          "offset": 11719,
+          "insert": "announcementArchives = createAnnouncementArchives({\n\t\t\t...createAnnouncementArchiveStore(dataSource.manager), schedule: jobs.scheduleAnnouncementArchive, now: () => new Date(),\n\t\t});\n\t\tconst ",
+          "previous": ""
+        },
+        {
+          "offset": 21059,
+          "insert": "announcementArchives, ",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/job-queue/runtime.ts": {
+      "currentSha256": "097af99001643aa1c9bcd72b196ad816a0b1fff99b6419248d9b82036f712ee1",
+      "previousSha256": "798762b440a5774c5f694576cd67765f75a90cfdc5231d0a12aebaa0fd7b2719",
+      "patches": [
+        {
+          "offset": 579,
+          "insert": "';\nimport type { QueueDefinition } from '@mokurokujs/core';\nimport type { Queue } from 'bullmq",
+          "previous": ""
+        },
+        {
+          "offset": 1609,
+          "insert": " || name === 'system'",
+          "previous": ""
+        },
+        {
+          "offset": 1872,
+          "insert": ";\n\tqueue(definition: QueueDefinition): Pick<Queue, 'getJob' | 'remove'>",
+          "previous": ""
+        },
+        {
+          "offset": 2686,
+          "insert": "queue(definition) {\n\t\t\tif (terminal) {\n\t\t\t\tthrow new Error('Business job runtime is closed');\n\t\t\t}\n\t\t\treturn manager.getOrCreateQueue(definition);\n\t\t},\n\t\t",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/processes/queue-runtime.test.ts": {
+      "currentSha256": "53a066716bcaff1830ec3e20eb8ff53d775e9dc83fe42f48b607e6818d2cdaf0",
+      "previousSha256": "b3eccb8e969b33af534bc7b2eb79667ae0d645f36a605d3b1f1b5e1e7d81048b",
+      "patches": [
+        {
+          "offset": 10912,
+          "insert": ", 'system'",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/queue-workers.test.ts": {
+      "currentSha256": "de259fea52ef22d8285a42df1e8c77ec1b8dde1d62041570b6a871120bd9ff34",
+      "previousSha256": "0a857edf1a5e69d8ab0fe14d0e26cbe3adbe6c1d29fbfc6ae4f7f69fb7e5f302",
+      "patches": [
+        {
+          "offset": 1733,
+          "insert": "announcementArchives: { archive: async () => false }, ",
+          "previous": ""
+        },
+        {
+          "offset": 2348,
+          "insert": " and a named system handler",
+          "previous": ""
+        },
+        {
+          "offset": 2964,
+          "insert": ", 'system'",
+          "previous": ""
+        },
+        {
+          "offset": 3021,
+          "insert": ".slice(0, 3)",
+          "previous": ""
+        },
+        {
+          "offset": 3093,
+          "insert": "\n\texpect(state.handle.mock.calls[3][0].name).toBe('archiveAnnouncement');\n\texpect(state.handle.mock.calls[3][2]).toBeUndefined();",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/job-queue/runtime.test.ts": {
+      "currentSha256": "4e2a27cc0c987ce270c43b538a3ddb41df4bd7421c24e78d90e43fb432637ec0",
+      "previousSha256": "1004ac49da547a01b0ec74b8cb63293c280b013e01e80c4707a79f84cb569d1b",
+      "patches": [
+        {
+          "offset": 2729,
+          "insert": "fou",
+          "previous": "th"
+        },
+        {
+          "offset": 2733,
+          "insert": "",
+          "previous": "ee"
+        },
+        {
+          "offset": 3438,
+          "insert": "', 'system",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/worker-startup.test.ts": {
+      "currentSha256": "06574215d1b046ec4a106a878ceed1d7fd6f33b7ad802c5e3db9de94292f0297",
+      "previousSha256": "63007c0632740d8877f2bdc3f969e7e994f1c0be2c0a8086140dc5b13a3c3d9f",
+      "patches": [
+        {
+          "offset": 891,
+          "insert": "\n\tannouncementArchives: { archive: async () => false, restore: async () => {} },",
+          "previous": ""
+        },
+        {
+          "offset": 5219,
+          "insert": "4",
+          "previous": "3"
+        },
+        {
+          "offset": 5378,
+          "insert": "', 'system",
+          "previous": ""
+        },
+        {
+          "offset": 5662,
+          "insert": "4",
+          "previous": "3"
+        },
+        {
+          "offset": 6781,
+          "insert": "4",
+          "previous": "3"
+        }
+      ]
+    },
+    "packages/backend-next/src/processes/lifecycle.ts": {
+      "currentSha256": "de9701a6b7a5e057614ca2f6dc198923106d5c59652d1c13a98863cde32c3d01",
+      "previousSha256": "95c8d3aaa715e76df4073a8c36168b6d9e011077397917088cb09f6de77d2d7c",
+      "patches": [
+        {
+          "offset": 1210,
+          "insert": "await resources.announcementArchives.restore();\n\t\t",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/lifecycle.test.ts": {
+      "currentSha256": "980b28285bde7e57b26206427fed78637d05cf23a4ab1910d5fc0df2b9601200",
+      "previousSha256": "89a4e6a3e4fdae7fb38ec45e53eb66b640b52f03c559ec2dbd014cf4ffcaebf0",
+      "patches": [
+        {
+          "offset": 308,
+          "insert": " announcementArchives: { restore: vi.fn(async () => {}) },",
+          "previous": ""
+        },
+        {
+          "offset": 1159,
+          "insert": "resources.announcementArchives.restore.mockImplementationOnce(async () => {\n\t\tcalls.push('archives');\n\t});\n\t",
+          "previous": ""
+        },
+        {
+          "offset": 1386,
+          "insert": "', 'archives",
+          "previous": ""
+        },
+        {
+          "offset": 1583,
+          "insert": "', 'archives",
+          "previous": ""
+        },
+        {
+          "offset": 1856,
+          "insert": ".mock.calls.length;\n\tconst restored = resources.announcementArchives.restore",
+          "previous": ""
+        },
+        {
+          "offset": 2217,
+          "insert": "ed);\n\texpect(resources.announcementArchives.restore).toHaveBeenCalledTimes(restor",
+          "previous": ""
+        },
+        {
+          "offset": 4186,
+          "insert": "\ntest('an archive reservation failure closes resources before starting HTTP or workers', async () => {\n\tconst failure = Error('archive enqueue failed');\n\tresources.announcementArchives.restore.mockRejectedValueOnce(failure);\n\tconst closed = resources.close.mock.calls.length;\n\tconst start = vi.fn();\n\tawait expect(startManagedProcess('worker', testConfig(), start)).rejects.toBe(failure);\n\texpect(start).not.toHaveBeenCalled();\n\texpect(resources.close).toHaveBeenCalledTimes(closed + 1);\n});\n",
+          "previous": ""
+        }
+      ]
+    }
+  }
+}

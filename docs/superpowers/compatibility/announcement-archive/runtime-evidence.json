@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "baseRevision": "e045cf2e70",
+  "productRevision": "4597043a15692a1a35f60bbc4490a66afef76edd",
+  "issues": [
+    449,
+    450
+  ],
+  "recordedAt": "2026-11-18T07:12:09.973889+00:00",
+  "fullUpstreamNestMeasured": false,
+  "ciSuccessMeasured": false,
+  "scope": "Announcement reservation restoration, conditional archive and named system worker only; admin CRUD/other system handlers/schedulers/cutover remain with existing owners.",
+  "currentInputs": {
+    ".github/workflows/test-backend-next.yml": "e6fa376cc4e5ae9777126c18912ed9cd5ac0e678325a9728edd1c7c3458cb795",
+    "docs/superpowers/compatibility/announcement-archive/corpus.json": "deb2c2e87a3979305852a0866441e790e21f5461693022c411ea32bdf59dd0a4",
+    "docs/superpowers/compatibility/announcement-archive/observations.json": "d3bd30506eb708d78f0773de2405c0f34ae7aeaa19a222061c461ec6e469ac53",
+    "docs/superpowers/compatibility/announcement-archive/source-probe.mjs": "e6ccbcc731d84f23c01c50dc60d3b25d32c26a3da9c9902cb4efe201f80701d0",
+    "packages/backend-next/src/composition/queue-workers.ts": "86162263dc8c17e3660a1b45b960f0478fb6b6c5262c18da4659fc26f194dbc9",
+    "packages/backend-next/src/modules/announcement/archive.ts": "dd1ca37fcb654ad517982ac15d0c39c5e71e204a4d54f5fe7f10adc13b6b7732",
+    "packages/backend-next/src/modules/announcement/public.ts": "7698755ffa7c5b3f856e7dcce0d1b7884369f73c32673cf0dd54b10d812b053c",
+    "packages/backend-next/src/platform/connect-resources.ts": "b455014631be1536dca9ef0db5d8ecc29070a8f57e65ded7b692f407319313f2",
+    "packages/backend-next/src/platform/database/announcement-archive.ts": "729fbb85967100cf52708475ef344c657e83b735f637d0c1616d1d0aba391575",
+    "packages/backend-next/src/platform/job-queue/announcement-archive.ts": "1e2dfd6db9159b092d4caf32e9ebdf0b1ddf86312bc1e51de9e6d5880ac2393d",
+    "packages/backend-next/src/platform/job-queue/business-jobs.ts": "3d95eb9a664423d5585b6b632632842d93e9dbac482ba6608cfff3bea1ac86c6",
+    "packages/backend-next/src/platform/job-queue/runtime.ts": "097af99001643aa1c9bcd72b196ad816a0b1fff99b6419248d9b82036f712ee1",
+    "packages/backend-next/src/processes/lifecycle.ts": "de9701a6b7a5e057614ca2f6dc198923106d5c59652d1c13a98863cde32c3d01",
+    "packages/backend-next/test/integration/announcement-archive.test.ts": "4f2eb47f8d128b7a7f20a856b49c1f4bacdc489f710bb75c85c92bf7e0fa3f3e",
+    "packages/backend-next/test/integration/business-job-runtime.test.ts": "afb62b8cb4d3d4c2f3ef6b1130f1de9a238ad4834de33c0f670c04f3312524e1",
+    "packages/backend-next/test/integration/resources.test.ts": "ea0f7ddc31da15faaef4135b45d975a0e5625aea9e3890471083cc332ceb88c9",
+    "packages/backend-next/test/processes/announcement-archive.test.ts": "c70d9e7f52e759c354c9e33088680bd5222288aa4a397de70eada966d220e62d",
+    "packages/backend-next/test/processes/queue-runtime.test.ts": "53a066716bcaff1830ec3e20eb8ff53d775e9dc83fe42f48b607e6818d2cdaf0",
+    "packages/backend-next/test/unit/announcement-archive.test.ts": "09fe13f620d23d51e77b25a1b2b4b4648c7e3be5f62277380d10cc32c25b10ba",
+    "packages/backend-next/test/unit/composition/queue-workers.test.ts": "de259fea52ef22d8285a42df1e8c77ec1b8dde1d62041570b6a871120bd9ff34",
+    "packages/backend-next/test/unit/job-queue/runtime.test.ts": "4e2a27cc0c987ce270c43b538a3ddb41df4bd7421c24e78d90e43fb432637ec0",
+    "packages/backend-next/test/unit/lifecycle.test.ts": "980b28285bde7e57b26206427fed78637d05cf23a4ab1910d5fc0df2b9601200",
+    "packages/backend-next/test/unit/worker-startup.test.ts": "06574215d1b046ec4a106a878ceed1d7fd6f33b7ad802c5e3db9de94292f0297"
+  },
+  "runs": [
+    {
+      "name": "source",
+      "command": "BACKEND_NEXT_TEST_DB_PORT=57449 BACKEND_NEXT_TEST_REDIS_PORT=58449 node docs/superpowers/compatibility/announcement-archive/source-probe.mjs",
+      "exitCode": 0,
+      "sourceCases": 9,
+      "log": "/tmp/archive449-source.log",
+      "logSha256": "74d45202333b89b69fa3fc82fa739c6bd7870caf814c17128aa16c8d4be9330a"
+    },
+    {
+      "name": "full-unit",
+      "command": "pnpm --filter backend-next test",
+      "exitCode": 0,
+      "passed": 5127,
+      "skipped": 1,
+      "skipReason": "page source reexecution requires BACKEND_NEXT_UPSTREAM_PATH",
+      "log": "/tmp/archive449-unit-migration.log",
+      "logSha256": "c4848061adff81cc42409f316921e4ba76fd1385f168732b423be29b9d47915c"
+    },
+    {
+      "name": "archive-resources-announcements",
+      "command": "BACKEND_NEXT_TEST_DB_PORT=57449 BACKEND_NEXT_TEST_REDIS_PORT=58449 pnpm --filter backend-next test:integration test/integration/announcement-archive.test.ts test/integration/resources.test.ts test/integration/announcements.test.ts",
+      "exitCode": 0,
+      "passed": 65,
+      "skipped": 0,
+      "log": "/tmp/archive449-integration-migration.log",
+      "logSha256": "339100ea4ecfc9111f27450b0199cd2a14f001abcf22030f3104f4a31420f7b3"
+    },
+    {
+      "name": "process",
+      "command": "BACKEND_NEXT_TEST_DB_PORT=57449 BACKEND_NEXT_TEST_REDIS_PORT=58449 pnpm --filter backend-next test:process test/processes/announcement-archive.test.ts test/processes/queue-runtime.test.ts test/processes/supervisor.test.ts",
+      "exitCode": 0,
+      "passed": 28,
+      "skipped": 0,
+      "log": "/tmp/archive449-process-migration.log",
+      "logSha256": "7864877ea9b368527242fb9d3cac1a98df5dd9110453fdd7a16848fd57e2d8d3"
+    },
+    {
+      "name": "package-lint",
+      "command": "pnpm --filter backend-next... lint",
+      "exitCode": 0,
+      "log": "/tmp/archive449-package-lint.log",
+      "logSha256": "c602adbe71eb088808bcaca077bc155df50e80de6794481629a9da070949f987"
+    },
+    {
+      "name": "shipping",
+      "command": "node scripts/check-shipping.mjs --base e045cf2e70",
+      "exitCode": 0,
+      "log": "/tmp/archive449-shipping-migration.log",
+      "logSha256": "5d2546ec510eda62f33918d47c5b6b1e542c394397ac0f14e8d65cb39e98b21f"
+    },
+    {
+      "name": "shared-contracts-before-transition",
+      "command": "node --test scripts/*-contract*.test.mjs",
+      "exitCode": 1,
+      "passed": 591,
+      "failed": 211,
+      "skipped": 1,
+      "reason": "Current shared product inputs differ from historical evidence guards. Coordinated evidence transition is pending; historical validators not changed by product implementation.",
+      "log": "/tmp/archive449-contracts.log",
+      "logSha256": "289ac04142dadd7e4888cdca80210ab0b3ebee0479d17fa20f023a6287121ace",
+      "measuredProductRevision": "76bda912c121e09e9dadaa0a8d74ce617f48718e"
+    }
+  ],
+  "additionalVerification": [
+    "build PASS",
+    "backend-next/upstream typecheck PASS",
+    "backend-upstream sync:check PASS",
+    "Business job runtime3 PASS in earlier mixed integration run; resource fixture failure there is historical; migration-order followup65 includes actual resources tests without migration fixture additions",
+    "Lifecycle focused followup19 PASS; full-unit5127 covers the same final lifecycle tests"
+  ],
+  "knownLimits": [
+    "Malformed numeric-timestamp payloads fail with new DiagnosticError rather than upstream ORM diagnostic text.",
+    "Unknown system job names are retained failed; stopped handoff inspection still rejects system queue pending #526.",
+    "Full upstream Nest server/auth/e2e not measured.",
+    "The upstream getJob/getState deletion race returns on unknown state; the next explicit restoration can restore a still-active dated DB reservation. UF-016 records the preserved behavior."
+  ],
+  "review": {
+    "independentProductRevision": "4597043a15692a1a35f60bbc4490a66afef76edd",
+    "independentProductStatus": "PASS",
+    "codeRabbitCli": {
+      "reviewedProductRevision": "76bda912c121e09e9dadaa0a8d74ce617f48718e",
+      "status": "completed",
+      "minorFindings": 1,
+      "disposition": "Verified same pinned-source unknown-state race; preserve parity, record UF-016. Migration ordering changed after that CLI review and was independently reviewed.",
+      "log": "/tmp/archive449-coderabbit.log",
+      "logSha256": "df5a38be6934cefb4ca0618296ff39caf2c8d1de2f689174aa912261d492b303"
+    }
+  }
+}
