@@ -1,0 +1,77 @@
+# Synthetic recovery fixture only. Never attach a production volume or another network.
+x-redis: &redis
+  image: redis:8
+  command: ['redis-server', '--save', '', '--appendonly', 'no', '--dir', '/data']
+  networks: [isolated]
+  healthcheck:
+    test: ['CMD', 'redis-cli', 'ping']
+    interval: 1s
+    timeout: 3s
+    retries: 30
+
+services:
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: cutover-fixture-only
+      POSTGRES_DB: cutover
+    volumes: [postgres:/var/lib/postgresql]
+    networks: [isolated]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d cutover']
+      interval: 1s
+      timeout: 3s
+      retries: 30
+  redis:
+    <<: *redis
+    volumes: [redis:/data]
+  redis-pubsub:
+    <<: *redis
+    volumes: [redis-pubsub:/data]
+  redis-jobs:
+    <<: *redis
+    volumes: [redis-jobs:/data]
+  redis-timelines:
+    <<: *redis
+    volumes: [redis-timelines:/data]
+  redis-reactions:
+    <<: *redis
+    volumes: [redis-reactions:/data]
+  storage:
+    image: redis:8
+    entrypoint: ['sh', '-c', 'exec sleep infinity']
+    volumes: [storage:/data]
+    networks: [isolated]
+  probe:
+    image: node:24.22.3-trixie
+    profiles: [tools]
+    volumes: ['./probe.mjs:/fixture/probe.mjs:ro']
+    command: ['node', '/fixture/probe.mjs']
+    networks: [isolated]
+  candidate:
+    image: ${CUTOVER_CANDIDATE_IMAGE:-tiramiss-cutover-candidate:unbuilt}
+    profiles: [candidate]
+    working_dir: /misskey
+    entrypoint: []
+    command: ['node', 'packages/backend-next/built/entrypoints/supervisor.js']
+    environment:
+      NODE_ENV: production
+      MISSKEY_CONFIG_YML: /fixture/candidate.yml
+    volumes:
+      - './candidate.example.yml:/fixture/candidate.yml:ro'
+      - 'storage:/misskey/files'
+    networks: [isolated]
+
+networks:
+  isolated:
+    internal: true
+
+volumes:
+  postgres:
+  redis:
+  redis-pubsub:
+  redis-jobs:
+  redis-timelines:
+  redis-reactions:
+  storage:
