@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { afterAll, beforeAll, expect, test } from 'vitest';
+import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { MiAccessToken, MiHashtag, MiUser } from 'backend-upstream/entities';
 import { connectResources } from '../../src/platform/connect-resources.js';
 import { createBackendHttpApp } from '../../src/composition/http-app.js';
@@ -12,6 +12,8 @@ import { closeHttp, listenHttp } from '../../src/processes/http.js';
 import { createTestDatabase } from '../helpers/database.js';
 import { createNoteHashtagWriter } from '../../src/platform/database/note-hashtags.js';
 import { createUserHashtagWriter } from '../../src/platform/database/user-hashtags.js';
+import { createHashtagCatalogReader } from '../../src/platform/database/hashtag-catalog.js';
+import { canonicalizeHashtagResult } from '../../../../docs/superpowers/compatibility/hashtag-catalog/comparison.mjs';
 import corpus from '../../../../docs/superpowers/compatibility/hashtag-catalog/corpus.json' with { type: 'json' };
 import observations from '../../../../docs/superpowers/compatibility/hashtag-catalog/observations.json' with { type: 'json' };
 import type { Server } from 'node:http';
@@ -54,7 +56,7 @@ for (const observation of observations.cases) {
 			expect(body.error).toMatchObject(code === '2201X' ? { code: 'INTERNAL_ERROR' } : observation.error!);
 		} else {
 			expect(response.status).toBe(200);
-			expect(body).toEqual(observation.result);
+			expect(canonicalizeHashtagResult(item, body, corpus.rows)).toEqual(canonicalizeHashtagResult(item, observation.result, corpus.rows));
 		}
 		expect(response.headers.get('Access-Control-Allow-Origin')).toBe('*');
 		expect(response.headers.get('Cache-Control')).toBe('private, max-age=0, must-revalidate');
@@ -69,7 +71,7 @@ test('public routes accept native suspended and unscoped OAuth readers; invalid 
 		for (const token of ['reader0123456789', 'hashtagscopedaccesstoken']) {
 			const response = await request(endpoint, input, token);
 			expect(response.status).toBe(200);
-			expect(await response.json()).toEqual(anonymous);
+			expect(canonicalizeHashtagResult({ id: 'credential', endpoint, input }, await response.json(), corpus.rows)).toEqual(canonicalizeHashtagResult({ id: 'credential', endpoint, input }, anonymous, corpus.rows));
 		}
 		const invalid = await request(endpoint, input, 'invalidtoken');
 		expect(invalid.status).toBe(401);
@@ -112,5 +114,28 @@ test('unavailable Hashtag storage remains a server error for every route', async
 		}
 	} finally {
 		await resources.dataSource.query('ALTER TABLE hashtag_unavailable RENAME TO hashtag');
+	}
+});
+
+test('search projects only names and show projects only the seven public fields on real PG', async () => {
+	const reader = createHashtagCatalogReader(resources.dataSource.manager);
+	const queries = vi.spyOn(resources.dataSource.logger, 'logQuery');
+	try {
+		expect((await reader.search({ query: 'al', limit: 2, offset: 1 })).sort()).toEqual(['alphabet', 'alpine']);
+		expect(queries).toHaveBeenCalledTimes(1);
+		const searchSql = queries.mock.calls.at(-1)![0];
+		expect(searchSql.slice(0, searchSql.indexOf(' FROM '))).toBe('SELECT "tag"."name" AS "name"');
+		expect(searchSql).toContain('ORDER BY "tag"."mentionedLocalUsersCount" DESC');
+		expect(searchSql).toContain('LIMIT 2 OFFSET 1');
+		const row = await reader.find('alpha');
+		expect(Object.keys(row!).sort()).toEqual(['name', 'mentionedUsersCount', 'mentionedLocalUsersCount', 'mentionedRemoteUsersCount', 'attachedUsersCount', 'attachedLocalUsersCount', 'attachedRemoteUsersCount'].sort());
+		expect(queries).toHaveBeenCalledTimes(2);
+		const showSql = queries.mock.calls.at(-1)![0];
+		for (const field of ['id', 'mentionedUserIds', 'mentionedLocalUserIds', 'mentionedRemoteUserIds', 'attachedUserIds', 'attachedLocalUserIds', 'attachedRemoteUserIds']) {
+			expect(searchSql.slice(0, searchSql.indexOf(' FROM '))).not.toContain(`"${field}"`);
+			expect(showSql.slice(0, showSql.indexOf(' FROM '))).not.toContain(`"${field}"`);
+		}
+	} finally {
+		queries.mockRestore();
 	}
 });

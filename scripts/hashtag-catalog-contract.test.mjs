@@ -33,6 +33,9 @@ test('catalog current inputs, receipts and available logs cannot drift', () => {
 	for (const path of Object.keys(current.inputs)) {
 		assert.throws(() => validateHashtagCatalogEvidence(file => file === path ? Buffer.concat([read(file), Buffer.from('\n')]) : read(file), offline), /measured current input drift/);
 	}
+	for (const path of Object.keys(current.previousMeasurement.files)) {
+		assert.throws(() => validateHashtagCatalogEvidence(file => file === path ? Buffer.concat([read(file), Buffer.from('\n')]) : read(file), offline), /historical input drift/);
+	}
 	assert.throws(() => validateHashtagCatalogEvidence(file => file.endsWith('current-evidence.json') ? Buffer.from('{}') : read(file), offline), /receipt seal/);
 	const path = Object.keys(JSON.parse(read(directory + 'predecessor.json')).files)[0];
 	assert.throws(() => projectHashtagCatalogInput(path, read(path), file => file.endsWith('predecessor.json') ? Buffer.from('{}') : read(file)), /predecessor seal/);

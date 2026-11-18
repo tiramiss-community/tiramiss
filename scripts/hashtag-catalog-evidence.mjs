@@ -7,7 +7,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
 const directory = 'docs/superpowers/compatibility/hashtag-catalog/';
-const receiptSeal = '9935f7249ead1fc37838b3cebd5662d44d590496fae727a56100d319f82dd458';
+const receiptSeal = '2542d71844117a6618cc75ff9d1c2a2fa91a182fcb62b5a557c5e92ebc147e28';
 const predecessorSeal = '40736f8ac99ebb1babb3140c05aa345ce3dcc4c8ca9ed6bbb96ebec71e557e13';
 const read = path => readFileSync(new URL('../' + path, import.meta.url));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -28,12 +28,16 @@ export function validateHashtagCatalogEvidence(readFile = read, optional = optio
 	assert.equal(sha(bytes), receiptSeal, 'hashtag catalog receipt seal');
 	const current = JSON.parse(bytes);
 	assert.equal(current.scope, 'hashtag-catalog-495');
+	assert.equal(current.measurement, 'R2');
+	for (const [path, digest] of Object.entries(current.previousMeasurement.files)) {
+		assert.equal(sha(readFile(path)), digest, `hashtag catalog historical input drift: ${path}`);
+	}
 	assert.equal(current.upstreamFullServerMeasured, false);
 	assert.deepEqual(current.inputs, current.inputsAfter);
 	for (const [path, digest] of Object.entries(current.inputs)) {
 		assert.equal(sha(readFile(path)), digest, `hashtag catalog measured current input drift: ${path}`);
 	}
-	assert.deepEqual(current.runs.map(run => [run.name, run.passed, run.exitCode]), [['unit', 82, 0], ['http-pg', 57, 0], ['producers-pg', 29, 0], ['source-pg', 53, 0]]);
+	assert.deepEqual(current.runs.map(run => [run.name, run.passed, run.exitCode]), [['unit', 82, 0], ['http-pg', 58, 0], ['producers-pg', 29, 0], ['source-pg', 53, 0], ['comparison', 5, 0]]);
 	for (const run of current.runs) {
 		const log = optional(run.log);
 		if (log !== null) {

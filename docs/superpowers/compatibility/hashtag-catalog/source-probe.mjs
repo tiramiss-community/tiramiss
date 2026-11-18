@@ -8,6 +8,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import vm from 'node:vm';
+import { canonicalizeHashtagObservations } from './comparison.mjs';
 import { migrateDatabase } from '../../../../packages/backend-next/built/platform/database/migrate.js';
 import { createDataSource } from '../../../../packages/backend-next/built/platform/database/data-source.js';
 const require = createRequire(new URL('../../../../packages/backend-next/package.json', import.meta.url));
@@ -92,6 +93,10 @@ try {
 }
 const output = JSON.stringify({ upstreamCommit: pin, manifest, corpusSha256: sha(corpusBytes), method: 'Literal fixed-source endpoint callbacks, schemas, normalizer, SQL escaping and packer; actual TypeORM repository and PostgreSQL; no Nest/whole upstream HTTP server.', access: Object.fromEntries(Object.entries(endpoints).map(([name, endpoint]) => [name, { requireCredential: endpoint.requireCredential }])), cases }, null, 2) + '\n';
 const target = new URL('./observations.json', import.meta.url);
-if (process.argv[2] === '--write') writeFileSync(target, output);
-else { assert.equal(process.argv[2], '--check'); assert.equal(readFileSync(target, 'utf8'), output); }
+if (process.argv[2] === '--write') {
+	writeFileSync(target, output);
+} else {
+	assert.equal(process.argv[2], '--check');
+	assert.deepEqual(canonicalizeHashtagObservations(JSON.parse(output), corpus), canonicalizeHashtagObservations(JSON.parse(readFileSync(target, 'utf8')), corpus));
+}
 console.log(`hashtag fixed source PostgreSQL: ${cases.length} cases ${process.argv[2]}`);

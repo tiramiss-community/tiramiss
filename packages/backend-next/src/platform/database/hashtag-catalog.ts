@@ -4,7 +4,7 @@
  */
 import { MiHashtag } from 'backend-upstream/entities';
 import type { EntityManager } from 'typeorm';
-import type { HashtagCatalogReader } from '../../modules/hashtag/catalog.js';
+import type { HashtagCatalogReader, HashtagCounts } from '../../modules/hashtag/catalog.js';
 
 export function createHashtagCatalogReader(manager: EntityManager): HashtagCatalogReader {
 	const repository = manager.getRepository(MiHashtag);
@@ -26,10 +26,16 @@ export function createHashtagCatalogReader(manager: EntityManager): HashtagCatal
 		},
 		async search(input) {
 			const prefix = input.query.replace(/([\\%_])/g, '\\$1');
-			const rows = await repository.createQueryBuilder('tag').where('tag.name like :q', { q: `${prefix}%` })
-				.orderBy('tag.mentionedLocalUsersCount', 'DESC').groupBy('tag.id').limit(input.limit).offset(input.offset).getMany();
+			const rows = await repository.createQueryBuilder('tag').select('tag.name', 'name').where('tag.name like :q', { q: `${prefix}%` })
+				.orderBy('tag.mentionedLocalUsersCount', 'DESC').groupBy('tag.id').limit(input.limit).offset(input.offset).getRawMany<{ name: string }>();
 			return rows.map(row => row.name);
 		},
-		find: name => repository.findOneBy({ name }),
+		async find(name) {
+			const query = repository.createQueryBuilder('tag').select([]);
+			for (const field of ['name', 'mentionedUsersCount', 'mentionedLocalUsersCount', 'mentionedRemoteUsersCount', 'attachedUsersCount', 'attachedLocalUsersCount', 'attachedRemoteUsersCount']) {
+				query.addSelect(`tag.${field}`, field);
+			}
+			return await query.where('tag.name = :name', { name }).getRawOne<HashtagCounts>() ?? null;
+		},
 	};
 }
