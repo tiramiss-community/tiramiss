@@ -40,3 +40,18 @@ export function validateUsersChartsEvidence(readFile = read, optional = optional
 	}
 	return current;
 }
+
+export function validateUsersChartsReviewEvidence(readFile = read, optional = optionalRead) {
+	const bytes = readFile('docs/superpowers/compatibility/users-charts/review-evidence.json');
+	assert.equal(sha(bytes), '203ec3d9090839ffc90acc394eb3c8ce78dba69df6ba6e4524ab13c800a9f816', 'users chart review evidence seal');
+	const current = JSON.parse(bytes);
+	assert.equal(current.runtimeUnchanged, true);
+	for (const [path, binding] of Object.entries(current.files)) {
+		assert.equal(sha(projectParallelInput(path, readFile(path), binding.currentSha256)), binding.currentSha256, 'users chart reviewed test drift');
+	}
+	assert.equal(current.run.exitCode, 0);
+	assert.equal(current.run.passed, 5);
+	const log = optional(current.run.log);
+	if (log !== null) assert.equal(sha(log), current.run.logSha256, 'users chart review log drift');
+	return current;
+}

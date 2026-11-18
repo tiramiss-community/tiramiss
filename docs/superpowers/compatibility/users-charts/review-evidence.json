@@ -1,0 +1,24 @@
+{
+  "scope": "users-chart-review-319",
+  "baseRevision": "a9f1f1a033cb3a69262e372d90c67fc037652bd9",
+  "runtimeUnchanged": true,
+  "files": {
+    "packages/backend-next/test/unit/chart/users-charts.test.ts": {
+      "currentSha256": "02a3af5dc1b256844af5d7f46740dd9ec590a462d4082dec558fbd9a4cfbdf03",
+      "previousSha256": "e881b4b0993b78bd58e97f3e535718850a3ce3e0d80d566505d937f9870594ad",
+      "patches": [
+        {
+          "offset": 1501,
+          "insert": "\texpect(save).toHaveBeenNthCalledWith(2, { series: 'users', group: null, now: 2000, diff: { 'local.total': 1, 'local.inc': 1, 'local.dec': 0 } });\n",
+          "previous": ""
+        }
+      ]
+    }
+  },
+  "run": {
+    "log": "/tmp/b319-web-review-unit.log",
+    "logSha256": "1fb3e7455bb92369f705d30445494abd81326c38cc9869778d81f455847b7115",
+    "passed": 5,
+    "exitCode": 0
+  }
+}

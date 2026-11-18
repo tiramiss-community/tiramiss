@@ -29,6 +29,7 @@ test('resync overwrites current totals from real counts without flushing or repl
 	expect(save).toHaveBeenCalledWith({ series: 'users', group: null, now: 2000, diff: {}, absolute: { 'local.total': 7, 'remote.total': 9 } });
 	await charts.flush();
 	expect(save).toHaveBeenCalledTimes(2);
+	expect(save).toHaveBeenNthCalledWith(2, { series: 'users', group: null, now: 2000, diff: { 'local.total': 1, 'local.inc': 1, 'local.dec': 0 } });
 });
 
 test('failed flush detaches changes, and later commits continue', async () => {

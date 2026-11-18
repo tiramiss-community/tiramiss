@@ -57,3 +57,5 @@
 | [UF-014](packages/backend/src/server/web/ClientServerService.md#uf-014-twemojiバッジの96px指定に対して512pxが出力される) | `server/web/ClientServerService.ts` | Sharp 0.35.5の固定画像バッジが96px指定に対して512pxになる | 引き継いだ（#555） | 未報告 |
 | [UF-015](packages/backend/src/core/entities/PageEntityService.md#uf-015-旧content書戻しのdb失敗が未処理rejectionになる) | `core/entities/PageEntityService.ts` | 旧inputの非待機書戻しにrejection handlerがない | 非待機を維持しloggerへ報告（#293） | 未報告 |
 | [UF-016](packages/backend/src/core/QueueService.md#uf-016-アーカイブ予約の存在確認後に削除されると再投入しない) | `core/QueueService.ts` | 存在確認後に削除されたアーカイブ予約を再投入しない | 引き継いだ（#449/#450） | 未報告 |
+| [UF-017](packages/backend/src/core/chart/core.md#uf-017-空の過去区間では現在の最新行により既存totalの補間を失う) | `core/chart/core.ts` | 空の過去区間が最新行を使い既存totalの補間を失う | 引き継いだ（#319） | 未報告 |
+| [UF-018](packages/backend/src/core/chart/core.md#uf-018-resyncは未flushのtotal差分をそのまま再適用する) | `core/chart/core.ts`・`charts/users.ts` | resync後に保留total差分が再適用される | 引き継いだ（#319） | 未報告 |

@@ -31,3 +31,5 @@ node scripts/check-shipping.mjs --base 63854ab4c0
 2026-11-19 R4検証: unit **5510成功・既存skip 1件 / 159 files**、実PG/Redis・通常listening HTTPと既存note chartの結合 **124成功 / 3 files**。build/typecheck、source 4 update・2 resync・24 read、変更ファイルlint・SPDX・locale safetyを実行する。個々の実ログと入力hashはcurrent-evidenceへ記録し、旧note chartやremote actorの過去receiptを書き換えない。比較記録の互換投影は正確に一致した入力だけを基準のbyteへ戻し、未知の追加変更を同じ測定結果として扱わない。
 
 独立レビュー後のR5ではglobal notes/usersへ余分なuserIdを渡してもgroup検索しないよう修正し、GET/POSTの赤→緑を確認した。R5はchart/通常root unit51件、最後の同root/API36件、HTTP/PG124件、build/typecheck、shippingが成功。上記R4全単体5510件は修正前runtime33cef1f8bbの歴史として残し、R5の全単体再測定とは扱わない。
+
+Webレビュー追補: resync後のflushが元のtotal/inc/dec差分だけを保存することを追加assertionで固定し、単体5件を再検証した。製品runtimeは変更せず、R5記録を保持する別のreview-evidenceに有限なtest差分と実ログhashを記録する。空の過去区間のfallbackとresync後の保留差分再適用は固定本家の挙動として維持し、[UF-017/UF-018](../../../backend-next/upstream-findings/packages/backend/src/core/chart/core.md)へ記録した。

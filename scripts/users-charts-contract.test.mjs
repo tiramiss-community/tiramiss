@@ -5,7 +5,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { validateUsersChartsEvidence } from './users-charts-evidence.mjs';
+import { validateUsersChartsEvidence, validateUsersChartsReviewEvidence } from './users-charts-evidence.mjs';
 const read = path => readFileSync(new URL('../' + path, import.meta.url));
 
 test('users chart actual input and log receipt validates with and without host logs', () => {
@@ -23,4 +23,11 @@ test('every users measured current input rejects new unmeasured bytes offline', 
 test('users chart receipt and available actual log corruption reject', () => {
 	assert.throws(() => validateUsersChartsEvidence(path => path.endsWith('/current-evidence.json') ? Buffer.concat([read(path), Buffer.from('\n')]) : read(path), () => null), /users chart evidence seal/);
 	assert.throws(() => validateUsersChartsEvidence(read, () => Buffer.from('forged actual log')), /users chart actual log drift/);
+});
+
+
+test('scoped review test successor is measured separately from the immutable R5 product receipt', () => {
+	assert.equal(validateUsersChartsReviewEvidence(read, () => null).runtimeUnchanged, true);
+	const path = 'packages/backend-next/test/unit/chart/users-charts.test.ts';
+	assert.throws(() => validateUsersChartsReviewEvidence(file => file === path ? Buffer.concat([read(file), Buffer.from('\n')]) : read(file), () => null), /users chart reviewed test drift/);
 });
