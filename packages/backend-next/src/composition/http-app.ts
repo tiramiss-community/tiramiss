@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Hono } from 'hono';
+import { createHashtagCatalogHttp } from './hashtag-catalog-http.js';
 import { createNoteChartsApi } from '../http/note-charts-api.js';
 import { createTokenAuthenticator } from '../platform/database/authenticate.js';
 import { createAnnouncementsHttp } from './announcements-http.js';
@@ -39,6 +40,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		.route('/', createNoteChartsApi(resources.noteCharts, { authenticate: createTokenAuthenticator(resources.dataSource.manager, resources.logger), logger: resources.logger }))
 		.route('/', createRoleHttpApp(resources, config))
 		.route('/', createUserMemoHttp(resources, config))
+		.route('/', createHashtagCatalogHttp(resources))
 		.route('/', announcements.app)
 		.route('/', createUserRelationHttp(resources))
 		.route('/', createDriveFilesHttp(resources, config))

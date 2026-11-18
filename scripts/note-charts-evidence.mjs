@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import assert from 'node:assert/strict';
+import { projectHashtagCatalogInput } from './hashtag-catalog-evidence.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
@@ -19,7 +20,7 @@ function record(readFile) {
 const evidence = record(read);
 export const noteChartPredecessorPaths = Object.freeze(Object.keys(evidence.predecessors));
 
-export function validateNoteChartsEvidence(readFile = read, optional = optionalRead) {
+function validatePreviousNoteChartsEvidence(readFile = read, optional = optionalRead) {
 	const current = record(readFile);
 	assert.equal(current.runtimeRevision, '773ba79f2fadc7eee8a61fb40975518e283eb446');
 	assert.equal(current.baseRevision, 'c0123d10df9c7946a0bd0b65eeb12df7bff80776');
@@ -46,7 +47,7 @@ export function validateNoteChartsEvidence(readFile = read, optional = optionalR
 
 // Only #274's finite byte changes are removed. The archived measurements and their
 // original revisions remain historical; current chart behavior has its own runs.
-export function projectNoteChartsInput(path, actual) {
+function projectPreviousNoteChartsInput(path, actual) {
 	const binding = evidence.predecessors[path];
 	if (!binding) return actual;
 	const digest = sha(actual);
@@ -61,4 +62,13 @@ export function projectNoteChartsInput(path, actual) {
 	}
 	assert.equal(sha(before), binding.previousSha256, 'note charts predecessor identity');
 	return before;
+}
+
+// #495 is an independent public read slice; retain #274 measurements as history.
+export function validateNoteChartsEvidence(readFile = read, optional = optionalRead) {
+	return validatePreviousNoteChartsEvidence(path => projectHashtagCatalogInput(path, readFile(path), readFile), optional);
+}
+
+export function projectNoteChartsInput(path, actual) {
+	return projectPreviousNoteChartsInput(path, projectHashtagCatalogInput(path, actual));
 }
