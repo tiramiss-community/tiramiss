@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { projectAnnouncementArchiveInput } from './announcement-archive-predecessor.mjs';
+import { projectIdCodecInput } from './id-codec-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { scopedEvidenceValidation, withEvidenceRequestedPath } from './evidence-validation-scope.mjs';
 import { driveFilePredecessorFiles, readPreDriveFiles } from './drive-files-evidence.mjs';
@@ -82,7 +83,7 @@ export function validateDriveFolderPubsubSuccessor(value, rawRead = read, option
  return scopedEvidenceValidation(validateDriveFolderPubsubSuccessor, value, rawRead, optional, (rawRead, optional) => {
  const beforeMeta = createValidatedMetaPredecessorReader(rawRead, optional);
  const previousObservation = validateFolderObservation(undefined, rawRead, optional);
- const readFile = path => Object.hasOwn(previousObservation, path) ? Buffer.from(previousObservation[path]) : driveFilePredecessorFiles.includes(path) ? readPreDriveFiles(path, undefined, rawRead) : beforeMeta(path);
+ const readFile = path => Object.hasOwn(previousObservation, path) ? Buffer.from(previousObservation[path]) : driveFilePredecessorFiles.includes(path) ? readPreDriveFiles(path, undefined, rawRead) : projectIdCodecInput(path, beforeMeta(path));
  if (value === undefined) {
   const bytes = readFile(evidencePath);
   assert.equal(sha(bytes), seal, 'folder pubsub current receipt seal');
@@ -126,7 +127,7 @@ export function validateDriveFolderPubsubSuccessor(value, rawRead = read, option
 }
 export function readPreDriveFolderPubsub(path, encoding, readFile = read, optional = optionalRead) {
  return withEvidenceRequestedPath(path, () => {
- const bytes = pubsubSuccessorFiles.includes(path) ? Buffer.from(validateDriveFolderPubsubSuccessor(undefined, readFile, optional)[path]) : readFile(path);
+ const bytes = pubsubSuccessorFiles.includes(path) ? Buffer.from(validateDriveFolderPubsubSuccessor(undefined, readFile, optional)[path]) : projectIdCodecInput(path, readFile(path));
  return encoding ? bytes.toString(encoding) : bytes;
  });
 }

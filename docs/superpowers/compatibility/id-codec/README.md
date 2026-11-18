@@ -20,7 +20,7 @@ repo root、指定Node/pnpm、backend-nextとbackend-upstreamの依存導入後:
 
 ```sh
 node docs/superpowers/compatibility/id-codec/source-probe.mjs --check
-pnpm --filter backend-next test test/unit/id-codec.test.ts test/unit/config.test.ts
+pnpm --filter backend-next test test/unit/id-codec test/unit/config.test.ts
 pnpm --filter backend-next... build
 pnpm --filter backend-next... typecheck
 BACKEND_NEXT_TEST_DB_PORT=58432 BACKEND_NEXT_TEST_REDIS_PORT=58379 \
@@ -30,7 +30,7 @@ BACKEND_NEXT_TEST_DB_PORT=58432 BACKEND_NEXT_TEST_REDIS_PORT=58379 \
 node scripts/check-shipping.mjs --base origin/develop
 ```
 
-2026-11-18の実測: source再採取一致、単体208件/2files、実HTTP/PG 6件、build/typecheckがPASS。変更3ファイルのlint・SPDX・locale safetyもPASS。初回のHTTP試験はテストtokenがchar(16)を超えて準備時失敗したため、16文字へ直してから上記6件を再測定した。依存の初回は`--ignore-scripts`によりre2 native artifactがなく、`pnpm rebuild re2`後に実行した。これは製品不具合の修正ではない。
+2026-11-18の実測: source再採取一致、単体208件/3files、実HTTP/PG 6件、build/typecheckがPASS。変更ファイルのlint・SPDX・locale safetyもPASS。初回のHTTP試験はテストtokenがchar(16)を超えて準備時失敗したため、16文字へ直してから上記6件を再測定した。依存の初回は`--ignore-scripts`によりre2 native artifactがなく、`pnpm rebuild re2`後に実行した。これは製品不具合の修正ではない。
 
 比較は本家ソースのmethod実行と新実装の実HTTP/PGを組み合わせた有限比較である。本家full server/PG、全ID利用者、全単体、process、切替migrationを実行した意味ではない。
 
@@ -42,3 +42,11 @@ node scripts/check-shipping.mjs --base origin/develop
 - 本家方式と同じく設定を変えれば過去IDの解析方式も変わる。混在形式の自動判別・新ID形式・新しい一意性保証を追加しない。生成・保存の今回の確認だけで通知移行/AP取込の先行条件を完了としない。
 
 親#138/#114、#575はOPENのまま。新たな方針・依存順の変更はない。
+
+## 過去の比較記録の維持
+
+`compatibility-predecessor.json`と`id-codec-predecessor.mjs`は今回の`id-codec.ts`だけについて、変更後SHA-256と一致する入力を正確な変更前バイト列へ戻す。Driveフォルダの2つのvalidatorとその下流readerがこの有限な投影を使う。過去のreceipt・測定件数・hashを書き換えたり、今回再測定したと主張したりしない。その他のパスと未知の変更はそのまま従来のguardへ渡す。新しいcontractは正確な投影と、1文字の追記も両validatorで拒否することを確認する。
+
+独立レビュー後、source probeの例外記録を生成時に限定した。解析時の例外はprobe自体を失敗させる。現コーパスの生成失敗はULIDの負日時2件と48bit超過1件だけで、単体では例外の名前も比較する。HTTPサーバー・DB・一時設定の後片付けは前段のcloseが失敗しても試みる。
+
+追補後のroot gate: `node --test scripts/*-contract*.test.mjs` が817件中816成功・0失敗・1skip（既存の条件付き項目）でPASS。追加前の既存`id-codec.test.ts`をhistorical receiptの元バイトで保持し、新規ケースは`id-codec-compatibility.test.ts`へ分離した。最初の全root実行では既存単体ファイルのhash差による3失敗があり、分離後に全件を再実行した。

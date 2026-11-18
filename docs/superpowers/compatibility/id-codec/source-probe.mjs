@@ -62,8 +62,15 @@ for (const [method, file] of [['aid', 'aid', 8], ['aidx', 'aidx', 8], ['meid', '
 		clock = label === 'clock-zero' || label === 'clock-negative' ? value : label.includes('rollover') || label.startsWith('ulid-') ? value + 1 : now;
 		const input = label === 'omitted' ? undefined : label === 'nan' ? NaN : value;
 		const item = { method, label, atMs: value, now: clock, safe: context.service.isSafeT(input) };
+		let id;
 		try {
-			const id = context.service.gen(input);
+			id = context.service.gen(input);
+		} catch (error) {
+			item.error = { name: error.name };
+			cases.push(item);
+			continue;
+		}
+		{
 			const noiseLength = { aid: 2, aidx: 8, meid: 12, meidg: 12, objectid: 16, ulid: 16 }[method];
 			item.generated = { prefix: id.slice(0, -noiseLength), length: id.length };
 			// These generated IDs use the explicit deterministic random doubles above.
@@ -71,7 +78,7 @@ for (const [method, file] of [['aid', 'aid', 8], ['aidx', 'aidx', 8], ['meid', '
 			item.parsedAt = context.service.parse(id).date.getTime();
 			const full = context.service.parseFull(id);
 			item.full = { date: full.date, additional: full.additional.toString() };
-		} catch (error) { item.error = { name: error.name }; }
+		}
 		cases.push(item);
 	}
 }

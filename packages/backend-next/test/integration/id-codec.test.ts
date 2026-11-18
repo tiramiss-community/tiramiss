@@ -31,10 +31,16 @@ beforeAll(async () => {
 	await resources.dataSource.getRepository(MiUser).insert({ id: 'alice', username: 'alice', usernameLower: 'alice', token });
 });
 afterAll(async () => {
-	await resources?.close();
-	await database?.close();
-	if (directory) {
-		await rm(directory, { recursive: true, force: true });
+	try {
+		await resources?.close();
+	} finally {
+		try {
+			await database?.close();
+		} finally {
+			if (directory) {
+				await rm(directory, { recursive: true, force: true });
+			}
+		}
 	}
 });
 
@@ -70,7 +76,10 @@ test.each(idMethods)('YAML %s selection survives HTTP generation, PostgreSQL sto
 		expect(await response.json()).toMatchObject({ id: saved.id, name: saved.name, createdAt: body.createdAt });
 	} finally {
 		clock.mockRestore();
-		await closeHttp(server);
-		await drainHttpAppWork(app);
+		try {
+			await closeHttp(server);
+		} finally {
+			await drainHttpAppWork(app);
+		}
 	}
 });

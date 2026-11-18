@@ -53,6 +53,6 @@ test('source observations bind the exact corpus, fixed source files and literal 
 });
 test('finite folder reader uses builtins and its narrow pubsub successor only and cannot spawn source/Git subprocesses', () => {
  const source = read('scripts/drive-folders-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || match[1] === './evidence-validation-scope.mjs' || match[1] === './meta-cache-evidence.mjs' || match[1] === './drive-files-evidence.mjs' || match[1] === './drive-folder-pubsub-evidence.mjs'));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || match[1] === './id-codec-predecessor.mjs' || match[1] === './evidence-validation-scope.mjs' || match[1] === './meta-cache-evidence.mjs' || match[1] === './drive-files-evidence.mjs' || match[1] === './drive-folder-pubsub-evidence.mjs'));
  assert(!/execFile|spawn|import\(/.test(source));
 });

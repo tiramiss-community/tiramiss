@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectIdCodecInput } from './id-codec-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { scopedEvidenceValidation } from './evidence-validation-scope.mjs';
 import { driveFilePredecessorFiles, readPreDriveFiles } from './drive-files-evidence.mjs';
@@ -32,7 +33,7 @@ export function validateDriveFoldersSuccessor(value, rawRead = read, optional = 
  return scopedEvidenceValidation(validateDriveFoldersSuccessor, value, rawRead, optional, (rawRead, optional) => {
  const beforeMeta = createValidatedMetaPredecessorReader(rawRead, optional);
  const previousPubsub = validateDriveFolderPubsubSuccessor(undefined, rawRead, optional);
- const readFile = path => path in previousPubsub ? Buffer.from(previousPubsub[path]) : driveFilePredecessorFiles.includes(path) ? readPreDriveFiles(path, undefined, rawRead) : beforeMeta(path);
+ const readFile = path => path in previousPubsub ? Buffer.from(previousPubsub[path]) : driveFilePredecessorFiles.includes(path) ? readPreDriveFiles(path, undefined, rawRead) : projectIdCodecInput(path, beforeMeta(path));
  if (value === undefined) {
   const bytes = readFile(evidencePath);
   assert.equal(sha(bytes), seal, 'folder current receipt seal');
