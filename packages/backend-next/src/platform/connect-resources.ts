@@ -15,6 +15,7 @@ import { Redis } from 'ioredis';
 import { createUrlPreview } from '../modules/url-preview/public.js';
 import { createActorInstanceRegistration } from '../composition/actor-instance-registration.js';
 import { createRemoteEmojis } from '../composition/remote-emojis.js';
+import { createDefaultRolePolicies } from '../composition/default-role-policies.js';
 import { createInstanceAdministration } from '../composition/instance-admin.js';
 import { createUserHashtags } from '../composition/user-hashtags.js';
 import { createOutboundHttpClient } from '../composition/outbound-http.js';
@@ -257,6 +258,8 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		scope.defer(avatarDecorations.close);
 		const meta = createMetaCache({ events: internalEvents, read: () => readMeta(dataSource.manager), onError: error => logger.error('meta-cache.reload-failed', { error }) });
 		scope.defer(meta.close);
+		const defaultRolePolicies = createDefaultRolePolicies({ dataSource, meta, publisher: rolePublisher, url: config.url, logger, ids: createIdCodec(config.id) });
+		scope.defer(defaultRolePolicies.close);
 		const roleMaterials = await openRoleMaterials({
 			events: internalEvents,
 			source: createRoleMaterialReader(dataSource.manager),
@@ -471,6 +474,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			reactionsRedis,
 			timelinesRedis,
 			roleMaterials,
+			defaultRolePolicies,
 			userHashtags,
 			remoteEmojis,
 			actorInstanceRegistration,

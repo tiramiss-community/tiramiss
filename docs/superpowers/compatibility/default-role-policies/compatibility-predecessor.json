@@ -1,0 +1,117 @@
+{
+  "files": {
+    "packages/backend-next/src/composition/role-http.ts": {
+      "previousSha256": "daaa3c677e9dc55af254f2afa5b45d0c5e0c2e154e29244b8506b20d824af4d3",
+      "currentSha256": "b4e58e7cf93600ab2201ed8205bbe87229e4754ca98cab66b99c65ddd42e331d",
+      "patches": [
+        {
+          "offset": 594,
+          "previous": "\tresources: Pick<RuntimeResources, 'dataSource' | 'logger'> & {\n",
+          "insert": "\tresources: Pick<RuntimeResources, 'dataSource' | 'logger' | 'defaultRolePolicies'> & {\n"
+        },
+        {
+          "offset": 1090,
+          "previous": "\t\tendpoints: [...createRoleEndpoints(application), ...createPublicRoleEndpoints(application)],\n",
+          "insert": "\t\tendpoints: [\n\t\t\t...createRoleEndpoints(application),\n\t\t\t{\n\t\t\t\tname: 'admin/roles/update-default-policies',\n\t\t\t\taccess: { requireCredential: true, requireAdmin: true, kind: 'write:admin:roles' },\n\t\t\t\thandle: resources.defaultRolePolicies.updateDefaultPolicies,\n\t\t\t},\n\t\t\t...createPublicRoleEndpoints(application),\n\t\t],\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/modules/audit/public.ts": {
+      "previousSha256": "fc3ba87b83788ded77e541ff9795c637bebf1c4a7fffd53da6c546ab8c88e940",
+      "currentSha256": "e28e24084c907f1eb33dd416266e08ad1a0e270c1e21ce1b555a0c12423f27ef",
+      "patches": [
+        {
+          "offset": 872,
+          "previous": "export type ModerationLogType = 'updateRole' | 'deleteNote' | 'clearQueue' | 'promoteQueue' | 'pauseQueue' | 'resumeQueue' | 'suspendRemoteInstance' | 'unsuspendRemoteInstance' | 'updateRemoteInstanceNote';\n",
+          "insert": "export type ModerationLogType = 'updateRole' | 'updateServerSettings' | 'deleteNote' | 'clearQueue' | 'promoteQueue' | 'pauseQueue' | 'resumeQueue' | 'suspendRemoteInstance' | 'unsuspendRemoteInstance' | 'updateRemoteInstanceNote';\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/modules/role/public.ts": {
+      "previousSha256": "d3ca8fe440ea0e3dd74765d97151cd0a1c590d803826f785c9f5fb7a253d99ba",
+      "currentSha256": "5ca4682ea9b590edb030632cb4852ba3fce11fd8589418caba739b963013c363",
+      "patches": [
+        {
+          "offset": 1264,
+          "previous": "",
+          "insert": "export { createUpdateDefaultPolicies } from './update-default-policies.js';\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/connect-resources.ts": {
+      "previousSha256": "3fb32e36f9fce98728d59ee3adae9724b1085977cf8a3baee85b01c86491144c",
+      "currentSha256": "de92c9112fe54de8608dc54f906f741bf83fcf5ec5981baf887bf0f3199140a0",
+      "patches": [
+        {
+          "offset": 907,
+          "previous": "",
+          "insert": "import { createDefaultRolePolicies } from '../composition/default-role-policies.js';\n"
+        },
+        {
+          "offset": 10428,
+          "previous": "",
+          "insert": "\t\tconst defaultRolePolicies = createDefaultRolePolicies({ dataSource, meta, publisher: rolePublisher, url: config.url, logger, ids: createIdCodec(config.id) });\n\t\tscope.defer(defaultRolePolicies.close);\n"
+        },
+        {
+          "offset": 21732,
+          "previous": "",
+          "insert": "\t\t\tdefaultRolePolicies,\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "previousSha256": "859b3e8e5ec9547b4dceaabc24e4c3a0554984bf2677afecd0ed3d16c47af2fd",
+      "currentSha256": "95aebb6d976628a705eb72cf17b1a779ae495a07f17570a6709c3569855ee91c",
+      "patches": [
+        {
+          "offset": 864,
+          "previous": "",
+          "insert": "\t\tdefaultRolePolicies: { updateDefaultPolicies: vi.fn() },\n"
+        },
+        {
+          "offset": 2256,
+          "previous": "\t\t'/api/admin/roles/show', '/api/admin/roles/update', '/api/roles/list', '/api/roles/show',\n",
+          "insert": "\t\t'/api/admin/roles/show', '/api/admin/roles/update', '/api/admin/roles/update-default-policies', '/api/roles/list', '/api/roles/show',\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/meta-cache.ts": {
+      "previousSha256": "a1ed13fbdbec2ec9e12f4517be8ee337d921d8de50bf85b62c638e7ccc73ea04",
+      "currentSha256": "06e824f2166011bb9be9402aa2a01da3472c1ea51c9f34856f11a17ff1f3c1b6",
+      "patches": [
+        {
+          "offset": 925,
+          "previous": "\t\tconst work = options.read().then(meta => {\n",
+          "insert": "\t\treturn refresh(options.read);\n\t}\n\n\tasync function refresh(read: () => Promise<MiMeta>): Promise<MiMeta> {\n\t\tif (closed) {\n\t\t\tthrow new Error('Meta cache is closed');\n\t\t}\n\t\tconst work = read().then(meta => {\n"
+        },
+        {
+          "offset": 1884,
+          "previous": "\treturn { fetch, close };\n",
+          "insert": "\treturn { fetch, refresh, close };\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/meta-cache.test.ts": {
+      "previousSha256": "17597969f95aa0663e1d37fb942ff8c3daf2aa6addc3d79b9954827d1333399c",
+      "currentSha256": "08219e0603875eecafaebadc5520aa933c789c28e3a38a4dcfb24480e4465994",
+      "patches": [
+        {
+          "offset": 4347,
+          "previous": "",
+          "insert": "\ntest('producer refresh uses its primary reader, updates the ordinary cache and drains on close', async () => {\n\tconst h = harness(); await h.cache.fetch();\n\tlet release!: (value: MiMeta) => void;\n\tconst primary = vi.fn(() => new Promise<MiMeta>(resolve => {\n\t\trelease = resolve;\n\t}));\n\tconst pending = h.cache.refresh(primary);\n\tlet closed = false;\n\tconst closing = h.cache.close().then(() => {\n\t\tclosed = true;\n\t});\n\tawait Promise.resolve(); expect(closed).toBe(false);\n\trelease({ id: 'z', name: 'primary' } as MiMeta); expect(await pending).toMatchObject({ name: 'primary' });\n\tawait closing; expect(closed).toBe(true); expect(primary).toHaveBeenCalledOnce(); expect(h.reads()).toBe(1);\n\tconst other = harness(); await other.cache.fetch();\n\tawait other.cache.refresh(async () => ({ id: 'z', name: 'fresh' } as MiMeta));\n\texpect((await other.cache.fetch()).name).toBe('fresh'); expect(other.reads()).toBe(1);\n\tawait expect(other.cache.refresh(async () => {\n\t\tthrow new Error('failed primary');\n\t})).rejects.toThrow('failed primary');\n\texpect((await other.cache.fetch()).name).toBe('fresh'); await other.cache.close();\n});\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/federation/local-featured-red.test.ts": {
+      "previousSha256": "9a5b9410665f3b75c0bc92745e5e5c4b23e9edfecb92dc815ae0ee1ddcbbc139",
+      "currentSha256": "1d4c07031c15397508c909a4cf926f699fa6e388207731ccf4647296b2a6f2c9",
+      "patches": [
+        {
+          "offset": 1865,
+          "previous": "",
+          "insert": "\t\tdefaultRolePolicies: { updateDefaultPolicies: vi.fn() },\n"
+        }
+      ]
+    }
+  }
+}

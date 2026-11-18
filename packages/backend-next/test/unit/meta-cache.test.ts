@@ -75,3 +75,26 @@ test('close cancels future work, unregisters and waits for an accepted fetch', a
 	release(); await pending; await close; await vi.advanceTimersByTimeAsync(600000); expect(h.reads()).toBe(1);
 	await expect(h.cache.fetch(true)).rejects.toThrow('Meta cache is closed'); await h.cache.close();
 });
+
+test('producer refresh uses its primary reader, updates the ordinary cache and drains on close', async () => {
+	const h = harness(); await h.cache.fetch();
+	let release!: (value: MiMeta) => void;
+	const primary = vi.fn(() => new Promise<MiMeta>(resolve => {
+		release = resolve;
+	}));
+	const pending = h.cache.refresh(primary);
+	let closed = false;
+	const closing = h.cache.close().then(() => {
+		closed = true;
+	});
+	await Promise.resolve(); expect(closed).toBe(false);
+	release({ id: 'z', name: 'primary' } as MiMeta); expect(await pending).toMatchObject({ name: 'primary' });
+	await closing; expect(closed).toBe(true); expect(primary).toHaveBeenCalledOnce(); expect(h.reads()).toBe(1);
+	const other = harness(); await other.cache.fetch();
+	await other.cache.refresh(async () => ({ id: 'z', name: 'fresh' } as MiMeta));
+	expect((await other.cache.fetch()).name).toBe('fresh'); expect(other.reads()).toBe(1);
+	await expect(other.cache.refresh(async () => {
+		throw new Error('failed primary');
+	})).rejects.toThrow('failed primary');
+	expect((await other.cache.fetch()).name).toBe('fresh'); await other.cache.close();
+});
