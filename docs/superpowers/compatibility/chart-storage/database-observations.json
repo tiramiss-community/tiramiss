@@ -1,0 +1,235 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "schemaManifestSha256": "8aa7a4f58a056073d5771ef8460562364f65cea3c14f367f6bdd4c2b9044c69b",
+  "tables": 24,
+  "migrations": 349,
+  "schemaDiff": {
+    "up": 0,
+    "down": 0
+  },
+  "readWrite": [
+    {
+      "series": "federation",
+      "span": "hour",
+      "table": "__chart__federation",
+      "historicalRows": 1,
+      "updatedMetric": "___deliveredInstances",
+      "insertedId": 2,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "federation",
+      "span": "day",
+      "table": "__chart_day__federation",
+      "historicalRows": 1,
+      "updatedMetric": "___deliveredInstances",
+      "insertedId": 2,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "notes",
+      "span": "hour",
+      "table": "__chart__notes",
+      "historicalRows": 1,
+      "updatedMetric": "___local_total",
+      "insertedId": 2,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "notes",
+      "span": "day",
+      "table": "__chart_day__notes",
+      "historicalRows": 1,
+      "updatedMetric": "___local_total",
+      "insertedId": 2,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "users",
+      "span": "hour",
+      "table": "__chart__users",
+      "historicalRows": 1,
+      "updatedMetric": "___local_total",
+      "insertedId": 2,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "users",
+      "span": "day",
+      "table": "__chart_day__users",
+      "historicalRows": 1,
+      "updatedMetric": "___local_total",
+      "insertedId": 2,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "activeUsers",
+      "span": "hour",
+      "table": "__chart__active_users",
+      "historicalRows": 1,
+      "updatedMetric": "___readWrite",
+      "insertedId": 2,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "activeUsers",
+      "span": "day",
+      "table": "__chart_day__active_users",
+      "historicalRows": 1,
+      "updatedMetric": "___readWrite",
+      "insertedId": 2,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "instance",
+      "span": "hour",
+      "table": "__chart__instance",
+      "historicalRows": 2,
+      "updatedMetric": "___requests_failed",
+      "insertedId": 3,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "instance",
+      "span": "day",
+      "table": "__chart_day__instance",
+      "historicalRows": 2,
+      "updatedMetric": "___requests_failed",
+      "insertedId": 3,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "perUserNotes",
+      "span": "hour",
+      "table": "__chart__per_user_notes",
+      "historicalRows": 2,
+      "updatedMetric": "___total",
+      "insertedId": 3,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "perUserNotes",
+      "span": "day",
+      "table": "__chart_day__per_user_notes",
+      "historicalRows": 2,
+      "updatedMetric": "___total",
+      "insertedId": 3,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "perUserPv",
+      "span": "hour",
+      "table": "__chart__per_user_pv",
+      "historicalRows": 2,
+      "updatedMetric": "___upv_user",
+      "insertedId": 3,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "perUserPv",
+      "span": "day",
+      "table": "__chart_day__per_user_pv",
+      "historicalRows": 2,
+      "updatedMetric": "___upv_user",
+      "insertedId": 3,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "drive",
+      "span": "hour",
+      "table": "__chart__drive",
+      "historicalRows": 1,
+      "updatedMetric": "___local_incCount",
+      "insertedId": 2,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "drive",
+      "span": "day",
+      "table": "__chart_day__drive",
+      "historicalRows": 1,
+      "updatedMetric": "___local_incCount",
+      "insertedId": 2,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "perUserReaction",
+      "span": "hour",
+      "table": "__chart__per_user_reaction",
+      "historicalRows": 2,
+      "updatedMetric": "___local_count",
+      "insertedId": 3,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "perUserReaction",
+      "span": "day",
+      "table": "__chart_day__per_user_reaction",
+      "historicalRows": 2,
+      "updatedMetric": "___local_count",
+      "insertedId": 3,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "perUserFollowing",
+      "span": "hour",
+      "table": "__chart__per_user_following",
+      "historicalRows": 2,
+      "updatedMetric": "___local_followings_total",
+      "insertedId": 3,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "perUserFollowing",
+      "span": "day",
+      "table": "__chart_day__per_user_following",
+      "historicalRows": 2,
+      "updatedMetric": "___local_followings_total",
+      "insertedId": 3,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "perUserDrive",
+      "span": "hour",
+      "table": "__chart__per_user_drive",
+      "historicalRows": 2,
+      "updatedMetric": "___totalCount",
+      "insertedId": 3,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "perUserDrive",
+      "span": "day",
+      "table": "__chart_day__per_user_drive",
+      "historicalRows": 2,
+      "updatedMetric": "___totalCount",
+      "insertedId": 3,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "apRequest",
+      "span": "hour",
+      "table": "__chart__ap_request",
+      "historicalRows": 1,
+      "updatedMetric": "___deliverFailed",
+      "insertedId": 2,
+      "uniqueViolation": "23505"
+    },
+    {
+      "series": "apRequest",
+      "span": "day",
+      "table": "__chart_day__ap_request",
+      "historicalRows": 1,
+      "updatedMetric": "___deliverFailed",
+      "insertedId": 2,
+      "uniqueViolation": "23505"
+    }
+  ],
+  "historyUnchanged": true,
+  "catalogUnchanged": true,
+  "injectedDriftDetectedWithoutApplyingDdl": true,
+  "restoredSchemaDiff": {
+    "up": 0,
+    "down": 0
+  }
+}

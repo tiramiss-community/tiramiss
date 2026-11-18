@@ -1,0 +1,2688 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "extraction": "Exact two static Chart methods and constants; literal definition initializers; actual TypeORM EntitySchema. No chart service execution.",
+  "inputs": [
+    {
+      "path": "packages/backend/src/core/chart/ChartManagementService.ts",
+      "gitBlob": "0db05f76124bb77066f7d12532dc02391b809e9b",
+      "sha256": "09adefb31b360e04d5a4bfa4ff9dd500e2c0694e0a6c86f5a3e19e647564758b"
+    },
+    {
+      "path": "packages/backend/src/core/chart/charts/entities/active-users.ts",
+      "gitBlob": "fc2b88a2bb5dea45230605eb9c3b593bb2aaefc3",
+      "sha256": "4081700ad775efccc33ba25269caa3c56340d350ef4dc51b4a214afab6e2cd5f"
+    },
+    {
+      "path": "packages/backend/src/core/chart/charts/entities/ap-request.ts",
+      "gitBlob": "93e47e081b39810d43ddbcd2c62d81cb40be5956",
+      "sha256": "3ee57dc4cdd005f4945faed8dee354592aed94c8894bfc184e3f0331e00dfbe3"
+    },
+    {
+      "path": "packages/backend/src/core/chart/charts/entities/drive.ts",
+      "gitBlob": "4ea16da38c3258f24f113255ff876bd74b60c036",
+      "sha256": "bc1e16a6db07a1069eebd03bd49b86e1cc883ba5deb0a76b36302c0de52384e4"
+    },
+    {
+      "path": "packages/backend/src/core/chart/charts/entities/federation.ts",
+      "gitBlob": "5ed780434342e3a3bb26dff37fb576dce02c013f",
+      "sha256": "51a8ad4a385532bb115a1e0da4c2a4f6b8c2b9518ec1f793b09069d0c5c1dff8"
+    },
+    {
+      "path": "packages/backend/src/core/chart/charts/entities/instance.ts",
+      "gitBlob": "d0cac3e73f09a0da211b51ec65c91bdd1292f888",
+      "sha256": "d8e58691fc760fc1d62bf19dc4938395ca6383717948bd260316ec6ef33b0530"
+    },
+    {
+      "path": "packages/backend/src/core/chart/charts/entities/notes.ts",
+      "gitBlob": "325236ab3521f5366a6500ab173c0a8ff2c20d4f",
+      "sha256": "71e98fe6381d988759b0c7d9488bbc03de0d3c49ad40d87d93a0201f7836507d"
+    },
+    {
+      "path": "packages/backend/src/core/chart/charts/entities/per-user-drive.ts",
+      "gitBlob": "25d4619dde0e7bac64925834e69b9f36c42d8f03",
+      "sha256": "85a64aab477f036a9034ec7688c490f86be4d79edc3940aa424dc078aa036451"
+    },
+    {
+      "path": "packages/backend/src/core/chart/charts/entities/per-user-following.ts",
+      "gitBlob": "1618bd22f318eb3c6315fdf8d830ccaca4006237",
+      "sha256": "8b3364dafb9ebd3e1564cad900862eda0aa72ecb70aa340c3d7fd94d658f69ee"
+    },
+    {
+      "path": "packages/backend/src/core/chart/charts/entities/per-user-notes.ts",
+      "gitBlob": "30404b2e48c8ba328b4ae2af80e2b345f5be36b2",
+      "sha256": "f0e9f55c3b331bc7c1da4453794dd06cfda7817bdb2fa4d89bedd749aa99dc92"
+    },
+    {
+      "path": "packages/backend/src/core/chart/charts/entities/per-user-pv.ts",
+      "gitBlob": "7a903afad4dd4a003dbcd198023159ab9796c3a9",
+      "sha256": "1110e8e342c0414d1d1ddb21476ebc1ca00a77d76128dab900a2759711e2f91f"
+    },
+    {
+      "path": "packages/backend/src/core/chart/charts/entities/per-user-reactions.ts",
+      "gitBlob": "bb62bb238625532b768344801682cfe40875b7df",
+      "sha256": "722963f36b195225c9a9d4560167ee1346af1845f09cf03fe5f4211d989b8256"
+    },
+    {
+      "path": "packages/backend/src/core/chart/charts/entities/users.ts",
+      "gitBlob": "f94a5029d7efc2d00e2a4db3f71824414cc793ad",
+      "sha256": "7fe6a6d7ccd251efc248a90bd11ce9ce1a9c82c6e0d1dde849e647a76735b8eb"
+    },
+    {
+      "path": "packages/backend/src/core/chart/core.ts",
+      "gitBlob": "c1a012947be38fef645271c67adf0cf447dc1dda",
+      "sha256": "0fae5de0dcfb05018ffaf4f83bfc82e377d3fe316f05d4e057c3edc8c52bb6b3"
+    },
+    {
+      "path": "packages/backend/src/core/chart/entities.ts",
+      "gitBlob": "e424f2c8c5c258220234f2b65a9a81979bf94219",
+      "sha256": "1dc7fd106a094792c7d6487a8176050344fb54ca3e0b3b62ae2dd3dded5f2267"
+    },
+    {
+      "path": "packages/backend/src/decorators.ts",
+      "gitBlob": "42f925e1251cf8d5eb48caeb96d5a72fb203c017",
+      "sha256": "207c53166f496fb50e49b765b02ca7334cf7f817343222901a9646442a225f21"
+    },
+    {
+      "path": "packages/backend/src/env.ts",
+      "gitBlob": "c3b1cd015f4679740f65bc05c9f694ae81879529",
+      "sha256": "110cc45d73e417af1074a25b5be877093c9f63bab3e8dde0515bafc4f00751d6"
+    },
+    {
+      "path": "packages/backend/src/logger.ts",
+      "gitBlob": "4144c1cf0463e0cc06e414bdcc5f87547c67cf93",
+      "sha256": "59c5992d25a18755e50eca260baf6ec20eafa201d3e2e0254958d69b401b3d88"
+    },
+    {
+      "path": "packages/backend/src/logging/BootstrapConsoleBackend.ts",
+      "gitBlob": "42016acef645d55685e957d6a6ac45b66b8bd666",
+      "sha256": "d066c8e41fe4f3612f7cc19e8a638e1b600a9b5efde755db94c5a31aab3a8988"
+    },
+    {
+      "path": "packages/backend/src/logging/JsonConsoleBackend.ts",
+      "gitBlob": "fe6f8f0e2be197c3221f32c4f9a1ca60ffc7d02f",
+      "sha256": "bd351be0e1b0a7c0bd817c54186f6d1789e8da87898b3ca1ee7fde75920c63ef"
+    },
+    {
+      "path": "packages/backend/src/logging/LogBackend.ts",
+      "gitBlob": "0b79effe7f9b36531c9039dbfa4994e838841b16",
+      "sha256": "cfb1979076022003c5c144685be86719801f85e2968fad13da3b716750a38a07"
+    },
+    {
+      "path": "packages/backend/src/logging/logging-runtime.ts",
+      "gitBlob": "223f6e379ee718cd07b56c83ef843bdca788b47d",
+      "sha256": "64247430b0df005bdc715400eb32e0dea301d04aa87b2d8d83a474b98526bca5"
+    },
+    {
+      "path": "packages/backend/src/logging/LogManager.ts",
+      "gitBlob": "ef78f97bfe26e27b556df9134a431ffbfe453141",
+      "sha256": "fdc6c898791b76f3f7d53d5a25ba61f6de83d4fc3f434db7c9ce3643ea030bd6"
+    },
+    {
+      "path": "packages/backend/src/logging/LogNormalizer.ts",
+      "gitBlob": "117f03b7ba9a4f50c5516733a67929241d2dc5db",
+      "sha256": "893bfc0677c79b1c54d1427574c7e8587d0fc990fd589b26ae8dd6326fd56af8"
+    },
+    {
+      "path": "packages/backend/src/logging/PrettyConsoleBackend.ts",
+      "gitBlob": "7a5d277bcdafe19f5749882f2e3c7da0901b6752",
+      "sha256": "341699f199e8532c9b3a0d014da21f969d2d70f726ee1d2a6d45ad4412596b30"
+    },
+    {
+      "path": "packages/backend/src/logging/types.ts",
+      "gitBlob": "ddd10f410f8be5d345ac70d50d33e2bcb1715adc",
+      "sha256": "259df33fea8d6da06db9c244aef87dbd76802e1a9a59151031a09ac479fcab48"
+    },
+    {
+      "path": "packages/backend/src/misc/prelude/time.ts",
+      "gitBlob": "275b67ed00be1e68aecf1d088804fb1d9cd54b2b",
+      "sha256": "bbd502e836812a15762a72a8e644bb2ef6a170773c7dc48e625676c38b338755"
+    },
+    {
+      "path": "packages/backend/src/misc/sql-string-escape.ts",
+      "gitBlob": "7cf44fd798026e90c4befbc59010a7d708d75c26",
+      "sha256": "717d956e7262144a19ab881d36336091aaefb2337bd9561bae4870e901746713"
+    },
+    {
+      "path": "packages/backend/src/models/_.ts",
+      "gitBlob": "c4528e3a7731c98e90d99e9ed5f1a3a78523263b",
+      "sha256": "03554499d5eb569d3267040967d67959d1b1072abed11cd016094f6510032b26"
+    },
+    {
+      "path": "packages/backend/src/models/AbuseReportNotificationRecipient.ts",
+      "gitBlob": "daed81c17468ae9e7200de8b172d5fc41fdd6432",
+      "sha256": "d92bf22a027cf12e6cccb4168e83a84c672713ba6822816dc4e13796872d9059"
+    },
+    {
+      "path": "packages/backend/src/models/AbuseUserReport.ts",
+      "gitBlob": "cd49fcddfede06b6dfd815ec7f4114da58d9f296",
+      "sha256": "a083723b8cab4afd73cfe9037549b00a29d0c074eddb9fc06ad5898e0508d49c"
+    },
+    {
+      "path": "packages/backend/src/models/AccessToken.ts",
+      "gitBlob": "a853dcc6cb7703e6cf06b56484dd2ae624b69c94",
+      "sha256": "467f26599f3faeedf670163be022ed3280fa0b706515c0a21ccd5424cf0bc073"
+    },
+    {
+      "path": "packages/backend/src/models/Ad.ts",
+      "gitBlob": "0d402fcbe8cd0e4044c190a322334d88b72c3ed3",
+      "sha256": "968fa9b07cc300acf9d32ebaa9a71530d362d658b0264e920456bb7465baefa7"
+    },
+    {
+      "path": "packages/backend/src/models/Announcement.ts",
+      "gitBlob": "4155161cfc29a6d7b573c2f17fef0baef3cf1caf",
+      "sha256": "74ebb2c97c3ce6ec893dd65cf15bb3cff1687d0b939619b8a61a77a630bf6489"
+    },
+    {
+      "path": "packages/backend/src/models/AnnouncementRead.ts",
+      "gitBlob": "2133cff14081a2ec2e7ed88fc647ab498d00ac27",
+      "sha256": "46dddc3731d70bf062fd74cdf8283e0b86da665bb94f4c86a4364d89ff98cef6"
+    },
+    {
+      "path": "packages/backend/src/models/Antenna.ts",
+      "gitBlob": "3433cf20af146369c3a02263eb138ca1e4552d4d",
+      "sha256": "78c483736614bd03d9fb3c0a439fcea7a6a0eadab90e4640ebb66f6271ec1f5d"
+    },
+    {
+      "path": "packages/backend/src/models/App.ts",
+      "gitBlob": "bbb80b99efc831d6f2363872bf0089ed047c1373",
+      "sha256": "5e7aa9987e35ed21a0a65de57c9bf3d63f13c5c83f204dc19b7a5264d8e6b46f"
+    },
+    {
+      "path": "packages/backend/src/models/AuthSession.ts",
+      "gitBlob": "a7273e63bf729b1ed7b90fc6ea1dee3e766fa829",
+      "sha256": "a2d6d87099337090feaf676a8ad37738d997f3470228da1543075f4a023999ea"
+    },
+    {
+      "path": "packages/backend/src/models/AvatarDecoration.ts",
+      "gitBlob": "d14a210392c75f0ab4290a5f5714e3e382bfbdc1",
+      "sha256": "5dcaf4a369d6628258ba0a2c0a8529fcb30a8045ddca5be1dfa7cebe7844fedd"
+    },
+    {
+      "path": "packages/backend/src/models/Blocking.ts",
+      "gitBlob": "49b584f5091e7bf9ac474eed962674d5e53b2932",
+      "sha256": "89afafeaeebb14977dfbf4232bd6626376f1b6b409fb72b68268afe94a71ba24"
+    },
+    {
+      "path": "packages/backend/src/models/BubbleGameRecord.ts",
+      "gitBlob": "5dd7009fc68a90d73e411870dd80579114f050c4",
+      "sha256": "7c26780eeebc89cb23eb07ba9989e9c7bb1be69be0099b6ef1bfd66d0411b8bb"
+    },
+    {
+      "path": "packages/backend/src/models/Channel.ts",
+      "gitBlob": "5a5b914eb11bac40fc4cb59ca3e65693925d8979",
+      "sha256": "f9718ea8ca8de9dfdd21b8dbe1aa725831ba1915392b7992a3ae03e3cd1bb18d"
+    },
+    {
+      "path": "packages/backend/src/models/ChannelFavorite.ts",
+      "gitBlob": "4f4946859868ce8f448bb4f09d9b779ee77aa7a5",
+      "sha256": "e5313171cd51b847d7a44c0a46208ab408de272ccd6c533a64d0bc4d6a5e55eb"
+    },
+    {
+      "path": "packages/backend/src/models/ChannelFollowing.ts",
+      "gitBlob": "7597e704a8052a0d8062ad738a7a5811d073ac63",
+      "sha256": "0b02ca50f4886202b76f215c5090117050ddac0035cc7563f78764acca3827e0"
+    },
+    {
+      "path": "packages/backend/src/models/ChannelMuting.ts",
+      "gitBlob": "b7054c9c5ff51d34c5382e1422957e0d0cc61a82",
+      "sha256": "87f52ed759e7a6b8f8143c0d577342e1ea933a0b00419b0f00a84a3be9d20106"
+    },
+    {
+      "path": "packages/backend/src/models/ChatApproval.ts",
+      "gitBlob": "bd2509b67f328339a033fdca394c7a25635d4169",
+      "sha256": "be0dad35026e3b00158e17403f8bdc7af56d14ef254807decf542dd7cca28276"
+    },
+    {
+      "path": "packages/backend/src/models/ChatMessage.ts",
+      "gitBlob": "530ef9b84261ab5691e230031c49e452b087d514",
+      "sha256": "7a9c0c0ec1398f876a4c859c4509788db6351e89f3c9775f1abf2d23efa74a3b"
+    },
+    {
+      "path": "packages/backend/src/models/ChatRoom.ts",
+      "gitBlob": "c148b16af8b0d404e67eda943a43fec0fa6d078b",
+      "sha256": "c35cadcdf150a7433c9439444246405d5cf1c43f2bcda1bf1826133a8ce60bfa"
+    },
+    {
+      "path": "packages/backend/src/models/ChatRoomInvitation.ts",
+      "gitBlob": "5827d0401db16792ce48046e60f34907468e3887",
+      "sha256": "514017cc3fd091e5dd0ea58b6851fb71ea1afc60b8856e505ac0251edc1de235"
+    },
+    {
+      "path": "packages/backend/src/models/ChatRoomMembership.ts",
+      "gitBlob": "d59b4426df16a7183a72db450b6439fae757d1c5",
+      "sha256": "4ee0a83799a9e8ee2015cbe2200b0f40de27c9132d326882b69cd42dcbad058c"
+    },
+    {
+      "path": "packages/backend/src/models/Clip.ts",
+      "gitBlob": "ddd0298f44755ffaef93990ddb07163a9b536dc7",
+      "sha256": "df9c2c87daa68c089bff41d66516ba96dfd5e28d58727707630bd3c013d291b8"
+    },
+    {
+      "path": "packages/backend/src/models/ClipFavorite.ts",
+      "gitBlob": "2d46fd0f0e8b29ecebcb0cdd157718b7d6dfba90",
+      "sha256": "2d274aa8e9a6e0c64feacc1e232499e397e0f620dc6ca5078cf9b6160a457f2b"
+    },
+    {
+      "path": "packages/backend/src/models/ClipNote.ts",
+      "gitBlob": "23df66c4e0f368945e939be0b45f30715e40c1e4",
+      "sha256": "3d06aceba0f22119748020c5467d2a786d81a28c10c6d531258db1c6e782674d"
+    },
+    {
+      "path": "packages/backend/src/models/DriveFile.ts",
+      "gitBlob": "79189b10eb01bc1c4cbc38e1ce3a9680d812aa8c",
+      "sha256": "9c8197a8506abe00dea5f4ab20de3af3cd684c1ea5b44f52bdf3f0ea2ecb12ba"
+    },
+    {
+      "path": "packages/backend/src/models/DriveFolder.ts",
+      "gitBlob": "7e34c07f46315a2827cf4d5d85bb1e53ba78e980",
+      "sha256": "c4a33c4ec6c0b8c436b83bb0de262e5ccab20c3263928e5e84d52d954065cba5"
+    },
+    {
+      "path": "packages/backend/src/models/Emoji.ts",
+      "gitBlob": "8dff8fd153c63baffa391f2dd9a0e45bf01315b9",
+      "sha256": "8523b308b0425723dc4c27f3c34854519136ce056ba2abf28563825a22813802"
+    },
+    {
+      "path": "packages/backend/src/models/Flash.ts",
+      "gitBlob": "ed677a9de3e65034f4901852efcb64a5a6187972",
+      "sha256": "924722f6dabc744e3ddb4ca41f73cb32a766622fe49265ba75850593249b5226"
+    },
+    {
+      "path": "packages/backend/src/models/FlashLike.ts",
+      "gitBlob": "0d99c2a9ae1a9eee259e8c6daf3c736a50ed5cb3",
+      "sha256": "3ce2d87b04c051b8120382de1b4ca5b61c953f528b53ac7a41f0b05168c6e95a"
+    },
+    {
+      "path": "packages/backend/src/models/Following.ts",
+      "gitBlob": "fe621662877dd321719cbf24b39171e10e822e5e",
+      "sha256": "b53d0ebb5ab5e85a4cbf2384053dd8e053a77cea819893452df60dec321d9579"
+    },
+    {
+      "path": "packages/backend/src/models/FollowRequest.ts",
+      "gitBlob": "468829b7e8db0b43a5a03a2b678e449ede688c15",
+      "sha256": "43d65ba39e9491831c767330cfcd777c2ae91bf874e48a51fef7fe8bd4a86328"
+    },
+    {
+      "path": "packages/backend/src/models/GalleryLike.ts",
+      "gitBlob": "787b38e46dec464ba94a24263a1198aa4b23a90c",
+      "sha256": "6cc54d0e41ddb01c9fb0b13f6d391f1c6608dc94bd0d53dca003101ec92c2560"
+    },
+    {
+      "path": "packages/backend/src/models/GalleryPost.ts",
+      "gitBlob": "f66956628ba1907b26008416f5995e00ad12f139",
+      "sha256": "7dd0d327e91d3f7d323ecac915ecdcc97a1777ba8b0e11107f6869ad8c809561"
+    },
+    {
+      "path": "packages/backend/src/models/Hashtag.ts",
+      "gitBlob": "43013489573ed51486059adebb72d3329cba1333",
+      "sha256": "105c082a8fbd374c6990388a57125ae1b973ff5d8366032954399b046842b658"
+    },
+    {
+      "path": "packages/backend/src/models/Instance.ts",
+      "gitBlob": "17cd5c666557ce8bfc240551f1c44c37892a4da3",
+      "sha256": "f8cc3a7bcbcd7374fdd1ffe6f9238b15f6d449b3e9d876192ad6515f3554c1a6"
+    },
+    {
+      "path": "packages/backend/src/models/Meta.ts",
+      "gitBlob": "307b3f7a5db85cab8e26ccfdb5c52bf76c52525a",
+      "sha256": "27bd75b935886158a59b4126fa50e4687e6c38e3e91789cddf3438154d6ec38f"
+    },
+    {
+      "path": "packages/backend/src/models/ModerationLog.ts",
+      "gitBlob": "c22114a36ddc9dbd3434a67637369b63feeced55",
+      "sha256": "fb3276f73e4863139cbe265c0795270992b6b32c598e7eaf616c750bb0e3ee11"
+    },
+    {
+      "path": "packages/backend/src/models/Muting.ts",
+      "gitBlob": "9406b97a628ecac9f10d66a0e2631f8930e3f0a6",
+      "sha256": "3d6fbb28c49a4280ba5d9dda8ba30697681758d9d7d3bbf466e54b909be7c13a"
+    },
+    {
+      "path": "packages/backend/src/models/Note.ts",
+      "gitBlob": "089fe8f1883065a76033f0dfcf17b23dabf2741d",
+      "sha256": "6bfac7ead9ec41ed6a276b1fb4088cda551ac1215550856cdcd250699df31d80"
+    },
+    {
+      "path": "packages/backend/src/models/NoteDraft.ts",
+      "gitBlob": "5bfd9699fe3279c76cc898d0b90d2b86838c0032",
+      "sha256": "351d50c996a5d163c5b6b55126f139247bcbc8fbe21bf483e21c9ab40b12f231"
+    },
+    {
+      "path": "packages/backend/src/models/NoteFavorite.ts",
+      "gitBlob": "51bcb2662937ed5ff8bae483aaced3ac4a83d033",
+      "sha256": "24cb23e3f659e4498b1d963041d0865d370193b984794d05fd08182c759ad050"
+    },
+    {
+      "path": "packages/backend/src/models/NoteReaction.ts",
+      "gitBlob": "98263081ab24bd413ca7bfeb3f7ffacaf4780d6b",
+      "sha256": "32e02ef7fab04e726df360a80ed06a057aeda3412ad5d21dfd4b24a1780a5f3e"
+    },
+    {
+      "path": "packages/backend/src/models/NoteThreadMuting.ts",
+      "gitBlob": "32bb829c0bc622c53f6369a4272261df8ab58173",
+      "sha256": "f016b4f48d3780538b6c60101b2ad047366b4c8b53ee4ddd30934874942009d8"
+    },
+    {
+      "path": "packages/backend/src/models/Page.ts",
+      "gitBlob": "8811200801f0aea8a00e2ee8f9e1b012f2d2a535",
+      "sha256": "5950e60730beaaea630f53b1b8276c42727465a78c1c852c9237860585363aa2"
+    },
+    {
+      "path": "packages/backend/src/models/PageLike.ts",
+      "gitBlob": "cf3025ae1c0389df2f575eb72eadcff92e6cb1c3",
+      "sha256": "9c4528c3d34266f8c17682f61240e48bb3b795337093d17ab1fd9dcdb6982d87"
+    },
+    {
+      "path": "packages/backend/src/models/PasswordResetRequest.ts",
+      "gitBlob": "3379b540eec115eece1c7b0364753ff98df29aae",
+      "sha256": "628e6f5760621a2f52dd5d2096ff0269479197acfa25ac8fda3071bdbffffef9"
+    },
+    {
+      "path": "packages/backend/src/models/Poll.ts",
+      "gitBlob": "d82e29fb85ba00f3cae00ef7f42226ee46faab50",
+      "sha256": "16409d547a62cc17ed60cd14d7137efd60ca59004c49e2a2786c16871ef92198"
+    },
+    {
+      "path": "packages/backend/src/models/PollVote.ts",
+      "gitBlob": "600ca8ea41713964b7a4152d20a5e947df443c2c",
+      "sha256": "dfec4b3e8470365d0fe0d557960f141adbb4742d16f3b24d5913a82d2efb7698"
+    },
+    {
+      "path": "packages/backend/src/models/PromoNote.ts",
+      "gitBlob": "871f7471fc5f60a56bb3c623f45bb45e1925f257",
+      "sha256": "a71dbb5bb9846a681c0995715d21f35309c64d3ef7388cf40d84506d5fc3138e"
+    },
+    {
+      "path": "packages/backend/src/models/PromoRead.ts",
+      "gitBlob": "15a3573ef3f146c141160d25dee573bfa50915fb",
+      "sha256": "f1a1d6c982b5347c10c9887607eeda0c545ebd3b64709344cffc4dd3dcf88bbd"
+    },
+    {
+      "path": "packages/backend/src/models/RegistrationTicket.ts",
+      "gitBlob": "07216599d3d7af24aa93511189eec7538670f18a",
+      "sha256": "390819461a81bd412f9e1ec3eb966989d4b24d7d8d09c466e8498b343ab78b7e"
+    },
+    {
+      "path": "packages/backend/src/models/RegistryItem.ts",
+      "gitBlob": "869980bbffd4c6165823fcd61564400935c5dbf0",
+      "sha256": "388c597778f560794322831d9ab212af4faf18b8daa355e398059f10a0489203"
+    },
+    {
+      "path": "packages/backend/src/models/Relay.ts",
+      "gitBlob": "eca29160328890b5e5abc6d3588d8691b5a6671f",
+      "sha256": "b8660ca4968639c429f4462189130c616d070f06efd01d19c087d7ba7076c510"
+    },
+    {
+      "path": "packages/backend/src/models/RenoteMuting.ts",
+      "gitBlob": "b760a09c5387eef787f623f5ae45bf837f3bfa9b",
+      "sha256": "d4f61efc7797d7d002c38f6d77d84a02ae2a315c50e569b554128e6fcae4b14f"
+    },
+    {
+      "path": "packages/backend/src/models/RetentionAggregation.ts",
+      "gitBlob": "139f3e4dfdc68c3af6cfe54916fa2b9da20b5b1b",
+      "sha256": "b9c51d309661863a0ebbb4084697f4a49ce81da2d139b1278db47a65fa633c8f"
+    },
+    {
+      "path": "packages/backend/src/models/ReversiGame.ts",
+      "gitBlob": "fbbf24792f2c64dee3948124f5510d7158068400",
+      "sha256": "046ec153d68b05a0465aaecd18c6e95967a9442782cfb34392b65fee57e9a93f"
+    },
+    {
+      "path": "packages/backend/src/models/Role.ts",
+      "gitBlob": "4c7da252bddfd78d7aa81cfb86a8786cdfefde39",
+      "sha256": "f008b36404dd14a8f5690019885002615caefd12651ac8e437f87c62ac3f4b67"
+    },
+    {
+      "path": "packages/backend/src/models/RoleAssignment.ts",
+      "gitBlob": "cb96377f66a0dd6aa73e73e3424132d8007a358d",
+      "sha256": "afa68f74c5b05035341966557adbd836cd06111e4a54332af0c293d658912960"
+    },
+    {
+      "path": "packages/backend/src/models/Signin.ts",
+      "gitBlob": "59cbad735de20fcb356f88b70e5ad9ff89769949",
+      "sha256": "2bbb9cbd8ceb4209a6045a49c0829649ab65f472d5c4ef79b918c95a91e116b4"
+    },
+    {
+      "path": "packages/backend/src/models/SwSubscription.ts",
+      "gitBlob": "a95aede44f23b3861ff2c60ee6a26553865ddb1e",
+      "sha256": "254158f8aa3ce243307a6cefec0f3da4c5d8c0635b92f7d28b527c15bef2804d"
+    },
+    {
+      "path": "packages/backend/src/models/SystemAccount.ts",
+      "gitBlob": "2a48e62ed1e6124a58edbc8d2da098ba7ce2631b",
+      "sha256": "781f2b434166f9a7d25027c7a6e05bbea8bcb9bbabd4f58152c00b32715330aa"
+    },
+    {
+      "path": "packages/backend/src/models/SystemWebhook.ts",
+      "gitBlob": "1a7ce4962bc78732003bdc73179a8e6267223d51",
+      "sha256": "3883c8873e2b084c02faa22fe2984e3b318d8d936d0ef2b4787740cf43cc4b70"
+    },
+    {
+      "path": "packages/backend/src/models/UsedUsername.ts",
+      "gitBlob": "fbfc126763504f855584b37e1190ff9c61a7b224",
+      "sha256": "7e9cb9415b121a703e1f563ecd2b0c371add61f3c3e9b58151dd705209efdbfc"
+    },
+    {
+      "path": "packages/backend/src/models/User.ts",
+      "gitBlob": "084dd354850ee85267f6d2490368a3e081e30883",
+      "sha256": "e72ed54a927cc873976bbfd7add8decd14f9596718cc6eb978c7cff1bc641f0e"
+    },
+    {
+      "path": "packages/backend/src/models/UserIp.ts",
+      "gitBlob": "3e757fcf7988f1602842323b7f04de530de2502b",
+      "sha256": "69fd84356684f4d907b1674757f332d39e32ccdb4ab35e8886bf744be447b97b"
+    },
+    {
+      "path": "packages/backend/src/models/UserKeypair.ts",
+      "gitBlob": "894739c84c33e8c7bbbb0658ce4ce752410cf7fd",
+      "sha256": "f5a69eae05becde7c33e062257edc52f3897b2beeeebeffa1259f305092f543b"
+    },
+    {
+      "path": "packages/backend/src/models/UserList.ts",
+      "gitBlob": "05fd833b6fe92dc7bc9405a34a83fa33d528e0ce",
+      "sha256": "fef1a7b39a43d16c2637cedc0e8e87bfc9a63c8108bf309130e4fffb94506fcd"
+    },
+    {
+      "path": "packages/backend/src/models/UserListFavorite.ts",
+      "gitBlob": "67ab92d98c65107d12c5f859107804edad053fc1",
+      "sha256": "38779e5d16454ac1ae5e925b54256a921441b15e1e59281121d9e6ce8caab59c"
+    },
+    {
+      "path": "packages/backend/src/models/UserListMembership.ts",
+      "gitBlob": "1a2b3fffc1550360cadd42a7c468d400f4da86a9",
+      "sha256": "02f537c794940fb5f2a24da83886e9cfde6cd2732c0dc77cd3153aa9fda646cc"
+    },
+    {
+      "path": "packages/backend/src/models/UserMemo.ts",
+      "gitBlob": "facc8c6b1c298af365a41d642b66e5b7e89c7a7a",
+      "sha256": "be96c785faa88f9bd2613c137f9ea8b268dc2bb8f3b8803bf5c764dbcad7e494"
+    },
+    {
+      "path": "packages/backend/src/models/UserNotePining.ts",
+      "gitBlob": "733d4fb9d85d17a0774c767f9e84be0429da598a",
+      "sha256": "88b35d6a010530807d4f1e347a02cceb4b7026695c41c0d7e7c4712c868e8d90"
+    },
+    {
+      "path": "packages/backend/src/models/UserPending.ts",
+      "gitBlob": "99f8a22a8481dec390977b12ddb5ba88ddef812c",
+      "sha256": "afad5d5f8994bd949d3a86a54ef8923b52b41e8d9189096c45dd0610f79a571e"
+    },
+    {
+      "path": "packages/backend/src/models/UserProfile.ts",
+      "gitBlob": "4bef1de617d8eb773e24545da3ecfa09c5ccb1f0",
+      "sha256": "afd7f32c99016cdd613a90b066570079db140d88a62f096267daea20ef2126ba"
+    },
+    {
+      "path": "packages/backend/src/models/UserPublickey.ts",
+      "gitBlob": "8c23d368e98b6fecd9866846f930dd5303cc1391",
+      "sha256": "5cb1dae60e5814cf41202d02c44d1cd685dee29c2e22eab02e57af54342c4b95"
+    },
+    {
+      "path": "packages/backend/src/models/UserSecurityKey.ts",
+      "gitBlob": "577ec359e4b68330d4b4ca5d3172e773e14f0e12",
+      "sha256": "c854bb68167e33861cebbe83089a2791da269cca74cac56e5ea45bb26c62330b"
+    },
+    {
+      "path": "packages/backend/src/models/util/id.ts",
+      "gitBlob": "2d742702c7ac1bea99b6ecf5e7a44b34a3da8bdf",
+      "sha256": "9700330b93195e8242fcc364c38bf98aa0c2a3995ac81ced8cefa5e5e4bc49d8"
+    },
+    {
+      "path": "packages/backend/src/models/Webhook.ts",
+      "gitBlob": "5f833115cc3c6286ceeef727bb3b9107a60eec73",
+      "sha256": "109604689d80426bcab64164367698d3d012afb9263c997ec88f5ec5f9403324"
+    },
+    {
+      "path": "packages/backend/src/postgres.ts",
+      "gitBlob": "0df2614c6d16e51db06cb485e0e9f98909be24aa",
+      "sha256": "c6879b6b23c5fb1e7518ff0eaa02397791470732389954648f42ab13c0eaaa74"
+    },
+    {
+      "path": "packages/backend/src/types.ts",
+      "gitBlob": "d475bb5639b9686b5cd6e8805f84ff81398a46a3",
+      "sha256": "9f8cd80a2a56aa36b11848f41e3bc02d20bff87603348c3f984bcfaf3290e307"
+    }
+  ],
+  "dependencyClosure": {
+    "files": 105,
+    "alreadySynced": 44,
+    "outsideCurrentManifest": 61,
+    "outsideAllowedManagedPaths": [
+      "packages/backend/src/core/chart/charts/entities/active-users.ts",
+      "packages/backend/src/core/chart/charts/entities/ap-request.ts",
+      "packages/backend/src/core/chart/charts/entities/drive.ts",
+      "packages/backend/src/core/chart/charts/entities/federation.ts",
+      "packages/backend/src/core/chart/charts/entities/instance.ts",
+      "packages/backend/src/core/chart/charts/entities/notes.ts",
+      "packages/backend/src/core/chart/charts/entities/per-user-drive.ts",
+      "packages/backend/src/core/chart/charts/entities/per-user-following.ts",
+      "packages/backend/src/core/chart/charts/entities/per-user-notes.ts",
+      "packages/backend/src/core/chart/charts/entities/per-user-pv.ts",
+      "packages/backend/src/core/chart/charts/entities/per-user-reactions.ts",
+      "packages/backend/src/core/chart/charts/entities/users.ts",
+      "packages/backend/src/core/chart/core.ts",
+      "packages/backend/src/decorators.ts",
+      "packages/backend/src/env.ts",
+      "packages/backend/src/logger.ts",
+      "packages/backend/src/logging/BootstrapConsoleBackend.ts",
+      "packages/backend/src/logging/JsonConsoleBackend.ts",
+      "packages/backend/src/logging/LogBackend.ts",
+      "packages/backend/src/logging/LogManager.ts",
+      "packages/backend/src/logging/LogNormalizer.ts",
+      "packages/backend/src/logging/PrettyConsoleBackend.ts",
+      "packages/backend/src/logging/logging-runtime.ts",
+      "packages/backend/src/logging/types.ts",
+      "packages/backend/src/misc/prelude/time.ts",
+      "packages/backend/src/misc/sql-string-escape.ts"
+    ],
+    "externalDependencies": [
+      "chalk",
+      "color-convert",
+      "date-fns",
+      "nested-property",
+      "typeorm"
+    ],
+    "undeclaredExternalDependencies": [
+      "chalk",
+      "color-convert",
+      "date-fns",
+      "nested-property"
+    ]
+  },
+  "charts": [
+    {
+      "name": "federation",
+      "definition": "packages/backend/src/core/chart/charts/entities/federation.ts",
+      "schema": {
+        "deliveredInstances": {
+          "uniqueIncrement": true,
+          "range": "small"
+        },
+        "inboxInstances": {
+          "uniqueIncrement": true,
+          "range": "small"
+        },
+        "stalled": {
+          "uniqueIncrement": true,
+          "range": "small"
+        },
+        "sub": {
+          "accumulate": true,
+          "range": "small"
+        },
+        "pub": {
+          "accumulate": true,
+          "range": "small"
+        },
+        "pubsub": {
+          "accumulate": true,
+          "range": "small"
+        },
+        "subActive": {
+          "accumulate": true,
+          "range": "small"
+        },
+        "pubActive": {
+          "accumulate": true,
+          "range": "small"
+        }
+      },
+      "entities": {
+        "hour": {
+          "name": "ChartXfederation",
+          "tableName": "__chart__federation",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "unique_temp___deliveredInstances": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___deliveredInstances": {
+              "type": "smallint",
+              "default": 0
+            },
+            "unique_temp___inboxInstances": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___inboxInstances": {
+              "type": "smallint",
+              "default": 0
+            },
+            "unique_temp___stalled": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___stalled": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___sub": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___pub": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___pubsub": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___subActive": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___pubActive": {
+              "type": "smallint",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date"
+              ]
+            }
+          ],
+          "relations": {}
+        },
+        "day": {
+          "name": "ChartDayXfederation",
+          "tableName": "__chart_day__federation",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "unique_temp___deliveredInstances": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___deliveredInstances": {
+              "type": "smallint",
+              "default": 0
+            },
+            "unique_temp___inboxInstances": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___inboxInstances": {
+              "type": "smallint",
+              "default": 0
+            },
+            "unique_temp___stalled": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___stalled": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___sub": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___pub": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___pubsub": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___subActive": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___pubActive": {
+              "type": "smallint",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date"
+              ]
+            }
+          ],
+          "relations": {}
+        }
+      }
+    },
+    {
+      "name": "notes",
+      "definition": "packages/backend/src/core/chart/charts/entities/notes.ts",
+      "schema": {
+        "local.total": {
+          "accumulate": true
+        },
+        "local.inc": {},
+        "local.dec": {},
+        "local.diffs.normal": {},
+        "local.diffs.reply": {},
+        "local.diffs.renote": {},
+        "local.diffs.withFile": {},
+        "remote.total": {
+          "accumulate": true
+        },
+        "remote.inc": {},
+        "remote.dec": {},
+        "remote.diffs.normal": {},
+        "remote.diffs.reply": {},
+        "remote.diffs.renote": {},
+        "remote.diffs.withFile": {}
+      },
+      "entities": {
+        "hour": {
+          "name": "ChartXnotes",
+          "tableName": "__chart__notes",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "___local_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_inc": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_dec": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_diffs_normal": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_diffs_reply": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_diffs_renote": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_diffs_withFile": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_inc": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_dec": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_diffs_normal": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_diffs_reply": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_diffs_renote": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_diffs_withFile": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date"
+              ]
+            }
+          ],
+          "relations": {}
+        },
+        "day": {
+          "name": "ChartDayXnotes",
+          "tableName": "__chart_day__notes",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "___local_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_inc": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_dec": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_diffs_normal": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_diffs_reply": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_diffs_renote": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_diffs_withFile": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_inc": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_dec": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_diffs_normal": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_diffs_reply": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_diffs_renote": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_diffs_withFile": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date"
+              ]
+            }
+          ],
+          "relations": {}
+        }
+      }
+    },
+    {
+      "name": "users",
+      "definition": "packages/backend/src/core/chart/charts/entities/users.ts",
+      "schema": {
+        "local.total": {
+          "accumulate": true
+        },
+        "local.inc": {
+          "range": "small"
+        },
+        "local.dec": {
+          "range": "small"
+        },
+        "remote.total": {
+          "accumulate": true
+        },
+        "remote.inc": {
+          "range": "small"
+        },
+        "remote.dec": {
+          "range": "small"
+        }
+      },
+      "entities": {
+        "hour": {
+          "name": "ChartXusers",
+          "tableName": "__chart__users",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "___local_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___local_dec": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___remote_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___remote_dec": {
+              "type": "smallint",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date"
+              ]
+            }
+          ],
+          "relations": {}
+        },
+        "day": {
+          "name": "ChartDayXusers",
+          "tableName": "__chart_day__users",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "___local_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___local_dec": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___remote_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___remote_dec": {
+              "type": "smallint",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date"
+              ]
+            }
+          ],
+          "relations": {}
+        }
+      }
+    },
+    {
+      "name": "activeUsers",
+      "definition": "packages/backend/src/core/chart/charts/entities/active-users.ts",
+      "schema": {
+        "readWrite": {
+          "intersection": [
+            "read",
+            "write"
+          ]
+        },
+        "read": {
+          "uniqueIncrement": true
+        },
+        "write": {
+          "uniqueIncrement": true
+        },
+        "registeredWithinWeek": {
+          "uniqueIncrement": true
+        },
+        "registeredWithinMonth": {
+          "uniqueIncrement": true
+        },
+        "registeredWithinYear": {
+          "uniqueIncrement": true
+        },
+        "registeredOutsideWeek": {
+          "uniqueIncrement": true
+        },
+        "registeredOutsideMonth": {
+          "uniqueIncrement": true
+        },
+        "registeredOutsideYear": {
+          "uniqueIncrement": true
+        }
+      },
+      "entities": {
+        "hour": {
+          "name": "ChartXactiveUsers",
+          "tableName": "__chart__active_users",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "___readWrite": {
+              "type": "integer",
+              "default": 0
+            },
+            "unique_temp___read": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___read": {
+              "type": "integer",
+              "default": 0
+            },
+            "unique_temp___write": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___write": {
+              "type": "integer",
+              "default": 0
+            },
+            "unique_temp___registeredWithinWeek": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___registeredWithinWeek": {
+              "type": "integer",
+              "default": 0
+            },
+            "unique_temp___registeredWithinMonth": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___registeredWithinMonth": {
+              "type": "integer",
+              "default": 0
+            },
+            "unique_temp___registeredWithinYear": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___registeredWithinYear": {
+              "type": "integer",
+              "default": 0
+            },
+            "unique_temp___registeredOutsideWeek": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___registeredOutsideWeek": {
+              "type": "integer",
+              "default": 0
+            },
+            "unique_temp___registeredOutsideMonth": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___registeredOutsideMonth": {
+              "type": "integer",
+              "default": 0
+            },
+            "unique_temp___registeredOutsideYear": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___registeredOutsideYear": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date"
+              ]
+            }
+          ],
+          "relations": {}
+        },
+        "day": {
+          "name": "ChartDayXactiveUsers",
+          "tableName": "__chart_day__active_users",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "___readWrite": {
+              "type": "integer",
+              "default": 0
+            },
+            "unique_temp___read": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___read": {
+              "type": "integer",
+              "default": 0
+            },
+            "unique_temp___write": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___write": {
+              "type": "integer",
+              "default": 0
+            },
+            "unique_temp___registeredWithinWeek": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___registeredWithinWeek": {
+              "type": "integer",
+              "default": 0
+            },
+            "unique_temp___registeredWithinMonth": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___registeredWithinMonth": {
+              "type": "integer",
+              "default": 0
+            },
+            "unique_temp___registeredWithinYear": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___registeredWithinYear": {
+              "type": "integer",
+              "default": 0
+            },
+            "unique_temp___registeredOutsideWeek": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___registeredOutsideWeek": {
+              "type": "integer",
+              "default": 0
+            },
+            "unique_temp___registeredOutsideMonth": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___registeredOutsideMonth": {
+              "type": "integer",
+              "default": 0
+            },
+            "unique_temp___registeredOutsideYear": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___registeredOutsideYear": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date"
+              ]
+            }
+          ],
+          "relations": {}
+        }
+      }
+    },
+    {
+      "name": "instance",
+      "definition": "packages/backend/src/core/chart/charts/entities/instance.ts",
+      "schema": {
+        "requests.failed": {
+          "range": "small"
+        },
+        "requests.succeeded": {
+          "range": "small"
+        },
+        "requests.received": {
+          "range": "small"
+        },
+        "notes.total": {
+          "accumulate": true
+        },
+        "notes.inc": {},
+        "notes.dec": {},
+        "notes.diffs.normal": {},
+        "notes.diffs.reply": {},
+        "notes.diffs.renote": {},
+        "notes.diffs.withFile": {},
+        "users.total": {
+          "accumulate": true
+        },
+        "users.inc": {
+          "range": "small"
+        },
+        "users.dec": {
+          "range": "small"
+        },
+        "following.total": {
+          "accumulate": true
+        },
+        "following.inc": {
+          "range": "small"
+        },
+        "following.dec": {
+          "range": "small"
+        },
+        "followers.total": {
+          "accumulate": true
+        },
+        "followers.inc": {
+          "range": "small"
+        },
+        "followers.dec": {
+          "range": "small"
+        },
+        "drive.totalFiles": {
+          "accumulate": true
+        },
+        "drive.incFiles": {},
+        "drive.decFiles": {},
+        "drive.incUsage": {},
+        "drive.decUsage": {}
+      },
+      "entities": {
+        "hour": {
+          "name": "ChartXinstance",
+          "tableName": "__chart__instance",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "group": {
+              "type": "varchar",
+              "length": 128
+            },
+            "___requests_failed": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___requests_succeeded": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___requests_received": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___notes_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___notes_inc": {
+              "type": "integer",
+              "default": 0
+            },
+            "___notes_dec": {
+              "type": "integer",
+              "default": 0
+            },
+            "___notes_diffs_normal": {
+              "type": "integer",
+              "default": 0
+            },
+            "___notes_diffs_reply": {
+              "type": "integer",
+              "default": 0
+            },
+            "___notes_diffs_renote": {
+              "type": "integer",
+              "default": 0
+            },
+            "___notes_diffs_withFile": {
+              "type": "integer",
+              "default": 0
+            },
+            "___users_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___users_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___users_dec": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___following_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___following_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___following_dec": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___followers_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___followers_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___followers_dec": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___drive_totalFiles": {
+              "type": "integer",
+              "default": 0
+            },
+            "___drive_incFiles": {
+              "type": "integer",
+              "default": 0
+            },
+            "___drive_decFiles": {
+              "type": "integer",
+              "default": 0
+            },
+            "___drive_incUsage": {
+              "type": "integer",
+              "default": 0
+            },
+            "___drive_decUsage": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ]
+            }
+          ],
+          "relations": {}
+        },
+        "day": {
+          "name": "ChartDayXinstance",
+          "tableName": "__chart_day__instance",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "group": {
+              "type": "varchar",
+              "length": 128
+            },
+            "___requests_failed": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___requests_succeeded": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___requests_received": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___notes_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___notes_inc": {
+              "type": "integer",
+              "default": 0
+            },
+            "___notes_dec": {
+              "type": "integer",
+              "default": 0
+            },
+            "___notes_diffs_normal": {
+              "type": "integer",
+              "default": 0
+            },
+            "___notes_diffs_reply": {
+              "type": "integer",
+              "default": 0
+            },
+            "___notes_diffs_renote": {
+              "type": "integer",
+              "default": 0
+            },
+            "___notes_diffs_withFile": {
+              "type": "integer",
+              "default": 0
+            },
+            "___users_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___users_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___users_dec": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___following_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___following_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___following_dec": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___followers_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___followers_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___followers_dec": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___drive_totalFiles": {
+              "type": "integer",
+              "default": 0
+            },
+            "___drive_incFiles": {
+              "type": "integer",
+              "default": 0
+            },
+            "___drive_decFiles": {
+              "type": "integer",
+              "default": 0
+            },
+            "___drive_incUsage": {
+              "type": "integer",
+              "default": 0
+            },
+            "___drive_decUsage": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ]
+            }
+          ],
+          "relations": {}
+        }
+      }
+    },
+    {
+      "name": "perUserNotes",
+      "definition": "packages/backend/src/core/chart/charts/entities/per-user-notes.ts",
+      "schema": {
+        "total": {
+          "accumulate": true
+        },
+        "inc": {
+          "range": "small"
+        },
+        "dec": {
+          "range": "small"
+        },
+        "diffs.normal": {
+          "range": "small"
+        },
+        "diffs.reply": {
+          "range": "small"
+        },
+        "diffs.renote": {
+          "range": "small"
+        },
+        "diffs.withFile": {
+          "range": "small"
+        }
+      },
+      "entities": {
+        "hour": {
+          "name": "ChartXperUserNotes",
+          "tableName": "__chart__per_user_notes",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "group": {
+              "type": "varchar",
+              "length": 128
+            },
+            "___total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___dec": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___diffs_normal": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___diffs_reply": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___diffs_renote": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___diffs_withFile": {
+              "type": "smallint",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ]
+            }
+          ],
+          "relations": {}
+        },
+        "day": {
+          "name": "ChartDayXperUserNotes",
+          "tableName": "__chart_day__per_user_notes",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "group": {
+              "type": "varchar",
+              "length": 128
+            },
+            "___total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___dec": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___diffs_normal": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___diffs_reply": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___diffs_renote": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___diffs_withFile": {
+              "type": "smallint",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ]
+            }
+          ],
+          "relations": {}
+        }
+      }
+    },
+    {
+      "name": "perUserPv",
+      "definition": "packages/backend/src/core/chart/charts/entities/per-user-pv.ts",
+      "schema": {
+        "upv.user": {
+          "uniqueIncrement": true,
+          "range": "small"
+        },
+        "pv.user": {
+          "range": "small"
+        },
+        "upv.visitor": {
+          "uniqueIncrement": true,
+          "range": "small"
+        },
+        "pv.visitor": {
+          "range": "small"
+        }
+      },
+      "entities": {
+        "hour": {
+          "name": "ChartXperUserPv",
+          "tableName": "__chart__per_user_pv",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "group": {
+              "type": "varchar",
+              "length": 128
+            },
+            "unique_temp___upv_user": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___upv_user": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___pv_user": {
+              "type": "smallint",
+              "default": 0
+            },
+            "unique_temp___upv_visitor": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___upv_visitor": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___pv_visitor": {
+              "type": "smallint",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ]
+            }
+          ],
+          "relations": {}
+        },
+        "day": {
+          "name": "ChartDayXperUserPv",
+          "tableName": "__chart_day__per_user_pv",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "group": {
+              "type": "varchar",
+              "length": 128
+            },
+            "unique_temp___upv_user": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___upv_user": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___pv_user": {
+              "type": "smallint",
+              "default": 0
+            },
+            "unique_temp___upv_visitor": {
+              "type": "varchar",
+              "array": true,
+              "default": "{}"
+            },
+            "___upv_visitor": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___pv_visitor": {
+              "type": "smallint",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ]
+            }
+          ],
+          "relations": {}
+        }
+      }
+    },
+    {
+      "name": "drive",
+      "definition": "packages/backend/src/core/chart/charts/entities/drive.ts",
+      "schema": {
+        "local.incCount": {},
+        "local.incSize": {},
+        "local.decCount": {},
+        "local.decSize": {},
+        "remote.incCount": {},
+        "remote.incSize": {},
+        "remote.decCount": {},
+        "remote.decSize": {}
+      },
+      "entities": {
+        "hour": {
+          "name": "ChartXdrive",
+          "tableName": "__chart__drive",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "___local_incCount": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_incSize": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_decCount": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_decSize": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_incCount": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_incSize": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_decCount": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_decSize": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date"
+              ]
+            }
+          ],
+          "relations": {}
+        },
+        "day": {
+          "name": "ChartDayXdrive",
+          "tableName": "__chart_day__drive",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "___local_incCount": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_incSize": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_decCount": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_decSize": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_incCount": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_incSize": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_decCount": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_decSize": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date"
+              ]
+            }
+          ],
+          "relations": {}
+        }
+      }
+    },
+    {
+      "name": "perUserReaction",
+      "definition": "packages/backend/src/core/chart/charts/entities/per-user-reactions.ts",
+      "schema": {
+        "local.count": {
+          "range": "small"
+        },
+        "remote.count": {
+          "range": "small"
+        }
+      },
+      "entities": {
+        "hour": {
+          "name": "ChartXperUserReaction",
+          "tableName": "__chart__per_user_reaction",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "group": {
+              "type": "varchar",
+              "length": 128
+            },
+            "___local_count": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___remote_count": {
+              "type": "smallint",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ]
+            }
+          ],
+          "relations": {}
+        },
+        "day": {
+          "name": "ChartDayXperUserReaction",
+          "tableName": "__chart_day__per_user_reaction",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "group": {
+              "type": "varchar",
+              "length": 128
+            },
+            "___local_count": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___remote_count": {
+              "type": "smallint",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ]
+            }
+          ],
+          "relations": {}
+        }
+      }
+    },
+    {
+      "name": "perUserFollowing",
+      "definition": "packages/backend/src/core/chart/charts/entities/per-user-following.ts",
+      "schema": {
+        "local.followings.total": {
+          "accumulate": true
+        },
+        "local.followings.inc": {
+          "range": "small"
+        },
+        "local.followings.dec": {
+          "range": "small"
+        },
+        "local.followers.total": {
+          "accumulate": true
+        },
+        "local.followers.inc": {
+          "range": "small"
+        },
+        "local.followers.dec": {
+          "range": "small"
+        },
+        "remote.followings.total": {
+          "accumulate": true
+        },
+        "remote.followings.inc": {
+          "range": "small"
+        },
+        "remote.followings.dec": {
+          "range": "small"
+        },
+        "remote.followers.total": {
+          "accumulate": true
+        },
+        "remote.followers.inc": {
+          "range": "small"
+        },
+        "remote.followers.dec": {
+          "range": "small"
+        }
+      },
+      "entities": {
+        "hour": {
+          "name": "ChartXperUserFollowing",
+          "tableName": "__chart__per_user_following",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "group": {
+              "type": "varchar",
+              "length": 128
+            },
+            "___local_followings_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_followings_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___local_followings_dec": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___local_followers_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_followers_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___local_followers_dec": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___remote_followings_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_followings_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___remote_followings_dec": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___remote_followers_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_followers_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___remote_followers_dec": {
+              "type": "smallint",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ]
+            }
+          ],
+          "relations": {}
+        },
+        "day": {
+          "name": "ChartDayXperUserFollowing",
+          "tableName": "__chart_day__per_user_following",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "group": {
+              "type": "varchar",
+              "length": 128
+            },
+            "___local_followings_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_followings_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___local_followings_dec": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___local_followers_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___local_followers_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___local_followers_dec": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___remote_followings_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_followings_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___remote_followings_dec": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___remote_followers_total": {
+              "type": "integer",
+              "default": 0
+            },
+            "___remote_followers_inc": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___remote_followers_dec": {
+              "type": "smallint",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ]
+            }
+          ],
+          "relations": {}
+        }
+      }
+    },
+    {
+      "name": "perUserDrive",
+      "definition": "packages/backend/src/core/chart/charts/entities/per-user-drive.ts",
+      "schema": {
+        "totalCount": {
+          "accumulate": true
+        },
+        "totalSize": {
+          "accumulate": true
+        },
+        "incCount": {
+          "range": "small"
+        },
+        "incSize": {},
+        "decCount": {
+          "range": "small"
+        },
+        "decSize": {}
+      },
+      "entities": {
+        "hour": {
+          "name": "ChartXperUserDrive",
+          "tableName": "__chart__per_user_drive",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "group": {
+              "type": "varchar",
+              "length": 128
+            },
+            "___totalCount": {
+              "type": "integer",
+              "default": 0
+            },
+            "___totalSize": {
+              "type": "integer",
+              "default": 0
+            },
+            "___incCount": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___incSize": {
+              "type": "integer",
+              "default": 0
+            },
+            "___decCount": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___decSize": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ]
+            }
+          ],
+          "relations": {}
+        },
+        "day": {
+          "name": "ChartDayXperUserDrive",
+          "tableName": "__chart_day__per_user_drive",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "group": {
+              "type": "varchar",
+              "length": 128
+            },
+            "___totalCount": {
+              "type": "integer",
+              "default": 0
+            },
+            "___totalSize": {
+              "type": "integer",
+              "default": 0
+            },
+            "___incCount": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___incSize": {
+              "type": "integer",
+              "default": 0
+            },
+            "___decCount": {
+              "type": "smallint",
+              "default": 0
+            },
+            "___decSize": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date",
+                "group"
+              ]
+            }
+          ],
+          "relations": {}
+        }
+      }
+    },
+    {
+      "name": "apRequest",
+      "definition": "packages/backend/src/core/chart/charts/entities/ap-request.ts",
+      "schema": {
+        "deliverFailed": {},
+        "deliverSucceeded": {},
+        "inboxReceived": {}
+      },
+      "entities": {
+        "hour": {
+          "name": "ChartXapRequest",
+          "tableName": "__chart__ap_request",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "___deliverFailed": {
+              "type": "integer",
+              "default": 0
+            },
+            "___deliverSucceeded": {
+              "type": "integer",
+              "default": 0
+            },
+            "___inboxReceived": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date"
+              ]
+            }
+          ],
+          "relations": {}
+        },
+        "day": {
+          "name": "ChartDayXapRequest",
+          "tableName": "__chart_day__ap_request",
+          "columns": {
+            "id": {
+              "type": "integer",
+              "primary": true,
+              "generated": true
+            },
+            "date": {
+              "type": "integer"
+            },
+            "___deliverFailed": {
+              "type": "integer",
+              "default": 0
+            },
+            "___deliverSucceeded": {
+              "type": "integer",
+              "default": 0
+            },
+            "___inboxReceived": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          "indices": [
+            {
+              "columns": [
+                "date"
+              ],
+              "unique": true
+            }
+          ],
+          "uniques": [
+            {
+              "columns": [
+                "date"
+              ]
+            }
+          ],
+          "relations": {}
+        }
+      }
+    }
+  ]
+}
