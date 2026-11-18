@@ -1,0 +1,53 @@
+{
+  "scope": "database-replication-test-review-followup-567",
+  "previousCommit": "5dd03e3e01a0980608f4c7513488fc81505e19b2",
+  "measuredAt": "2026-11-18T09:51:52.334541+00:00",
+  "productSourcesUnchanged": true,
+  "changes": [
+    "Observe transaction state on the QueryRunner executing SQL rather than an optional manager runner",
+    "Race readiness against operation rejection; always destroy the source after failed resumed queries",
+    "Protect partial remote fixture acquisition and preserve original assertion failures while reporting cleanup errors after successful bodies",
+    "Exercise real PostgreSQL authentication rejection before metadata readiness for single and replicated sources"
+  ],
+  "inputs": {
+    "packages/backend-next/test/replication/database.test.ts": "ee27e5e76205939b172de38bc914bfae0ffd6dd01d9d71a6fa7b6b30e9bb6e0a",
+    "packages/backend-next/test/replication/initialization.test.ts": "457e9156193917a5395de1bac9fb53a55505641c307d2931ff10684db2a7a371"
+  },
+  "commands": [
+    {
+      "check": "typecheck",
+      "log": "/tmp/db567-test-delta-typecheck-last.log",
+      "sha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e",
+      "result": "PASS"
+    },
+    {
+      "check": "physical-standby",
+      "log": "/tmp/db567-test-delta-replica-last.log",
+      "sha256": "f3f4be1cf01bb88d682ff27b3f959ad893340d9d1e27cb6fa7badc0ce77ae075",
+      "result": "31 PASS; 2 files"
+    },
+    {
+      "check": "shipping",
+      "log": "/tmp/db567-test-delta-shipping-last.log",
+      "sha256": "a6ab1f0b2ea1c4171aced53d400d7dde667916827597f32941089daa9891aa16",
+      "result": "PASS"
+    }
+  ],
+  "counterexamples": [
+    {
+      "log": "/tmp/db567-ready-red.log",
+      "sha256": "95fa67e5fc31fc4a3b6ae3deda82373e0b849c89789f38ca356fad62781c2d5f",
+      "result": "2 early-authentication errors timed out at metadata readiness before readiness race fix"
+    },
+    {
+      "log": "/tmp/db567-ready-green.log",
+      "sha256": "23c169d57681a3488618c630a10116aeab76dfde2c67ee3e8d400f712652ad2d",
+      "result": "10 initialization tests PASS, original error identity and SQLSTATE 28P01 preserved"
+    }
+  ],
+  "limits": [
+    "Product sources and prior measured receipts remain unchanged",
+    "Broad product validation remains recorded separately in replication-final-results.json; only targeted checks repeated for this test-only delta",
+    "Outside-diff canonical actor duplicate recovery and URI refresh rereads retain ordinary repositories matching pinned upstream source"
+  ]
+}

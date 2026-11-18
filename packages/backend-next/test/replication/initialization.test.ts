@@ -81,6 +81,21 @@ for (const replicated of [false, true]) {
 	}
 }
 
+type InitializationOutcome = { status: 'fulfilled' } | { status: 'rejected'; error: unknown };
+
+async function waitForMetadata(ready: Promise<void>, initialization: Promise<InitializationOutcome>): Promise<void> {
+	const outcome = await Promise.race([
+		ready.then(() => ({ status: 'ready' as const })),
+		initialization,
+	]);
+	if (outcome.status === 'rejected') {
+		throw outcome.error;
+	}
+	if (outcome.status === 'fulfilled') {
+		throw new Error('Initialization completed before reaching the metadata checkpoint');
+	}
+}
+
 for (const replicated of [false, true]) {
 	const options = {
 		type: 'postgres' as const, ...primary, entities: [], installExtensions: false,
@@ -101,6 +116,42 @@ for (const replicated of [false, true]) {
 			expect(await source.query('SELECT 3 AS ready')).toEqual([{ ready: 3 }]);
 		} finally {
 			await runner.release();
+			if (source.isInitialized) {
+				await source.destroy();
+			}
+		}
+	});
+
+	test(`metadata checkpoint reports an earlier initialization error without waiting for readiness (replication: ${replicated})`, async () => {
+		const source = createRuntimeDataSource({
+			...options, password: 'incorrect-test-password',
+			...(replicated ? { replication: { master: { ...primary, password: 'incorrect-test-password' }, slaves: [replica] } } : {}),
+		});
+		const initialization = source.initialize().then(
+			() => ({ status: 'fulfilled' as const }),
+			error => ({ status: 'rejected' as const, error: error as unknown }),
+		);
+		let timer: ReturnType<typeof setTimeout> | undefined;
+		try {
+			const original = await initialization;
+			expect(original.status).toBe('rejected');
+			const outcome = await Promise.race([
+				waitForMetadata(new Promise<void>(() => {}), initialization).then(
+					() => ({ status: 'fulfilled' as const }),
+					error => ({ status: 'rejected' as const, error: error as unknown }),
+				),
+				new Promise<{ status: 'timeout' }>(resolve => {
+					timer = setTimeout(() => resolve({ status: 'timeout' }), 500);
+				}),
+			]);
+			expect(outcome.status).toBe('rejected');
+			if (outcome.status === 'rejected' && original.status === 'rejected') {
+				expect(outcome.error).toBe(original.error);
+				expect(outcome.error).toMatchObject({ code: '28P01' });
+			}
+		} finally {
+			clearTimeout(timer);
+			await initialization;
 			if (source.isInitialized) {
 				await source.destroy();
 			}
@@ -146,7 +197,7 @@ for (const replicated of [false, true]) {
 			error => ({ status: 'rejected' as const, error: error as unknown }),
 		);
 		try {
-			await ready;
+			await waitForMetadata(ready, initialization);
 			await expect(source.initialize()).rejects.toBeInstanceOf(CannotConnectAlreadyConnectedError);
 			expect(await held.query('SELECT 2 AS alive')).toEqual([{ alive: 2 }]);
 			resume();

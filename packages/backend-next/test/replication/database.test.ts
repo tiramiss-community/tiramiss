@@ -254,16 +254,36 @@ test.each([false, true])('normal create response and post-save delivery survive 
 
 test('primary reads return each query connection after success and failure without opening a transaction', async () => {
 	const source = await createDataSource({ ...config, extra: { ...config.extra, max: 1 } }, 500).initialize();
+	const transactionStates: boolean[] = [];
+	const restoreQueries: (() => void)[] = [];
+	const originalCreate = source.createQueryRunner.bind(source);
+	const create = vi.spyOn(source, 'createQueryRunner').mockImplementation(mode => {
+		const runner = originalCreate(mode);
+		const originalQuery = runner.query;
+		const query = vi.spyOn(runner, 'query').mockImplementation((...args: Parameters<typeof runner.query>) => {
+			if (args[0].includes('pg_is_in_recovery()')) {
+				transactionStates.push(runner.isTransactionActive);
+			}
+			return Reflect.apply(originalQuery, runner, args);
+		});
+		restoreQueries.push(() => query.mockRestore());
+		return runner;
+	});
 	try {
 		expect(await readFromPrimary(source, manager => location(manager))).toEqual({ standby: false, timeout: '500ms' });
 		const error = new Error('primary-read-fixture');
 		await expect(readFromPrimary(source, async manager => {
 			expect(await location(manager)).toEqual({ standby: false, timeout: '500ms' });
-			expect(manager.queryRunner?.isTransactionActive ?? false).toBe(false);
 			throw error;
 		})).rejects.toBe(error);
+		expect(transactionStates.length).toBeGreaterThan(0);
+		expect(transactionStates.every(active => !active)).toBe(true);
 		expect(await source.query('SELECT 1 AS ready')).toEqual([{ ready: 1 }]);
 	} finally {
+		create.mockRestore();
+		for (const restore of restoreQueries) {
+			restore();
+		}
 		await source.destroy();
 	}
 });
@@ -279,30 +299,38 @@ test('primary reads release their query connection while waiting for non-DB work
 		return location(manager);
 	});
 	try {
-		await entered.promise;
+		await Promise.race([entered.promise, reading.then(() => {
+			throw new Error('Primary read finished before the wait barrier');
+		})]);
 		expect(await source.query('SELECT 1 AS ready')).toEqual([{ ready: 1 }]);
 		expect(await location(source.manager)).toEqual({ standby: true, timeout: '500ms' });
 	} finally {
 		resume.resolve();
-		await reading;
-		await source.destroy();
+		try {
+			await reading;
+		} finally {
+			await source.destroy();
+		}
 	}
 });
 
 test('newly resolved remote mention retains its stored URI and direct delivery before WAL replay', async () => {
 	const peer = await startRemotePeer();
-	const actor = plainActor(peer.origin, 'freshreplica');
-	peer.respond(async request => request.path.startsWith('/.well-known/webfinger')
-		? { type: 'application/jrd+json', body: { links: [{ rel: 'self', type: 'application/activity+json', href: actor.id }] } }
-		: request.path === '/users/freshreplica' ? { body: actor } : { status: 404, body: {} });
-	vi.stubEnv('MISSKEY_WEBFINGER_USE_HTTP', 'true');
-	const runtime = { ...database.config, database: config, outboundHttp: { ...database.config.outboundHttp, proxy: peer.proxy } };
-	const resources = await connectResources(runtime, createLogger('database-replication-mention', () => {}));
-	const codec = createIdCodec(runtime.id);
-	const author = codec.newId(Date.now());
-	const token = 'replica-native03';
-	const jobs = new Queue('deliver', { connection: { host: runtime.redis.host, port: runtime.redis.port }, prefix: `${runtime.redis.prefix}:queue:deliver` });
+	let resources: Awaited<ReturnType<typeof connectResources>> | undefined;
+	let jobs: Queue | undefined;
+	const errors: unknown[] = [];
 	try {
+		const actor = plainActor(peer.origin, 'freshreplica');
+		peer.respond(async request => request.path.startsWith('/.well-known/webfinger')
+			? { type: 'application/jrd+json', body: { links: [{ rel: 'self', type: 'application/activity+json', href: actor.id }] } }
+			: request.path === '/users/freshreplica' ? { body: actor } : { status: 404, body: {} });
+		vi.stubEnv('MISSKEY_WEBFINGER_USE_HTTP', 'true');
+		const runtime = { ...database.config, database: config, outboundHttp: { ...database.config.outboundHttp, proxy: peer.proxy } };
+		resources = await connectResources(runtime, createLogger('database-replication-mention', () => {}));
+		const codec = createIdCodec(runtime.id);
+		const author = codec.newId(Date.now());
+		const token = 'replica-native03';
+		jobs = new Queue('deliver', { connection: { host: runtime.redis.host, port: runtime.redis.port }, prefix: `${runtime.redis.prefix}:queue:deliver` });
 		await resources.dataSource.getRepository(MiMeta).deleteAll();
 		await resources.dataSource.getRepository(MiMeta).insert({ id: 'singleton', federation: 'all', signToActivityPubGet: false });
 		await resources.dataSource.getRepository(MiUser).insert({ id: author, username: 'replicaMention', usernameLower: 'replicamention', token });
@@ -323,13 +351,30 @@ test('newly resolved remote mention retains its stored URI and direct delivery b
 		const activity = JSON.parse(job!.data.content);
 		expect([...activity.object.to, ...activity.object.cc]).toContain(actor.id);
 	} finally {
+		let resumed = false;
 		try {
 			await observer.query('SELECT pg_wal_replay_resume()');
+			resumed = true;
+		} catch (error) {
+			errors.push(error);
+		}
+		try {
+			const closed = await Promise.allSettled([jobs?.close(), resources?.close(), peer.close()]);
+			errors.push(...closed.flatMap(result => result.status === 'rejected' ? [result.reason] : []));
 		} finally {
-			await Promise.allSettled([jobs.close(), resources.close(), peer.close()]);
 			vi.unstubAllEnvs();
 		}
-		await replay();
+		if (resumed) {
+			try {
+				await replay();
+			} catch (error) {
+				errors.push(error);
+			}
+		}
+	}
+	// Keep an existing assertion failure; successful bodies must still report cleanup failures.
+	if (errors.length > 0) {
+		throw new AggregateError(errors, 'Remote mention fixture cleanup failed');
 	}
 });
 

@@ -68,3 +68,9 @@ TypeORM 1.1.1 の `PostgresDriver.connect()` は slave pool の開設後に prim
 認証後の metadata SQL が失敗すると runner は既に公開の `PostgresDriver.connectedQueryRunners` に登録されている。pool を閉じる前に、その一覧の複製を解放する。既に初期化済み、または初期化中の同じ DataSource に対する重複要求は cleanup 区間へ入れず、TypeORM の `CannotConnectAlreadyConnectedError` を返す。実 PG の division-by-zero で元の SQLSTATE 22012、両接続先の解放、失敗後の再試行、既存 runner を保持した重複要求と並行要求を確認した。
 
 [最終の入力と実測](replication-final-results.json) に新しい測定を置き、それまでの receipt を更新・昇格しない。変更した4入力だけを 4c1ed の正確なバイトへ戻す次の hop で既存の検査へ接続する。検証設定はルート `package.json` / `pnpm-workspace.yaml` の変更でも専用 CI が動く。新しい replica 設定の検査は診断 code と field も確認し、試験の standby 再開失敗によって他の接続の解放を省略しない。
+
+## テストだけの追補
+
+[テスト修正の実測](replication-test-results.json) は製品 source を変えず、SQL を実行する runner の transaction 状態を観測し、readiness 待機を初期エラーと競合させる。fixture の部分取得・照会失敗でも接続を閉じ、既存 assertion を後片付けのエラーで隠さない。実 PG 認証失敗の早期伝播2件を加え、専用 suite は31件成功した。過去の29件の receipt は当時の測定として保持する。
+
+Web review の差分外提案2件は本家 source と照合した。固定本家 `ApPersonService.ts` 427–434行の canonical actor 重複（23505）後の再取得は通常 `usersRepository.findOneBy` を使う。`RemoteUserResolveService.ts` 107–137行の URI 修正・`updatePerson` 後の再取得も同様である。今回追加した再読取による回帰と区別し、この二つに新しい primary 保証を加えない。
