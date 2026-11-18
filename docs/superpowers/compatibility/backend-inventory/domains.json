@@ -2272,10 +2272,13 @@
         "packages/backend-next/test/integration/hashtag-catalog.test.ts",
         "docs/superpowers/compatibility/hashtag-catalog/source-probe.mjs",
         "docs/superpowers/compatibility/hashtag-catalog/observations.json",
-        "docs/superpowers/compatibility/hashtag-catalog/README.md"
+        "docs/superpowers/compatibility/hashtag-catalog/README.md",
+        "docs/superpowers/compatibility/hashtag-catalog/current-evidence.json",
+        "docs/superpowers/compatibility/hashtag-catalog/comparison.mjs",
+        "scripts/hashtag-catalog-comparison.test.mjs"
       ],
-      "note": "検索索引と投稿/profile hashtag producerを維持し、#495でlist/search/showと純粋描画を通常HTTPへ接続。固定本家のliteral callbacks/実PG53入力を通常HTTP/PGと比較。利用者一覧#499・trend#496、その他検索/閲覧#186、再構築#132/#133、最終縦断#176は未完了。",
-      "evidenceRevision": "992044cb2dad505a819f7897c319474721c9e3f8"
+      "note": "検索索引と投稿/profile hashtag producerを維持し、#495でlist/search/showと純粋描画を通常HTTPへ接続。固定本家のliteral callbacks/実PG53入力を通常HTTP/PGと比較。利用者一覧#499・trend#496、その他検索/閲覧#186、再構築#132/#133、最終縦断#176は未完了。 R2: 同数内だけの順序正規化、順位/対象/内容の破損拒否と同数を分断しないページ境界を検査。search nameのみ・show7列のみの実SQLと58 HTTP/PGを検証し、R1 raw/receiptを保持。",
+      "evidenceRevision": "0b687892de52469f97755dcf81f630e4e45035fc"
     },
     "api:admin/queue/clear": {
       "status": "verified",
@@ -3869,10 +3872,13 @@
         "packages/backend-next/test/integration/hashtag-catalog.test.ts",
         "docs/superpowers/compatibility/hashtag-catalog/source-probe.mjs",
         "docs/superpowers/compatibility/hashtag-catalog/observations.json",
-        "docs/superpowers/compatibility/hashtag-catalog/README.md"
+        "docs/superpowers/compatibility/hashtag-catalog/README.md",
+        "docs/superpowers/compatibility/hashtag-catalog/current-evidence.json",
+        "docs/superpowers/compatibility/hashtag-catalog/comparison.mjs",
+        "scripts/hashtag-catalog-comparison.test.mjs"
       ],
-      "evidenceRevision": "992044cb2dad505a819f7897c319474721c9e3f8",
-      "note": "#495: 固定本家literal callbacksと実PG53入力を通常HTTP/PGと比較。正規化・前方検索・offset/limit・全件数順・attached絞込み・不存在と全列不変を検証。利用者一覧#499・trend#496と親#186は未完了。"
+      "evidenceRevision": "0b687892de52469f97755dcf81f630e4e45035fc",
+      "note": "#495: 固定本家literal callbacksと実PG53入力を通常HTTP/PGと比較。正規化・前方検索・offset/limit・全件数順・attached絞込み・不存在と全列不変を検証。利用者一覧#499・trend#496と親#186は未完了。 R2: 同数内だけの順序正規化、順位/対象/内容の破損拒否と同数を分断しないページ境界を検査。search nameのみ・show7列のみの実SQLと58 HTTP/PGを検証し、R1 raw/receiptを保持。"
     },
     "api:hashtags/search": {
       "status": "verified",
@@ -3887,10 +3893,13 @@
         "packages/backend-next/test/integration/hashtag-catalog.test.ts",
         "docs/superpowers/compatibility/hashtag-catalog/source-probe.mjs",
         "docs/superpowers/compatibility/hashtag-catalog/observations.json",
-        "docs/superpowers/compatibility/hashtag-catalog/README.md"
+        "docs/superpowers/compatibility/hashtag-catalog/README.md",
+        "docs/superpowers/compatibility/hashtag-catalog/current-evidence.json",
+        "docs/superpowers/compatibility/hashtag-catalog/comparison.mjs",
+        "scripts/hashtag-catalog-comparison.test.mjs"
       ],
-      "evidenceRevision": "992044cb2dad505a819f7897c319474721c9e3f8",
-      "note": "#495: 固定本家literal callbacksと実PG53入力を通常HTTP/PGと比較。正規化・前方検索・offset/limit・全件数順・attached絞込み・不存在と全列不変を検証。利用者一覧#499・trend#496と親#186は未完了。"
+      "evidenceRevision": "0b687892de52469f97755dcf81f630e4e45035fc",
+      "note": "#495: 固定本家literal callbacksと実PG53入力を通常HTTP/PGと比較。正規化・前方検索・offset/limit・全件数順・attached絞込み・不存在と全列不変を検証。利用者一覧#499・trend#496と親#186は未完了。 R2: 同数内だけの順序正規化、順位/対象/内容の破損拒否と同数を分断しないページ境界を検査。search nameのみ・show7列のみの実SQLと58 HTTP/PGを検証し、R1 raw/receiptを保持。"
     },
     "api:hashtags/show": {
       "status": "verified",
@@ -3905,10 +3914,13 @@
         "packages/backend-next/test/integration/hashtag-catalog.test.ts",
         "docs/superpowers/compatibility/hashtag-catalog/source-probe.mjs",
         "docs/superpowers/compatibility/hashtag-catalog/observations.json",
-        "docs/superpowers/compatibility/hashtag-catalog/README.md"
+        "docs/superpowers/compatibility/hashtag-catalog/README.md",
+        "docs/superpowers/compatibility/hashtag-catalog/current-evidence.json",
+        "docs/superpowers/compatibility/hashtag-catalog/comparison.mjs",
+        "scripts/hashtag-catalog-comparison.test.mjs"
       ],
-      "evidenceRevision": "992044cb2dad505a819f7897c319474721c9e3f8",
-      "note": "#495: 固定本家literal callbacksと実PG53入力を通常HTTP/PGと比較。正規化・前方検索・offset/limit・全件数順・attached絞込み・不存在と全列不変を検証。利用者一覧#499・trend#496と親#186は未完了。"
+      "evidenceRevision": "0b687892de52469f97755dcf81f630e4e45035fc",
+      "note": "#495: 固定本家literal callbacksと実PG53入力を通常HTTP/PGと比較。正規化・前方検索・offset/limit・全件数順・attached絞込み・不存在と全列不変を検証。利用者一覧#499・trend#496と親#186は未完了。 R2: 同数内だけの順序正規化、順位/対象/内容の破損拒否と同数を分断しないページ境界を検査。search nameのみ・show7列のみの実SQLと58 HTTP/PGを検証し、R1 raw/receiptを保持。"
     }
   }
 }
