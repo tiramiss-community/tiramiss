@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectWellKnownInput } from './well-known-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -35,7 +36,7 @@ export function validateHashtagCatalogEvidence(readFile = read, optional = optio
 	assert.equal(current.upstreamFullServerMeasured, false);
 	assert.deepEqual(current.inputs, current.inputsAfter);
 	for (const [path, digest] of Object.entries(current.inputs)) {
-		assert.equal(sha(readFile(path)), digest, `hashtag catalog measured current input drift: ${path}`);
+		assert.equal(sha(projectWellKnownInput(path, readFile(path))), digest, `hashtag catalog measured current input drift: ${path}`);
 	}
 	assert.deepEqual(current.runs.map(run => [run.name, run.passed, run.exitCode]), [['unit', 82, 0], ['http-pg', 58, 0], ['producers-pg', 29, 0], ['source-pg', 53, 0], ['comparison', 5, 0]]);
 	for (const run of current.runs) {
@@ -50,6 +51,7 @@ export function validateHashtagCatalogEvidence(readFile = read, optional = optio
 // The old receipts describe their original runs. Remove only the two exact
 // catalog registrations; any other bytes continue to the older drift checks.
 export function projectHashtagCatalogInput(path, actual, readFile = read) {
+	actual = projectWellKnownInput(path, actual);
 	if (path !== 'packages/backend-next/src/composition/http-app.ts' && path !== 'packages/backend-next/test/unit/composition/http-app.test.ts') {
 		return actual;
 	}

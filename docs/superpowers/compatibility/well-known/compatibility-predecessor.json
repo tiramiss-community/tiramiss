@@ -1,0 +1,64 @@
+{
+  "baseline": "e045cf2e703e4483cda6b823f8a5d7efde436ab5",
+  "scope": "well-known-host-meta-531-historical-input-projection",
+  "note": "Exact bounded predecessor views only; historical measurements are not renewed. New measurements are documented in README.md.",
+  "files": {
+    "packages/backend-next/src/composition/webfinger-http.ts": {
+      "currentSha256": "ba3d5bd466024784ba1de18554084bdafe97aab3cad0b5d5047b0ea014912a78",
+      "previousSha256": "31e3ac77363797fc60792e1b08b05d0fb5f519338fa3b1a9e62e66ea5da876a1",
+      "patches": [
+        {
+          "offset": 102,
+          "insert": "\nimport { createWellKnownApi } from '../http/well-known-api.js';",
+          "previous": ""
+        },
+        {
+          "offset": 579,
+          "insert": "const pa",
+          "previous": ""
+        },
+        {
+          "offset": 588,
+          "insert": "",
+          "previous": "e"
+        },
+        {
+          "offset": 589,
+          "insert": "s",
+          "previous": "urn"
+        },
+        {
+          "offset": 591,
+          "insert": "= ",
+          "previous": "createWebfingerApi("
+        },
+        {
+          "offset": 644,
+          "insert": "",
+          "previous": ",\n\t\treadUser: createLocalWebfingerReader(resources.dataSource.manager)"
+        },
+        {
+          "offset": 735,
+          "insert": ";\n\treturn createWellKnownApi(parts).route('/', createWebfingerApi({\n\t\t...parts, readUser: createLocalWebfingerReader(resources.dataSource.manager),\n\t})",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "currentSha256": "558a1971b05356e7f3073d52037636a945dcb5f1f4f6214d2502b61fb2fcb383",
+      "previousSha256": "a2138bbd880e41809c82121384ad52e703ef984af83bb6f81c1a5298e6060b1f",
+      "patches": [
+        {
+          "offset": 2793,
+          "insert": "', '/.well-known/*', '/.well-known/host-meta', '/.well-known/host-meta.json",
+          "previous": ""
+        },
+        {
+          "offset": 12429,
+          "insert": "\ntest('ordinary composition exposes host-meta and well-known preflight without Meta reads', async () => {\n\tconst { resources, repository } = fixture();\n\tconst app = createBackendHttpApp(resources, testConfig());\n\tconst hostMeta = await app.request('/.well-known/host-meta');\n\texpect(hostMeta.status).toBe(200);\n\texpect(hostMeta.headers.get('content-type')).toBe('application/xrd+xml');\n\texpect(await hostMeta.text()).toContain('template=\"http://example.test/.well-known/webfinger?resource={uri}\"');\n\trepository.find.mockClear();\n\tfor (const path of ['/.well-known/unknown', '/.well-known/oauth-authorization-server', '/.well-known/change-password']) {\n\t\tconst response = await app.request(path, { method: 'OPTIONS' });\n\t\texpect(response.status).toBe(204);\n\t\texpect(response.headers.get('access-control-allow-origin')).toBe('*');\n\t\texpect(await response.text()).toBe('');\n\t}\n\texpect(repository.find).not.toHaveBeenCalled();\n});\n",
+          "previous": ""
+        }
+      ]
+    }
+  }
+}
