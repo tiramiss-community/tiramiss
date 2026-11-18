@@ -174,6 +174,58 @@
           "previous": "3"
         }
       ]
+    },
+    "packages/backend-next/src/processes/lifecycle.ts": {
+      "currentSha256": "de9701a6b7a5e057614ca2f6dc198923106d5c59652d1c13a98863cde32c3d01",
+      "previousSha256": "95c8d3aaa715e76df4073a8c36168b6d9e011077397917088cb09f6de77d2d7c",
+      "patches": [
+        {
+          "offset": 1210,
+          "insert": "await resources.announcementArchives.restore();\n\t\t",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/lifecycle.test.ts": {
+      "currentSha256": "980b28285bde7e57b26206427fed78637d05cf23a4ab1910d5fc0df2b9601200",
+      "previousSha256": "89a4e6a3e4fdae7fb38ec45e53eb66b640b52f03c559ec2dbd014cf4ffcaebf0",
+      "patches": [
+        {
+          "offset": 308,
+          "insert": " announcementArchives: { restore: vi.fn(async () => {}) },",
+          "previous": ""
+        },
+        {
+          "offset": 1159,
+          "insert": "resources.announcementArchives.restore.mockImplementationOnce(async () => {\n\t\tcalls.push('archives');\n\t});\n\t",
+          "previous": ""
+        },
+        {
+          "offset": 1386,
+          "insert": "', 'archives",
+          "previous": ""
+        },
+        {
+          "offset": 1583,
+          "insert": "', 'archives",
+          "previous": ""
+        },
+        {
+          "offset": 1856,
+          "insert": ".mock.calls.length;\n\tconst restored = resources.announcementArchives.restore",
+          "previous": ""
+        },
+        {
+          "offset": 2217,
+          "insert": "ed);\n\texpect(resources.announcementArchives.restore).toHaveBeenCalledTimes(restor",
+          "previous": ""
+        },
+        {
+          "offset": 4186,
+          "insert": "\ntest('an archive reservation failure closes resources before starting HTTP or workers', async () => {\n\tconst failure = Error('archive enqueue failed');\n\tresources.announcementArchives.restore.mockRejectedValueOnce(failure);\n\tconst closed = resources.close.mock.calls.length;\n\tconst start = vi.fn();\n\tawait expect(startManagedProcess('worker', testConfig(), start)).rejects.toBe(failure);\n\texpect(start).not.toHaveBeenCalled();\n\texpect(resources.close).toHaveBeenCalledTimes(closed + 1);\n});\n",
+          "previous": ""
+        }
+      ]
     }
   }
 }

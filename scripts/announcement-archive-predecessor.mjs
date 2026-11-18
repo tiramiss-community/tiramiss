@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs';
 
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const record = readFileSync(new URL('../docs/superpowers/compatibility/announcement-archive/compatibility-predecessor.json', import.meta.url));
-assert.equal(sha(record), '90d23b690ad13acf682357daef807d6d7d19e888206caede7e1a94a6119dc832', 'announcement archive predecessor seal');
+assert.equal(sha(record), '9ee311b9b8ee367a0a83a7d2f3c471ecdfca826e1af4fa47cb250ba3a02bd20b', 'announcement archive predecessor seal');
 const { files } = JSON.parse(record);
 
 // Only exact #449/#450 inputs project to their historical bytes; unknown drift
