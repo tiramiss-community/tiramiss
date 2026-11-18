@@ -27,8 +27,8 @@ test('close waits for a periodic flush before flushing newly accepted changes', 
 	vi.useFakeTimers();
 	let finish!: () => void;
 	const flush = vi.fn().mockImplementationOnce(() => new Promise<void>(resolve => {
- finish = resolve; 
-})).mockResolvedValue(undefined);
+		finish = resolve;
+	})).mockResolvedValue(undefined);
 	const task = startNoteChartFlush(flush, vi.fn());
 	await vi.advanceTimersByTimeAsync(20 * 60 * 1000);
 	const closing = task.close();

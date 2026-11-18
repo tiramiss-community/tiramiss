@@ -38,8 +38,9 @@ test('discards attempted buffers on failure, retains arrivals while saving, and 
 	const { save, charts } = fixture();
 	charts.update(note, true, false);
 	save.mockImplementationOnce(async () => {
- charts.update(note, true, false); throw new Error('db lost'); 
-});
+		charts.update(note, true, false);
+		throw new Error('db lost');
+	});
 	await expect(charts.flush()).rejects.toThrow();
 	expect(save).toHaveBeenCalledTimes(2);
 	save.mockClear();
@@ -92,8 +93,8 @@ test('notes save starts first and per-user buffers include arrivals before their
 	const { save, charts } = fixture();
 	charts.update(note, true, false);
 	save.mockImplementationOnce(async () => {
- charts.update(note, true, false); 
-});
+		charts.update(note, true, false);
+	});
 	await charts.flush();
 	expect(save.mock.calls[0][0]).toMatchObject({ series: 'notes', diff: { 'local.inc': 1 } });
 	expect(save.mock.calls[1][0]).toMatchObject({ series: 'perUserNotes', diff: { inc: 2 } });
