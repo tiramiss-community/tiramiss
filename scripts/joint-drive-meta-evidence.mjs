@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectWellKnownInput } from './well-known-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { readPrePublicDocuments } from './public-documents-evidence.mjs';
 import { readForActorEmojiCacheEvidence } from './actor-emoji-cache-evidence.mjs';
@@ -33,5 +34,5 @@ export function readForDriveFileEvidence(file, readFile = read) {
  return project(file, readFile, 'driveFiles', 'drive file');
 }
 export function readForMetaCacheEvidence(file, readFile = read) {
- return project(file, readFile, 'metaCache', 'Meta cache');
+ return projectWellKnownInput(file, project(file, readFile, 'metaCache', 'Meta cache'));
 }

@@ -3,8 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Hono } from 'hono';
-import { renderHostMetaXrd } from '../modules/federation/public.js';
 import type { Logger } from '../platform/logger.js';
+
+// Preserve the pinned XML helper's first-occurrence attribute escaping.
+function renderHostMetaXrd(selfUrl: string): string {
+	const template = Object.entries({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })
+		.reduce((value, [character, replacement]) => value.replace(character, replacement), `${selfUrl}/.well-known/webfinger?resource={uri}`);
+	return `<?xml version="1.0" encoding="UTF-8"?><XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0"><Link rel="lrdd" type="application/xrd+xml" template="${template}"/></XRD>`;
+}
 
 export function createWellKnownApi(parts: {
 	selfUrl: string;
