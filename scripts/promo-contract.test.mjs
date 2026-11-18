@@ -2,6 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -19,7 +21,20 @@ test('promo source observations bind the finite corpus and source manifest witho
 	assert.deepEqual(observed.cases.map(item => item.id), corpus.cases.map(item => item.id));
 	assert.equal(new Set(observed.cases.map(item => item.id)).size, 18);
 	assert.deepEqual(observed.access, { requireCredential: true, requireModerator: true, kind: 'write:admin:promo' });
-	assert.equal(observed.manifest.length, 3);
+	assert.deepEqual(observed.manifest, [
+	  {
+	    "path": "packages/backend/src/server/api/endpoints/admin/promo/create.ts",
+	    "sha256": "f36d15f10952fde2e69c807d3bcfc8acd0eb67fca6f645afc587677a17cddc1b"
+	  },
+	  {
+	    "path": "packages/backend/src/server/api/GetterService.ts",
+	    "sha256": "8c8864d50e7524b3ff358e2bb4ff5aceda8e3f1e3a7ad8efe1e7ac9c1b4236c7"
+	  },
+	  {
+	    "path": "packages/backend/src/models/PromoNote.ts",
+	    "sha256": "a71dbb5bb9846a681c0995715d21f35309c64d3ef7388cf40d84506d5fc3138e"
+	  }
+	]);
 	assert.match(observed.doubles, /Neither mode runs full upstream HTTP/);
 });
 
@@ -37,4 +52,16 @@ test('promo additive inputs preserve exact historical bytes and pass unknown dri
 	}
 	const unrelated = Buffer.from('unrelated');
 	assert.equal(projectPromoInput('unrelated', unrelated), unrelated);
+});
+
+
+test('PG source replay rejects non-disposable and remote databases before connecting or clearing rows', () => {
+	for (const database of [
+		{ database: 'production', host: '127.0.0.1' },
+		{ database: `backend_next_${'a'.repeat(32)}`, host: 'database.remote.test' },
+	]) {
+		assert.throws(() => execFileSync(process.execPath, [fileURLToPath(new URL('../docs/superpowers/compatibility/promo/source-probe.mjs', import.meta.url)), '--pg'], {
+			input: JSON.stringify({ database, cases: [] }), encoding: 'utf8', timeout: 5000, killSignal: 'SIGKILL', stdio: ['pipe', 'pipe', 'pipe'],
+		}), /promo probe requires a (?:disposable|local) test database/);
+	}
 });

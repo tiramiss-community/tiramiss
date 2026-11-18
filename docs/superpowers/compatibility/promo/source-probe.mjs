@@ -52,6 +52,8 @@ let items = corpus.cases;
 let preserve = false;
 if (process.argv[2] === '--pg') {
 	const request = JSON.parse(readFileSync(0, 'utf8'));
+	assert.match(request.database?.database ?? '', /^backend_next_[0-9a-f]{32}$/, 'promo probe requires a disposable test database');
+	assert(['127.0.0.1', 'localhost', '::1'].includes(request.database.host), 'promo probe requires a local test database');
 	const { createDataSource } = await import(new URL('../../../../packages/backend-next/built/platform/database/data-source.js', import.meta.url));
 	dataSource = await createDataSource(request.database).initialize();
 	items = request.cases;

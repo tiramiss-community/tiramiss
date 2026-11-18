@@ -40,11 +40,25 @@ beforeAll(async () => {
 	url = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
 });
 afterAll(async () => {
-	if (server) {
-		await closeHttp(server);
+	const errors: unknown[] = [];
+	for (const release of [
+		async () => {
+			if (server) {
+				await closeHttp(server);
+			}
+		},
+		async () => resources?.close(),
+		async () => database?.close(),
+	]) {
+		try {
+			await release();
+		} catch (error) {
+			errors.push(error);
+		}
 	}
-	await resources?.close();
-	await database?.close();
+	if (errors.length) {
+		throw new AggregateError(errors, 'Promotion test cleanup failed');
+	}
 });
 
 async function call(input: unknown, token: string | null = seed.actors.root.token) {
@@ -87,7 +101,7 @@ for (const observation of observations.cases) {
 
 function sourcePg(cases: unknown[], preserve = false) {
 	return JSON.parse(execFileSync(process.execPath, [fileURLToPath(new URL('../../../../docs/superpowers/compatibility/promo/source-probe.mjs', import.meta.url)), '--pg'], {
-		input: JSON.stringify({ database: database.config.database, cases, preserve }), encoding: 'utf8',
+		input: JSON.stringify({ database: database.config.database, cases, preserve }), encoding: 'utf8', timeout: 30000, killSignal: 'SIGKILL',
 	}));
 }
 

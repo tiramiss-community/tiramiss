@@ -17,7 +17,8 @@ Timeline promotion selection and `promo/read` are outside #542. #194/#114, Note 
 Use Node26.4.0 (`/tmp/tiramiss-s1-node26/bin`) and pnpm12.9.1, independent worktree/node_modules, and dedicated Compose `sol-promo542`, PG62432/Redis62379. Never use `misskey-infra`.
 
 ```sh
-PATH=/tmp/tiramiss-s1-node26/bin:$PATH pnpm install --frozen-lockfile --filter backend-next...
+export PATH="/tmp/tiramiss-s1-node26/bin:$PATH"
+pnpm install --frozen-lockfile --filter backend-next...
 BACKEND_NEXT_TEST_DB_PORT=62432 BACKEND_NEXT_TEST_REDIS_PORT=62379 docker compose -p sol-promo542 -f packages/backend-next/compose.test.yml up -d --wait postgres redis
 pnpm --filter backend-upstream sync:check
 pnpm --filter backend-upstream test
@@ -38,3 +39,10 @@ CHANGELOG candidate: backend-next supports moderator creation of promotion posts
 Final measured result: dependency build/typecheck, upstream sync5, source18, all unit5293/1 existing optional skip, real HTTP/PG/schema26, root808/1 existing optional skip, and shipping PASS. Root input hashes matched before/after the frozen run. Logs are under `/tmp/promo542-*`; the durable input/log hashes and unsuccessful run history are in `current-evidence.json`. Independent product review approved runtime `e13fc9364d`; proof delta and CLI/web review are separate gates.
 
 Catalog `api:admin/promo/create` is updated from its immutable proof commit `ec99a6b97c`; generation/check and inventory+promo contracts13 PASS. The metadata-only catalog step follows the recorded frozen root measurement and does not claim that historical run included later catalog text.
+
+
+## R2 review follow-up
+
+The CLI review of 23 runtime files produced five minor test/docs findings. R2 exports Node PATH for the whole reproduction block, bounds source child execution to30s/SIGKILL, attempts each cleanup stage and aggregates errors, asserts all three pinned source paths/hashes, and rejects non-temporary or remote DB targets before connecting/clearing. The accepted PG name is the exact `createTestDatabase` convention `backend_next_<32 lowercase hex>` on loopback. Guard rejection is tested before any connection.
+
+R2 typecheck/source18/HTTP-PG-schema26/nearest-contracts22/shipping PASS. Runtime source is unchanged. The byte-identical original `r1-current-evidence.json` retains the previous whole-unit and frozen-root measurements; those were not rerun or relabeled for R2. `current-evidence.json` records the R2 targeted logs/current input hashes and links the R1 archive. This follow-up does not claim a new full upstream server comparison.
