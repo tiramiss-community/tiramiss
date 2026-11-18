@@ -1,6 +1,6 @@
 {
   "baseRevision": "706f82eb2086c7364001d770ffde73000911bd07",
-  "scope": "Only the mechanically synchronized PromoRead addition is projected for historical measurements; prior receipts are unchanged.",
+  "scope": "Mechanically synchronized PromoRead addition and entity metadata assertions only; prior receipts are unchanged.",
   "files": {
     "packages/backend-upstream/upstream-sync.json": {
       "previousSha256": "58707b07f611652ec2c407d5585976aed56e07dfaa4ef3adc5abef939fad5ff5",
@@ -42,6 +42,22 @@
           "offset": 17593,
           "insert": "PromoRead.ts\",\n\t\"src/models/",
           "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/package-imports.test.ts": {
+      "previousSha256": "3f52ff89a5c972a6beea4a0e744a9420c4d6103270cc7f52f67474928a1c8799",
+      "currentSha256": "a31d55df4b4f3e985964eb6353ea088cadfb57e013eb5bc97fdcf019d2b56c59",
+      "patches": [
+        {
+          "offset": 5177,
+          "insert": "const promoRead = source.getMetadata('MiPromoRead');\n\texpect(promoRead.tableName).toBe('promo_read');\n\texpect(promoRead.indices.some(index => index.isUnique && index.columns.map(column => column.propertyName).join(',') === 'userId,noteId')).toBe(true);\n\tfor (const property of ['user', 'note']) {\n\t\texpect(promoRead.relations.find(relation => relation.propertyName === property)?.onDelete).toBe('CASCADE');\n\t}\n\t",
+          "previous": ""
+        },
+        {
+          "offset": 5633,
+          "insert": "4",
+          "previous": "3"
         }
       ]
     }

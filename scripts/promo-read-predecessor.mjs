@@ -7,7 +7,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const record = readFileSync(new URL('../docs/superpowers/compatibility/promo-read/compatibility-predecessor.json', import.meta.url));
-assert.equal(sha(record), '23698bd84bf9ddb67e201c4868f3be5414b4ca7779848da3b00bee1dc681fa0f', 'promo/read predecessor seal');
+assert.equal(sha(record), '97c45d601af5bf64bdead037f5c69851095ced6659b8c5b2998722d42806a36a', 'promo/read predecessor seal');
 const { files } = JSON.parse(record);
 
 // Preserve earlier measurements through only the exact additive #530 inputs.

@@ -28,9 +28,9 @@ test('promo/read source observations bind the finite corpus, auth metadata and e
 	]);
 });
 
-test('only the three exact synchronized additions project to historical bytes; unknown drift passes through', () => {
+test('only the four exact synchronized additions project to historical bytes; unknown drift passes through', () => {
 	const { files } = JSON.parse(read(directory + 'compatibility-predecessor.json'));
-	assert.equal(Object.keys(files).length, 3);
+	assert.equal(Object.keys(files).length, 4);
 	for (const [path, binding] of Object.entries(files)) {
 		const current = read(path);
 		assert.equal(sha(current), binding.currentSha256);
@@ -45,9 +45,11 @@ test('only the three exact synchronized additions project to historical bytes; u
 });
 
 test('PG replay rejects non-disposable and remote targets before connecting', () => {
-	for (const database of [{ database: 'production', host: '127.0.0.1' }, { database: `backend_next_${'a'.repeat(32)}`, host: 'remote.test' }]) {
+	for (const database of [{ database: 'production', host: '127.0.0.1' }, { database: `backend_next_${'a'.repeat(32)}`, host: 'remote.test' },
+		{ database: `backend_next_${'a'.repeat(32)}`, host: '127.0.0.1', replicas: { enabled: true, hosts: ['remote.test'] } },
+		{ database: `backend_next_${'a'.repeat(32)}`, host: '127.0.0.1', extra: { host: 'remote.test' } }]) {
 		assert.throws(() => execFileSync(process.execPath, [fileURLToPath(new URL('../' + directory + 'source-probe.mjs', import.meta.url)), '--pg'], {
 			input: JSON.stringify({ database, cases: [] }), encoding: 'utf8', timeout: 5000, killSignal: 'SIGKILL', stdio: ['pipe', 'pipe', 'pipe'],
-		}), /promo probe requires a (?:disposable|local) test database/);
+		}), /promo probe (?:requires a (?:disposable|local) test database|rejects connection overrides)/);
 	}
 });

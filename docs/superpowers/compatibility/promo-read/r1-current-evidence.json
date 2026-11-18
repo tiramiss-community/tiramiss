@@ -1,0 +1,99 @@
+{
+  "baseRevision": "706f82eb2086c7364001d770ffde73000911bd07",
+  "environment": {
+    "node": "v24.20.0",
+    "pnpm": "12.9.1",
+    "composeProject": "sol-promo-read530",
+    "postgresPort": 63432,
+    "redisPort": 63379
+  },
+  "inputs": {
+    "packages/backend-next/src/composition/promo-http.ts": "9876de281da352042a6c64b1be009eb31daad17ae1f011bd4d69fd75bca23afa",
+    "packages/backend-next/src/http/promo-api.ts": "d06035ae14c09cb462ffeb43e8501991713ef0487d607a6c42235ec53a4d8fd3",
+    "packages/backend-next/src/modules/promo/public.ts": "1f84b9c54c3558e04015a849668c441613d5acbdee18c850a0073959ac263b3d",
+    "packages/backend-next/src/platform/database/promo.ts": "98c91f30fa8aae15c4a714c86bc6ee2e0d9482bcb37cff022eea73ea1b4f2fb3",
+    "packages/backend-upstream/.managed-files.json": "40a6f528d0726495a28fddca507dfe8d86b2531e2a977102de79ac9a22f66795",
+    "packages/backend-upstream/exports/entities.ts": "420ce3794ec43c7e380f4a5cb0a2f2a667d889d7b2997d7c3a7e8f2a4b436edd",
+    "packages/backend-upstream/upstream-sync.json": "6caa674a2ff9c859e1c30c3bf009da3d32334a630af2378057b9fe8a2821f584",
+    "scripts/promo-contract.test.mjs": "1e132dbf9e3701c55e60a297a9f08468b9ab94e55fbc680a9d2614821105cf2e",
+    "scripts/promo-predecessor.mjs": "7e959a201acc2e06270043d815633100726665b25a31f5b5a453d136c2b9a1f6",
+    "docs/superpowers/compatibility/promo-read/README.md": "68b30565cef11c1bc65126b26719c2fb5874cf2422b1088a7f480d858da6ce75",
+    "docs/superpowers/compatibility/promo-read/compatibility-predecessor.json": "23698bd84bf9ddb67e201c4868f3be5414b4ca7779848da3b00bee1dc681fa0f",
+    "docs/superpowers/compatibility/promo-read/corpus.json": "2b32036266ee8105597d5dcf0fe20906fd252a3689d6c04ff2340e0ed7759e73",
+    "docs/superpowers/compatibility/promo-read/observations.json": "9c9fcb5cc7992e1773005051a026480fc3e60c95fac57dc1eca59cbf5a3466b7",
+    "docs/superpowers/compatibility/promo-read/source-probe.mjs": "e900d05f5d9dd346e63e54ba3053b8d6bcc6e3762c90094db5bc9a783b9ac0cb",
+    "packages/backend-next/test/integration/promo-read.test.ts": "6a924a1f7f9d19ae544e16f1a60e7ee4582744f7f2a291e17871e41e464df192",
+    "packages/backend-next/test/unit/promo-read.test.ts": "237b40ec7abde80c41783b6684071076fd3a0890712f1e8a1c5d2c46762aacb8",
+    "packages/backend-upstream/src/models/PromoRead.ts": "f1a1d6c982b5347c10c9887607eeda0c545ebd3b64709344cffc4dd3dcf88bbd",
+    "scripts/promo-read-contract.test.mjs": "d74c32f43fdf09b636a7f1fbc703b95e449d1c8d875efa04cfb67e661eb1cac3",
+    "scripts/promo-read-predecessor.mjs": "12f67e05e43226074e60693b35dbb9c72a92722410db3a01eef41000ec407b39"
+  },
+  "runs": [
+    {
+      "command": "pnpm --filter backend-upstream sync:check",
+      "status": "PASS",
+      "log": "/tmp/promo-read-sync.log",
+      "sha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd"
+    },
+    {
+      "command": "pnpm --filter backend-upstream test",
+      "status": "PASS",
+      "log": "/tmp/promo-read-upstream.log",
+      "sha256": "5afe483ac8a697a90340e235bc118fcc3e918d0ae4df24301d41c0c7fa4a0240"
+    },
+    {
+      "command": "pnpm --filter backend-next... build",
+      "status": "PASS",
+      "log": "/tmp/promo-read-build.log",
+      "sha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "command": "pnpm --filter backend-next... typecheck",
+      "status": "PASS",
+      "log": "/tmp/promo-read-typecheck.log",
+      "sha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "command": "pnpm --filter backend-next test test/unit/promo-read.test.ts test/unit/promo.test.ts",
+      "status": "PASS",
+      "log": "/tmp/promo-read-unit.log",
+      "sha256": "34d00d7ba134cb23ec1b84bc6354c87d7149518fc2ce8cbdb7f79116eae89d62"
+    },
+    {
+      "command": "BACKEND_NEXT_TEST_DB_PORT=63432 BACKEND_NEXT_TEST_REDIS_PORT=63379 pnpm --filter backend-next test:integration test/integration/promo-read.test.ts test/integration/promo.test.ts test/integration/migrations.test.ts",
+      "status": "PASS",
+      "log": "/tmp/promo-read-integration.log",
+      "sha256": "f6b71ea4f713896ec24e9383486b6379cdd697c0258c6a37a564b41b3743ce79"
+    },
+    {
+      "command": "node docs/superpowers/compatibility/promo-read/source-probe.mjs --check",
+      "status": "PASS",
+      "log": "/tmp/promo-read-source.log",
+      "sha256": "1a653a9ef1fd2f829fae13fcc158c0c1160b3ffe7478bffc4d715d28d518f6c4"
+    },
+    {
+      "command": "node --test scripts/promo-read-contract.test.mjs scripts/promo-contract.test.mjs",
+      "status": "PASS",
+      "log": "/tmp/promo-read-contracts-nearest.log",
+      "sha256": "25f57ada0de6dc7833d20c6f07b3ff6ff81ce524559a84d9b41aa9762c030f34"
+    },
+    {
+      "command": "node scripts/check-shipping.mjs --base 706f82eb20",
+      "status": "PASS",
+      "log": "/tmp/promo-read-shipping.log",
+      "sha256": "d5c871e7ced1b3340f5c9212b48d977822a394e9f26852ea36c96c36c9113bcc"
+    }
+  ],
+  "results": {
+    "upstream": 5,
+    "source": 14,
+    "unit": 32,
+    "integration": 41,
+    "nearestRootContracts": 6
+  },
+  "limits": [
+    "Full upstream HTTP/auth server not executed; literal callback/Getter uses doubles or real PG.",
+    "Whole-root contracts initially failed before finite successor projection; successor smoke16 PASS, final broad run pending at this commit.",
+    "CodeRabbit CLI external egress denied by auto-review; independent Codex review owned by coordinator."
+  ]
+}

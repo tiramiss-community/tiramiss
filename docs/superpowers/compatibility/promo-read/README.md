@@ -6,11 +6,11 @@ Fixed upstream `8e07cf085adf7009583d234a208e30436f020e26`; implementation base `
 
 ## Evidence and limits
 
-`source-probe.mjs` extracts the literal pinned endpoint callback, schema/meta and `GetterService.getNote`, and binds their hashes plus the PromoRead entity source. Fourteen finite cases cover public/private/followers/unpromoted Notes, duplicate, another viewer, missing Note, malformed input, and note/existence/insert failures. Controlled repositories and deterministic IDs are explicit doubles. `--pg` runs the same callback/Getter with real TypeORM repositories in an isolated migrated test DB; it rejects non-disposable names and remote hosts before connection. Rows are compared by `(noteId,userId)`, and only generated IDs are normalized.
+`source-probe.mjs` extracts the literal pinned endpoint callback, schema/meta and `GetterService.getNote`, and binds their hashes plus the PromoRead entity source. Fourteen finite cases cover public/private/followers/unpromoted Notes, duplicate, another viewer, missing Note, malformed input, and note/existence/insert failures. Controlled repositories and deterministic IDs are explicit doubles. `--pg` runs the same callback/Getter with real TypeORM repositories in an isolated migrated test DB; it rejects non-disposable names and remote hosts before connection. Connection options are copied explicitly; unknown keys and nonempty `extra` are rejected before connection. Rows are compared by `(noteId,userId)`, and only generated IDs are normalized.
 
 The integration suite uses the normal listening backend-next HTTP app, real tokens, PostgreSQL and Redis. It compares saved state/error codes with the pinned callback/PG execution; checks credential/suspension/scope-before-input, ordinary user and scoped write success, DB read/existence/insert errors, unique viewer/Note constraint and Note/user CASCADE. Exact internal DB messages/random error IDs and full upstream HTTP/auth infrastructure are outside this measurement. No upstream full server is claimed.
 
-`compatibility-predecessor.json` projects only three exact mechanically synced inputs to their previous bytes for historical receipts. Unknown input drift is passed to existing guards; old evidence is unchanged.
+`compatibility-predecessor.json` projects only four exact mechanically synced/metadata-test inputs to their previous bytes for historical receipts. Unknown input drift is passed to existing guards; old evidence is unchanged.
 
 This implements only promo/read within #530. Pinned users await detailed-user support #297; #530/#193/#114 remain open. Timeline promotion selection is outside this slice; admin creation is the separate #542 result.
 
@@ -35,3 +35,5 @@ BACKEND_NEXT_TEST_DB_PORT=63432 BACKEND_NEXT_TEST_REDIS_PORT=63379 docker compos
 ```
 
 `current-evidence.json` records measured commands, log hashes and input hashes. API type regeneration for the legacy backend is skipped: its metadata/schema have not changed; the new API reproduces the existing upstream contract. No CHANGELOG was edited. Candidate: backend-next supports viewer-specific promotion read tracking.
+
+Initial build/typecheck, upstream5, source14, near-unit32 and real HTTP/PG/schema41 passed. The helper follow-up passed source14, normal HTTP/PG15, entity import1 and catalog/nearest-root17. R1 evidence is archived byte-for-byte. A broad root run passed817/skipped1 (818 total) before the final fourth metadata-test projection was added; nearest17 and import1 cover that final addition. Independent Codex review confirmed the helper connection boundary fix. The initial exploratory root run failed136 before finite successor wiring; its log is retained and is not claimed as a successful measurement.

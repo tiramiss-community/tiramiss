@@ -21,10 +21,17 @@ function source(path) {
 	return ts.createSourceFile(path, bytes.toString(), ts.ScriptTarget.Latest, true);
 }
 class ApiError extends Error {
-	constructor(meta) { super(meta.message); this.code = meta.code; this.id = meta.id; }
+	constructor(meta) {
+		super(meta.message);
+		this.code = meta.code;
+		this.id = meta.id;
+	}
 }
 class IdentifiableError extends Error {
-	constructor(id, message) { super(message); this.id = id; }
+	constructor(id, message) {
+		super(message);
+		this.id = id;
+	}
 }
 const globals = { ApiError, IdentifiableError };
 function evaluate(text) {
@@ -54,8 +61,18 @@ if (process.argv[2] === '--pg') {
 	const request = JSON.parse(readFileSync(0, 'utf8'));
 	assert.match(request.database?.database ?? '', /^backend_next_[0-9a-f]{32}$/, 'promo probe requires a disposable test database');
 	assert(['127.0.0.1', 'localhost', '::1'].includes(request.database.host), 'promo probe requires a local test database');
+	assert(Object.keys(request.database).every(key => ['host', 'port', 'database', 'username', 'password', 'extra'].includes(key)), 'promo probe rejects connection overrides');
+	assert.deepEqual(request.database.extra ?? {}, {}, 'promo probe rejects connection overrides');
+	const database = {
+		host: request.database.host,
+		port: request.database.port,
+		database: request.database.database,
+		username: request.database.username,
+		password: request.database.password,
+		extra: {},
+	};
 	const { createDataSource } = await import(new URL('../../../../packages/backend-next/built/platform/database/data-source.js', import.meta.url));
-	dataSource = await createDataSource(request.database).initialize();
+	dataSource = await createDataSource(database).initialize();
 	items = request.cases;
 	preserve = request.preserve === true;
 }
@@ -63,50 +80,62 @@ const cases = [];
 try {
 	for (const item of items) {
 		let rows = structuredClone(item.rows);
-		const fail = operation => { if (item.fail === operation)
-			throw Error(`${operation} unavailable`); };
+		const fail = operation => {
+			if (item.fail === operation) {
+				throw Error(`${operation} unavailable`);
+			}
+		};
 		const promos = dataSource?.getRepository('promo_read') ?? {
-			async exists({ where }) { fail('exists'); return rows.some(row => row.noteId === where.noteId && row.userId === where.userId); },
-			async insert(row) { fail('insert'); rows.push(row); },
+			async exists({ where }) {
+				fail('exists');
+				return rows.some(row => row.noteId === where.noteId && row.userId === where.userId);
+			},
+			async insert(row) {
+				fail('insert');
+				rows.push(row);
+			},
 		};
 		const notes = dataSource?.getRepository('note') ?? {
-			async findOneBy({ id }) { fail('note'); return corpus.notes.find(note => note.id === id) ?? null; },
+			async findOneBy({ id }) {
+				fail('note');
+				return corpus.notes.find(note => note.id === id) ?? null;
+			},
 		};
 		if (dataSource && !preserve) {
 			await promos.clear();
-			if (rows.length)
+			if (rows.length) {
 				await promos.insert(rows);
+			}
 		}
 		let error;
 		try {
 			const input = structuredClone(item.input);
-			if (!validate(input))
+			if (!validate(input)) {
 				error = { code: 'INVALID_PARAM' };
-			else
+			} else {
 				await handle.call({ promoReadsRepository: promos, idService: { gen: () => 'generated' }, getterService: { getNote: id => getNote.call({ notesRepository: notes }, id) } }, input, { id: item.userId ?? 'reader' });
-		}
-		catch (caught) {
+			}
+		} catch (caught) {
 			assert.notEqual(caught.name, 'ReferenceError');
 			error = caught.code && caught.id ? { code: caught.code, id: caught.id } : dataSource ? { code: 'INTERNAL_ERROR' } : { message: caught.message };
 		}
-		if (dataSource && !preserve)
-			rows = (await promos.find({ order: { id: 'ASC' } })).map(row => ({ id: row.id, noteId: row.noteId, userId: row.userId }));
+		if (dataSource && !preserve) {
+			rows = (await promos.find()).map(row => ({ id: row.id, noteId: row.noteId, userId: row.userId }));
+		}
 		rows.sort((a, b) => a.noteId.localeCompare(b.noteId) || a.userId.localeCompare(b.userId));
 		cases.push({ id: item.id, ...(error ? { error } : {}), ...(!preserve ? { rows } : {}) });
 	}
-}
-finally {
+} finally {
 	await dataSource?.destroy();
 }
 if (process.argv[2] === '--pg') {
 	process.stdout.write(JSON.stringify(cases));
-}
-else {
+} else {
 	const output = JSON.stringify({ upstreamCommit: pin, manifest, corpusSha256: sha(corpusBytes), doubles: corpus.doubles, access: { requireCredential: meta.requireCredential, requireModerator: meta.requireModerator, kind: meta.kind }, cases }, null, 2) + '\n';
 	const target = new URL('./observations.json', import.meta.url);
-	if (process.argv[2] === '--write')
+	if (process.argv[2] === '--write') {
 		writeFileSync(target, output);
-	else {
+	} else {
 		assert.equal(process.argv[2], '--check');
 		assert.equal(readFileSync(target, 'utf8'), output);
 	}
