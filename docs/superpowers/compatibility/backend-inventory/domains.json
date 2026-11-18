@@ -2778,6 +2778,123 @@
       ],
       "note": "#195: 既存GET /users/:userとacquireActorのlocal解決にemoji→hashtag tag公開を接続。順序・重複・localOnly・日時・URL/MIME fallback・失敗境界を固定本家12観測と実HTTP/PGで確認。Profile/鍵の既存公開を含むpartial。画像/他rich actor/featured/Move/inbox/remote Notesとcache鮮度#217は未完了。#176/#127/#195、notes/create partialを維持。 #195 local actor画像公開: 既存GET /users/:idと内部local解決へ保存済Driveのicon/image、identiconとsystem Meta fallbackを接続。proxy優先順位、null/空値、取得と鍵の失敗順を固定本家33件のsource-method doublesで観測し、新サーバー実HTTP/PG 53件とremote-user 108件・近傍単体317件をR2で検証。本家full HTTP/PGの比較ではない。Meta DB直読の鮮度/失敗差と既存内部remote-row guard差を保持。画像バイト配信(/identicon・/files・/proxy)、Drive取得・remote media、他rich actor/featured/Move/inbox/remote Notesとcache #217は未完了。#176/#127/#195はOPEN、notes/create:partial・postingComplete:false。 #195 local stored fields (efd6b94ea9911fc6b9aeaad0edeea04da3932da1): isCat・_misskey_設定3項目・movedTo・alsoKnownAsとfeatured URLを既存HTTP/内部actorへ公開。固定renderPerson 21件（成功16/拒否5）、親877入力のbuild/typecheck・単体283・実HTTP/PG actor69+remote-user108を検証。詳細: docs/superpowers/compatibility/remote-user/local-actor-fields-results.md。featured endpointはnot_implemented、Move実行・Drive/remote media・remote Notes・inbox・cache等は未完了。既存5gap、#176/#127/#195 OPEN、notes/create:partial・postingComplete:falseを維持。"
     },
+    "http:packages/backend/src/server/NodeinfoServerService.ts:137": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/nodeinfo/public.ts",
+        "packages/backend-next/src/http/nodeinfo-api.ts",
+        "packages/backend-next/src/composition/nodeinfo-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/federation/nodeinfo-api.test.ts",
+        "packages/backend-next/test/integration/nodeinfo.test.ts",
+        "packages/backend-next/test/unit/composition/http-app.test.ts",
+        "docs/superpowers/compatibility/nodeinfo/source-probe.mjs",
+        "docs/superpowers/compatibility/nodeinfo/observations.json",
+        "docs/superpowers/compatibility/nodeinfo/README.md"
+      ],
+      "note": "#531: 通常HTTPのNodeInfo2.0/2.1・discovery、hour chartのlocal総数、fresh Metaと既存proxy遅延作成、共有10分cache・版間mutation・HEADを比較。固定literal sourceのlistening Fastify36観測（chart/Meta/proxy doubles）と新実装の単体316・通常HTTP/PG94は別測定。実DBの4読取失敗・warm cache・復帰を確認。Fastifyの500/404診断本文・Content-Typeは比較外で、新実装は既存WebFinger/host-meta同様のempty500と固定診断。full本家server/PG・通知鮮度は未証明。親#193と全体移植は未完了。詳細: docs/superpowers/compatibility/nodeinfo/README.md。",
+      "evidenceRevision": "95c8c0eb62bfb30f7187328547b35e2e38fc7e83"
+    },
+    "http:packages/backend/src/server/NodeinfoServerService.ts:152": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/nodeinfo/public.ts",
+        "packages/backend-next/src/http/nodeinfo-api.ts",
+        "packages/backend-next/src/composition/nodeinfo-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/federation/nodeinfo-api.test.ts",
+        "packages/backend-next/test/integration/nodeinfo.test.ts",
+        "packages/backend-next/test/unit/composition/http-app.test.ts",
+        "docs/superpowers/compatibility/nodeinfo/source-probe.mjs",
+        "docs/superpowers/compatibility/nodeinfo/observations.json",
+        "docs/superpowers/compatibility/nodeinfo/README.md"
+      ],
+      "note": "#531: 通常HTTPのNodeInfo2.0/2.1・discovery、hour chartのlocal総数、fresh Metaと既存proxy遅延作成、共有10分cache・版間mutation・HEADを比較。固定literal sourceのlistening Fastify36観測（chart/Meta/proxy doubles）と新実装の単体316・通常HTTP/PG94は別測定。実DBの4読取失敗・warm cache・復帰を確認。Fastifyの500/404診断本文・Content-Typeは比較外で、新実装は既存WebFinger/host-meta同様のempty500と固定診断。full本家server/PG・通知鮮度は未証明。親#193と全体移植は未完了。詳細: docs/superpowers/compatibility/nodeinfo/README.md。",
+      "evidenceRevision": "95c8c0eb62bfb30f7187328547b35e2e38fc7e83"
+    },
+    "http:packages/backend/src/server/WellKnownServerService.ts:101": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/nodeinfo/public.ts",
+        "packages/backend-next/src/http/nodeinfo-api.ts",
+        "packages/backend-next/src/composition/nodeinfo-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/federation/nodeinfo-api.test.ts",
+        "packages/backend-next/test/integration/nodeinfo.test.ts",
+        "packages/backend-next/test/unit/composition/http-app.test.ts",
+        "docs/superpowers/compatibility/nodeinfo/source-probe.mjs",
+        "docs/superpowers/compatibility/nodeinfo/observations.json",
+        "docs/superpowers/compatibility/nodeinfo/README.md"
+      ],
+      "note": "#531: 通常HTTPのNodeInfo2.0/2.1・discovery、hour chartのlocal総数、fresh Metaと既存proxy遅延作成、共有10分cache・版間mutation・HEADを比較。固定literal sourceのlistening Fastify36観測（chart/Meta/proxy doubles）と新実装の単体316・通常HTTP/PG94は別測定。実DBの4読取失敗・warm cache・復帰を確認。Fastifyの500/404診断本文・Content-Typeは比較外で、新実装は既存WebFinger/host-meta同様のempty500と固定診断。full本家server/PG・通知鮮度は未証明。親#193と全体移植は未完了。詳細: docs/superpowers/compatibility/nodeinfo/README.md。",
+      "evidenceRevision": "95c8c0eb62bfb30f7187328547b35e2e38fc7e83"
+    },
+    "http:packages/backend/src/server/WellKnownServerService.ts:71": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/http/well-known-api.ts",
+        "packages/backend-next/src/http/webfinger-api.ts",
+        "packages/backend-next/src/composition/webfinger-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/federation/well-known-api.test.ts",
+        "packages/backend-next/test/integration/well-known.test.ts",
+        "packages/backend-next/test/unit/federation/webfinger-api.test.ts",
+        "packages/backend-next/test/integration/webfinger.test.ts",
+        "docs/superpowers/compatibility/well-known/source-probe.mjs",
+        "docs/superpowers/compatibility/well-known/observations.json",
+        "docs/superpowers/compatibility/well-known/README.md"
+      ],
+      "note": "#531: host-meta XML/JSON、未知pathを含む/.well-known/* OPTIONS204と4CORS、bare prefix/未知GET404、後続登録順を通常HTTPへ接続。前slice固定source144観測と今回の単体316・通常HTTP/PG94（well-known41/WebFinger46/NodeInfo7）で回帰確認。連合無効403、XML値/属性の固定source escaping、Meta cold失敗/warm cache・OPTIONS bypassを確認。OAuth/passwordはstand-inによる登録順/共通headerのみで業務所有は変更しない。診断本文/Content-Typeの既存差・本家fullserver/PG未実測・通知鮮度の限界はdocs/superpowers/compatibility/well-known/README.mdとnodeinfo/README.mdに記録。",
+      "evidenceRevision": "95c8c0eb62bfb30f7187328547b35e2e38fc7e83"
+    },
+    "http:packages/backend/src/server/WellKnownServerService.ts:85": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/http/well-known-api.ts",
+        "packages/backend-next/src/http/webfinger-api.ts",
+        "packages/backend-next/src/composition/webfinger-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/federation/well-known-api.test.ts",
+        "packages/backend-next/test/integration/well-known.test.ts",
+        "packages/backend-next/test/unit/federation/webfinger-api.test.ts",
+        "packages/backend-next/test/integration/webfinger.test.ts",
+        "docs/superpowers/compatibility/well-known/source-probe.mjs",
+        "docs/superpowers/compatibility/well-known/observations.json",
+        "docs/superpowers/compatibility/well-known/README.md"
+      ],
+      "note": "#531: host-meta XML/JSON、未知pathを含む/.well-known/* OPTIONS204と4CORS、bare prefix/未知GET404、後続登録順を通常HTTPへ接続。前slice固定source144観測と今回の単体316・通常HTTP/PG94（well-known41/WebFinger46/NodeInfo7）で回帰確認。連合無効403、XML値/属性の固定source escaping、Meta cold失敗/warm cache・OPTIONS bypassを確認。OAuth/passwordはstand-inによる登録順/共通headerのみで業務所有は変更しない。診断本文/Content-Typeの既存差・本家fullserver/PG未実測・通知鮮度の限界はdocs/superpowers/compatibility/well-known/README.mdとnodeinfo/README.mdに記録。",
+      "evidenceRevision": "95c8c0eb62bfb30f7187328547b35e2e38fc7e83"
+    },
+    "http:packages/backend/src/server/WellKnownServerService.ts:67": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/http/well-known-api.ts",
+        "packages/backend-next/src/http/webfinger-api.ts",
+        "packages/backend-next/src/composition/webfinger-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/federation/well-known-api.test.ts",
+        "packages/backend-next/test/integration/well-known.test.ts",
+        "packages/backend-next/test/unit/federation/webfinger-api.test.ts",
+        "packages/backend-next/test/integration/webfinger.test.ts",
+        "docs/superpowers/compatibility/well-known/source-probe.mjs",
+        "docs/superpowers/compatibility/well-known/observations.json",
+        "docs/superpowers/compatibility/well-known/README.md"
+      ],
+      "note": "#531: host-meta XML/JSON、未知pathを含む/.well-known/* OPTIONS204と4CORS、bare prefix/未知GET404、後続登録順を通常HTTPへ接続。前slice固定source144観測と今回の単体316・通常HTTP/PG94（well-known41/WebFinger46/NodeInfo7）で回帰確認。連合無効403、XML値/属性の固定source escaping、Meta cold失敗/warm cache・OPTIONS bypassを確認。OAuth/passwordはstand-inによる登録順/共通headerのみで業務所有は変更しない。診断本文/Content-Typeの既存差・本家fullserver/PG未実測・通知鮮度の限界はdocs/superpowers/compatibility/well-known/README.mdとnodeinfo/README.mdに記録。",
+      "evidenceRevision": "95c8c0eb62bfb30f7187328547b35e2e38fc7e83"
+    },
     "http:packages/backend/src/server/WellKnownServerService.ts:119": {
       "status": "verified",
       "implementation": [
@@ -2802,31 +2919,6 @@
         "docs/superpowers/compatibility/remote-user/local-webfinger-results.md"
       ],
       "note": "WebFinger GET/HEADのsource-bounded契約を通常HTTPと実PGへ接続。例外はresources.loggerへ固定eventと安全なfieldsだけを一度渡し、空500とCORSを維持する。固定本家createServerのFastify inject＋明示repository/URI/Meta/NodeInfo/OAuth doublesとAcct/XMLの49件を直接照合。R3はbuild/typecheck・近傍単体235件・通常listening HTTP/PG WebFinger46件を実測。既存Loggerのstdout JSONと固定event・安全な定数fieldsを6単体ケース、通常compositionのlogger受け渡しを2ケースで確認。R2のconsole診断と旧current recordは歴史的archiveに保持。既存HTTP/actor55件は別の歴史的R1実行。本家full server/PG比較ではない。error bodyの診断文字列は比較せず、status/CORS/cache/Varyを比較。MetaはDB直読対本家の通知更新injected Metaで、stable Metaだけを確認しcache/通知同等性は#217に残す。#176/#127/#195はOPEN、notes/create:partial・postingComplete:false。"
-    },
-    "http:packages/backend/src/server/WellKnownServerService.ts:67": {
-      "status": "partial",
-      "implementation": [
-        "packages/backend-next/src/modules/federation/local-webfinger.ts",
-        "packages/backend-next/src/modules/federation/public.ts",
-        "packages/backend-next/src/platform/database/local-webfinger.ts",
-        "packages/backend-next/src/http/webfinger-api.ts",
-        "packages/backend-next/src/composition/webfinger-http.ts",
-        "packages/backend-next/src/composition/http-app.ts"
-      ],
-      "verification": [
-        "packages/backend-next/test/helpers/webfinger-source.ts",
-        "packages/backend-next/test/unit/federation/local-webfinger.test.ts",
-        "packages/backend-next/test/unit/federation/webfinger-api.test.ts",
-        "packages/backend-next/test/unit/composition/http-app.test.ts",
-        "packages/backend-next/test/integration/webfinger.test.ts",
-        "docs/superpowers/compatibility/remote-user/local-webfinger-corpus.json",
-        "docs/superpowers/compatibility/remote-user/local-webfinger-observations.json",
-        "docs/superpowers/compatibility/remote-user/local-webfinger-source-probe.mjs",
-        "docs/superpowers/compatibility/remote-user/local-webfinger-runtime-evidence.json",
-        "docs/superpowers/compatibility/remote-user/local-webfinger-structured-logging-runtime-evidence.json",
-        "docs/superpowers/compatibility/remote-user/local-webfinger-results.md"
-      ],
-      "note": "WebFinger pathのOPTIONSと4 CORS headersだけを確認。wildcard OPTIONS /.well-known/*はmountせず、他well-known全体の契約を満たさない。固定本家createServerのFastify inject＋明示repository/URI/Meta/NodeInfo/OAuth doublesとAcct/XMLの49件を直接照合。R3はbuild/typecheck・近傍単体235件・通常listening HTTP/PG WebFinger46件を実測。既存Loggerのstdout JSONと固定event・安全な定数fieldsを6単体ケース、通常compositionのlogger受け渡しを2ケースで確認。R2のconsole診断と旧current recordは歴史的archiveに保持。既存HTTP/actor55件は別の歴史的R1実行。本家full server/PG比較ではない。error bodyの診断文字列は比較せず、status/CORS/cache/Varyを比較。MetaはDB直読対本家の通知更新injected Metaで、stable Metaだけを確認しcache/通知同等性は#217に残す。#176/#127/#195はOPEN、notes/create:partial・postingComplete:false。"
     },
     "http:packages/backend/src/server/ActivityPubServerService.ts:655": {
       "status": "partial",

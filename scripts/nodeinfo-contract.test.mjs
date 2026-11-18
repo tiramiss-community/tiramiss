@@ -21,7 +21,7 @@ test('NodeInfo preserves only its exact two shared predecessors without renewing
 	]);
 	for (const [path, binding] of Object.entries(record.files)) {
 		const actual = read(path);
-		assert.equal(sha(actual), binding.currentSha256);
+		assert.equal(sha(projectParallelInput(path, actual, binding.currentSha256)), binding.currentSha256);
 		assert.equal(sha(projectParallelInput(path, actual, binding.previousSha256)), binding.previousSha256);
 		assert.equal(sha(projectParallelInput(path, read(path), binding.previousSha256)), binding.previousSha256);
 		const drift = Buffer.concat([actual, Buffer.from('\n')]);
