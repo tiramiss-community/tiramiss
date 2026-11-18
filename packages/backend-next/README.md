@@ -378,3 +378,7 @@ Supervisor自然retry試験は通常の60–72秒backoffを待つ（test timeout
 専用検証環境で `pnpm --filter backend-next test:integration test/integration/webfinger.test.ts test/integration/http-app.test.ts test/integration/activitypub-actor.test.ts` を実行する。並行時は既存の `BACKEND_NEXT_TEST_DB_PORT` / `BACKEND_NEXT_TEST_REDIS_PORT` / `BACKEND_NEXT_TEST_MEILI_PORT` を設定する。Metaは既存DB readerを使い、通知/cache鮮度の同等性は#217へ残す。host-meta・NodeInfo・authorize-follow本体・collections・inbox、#176/#127/#195全体の完成は含めない。
 
 #323（actor acct別名・公開鍵）は実装と証跡が完了しmerge待ち。次は#324。[有限の比較・実測](../../docs/superpowers/compatibility/remote-user/local-actor-alias-key-results.md)を参照。
+
+## host-meta と well-known 共通応答（#531 の一部）
+
+通常HTTPから `GET` / `HEAD /.well-known/host-meta` と `host-meta.json` を提供し、既存Meta cacheの連合設定で判定する。`OPTIONS /.well-known/*` は未知パスを含め204とCORSを返し、Metaを参照しない。既存WebFinger、後から登録されるwell-knownハンドラーのCORSと、未知GET/HEADの既存404を維持する。[固定本家との比較・検証範囲](../../docs/superpowers/compatibility/well-known/README.md)。NodeInfo 2.0/2.1・人数集計・文書キャッシュと `/.well-known/nodeinfo` は #531 の残作業。

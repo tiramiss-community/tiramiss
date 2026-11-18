@@ -1,0 +1,2901 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "sources": [
+    [
+      "packages/backend/src/server/WellKnownServerService.ts",
+      "a95eae39e0a03afa7ace1c9902394923f753ee4ba578783b15bc2ddc40a38d02"
+    ],
+    [
+      "packages/backend/src/misc/prelude/xml.ts",
+      "43e37baa00eb7c9d3a84d1484c0b5be84a33a5fe70bbdeaada27bb868e45eb9c"
+    ]
+  ],
+  "dependencies": {
+    "fastify": "5.12.5",
+    "@fastify/accepts": "5.0.6",
+    "vary": "1.1.2"
+  },
+  "method": "Literal pinned createServer and XML source, listening Fastify; injected Meta and OAuth; no upstream PG/full server",
+  "cases": [
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/host-meta",
+      "method": "GET",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/xrd+xml",
+        "location": null
+      },
+      "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\"><Link rel=\"lrdd\" type=\"application/xrd+xml\" template=\"https://local.test:8443/.well-known/webfinger?resource={uri}\"/></XRD>",
+      "injectedFailureBody": null,
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/host-meta",
+      "method": "HEAD",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/xrd+xml",
+        "location": null
+      },
+      "body": "",
+      "injectedFailureBody": null,
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/host-meta",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/host-meta.json",
+      "method": "GET",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": "{\"links\":[{\"rel\":\"lrdd\",\"type\":\"application/jrd+json\",\"template\":\"https://local.test:8443/.well-known/webfinger?resource={uri}\"}]}",
+      "injectedFailureBody": null,
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/host-meta.json",
+      "method": "HEAD",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": "",
+      "injectedFailureBody": null,
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/host-meta.json",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/missing",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/missing",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/missing",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known",
+      "method": "OPTIONS",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/missing/nested",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/missing/nested",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/missing/nested",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "GET",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": "{\"issuer\":\"https://local.test:8443\"}",
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "HEAD",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": "",
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/change-password",
+      "method": "GET",
+      "status": 302,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": "https://local.test:8443/settings/security"
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/change-password",
+      "method": "HEAD",
+      "status": 302,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": "https://local.test:8443/settings/security"
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "all",
+      "path": "/.well-known/change-password",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/host-meta",
+      "method": "GET",
+      "status": 403,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/host-meta",
+      "method": "HEAD",
+      "status": 403,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/host-meta",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/host-meta.json",
+      "method": "GET",
+      "status": 403,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/host-meta.json",
+      "method": "HEAD",
+      "status": 403,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/host-meta.json",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/missing",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/missing",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/missing",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known",
+      "method": "OPTIONS",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/missing/nested",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/missing/nested",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/missing/nested",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "GET",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": "{\"issuer\":\"https://local.test:8443\"}",
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "HEAD",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": "",
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/change-password",
+      "method": "GET",
+      "status": 302,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": "https://local.test:8443/settings/security"
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/change-password",
+      "method": "HEAD",
+      "status": 302,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": "https://local.test:8443/settings/security"
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "none",
+      "path": "/.well-known/change-password",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/host-meta",
+      "method": "GET",
+      "status": 500,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": "{\"statusCode\":500,\"error\":\"Internal Server Error\",\"message\":\"injected Meta failure\"}",
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/host-meta",
+      "method": "HEAD",
+      "status": 500,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": "",
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/host-meta",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/host-meta.json",
+      "method": "GET",
+      "status": 500,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": "{\"statusCode\":500,\"error\":\"Internal Server Error\",\"message\":\"injected Meta failure\"}",
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/host-meta.json",
+      "method": "HEAD",
+      "status": 500,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": "",
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/host-meta.json",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/missing",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/missing",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/missing",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known",
+      "method": "OPTIONS",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/missing/nested",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/missing/nested",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/missing/nested",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "GET",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": "{\"issuer\":\"https://local.test:8443\"}",
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "HEAD",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": "",
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/change-password",
+      "method": "GET",
+      "status": 302,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": "https://local.test:8443/settings/security"
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/change-password",
+      "method": "HEAD",
+      "status": 302,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": "https://local.test:8443/settings/security"
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test:8443",
+      "federation": "fault",
+      "path": "/.well-known/change-password",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/host-meta",
+      "method": "GET",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/xrd+xml",
+        "location": null
+      },
+      "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XRD xmlns=\"http://docs.oasis-open.org/ns/xri/xrd-1.0\"><Link rel=\"lrdd\" type=\"application/xrd+xml\" template=\"https://local.test/a&amp;&&lt;<&gt;>&quot;\"&apos;'/.well-known/webfinger?resource={uri}\"/></XRD>",
+      "injectedFailureBody": null,
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/host-meta",
+      "method": "HEAD",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/xrd+xml",
+        "location": null
+      },
+      "body": "",
+      "injectedFailureBody": null,
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/host-meta",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/host-meta.json",
+      "method": "GET",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": "{\"links\":[{\"rel\":\"lrdd\",\"type\":\"application/jrd+json\",\"template\":\"https://local.test/a&&<<>>\\\"\\\"''/.well-known/webfinger?resource={uri}\"}]}",
+      "injectedFailureBody": null,
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/host-meta.json",
+      "method": "HEAD",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": "",
+      "injectedFailureBody": null,
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/host-meta.json",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/missing",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/missing",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/missing",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known",
+      "method": "OPTIONS",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/missing/nested",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/missing/nested",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/missing/nested",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "GET",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": "{\"issuer\":\"https://local.test/a&&<<>>\\\"\\\"''\"}",
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "HEAD",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": "",
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/change-password",
+      "method": "GET",
+      "status": 302,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": "https://local.test/settings/security"
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/change-password",
+      "method": "HEAD",
+      "status": 302,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": "https://local.test/settings/security"
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "all",
+      "path": "/.well-known/change-password",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/host-meta",
+      "method": "GET",
+      "status": 403,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/host-meta",
+      "method": "HEAD",
+      "status": 403,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/host-meta",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/host-meta.json",
+      "method": "GET",
+      "status": 403,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/host-meta.json",
+      "method": "HEAD",
+      "status": 403,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/host-meta.json",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/missing",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/missing",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/missing",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known",
+      "method": "OPTIONS",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/missing/nested",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/missing/nested",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/missing/nested",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "GET",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": "{\"issuer\":\"https://local.test/a&&<<>>\\\"\\\"''\"}",
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "HEAD",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": "",
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/change-password",
+      "method": "GET",
+      "status": 302,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": "https://local.test/settings/security"
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/change-password",
+      "method": "HEAD",
+      "status": 302,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": "https://local.test/settings/security"
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "none",
+      "path": "/.well-known/change-password",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/host-meta",
+      "method": "GET",
+      "status": 500,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": "{\"statusCode\":500,\"error\":\"Internal Server Error\",\"message\":\"injected Meta failure\"}",
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/host-meta",
+      "method": "HEAD",
+      "status": 500,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": "",
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/host-meta",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/host-meta.json",
+      "method": "GET",
+      "status": 500,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": "{\"statusCode\":500,\"error\":\"Internal Server Error\",\"message\":\"injected Meta failure\"}",
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/host-meta.json",
+      "method": "HEAD",
+      "status": 500,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": "",
+      "metaReads": 1
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/host-meta.json",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/missing",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/missing",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/missing",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known",
+      "method": "OPTIONS",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/missing/nested",
+      "method": "GET",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/missing/nested",
+      "method": "HEAD",
+      "status": 404,
+      "headers": {
+        "access-control-allow-headers": null,
+        "access-control-allow-methods": null,
+        "access-control-allow-origin": null,
+        "access-control-expose-headers": null,
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/missing/nested",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "GET",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": "{\"issuer\":\"https://local.test/a&&<<>>\\\"\\\"''\"}",
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "HEAD",
+      "status": 200,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": "application/json; charset=utf-8",
+        "location": null
+      },
+      "body": "",
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/oauth-authorization-server",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/change-password",
+      "method": "GET",
+      "status": 302,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": "https://local.test/settings/security"
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/change-password",
+      "method": "HEAD",
+      "status": 302,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": "https://local.test/settings/security"
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    },
+    {
+      "url": "https://local.test/a&&<<>>\"\"''",
+      "federation": "fault",
+      "path": "/.well-known/change-password",
+      "method": "OPTIONS",
+      "status": 204,
+      "headers": {
+        "access-control-allow-headers": "Accept",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-origin": "*",
+        "access-control-expose-headers": "Vary",
+        "cache-control": null,
+        "vary": null,
+        "content-type": null,
+        "location": null
+      },
+      "body": null,
+      "injectedFailureBody": null,
+      "metaReads": 0
+    }
+  ]
+}

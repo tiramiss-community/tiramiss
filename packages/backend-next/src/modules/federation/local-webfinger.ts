@@ -62,3 +62,7 @@ export function renderWebfingerXrd(document: LocalWebfingerDocument): string {
 	const links = document.links.map(link => `<Link${Object.entries(link).map(([key, value]) => ` ${key}="${escapeAttribute(value)}"`).join('')}/>`).join('');
 	return `<?xml version="1.0" encoding="UTF-8"?><XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0"><Subject>${escapeValue(document.subject)}</Subject>${links}</XRD>`;
 }
+
+export function renderHostMetaXrd(selfUrl: string): string {
+	return `<?xml version="1.0" encoding="UTF-8"?><XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0"><Link rel="lrdd" type="application/xrd+xml" template="${escapeAttribute(`${selfUrl}/.well-known/webfinger?resource={uri}`)}"/></XRD>`;
+}

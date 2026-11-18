@@ -49,7 +49,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 		'/api/users/update-memo', '/api/hashtags/list', '/api/hashtags/search', '/api/hashtags/show', '/api/announcements', '/api/announcements/show', '/api/i/read-announcement', '/api/users/relation',
 		'/api/drive/files/show', '/api/drive/files/find', '/api/drive/files/find-by-hash', '/api/drive/files/check-existence', '/api/admin/drive/show-file', '/api/pages/show',
 		'/users/:id', '/:acct{@[^/]*}', '/users/:user{[^/]*}/publickey',
-		'/api/admin/federation/update-instance', '/api/admin/federation/refresh-remote-instance-metadata', '/url', '/.well-known/webfinger',
+		'/api/admin/federation/update-instance', '/api/admin/federation/refresh-remote-instance-metadata', '/url', '/.well-known/*', '/.well-known/host-meta', '/.well-known/host-meta.json', '/.well-known/webfinger',
 		'/users/:id/collections/featured', '/notes/:id', '/users/:id/followers', '/users/:id/following',
 		'/users/:user/outbox', '/users//outbox', '/notes/:note/activity', '/notes//activity',
 		'/emojis/:emoji', '/emojis/', '/api/emoji', '/api/emojis',
@@ -209,4 +209,21 @@ test('image path dispatch preserves existing Role GET/HEAD/OPTIONS and unknown r
 			expect({ status: after.status, headers: Object.fromEntries(after.headers), body: await after.text() }).toEqual({ status: before.status, headers: Object.fromEntries(before.headers), body: await before.text() });
 		}
 	}
+});
+
+test('ordinary composition exposes host-meta and well-known preflight without Meta reads', async () => {
+	const { resources, repository } = fixture();
+	const app = createBackendHttpApp(resources, testConfig());
+	const hostMeta = await app.request('/.well-known/host-meta');
+	expect(hostMeta.status).toBe(200);
+	expect(hostMeta.headers.get('content-type')).toBe('application/xrd+xml');
+	expect(await hostMeta.text()).toContain('template="http://example.test/.well-known/webfinger?resource={uri}"');
+	repository.find.mockClear();
+	for (const path of ['/.well-known/unknown', '/.well-known/oauth-authorization-server', '/.well-known/change-password']) {
+		const response = await app.request(path, { method: 'OPTIONS' });
+		expect(response.status).toBe(204);
+		expect(response.headers.get('access-control-allow-origin')).toBe('*');
+		expect(await response.text()).toBe('');
+	}
+	expect(repository.find).not.toHaveBeenCalled();
 });
