@@ -69,3 +69,24 @@ test('batch follow-up retains fresh validation and the original receipt remains 
  assert.equal(record().baseRevision, '5f0549ad96af7ce85e12fdcc4bf26f23b029d29d');
  assert.equal(Object.keys(record().inputs).length, 18);
 });
+
+test('stream auth metadata preserves actor receipt without accepting the previous adapter as current input', () => {
+ const path = 'packages/backend-next/src/platform/database/streaming.ts';
+ const current = read(path).toString();
+ const previous = current.replace('\t\t\t\ttokenPermissions: caller.credential.native ? undefined : [...caller.credential.permissions],\n', '');
+ assert.notEqual(previous, current);
+ assert.equal(Object.keys(validateActorEmojiCacheEvidence(undefined, read, () => null)).length, 12);
+ assert.throws(() => validateActorEmojiCacheEvidence(undefined, file => file === path ? Buffer.from(previous) : read(file), () => null), /measured current input drift/);
+ // The reader's authorization field alone may project; neighboring read/render edits may not.
+ const changed = current.replace('const reader = createNoteReader', 'const reader = changedNoteReader');
+ assert.notEqual(changed, current);
+ assert.throws(() => validateActorEmojiCacheEvidence(undefined, file => file === path ? Buffer.from(changed) : read(file), () => null), /measured current input drift/);
+ let stale = false;
+ const live = file => stale && file === path ? Buffer.from(previous) : read(file);
+ const optional = () => null;
+ inEvidenceValidationScope(() => {
+  readForActorEmojiCacheEvidence(path, live, optional);
+  stale = true;
+  assert.throws(() => readForActorEmojiCacheEvidence(path, live, optional), /measured current input drift/);
+ });
+});

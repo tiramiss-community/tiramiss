@@ -28,6 +28,7 @@ export function createStreamingReader(manager: EntityManager, redis: Redis, logg
 				userId: caller.credential.userId,
 				canReadAccount: allowsPermission(caller.credential, 'read:account'),
 				isSuspended: caller.isSuspended,
+				tokenPermissions: caller.credential.native ? undefined : [...caller.credential.permissions],
 			};
 		},
 		async readFacts(userId: string | null): Promise<StreamFacts> {
