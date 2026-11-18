@@ -45,7 +45,8 @@
 		"src/models/PageLike.ts",
 		"src/models/Announcement.ts",
 		"src/models/AnnouncementRead.ts",
-		"src/models/PromoNote.ts"
+		"src/models/PromoNote.ts",
+		"src/models/PromoRead.ts"
 	],
 	"migrationDirectory": "migration",
 	"externalDependencies": [

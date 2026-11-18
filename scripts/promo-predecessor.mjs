@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectPromoReadInput } from './promo-read-predecessor.mjs';
 import { projectNoteTranslationInput } from './note-translate-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
@@ -13,7 +14,7 @@ const { files } = JSON.parse(record);
 
 // Preserve earlier measurements through only the exact additive #542 inputs.
 export function projectPromoInput(path, actual) {
-	actual = projectNoteTranslationInput(path, actual);
+	actual = projectNoteTranslationInput(path, projectPromoReadInput(path, actual));
 	const binding = Object.hasOwn(files, path) ? files[path] : undefined;
 	if (!binding || sha(actual) !== binding.currentSha256) return actual;
 	let before = Buffer.from(actual);

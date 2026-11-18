@@ -8,9 +8,10 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { projectPromoReadInput } from './promo-read-predecessor.mjs';
 import { projectNoteTranslationInput } from './note-translate-predecessor.mjs';
 import { projectPromoInput } from './promo-predecessor.mjs';
-const read = path => readFileSync(new URL('../' + path, import.meta.url));
+const read = path => projectPromoReadInput(path, readFileSync(new URL('../' + path, import.meta.url)));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const directory = 'docs/superpowers/compatibility/promo/';
 

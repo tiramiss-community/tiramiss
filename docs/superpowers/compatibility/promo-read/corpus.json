@@ -1,0 +1,169 @@
+{
+  "doubles": "Literal pinned callback/Getter/schema with controlled repositories and deterministic generated ID; --pg binds real TypeORM repositories in a disposable migrated DB. HTTP auth is tested on backend-next separately.",
+  "notes": [
+    {
+      "id": "publicnote",
+      "userId": "author",
+      "visibility": "public"
+    },
+    {
+      "id": "privatenote",
+      "userId": "author",
+      "visibility": "specified"
+    },
+    {
+      "id": "followersnote",
+      "userId": "author",
+      "visibility": "followers"
+    },
+    {
+      "id": "remotenote",
+      "userId": "remote",
+      "visibility": "public"
+    }
+  ],
+  "cases": [
+    {
+      "id": "public",
+      "input": {
+        "noteId": "publicnote"
+      },
+      "rows": []
+    },
+    {
+      "id": "private",
+      "input": {
+        "noteId": "privatenote"
+      },
+      "rows": []
+    },
+    {
+      "id": "followers",
+      "input": {
+        "noteId": "followersnote"
+      },
+      "rows": []
+    },
+    {
+      "id": "unpromoted",
+      "input": {
+        "noteId": "remotenote"
+      },
+      "rows": []
+    },
+    {
+      "id": "duplicate",
+      "input": {
+        "noteId": "publicnote"
+      },
+      "rows": [
+        {
+          "id": "existing",
+          "noteId": "publicnote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "other-viewer",
+      "input": {
+        "noteId": "publicnote"
+      },
+      "rows": [
+        {
+          "id": "existing",
+          "noteId": "publicnote",
+          "userId": "reader"
+        }
+      ],
+      "userId": "other"
+    },
+    {
+      "id": "unknown",
+      "input": {
+        "noteId": "unknown"
+      },
+      "rows": [
+        {
+          "id": "existing",
+          "noteId": "publicnote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "missing",
+      "input": {},
+      "rows": [
+        {
+          "id": "existing",
+          "noteId": "publicnote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "null",
+      "input": {
+        "noteId": null
+      },
+      "rows": [
+        {
+          "id": "existing",
+          "noteId": "publicnote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "number",
+      "input": {
+        "noteId": 1
+      },
+      "rows": [
+        {
+          "id": "existing",
+          "noteId": "publicnote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "punctuation",
+      "input": {
+        "noteId": "bad-id"
+      },
+      "rows": [
+        {
+          "id": "existing",
+          "noteId": "publicnote",
+          "userId": "reader"
+        }
+      ]
+    },
+    {
+      "id": "note-failure",
+      "input": {
+        "noteId": "publicnote"
+      },
+      "rows": [],
+      "fail": "note"
+    },
+    {
+      "id": "exists-failure",
+      "input": {
+        "noteId": "publicnote"
+      },
+      "rows": [],
+      "fail": "exists"
+    },
+    {
+      "id": "insert-failure",
+      "input": {
+        "noteId": "publicnote"
+      },
+      "rows": [],
+      "fail": "insert"
+    }
+  ]
+}
