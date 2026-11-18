@@ -42,7 +42,7 @@ test('both immutable receipts, predecessor and optional artifacts reject forgery
 });
 test('finite pubsub reader uses builtins and its observation successor and passes unrelated input bytes through', () => {
  const source = read('scripts/drive-folder-pubsub-evidence.mjs').toString();
- assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || match[1] === './evidence-validation-scope.mjs' || match[1] === './meta-cache-evidence.mjs' || match[1] === './drive-files-evidence.mjs' || match[1] === './drive-folder-observation-evidence.mjs' || match[1] === './announcement-archive-predecessor.mjs'));
+ assert([...source.matchAll(/from ['"]([^'"]+)['"]/g)].every(match => match[1].startsWith('node:') || match[1] === './id-codec-predecessor.mjs' || match[1] === './evidence-validation-scope.mjs' || match[1] === './meta-cache-evidence.mjs' || match[1] === './drive-files-evidence.mjs' || match[1] === './drive-folder-observation-evidence.mjs' || match[1] === './announcement-archive-predecessor.mjs'));
  assert(!/execFile|spawn|import\(/.test(source));
  assert.equal(readPreDriveFolderPubsub('unrelated', 'utf8', () => Buffer.from('live'), () => null), 'live');
 });

@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { projectIdCodecInput } from './id-codec-predecessor.mjs';
 import assert from 'node:assert/strict';
 import { scopedEvidenceValidation } from './evidence-validation-scope.mjs';
 import { driveFilePredecessorFiles, readPreDriveFiles } from './drive-files-evidence.mjs';
@@ -28,11 +29,14 @@ export const successorFiles = Object.freeze([
  'packages/backend-next/src/composition/http-app.ts',
  'packages/backend-next/test/unit/composition/http-app.test.ts',
 ]);
+export function assertDriveFolderInputHashes(inputs, readFile) {
+ for (const [path, digest] of Object.entries(inputs)) assert.equal(sha(readFile(path)), digest, `folder measured current input drift: ${path}`);
+}
 export function validateDriveFoldersSuccessor(value, rawRead = read, optional = optionalRead) {
  return scopedEvidenceValidation(validateDriveFoldersSuccessor, value, rawRead, optional, (rawRead, optional) => {
  const beforeMeta = createValidatedMetaPredecessorReader(rawRead, optional);
  const previousPubsub = validateDriveFolderPubsubSuccessor(undefined, rawRead, optional);
- const readFile = path => path in previousPubsub ? Buffer.from(previousPubsub[path]) : driveFilePredecessorFiles.includes(path) ? readPreDriveFiles(path, undefined, rawRead) : beforeMeta(path);
+ const readFile = path => path in previousPubsub ? Buffer.from(previousPubsub[path]) : driveFilePredecessorFiles.includes(path) ? readPreDriveFiles(path, undefined, rawRead) : projectIdCodecInput(path, beforeMeta(path));
  if (value === undefined) {
   const bytes = readFile(evidencePath);
   assert.equal(sha(bytes), seal, 'folder current receipt seal');
@@ -45,7 +49,7 @@ export function validateDriveFoldersSuccessor(value, rawRead = read, optional = 
  assert.equal(value.noInputDrift, true);
  assert.deepEqual(value.inputsAfter, value.inputs);
  assert.equal(Object.keys(value.inputs).length, 20);
- for (const [path, digest] of Object.entries(value.inputs)) assert.equal(sha(readFile(path)), digest, `folder measured current input drift: ${path}`);
+ assertDriveFolderInputHashes(value.inputs, readFile);
  const bytes = readFile(predecessorPath);
  assert.equal(sha(bytes), predecessorSeal, 'folder predecessor seal');
  const previous = JSON.parse(bytes);

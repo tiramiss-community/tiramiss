@@ -26,15 +26,16 @@ export function createIdCodec(method: IdMethod) {
 				case 'ulid': return [...id.slice(0, 10)].reduce((time, char) => time * 32 + alphabet.indexOf(char), 0);
 			}
 		},
-		newId(atMs: number): string {
+		newId(atMs?: number): string {
 			const time = !atMs || atMs > Date.now() ? Date.now() : atMs;
 			counter++;
 			switch (method) {
 				case 'aid': return Math.max(0, time - epoch).toString(36).padStart(8, '0') + counter.toString(36).padStart(2, '0').slice(-2);
 				case 'aidx': return Math.max(0, time - epoch).toString(36).padStart(8, '0').slice(-8) + nodeId + counter.toString(36).padStart(4, '0').slice(-4);
-				case 'meid': return (Math.max(0, time) + 0x800000000000).toString(16).padStart(12, '0') + randomBytes(6).toString('hex');
-				case 'meidg': return 'g' + Math.max(0, time).toString(16).padStart(11, '0') + randomBytes(6).toString('hex');
-				case 'objectid': return Math.floor(Math.max(0, time) / 1000).toString(16).padStart(8, '0') + randomBytes(8).toString('hex');
+				// The upstream formats keep a single zero prefix for pre-epoch input.
+				case 'meid': return (time <= 0 ? '0' : (time + 0x800000000000).toString(16).padStart(12, '0')) + randomBytes(6).toString('hex');
+				case 'meidg': return 'g' + (time <= 0 ? '0' : time.toString(16).padStart(11, '0')) + randomBytes(6).toString('hex');
+				case 'objectid': return (time <= 0 ? '0' : Math.floor(time / 1000).toString(16).padStart(8, '0')) + randomBytes(8).toString('hex');
 				case 'ulid': return ulid(time);
 			}
 		},

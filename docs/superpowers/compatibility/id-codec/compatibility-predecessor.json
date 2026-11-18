@@ -1,0 +1,89 @@
+{
+  "issue": 575,
+  "baseRevision": "706f82eb20",
+  "runtimeRevision": "7cb53391b019d39ec81ec4694a55a7e2408f752c",
+  "note": "Exact single-file projection preserves historical measurements; ID boundaries are measured separately.",
+  "files": {
+    "packages/backend-next/src/platform/id-codec.ts": {
+      "currentSha256": "c89fec1028aef8d92776d0017f316938cf5f1af259b4d0e699e9c5995677e8cb",
+      "previousSha256": "db0c48b61495e5d80e6c6a7434d69a635e6f338a15bc4b951c995285ccd5125f",
+      "patches": [
+        {
+          "offset": 1059,
+          "previous": "",
+          "insert": "?"
+        },
+        {
+          "offset": 1463,
+          "previous": "",
+          "insert": "// The upstream formats keep a single zero prefix for pre-epoch input.\n\t\t\t\t"
+        },
+        {
+          "offset": 1559,
+          "previous": "Math.max(0, ",
+          "insert": ""
+        },
+        {
+          "offset": 1563,
+          "previous": ")",
+          "insert": " <= 0 ? '0' : (time"
+        },
+        {
+          "offset": 1630,
+          "previous": "",
+          "insert": ")"
+        },
+        {
+          "offset": 1698,
+          "previous": "Ma",
+          "insert": "("
+        },
+        {
+          "offset": 1700,
+          "previous": "h.",
+          "insert": "i"
+        },
+        {
+          "offset": 1702,
+          "previous": "ax(",
+          "insert": "e <= "
+        },
+        {
+          "offset": 1708,
+          "previous": ",",
+          "insert": " ? '0' :"
+        },
+        {
+          "offset": 1721,
+          "previous": ")",
+          "insert": ""
+        },
+        {
+          "offset": 1751,
+          "previous": "",
+          "insert": ")"
+        },
+        {
+          "offset": 1816,
+          "previous": "",
+          "insert": "(time <= 0 ? '0' : "
+        },
+        {
+          "offset": 1846,
+          "previous": "Math.max(0, ",
+          "insert": ""
+        },
+        {
+          "offset": 1850,
+          "previous": ")",
+          "insert": ""
+        },
+        {
+          "offset": 1887,
+          "previous": "",
+          "insert": ")"
+        }
+      ]
+    }
+  }
+}
