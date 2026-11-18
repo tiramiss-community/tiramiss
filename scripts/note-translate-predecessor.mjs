@@ -17,8 +17,8 @@ const transitions = {
     ]
   },
   "packages/backend-next/test/unit/composition/http-app.test.ts": {
-    "current": "c0bbaf03301b5934da407d2ec8ba088b8b2a5bb33d5fa61e4a2056a00dcbbfe0",
-    "previous": "558a1971b05356e7f3073d52037636a945dcb5f1f4f6214d2502b61fb2fcb383",
+    "current": "e4121be82e17d7f1113f43a69e4b78b7a38c1d3d67c08ad8e36eed7995f36f2f",
+    "previous": "cadc10344ec0024592e4aeb73730d369fe10b53a1de4d4dfa4ef88b1a38e203b",
     "additions": [
       "\t\toutboundHttp: { send: vi.fn() },\n",
       "'/api/notes/translate', ",

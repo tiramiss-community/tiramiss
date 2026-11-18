@@ -6,9 +6,10 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { projectPromoInput } from './promo-predecessor.mjs';
 import { projectWellKnownInput } from './well-known-predecessor.mjs';
 
-const read = path => readFileSync(new URL('../' + path, import.meta.url));
+const read = path => projectPromoInput(path, readFileSync(new URL('../' + path, import.meta.url)));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const record = JSON.parse(read('docs/superpowers/compatibility/well-known/compatibility-predecessor.json'));
 

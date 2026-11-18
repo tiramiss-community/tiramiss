@@ -57,3 +57,9 @@ unit は通常 CI の glob、integration は `test:integration` の glob に含�
 `note-routes.ts` の import・prepared field・route 登録と、既存 composition unit の outbound client fixture・route/認証期待値だけを追加した。`scripts/note-translate-predecessor.mjs` はこの 2 ファイルの追加前後の固定 hash と、各 3 断片の一意一致を検査して前の bytes を復元する。既存 notes-pagination / well-known の有限な入口投影へ接続し、未知の bytes は下流の既存 drift 検査へ渡す。`note-translate-contract.test.mjs` が両共有ファイルの正常投影と、通常の notes validator による未知の変更の拒否を検証する。過去の receipt / 測定件数 / source 結果は書き換えず、古い製品テストを今回再測定したとは主張しない。
 
 translation unit 34 件に加え、既存 composition unit 16 件も今回実行し成功した。
+
+## #636 との積み重ね
+
+翻訳 PR は #636 (`feat/backend-next-promo-542`) を base とする。両機能は業務上独立しているが、同じ composition unit の固定入力を使うため、比較資料の順序だけを依存させる。翻訳の有限投影は合成済み fixture を #636 の fixture へ戻し、その後で promo 投影が既存の入力を復元する。promo の保存済み source 観測・receipt・測定結果は保持し、direct な promo/well-known 読み取りにも翻訳投影を通す。
+
+積み重ね後の近傍再検証: package import・translation・composition・featured・promo の unit 6 files / 72 件、translation と promo の実 HTTP/PG/Redis integration 2 files / 36 件が成功。依存順 build / typecheck と inventory 生成検査も成功した。既存の pg 同時 query 警告と promo の不正日時入力の pg deprecation warning は残る。

@@ -32,7 +32,7 @@ test('translation fixture and route assertion preserve the exact historical comp
 	const target = 'packages/backend-next/test/unit/composition/http-app.test.ts';
 	const current = read(target);
 	const previous = projectNoteTranslationInput(target, current);
-	assert.equal(sha(previous), '558a1971b05356e7f3073d52037636a945dcb5f1f4f6214d2502b61fb2fcb383');
+	assert.equal(sha(previous), 'cadc10344ec0024592e4aeb73730d369fe10b53a1de4d4dfa4ef88b1a38e203b');
 	assert.notEqual(sha(current), sha(previous));
 	validateNotesPaginationEvidence(undefined, read, () => null);
 	assert.throws(() => validateNotesPaginationEvidence(undefined, file => file === target ? Buffer.concat([read(file), Buffer.from('\n')]) : read(file), () => null), /measured current input drift/);
