@@ -8,6 +8,8 @@ import { readFileSync } from 'node:fs';
 import { scopedEvidenceValidation, withEvidenceRequestedPath, getEvidenceCurrentReader, registerEvidenceObserver } from './evidence-validation-scope.mjs';
 import { projectNotesPaginationInput } from './notes-pagination-evidence.mjs';
 
+import { projectDatabaseOptionsInput } from './database-options-predecessor.mjs';
+
 const directory = 'docs/superpowers/compatibility/avatar-images/';
 const receiptSeal = '490de47cfab1432a900fa3f322ea97e8f858754a35558ea18f0d752cf22e3839';
 const historySeals = {
@@ -41,7 +43,7 @@ export function validateAvatarImagesEvidence(value, rawRead = read, optional = o
 	rawRead = getEvidenceCurrentReader(rawRead);
 	return scopedEvidenceValidation(validateAvatarImagesEvidence, value, rawRead, optional, (rawRead, optional) => {
 		const currentRead = rawRead;
-		rawRead = path => projectNotesPaginationInput(path, currentRead(path));
+		rawRead = path => projectNotesPaginationInput(path, projectDatabaseOptionsInput(path, currentRead(path)));
 		for (const [name, seal] of Object.entries(historySeals)) assert.equal(sha(rawRead(directory + name)), seal, 'avatar images historical seal');
 		const receipt = rawRead(directory + 'current-evidence.json');
 		assert.equal(sha(receipt), receiptSeal, 'avatar images receipt seal');
