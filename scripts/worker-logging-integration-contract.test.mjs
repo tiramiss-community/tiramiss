@@ -15,10 +15,11 @@ const offline = () => null;
 test('integration log assertions have separate actual measurements while R2 bytes remain frozen', () => {
 	const value = validateWorkerLoggingIntegrationFollowup(read, offline);
 	assert.deepEqual(value.runs.filter(run => run.artifact).map(run => [run.name, run.passed]), [['integration', 11], ['process', 1]]);
-	const path = Object.keys(value.files)[0];
-	assert.equal(sha(projectWorkerLoggingIntegrationInput(path, read(path))), value.files[path].previousSha256);
-	const drift = Buffer.concat([read(path), Buffer.from('\n')]);
-	assert.equal(projectWorkerLoggingIntegrationInput(path, drift), drift);
+	for (const path of Object.keys(value.files)) {
+		assert.equal(sha(projectWorkerLoggingIntegrationInput(path, read(path))), value.files[path].previousSha256);
+		const drift = Buffer.concat([read(path), Buffer.from('\n')]);
+		assert.equal(projectWorkerLoggingIntegrationInput(path, drift), drift);
+	}
 	const unrelated = Buffer.from('untouched');
 	assert.equal(projectWorkerLoggingIntegrationInput('unrelated', unrelated), unrelated);
 });
@@ -35,4 +36,16 @@ test('integration current bytes, frozen R2 record, follow-up and actual logs rej
 		assert.throws(() => validateWorkerLoggingIntegrationFollowup(read, path => path === run.log ? Buffer.from('forged') : null), /actual artifact drift/);
 	}
 	validateWorkerLoggingIntegrationFollowup();
+});
+
+
+test('the measured process fixture transition changes only its one failed-job diagnostic assertion', () => {
+	const path = 'packages/backend-next/test/processes/note-delete-integration.test.ts';
+	const actual = read(path);
+	const expression = "queue: 'deliver', reason: 'delivery-rejected', error:";
+	assert.equal(actual.toString('utf8').split(expression).length, 2);
+	const previous = projectWorkerLoggingIntegrationInput(path, actual);
+	assert.equal(previous.toString('utf8'), actual.toString('utf8').replace(expression, "queue: 'deliver', reason: '404 Not Found', error:"));
+	assert.match(previous.toString('utf8'), /expect\(jobs\[0\]\.failedReason\)\.toBe\('404 Not Found'\)/);
+	assert.notEqual(sha(previous), sha(actual));
 });

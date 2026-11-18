@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs';
 const recordPath = 'docs/superpowers/compatibility/worker-logging/integration-followup.json';
 const seal = '0dfcb866dfd9b2a982b20dcc8ac11cb92fd6a55f98c79f045688bed97d2416d6';
 const fixturePath = 'packages/backend-next/test/integration/deliver-queue.test.ts';
+const processFixturePath = 'packages/backend-next/test/processes/note-delete-integration.test.ts';
 const read = path => readFileSync(new URL('../' + path, import.meta.url));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const optionalRead = path => {
@@ -26,7 +27,7 @@ function record(readFile) {
 }
 
 export function projectWorkerLoggingIntegrationInput(path, actual, readFile = read) {
-	if (path !== fixturePath) {
+	if (path !== fixturePath && path !== processFixturePath) {
 		return actual;
 	}
 	const binding = record(readFile).files[path];
@@ -47,12 +48,14 @@ export function validateWorkerLoggingIntegrationFollowup(readFile = read, option
 	const current = record(readFile);
 	assert.equal(current.baseRevision, '0fd9068da5cfde3f9a6a027e2959aa39db7f3bb4');
 	assert.equal(current.issueComplete, false);
-	assert.deepEqual(Object.keys(current.files), [fixturePath, 'packages/backend-next/test/processes/note-delete-integration.test.ts']);
+	assert.deepEqual(Object.keys(current.files), [fixturePath, processFixturePath]);
 	assert.equal(sha(readFile(current.r2.path)), current.r2.sha256, 'worker logging frozen R2 evidence drift');
 	for (const [path, binding] of Object.entries(current.files)) {
 		assert.equal(sha(readFile(path)), binding.sha256, `worker logging measured integration input drift: ${path}`);
 	}
-	assert.equal(sha(projectWorkerLoggingIntegrationInput(fixturePath, readFile(fixturePath), readFile)), current.files[fixturePath].previousSha256);
+	for (const path of [fixturePath, processFixturePath]) {
+		assert.equal(sha(projectWorkerLoggingIntegrationInput(path, readFile(path), readFile)), current.files[path].previousSha256);
+	}
 	const failedLog = optional(current.observedContractFailure.log);
 	if (failedLog !== null) {
 		assert.equal(sha(failedLog), current.observedContractFailure.logSha256, 'worker logging integration actual artifact drift');
