@@ -13,6 +13,20 @@ import { createPostingStream } from '../../src/platform/posting-stream.js';
 import { closeHttp, listenHttp } from '../../src/processes/http.js';
 import { testConfig } from '../helpers/database.js';
 
+const completion = vi.hoisted(() => ({ sequence: 0 }));
+
+// Observe completion while forwarding the actual receiver, filters and channel lifecycle.
+vi.mock('../../src/modules/stream/public.js', async importOriginal => {
+	const original = await importOriginal<typeof import('../../src/modules/stream/public.js')>();
+	return { ...original, createStreamConnection(...args: Parameters<typeof original.createStreamConnection>) {
+		const connection = original.createStreamConnection(...args);
+		return { ...connection, async publish(value: unknown) {
+			await connection.publish(value);
+			completion.sequence++;
+		} };
+	} };
+});
+
 const corpus = JSON.parse(readFileSync(new URL('../../../../docs/superpowers/compatibility/stream/timelines/source-cases.json', import.meta.url), 'utf8'));
 
 test('all pinned timeline observations match real Redis producer and WebSocket delivery', async () => {
@@ -49,18 +63,15 @@ test('all pinned timeline observations match real Redis producer and WebSocket d
 			await new Promise<void>((resolve, reject) => {
 				socket.once('open', resolve); socket.once('error', reject);
 			});
-			socket.send(JSON.stringify({ type: 'subNote', body: { id: 'barrier' } }));
 			socket.send(JSON.stringify({ type: 'connect', body: { id: 'channel-id', channel: record.input.channel, params: record.input.params, pong: true } }));
 			await vi.waitFor(() => expect(messages).toContainEqual({ type: 'connected', body: { id: 'channel-id' } }), { interval: 1 });
+			const before = completion.sequence;
 			await publisher.notes(record.input.payload);
-			await publisher.deleted({ id: 'barrier', userId: 'author', visibility: 'public', visibleUserIds: [] }, Date.now());
-			// An ordered noteUpdated marker confirms even rejected notes finished the session queue.
-			// UGC-none guests suppress every note event, so give their negative assertion a bounded observation window.
-			if (record.input.facts.user === null && record.input.facts.ugc === 'none') {
-				await new Promise(resolve => setTimeout(resolve, 50));
-			} else {
-				await vi.waitFor(() => expect(messages.some(message => message.type === 'noteUpdated')).toBe(true), { interval: 1 });
-			}
+			await vi.waitFor(() => expect(completion.sequence).toBe(before + 1), { interval: 1 });
+			// The pong follows all earlier server writes on this socket, including a wrongly sent note.
+			await new Promise<void>(resolve => {
+				socket.once('pong', () => resolve()); socket.ping();
+			});
 			const notes = messages.filter(message => message.type === 'channel');
 			expect(notes, record.id).toEqual(record.sent);
 			await new Promise<void>(resolve => {

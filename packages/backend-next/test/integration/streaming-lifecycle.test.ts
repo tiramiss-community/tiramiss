@@ -220,3 +220,35 @@ test('upgrade rejects a token without read account before public channel subscri
 		await running.close();
 	}
 });
+
+test.each(['disconnect', 'replace'])('pending timeline initialization preserves queued WebSocket %s ordering', async action => {
+	const entered = deferred<void>();
+	const policies = deferred<{ ltlAvailable: boolean; gtlAvailable: boolean }>();
+	const running = await start(ports({ timelinePolicies: async () => {
+		entered.resolve(); return policies.promise;
+	} }));
+	const client = await connect(running.address);
+	const redis = new Redis(testConfig().redis);
+	try {
+		client.socket.send(JSON.stringify({ type: 'connect', body: { id: 't', channel: 'localTimeline', pong: true } }));
+		await entered.promise;
+		if (action === 'disconnect') {
+			client.socket.send(JSON.stringify({ type: 'disconnect', body: { id: 't' } }));
+		} else {
+			client.socket.send(JSON.stringify({ type: 'connect', body: { id: 't', channel: 'homeTimeline', pong: true } }));
+		}
+		client.socket.send(JSON.stringify({ type: 'connect', body: { id: 'barrier', channel: 'main', pong: true } }));
+		expect(client.messages).toEqual([]);
+		policies.resolve({ ltlAvailable: true, gtlAvailable: true });
+		await vi.waitFor(() => expect(client.messages).toEqual((action === 'disconnect' ? ['t', 'barrier'] : ['t', 't', 'barrier']).map(id => ({ type: 'connected', body: { id } }))));
+		await redis.publish('example.test', JSON.stringify({ channel: 'notesStream', message: { id: 'after', userId: 'author', user: { id: 'author', host: null }, visibility: 'public', createdAt: new Date().toISOString() } }));
+		await redis.publish('example.test', JSON.stringify({ channel: 'mainStream:me', message: { type: 'marker', body: {} } }));
+		await vi.waitFor(() => expect(client.messages).toContainEqual({ type: 'channel', body: { id: 'barrier', type: 'marker', body: {} } }));
+		expect(client.messages.some(message => message.body?.type === 'note')).toBe(false);
+	} finally {
+		policies.resolve({ ltlAvailable: true, gtlAvailable: true });
+		redis.disconnect();
+		client.socket.terminate();
+		await running.close();
+	}
+});

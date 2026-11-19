@@ -257,9 +257,9 @@ for (const relation of ['reply', 'renote']) {
   [`${relation}-ordinary`, facts(), note(outer)],
   [`${relation}-guest`, facts({ user: null }), note(outer)],
   [`${relation}-self`, facts({ user: { id: 'author' } }), note(outer)],
-  [`${relation}-viewer`, facts(), note({ ...outer, [relation]: { ...related, userId: 'viewer' } })],
-  [`${relation}-muted`, facts({ muting: ['other'] }), note(outer)],
-  [`${relation}-blocked`, facts({ blockingMe: ['other'] }), note(outer)],
+  [`${relation}-viewer`, facts(), note({ ...outer, [relation]: { ...related, userId: 'viewer', user: { ...related.user, id: 'viewer' } } })],
+  [`${relation}-muted`, facts({ muting: ['other'] }), note(outer), { withReplies: true }],
+  [`${relation}-blocked`, facts({ blockingMe: ['other'] }), note(outer), { withReplies: true }],
   [`${relation}-withReplies`, facts(), note(outer), { withReplies: true }],
   [`${relation}-followingReplies`, facts({ following: { author: { withReplies: true } } }), note(outer)],
   [`${relation}-private`, facts(), note({ ...outer, [relation]: { ...related, visibility: 'specified', visibleUserIds: ['other'] } }), { withReplies: true }],
@@ -272,7 +272,7 @@ cases.push(
  ['renote-noRenotes', facts(), note({ text: null, renoteId: 'r', renote }), { withRenotes: false }],
  ['renote-muted-author', facts({ renoteMuting: ['author'] }), note({ text: null, renoteId: 'r', renote })],
  ['quote-noRenotes', facts(), note({ text: 'quote', renoteId: 'r', renote }), { withRenotes: false }],
- ['renote-private-reply', facts(), note({ text: null, renoteId: 'r', renote: { ...renote, reply: note({ userId: 'other', visibility: 'followers' }) } })],
+ ['renote-private-reply', facts(), note({ text: null, renoteId: 'r', renote: { ...renote, replyId: 'private-reply', reply: note({ id: 'private-reply', userId: 'other', user: { id: 'other', host: null }, visibility: 'followers' }) } })],
 );
 for (const name of Object.keys(channels)) {
  for (const [id, f, n, params] of cases) {

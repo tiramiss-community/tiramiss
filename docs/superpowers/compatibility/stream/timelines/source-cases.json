@@ -2070,7 +2070,7 @@
             "id": "reply",
             "userId": "viewer",
             "user": {
-              "id": "other",
+              "id": "viewer",
               "host": null
             },
             "createdAt": "2026-11-06T23:59:00.000Z",
@@ -2124,7 +2124,7 @@
                 "id": "reply",
                 "userId": "viewer",
                 "user": {
-                  "id": "other",
+                  "id": "viewer",
                   "host": null
                 },
                 "createdAt": "2026-11-06T23:59:00.000Z",
@@ -2182,7 +2182,9 @@
             "gtlAvailable": true
           }
         },
-        "params": {},
+        "params": {
+          "withReplies": true
+        },
         "payload": {
           "id": "note",
           "userId": "author",
@@ -2261,7 +2263,9 @@
             "gtlAvailable": true
           }
         },
-        "params": {},
+        "params": {
+          "withReplies": true
+        },
         "payload": {
           "id": "note",
           "userId": "author",
@@ -3352,7 +3356,7 @@
             "id": "renote",
             "userId": "viewer",
             "user": {
-              "id": "other",
+              "id": "viewer",
               "host": null
             },
             "createdAt": "2026-11-06T23:59:00.000Z",
@@ -3406,7 +3410,7 @@
                 "id": "renote",
                 "userId": "viewer",
                 "user": {
-                  "id": "other",
+                  "id": "viewer",
                   "host": null
                 },
                 "createdAt": "2026-11-06T23:59:00.000Z",
@@ -3463,7 +3467,9 @@
             "gtlAvailable": true
           }
         },
-        "params": {},
+        "params": {
+          "withReplies": true
+        },
         "payload": {
           "id": "note",
           "userId": "author",
@@ -3542,7 +3548,9 @@
             "gtlAvailable": true
           }
         },
-        "params": {},
+        "params": {
+          "withReplies": true
+        },
         "payload": {
           "id": "note",
           "userId": "author",
@@ -4449,15 +4457,13 @@
             "cw": null,
             "visibility": "public",
             "channelId": null,
-            "replyId": null,
+            "replyId": "private-reply",
             "reply": {
-              "id": "note",
+              "id": "private-reply",
               "userId": "other",
               "user": {
-                "id": "author",
-                "host": null,
-                "requireSigninToViewContents": false,
-                "makeNotesHiddenBefore": null
+                "id": "other",
+                "host": null
               },
               "createdAt": "2026-11-06T23:59:00.000Z",
               "text": "text",
@@ -4527,15 +4533,13 @@
                 "cw": null,
                 "visibility": "public",
                 "channelId": null,
-                "replyId": null,
+                "replyId": "private-reply",
                 "reply": {
-                  "id": "note",
+                  "id": "private-reply",
                   "userId": "other",
                   "user": {
-                    "id": "author",
-                    "host": null,
-                    "requireSigninToViewContents": false,
-                    "makeNotesHiddenBefore": null
+                    "id": "other",
+                    "host": null
                   },
                   "createdAt": "2026-11-06T23:59:00.000Z",
                   "text": null,
@@ -6448,7 +6452,7 @@
             "id": "reply",
             "userId": "viewer",
             "user": {
-              "id": "other",
+              "id": "viewer",
               "host": null
             },
             "createdAt": "2026-11-06T23:59:00.000Z",
@@ -6502,7 +6506,7 @@
                 "id": "reply",
                 "userId": "viewer",
                 "user": {
-                  "id": "other",
+                  "id": "viewer",
                   "host": null
                 },
                 "createdAt": "2026-11-06T23:59:00.000Z",
@@ -6560,7 +6564,9 @@
             "gtlAvailable": true
           }
         },
-        "params": {},
+        "params": {
+          "withReplies": true
+        },
         "payload": {
           "id": "note",
           "userId": "author",
@@ -6639,7 +6645,9 @@
             "gtlAvailable": true
           }
         },
-        "params": {},
+        "params": {
+          "withReplies": true
+        },
         "payload": {
           "id": "note",
           "userId": "author",
@@ -7475,7 +7483,7 @@
             "id": "renote",
             "userId": "viewer",
             "user": {
-              "id": "other",
+              "id": "viewer",
               "host": null
             },
             "createdAt": "2026-11-06T23:59:00.000Z",
@@ -7529,7 +7537,7 @@
                 "id": "renote",
                 "userId": "viewer",
                 "user": {
-                  "id": "other",
+                  "id": "viewer",
                   "host": null
                 },
                 "createdAt": "2026-11-06T23:59:00.000Z",
@@ -7586,7 +7594,9 @@
             "gtlAvailable": true
           }
         },
-        "params": {},
+        "params": {
+          "withReplies": true
+        },
         "payload": {
           "id": "note",
           "userId": "author",
@@ -7665,7 +7675,9 @@
             "gtlAvailable": true
           }
         },
-        "params": {},
+        "params": {
+          "withReplies": true
+        },
         "payload": {
           "id": "note",
           "userId": "author",
@@ -8497,15 +8509,13 @@
             "cw": null,
             "visibility": "public",
             "channelId": null,
-            "replyId": null,
+            "replyId": "private-reply",
             "reply": {
-              "id": "note",
+              "id": "private-reply",
               "userId": "other",
               "user": {
-                "id": "author",
-                "host": null,
-                "requireSigninToViewContents": false,
-                "makeNotesHiddenBefore": null
+                "id": "other",
+                "host": null
               },
               "createdAt": "2026-11-06T23:59:00.000Z",
               "text": "text",
@@ -10705,7 +10715,7 @@
             "id": "reply",
             "userId": "viewer",
             "user": {
-              "id": "other",
+              "id": "viewer",
               "host": null
             },
             "createdAt": "2026-11-06T23:59:00.000Z",
@@ -10759,7 +10769,7 @@
                 "id": "reply",
                 "userId": "viewer",
                 "user": {
-                  "id": "other",
+                  "id": "viewer",
                   "host": null
                 },
                 "createdAt": "2026-11-06T23:59:00.000Z",
@@ -10817,7 +10827,9 @@
             "gtlAvailable": true
           }
         },
-        "params": {},
+        "params": {
+          "withReplies": true
+        },
         "payload": {
           "id": "note",
           "userId": "author",
@@ -10896,7 +10908,9 @@
             "gtlAvailable": true
           }
         },
-        "params": {},
+        "params": {
+          "withReplies": true
+        },
         "payload": {
           "id": "note",
           "userId": "author",
@@ -11987,7 +12001,7 @@
             "id": "renote",
             "userId": "viewer",
             "user": {
-              "id": "other",
+              "id": "viewer",
               "host": null
             },
             "createdAt": "2026-11-06T23:59:00.000Z",
@@ -12041,7 +12055,7 @@
                 "id": "renote",
                 "userId": "viewer",
                 "user": {
-                  "id": "other",
+                  "id": "viewer",
                   "host": null
                 },
                 "createdAt": "2026-11-06T23:59:00.000Z",
@@ -12098,7 +12112,9 @@
             "gtlAvailable": true
           }
         },
-        "params": {},
+        "params": {
+          "withReplies": true
+        },
         "payload": {
           "id": "note",
           "userId": "author",
@@ -12177,7 +12193,9 @@
             "gtlAvailable": true
           }
         },
-        "params": {},
+        "params": {
+          "withReplies": true
+        },
         "payload": {
           "id": "note",
           "userId": "author",
@@ -13084,15 +13102,13 @@
             "cw": null,
             "visibility": "public",
             "channelId": null,
-            "replyId": null,
+            "replyId": "private-reply",
             "reply": {
-              "id": "note",
+              "id": "private-reply",
               "userId": "other",
               "user": {
-                "id": "author",
-                "host": null,
-                "requireSigninToViewContents": false,
-                "makeNotesHiddenBefore": null
+                "id": "other",
+                "host": null
               },
               "createdAt": "2026-11-06T23:59:00.000Z",
               "text": "text",
@@ -13162,15 +13178,13 @@
                 "cw": null,
                 "visibility": "public",
                 "channelId": null,
-                "replyId": null,
+                "replyId": "private-reply",
                 "reply": {
-                  "id": "note",
+                  "id": "private-reply",
                   "userId": "other",
                   "user": {
-                    "id": "author",
-                    "host": null,
-                    "requireSigninToViewContents": false,
-                    "makeNotesHiddenBefore": null
+                    "id": "other",
+                    "host": null
                   },
                   "createdAt": "2026-11-06T23:59:00.000Z",
                   "text": null,

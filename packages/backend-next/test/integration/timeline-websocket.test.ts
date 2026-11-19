@@ -74,8 +74,9 @@ async function connect(token?: string, headers?: Record<string, string>) {
 		socket,
 		messages,
 		async channel(channel: string, id = channel, params: Record<string, unknown> = {}) {
+			const start = messages.length;
 			socket.send(JSON.stringify({ type: 'connect', body: { channel, id, params, pong: true } }));
-			await vi.waitFor(() => expect(messages).toContainEqual({ type: 'connected', body: { id } }));
+			await vi.waitFor(() => expect(messages.slice(start)).toContainEqual({ type: 'connected', body: { id } }));
 		},
 	};
 }

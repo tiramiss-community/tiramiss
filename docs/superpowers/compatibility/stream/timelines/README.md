@@ -5,16 +5,16 @@
 ## 実装と範囲
 
 - 標準registryに3 channelを登録する。local/globalは匿名可、hybridはcredentialと`read:account`が必要。すべて非共有。
-- 接続ごとに既存Roleの評価契約を使い、local/hybridは`ltlAvailable`、globalは`gtlAvailable`を取得する。本家同様、拒否時も`connected`を返すがnoteを購読しない。既存購読は権限変更だけで再判定せず、再接続・同一ID置換で再取得する。
+- 接続ごとに既存Roleの評価契約を使い、local/hybridは`ltlAvailable`、globalは`gtlAvailable`を取得する。本家同様、Roleポリシー拒否時は`pong: true`の要求だけ`connected`を返し、noteは購読しない。匿名hybridはRole評価前の資格確認で拒否し、`pong: true`でもackしない。既存購読は権限変更だけで再判定せず、再接続・同一ID置換で再取得する。
 - localはローカルの公開・非channel投稿、globalは公開・非channel投稿、hybridは本人・following・公開local・following channelを選ぶ。可視性・mute/block・返信・pure renote・withFiles・withRenotes・withRepliesと匿名のログイン要求を本家と比較する。オプションは本家のnullish既定値とtruthinessを保ち、boolean型に限定しない。
 - 配信は既存投稿producerの`notesStream`を使う。snapshotの本文hideと現在following確認、閲覧者別のrenote `myReaction`を維持し、Note再取得UseCaseを呼ばない。
-- channelごとのRedis/EventEmitter listenerを追加しない。disconnect・ID置換・connection disposeで中央の配送先を除去する。非同期の権限取得が切断・置換後に完了しても旧channelを復活・ackしない。
+- channelごとのRedis/EventEmitter listenerを追加しない。disconnect・ID置換・connection disposeで中央の配送先を除去する。非同期の権限取得が解除・置換・connection disposeの適用後に完了しても旧channelを復活・ackしない。通常WebSocketのフレーム処理は本家と同じ直列順序を保つため、権限取得中に受信した後続disconnect/置換フレームは先行connectの完了後に適用され、その前に旧connectのackが届く。ソケットcloseは直ちにdisposeする。
 
 ## 検証
 
 `test/unit/stream/timelines.test.ts` は148 source観測を直接比較し、別の3件でRole再取得、非同期init中の切断・置換・dispose、不正params、匿名hybrid拒否を確認する。
 
-`test/integration/timeline-source-websocket.test.ts` は同じ148入力を実Redisの既存producerから新サーバーの実WebSocketへ流し、wire JSONをsource観測と比較する。認証・関係facts・Role・反応照会は固定した入力のdouble。非配信は同じRedis接続のnoteUpdated markerまでの順序で観測する。UGC-noneの匿名2ケースはmarker自体も抑止されるため50msの観測窓で確認する。
+`test/integration/timeline-source-websocket.test.ts` は同じ148入力を実Redisの既存producerから新サーバーの実WebSocketへ流し、wire JSONをsource観測と比較する。認証・関係facts・Role・反応照会は固定した入力のdouble。テストだけのpass-through wrapperで実connection.publishの完了を観測し、その後に同じWebSocketのping/pongで先行する送信が受信済みになるまで待つ。UGC-noneも固定時間待機を使わず処理完了後に非配信を確認する。UGC-noneの破棄条件だけを一時的に除去した回帰注入ではこの比較が失敗し、実装を復元すると成功した。
 
 `test/integration/timeline-websocket.test.ts` の4件は実HTTPのnotes/create→既存producer→実Redis→WebSocketと、実PGからの認証・Role・関係factsを使う。
 
@@ -23,7 +23,7 @@
 - user mute・相手からのblock・renote mute、本人/匿名と異なる閲覧者のmyReaction。reaction APIは範囲外なのでreaction行・count/cacheをテスト準備としてPGへ保存する。
 - 返信・pure renote・quoteの実投稿、独立したfiles/replies/renotesオプション。remote authorと添付ファイルのsnapshotは既存producerへ直接渡す。remote ingest・Drive uploadの完成を主張しない。
 
-既存`streaming-lifecycle.test.ts` の8件で共有subscriber・timer・socket解放、1 MiB上限、heartbeat、pending処理の終了待機も再検証する。2026-11-19、base `5fdc1702d2568c2df9dc2f33411fd11ecc35db04`、専用Compose `tiramiss-timeline456`（PG55456/Redis56456）で実行した。全stream単体296件、上記結合13件、build/typecheck・upstream sync・shippingはPASS。PGの既存query並列実行deprecation warningが出る。
+`streaming-lifecycle.test.ts` の10件で共有subscriber・timer・socket解放、1 MiB上限、heartbeat、pending処理の終了待機も再検証する。追加した実WS2件では権限取得を保留し、後続のdisconnect/同ID置換は旧connectのack後に適用され、その後のnoteを配信しない本家相当の順序を確認する。2026-11-19、base `5fdc1702d2568c2df9dc2f33411fd11ecc35db04`、専用Compose `tiramiss-timeline456`（PG55456/Redis56456）で実行した。全stream単体296件、上記結合15件、build/typecheck・upstream sync・shippingはPASS。PGの既存query並列実行deprecation warningが出る。
 
 ## 再実行
 
