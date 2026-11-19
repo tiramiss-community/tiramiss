@@ -83,8 +83,8 @@ test('followers visibility exemptions do not depend on an unrelated following lo
 		const read = ports.readNote;
 		ports.readNote = async id => ({ ...(await read(id))!, visibility: 'followers', ...(exemption === 'author' ? { userId: 'viewer' } : exemption === 'reply' ? { replyUserId: 'viewer' } : { mentions: ['viewer'] }) });
 		ports.isFollowing = async () => {
- throw Error('following unavailable'); 
-};
+			throw Error('following unavailable');
+		};
 		await expect(app.execute('favorites/create', access(), { noteId: 'target' }, 100)).resolves.toBeUndefined();
 	}
 });

@@ -4633,7 +4633,7 @@
         "docs/superpowers/compatibility/note-personal-state/README.md",
         "scripts/note-personal-state-contract.test.mjs"
       ],
-      "evidenceRevision": "a92e04d4d4acfc8d5a249ada7228a1af3a1a5779",
+      "evidenceRevision": "83103610156681772bca6e40dfe0a0f4514a12f5",
       "differences": [
         "固定source callback・可視性method・AchievementServiceと明示的repository doublesの26ケースを、新実装の通常listening HTTP/PG/Redisと比較。本家full serverは起動していない。実績grantは作者行ロックで同時重複を防ぐ。通知は既存PG正本とmain streamのみで、一般の未読/push/一覧は#177/#298/#437の既存担当へ残る。"
       ],
@@ -4656,7 +4656,7 @@
         "docs/superpowers/compatibility/note-personal-state/README.md",
         "scripts/note-personal-state-contract.test.mjs"
       ],
-      "evidenceRevision": "a92e04d4d4acfc8d5a249ada7228a1af3a1a5779",
+      "evidenceRevision": "83103610156681772bca6e40dfe0a0f4514a12f5",
       "differences": [
         "固定source callback・可視性method・AchievementServiceと明示的repository doublesの26ケースを、新実装の通常listening HTTP/PG/Redisと比較。本家full serverは起動していない。実績grantは作者行ロックで同時重複を防ぐ。通知は既存PG正本とmain streamのみで、一般の未読/push/一覧は#177/#298/#437の既存担当へ残る。"
       ],
@@ -4679,7 +4679,7 @@
         "docs/superpowers/compatibility/note-personal-state/README.md",
         "scripts/note-personal-state-contract.test.mjs"
       ],
-      "evidenceRevision": "a92e04d4d4acfc8d5a249ada7228a1af3a1a5779",
+      "evidenceRevision": "83103610156681772bca6e40dfe0a0f4514a12f5",
       "differences": [
         "固定source callback・可視性method・AchievementServiceと明示的repository doublesの26ケースを、新実装の通常listening HTTP/PG/Redisと比較。本家full serverは起動していない。実績grantは作者行ロックで同時重複を防ぐ。通知は既存PG正本とmain streamのみで、一般の未読/push/一覧は#177/#298/#437の既存担当へ残る。"
       ],
@@ -4702,7 +4702,7 @@
         "docs/superpowers/compatibility/note-personal-state/README.md",
         "scripts/note-personal-state-contract.test.mjs"
       ],
-      "evidenceRevision": "a92e04d4d4acfc8d5a249ada7228a1af3a1a5779",
+      "evidenceRevision": "83103610156681772bca6e40dfe0a0f4514a12f5",
       "differences": [
         "固定source callback・可視性method・AchievementServiceと明示的repository doublesの26ケースを、新実装の通常listening HTTP/PG/Redisと比較。本家full serverは起動していない。実績grantは作者行ロックで同時重複を防ぐ。通知は既存PG正本とmain streamのみで、一般の未読/push/一覧は#177/#298/#437の既存担当へ残る。"
       ],
@@ -4725,7 +4725,7 @@
         "docs/superpowers/compatibility/note-personal-state/README.md",
         "scripts/note-personal-state-contract.test.mjs"
       ],
-      "evidenceRevision": "a92e04d4d4acfc8d5a249ada7228a1af3a1a5779",
+      "evidenceRevision": "83103610156681772bca6e40dfe0a0f4514a12f5",
       "note": "#481: favorite/thread muteの更新・保存後読取り材料・通知consumer反映・作者実績を実装/比較済み。#488 unrenote/#489 poll recommendationの既存成果も維持。reaction/投票更新・buffer・AP/通知等の親#184残範囲、favorite一覧#487は未完了。"
     },
     "api:notes/unrenote": {
