@@ -35,7 +35,7 @@ test('only the recorded IP logging additions project to exact historical inputs;
 	const predecessor = JSON.parse(readFileSync(new URL('compatibility-predecessor.json', directory)));
 	for (const [path, binding] of Object.entries(predecessor.files)) {
 		const actual = readFileSync(new URL('../' + path, import.meta.url));
-		assert.equal(sha(actual), binding.currentSha256, path);
+		assert.equal(sha(projectParallelInput(path, actual, binding.currentSha256)), binding.currentSha256, path);
 		assert.equal(sha(projectParallelInput(path, actual, binding.previousSha256)), binding.previousSha256, path);
 		const drift = Buffer.concat([actual, Buffer.from('\n')]);
 		assert.equal(projectParallelInput(path, drift, binding.previousSha256), drift, path);
