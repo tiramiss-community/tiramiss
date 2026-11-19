@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Hono } from 'hono';
+import { recordAuthenticatedApiIp } from './api-ip-log.js';
 import { compileInput } from '../modules/access/public.js';
 import { apiErrorResponse, commonApiError, INTERNAL_ERROR } from './api-error.js';
 import { readApiRequest, registerApiRoute } from './api-request.js';
@@ -36,6 +37,7 @@ export function createNotesListApi(dependencies: {
 		}
 		try {
 			const viewerId = (await dependencies.authenticate(request.token))?.credential.userId ?? null;
+			recordAuthenticatedApiIp(context, viewerId);
 			return context.json(await dependencies.listNotes(readInput(request.input), viewerId, Date.now()));
 		} catch (error) {
 			const known = commonApiError(error);

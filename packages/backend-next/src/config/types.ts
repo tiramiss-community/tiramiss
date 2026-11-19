@@ -48,6 +48,7 @@ export interface MeilisearchConfig {
 	scope?: import('../modules/search/public.js').SearchScope;
 }
 export interface RuntimeConfig {
+	trustProxy?: boolean | number | string | string[];
 	fulltextSearch?: { provider?: string };
 	meilisearch?: MeilisearchConfig;
 	id: IdMethod;

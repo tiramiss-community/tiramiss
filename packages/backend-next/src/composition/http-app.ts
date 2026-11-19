@@ -3,13 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Hono } from 'hono';
+import { MiUserIp } from 'backend-upstream/entities';
+import { apiIpLogging } from '../http/api-ip-log.js';
+import { createApiIpLog } from '../platform/api-ip-log.js';
+import { createNoteChartsApi, createUsersChartsApi } from '../http/note-charts-api.js';
+import { createTokenAuthenticator } from '../platform/database/authenticate.js';
+import { getAvatarImagesPath } from '../http/avatar-images-api.js';
 import { createAvatarDecorationAdminHttp } from './avatar-decoration-admin-http.js';
 import { createAvatarDecorationsHttp } from './avatar-decorations-http.js';
 import { createHashtagCatalogHttp } from './hashtag-catalog-http.js';
-import { createNoteChartsApi, createUsersChartsApi } from '../http/note-charts-api.js';
-import { createTokenAuthenticator } from '../platform/database/authenticate.js';
 import { createAnnouncementsHttp } from './announcements-http.js';
-import { getAvatarImagesPath } from '../http/avatar-images-api.js';
 import { createPublicEmojisHttp } from './public-emojis-http.js';
 import { createUserRelationHttp } from './user-relation-http.js';
 import { createPromoHttp } from './promo-http.js';
@@ -45,6 +48,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 	const announcements = createAnnouncementsHttp(resources, config);
 	const avatarDecorationAdmin = createAvatarDecorationAdminHttp(resources, config);
 	const app = new Hono({ getPath: getAvatarImagesPath })
+		.use('/api/*', apiIpLogging((userId, ip) => ipLog.record(userId, ip), config.trustProxy))
 		.route('/', createUsersChartsApi(resources.noteCharts, { authenticate: createTokenAuthenticator(resources.dataSource.manager, resources.logger), logger: resources.logger }))
 		.route('/', createNoteChartsApi(resources.noteCharts, { authenticate: createTokenAuthenticator(resources.dataSource.manager, resources.logger), logger: resources.logger }))
 		.route('/', createRoleHttpApp(resources, config))
@@ -74,12 +78,18 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		.route('/', createAvatarImagesHttp(resources, config))
 		.route('/', folders.app);
 	registerHttpAppWork(app, async () => {
-		await Promise.all([folders.idle(), pages.idle(), announcements.idle(), avatarDecorationAdmin.idle()]);
+		await Promise.all([folders.idle(), pages.idle(), announcements.idle(), avatarDecorationAdmin.idle(), ipLog.close()]);
 	});
 	registerNoteRoutes(app, resources, note);
 	app.route('/', createTestControlsHttp(resources, config));
 	if (queueApi) {
 		app.route('/', queueApi);
 	}
+	const ipLog = createApiIpLog({
+		enabled: async () => (await resources.meta.fetch()).enableIpLogging,
+		insert: row => resources.dataSource.getRepository(MiUserIp).createQueryBuilder().insert().values(row).orIgnore(true).execute(),
+		now: () => new Date(),
+		onError: error => resources.logger.error('api.ip-log-failed', { error }),
+	});
 	return app;
 }

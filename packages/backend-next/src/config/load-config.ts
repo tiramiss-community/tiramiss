@@ -189,6 +189,12 @@ export async function loadConfig(
 
 	return {
 		id,
+		trustProxy: optional(source.trustProxy, value => {
+			if (typeof value === 'boolean' || typeof value === 'number') {
+				return value;
+			}
+			return Array.isArray(value) ? texts(value, 'trustProxy') : text(value, 'trustProxy');
+		}),
 		...searchConfig(source),
 		url: url.origin,
 		userAgent: `Misskey/${upstreamRelease.version} (${source.url})`,

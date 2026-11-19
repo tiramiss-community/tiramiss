@@ -1,0 +1,108 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "source": {
+    "path": "packages/backend/src/server/api/ApiCallService.ts",
+    "sha256": "da6431575d066d3b71633bead6e5d26130482d8b2a57a01179a1ab82a3032283"
+  },
+  "corpusSha256": "7ab180582ea076c1dea1a068b539c5c7a49fca452427a2cc9da35ecbeaf54cd7",
+  "probeSha256": "79ca2110a01258026f27a599016cf876ec817f7824ab0bc3be2fcb564d44c4cf",
+  "configSource": {
+    "path": "packages/backend/src/config.ts",
+    "sha256": "ff8ca6f4e42b5687913a5b023ce3d873db5e2e198270f481f5a8da29df337643"
+  },
+  "trustedProxies": [
+    "10.0.0.0/8",
+    "172.16.0.0/12",
+    "192.168.0.0/16",
+    "127.0.0.1/32",
+    "::1/128",
+    "fc00::/7"
+  ],
+  "intervalMs": 3600000,
+  "clearedTimers": 8,
+  "observationKind": "literal logIp, constructor timer statement and shutdown body; repository doubles, fixed clock; async rejection observed at repository boundary",
+  "cases": [
+    {
+      "id": "disabled",
+      "attempts": 0,
+      "rejected": 0,
+      "rows": []
+    },
+    {
+      "id": "anonymous",
+      "attempts": 0,
+      "rejected": 0,
+      "rows": []
+    },
+    {
+      "id": "duplicate",
+      "attempts": 1,
+      "rejected": 0,
+      "rows": [
+        {
+          "createdAt": "1970-01-01T00:00:00.000Z",
+          "userId": "alice",
+          "ip": "1.2.3.4"
+        }
+      ]
+    },
+    {
+      "id": "different-ip",
+      "attempts": 2,
+      "rejected": 0,
+      "rows": [
+        {
+          "createdAt": "1970-01-01T00:00:00.000Z",
+          "userId": "alice",
+          "ip": "1.2.3.4"
+        },
+        {
+          "createdAt": "1970-01-01T00:00:00.000Z",
+          "userId": "alice",
+          "ip": "5.6.7.8"
+        }
+      ]
+    },
+    {
+      "id": "different-user",
+      "attempts": 2,
+      "rejected": 0,
+      "rows": [
+        {
+          "createdAt": "1970-01-01T00:00:00.000Z",
+          "userId": "alice",
+          "ip": "1.2.3.4"
+        },
+        {
+          "createdAt": "1970-01-01T00:00:00.000Z",
+          "userId": "bob",
+          "ip": "1.2.3.4"
+        }
+      ]
+    },
+    {
+      "id": "hour-clear",
+      "attempts": 2,
+      "rejected": 0,
+      "rows": [
+        {
+          "createdAt": "1970-01-01T00:00:00.000Z",
+          "userId": "alice",
+          "ip": "1.2.3.4"
+        }
+      ]
+    },
+    {
+      "id": "sync-failure",
+      "attempts": 1,
+      "rejected": 0,
+      "rows": []
+    },
+    {
+      "id": "async-failure",
+      "attempts": 1,
+      "rejected": 1,
+      "rows": []
+    }
+  ]
+}

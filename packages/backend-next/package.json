@@ -25,6 +25,7 @@
 	},
 	"dependencies": {
 		"@fastify/send": "4.1.1",
+		"@fastify/proxy-addr": "5.1.1",
 		"@misskey-dev/emoji-assets": "17.0.3",
 		"@napi-rs/canvas": "1.0.10",
 		"random-seed": "0.3.0",

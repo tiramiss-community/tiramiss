@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Hono } from 'hono';
+import { recordAuthenticatedApiIp } from './api-ip-log.js';
 import { NoteDeleteError } from '../modules/note/public.js';
 import { apiErrorResponse, commonApiError, INTERNAL_ERROR } from './api-error.js';
 import { toNoteActor } from './note-create-api.js';
@@ -36,6 +37,7 @@ export function createNoteDeleteApi(dependencies: {
 		}
 		try {
 			const actor = toNoteActor((await dependencies.authenticate(request.token))?.credential ?? null);
+			recordAuthenticatedApiIp(context, actor?.userId);
 			const now = Date.now();
 			await dependencies.deleteNote(actor, request.input, now);
 			return context.body(null, 204);
