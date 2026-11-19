@@ -1,0 +1,39 @@
+{
+  "baseline": "db1f3652fb832889bf2e34575420a6ff61477041",
+  "scope": "nodeinfo-531-historical-input-projection",
+  "note": "Only exact NodeInfo registration and composition fixture additions. Historical measurements are not renewed.",
+  "files": {
+    "packages/backend-next/src/composition/http-app.ts": {
+      "currentSha256": "5530dbe558fc04e3b92ab71470a556d27b387f2956ac7f01e490e38110d3b03d",
+      "previousSha256": "3c9b9703ba4cd7eac791dc303f23873ccfc71d55c08c1eb8cb26c5dfdffdc3b8",
+      "patches": [
+        {
+          "offset": 1460,
+          "insert": "import { createNodeInfoHttp } from './nodeinfo-http.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 3480,
+          "insert": "\n\t\t.route('/', createNodeInfoHttp(resources, config))",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "currentSha256": "c6c1cbf5877583c3ee01f30b9ca6ccb0c57d138090d4cd2d64cd6b9fb9196983",
+      "previousSha256": "a8bbb4467104cb1b4cec26d21a3667785560de24b6084765d98669c2a64bb71b",
+      "patches": [
+        {
+          "offset": 3209,
+          "insert": " '/.well-known/nodeinfo', '/nodeinfo/2.1', '/nodeinfo/2.0',",
+          "previous": ""
+        },
+        {
+          "offset": 14326,
+          "insert": "\ntest('ordinary composition exposes NodeInfo discovery without chart or proxy reads', async () => {\n\tconst { resources } = fixture();\n\tconst response = await createBackendHttpApp(resources, testConfig()).request('/.well-known/nodeinfo');\n\texpect(response.status).toBe(200);\n\texpect(await response.json()).toEqual({ links: [\n\t\t{ rel: 'http://nodeinfo.diaspora.software/ns/schema/2.1', href: 'http://example.test/nodeinfo/2.1' },\n\t\t{ rel: 'http://nodeinfo.diaspora.software/ns/schema/2.0', href: 'http://example.test/nodeinfo/2.0' },\n\t] });\n\texpect(resources.noteCharts.read).not.toHaveBeenCalled();\n});\n",
+          "previous": ""
+        }
+      ]
+    }
+  }
+}

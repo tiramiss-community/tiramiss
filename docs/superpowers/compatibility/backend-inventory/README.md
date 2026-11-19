@@ -690,3 +690,7 @@ This child evidence result does not complete posting or actor/effects work: #176
 ## #368 / #367 装飾公開取得と共有キャッシュ（2026-11-19）
 
 [限定比較・実測と残責任](../avatar-decorations/README.md)に基づき、公開 `get-avatar-decorations` と30分キャッシュ責任を `verified`、装飾 Entity / Service 全体と三種の internal event を `partial` とした。公開取得は本家と同じ `getAll(true)` で毎回更新する。実 HTTP/PG のロール公開制限・DB障害復帰と実 Redis の受信無効化を検証した。管理 writer / 実発行の証明 #541 / #582 と他 User 表示 consumer の移行は残り、親の完成を意味しない。各行は全体baselineを動かさず、この実装のimmutable revisionへ個別に根拠を結ぶ。
+
+## #531 NodeInfo・well-knownの照合（2026-11-19）
+
+製品revision `95c8c0eb62` の[NodeInfo比較](../nodeinfo/README.md)と既存[host-meta比較](../well-known/README.md)に基づき、NodeInfo2.0/2.1・discovery・host-meta XML/JSON・wildcard OPTIONS/CORS・XML escapeの対象行を更新した。通常HTTPのchart/Meta/proxy読取、共有10分cacheの版間mutation、実DB失敗と復帰を含む。固定literal source/doubles36観測と、新実装の単体316・通常HTTP/PG94を区別する。OAuth discovery/change-passwordの業務所有は変更せずWellKnown service/mount全体はpartial、親#193と全体移植は未完了。既存の全体implementationCommitとaudit判定は保持し、各更新行のevidenceRevisionを製品commitへ固定する。

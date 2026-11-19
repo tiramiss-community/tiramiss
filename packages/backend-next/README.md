@@ -384,7 +384,7 @@ Supervisor自然retry試験は通常の60–72秒backoffを待つ（test timeout
 
 ## host-meta と well-known 共通応答（#531 の一部）
 
-通常HTTPから `GET` / `HEAD /.well-known/host-meta` と `host-meta.json` を提供し、既存Meta cacheの連合設定で判定する。`OPTIONS /.well-known/*` は未知パスを含め204とCORSを返し、Metaを参照しない。既存WebFinger、後から登録されるwell-knownハンドラーのCORSと、未知GET/HEADの既存404を維持する。[固定本家との比較・検証範囲](../../docs/superpowers/compatibility/well-known/README.md)。NodeInfo 2.0/2.1・人数集計・文書キャッシュと `/.well-known/nodeinfo` は #531 の残作業。
+通常HTTPから `GET` / `HEAD /.well-known/host-meta` と `host-meta.json` を提供し、既存Meta cacheの連合設定で判定する。`OPTIONS /.well-known/*` は未知パスを含め204とCORSを返し、Metaを参照しない。既存WebFinger、後から登録されるwell-knownハンドラーのCORSと、未知GET/HEADの既存404を維持する。[固定本家との比較・検証範囲](../../docs/superpowers/compatibility/well-known/README.md)。NodeInfo 2.0/2.1 と `/.well-known/nodeinfo` も通常 HTTP から提供する。保存済み hourly chart の local 投稿数・人数、fresh Meta、既存 proxy system account を読み、共有10分 cache と本家の版間依存を維持する。[固定本家比較と実依存検証](../../docs/superpowers/compatibility/nodeinfo/README.md)を参照する。
 
 
 ## アバター装飾の公開取得とキャッシュ（#368 / #367）

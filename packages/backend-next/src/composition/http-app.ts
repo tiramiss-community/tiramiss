@@ -24,6 +24,7 @@ import { createUrlPreviewHttp } from './url-preview-http.js';
 import { createPublicDocumentsHttp } from './public-documents-http.js';
 import { createEmojiImagesHttp } from './emoji-images-http.js';
 import { createAvatarImagesHttp } from './avatar-images-http.js';
+import { createNodeInfoHttp } from './nodeinfo-http.js';
 import { createWebfingerHttp } from './webfinger-http.js';
 import { createFollowCollectionsHttp } from './follow-collections-http.js';
 import { createOutboxHttp } from './outbox-http.js';
@@ -58,6 +59,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		.route('/', createInstanceAdminHttp(resources))
 		.route('/', createUrlPreviewHttp(resources))
 		.route('/', createWebfingerHttp(resources, config))
+		.route('/', createNodeInfoHttp(resources, config))
 		.route('/', createFeaturedHttp(resources, config))
 		.route('/', createFollowCollectionsHttp(resources, config))
 		.route('/', createOutboxHttp(resources, config))
