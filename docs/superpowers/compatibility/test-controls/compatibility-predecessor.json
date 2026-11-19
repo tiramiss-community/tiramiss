@@ -1,0 +1,34 @@
+{
+  "scope": "test-controls-390",
+  "baseRevision": "db1f3652fb832889bf2e34575420a6ff61477041",
+  "files": {
+    "packages/backend-next/src/composition/http-app.ts": {
+      "previousSha256": "3c9b9703ba4cd7eac791dc303f23873ccfc71d55c08c1eb8cb26c5dfdffdc3b8",
+      "currentSha256": "6e61fac4f0938d0e5787fb0640fead203e8504384cc14d9e171b979a803d4788",
+      "patches": [
+        {
+          "offset": 1922,
+          "insert": "-http.js';\nimport { createTestControlsHttp } from './test-controls",
+          "previous": ""
+        },
+        {
+          "offset": 4157,
+          "insert": "app.route('/', createTestControlsHttp(resources, config));\n\t",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "previousSha256": "a8bbb4467104cb1b4cec26d21a3667785560de24b6084765d98669c2a64bb71b",
+      "currentSha256": "108edf18e14e317e05c6ca831f3a7733906acbbb8f84f676067803878671d6fc",
+      "patches": [
+        {
+          "offset": 3893,
+          "insert": "', '/api/test', '/api/reset-db",
+          "previous": ""
+        }
+      ]
+    }
+  },
+  "note": "Bounded reversal of test/reset-db route registration and route-list expectation; does not remeasure historical contracts."
+}

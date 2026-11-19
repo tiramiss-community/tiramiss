@@ -1,0 +1,16 @@
+{
+  "baseline": "db1f3652fb832889bf2e34575420a6ff61477041",
+  "files": {
+    "packages/backend-next/src/platform/connect-resources.ts": {
+      "previousSha256": "fa50748aa0093ec196eac64715908b460cc99da0bd07e02b2cc2d0f3ce3bccd0",
+      "currentSha256": "6ec428f85e66172e77d9d5a9fb0818a0ac9fa43ac3fd1a8d49efe88bf8b77100",
+      "patches": [
+        {
+          "offset": 22474,
+          "previous": "",
+          "insert": "\t\t\tpublishInternalEvent: async (type: string, body: object): Promise<void> => {\n\t\t\t\tawait rolePublisher.publish(new URL(config.url).host, JSON.stringify({ channel: 'internal', message: { type, body } }));\n\t\t\t},\n"
+        }
+      ]
+    }
+  }
+}

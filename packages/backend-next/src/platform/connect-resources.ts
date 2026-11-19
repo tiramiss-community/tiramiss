@@ -466,6 +466,9 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 			noteCharts,
 			actorEmojis,
 			avatarDecorations,
+			publishInternalEvent: async (type: string, body: object): Promise<void> => {
+				await rolePublisher.publish(new URL(config.url).host, JSON.stringify({ channel: 'internal', message: { type, body } }));
+			},
 			meta,
 			urlPreview,
 			instanceAdministration,
