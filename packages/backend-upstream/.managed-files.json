@@ -371,6 +371,7 @@
 	"src/models/ModerationLog.ts",
 	"src/models/Muting.ts",
 	"src/models/Note.ts",
+	"src/models/NoteFavorite.ts",
 	"src/models/NoteReaction.ts",
 	"src/models/NoteThreadMuting.ts",
 	"src/models/Page.ts",

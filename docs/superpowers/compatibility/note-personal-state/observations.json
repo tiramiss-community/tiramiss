@@ -1,0 +1,1082 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "manifest": [
+    {
+      "path": "packages/backend/src/core/entities/NoteEntityService.ts",
+      "gitBlob": "f648e5769409b5af17fc762803ae98bf0c17036a",
+      "sha256": "a8ca00a7f5ff1206db352b7f08a82d0efe3e443be15ca5f38e2f696e969dbc00"
+    },
+    {
+      "path": "packages/backend/src/core/AchievementService.ts",
+      "gitBlob": "8d2de89efd626db7519d35ed7a74289ec1135f89",
+      "sha256": "2f491b545bcee272a7c1744be3832172ab0c9947447682d2016731cfa95feb7c"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/notes/state.ts",
+      "gitBlob": "4c1eb865426f3f1d73e2e10bc4e10cf243dc8a45",
+      "sha256": "9ec9df8b5d56ea36689ee06d12a2cba6b710433dcc36d41fb95f084ed6b86790"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/notes/favorites/create.ts",
+      "gitBlob": "7c9769f75f59b1b9624be4eb90d48538c58980d6",
+      "sha256": "0683d0965f3ca2444b5cb21cc3b1430e1e0f201ee00b6147bf3f7827019706a9"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/notes/favorites/delete.ts",
+      "gitBlob": "2036facdba6b8c07c5d4a8ecdbd63006b2ffdd03",
+      "sha256": "9b7d67dcf7c03b33d8ec38664367af0d22a2aa122e331e7b1381a4b5f6125892"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/notes/thread-muting/create.ts",
+      "gitBlob": "143e823367a7b1a78f940ad5fd372e634d663cb0",
+      "sha256": "7b9f64d0dc0b8c0a82bca39508d4078183f03d363cfe3cc4ddc2c3b908fb0eed"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/notes/thread-muting/delete.ts",
+      "gitBlob": "d94d6cd652fdb5973cde6405c206e0dbdf154b7c",
+      "sha256": "8fd6ccc2dce66ea703bcf3700d550c989aff48a2cb1643b54159d13a2b6a70fa"
+    },
+    {
+      "path": "packages/backend/src/models/NoteFavorite.ts",
+      "gitBlob": "51bcb2662937ed5ff8bae483aaced3ac4a83d033",
+      "sha256": "24cb23e3f659e4498b1d963041d0865d370193b984794d05fd08182c759ad050"
+    },
+    {
+      "path": "packages/backend/src/models/NoteThreadMuting.ts",
+      "gitBlob": "32bb829c0bc622c53f6369a4272261df8ab58173",
+      "sha256": "f016b4f48d3780538b6c60101b2ad047366b4c8b53ee4ddd30934874942009d8"
+    },
+    {
+      "path": "packages/backend/src/server/api/GetterService.ts",
+      "gitBlob": "6f689dfa24b80fe127bf05012bdf4c8d0419407f",
+      "sha256": "8c8864d50e7524b3ff358e2bb4ff5aceda8e3f1e3a7ad8efe1e7ac9c1b4236c7"
+    },
+    {
+      "path": "packages/backend/src/core/NotificationService.ts",
+      "gitBlob": "e0e28001b4f388c6aae801432d7a259ec43bb768",
+      "sha256": "d813d5f432eb015f6360b7d0a3bed949bad3dc0cec7d084dddd6f6c402dbba69"
+    }
+  ],
+  "corpusSha256": "af570c767efcf4e2e72a73eaa099b9ccf3f33f74123302bf57825e05f0f8513f",
+  "doubles": [
+    "Endpoint callbacks, isVisibleForMe, AchievementService.create and notes/state callback execute from pinned Git blobs.",
+    "Repository, ID, clock, auth-independent local actor and notification delivery are explicit in-memory boundaries; PostgreSQL/HTTP/Redis run separately.",
+    "NotificationService reception is represented by never vs other no-notifier modes; push/unread/read APIs belong to downstream notification work."
+  ],
+  "access": {
+    "favorites/create": {
+      "requireCredential": true,
+      "kind": "write:favorites",
+      "prohibitMoved": true,
+      "limit": {
+        "duration": 3600000,
+        "max": 20
+      }
+    },
+    "favorites/delete": {
+      "requireCredential": true,
+      "kind": "write:favorites",
+      "prohibitMoved": false,
+      "limit": null
+    },
+    "thread-muting/create": {
+      "requireCredential": true,
+      "kind": "write:account",
+      "prohibitMoved": false,
+      "limit": {
+        "duration": 3600000,
+        "max": 10
+      }
+    },
+    "thread-muting/delete": {
+      "requireCredential": true,
+      "kind": "write:account",
+      "prohibitMoved": false,
+      "limit": null
+    }
+  },
+  "cases": [
+    {
+      "id": "favorite-save-duplicate-delete-retry",
+      "steps": [
+        {
+          "favorites": [
+            {
+              "id": "normalizedid",
+              "noteId": "targetnote",
+              "userId": "viewer"
+            }
+          ],
+          "mutings": [],
+          "achievements": [
+            {
+              "name": "myNoteFavorited1",
+              "unlockedAt": 1700000000000
+            }
+          ],
+          "notifications": [
+            {
+              "userId": "author",
+              "type": "achievementEarned",
+              "achievement": "myNoteFavorited1"
+            }
+          ],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": true,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        },
+        {
+          "error": {
+            "code": "ALREADY_FAVORITED",
+            "id": "a402c12b-34dd-41d2-97d8-4d2ffd96a1a6"
+          },
+          "favorites": [
+            {
+              "id": "normalizedid",
+              "noteId": "targetnote",
+              "userId": "viewer"
+            }
+          ],
+          "mutings": [],
+          "achievements": [
+            {
+              "name": "myNoteFavorited1",
+              "unlockedAt": 1700000000000
+            }
+          ],
+          "notifications": [
+            {
+              "userId": "author",
+              "type": "achievementEarned",
+              "achievement": "myNoteFavorited1"
+            }
+          ],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": true,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        },
+        {
+          "favorites": [],
+          "mutings": [],
+          "achievements": [
+            {
+              "name": "myNoteFavorited1",
+              "unlockedAt": 1700000000000
+            }
+          ],
+          "notifications": [
+            {
+              "userId": "author",
+              "type": "achievementEarned",
+              "achievement": "myNoteFavorited1"
+            }
+          ],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        },
+        {
+          "error": {
+            "code": "NOT_FAVORITED",
+            "id": "b625fc69-635e-45e9-86f4-dbefbef35af5"
+          },
+          "favorites": [],
+          "mutings": [],
+          "achievements": [
+            {
+              "name": "myNoteFavorited1",
+              "unlockedAt": 1700000000000
+            }
+          ],
+          "notifications": [
+            {
+              "userId": "author",
+              "type": "achievementEarned",
+              "achievement": "myNoteFavorited1"
+            }
+          ],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mute-fallback-save-duplicate-delete-retry",
+      "steps": [
+        {
+          "favorites": [],
+          "mutings": [
+            {
+              "id": "normalizedid",
+              "threadId": "targetnote",
+              "userId": "viewer"
+            }
+          ],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": true
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        },
+        {
+          "error": {
+            "code": "ALREADY_MUTING",
+            "id": "c146e22d-1141-4b31-b28d-176371014d18"
+          },
+          "favorites": [],
+          "mutings": [
+            {
+              "id": "normalizedid",
+              "threadId": "targetnote",
+              "userId": "viewer"
+            }
+          ],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": true
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        },
+        {
+          "favorites": [],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        },
+        {
+          "favorites": [],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mute-root-sharing",
+      "steps": [
+        {
+          "favorites": [],
+          "mutings": [
+            {
+              "id": "normalizedid",
+              "threadId": "rootnote",
+              "userId": "viewer"
+            }
+          ],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": true
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        },
+        {
+          "favorites": [],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favorites-create-missing",
+      "steps": [
+        {
+          "error": {
+            "code": "NO_SUCH_NOTE",
+            "id": "6dd26674-e060-4816-909a-45ba3f4da458"
+          },
+          "favorites": [],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": []
+        }
+      ]
+    },
+    {
+      "id": "favorites-create-invisible",
+      "steps": [
+        {
+          "error": {
+            "code": "NO_SUCH_NOTE",
+            "id": "6dd26674-e060-4816-909a-45ba3f4da458"
+          },
+          "favorites": [],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favorites-delete-missing",
+      "steps": [
+        {
+          "error": {
+            "code": "NO_SUCH_NOTE",
+            "id": "80848a2c-398f-4343-baa9-df1d57696c56"
+          },
+          "favorites": [],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": []
+        }
+      ]
+    },
+    {
+      "id": "favorites-delete-invisible",
+      "steps": [
+        {
+          "favorites": [],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "thread-muting-create-missing",
+      "steps": [
+        {
+          "error": {
+            "code": "NO_SUCH_NOTE",
+            "id": "5ff67ada-ed3b-2e71-8e87-a1a421e177d2"
+          },
+          "favorites": [],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": []
+        }
+      ]
+    },
+    {
+      "id": "thread-muting-create-invisible",
+      "steps": [
+        {
+          "favorites": [],
+          "mutings": [
+            {
+              "id": "normalizedid",
+              "threadId": "targetnote",
+              "userId": "viewer"
+            }
+          ],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": true
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "thread-muting-delete-missing",
+      "steps": [
+        {
+          "error": {
+            "code": "NO_SUCH_NOTE",
+            "id": "bddd57ac-ceb3-b29d-4334-86ea5fae481a"
+          },
+          "favorites": [],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": []
+        }
+      ]
+    },
+    {
+      "id": "thread-muting-delete-invisible",
+      "steps": [
+        {
+          "favorites": [],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favorite-specified-recipient",
+      "steps": [
+        {
+          "favorites": [
+            {
+              "id": "normalizedid",
+              "noteId": "targetnote",
+              "userId": "viewer"
+            }
+          ],
+          "mutings": [],
+          "achievements": [
+            {
+              "name": "myNoteFavorited1",
+              "unlockedAt": 1700000000000
+            }
+          ],
+          "notifications": [
+            {
+              "userId": "author",
+              "type": "achievementEarned",
+              "achievement": "myNoteFavorited1"
+            }
+          ],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": true,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favorite-own-note",
+      "steps": [
+        {
+          "favorites": [
+            {
+              "id": "normalizedid",
+              "noteId": "targetnote",
+              "userId": "viewer"
+            }
+          ],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": true,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favorite-remote-note",
+      "steps": [
+        {
+          "favorites": [
+            {
+              "id": "normalizedid",
+              "noteId": "targetnote",
+              "userId": "viewer"
+            }
+          ],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": true,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favorite-followers-hidden",
+      "steps": [
+        {
+          "error": {
+            "code": "NO_SUCH_NOTE",
+            "id": "6dd26674-e060-4816-909a-45ba3f4da458"
+          },
+          "favorites": [],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favorite-followers-following",
+      "steps": [
+        {
+          "favorites": [
+            {
+              "id": "normalizedid",
+              "noteId": "targetnote",
+              "userId": "viewer"
+            }
+          ],
+          "mutings": [],
+          "achievements": [
+            {
+              "name": "myNoteFavorited1",
+              "unlockedAt": 1700000000000
+            }
+          ],
+          "notifications": [
+            {
+              "userId": "author",
+              "type": "achievementEarned",
+              "achievement": "myNoteFavorited1"
+            }
+          ],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": true,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favorite-followers-reply",
+      "steps": [
+        {
+          "favorites": [
+            {
+              "id": "normalizedid",
+              "noteId": "targetnote",
+              "userId": "viewer"
+            }
+          ],
+          "mutings": [],
+          "achievements": [
+            {
+              "name": "myNoteFavorited1",
+              "unlockedAt": 1700000000000
+            }
+          ],
+          "notifications": [
+            {
+              "userId": "author",
+              "type": "achievementEarned",
+              "achievement": "myNoteFavorited1"
+            }
+          ],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": true,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favorite-followers-mention",
+      "steps": [
+        {
+          "favorites": [
+            {
+              "id": "normalizedid",
+              "noteId": "targetnote",
+              "userId": "viewer"
+            }
+          ],
+          "mutings": [],
+          "achievements": [
+            {
+              "name": "myNoteFavorited1",
+              "unlockedAt": 1700000000000
+            }
+          ],
+          "notifications": [
+            {
+              "userId": "author",
+              "type": "achievementEarned",
+              "achievement": "myNoteFavorited1"
+            }
+          ],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": true,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favorite-home",
+      "steps": [
+        {
+          "favorites": [
+            {
+              "id": "normalizedid",
+              "noteId": "targetnote",
+              "userId": "viewer"
+            }
+          ],
+          "mutings": [],
+          "achievements": [
+            {
+              "name": "myNoteFavorited1",
+              "unlockedAt": 1700000000000
+            }
+          ],
+          "notifications": [
+            {
+              "userId": "author",
+              "type": "achievementEarned",
+              "achievement": "myNoteFavorited1"
+            }
+          ],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": true,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favorite-existing-achievement",
+      "steps": [
+        {
+          "favorites": [
+            {
+              "id": "normalizedid",
+              "noteId": "targetnote",
+              "userId": "viewer"
+            }
+          ],
+          "mutings": [],
+          "achievements": [
+            {
+              "name": "myNoteFavorited1",
+              "unlockedAt": 123
+            }
+          ],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": true,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favorite-disabled-notification",
+      "steps": [
+        {
+          "favorites": [
+            {
+              "id": "normalizedid",
+              "noteId": "targetnote",
+              "userId": "viewer"
+            }
+          ],
+          "mutings": [],
+          "achievements": [
+            {
+              "name": "myNoteFavorited1",
+              "unlockedAt": 1700000000000
+            }
+          ],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": true,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favorite-failure-insert",
+      "steps": [
+        {
+          "error": {
+            "message": "insert unavailable"
+          },
+          "favorites": [],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mute-failure-insert",
+      "steps": [
+        {
+          "error": {
+            "message": "insert unavailable"
+          },
+          "favorites": [],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favorite-failure-delete",
+      "steps": [
+        {
+          "error": {
+            "message": "delete unavailable"
+          },
+          "favorites": [
+            {
+              "id": "existing",
+              "userId": "viewer",
+              "noteId": "targetnote"
+            }
+          ],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": true,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favorite-failure-achievement",
+      "steps": [
+        {
+          "favorites": [
+            {
+              "id": "normalizedid",
+              "noteId": "targetnote",
+              "userId": "viewer"
+            }
+          ],
+          "mutings": [],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": true,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": false,
+              "isMutedThread": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "viewer-private-state",
+      "steps": [
+        {
+          "error": {
+            "code": "NOT_FAVORITED",
+            "id": "b625fc69-635e-45e9-86f4-dbefbef35af5"
+          },
+          "favorites": [
+            {
+              "id": "otherfavorite",
+              "userId": "other",
+              "noteId": "targetnote"
+            }
+          ],
+          "mutings": [
+            {
+              "id": "othermute",
+              "userId": "other",
+              "threadId": "targetnote"
+            }
+          ],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": true,
+              "isMutedThread": true
+            }
+          ]
+        },
+        {
+          "favorites": [
+            {
+              "id": "otherfavorite",
+              "userId": "other",
+              "noteId": "targetnote"
+            }
+          ],
+          "mutings": [
+            {
+              "id": "othermute",
+              "userId": "other",
+              "threadId": "targetnote"
+            }
+          ],
+          "achievements": [],
+          "notifications": [],
+          "reads": [
+            {
+              "userId": "viewer",
+              "isFavorited": false,
+              "isMutedThread": false
+            },
+            {
+              "userId": "other",
+              "isFavorited": true,
+              "isMutedThread": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -47,7 +47,8 @@
 		"src/models/Announcement.ts",
 		"src/models/AnnouncementRead.ts",
 		"src/models/PromoNote.ts",
-		"src/models/PromoRead.ts"
+		"src/models/PromoRead.ts",
+		"src/models/NoteFavorite.ts"
 	],
 	"migrationDirectory": "migration",
 	"externalDependencies": [

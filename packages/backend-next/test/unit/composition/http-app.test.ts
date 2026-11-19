@@ -60,6 +60,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 		'/manifest.json', '/robots.txt', '/opensearch.xml',
 		'/fluent-emoji/*', '/twemoji/*', '/twemoji-badge/*',
 		'/emoji/*', '/avatar/*', '/identicon/*',
+		'/api/notes/favorites/create', '/api/notes/favorites/delete', '/api/notes/thread-muting/create', '/api/notes/thread-muting/delete',
 		'/api/drive/folders/create', '/api/drive/folders/delete', '/api/drive/folders/find', '/api/drive/folders/show', '/api/drive/folders/update',
 		'/api/notes/polls/recommendation', '/api/notes', '/api/notes/delete', '/api/notes/unrenote', '/api/notes/show', '/api/notes/create', '/api/test', '/api/reset-db', '/api/test-queue',
 	]);
@@ -252,4 +253,14 @@ test('ordinary composition exposes NodeInfo discovery without chart or proxy rea
 		{ rel: 'http://nodeinfo.diaspora.software/ns/schema/2.0', href: 'http://example.test/nodeinfo/2.0' },
 	] });
 	expect(resources.noteCharts.read).not.toHaveBeenCalled();
+});
+
+test('personal state composition rejects unauthenticated favorite and thread mute writes', async () => {
+	const { resources } = fixture();
+	const app = createBackendHttpApp(resources, testConfig());
+	for (const path of ['notes/favorites/create', 'notes/favorites/delete', 'notes/thread-muting/create', 'notes/thread-muting/delete']) {
+		const response = await app.request(`/api/${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+		expect(response.status).toBe(401);
+		expect(await response.json()).toHaveProperty('error.code', 'CREDENTIAL_REQUIRED');
+	}
 });

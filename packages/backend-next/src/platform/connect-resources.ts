@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { createFavoriteAchievements } from '../composition/favorite-achievements.js';
 import { createPostingNoteCharts } from '../composition/posting-note-charts.js';
 import { createNoteCharts, createUsersCharts } from '../modules/chart/public.js';
 import { createAnnouncementArchives } from '../modules/announcement/public.js';
@@ -454,6 +455,9 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 						: appendNoteDeleteAudit(dataSource.manager, input, createIdCodec(config.id).newId), logger);
 		scope.defer(notePostDelete.close);
 
+		const favoriteAchievements = createFavoriteAchievements({ dataSource, postingStream, logger }, config);
+		scope.defer(favoriteAchievements.close);
+
 		if (lostQueue !== undefined) {
 			throw new DiagnosticError('JOB_QUEUE_REDIS_ENDED', { queue: lostQueue });
 		}
@@ -462,6 +466,7 @@ export async function connectResources(config: RuntimeConfig, logger: Logger) {
 		}
 		active = true;
 		return {
+			favoriteAchievements,
 			announcementArchives,
 			noteCharts,
 			actorEmojis,
