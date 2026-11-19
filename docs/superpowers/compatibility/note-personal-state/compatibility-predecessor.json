@@ -199,6 +199,28 @@
           "insert": "\tconst favorite = source.getMetadata('MiNoteFavorite');\n\texpect(favorite.tableName).toBe('note_favorite');\n\texpect(favorite.indices.some(index => index.isUnique && index.columns.map(column => column.propertyName).join(',') === 'userId,noteId')).toBe(true);\n\tfor (const property of ['user', 'note']) {\n\t\texpect(favorite.relations.find(relation => relation.propertyName === property)?.onDelete).toBe('CASCADE');\n\t}\n\texpect(source.entityMetadatas).toHaveLength(46);\n"
         }
       ]
+    },
+    "packages/backend-next/test/integration/notification.test.ts": {
+      "previousSha256": "dc9b361af11f33c2ad04a9447f3acbf00df962013a9c9d77859b204a976818e7",
+      "currentSha256": "8e0188cab47d4e793baa15f6b6e1964f43b344778a43ad5ef4ed7c2942d916f2",
+      "patches": [
+        {
+          "offset": 2158,
+          "previous": "\t\tnotifier_id: 'author', note_id: 'note', target_note_id: type === 'renote' ? 'original' : null, created_at: new Date(at),\n",
+          "insert": "\t\tnotifier_id: 'author', note_id: 'note', achievement: null, target_note_id: type === 'renote' ? 'original' : null, created_at: new Date(at),\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/integration/migration-proof.test.ts": {
+      "previousSha256": "e24402924caa8f3d12ab4b4a0983f454e40cb4e5fe1d16aec28052116c166e5f",
+      "currentSha256": "95877bace0f29a1e901e34bea0c40c26b36bc08cf2eda1393f21aea185fec2f8",
+      "patches": [
+        {
+          "offset": 1646,
+          "previous": "\texpect(await observe('history', true)).toMatchObject({ before: 348, after: 349, preserved: true, repeated: true, checks: [0, 0], missing: { code: 'MIGRATION_HISTORY_MISSING' }, pending: { code: 'PENDING_MIGRATIONS' }, drift: 'SCHEMA_DRIFT', internalCount: 8 });\n",
+          "insert": "\texpect(await observe('history', true)).toMatchObject({ before: 348, after: 349, preserved: true, repeated: true, checks: [0, 0], missing: { code: 'MIGRATION_HISTORY_MISSING' }, pending: { code: 'PENDING_MIGRATIONS' }, drift: 'SCHEMA_DRIFT', internalCount: 9 });\n"
+        }
+      ]
     }
   }
 }

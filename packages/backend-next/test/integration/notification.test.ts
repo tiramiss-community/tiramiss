@@ -39,7 +39,7 @@ test.each(['reply', 'mention', 'quote', 'renote', 'note'] as const)('saves a %s 
 	await save(record('id', type));
 	expect(await bodies()).toEqual([{
 		notification_id: 'id', recipient_id: 'recipient', notification_type: type,
-		notifier_id: 'author', note_id: 'note', target_note_id: type === 'renote' ? 'original' : null, created_at: new Date(at),
+		notifier_id: 'author', note_id: 'note', achievement: null, target_note_id: type === 'renote' ? 'original' : null, created_at: new Date(at),
 	}]);
 });
 
