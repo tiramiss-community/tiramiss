@@ -4561,6 +4561,31 @@
       "differences": [
         "Reset requires explicit operator binding of disposable PG/Redis host/port/database/db. Primary Redis flush remains first; atomic schema-qualified TRUNCATE ONLY in public/backend_internal preserves migrations/typeorm_metadata instead of upstream unqualified DELETE/retry over all schemas. See compatibility/test-controls/README.md; does not guarantee distributed atomicity or reset other memory caches. Post-commit publication failure emits a fixed diagnostic and retains204; unknown COMMIT outcomes require state inspection before retry."
       ]
+    },
+    "api:notes/unrenote": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/note/unrenote.ts",
+        "packages/backend-next/src/modules/note/deletion-request.ts",
+        "packages/backend-next/src/modules/note/delete-note.ts",
+        "packages/backend-next/src/platform/database/note-deleter.ts",
+        "packages/backend-next/src/platform/note-post-delete.ts",
+        "packages/backend-next/src/http/note-delete-api.ts",
+        "packages/backend-next/src/composition/note-routes.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/note/unrenote.test.ts",
+        "packages/backend-next/test/integration/unrenote.test.ts",
+        "packages/backend-next/test/integration/note-delete.test.ts",
+        "docs/superpowers/compatibility/unrenote/source-probe.mjs",
+        "docs/superpowers/compatibility/unrenote/source-observations.json",
+        "docs/superpowers/compatibility/unrenote/README.md"
+      ],
+      "differences": [
+        "固定method/callbackとPG比較であり本家full HTTP/認証gate/実AP renderer/実chart等ではない。既存削除の限定比較と終了時drainを引き継ぐ。本人をsnapshot取得時に一度読み、並行本人削除の競合は未比較。"
+      ],
+      "note": "#488: 本人の全Renote（引用を含む）を選び既存削除操作へ接続。固定endpoint/deletion methodと同一PGの4操作・HTTP・保存/counter・副作用開始を比較。新実装の実Redis/AP queue/Meili、非待機応答・DELETE失敗/retry・drainを検証。親#184/#114、notes/create partial、chart#200の残範囲を維持。",
+      "evidenceRevision": "54dd3e2ac4ea642bfe56339d8664be2f849b209e"
     }
   }
 }

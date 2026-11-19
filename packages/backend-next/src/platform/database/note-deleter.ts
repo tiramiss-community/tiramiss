@@ -12,6 +12,20 @@ import type { DeletedNoteSnapshot } from '../../modules/note/public.js';
 import type { DeliveryUser } from '../../modules/federation/public.js';
 
 export function createNoteDeleter(manager: EntityManager, createdAtFromId: (id: string) => number) {
+	function snapshot(row: MiNote, author: MiUser): DeletedNoteSnapshot {
+		return {
+			id: row.id, userId: row.userId, authorHost: author.host, noteHost: row.userHost, authorUsername: author.username, localOnly: row.localOnly,
+			replyId: row.replyId, renoteUserId: row.renoteUserId,
+			note: {
+				id: row.id, userId: row.userId, createdAtMs: createdAtFromId(row.id), text: row.text, cw: row.cw, visibility: row.visibility,
+				replyId: row.replyId, renoteId: row.renoteId, renoteUserHost: row.renoteUserHost, fileIds: row.fileIds,
+				hasPoll: row.hasPoll, tags: row.tags, mentionedRemoteUsers: JSON.parse(row.mentionedRemoteUsers),
+			},
+			renote: null,
+			auditNote: { ...row },
+		};
+	}
+
 	return {
 		async readActor(userId: string, now: number) {
 			if (!await manager.getRepository(MiUser).existsBy({ id: userId, host: IsNull() })) {
@@ -29,17 +43,18 @@ export function createNoteDeleter(manager: EntityManager, createdAtFromId: (id: 
 				return null;
 			}
 			const author = await manager.getRepository(MiUser).findOneByOrFail({ id: row.userId });
-			return {
-				id: row.id, userId: row.userId, authorHost: author.host, noteHost: row.userHost, authorUsername: author.username, localOnly: row.localOnly,
-				replyId: row.replyId, renoteUserId: row.renoteUserId,
-				note: {
-					id: row.id, userId: row.userId, createdAtMs: createdAtFromId(row.id), text: row.text, cw: row.cw, visibility: row.visibility,
-					replyId: row.replyId, renoteId: row.renoteId, renoteUserHost: row.renoteUserHost, fileIds: row.fileIds,
-					hasPoll: row.hasPoll, tags: row.tags, mentionedRemoteUsers: JSON.parse(row.mentionedRemoteUsers),
-				},
-				renote: null,
-				auditNote: { ...row },
-			};
+			return snapshot(row, author);
+		},
+		readTarget(noteId: string): Promise<boolean> {
+			return manager.getRepository(MiNote).existsBy({ id: noteId });
+		},
+		async readOwnRenotes(userId: string, noteId: string): Promise<DeletedNoteSnapshot[]> {
+			const rows = await manager.getRepository(MiNote).findBy({ userId, renoteId: noteId });
+			if (rows.length === 0) {
+				return [];
+			}
+			const author = await manager.getRepository(MiUser).findOneByOrFail({ id: userId });
+			return rows.map(row => snapshot(row, author));
 		},
 		async readRenote(id: string): Promise<DeletedNoteSnapshot['renote']> {
 			const original = await manager.getRepository(MiNote).findOneBy({ id });

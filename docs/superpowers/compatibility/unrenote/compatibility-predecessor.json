@@ -1,0 +1,188 @@
+{
+  "baseline": "c25f3ee9790a5bf593bbe001e1c37e33395cd827",
+  "files": {
+    "packages/backend-next/src/composition/note-routes.ts": {
+      "previousSha256": "8e8925a80409b1cbebf1bcbbd0fa3f04acdd123a562564df24250a8dd81227c0",
+      "currentSha256": "0508bee142e8ba8c0f15a298e1f0627fbb6d45890776c543d3de91a578e9f9e3",
+      "patches": [
+        {
+          "offset": 839,
+          "previous": "import { createDeleteNote, createShowNote, readNotePlan, renderNote } from '../modules/note/public.js';\n",
+          "insert": "import { createDeleteNote, createUnrenote, removeNote, createShowNote, readNotePlan, renderNote } from '../modules/note/public.js';\n"
+        },
+        {
+          "offset": 1605,
+          "previous": "",
+          "insert": "import type { NoteDeletionPorts } from '../modules/note/public.js';\n"
+        },
+        {
+          "offset": 2583,
+          "previous": "\tconst deletion = createDeleteNote({\n\t\t...createNoteDeleter(manager, codec.createdAtFromId),\n",
+          "insert": "\tconst deleter = createNoteDeleter(manager, codec.createdAtFromId);\n\tconst deletionPorts: NoteDeletionPorts = {\n\t\t...deleter,\n"
+        },
+        {
+          "offset": 3127,
+          "previous": "",
+          "insert": "\t};\n\tconst deletion = createDeleteNote(deletionPorts);\n\tconst unrenote = createUnrenote({\n\t\treadActor: deletionPorts.readActor,\n\t\tlimit: createNoteDeleteRateLimiter(resources.redis, 'notes/unrenote'),\n\t\treadTarget: deleter.readTarget,\n\t\treadOwnRenotes: deleter.readOwnRenotes,\n\t\tstartRemoval: (snapshot, userId, now) => {\n\t\t\tresources.notePostDelete.trackRemoval(removeNote(snapshot, userId, now, deletionPorts), snapshot.id, userId);\n\t\t},\n"
+        },
+        {
+          "offset": 4225,
+          "previous": "\treturn { authenticate, deletion, show, list, create, reader, readCreatedNote, pollRecommendation: createPollRecommendationHttp(resources, config) };\n",
+          "insert": "\treturn { authenticate, deletion, unrenote, show, list, create, reader, readCreatedNote, pollRecommendation: createPollRecommendationHttp(resources, config) };\n"
+        },
+        {
+          "offset": 4513,
+          "previous": "\tconst { authenticate, deletion, show, list, create, readCreatedNote } = prepared;\n",
+          "insert": "\tconst { authenticate, deletion, unrenote, show, list, create, readCreatedNote } = prepared;\n"
+        },
+        {
+          "offset": 4878,
+          "previous": "",
+          "insert": "\t\t.route('/', createNoteDeleteApi({ authenticate, deleteNote: unrenote.unrenote, logger: resources.logger, endpoint: 'unrenote' }))\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/http/note-delete-api.ts": {
+      "previousSha256": "5cca7fda373746e7d4483c2b36a8e13258b68fba9fe47099981e0867cc21b5d1",
+      "currentSha256": "837be35b14c993354fba85c7f8ea70eea6ddb6e7c52e978872bcbf998e140800",
+      "patches": [
+        {
+          "offset": 2162,
+          "previous": "",
+          "insert": "\tendpoint?: 'delete' | 'unrenote';\n"
+        },
+        {
+          "offset": 2227,
+          "previous": "\tregisterApiRoute(app, '/api/notes/delete', async context => {\n",
+          "insert": "\tregisterApiRoute(app, `/api/notes/${dependencies.endpoint ?? 'delete'}`, async context => {\n"
+        },
+        {
+          "offset": 2723,
+          "previous": "\t\t\t\treturn apiErrorResponse({ ...errors[error.code], code: error.code, info: error.info });\n",
+          "insert": "\t\t\t\tconst definition = { ...errors[error.code] };\n\t\t\t\tif (dependencies.endpoint === 'unrenote' && error.code === 'NO_SUCH_NOTE') {\n\t\t\t\t\tdefinition.id = 'efd4a259-2442-496b-8dd7-b255aa1a160f';\n\t\t\t\t}\n\t\t\t\treturn apiErrorResponse({ ...definition, code: error.code, info: error.info });\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/modules/note/delete-note.ts": {
+      "previousSha256": "a01e54bdc4ba8e166ca499304794e01a694093b609ad5391266d3c3f68985c07",
+      "currentSha256": "64f5162174ff6fa661a9df9e40e99d5245cc56d1b9c1e7094647985aa1750fec",
+      "patches": [
+        {
+          "offset": 103,
+          "previous": "import { Ajv } from 'ajv';\n",
+          "insert": "import { NoteDeleteError, readDeletionRequest } from './deletion-request.js';\n"
+        },
+        {
+          "offset": 364,
+          "previous": "export type NoteDeleteErrorCode = 'CREDENTIAL_REQUIRED' | 'AUTHENTICATION_FAILED' | 'YOUR_ACCOUNT_SUSPENDED' | 'PERMISSION_DENIED' | 'INVALID_PARAM' | 'RATE_LIMIT_EXCEEDED' | 'NO_SUCH_NOTE' | 'ACCESS_DENIED';\nexport class NoteDeleteError extends Error {\n\tconstructor(public readonly code: NoteDeleteErrorCode, public readonly info?: object) {\n\t\tsuper(code);\n\t}\n}\n",
+          "insert": "export { NoteDeleteError } from './deletion-request.js';\nexport type { NoteDeleteErrorCode } from './deletion-request.js';\n\n"
+        },
+        {
+          "offset": 1282,
+          "previous": "const ajv = new Ajv();\najv.addFormat('misskey:id', /^[a-zA-Z0-9]+$/);\nconst validate = ajv.compile({ type: 'object', properties: { noteId: { type: 'string', format: 'misskey:id' } }, required: ['noteId'] });\n\nexport function createDeleteNote(ports: {\n",
+          "insert": "export type NoteDeletionPorts = {\n"
+        },
+        {
+          "offset": 1934,
+          "previous": "}) {\n",
+          "insert": "};\n\nexport async function removeNote(snapshot: DeletedNoteSnapshot, actorId: string, now: number, ports: NoteDeletionPorts): Promise<void> {\n\t// 本家はこの減算を独立した文として先に確定する。後の DELETE 失敗で巻き戻したことにはしない。\n\tif (snapshot.replyId !== null) {\n\t\tawait ports.decrementReplies(snapshot.replyId);\n\t}\n\tports.publishDeleted?.(snapshot, now);\n\tif (snapshot.authorHost === null && !snapshot.localOnly) {\n\t\t// 本家は deleted stream の後、ローカルの純粋 Renote の AP 準備だけで元投稿を読む。\n\t\tconst deliverySnapshot = isPureRenote(snapshot.note)\n\t\t\t? { ...snapshot, renote: await ports.readRenote(snapshot.note.renoteId!) }\n\t\t\t: snapshot;\n\t\tconst activity = ports.renderActivity(deliverySnapshot, now);\n\t\tports.start({ kind: 'delivery', snapshot: deliverySnapshot, activity });\n\t}\n\tports.start({ kind: 'charts', snapshot });\n\tif (snapshot.authorHost !== null) {\n\t\tports.start({ kind: 'instanceCounts', snapshot });\n\t}\n\tports.start({ kind: 'search', snapshot });\n\tawait ports.deleteNote(snapshot.id, snapshot.userId);\n\tif (snapshot.userId !== actorId) {\n\t\tports.start({ kind: 'audit', snapshot, actorId, occurredAtMs: now });\n\t}\n}\n\nexport function createDeleteNote(ports: NoteDeletionPorts) {\n"
+        },
+        {
+          "offset": 3317,
+          "previous": "\t\t\tif (actor === null) {\n\t\t\t\tthrow new NoteDeleteError('CREDENTIAL_REQUIRED');\n\t\t\t}\n\t\t\tconst facts = await ports.readActor(actor.userId, now);\n\t\t\tif (facts === null) {\n\t\t\t\tthrow new NoteDeleteError('AUTHENTICATION_FAILED');\n\t\t\t}\n\t\t\tif (facts.rateLimitFactor > 0) {\n\t\t\t\tawait ports.limit(actor.userId, facts.rateLimitFactor);\n\t\t\t}\n\t\t\tif (facts.isSuspended) {\n\t\t\t\tthrow new NoteDeleteError('YOUR_ACCOUNT_SUSPENDED');\n\t\t\t}\n\t\t\tif (!actor.canWriteNote) {\n\t\t\t\tthrow new NoteDeleteError('PERMISSION_DENIED');\n\t\t\t}\n\t\t\tif (!validate(input)) {\n\t\t\t\tconst error = validate.errors![0];\n\t\t\t\tthrow new NoteDeleteError('INVALID_PARAM', { param: error.schemaPath, reason: error.message! });\n\t\t\t}\n\t\t\tconst snapshot = await ports.readNote((input as { noteId: string }).noteId);\n",
+          "insert": "\t\t\tconst { actor: authorized, facts, noteId } = await readDeletionRequest(actor, input, now, ports);\n\t\t\tconst snapshot = await ports.readNote(noteId);\n"
+        },
+        {
+          "offset": 3548,
+          "previous": "\t\t\tif (snapshot.userId !== actor.userId && !facts.isModerator) {\n",
+          "insert": "\t\t\tif (snapshot.userId !== authorized.userId && !facts.isModerator) {\n"
+        },
+        {
+          "offset": 3671,
+          "previous": "\t\t\t// 本家はこの減算を独立した文として先に確定する。後の DELETE 失敗で巻き戻したことにはしない。\n\t\t\tif (snapshot.replyId !== null) {\n\t\t\t\tawait ports.decrementReplies(snapshot.replyId);\n\t\t\t}\n\t\t\tports.publishDeleted?.(snapshot, now);\n\t\t\tif (snapshot.authorHost === null && !snapshot.localOnly) {\n\t\t\t\t// 本家は deleted stream の後、ローカルの純粋 Renote の AP 準備だけで元投稿を読む。\n\t\t\t\tconst deliverySnapshot = isPureRenote(snapshot.note)\n\t\t\t\t\t? { ...snapshot, renote: await ports.readRenote(snapshot.note.renoteId!) }\n\t\t\t\t\t: snapshot;\n\t\t\t\tconst activity = ports.renderActivity(deliverySnapshot, now);\n\t\t\t\tports.start({ kind: 'delivery', snapshot: deliverySnapshot, activity });\n\t\t\t}\n\t\t\tports.start({ kind: 'charts', snapshot });\n\t\t\tif (snapshot.authorHost !== null) {\n\t\t\t\tports.start({ kind: 'instanceCounts', snapshot });\n\t\t\t}\n\t\t\tports.start({ kind: 'search', snapshot });\n\t\t\tawait ports.deleteNote(snapshot.id, snapshot.userId);\n\t\t\tif (snapshot.userId !== actor.userId) {\n\t\t\t\tports.start({ kind: 'audit', snapshot, actorId: actor.userId, occurredAtMs: now });\n\t\t\t}\n",
+          "insert": "\t\t\tawait removeNote(snapshot, authorized.userId, now, ports);\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/modules/note/public.ts": {
+      "previousSha256": "e2a810519faf1d6ec025d7f7817776a86795c6e07bbfdbddcc120e8203a507f1",
+      "currentSha256": "878b0f8e714d686824dd89009e33b21f91ecb9200ab795128528eb1fbbfc2323",
+      "patches": [
+        {
+          "offset": 1027,
+          "previous": "export { createDeleteNote, NoteDeleteError } from './delete-note.js';\nexport type { DeletedNoteSnapshot, NoteDeleteWork, NoteDeleteErrorCode } from './delete-note.js';\n",
+          "insert": "export { createUnrenote } from './unrenote.js';\nexport { createDeleteNote, removeNote, NoteDeleteError } from './delete-note.js';\nexport type { DeletedNoteSnapshot, NoteDeleteWork, NoteDeleteErrorCode, NoteDeletionPorts } from './delete-note.js';\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/note-deleter.ts": {
+      "previousSha256": "820c33f24acb3cb9390cfd7112b97a4e6ac38ec9024f264ba246ecf22f27e1fe",
+      "currentSha256": "abd2824cce2f596f5fdd1748f9f046421b511ae47bb60983bd1f1ff30e35bf8a",
+      "patches": [
+        {
+          "offset": 742,
+          "previous": "",
+          "insert": "\tfunction snapshot(row: MiNote, author: MiUser): DeletedNoteSnapshot {\n\t\treturn {\n\t\t\tid: row.id, userId: row.userId, authorHost: author.host, noteHost: row.userHost, authorUsername: author.username, localOnly: row.localOnly,\n\t\t\treplyId: row.replyId, renoteUserId: row.renoteUserId,\n\t\t\tnote: {\n\t\t\t\tid: row.id, userId: row.userId, createdAtMs: createdAtFromId(row.id), text: row.text, cw: row.cw, visibility: row.visibility,\n\t\t\t\treplyId: row.replyId, renoteId: row.renoteId, renoteUserHost: row.renoteUserHost, fileIds: row.fileIds,\n\t\t\t\thasPoll: row.hasPoll, tags: row.tags, mentionedRemoteUsers: JSON.parse(row.mentionedRemoteUsers),\n\t\t\t},\n\t\t\trenote: null,\n\t\t\tauditNote: { ...row },\n\t\t};\n\t}\n\n"
+        },
+        {
+          "offset": 2495,
+          "previous": "\t\t\treturn {\n\t\t\t\tid: row.id, userId: row.userId, authorHost: author.host, noteHost: row.userHost, authorUsername: author.username, localOnly: row.localOnly,\n\t\t\t\treplyId: row.replyId, renoteUserId: row.renoteUserId,\n\t\t\t\tnote: {\n\t\t\t\t\tid: row.id, userId: row.userId, createdAtMs: createdAtFromId(row.id), text: row.text, cw: row.cw, visibility: row.visibility,\n\t\t\t\t\treplyId: row.replyId, renoteId: row.renoteId, renoteUserHost: row.renoteUserHost, fileIds: row.fileIds,\n\t\t\t\t\thasPoll: row.hasPoll, tags: row.tags, mentionedRemoteUsers: JSON.parse(row.mentionedRemoteUsers),\n\t\t\t\t},\n\t\t\t\trenote: null,\n\t\t\t\tauditNote: { ...row },\n\t\t\t};\n",
+          "insert": "\t\t\treturn snapshot(row, author);\n\t\t},\n\t\treadTarget(noteId: string): Promise<boolean> {\n\t\t\treturn manager.getRepository(MiNote).existsBy({ id: noteId });\n\t\t},\n\t\tasync readOwnRenotes(userId: string, noteId: string): Promise<DeletedNoteSnapshot[]> {\n\t\t\tconst rows = await manager.getRepository(MiNote).findBy({ userId, renoteId: noteId });\n\t\t\tif (rows.length === 0) {\n\t\t\t\treturn [];\n\t\t\t}\n\t\t\tconst author = await manager.getRepository(MiUser).findOneByOrFail({ id: userId });\n\t\t\treturn rows.map(row => snapshot(row, author));\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/note-delete-rate-limit.ts": {
+      "previousSha256": "df97bba56cd420cf98140e4097e8f67dcb47b540b9ff1189a2e338a20216c728",
+      "currentSha256": "a02504fa03ca06bdd186f30fd38128226a95be29bcec4bdf726d21404dcd4f27",
+      "patches": [
+        {
+          "offset": 263,
+          "previous": "export function createNoteDeleteRateLimiter(redis: Redis) {\n",
+          "insert": "export function createNoteDeleteRateLimiter(redis: Redis, key = 'notes/delete') {\n"
+        },
+        {
+          "offset": 456,
+          "previous": "\t\tconst exceeded = await limit({ key: 'notes/delete', duration: 60 * 60 * 1000, max: 300, minInterval: 1000 }, userId, factor);\n",
+          "insert": "\t\tconst exceeded = await limit({ key, duration: 60 * 60 * 1000, max: 300, minInterval: 1000 }, userId, factor);\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/note-post-delete.ts": {
+      "previousSha256": "aa3a42da8c33f1980de7c53fe08fc1e1cd1e0305a29c8266ff3c796235e4f64a",
+      "currentSha256": "7ed91e8a022c2e42580ed0ef3bba4964e11e2c7c61ed3d53da6c7e1ec73cece9",
+      "patches": [
+        {
+          "offset": 471,
+          "previous": "",
+          "insert": "\tfunction track(task: Promise<void>, noteId: string, userId: string, kind: string): void {\n\t\tconst handled = task.catch(error => {\n\t\t\tlogger.error('note-post-delete.failed', { error, noteId, userId, kind });\n\t\t});\n\t\tpending.add(handled);\n\t\tvoid handled.then(() => pending.delete(handled));\n\t}\n\n"
+        },
+        {
+          "offset": 775,
+          "previous": "",
+          "insert": "\t\ttrackRemoval(task: Promise<void>, noteId: string, userId: string): void {\n\t\t\ttrack(task, noteId, userId, 'unrenote');\n\t\t},\n"
+        },
+        {
+          "offset": 1063,
+          "previous": "\t\t\tconst task = (async () => run(input))().catch(error => {\n\t\t\t\tlogger.error('note-post-delete.failed', { error, noteId: input.snapshot.id, userId: input.snapshot.userId, kind: input.kind });\n\t\t\t});\n\t\t\tpending.add(task);\n\t\t\tvoid task.then(() => pending.delete(task));\n",
+          "insert": "\t\t\ttrack((async () => run(input))(), input.snapshot.id, input.snapshot.userId, input.kind);\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "previousSha256": "32ec236ef523e7a4d39db6a7b1da8d4206a53963170490ae4a1a63ebc150259c",
+      "currentSha256": "e0222b54780c4a9916802297bfd00abf0383fcea45d5d40d984f5a1df76df448",
+      "patches": [
+        {
+          "offset": 4003,
+          "previous": "\t\t'/api/notes/polls/recommendation', '/api/notes', '/api/notes/delete', '/api/notes/show', '/api/notes/create', '/api/test', '/api/reset-db', '/api/test-queue',\n",
+          "insert": "\t\t'/api/notes/polls/recommendation', '/api/notes', '/api/notes/delete', '/api/notes/unrenote', '/api/notes/show', '/api/notes/create', '/api/test', '/api/reset-db', '/api/test-queue',\n"
+        },
+        {
+          "offset": 4192,
+          "previous": "\tfor (const path of ['promo/read', 'notes/translate', 'notes/polls/recommendation', 'admin/roles/show', 'admin/roles/update', 'notes/delete', 'notes/create', 'drive/files/show', 'drive/files/find', 'drive/files/find-by-hash', 'drive/files/check-existence', 'admin/drive/show-file', 'drive/folders/create', 'drive/folders/delete', 'drive/folders/find', 'drive/folders/show', 'drive/folders/update']) {\n",
+          "insert": "\tfor (const path of ['promo/read', 'notes/translate', 'notes/polls/recommendation', 'admin/roles/show', 'admin/roles/update', 'notes/delete', 'notes/unrenote', 'notes/create', 'drive/files/show', 'drive/files/find', 'drive/files/find-by-hash', 'drive/files/check-existence', 'admin/drive/show-file', 'drive/folders/create', 'drive/folders/delete', 'drive/folders/find', 'drive/folders/show', 'drive/folders/update']) {\n"
+        }
+      ]
+    }
+  }
+}

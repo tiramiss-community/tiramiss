@@ -1,0 +1,51 @@
+{
+  "identity": [
+    {
+      "revision": "8e07cf085adf7009583d234a208e30436f020e26",
+      "path": "packages/backend/src/server/api/endpoints/notes/unrenote.ts",
+      "sha256": "6e99fa660afe694ca704bdf2f9182bb5a6cc8f11f6c71c9cebd610ef4fd9dab7"
+    },
+    {
+      "revision": "8e07cf085adf7009583d234a208e30436f020e26",
+      "path": "packages/backend/src/core/NoteDeleteService.ts",
+      "sha256": "f27dfc26664f39f9ade3366f46411ffe6ff5c189e5d97fb371dda5c3bf7d240c"
+    },
+    {
+      "revision": "8e07cf085adf7009583d234a208e30436f020e26",
+      "path": "packages/backend/src/misc/is-renote.ts",
+      "sha256": "94e81166e0dded8b2298000e2f9e1f8692754859f22c54791ac0f3f1d5b99607"
+    }
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "noteId": {
+        "type": "string",
+        "format": "misskey:id"
+      }
+    },
+    "required": [
+      "noteId"
+    ]
+  },
+  "meta": {
+    "tags": [
+      "notes"
+    ],
+    "requireCredential": true,
+    "kind": "write:notes",
+    "limit": {
+      "duration": 3600000,
+      "max": 300,
+      "minInterval": 1000
+    },
+    "errors": {
+      "noSuchNote": {
+        "message": "No such note.",
+        "code": "NO_SUCH_NOTE",
+        "id": "efd4a259-2442-496b-8dd7-b255aa1a160f"
+      }
+    }
+  },
+  "scope": "Literal endpoint callback and NoteDeleteService.delete; PG mode executes real selection/decrement/delete in a rolled-back transaction. API gate, stream/charts/search and AP renderer/delivery are doubles; not a full upstream server."
+}
