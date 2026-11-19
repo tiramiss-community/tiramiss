@@ -36,7 +36,7 @@ test.each([false, true])('uses the actual upstream transaction flags in a fresh 
 });
 
 test('preserves 348 existing rows through the real concurrent migrate/check CLI and distinguishes diagnostics', async () => {
-	expect(await observe('history', true)).toMatchObject({ before: 348, after: 349, preserved: true, repeated: true, checks: [0, 0], missing: { code: 'MIGRATION_HISTORY_MISSING' }, pending: { code: 'PENDING_MIGRATIONS' }, drift: 'SCHEMA_DRIFT', internalCount: 8 });
+	expect(await observe('history', true)).toMatchObject({ before: 348, after: 349, preserved: true, repeated: true, checks: [0, 0], missing: { code: 'MIGRATION_HISTORY_MISSING' }, pending: { code: 'PENDING_MIGRATIONS' }, drift: 'SCHEMA_DRIFT', internalCount: 9 });
 });
 
 test.each([false, true])('reports the actual remaining state after the second index fails and recovers after repair (concurrent=%s)', async concurrent => {

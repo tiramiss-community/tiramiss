@@ -1,0 +1,345 @@
+{
+  "newId": "normalizedid",
+  "doubles": [
+    "Endpoint callbacks, isVisibleForMe, AchievementService.create and notes/state callback execute from pinned Git blobs.",
+    "Repository, ID, clock, auth-independent local actor and notification delivery are explicit in-memory boundaries; PostgreSQL/HTTP/Redis run separately.",
+    "NotificationService reception is represented by never vs other no-notifier modes; push/unread/read APIs belong to downstream notification work."
+  ],
+  "cases": [
+    {
+      "id": "favorite-save-duplicate-delete-retry",
+      "note": {},
+      "steps": [
+        {
+          "operation": "favorites/create"
+        },
+        {
+          "operation": "favorites/create"
+        },
+        {
+          "operation": "favorites/delete"
+        },
+        {
+          "operation": "favorites/delete"
+        }
+      ]
+    },
+    {
+      "id": "mute-fallback-save-duplicate-delete-retry",
+      "note": {},
+      "steps": [
+        {
+          "operation": "thread-muting/create"
+        },
+        {
+          "operation": "thread-muting/create"
+        },
+        {
+          "operation": "thread-muting/delete"
+        },
+        {
+          "operation": "thread-muting/delete"
+        }
+      ]
+    },
+    {
+      "id": "mute-root-sharing",
+      "note": {
+        "threadId": "rootnote"
+      },
+      "steps": [
+        {
+          "operation": "thread-muting/create"
+        },
+        {
+          "operation": "thread-muting/delete"
+        }
+      ]
+    },
+    {
+      "id": "favorites-create-missing",
+      "note": null,
+      "steps": [
+        {
+          "operation": "favorites/create"
+        }
+      ]
+    },
+    {
+      "id": "favorites-create-invisible",
+      "note": {
+        "visibility": "specified"
+      },
+      "steps": [
+        {
+          "operation": "favorites/create"
+        }
+      ],
+      "favorites": []
+    },
+    {
+      "id": "favorites-delete-missing",
+      "note": null,
+      "steps": [
+        {
+          "operation": "favorites/delete"
+        }
+      ]
+    },
+    {
+      "id": "favorites-delete-invisible",
+      "note": {
+        "visibility": "specified"
+      },
+      "steps": [
+        {
+          "operation": "favorites/delete"
+        }
+      ],
+      "favorites": [
+        {
+          "id": "existing",
+          "userId": "viewer",
+          "noteId": "targetnote"
+        }
+      ]
+    },
+    {
+      "id": "thread-muting-create-missing",
+      "note": null,
+      "steps": [
+        {
+          "operation": "thread-muting/create"
+        }
+      ]
+    },
+    {
+      "id": "thread-muting-create-invisible",
+      "note": {
+        "visibility": "specified"
+      },
+      "steps": [
+        {
+          "operation": "thread-muting/create"
+        }
+      ],
+      "favorites": []
+    },
+    {
+      "id": "thread-muting-delete-missing",
+      "note": null,
+      "steps": [
+        {
+          "operation": "thread-muting/delete"
+        }
+      ]
+    },
+    {
+      "id": "thread-muting-delete-invisible",
+      "note": {
+        "visibility": "specified"
+      },
+      "steps": [
+        {
+          "operation": "thread-muting/delete"
+        }
+      ],
+      "favorites": []
+    },
+    {
+      "id": "favorite-specified-recipient",
+      "note": {
+        "visibility": "specified",
+        "visibleUserIds": [
+          "viewer"
+        ]
+      },
+      "steps": [
+        {
+          "operation": "favorites/create"
+        }
+      ]
+    },
+    {
+      "id": "favorite-own-note",
+      "note": {
+        "userId": "viewer"
+      },
+      "steps": [
+        {
+          "operation": "favorites/create"
+        }
+      ]
+    },
+    {
+      "id": "favorite-remote-note",
+      "note": {
+        "userId": "remote",
+        "userHost": "remote.test"
+      },
+      "steps": [
+        {
+          "operation": "favorites/create"
+        }
+      ]
+    },
+    {
+      "id": "favorite-followers-hidden",
+      "note": {
+        "visibility": "followers"
+      },
+      "steps": [
+        {
+          "operation": "favorites/create"
+        }
+      ]
+    },
+    {
+      "id": "favorite-followers-following",
+      "note": {
+        "visibility": "followers"
+      },
+      "steps": [
+        {
+          "operation": "favorites/create"
+        }
+      ],
+      "following": true
+    },
+    {
+      "id": "favorite-followers-reply",
+      "note": {
+        "visibility": "followers",
+        "replyUserId": "viewer"
+      },
+      "steps": [
+        {
+          "operation": "favorites/create"
+        }
+      ]
+    },
+    {
+      "id": "favorite-followers-mention",
+      "note": {
+        "visibility": "followers",
+        "mentions": [
+          "viewer"
+        ]
+      },
+      "steps": [
+        {
+          "operation": "favorites/create"
+        }
+      ]
+    },
+    {
+      "id": "favorite-home",
+      "note": {
+        "visibility": "home"
+      },
+      "steps": [
+        {
+          "operation": "favorites/create"
+        }
+      ]
+    },
+    {
+      "id": "favorite-existing-achievement",
+      "note": {},
+      "steps": [
+        {
+          "operation": "favorites/create"
+        }
+      ],
+      "achievements": [
+        {
+          "name": "myNoteFavorited1",
+          "unlockedAt": 123
+        }
+      ]
+    },
+    {
+      "id": "favorite-disabled-notification",
+      "note": {},
+      "steps": [
+        {
+          "operation": "favorites/create"
+        }
+      ],
+      "notificationMode": "never"
+    },
+    {
+      "id": "favorite-failure-insert",
+      "note": {},
+      "steps": [
+        {
+          "operation": "favorites/create"
+        }
+      ],
+      "fail": "insert"
+    },
+    {
+      "id": "mute-failure-insert",
+      "note": {},
+      "steps": [
+        {
+          "operation": "thread-muting/create"
+        }
+      ],
+      "fail": "insert"
+    },
+    {
+      "id": "favorite-failure-delete",
+      "note": {},
+      "steps": [
+        {
+          "operation": "favorites/delete"
+        }
+      ],
+      "favorites": [
+        {
+          "id": "existing",
+          "userId": "viewer",
+          "noteId": "targetnote"
+        }
+      ],
+      "fail": "delete"
+    },
+    {
+      "id": "favorite-failure-achievement",
+      "note": {},
+      "steps": [
+        {
+          "operation": "favorites/create"
+        }
+      ],
+      "fail": "achievement"
+    },
+    {
+      "id": "viewer-private-state",
+      "note": {},
+      "steps": [
+        {
+          "operation": "favorites/delete"
+        },
+        {
+          "operation": "thread-muting/delete"
+        }
+      ],
+      "favorites": [
+        {
+          "id": "otherfavorite",
+          "userId": "other",
+          "noteId": "targetnote"
+        }
+      ],
+      "mutings": [
+        {
+          "id": "othermute",
+          "userId": "other",
+          "threadId": "targetnote"
+        }
+      ]
+    }
+  ]
+}

@@ -89,7 +89,13 @@ test('loads copied entities without eagerly loading migration dependencies', asy
 	const userIp = source.getMetadata('MiUserIp');
 	expect(userIp.tableName).toBe('user_ip');
 	expect(userIp.indices.some(index => index.isUnique && index.columns.map(column => column.propertyName).join(',') === 'userId,ip')).toBe(true);
-	expect(source.entityMetadatas).toHaveLength(45);
+	const favorite = source.getMetadata('MiNoteFavorite');
+	expect(favorite.tableName).toBe('note_favorite');
+	expect(favorite.indices.some(index => index.isUnique && index.columns.map(column => column.propertyName).join(',') === 'userId,noteId')).toBe(true);
+	for (const property of ['user', 'note']) {
+		expect(favorite.relations.find(relation => relation.propertyName === property)?.onDelete).toBe('CASCADE');
+	}
+	expect(source.entityMetadatas).toHaveLength(46);
 	expect(source.getMetadata('MiWebhook').tableName).toBe('webhook');
 	expect(source.getMetadata('MiWebhook').relations.find(value => value.propertyName === 'user')?.inverseEntityMetadata.tableName).toBe('user');
 	for (const [model, table, relation] of [['MiMuting', 'muting', 'muter'], ['MiRenoteMuting', 'renote_muting', 'mutee'], ['MiNoteThreadMuting', 'note_thread_muting', 'user'], ['MiUserListMembership', 'user_list_membership', 'user']] as const) {

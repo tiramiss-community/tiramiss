@@ -17,6 +17,7 @@ import { createPublicEmojisHttp } from './public-emojis-http.js';
 import { createUserRelationHttp } from './user-relation-http.js';
 import { createPromoHttp } from './promo-http.js';
 import { createNoteTranslateHttp } from './note-translate-http.js';
+import { createNotePersonalStateHttp } from './note-personal-state-http.js';
 import { createUserMemoHttp } from './user-memo-http.js';
 import { createPagesHttp } from './pages-http.js';
 import { createDriveFilesHttp } from './drive-files-http.js';
@@ -76,6 +77,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		.route('/', createPublicDocumentsHttp(resources, config))
 		.route('/', createEmojiImagesHttp())
 		.route('/', createAvatarImagesHttp(resources, config))
+		.route('/', createNotePersonalStateHttp(resources, config))
 		.route('/', folders.app);
 	registerHttpAppWork(app, async () => {
 		await Promise.all([folders.idle(), pages.idle(), announcements.idle(), avatarDecorationAdmin.idle(), ipLog.close()]);

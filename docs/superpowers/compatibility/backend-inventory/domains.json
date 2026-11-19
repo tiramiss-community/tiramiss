@@ -4711,6 +4711,118 @@
         "Reset requires explicit operator binding of disposable PG/Redis host/port/database/db. Primary Redis flush remains first; atomic schema-qualified TRUNCATE ONLY in public/backend_internal preserves migrations/typeorm_metadata instead of upstream unqualified DELETE/retry over all schemas. See compatibility/test-controls/README.md; does not guarantee distributed atomicity or reset other memory caches. Post-commit publication failure emits a fixed diagnostic and retains204; unknown COMMIT outcomes require state inspection before retry."
       ]
     },
+    "api:notes/favorites/create": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/note-personal-state/public.ts",
+        "packages/backend-next/src/platform/database/note-personal-state.ts",
+        "packages/backend-next/src/http/note-personal-state-api.ts",
+        "packages/backend-next/src/composition/note-personal-state-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/note-personal-state/personal-state.test.ts",
+        "packages/backend-next/test/integration/note-personal-state.test.ts",
+        "docs/superpowers/compatibility/note-personal-state/source-probe.mjs",
+        "docs/superpowers/compatibility/note-personal-state/observations.json",
+        "docs/superpowers/compatibility/note-personal-state/README.md",
+        "scripts/note-personal-state-contract.test.mjs"
+      ],
+      "evidenceRevision": "83103610156681772bca6e40dfe0a0f4514a12f5",
+      "differences": [
+        "固定source callback・可視性method・AchievementServiceと明示的repository doublesの26ケースを、新実装の通常listening HTTP/PG/Redisと比較。本家full serverは起動していない。実績grantは作者行ロックで同時重複を防ぐ。通知は既存PG正本とmain streamのみで、一般の未読/push/一覧は#177/#298/#437の既存担当へ残る。"
+      ],
+      "note": "#481: 本人別保存/解除、threadId未設定時Note ID、API別可視性/重複/不存在/再試行/error UUID、scope/凍結/移行済み/Redis制限を比較。favorite作成時のローカル別作者の実績保存/PG通知/streamと失敗境界を接続。notes/state公開#482とfavorite一覧#487、親#184/#114は未完了。"
+    },
+    "api:notes/favorites/delete": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/note-personal-state/public.ts",
+        "packages/backend-next/src/platform/database/note-personal-state.ts",
+        "packages/backend-next/src/http/note-personal-state-api.ts",
+        "packages/backend-next/src/composition/note-personal-state-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/note-personal-state/personal-state.test.ts",
+        "packages/backend-next/test/integration/note-personal-state.test.ts",
+        "docs/superpowers/compatibility/note-personal-state/source-probe.mjs",
+        "docs/superpowers/compatibility/note-personal-state/observations.json",
+        "docs/superpowers/compatibility/note-personal-state/README.md",
+        "scripts/note-personal-state-contract.test.mjs"
+      ],
+      "evidenceRevision": "83103610156681772bca6e40dfe0a0f4514a12f5",
+      "differences": [
+        "固定source callback・可視性method・AchievementServiceと明示的repository doublesの26ケースを、新実装の通常listening HTTP/PG/Redisと比較。本家full serverは起動していない。実績grantは作者行ロックで同時重複を防ぐ。通知は既存PG正本とmain streamのみで、一般の未読/push/一覧は#177/#298/#437の既存担当へ残る。"
+      ],
+      "note": "#481: 本人別保存/解除、threadId未設定時Note ID、API別可視性/重複/不存在/再試行/error UUID、scope/凍結/移行済み/Redis制限を比較。favorite作成時のローカル別作者の実績保存/PG通知/streamと失敗境界を接続。notes/state公開#482とfavorite一覧#487、親#184/#114は未完了。"
+    },
+    "api:notes/thread-muting/create": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/note-personal-state/public.ts",
+        "packages/backend-next/src/platform/database/note-personal-state.ts",
+        "packages/backend-next/src/http/note-personal-state-api.ts",
+        "packages/backend-next/src/composition/note-personal-state-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/note-personal-state/personal-state.test.ts",
+        "packages/backend-next/test/integration/note-personal-state.test.ts",
+        "docs/superpowers/compatibility/note-personal-state/source-probe.mjs",
+        "docs/superpowers/compatibility/note-personal-state/observations.json",
+        "docs/superpowers/compatibility/note-personal-state/README.md",
+        "scripts/note-personal-state-contract.test.mjs"
+      ],
+      "evidenceRevision": "83103610156681772bca6e40dfe0a0f4514a12f5",
+      "differences": [
+        "固定source callback・可視性method・AchievementServiceと明示的repository doublesの26ケースを、新実装の通常listening HTTP/PG/Redisと比較。本家full serverは起動していない。実績grantは作者行ロックで同時重複を防ぐ。通知は既存PG正本とmain streamのみで、一般の未読/push/一覧は#177/#298/#437の既存担当へ残る。"
+      ],
+      "note": "#481: 本人別保存/解除、threadId未設定時Note ID、API別可視性/重複/不存在/再試行/error UUID、scope/凍結/移行済み/Redis制限を比較。favorite作成時のローカル別作者の実績保存/PG通知/streamと失敗境界を接続。notes/state公開#482とfavorite一覧#487、親#184/#114は未完了。"
+    },
+    "api:notes/thread-muting/delete": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/note-personal-state/public.ts",
+        "packages/backend-next/src/platform/database/note-personal-state.ts",
+        "packages/backend-next/src/http/note-personal-state-api.ts",
+        "packages/backend-next/src/composition/note-personal-state-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/note-personal-state/personal-state.test.ts",
+        "packages/backend-next/test/integration/note-personal-state.test.ts",
+        "docs/superpowers/compatibility/note-personal-state/source-probe.mjs",
+        "docs/superpowers/compatibility/note-personal-state/observations.json",
+        "docs/superpowers/compatibility/note-personal-state/README.md",
+        "scripts/note-personal-state-contract.test.mjs"
+      ],
+      "evidenceRevision": "83103610156681772bca6e40dfe0a0f4514a12f5",
+      "differences": [
+        "固定source callback・可視性method・AchievementServiceと明示的repository doublesの26ケースを、新実装の通常listening HTTP/PG/Redisと比較。本家full serverは起動していない。実績grantは作者行ロックで同時重複を防ぐ。通知は既存PG正本とmain streamのみで、一般の未読/push/一覧は#177/#298/#437の既存担当へ残る。"
+      ],
+      "note": "#481: 本人別保存/解除、threadId未設定時Note ID、API別可視性/重複/不存在/再試行/error UUID、scope/凍結/移行済み/Redis制限を比較。favorite作成時のローカル別作者の実績保存/PG通知/streamと失敗境界を接続。notes/state公開#482とfavorite一覧#487、親#184/#114は未完了。"
+    },
+    "capability:engagement": {
+      "status": "partial",
+      "implementation": [
+        "packages/backend-next/src/modules/note-personal-state/public.ts",
+        "packages/backend-next/src/platform/database/note-personal-state.ts",
+        "packages/backend-next/src/http/note-personal-state-api.ts",
+        "packages/backend-next/src/composition/note-personal-state-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/note-personal-state/personal-state.test.ts",
+        "packages/backend-next/test/integration/note-personal-state.test.ts",
+        "docs/superpowers/compatibility/note-personal-state/source-probe.mjs",
+        "docs/superpowers/compatibility/note-personal-state/observations.json",
+        "docs/superpowers/compatibility/note-personal-state/README.md",
+        "scripts/note-personal-state-contract.test.mjs"
+      ],
+      "evidenceRevision": "83103610156681772bca6e40dfe0a0f4514a12f5",
+      "note": "#481: favorite/thread muteの更新・保存後読取り材料・通知consumer反映・作者実績を実装/比較済み。#488 unrenote/#489 poll recommendationの既存成果も維持。reaction/投票更新・buffer・AP/通知等の親#184残範囲、favorite一覧#487は未完了。"
+    },
     "api:notes/unrenote": {
       "status": "verified",
       "implementation": [

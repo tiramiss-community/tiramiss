@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import type { EntityManager } from 'typeorm';
-import type { PostNotification } from '../../../modules/notification/public.js';
+import type { PostNotification, AchievementNotification } from '../../../modules/notification/public.js';
 
 async function lockRecipient(manager: EntityManager, recipientId: string): Promise<void> {
 	if (!manager.queryRunner?.isTransactionActive || manager.queryRunner.isReleased) {
@@ -23,11 +23,14 @@ export class PostNotificationPersistence {
 		}
 	}
 
-	async save(manager: EntityManager, notification: PostNotification): Promise<void> {
+	async save(manager: EntityManager, notification: PostNotification | AchievementNotification): Promise<void> {
 		await lockRecipient(manager, notification.recipientId);
 		await manager.createQueryBuilder().insert().into('backend_internal.notification').values({
 			notification_id: notification.id, recipient_id: notification.recipientId, notification_type: notification.type,
-			notifier_id: notification.notifierId, note_id: notification.noteId, target_note_id: notification.targetNoteId,
+			notifier_id: 'notifierId' in notification ? notification.notifierId : null,
+			note_id: 'noteId' in notification ? notification.noteId : null,
+			target_note_id: 'targetNoteId' in notification ? notification.targetNoteId : null,
+			achievement: 'achievement' in notification ? notification.achievement : null,
 			created_at: new Date(notification.createdAtMs),
 		}).execute();
 

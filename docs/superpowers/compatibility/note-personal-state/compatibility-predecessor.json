@@ -1,0 +1,226 @@
+{
+  "baseline": "5fdc1702d2568c2df9dc2f33411fd11ecc35db04",
+  "files": {
+    "packages/backend-next/src/composition/http-app.ts": {
+      "previousSha256": "4dbae4ec310d6585c00c0ef2f744a229c53c3bee02b8399aa6abae88293a438f",
+      "currentSha256": "c784576dd595d48a641534d18a8268f9ace3a046417f15e3782ca5a317805413",
+      "patches": [
+        {
+          "offset": 1086,
+          "previous": "",
+          "insert": "import { createNotePersonalStateHttp } from './note-personal-state-http.js';\n"
+        },
+        {
+          "offset": 4741,
+          "previous": "",
+          "insert": "\t\t.route('/', createNotePersonalStateHttp(resources, config))\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/modules/notification/model.ts": {
+      "previousSha256": "a6dd0dc7d66db0d857e2eacbaaa29b58f5f7275bb3cf41d237ebcf65f28d6503",
+      "currentSha256": "8504be295b76e16aa617a87ac88f60f2fc4dd5e4bfcfd09c50832adf2069a158",
+      "patches": [
+        {
+          "offset": 689,
+          "previous": "",
+          "insert": "\nexport interface AchievementNotification {\n\tid: string;\n\trecipientId: string;\n\ttype: 'achievementEarned';\n\tachievement: string;\n\tcreatedAtMs: number;\n}\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/modules/notification/public.ts": {
+      "previousSha256": "1048e96179ab05149ad8ecedf28953563d1f6c7c9dd1e08507c9ec9e94dc00e4",
+      "currentSha256": "f5ff82b3ff07f955693fe64807e2404d7172c1d047d4c86be8dcbcd79ee712e0",
+      "patches": [
+        {
+          "offset": 103,
+          "previous": "export type { PostNotification, PostNotificationType, PostNotificationWrites } from './model.js';\n",
+          "insert": "export type { PostNotification, PostNotificationType, PostNotificationWrites, AchievementNotification } from './model.js';\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/connect-resources.ts": {
+      "previousSha256": "6ec428f85e66172e77d9d5a9fb0818a0ac9fa43ac3fd1a8d49efe88bf8b77100",
+      "currentSha256": "910fb62bf3f630959f3f05cfefe9ac14a6fe6fac2e0e8de3f7651eb67e644a02",
+      "patches": [
+        {
+          "offset": 103,
+          "previous": "",
+          "insert": "import { createFavoriteAchievements } from '../composition/favorite-achievements.js';\n"
+        },
+        {
+          "offset": 22217,
+          "previous": "",
+          "insert": "\t\tconst favoriteAchievements = createFavoriteAchievements({ dataSource, postingStream, logger }, config);\n\t\tscope.defer(favoriteAchievements.close);\n\n"
+        },
+        {
+          "offset": 22632,
+          "previous": "",
+          "insert": "\t\t\tfavoriteAchievements,\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/migration-sources.ts": {
+      "previousSha256": "8fc2960fe615cbccc5d960fce9fa9099f263a025ce857e300e1fe3b72ae6764b",
+      "currentSha256": "97684f253cd395bad32d2a9070b165b76bf12c1f3bc6d5934190381f50ae87e6",
+      "patches": [
+        {
+          "offset": 700,
+          "previous": "",
+          "insert": "import { AchievementNotification1795060044090 } from './notification/achievement-migration.js';\n"
+        },
+        {
+          "offset": 1219,
+          "previous": "export const internalMigrations = [PostWorkPersistence1792590060271, PostWorkDispatch1792643873727, PostWorkRecovery1792665615537, PostNotification1792732433541, ApRecipientSnapshot1792734340852, ApHostLease1792815498061, RetireDurableWork1793635233676, PollEndedNotification1793706223869];\n",
+          "insert": "export const internalMigrations = [PostWorkPersistence1792590060271, PostWorkDispatch1792643873727, PostWorkRecovery1792665615537, PostNotification1792732433541, ApRecipientSnapshot1792734340852, ApHostLease1792815498061, RetireDurableWork1793635233676, PollEndedNotification1793706223869, AchievementNotification1795060044090];\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/notification/persistence.ts": {
+      "previousSha256": "776ecabf4453d7a271edb47faf604d2c14c4708154d10c9b3b4aa2ae8857981b",
+      "currentSha256": "2104bbafe4f9e4ffdc7720c00d0affbe10286596249ee24c5a0da01900025144",
+      "patches": [
+        {
+          "offset": 149,
+          "previous": "import type { PostNotification } from '../../../modules/notification/public.js';\n",
+          "insert": "import type { PostNotification, AchievementNotification } from '../../../modules/notification/public.js';\n"
+        },
+        {
+          "offset": 1055,
+          "previous": "\tasync save(manager: EntityManager, notification: PostNotification): Promise<void> {\n",
+          "insert": "\tasync save(manager: EntityManager, notification: PostNotification | AchievementNotification): Promise<void> {\n"
+        },
+        {
+          "offset": 1432,
+          "previous": "\t\t\tnotifier_id: notification.notifierId, note_id: notification.noteId, target_note_id: notification.targetNoteId,\n",
+          "insert": "\t\t\tnotifier_id: 'notifierId' in notification ? notification.notifierId : null,\n\t\t\tnote_id: 'noteId' in notification ? notification.noteId : null,\n\t\t\ttarget_note_id: 'targetNoteId' in notification ? notification.targetNoteId : null,\n\t\t\tachievement: 'achievement' in notification ? notification.achievement : null,\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/notification/schema.ts": {
+      "previousSha256": "cabf907c5ba8ff3b2456a52fcd405541ac6ab6c516855daf96861ffee835c729",
+      "currentSha256": "4a6a0e779fcacf79df6945f1731686fb3e4cc2ae56594312d7412913740c749a",
+      "patches": [
+        {
+          "offset": 278,
+          "previous": "\tnotification_type: { type: 'varchar', length: 16 } as const,\n\tnotifier_id: { ...id, nullable: true }, note_id: id, target_note_id: { ...id, nullable: true },\n",
+          "insert": "\tnotification_type: { type: 'varchar', length: 32 } as const,\n\tnotifier_id: { ...id, nullable: true }, note_id: { ...id, nullable: true }, achievement: { ...id, nullable: true }, target_note_id: { ...id, nullable: true },\n"
+        },
+        {
+          "offset": 680,
+          "previous": "\t\t{ name: 'notification_type', expression: \"notification_type IN ('reply','mention','quote','renote','note','pollEnded')\" },\n",
+          "insert": "\t\t{ name: 'notification_type', expression: \"notification_type IN ('reply','mention','quote','renote','note','pollEnded','achievementEarned')\" },\n\t\t{ name: 'notification_achievement', expression: \"(notification_type = 'achievementEarned') = (achievement IS NOT NULL) AND (notification_type = 'achievementEarned') = (note_id IS NULL)\" },\n"
+        },
+        {
+          "offset": 1128,
+          "previous": "\t\t{ name: 'notification_notifier', expression: \"(notification_type = 'pollEnded') = (notifier_id IS NULL)\" },\n",
+          "insert": "\t\t{ name: 'notification_notifier', expression: \"(notification_type IN ('pollEnded','achievementEarned')) = (notifier_id IS NULL)\" },\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/integration/migrations.test.ts": {
+      "previousSha256": "0a8d8c410c8719c6495a15f79d53f277065cd1eef245c4b5ab68b6e95f1ef6fc",
+      "currentSha256": "f8efced9f611657153030691735f59c30746ebba40297e5429edc22f0044149f",
+      "patches": [
+        {
+          "offset": 1961,
+          "previous": "\texpect(await source.query('SELECT name FROM backend_internal.migrations')).toEqual([{ name: 'PostWorkPersistence1792590060271' }, { name: 'PostWorkDispatch1792643873727' }, { name: 'PostWorkRecovery1792665615537' }, { name: 'PostNotification1792732433541' }, { name: 'ApRecipientSnapshot1792734340852' }, { name: 'ApHostLease1792815498061' }, { name: 'RetireDurableWork1793635233676' }, { name: 'PollEndedNotification1793706223869' }]);\n",
+          "insert": "\texpect(await source.query('SELECT name FROM backend_internal.migrations')).toEqual([{ name: 'PostWorkPersistence1792590060271' }, { name: 'PostWorkDispatch1792643873727' }, { name: 'PostWorkRecovery1792665615537' }, { name: 'PostNotification1792732433541' }, { name: 'ApRecipientSnapshot1792734340852' }, { name: 'ApHostLease1792815498061' }, { name: 'RetireDurableWork1793635233676' }, { name: 'PollEndedNotification1793706223869' }, { name: 'AchievementNotification1795060044090' }]);\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/integration/poll-ended-job.test.ts": {
+      "previousSha256": "c8ee85631c47cf629256006dadb61072818daa6b7fb9810f41446ce8a86e209b",
+      "currentSha256": "3021063e34f6c34844066107aa1ce3d9d497c89542ed24162ac1054f62faf369",
+      "patches": [
+        {
+          "offset": 6051,
+          "previous": "",
+          "insert": "\t\t\tawait internal.undoLastMigration();\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "previousSha256": "89d2fc32d1ffbf3c87dc06266d211e84439b6da222c7369b78a3493ab756773d",
+      "currentSha256": "0864b27b177ffd764a3d6ed0e4012ba52875c702fa44851b3f75648bea80f584",
+      "patches": [
+        {
+          "offset": 3955,
+          "previous": "",
+          "insert": "\t\t'/api/notes/favorites/create', '/api/notes/favorites/delete', '/api/notes/thread-muting/create', '/api/notes/thread-muting/delete',\n"
+        },
+        {
+          "offset": 15388,
+          "previous": "",
+          "insert": "\ntest('personal state composition rejects unauthenticated favorite and thread mute writes', async () => {\n\tconst { resources } = fixture();\n\tconst app = createBackendHttpApp(resources, testConfig());\n\tfor (const path of ['notes/favorites/create', 'notes/favorites/delete', 'notes/thread-muting/create', 'notes/thread-muting/delete']) {\n\t\tconst response = await app.request(`/api/${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });\n\t\texpect(response.status).toBe(401);\n\t\texpect(await response.json()).toHaveProperty('error.code', 'CREDENTIAL_REQUIRED');\n\t}\n});\n"
+        }
+      ]
+    },
+    "packages/backend-upstream/.managed-files.json": {
+      "previousSha256": "60ac1f6288335a1474f34c3bd3668e7321e7d8a720bb086f9fe5732b4992f8c0",
+      "currentSha256": "696270daf6644d288911ce9b8577af2bdd6f48a5331ff21ef062b2bc19ca7dc0",
+      "patches": [
+        {
+          "offset": 17386,
+          "previous": "",
+          "insert": "\t\"src/models/NoteFavorite.ts\",\n"
+        }
+      ]
+    },
+    "packages/backend-upstream/exports/entities.ts": {
+      "previousSha256": "7cf3c4da70de7b54414f55e7855269a1eb18dbbbcc33a841cdbf88f68da5ab6b",
+      "currentSha256": "af0523830f7440297d791b0a4b9b42eada537c3d809cf9fc8746e25fb15de6bd",
+      "patches": [
+        {
+          "offset": 2759,
+          "previous": "export { MiWebhook, MiRole, MiRoleAssignment, MiUser, MiMeta, MiModerationLog, MiAccessToken, MiApp, MiDriveFile, MiDriveFolder, MiNote, MiHashtag, MiChannel, MiFollowing, MiRelay, MiPoll, MiPollVote, MiNoteReaction, MiEmoji, MiInstance, MiAvatarDecoration, MiBlocking, MiUserProfile, MiPage, MiUserList, MiSystemAccount, MiUserKeypair, MiUsedUsername, MiMuting, MiRenoteMuting, MiNoteThreadMuting, MiUserListMembership, MiChannelFollowing, MiChannelMuting, MiAntenna, MiUserPublickey, MiFollowRequest, MiUserNotePining, MiUserMemo, MiUserIp, MiPageLike, MiAnnouncement, MiAnnouncementRead, MiPromoNote, MiPromoRead };\nexport const entities = [MiWebhook, MiRole, MiRoleAssignment, MiUser, MiMeta, MiModerationLog, MiAccessToken, MiApp, MiDriveFile, MiDriveFolder, MiNote, MiHashtag, MiChannel, MiFollowing, MiRelay, MiPoll, MiPollVote, MiNoteReaction, MiEmoji, MiInstance, MiAvatarDecoration, MiBlocking, MiUserProfile, MiPage, MiUserList, MiSystemAccount, MiUserKeypair, MiUsedUsername, MiMuting, MiRenoteMuting, MiNoteThreadMuting, MiUserListMembership, MiChannelFollowing, MiChannelMuting, MiAntenna, MiUserPublickey, MiFollowRequest, MiUserNotePining, MiUserMemo, MiUserIp, MiPageLike, MiAnnouncement, MiAnnouncementRead, MiPromoNote, MiPromoRead];\n",
+          "insert": "import { MiNoteFavorite } from '../src/models/NoteFavorite.js';\nexport { MiWebhook, MiRole, MiRoleAssignment, MiUser, MiMeta, MiModerationLog, MiAccessToken, MiApp, MiDriveFile, MiDriveFolder, MiNote, MiHashtag, MiChannel, MiFollowing, MiRelay, MiPoll, MiPollVote, MiNoteReaction, MiEmoji, MiInstance, MiAvatarDecoration, MiBlocking, MiUserProfile, MiPage, MiUserList, MiSystemAccount, MiUserKeypair, MiUsedUsername, MiMuting, MiRenoteMuting, MiNoteThreadMuting, MiUserListMembership, MiChannelFollowing, MiChannelMuting, MiAntenna, MiUserPublickey, MiFollowRequest, MiUserNotePining, MiUserMemo, MiUserIp, MiPageLike, MiAnnouncement, MiAnnouncementRead, MiPromoNote, MiPromoRead, MiNoteFavorite };\nexport const entities = [MiWebhook, MiRole, MiRoleAssignment, MiUser, MiMeta, MiModerationLog, MiAccessToken, MiApp, MiDriveFile, MiDriveFolder, MiNote, MiHashtag, MiChannel, MiFollowing, MiRelay, MiPoll, MiPollVote, MiNoteReaction, MiEmoji, MiInstance, MiAvatarDecoration, MiBlocking, MiUserProfile, MiPage, MiUserList, MiSystemAccount, MiUserKeypair, MiUsedUsername, MiMuting, MiRenoteMuting, MiNoteThreadMuting, MiUserListMembership, MiChannelFollowing, MiChannelMuting, MiAntenna, MiUserPublickey, MiFollowRequest, MiUserNotePining, MiUserMemo, MiUserIp, MiPageLike, MiAnnouncement, MiAnnouncementRead, MiPromoNote, MiPromoRead, MiNoteFavorite];\n"
+        }
+      ]
+    },
+    "packages/backend-upstream/upstream-sync.json": {
+      "previousSha256": "dff0e1960a2431e049a6a3f46b86d0e0a9eb419fbe7a5bbb88fd41ec368ffab3",
+      "currentSha256": "948989f5e48a0d09ffe7c4b22bfdf7292650cdbc1a2945f8f2ff2a2561df7e6b",
+      "patches": [
+        {
+          "offset": 1413,
+          "previous": "\t\t\"src/models/PromoRead.ts\"\n",
+          "insert": "\t\t\"src/models/PromoRead.ts\",\n\t\t\"src/models/NoteFavorite.ts\"\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/package-imports.test.ts": {
+      "previousSha256": "28a862dd99aa2902cea4b0c92c90acde8229049d74156655bb601f15f2de2631",
+      "currentSha256": "b531f920fcceb02483cf6a7b3677c64793b81316436710e45e671ea6a58dd945",
+      "patches": [
+        {
+          "offset": 5822,
+          "previous": "\texpect(source.entityMetadatas).toHaveLength(45);\n",
+          "insert": "\tconst favorite = source.getMetadata('MiNoteFavorite');\n\texpect(favorite.tableName).toBe('note_favorite');\n\texpect(favorite.indices.some(index => index.isUnique && index.columns.map(column => column.propertyName).join(',') === 'userId,noteId')).toBe(true);\n\tfor (const property of ['user', 'note']) {\n\t\texpect(favorite.relations.find(relation => relation.propertyName === property)?.onDelete).toBe('CASCADE');\n\t}\n\texpect(source.entityMetadatas).toHaveLength(46);\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/integration/notification.test.ts": {
+      "previousSha256": "dc9b361af11f33c2ad04a9447f3acbf00df962013a9c9d77859b204a976818e7",
+      "currentSha256": "8e0188cab47d4e793baa15f6b6e1964f43b344778a43ad5ef4ed7c2942d916f2",
+      "patches": [
+        {
+          "offset": 2158,
+          "previous": "\t\tnotifier_id: 'author', note_id: 'note', target_note_id: type === 'renote' ? 'original' : null, created_at: new Date(at),\n",
+          "insert": "\t\tnotifier_id: 'author', note_id: 'note', achievement: null, target_note_id: type === 'renote' ? 'original' : null, created_at: new Date(at),\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/integration/migration-proof.test.ts": {
+      "previousSha256": "e24402924caa8f3d12ab4b4a0983f454e40cb4e5fe1d16aec28052116c166e5f",
+      "currentSha256": "95877bace0f29a1e901e34bea0c40c26b36bc08cf2eda1393f21aea185fec2f8",
+      "patches": [
+        {
+          "offset": 1646,
+          "previous": "\texpect(await observe('history', true)).toMatchObject({ before: 348, after: 349, preserved: true, repeated: true, checks: [0, 0], missing: { code: 'MIGRATION_HISTORY_MISSING' }, pending: { code: 'PENDING_MIGRATIONS' }, drift: 'SCHEMA_DRIFT', internalCount: 8 });\n",
+          "insert": "\texpect(await observe('history', true)).toMatchObject({ before: 348, after: 349, preserved: true, repeated: true, checks: [0, 0], missing: { code: 'MIGRATION_HISTORY_MISSING' }, pending: { code: 'PENDING_MIGRATIONS' }, drift: 'SCHEMA_DRIFT', internalCount: 9 });\n"
+        }
+      ]
+    }
+  }
+}

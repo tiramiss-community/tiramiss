@@ -19,3 +19,11 @@ export interface PostNotification {
 export interface PostNotificationWrites {
 	save(notification: PostNotification): Promise<void>;
 }
+
+export interface AchievementNotification {
+	id: string;
+	recipientId: string;
+	type: 'achievementEarned';
+	achievement: string;
+	createdAtMs: number;
+}

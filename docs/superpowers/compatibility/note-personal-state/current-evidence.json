@@ -1,0 +1,403 @@
+{
+  "runtimeRevision": "a888ffde7da45d87e61fb5da1ef7d6d2558bde39",
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "baseline": "5fdc1702d2568c2df9dc2f33411fd11ecc35db04",
+  "nodeVersion": "v24.20.0",
+  "startedAt": "2026-11-19T04:07:51.219355+00:00",
+  "inputs": {
+    "docs/superpowers/compatibility/backend-inventory/audit-items.json": "d2dce5f80e2de9472332dc8a0be8a322df346f2235067f97966e7decf23a156f",
+    "docs/superpowers/compatibility/backend-inventory/contracts.json": "9abc03ce2311b7950fbbf5b905a71686d54e880f952afee6fe2718e63cbf992c",
+    "docs/superpowers/compatibility/backend-inventory/contracts.md": "38f17e60697e473aa10665b2137601b62b3693fab9caa8ce2405f8e1debd262e",
+    "docs/superpowers/compatibility/backend-inventory/domains.json": "cfd0eb2e73b788cdb88e0a01ba1e99c89740b19148cdd99c7ed1ef9a1c487f04",
+    "docs/superpowers/compatibility/note-personal-state/README.md": "8093e912afaccd9f5b7f950c1e6656b8b62aa74c78d237e738c0adecb7094e35",
+    "docs/superpowers/compatibility/note-personal-state/compatibility-predecessor.json": "1d03a15b782cc825a1d4165c3782a8c341422975041dcf02f720f82aac5c89f4",
+    "docs/superpowers/compatibility/note-personal-state/corpus.json": "af570c767efcf4e2e72a73eaa099b9ccf3f33f74123302bf57825e05f0f8513f",
+    "docs/superpowers/compatibility/note-personal-state/observations.json": "45eb3e9da5452eb0bce8662852011461bf7df5b5a72392d2811f275fc600d60b",
+    "docs/superpowers/compatibility/note-personal-state/source-probe.mjs": "7d2fc5063da19abc9a4efcb51f16390c2317604f6618c4ac51d29f710414cc43",
+    "packages/backend-next/src/composition/favorite-achievements.ts": "c466643370c4763c6b0c53ab6575a9ffb2a8e0ba42fa46f7b16526bc8e473af2",
+    "packages/backend-next/src/composition/http-app.ts": "c784576dd595d48a641534d18a8268f9ace3a046417f15e3782ca5a317805413",
+    "packages/backend-next/src/composition/note-personal-state-http.ts": "b7fd8baac011d01cb139ad474734ff398f840af9e5d7e79aa33a7cba7ea342f2",
+    "packages/backend-next/src/http/note-personal-state-api.ts": "da8d9944f359fc16917505af0b0dbce9575614915a0f3878f545440830ef5564",
+    "packages/backend-next/src/modules/note-personal-state/favorite-achievement.ts": "79e760235dd484258b81f6d248d79e3319e5758f9124d66a3374b0b899501be6",
+    "packages/backend-next/src/modules/note-personal-state/public.ts": "31fb82053aabf892de78f20df0281ac17343f1d91796f6df5293f949fdcae95d",
+    "packages/backend-next/src/modules/notification/model.ts": "8504be295b76e16aa617a87ac88f60f2fc4dd5e4bfcfd09c50832adf2069a158",
+    "packages/backend-next/src/modules/notification/public.ts": "f5ff82b3ff07f955693fe64807e2404d7172c1d047d4c86be8dcbcd79ee712e0",
+    "packages/backend-next/src/platform/connect-resources.ts": "910fb62bf3f630959f3f05cfefe9ac14a6fe6fac2e0e8de3f7651eb67e644a02",
+    "packages/backend-next/src/platform/database/migration-sources.ts": "97684f253cd395bad32d2a9070b165b76bf12c1f3bc6d5934190381f50ae87e6",
+    "packages/backend-next/src/platform/database/note-personal-state.ts": "f9899a2f22038fec3386f7a1d014e979f84637183b0e70572cf67a461be3a4f0",
+    "packages/backend-next/src/platform/database/notification/achievement-migration.ts": "9f0d94096ca293f345fcccbe7241ae1f575658449694158a4425b9f02f17662b",
+    "packages/backend-next/src/platform/database/notification/persistence.ts": "2104bbafe4f9e4ffdc7720c00d0affbe10286596249ee24c5a0da01900025144",
+    "packages/backend-next/src/platform/database/notification/schema.ts": "4a6a0e779fcacf79df6945f1731686fb3e4cc2ae56594312d7412913740c749a",
+    "packages/backend-next/test/integration/migrations.test.ts": "f8efced9f611657153030691735f59c30746ebba40297e5429edc22f0044149f",
+    "packages/backend-next/test/integration/note-personal-state.test.ts": "4fb95eb5df3663a79972dc2a5d0eaf1a6996ea4319fee8146aac4e8ba8f39d3a",
+    "packages/backend-next/test/integration/poll-ended-job.test.ts": "3021063e34f6c34844066107aa1ce3d9d497c89542ed24162ac1054f62faf369",
+    "packages/backend-next/test/package-imports.test.ts": "b531f920fcceb02483cf6a7b3677c64793b81316436710e45e671ea6a58dd945",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "0864b27b177ffd764a3d6ed0e4012ba52875c702fa44851b3f75648bea80f584",
+    "packages/backend-next/test/unit/note-personal-state/favorite-achievement.test.ts": "fc71c1d9045050100e8881f6077ee5647a268a476f63472aae293569675b5d59",
+    "packages/backend-next/test/unit/note-personal-state/personal-state.test.ts": "3e3d8b6019e388327ba28574093008ceb5bf248355d92fe9a4532c79b102a87d",
+    "packages/backend-upstream/.managed-files.json": "696270daf6644d288911ce9b8577af2bdd6f48a5331ff21ef062b2bc19ca7dc0",
+    "packages/backend-upstream/exports/entities.ts": "af0523830f7440297d791b0a4b9b42eada537c3d809cf9fc8746e25fb15de6bd",
+    "packages/backend-upstream/src/models/NoteFavorite.ts": "24cb23e3f659e4498b1d963041d0865d370193b984794d05fd08182c759ad050",
+    "packages/backend-upstream/upstream-sync.json": "948989f5e48a0d09ffe7c4b22bfdf7292650cdbc1a2945f8f2ff2a2561df7e6b",
+    "scripts/compatibility-inputs/note-personal-state.json": "124dc88ac97246578f1474abc6ce456ffb015841b414815893040ddff03a06d9",
+    "scripts/note-personal-state-contract.test.mjs": "bb79d17f17ecc4363692908db43ca80bad06d0ac9f5bb72872e0a042104c59c0"
+  },
+  "runs": [
+    {
+      "name": "build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "build"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/corrected-build.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/corrected-typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "name": "source",
+      "command": [
+        "node",
+        "docs/superpowers/compatibility/note-personal-state/source-probe.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/corrected-source.log",
+      "logSha256": "bb108c837ebdcf8b9238e929a91150b2c337e793c38f03ddbb5f93cbe5c71fc3"
+    },
+    {
+      "name": "unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/package-imports.test.ts",
+        "test/unit/composition/http-app.test.ts",
+        "test/unit/note-personal-state",
+        "test/unit/note/notification-policy.test.ts"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/corrected-unit.log",
+      "logSha256": "4f1cba6e38500001a78d2d8a30970d94303bfc21c7ba9a6d8ae69e3681a139d7",
+      "passed": 46
+    },
+    {
+      "name": "integration",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/note-personal-state.test.ts",
+        "test/integration/note-notifications.test.ts",
+        "test/integration/poll-ended-job.test.ts",
+        "test/integration/migrations.test.ts"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/corrected-integration.log",
+      "logSha256": "587102a17393b31738f6397509e9b208f0b9a12e1952d90ec9e425a8b4183ebd",
+      "passed": 66
+    },
+    {
+      "name": "shipping",
+      "command": [
+        "node",
+        "scripts/check-shipping.mjs",
+        "--base",
+        "5fdc1702d2568c2df9dc2f33411fd11ecc35db04"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/corrected-shipping.log",
+      "logSha256": "0b672c63c3eb942124935484460728e9bbde0d2b27a338b737c9d88d1620c019"
+    }
+  ],
+  "priorMeasurements": [
+    {
+      "name": "build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "build"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/build.log",
+      "logSha256": "c30fe0078b4bbd94f79302718a987aef63421c38a9507681972c71104a67ca2c"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next...",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/typecheck.log",
+      "logSha256": "aefb4b13a499d552cfdddcb15928bd976cc686f7f7bd7cc1fd00b4db58dcbb9e"
+    },
+    {
+      "name": "sync",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-upstream",
+        "sync:check"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/sync.log",
+      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd"
+    },
+    {
+      "name": "sync-tests",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-upstream",
+        "test"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/sync-tests.log",
+      "logSha256": "ceef4950bcde21afd18f8a67305b94e4b0641e6ea7a82c287cbad94be74d1dc8"
+    },
+    {
+      "name": "source",
+      "command": [
+        "node",
+        "docs/superpowers/compatibility/note-personal-state/source-probe.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/source.log",
+      "logSha256": "bb108c837ebdcf8b9238e929a91150b2c337e793c38f03ddbb5f93cbe5c71fc3",
+      "cases": 26
+    },
+    {
+      "name": "unit",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test",
+        "test/package-imports.test.ts",
+        "test/unit/composition/http-app.test.ts",
+        "test/unit/note-personal-state",
+        "test/unit/note/notification-policy.test.ts"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/unit.log",
+      "logSha256": "81c3e7e7213a6c07386b4e91b359b000f2e819ea04917460d5edd43bd861b251",
+      "passed": 45
+    },
+    {
+      "name": "integration",
+      "command": [
+        "pnpm",
+        "--filter",
+        "backend-next",
+        "test:integration",
+        "test/integration/note-personal-state.test.ts",
+        "test/integration/note-notifications.test.ts",
+        "test/integration/poll-ended-job.test.ts",
+        "test/integration/migrations.test.ts"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/integration.log",
+      "logSha256": "478a366559620022c1ab2320600752e8193fd13edc5fc2afdaf831da4996350d",
+      "passed": 66
+    },
+    {
+      "name": "root-contracts",
+      "command": [
+        "bash",
+        "-lc",
+        "node --test scripts/*contract*.test.mjs"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/root-contracts.log",
+      "logSha256": "358e818d21c4764ee7c3e88dc22b1ed7be027e84ec835e94ec82460595cc4671"
+    },
+    {
+      "name": "inventory",
+      "command": [
+        "node",
+        "scripts/backend-contract-inventory.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/inventory.log",
+      "logSha256": "9506ac89cde2b4c62b8c5dc1c5149e9424db0f4e35b248aa94a8ad3ab8d719d4"
+    },
+    {
+      "name": "shipping",
+      "command": [
+        "node",
+        "scripts/check-shipping.mjs",
+        "--base",
+        "5fdc1702d2568c2df9dc2f33411fd11ecc35db04"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/shipping.log",
+      "logSha256": "0b672c63c3eb942124935484460728e9bbde0d2b27a338b737c9d88d1620c019"
+    }
+  ],
+  "priorRuntimeRevision": "a92e04d4d4acfc8d5a249ada7228a1af3a1a5779",
+  "correction": {
+    "revision": "8310361015",
+    "description": "Short-circuit author/reply/mention visibility exemptions before following lookup; failing unit reproducer then focused runtime validation. Test formatting is normalized in a888ffde7da45d87e61fb5da1ef7d6d2558bde39",
+    "priorInputChanges": [
+      "packages/backend-next/src/modules/note-personal-state/public.ts",
+      "packages/backend-next/test/unit/note-personal-state/personal-state.test.ts"
+    ]
+  },
+  "rootContracts": {
+    "run": {
+      "name": "root-contracts",
+      "command": [
+        "bash",
+        "-lc",
+        "node --test scripts/*contract*.test.mjs"
+      ],
+      "exitCode": 0,
+      "log": "/tmp/tiramiss-481-final/root-contracts.log",
+      "logSha256": "358e818d21c4764ee7c3e88dc22b1ed7be027e84ec835e94ec82460595cc4671"
+    },
+    "passed": 844,
+    "skipped": 1,
+    "unchangedInputHashes": {
+      "packages/backend-next/src/composition/http-app.ts": "c784576dd595d48a641534d18a8268f9ace3a046417f15e3782ca5a317805413",
+      "packages/backend-next/src/modules/notification/model.ts": "8504be295b76e16aa617a87ac88f60f2fc4dd5e4bfcfd09c50832adf2069a158",
+      "packages/backend-next/src/modules/notification/public.ts": "f5ff82b3ff07f955693fe64807e2404d7172c1d047d4c86be8dcbcd79ee712e0",
+      "packages/backend-next/src/platform/connect-resources.ts": "910fb62bf3f630959f3f05cfefe9ac14a6fe6fac2e0e8de3f7651eb67e644a02",
+      "packages/backend-next/src/platform/database/migration-sources.ts": "97684f253cd395bad32d2a9070b165b76bf12c1f3bc6d5934190381f50ae87e6",
+      "packages/backend-next/src/platform/database/notification/persistence.ts": "2104bbafe4f9e4ffdc7720c00d0affbe10286596249ee24c5a0da01900025144",
+      "packages/backend-next/src/platform/database/notification/schema.ts": "4a6a0e779fcacf79df6945f1731686fb3e4cc2ae56594312d7412913740c749a",
+      "packages/backend-next/test/integration/migrations.test.ts": "f8efced9f611657153030691735f59c30746ebba40297e5429edc22f0044149f",
+      "packages/backend-next/test/integration/poll-ended-job.test.ts": "3021063e34f6c34844066107aa1ce3d9d497c89542ed24162ac1054f62faf369",
+      "packages/backend-next/test/unit/composition/http-app.test.ts": "0864b27b177ffd764a3d6ed0e4012ba52875c702fa44851b3f75648bea80f584",
+      "packages/backend-upstream/.managed-files.json": "696270daf6644d288911ce9b8577af2bdd6f48a5331ff21ef062b2bc19ca7dc0",
+      "packages/backend-upstream/exports/entities.ts": "af0523830f7440297d791b0a4b9b42eada537c3d809cf9fc8746e25fb15de6bd",
+      "packages/backend-upstream/upstream-sync.json": "948989f5e48a0d09ffe7c4b22bfdf7292650cdbc1a2945f8f2ff2a2561df7e6b",
+      "packages/backend-next/test/package-imports.test.ts": "b531f920fcceb02483cf6a7b3677c64793b81316436710e45e671ea6a58dd945",
+      "scripts/compatibility-inputs/note-personal-state.json": "124dc88ac97246578f1474abc6ce456ffb015841b414815893040ddff03a06d9",
+      "scripts/note-personal-state-contract.test.mjs": "bb79d17f17ecc4363692908db43ca80bad06d0ac9f5bb72872e0a042104c59c0",
+      "docs/superpowers/compatibility/note-personal-state/source-probe.mjs": "7d2fc5063da19abc9a4efcb51f16390c2317604f6618c4ac51d29f710414cc43",
+      "docs/superpowers/compatibility/note-personal-state/corpus.json": "af570c767efcf4e2e72a73eaa099b9ccf3f33f74123302bf57825e05f0f8513f",
+      "docs/superpowers/compatibility/note-personal-state/observations.json": "45eb3e9da5452eb0bce8662852011461bf7df5b5a72392d2811f275fc600d60b"
+    },
+    "scope": "Historical predecessor guards and fixed-source fixtures are unchanged through the focused correction; root contracts do not consume the newly added business module or unit test bytes. The corrected runtime is measured below; no broad root rerun is claimed."
+  },
+  "limitations": [
+    "Pinned-source extracted callbacks/methods with declared boundary doubles; not a full upstream server.",
+    "Existing generic notification unread/push/list work remains #177/#298/#437.",
+    "Original broad unit run had5625 passing and stale Entity-count failure, corrected and covered by current near unit; CI runs broad suite."
+  ],
+  "noInputDrift": true,
+  "completedAt": "2026-11-19T04:08:15.590496+00:00",
+  "currentStage": {
+    "revision": "7edc3fee13ab609f9e6103576511e9db01c130e6",
+    "runtimeSourceUnchangedSince": "a888ffde7da45d87e61fb5da1ef7d6d2558bde39",
+    "description": "Align two existing schema/migration assertions after CI found new achievement column and ninth internal migration. Preserve exact old input facts in finite descriptors; test callbacks and production code unchanged.",
+    "inputHashes": {
+      "docs/superpowers/compatibility/backend-inventory/audit-items.json": "d2dce5f80e2de9472332dc8a0be8a322df346f2235067f97966e7decf23a156f",
+      "docs/superpowers/compatibility/backend-inventory/contracts.json": "9abc03ce2311b7950fbbf5b905a71686d54e880f952afee6fe2718e63cbf992c",
+      "docs/superpowers/compatibility/backend-inventory/contracts.md": "38f17e60697e473aa10665b2137601b62b3693fab9caa8ce2405f8e1debd262e",
+      "docs/superpowers/compatibility/backend-inventory/domains.json": "cfd0eb2e73b788cdb88e0a01ba1e99c89740b19148cdd99c7ed1ef9a1c487f04",
+      "docs/superpowers/compatibility/note-personal-state/README.md": "8093e912afaccd9f5b7f950c1e6656b8b62aa74c78d237e738c0adecb7094e35",
+      "docs/superpowers/compatibility/note-personal-state/compatibility-predecessor.json": "6839defc1e1650cbf15cc5a3ee50cf3a3998250e0eeeb1a29e38a4270c6917b0",
+      "docs/superpowers/compatibility/note-personal-state/corpus.json": "af570c767efcf4e2e72a73eaa099b9ccf3f33f74123302bf57825e05f0f8513f",
+      "docs/superpowers/compatibility/note-personal-state/observations.json": "45eb3e9da5452eb0bce8662852011461bf7df5b5a72392d2811f275fc600d60b",
+      "docs/superpowers/compatibility/note-personal-state/source-probe.mjs": "7d2fc5063da19abc9a4efcb51f16390c2317604f6618c4ac51d29f710414cc43",
+      "packages/backend-next/src/composition/favorite-achievements.ts": "c466643370c4763c6b0c53ab6575a9ffb2a8e0ba42fa46f7b16526bc8e473af2",
+      "packages/backend-next/src/composition/http-app.ts": "c784576dd595d48a641534d18a8268f9ace3a046417f15e3782ca5a317805413",
+      "packages/backend-next/src/composition/note-personal-state-http.ts": "b7fd8baac011d01cb139ad474734ff398f840af9e5d7e79aa33a7cba7ea342f2",
+      "packages/backend-next/src/http/note-personal-state-api.ts": "da8d9944f359fc16917505af0b0dbce9575614915a0f3878f545440830ef5564",
+      "packages/backend-next/src/modules/note-personal-state/favorite-achievement.ts": "79e760235dd484258b81f6d248d79e3319e5758f9124d66a3374b0b899501be6",
+      "packages/backend-next/src/modules/note-personal-state/public.ts": "31fb82053aabf892de78f20df0281ac17343f1d91796f6df5293f949fdcae95d",
+      "packages/backend-next/src/modules/notification/model.ts": "8504be295b76e16aa617a87ac88f60f2fc4dd5e4bfcfd09c50832adf2069a158",
+      "packages/backend-next/src/modules/notification/public.ts": "f5ff82b3ff07f955693fe64807e2404d7172c1d047d4c86be8dcbcd79ee712e0",
+      "packages/backend-next/src/platform/connect-resources.ts": "910fb62bf3f630959f3f05cfefe9ac14a6fe6fac2e0e8de3f7651eb67e644a02",
+      "packages/backend-next/src/platform/database/migration-sources.ts": "97684f253cd395bad32d2a9070b165b76bf12c1f3bc6d5934190381f50ae87e6",
+      "packages/backend-next/src/platform/database/note-personal-state.ts": "f9899a2f22038fec3386f7a1d014e979f84637183b0e70572cf67a461be3a4f0",
+      "packages/backend-next/src/platform/database/notification/achievement-migration.ts": "9f0d94096ca293f345fcccbe7241ae1f575658449694158a4425b9f02f17662b",
+      "packages/backend-next/src/platform/database/notification/persistence.ts": "2104bbafe4f9e4ffdc7720c00d0affbe10286596249ee24c5a0da01900025144",
+      "packages/backend-next/src/platform/database/notification/schema.ts": "4a6a0e779fcacf79df6945f1731686fb3e4cc2ae56594312d7412913740c749a",
+      "packages/backend-next/test/integration/migration-proof.test.ts": "95877bace0f29a1e901e34bea0c40c26b36bc08cf2eda1393f21aea185fec2f8",
+      "packages/backend-next/test/integration/migrations.test.ts": "f8efced9f611657153030691735f59c30746ebba40297e5429edc22f0044149f",
+      "packages/backend-next/test/integration/note-personal-state.test.ts": "4fb95eb5df3663a79972dc2a5d0eaf1a6996ea4319fee8146aac4e8ba8f39d3a",
+      "packages/backend-next/test/integration/notification.test.ts": "8e0188cab47d4e793baa15f6b6e1964f43b344778a43ad5ef4ed7c2942d916f2",
+      "packages/backend-next/test/integration/poll-ended-job.test.ts": "3021063e34f6c34844066107aa1ce3d9d497c89542ed24162ac1054f62faf369",
+      "packages/backend-next/test/package-imports.test.ts": "b531f920fcceb02483cf6a7b3677c64793b81316436710e45e671ea6a58dd945",
+      "packages/backend-next/test/unit/composition/http-app.test.ts": "0864b27b177ffd764a3d6ed0e4012ba52875c702fa44851b3f75648bea80f584",
+      "packages/backend-next/test/unit/note-personal-state/favorite-achievement.test.ts": "fc71c1d9045050100e8881f6077ee5647a268a476f63472aae293569675b5d59",
+      "packages/backend-next/test/unit/note-personal-state/personal-state.test.ts": "3e3d8b6019e388327ba28574093008ceb5bf248355d92fe9a4532c79b102a87d",
+      "packages/backend-upstream/.managed-files.json": "696270daf6644d288911ce9b8577af2bdd6f48a5331ff21ef062b2bc19ca7dc0",
+      "packages/backend-upstream/exports/entities.ts": "af0523830f7440297d791b0a4b9b42eada537c3d809cf9fc8746e25fb15de6bd",
+      "packages/backend-upstream/src/models/NoteFavorite.ts": "24cb23e3f659e4498b1d963041d0865d370193b984794d05fd08182c759ad050",
+      "packages/backend-upstream/upstream-sync.json": "948989f5e48a0d09ffe7c4b22bfdf7292650cdbc1a2945f8f2ff2a2561df7e6b",
+      "scripts/compatibility-inputs/note-personal-state.json": "f56bd1560de86eb873a1a59b9bcdb0fcc23a712d5aa34cba445a4e1423f53bae",
+      "scripts/note-personal-state-contract.test.mjs": "64b1c04723b4871deab9af196020a6084748638ba030892139745566fca8a2a6"
+    },
+    "runs": [
+      {
+        "name": "schema-migration-personal-regression",
+        "exitCode": 0,
+        "log": "/tmp/481-regression-green.log",
+        "logSha256": "5e0665fb6d8b932dac26557836894d86d955fef985baba2826a316e7b28ce06c",
+        "passed": 59
+      },
+      {
+        "name": "source-and-sixteen-exact-predecessors",
+        "exitCode": 0,
+        "log": "/tmp/481-predecessor16.log",
+        "logSha256": "34f42a01f8660bfcdf3329fcad85a4e026b4b6965e6ecc9abdc1f81fecd6dfe3",
+        "passed": 17
+      },
+      {
+        "name": "shipping",
+        "exitCode": 0,
+        "log": "/tmp/481-final-safety.log",
+        "logSha256": "439308347131a04a50748640a31aef635429903a1f9871f785075487803624c0"
+      }
+    ],
+    "noInputDrift": true
+  },
+  "ciFailureHistory": {
+    "reviewedHead": "4f639896d1614f9096ad3eb74d715465d90bdf9e",
+    "jobUrl": "https://github.com/tiramiss-community/tiramiss/actions/runs/44455410270/job/135329108959",
+    "failureCount": 6,
+    "reason": "Expected notification SELECT* rows lacked achievement:null; migration CLI proof expected8 internal migrations instead of9.",
+    "localReproduction": {
+      "name": "reproduced-six-stale-assertions",
+      "exitCode": 1,
+      "log": "/tmp/481-regression-red.log",
+      "logSha256": "4cd9271e9a26ff2d7c15dbff543e446ed102b93d307c716abe99475a91ce77f9",
+      "passed": 20
+    },
+    "correction": "7edc3fee13"
+  },
+  "combinedValidatorCorrection": {
+    "parentRevision": "2445101f30d09c3ae825753893a199ff49e0e089",
+    "path": "scripts/note-personal-state-contract.test.mjs",
+    "sha256": "d7abcf7b041652463bee22fa0914d66c42514f4b24358fc78954e024b27da5ba",
+    "reason": "Known independently delivered sibling changes project to this PR exact component before predecessor validation; unrecorded byte drift still rejects. No runtime changes.",
+    "log": "/tmp/481-combined-validator-final.log",
+    "logSha256": "110548714578428ae8d56c69e9b92d781f5bea139abbab11fff0853e2ccc4b8a",
+    "passed": 17,
+    "exitCode": 0
+  }
+}

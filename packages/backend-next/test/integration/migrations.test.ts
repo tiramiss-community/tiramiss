@@ -36,7 +36,7 @@ test('applies all upstream migrations once and keeps internal history separate',
 	expect(await source.getRepository(MiHashtag).count()).toBe(0);
 	const before = await source.query('SELECT id, timestamp, name FROM public.migrations ORDER BY id');
 	expect(before).toHaveLength(349);
-	expect(await source.query('SELECT name FROM backend_internal.migrations')).toEqual([{ name: 'PostWorkPersistence1792590060271' }, { name: 'PostWorkDispatch1792643873727' }, { name: 'PostWorkRecovery1792665615537' }, { name: 'PostNotification1792732433541' }, { name: 'ApRecipientSnapshot1792734340852' }, { name: 'ApHostLease1792815498061' }, { name: 'RetireDurableWork1793635233676' }, { name: 'PollEndedNotification1793706223869' }]);
+	expect(await source.query('SELECT name FROM backend_internal.migrations')).toEqual([{ name: 'PostWorkPersistence1792590060271' }, { name: 'PostWorkDispatch1792643873727' }, { name: 'PostWorkRecovery1792665615537' }, { name: 'PostNotification1792732433541' }, { name: 'ApRecipientSnapshot1792734340852' }, { name: 'ApHostLease1792815498061' }, { name: 'RetireDurableWork1793635233676' }, { name: 'PollEndedNotification1793706223869' }, { name: 'AchievementNotification1795060044090' }]);
 	// A second command must preserve upstream migration IDs, not replay history.
 	await migrateDatabase(database.config.database);
 	expect(await source.query('SELECT id, timestamp, name FROM public.migrations ORDER BY id')).toEqual(before);

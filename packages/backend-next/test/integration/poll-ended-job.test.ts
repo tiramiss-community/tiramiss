@@ -104,6 +104,7 @@ test('migration down removes pollEnded rows and restores the previous constraint
 			await db.query(`INSERT INTO backend_internal.notification(notification_id,recipient_id,notification_type,notifier_id,note_id,created_at)
 				VALUES ('kept','r','mention','author','note',now()),('dropped','r','pollEnded',NULL,'note',now())`);
 			await internal.undoLastMigration();
+			await internal.undoLastMigration();
 			expect(await db.query('SELECT notification_id FROM backend_internal.notification')).toEqual([{ notification_id: 'kept' }]);
 			await expect(db.query('INSERT INTO backend_internal.notification(notification_id,recipient_id,notification_type,notifier_id,note_id,created_at) VALUES (\'x\',\'r\',\'pollEnded\',\'a\',\'note\',now())')).rejects.toThrow();
 			await expect(db.query('INSERT INTO backend_internal.notification(notification_id,recipient_id,notification_type,notifier_id,note_id,created_at) VALUES (\'y\',\'r\',\'mention\',NULL,\'note\',now())')).rejects.toThrow();
