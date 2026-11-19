@@ -33,3 +33,7 @@ pnpm --filter backend-next typecheck
 これは固定 endpoint/deletion method と新実装の有限比較で、本家 full server、認証 gate、AP renderer、chart/search/stream の本家実物を同時起動した比較ではない。本家側の後者は doubles、新実装側は実依存または既存 post-delete 呼出しの観測である。source は非待機性を deferred Promise で、新実装は実 PG lock で確認する。新実装では snapshot 取得時の本人を一度取得し、以後に本人が並行削除される競合や全配送先・chart 全体の同等性は主張しない。chart 更新や通常削除の既存部分完了を、この endpoint 接続だけで完成へ変更しない。
 
 2026-11-19 の検証は base `c25f3ee979` からの本変更を対象とする。実行結果は PR/引き継ぎへ記録し、過去の広域 receipt や snapshot の identity を書き換えない。
+
+## 過去入力との接続
+
+`compatibility-predecessor.json` は今回変更した共有7ファイルだけについて、base `c25f3ee979` の bytes と本変更の bytes、差分位置を封印する。既存の `scripts/parallel-inputs.mjs` が歴史的検証にだけこの有限差分を戻す。未知の追加変更は投影せず従来の drift 検出へ渡す。過去 receipt の hash・実測件数・本家比較結果は変更しない。`scripts/unrenote-contract.test.mjs` が各入力と未知変更の拒否を確認する。
