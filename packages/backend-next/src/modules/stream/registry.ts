@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { object } from './channel.js';
+import { createTimelineChannel } from './timelines.js';
 import { createHashtagChannel } from './hashtag.js';
 import { filterHomeNote, hideStreamNote, instanceMuted, noteMuted, noteVisible, pureRenote } from './policy.js';
 import type { StreamChannelDefinition, StreamPorts } from './channel.js';
@@ -10,6 +11,7 @@ import type { StreamNote } from './policy.js';
 
 export function createStreamChannelRegistry(ports: StreamPorts): ReadonlyMap<string, StreamChannelDefinition> {
 	const registry = new Map<string, StreamChannelDefinition>([
+		...(['localTimeline', 'hybridTimeline', 'globalTimeline'] as const).map(name => [name, createTimelineChannel(name, ports)] as const),
 		['hashtag', createHashtagChannel(ports)],
 		['main', {
 			requireCredential: true, kind: 'read:account', shouldShare: true,

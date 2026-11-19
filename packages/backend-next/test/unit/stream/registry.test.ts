@@ -82,8 +82,8 @@ for (const record of corpus.observations) {
 		};
 		const registry = new Map([...createStreamChannelRegistry(ports)].map(([name, definition]) => [name, {
 			...definition,
-			create(context: Parameters<typeof definition.create>[0]) {
-				const channel = definition.create(context);
+			async create(context: Parameters<typeof definition.create>[0]) {
+				const channel = await definition.create(context);
 				return { ...channel, dispose() {
 					channel?.dispose?.();
 					disposed.push(name);

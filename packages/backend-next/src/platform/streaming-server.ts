@@ -16,6 +16,7 @@ import type { QueueStatsReader } from '../modules/queue/public.js';
 
 export interface StreamingPorts {
 	authenticate(token: string | null): Promise<{ userId: string; canReadAccount: boolean; isSuspended: boolean; tokenPermissions?: readonly string[] } | null>;
+	timelinePolicies(userId: string | null): Promise<{ ltlAvailable: boolean; gtlAvailable: boolean }>;
 	readFacts(userId: string | null): Promise<StreamFacts>;
 	hidingFollowing(userId: string | null): Promise<ReadonlySet<string>>;
 	repack(id: string, userId: string | null): Promise<Record<string, unknown> | null>;
@@ -112,6 +113,7 @@ export async function openStreamingServer(server: Server, options: {
 					}).catch(error => options.logger.error('streaming.event.failed', { error })));
 				};
 				const connection = createStreamConnection({
+					timelinePolicies: () => options.ports.timelinePolicies(userId),
 					facts: () => facts, tokenPermissions: actor?.tokenPermissions, now: Date.now, hidingFollowing: () => options.ports.hidingFollowing(userId), queueStats: options.queueStats,
 					send: value => {
 						if (!closed && !draining && ws.readyState === WebSocket.OPEN) {

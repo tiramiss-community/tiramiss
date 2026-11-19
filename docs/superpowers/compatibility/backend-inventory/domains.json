@@ -4640,6 +4640,66 @@
       ],
       "note": "#488: 本人の全Renote（引用を含む）を選び既存削除操作へ接続。固定endpoint/deletion methodと同一PGの4操作・HTTP・保存/counter・副作用開始を比較。新実装の実Redis/AP queue/Meili、非待機応答・DELETE失敗/retry・drainを検証。親#184/#114、notes/create partial、chart#200の残範囲を維持。",
       "evidenceRevision": "54dd3e2ac4ea642bfe56339d8664be2f849b209e"
+    },
+    "stream-channel:packages/backend/src/server/api/stream/Connection.ts:353": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/stream/timelines.ts",
+        "packages/backend-next/src/modules/stream/registry.ts",
+        "packages/backend-next/src/modules/stream/connection.ts",
+        "packages/backend-next/src/platform/database/streaming-timeline-policies.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/stream/timelines.test.ts",
+        "packages/backend-next/test/integration/timeline-source-websocket.test.ts",
+        "packages/backend-next/test/integration/timeline-websocket.test.ts",
+        "docs/superpowers/compatibility/stream/timelines/README.md",
+        "docs/superpowers/compatibility/stream/timelines/source-cases.json",
+        "docs/superpowers/compatibility/stream/timelines/upstream-probe.mjs",
+        "packages/backend-next/test/integration/streaming-lifecycle.test.ts"
+      ],
+      "note": "#456: local/hybrid/global channelを登録し、接続時Role許可・可視性・mute/block・reply/renote・myReaction・不正params・切断を固定本家148観測と新実装の実Redis/WS再生、実HTTP投稿/PG/Redis/WS4件で検証。Role拒否かつpong:trueの要求だけackし購読しない。匿名hybrid資格拒否はackなし。非配信は実publish完了とWS ping/pong後に確認し、初期化待ちのWSフレームは本家同様に直列適用する。本家full server比較ではない。HTTP timeline・他channel・#185/#189全体と投稿完成は範囲外。",
+      "evidenceRevision": "e354adbf384828156f0954434180b37f265a725e"
+    },
+    "stream-channel:packages/backend/src/server/api/stream/Connection.ts:354": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/stream/timelines.ts",
+        "packages/backend-next/src/modules/stream/registry.ts",
+        "packages/backend-next/src/modules/stream/connection.ts",
+        "packages/backend-next/src/platform/database/streaming-timeline-policies.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/stream/timelines.test.ts",
+        "packages/backend-next/test/integration/timeline-source-websocket.test.ts",
+        "packages/backend-next/test/integration/timeline-websocket.test.ts",
+        "docs/superpowers/compatibility/stream/timelines/README.md",
+        "docs/superpowers/compatibility/stream/timelines/source-cases.json",
+        "docs/superpowers/compatibility/stream/timelines/upstream-probe.mjs",
+        "packages/backend-next/test/integration/streaming-lifecycle.test.ts"
+      ],
+      "note": "#456: local/hybrid/global channelを登録し、接続時Role許可・可視性・mute/block・reply/renote・myReaction・不正params・切断を固定本家148観測と新実装の実Redis/WS再生、実HTTP投稿/PG/Redis/WS4件で検証。Role拒否かつpong:trueの要求だけackし購読しない。匿名hybrid資格拒否はackなし。非配信は実publish完了とWS ping/pong後に確認し、初期化待ちのWSフレームは本家同様に直列適用する。本家full server比較ではない。HTTP timeline・他channel・#185/#189全体と投稿完成は範囲外。",
+      "evidenceRevision": "e354adbf384828156f0954434180b37f265a725e"
+    },
+    "stream-channel:packages/backend/src/server/api/stream/Connection.ts:355": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/stream/timelines.ts",
+        "packages/backend-next/src/modules/stream/registry.ts",
+        "packages/backend-next/src/modules/stream/connection.ts",
+        "packages/backend-next/src/platform/database/streaming-timeline-policies.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/stream/timelines.test.ts",
+        "packages/backend-next/test/integration/timeline-source-websocket.test.ts",
+        "packages/backend-next/test/integration/timeline-websocket.test.ts",
+        "docs/superpowers/compatibility/stream/timelines/README.md",
+        "docs/superpowers/compatibility/stream/timelines/source-cases.json",
+        "docs/superpowers/compatibility/stream/timelines/upstream-probe.mjs",
+        "packages/backend-next/test/integration/streaming-lifecycle.test.ts"
+      ],
+      "note": "#456: local/hybrid/global channelを登録し、接続時Role許可・可視性・mute/block・reply/renote・myReaction・不正params・切断を固定本家148観測と新実装の実Redis/WS再生、実HTTP投稿/PG/Redis/WS4件で検証。Role拒否かつpong:trueの要求だけackし購読しない。匿名hybrid資格拒否はackなし。非配信は実publish完了とWS ping/pong後に確認し、初期化待ちのWSフレームは本家同様に直列適用する。本家full server比較ではない。HTTP timeline・他channel・#185/#189全体と投稿完成は範囲外。",
+      "evidenceRevision": "e354adbf384828156f0954434180b37f265a725e"
     }
   }
 }

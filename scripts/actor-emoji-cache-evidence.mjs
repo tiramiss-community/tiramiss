@@ -153,13 +153,21 @@ function readBeforeActorEmojiBatch(path, rawRead, optional) {
  return withEvidenceRequestedPath(path, () => actorEmojiBatchFiles.includes(path) ? Buffer.from(validateActorEmojiBatchEvidence(undefined, rawRead, optional)[path]) : rawRead(path));
 }
 
-// #354 changes only authentication output metadata. Preserve the archived emoji
-// read/render measurement without accepting unmeasured adapter bytes as current.
+// #354 adds authentication metadata; #456 adds an independent timeline-policy port.
+// Preserve archived emoji read/render bytes while rejecting every other adapter edit.
 function projectStreamCredentialInput(path, actual) {
  if (path !== 'packages/backend-next/src/platform/database/streaming.ts') return actual;
- assert.equal(sha(actual), 'dbf359bfdff8923bff5b3ff805dca326808576d91ef14362c69ba842350dd17e', `Meta cache measured current input drift (stream credential): ${path}`);
+ assert.equal(sha(actual), 'b3bf3528876ae5fe64afc32040e29e2fd3584431277d8b8e91177ea7310982de', `Meta cache measured current input drift (stream credential): ${path}`);
+ let current = actual.toString();
+ for (const line of [
+  "import { readStreamingTimelinePolicies } from './streaming-timeline-policies.js';\n",
+  '\t\ttimelinePolicies: (userId: string | null) => readStreamingTimelinePolicies(manager, userId, options.createdAtFromId, Date.now()),\n',
+ ]) {
+  assert.equal(current.split(line).length, 2, 'timeline policy exact predecessor anchor');
+  current = current.replace(line, '');
+ }
+ assert.equal(sha(Buffer.from(current)), 'dbf359bfdff8923bff5b3ff805dca326808576d91ef14362c69ba842350dd17e', 'timeline policy exact predecessor identity');
  const addition = '\t\t\t\ttokenPermissions: caller.credential.native ? undefined : [...caller.credential.permissions],\n';
- const current = actual.toString();
  assert.equal(current.split(addition).length, 2, 'stream credential exact predecessor anchor');
  const previous = Buffer.from(current.replace(addition, ''));
  assert.equal(sha(previous), '812f422e05bb98b4f73214ac4531bceede66f17a43c035bf4da9ce1e7add2f4a', 'stream credential exact predecessor identity');
