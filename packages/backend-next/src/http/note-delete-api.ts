@@ -26,9 +26,10 @@ export function createNoteDeleteApi(dependencies: {
 	authenticate(token: string | null | undefined): Promise<{ credential: AccessCredential } | null>;
 	deleteNote(actor: NoteCreateActor | null, input: unknown, now: number): Promise<void>;
 	logger: Logger;
+	endpoint?: 'delete' | 'unrenote';
 }) {
 	const app = new Hono();
-	registerApiRoute(app, '/api/notes/delete', async context => {
+	registerApiRoute(app, `/api/notes/${dependencies.endpoint ?? 'delete'}`, async context => {
 		const request = await readApiRequest(context);
 		if (request instanceof Response) {
 			return request;
@@ -40,7 +41,11 @@ export function createNoteDeleteApi(dependencies: {
 			return context.body(null, 204);
 		} catch (error) {
 			if (error instanceof NoteDeleteError) {
-				return apiErrorResponse({ ...errors[error.code], code: error.code, info: error.info });
+				const definition = { ...errors[error.code] };
+				if (dependencies.endpoint === 'unrenote' && error.code === 'NO_SUCH_NOTE') {
+					definition.id = 'efd4a259-2442-496b-8dd7-b255aa1a160f';
+				}
+				return apiErrorResponse({ ...definition, code: error.code, info: error.info });
 			}
 			const known = commonApiError(error);
 			if (known) {
