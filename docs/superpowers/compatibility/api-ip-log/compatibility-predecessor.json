@@ -167,6 +167,17 @@
         }
       ]
     },
+    "packages/backend-next/test/package-imports.test.ts": {
+      "previousSha256": "a31d55df4b4f3e985964eb6353ea088cadfb57e013eb5bc97fdcf019d2b56c59",
+      "currentSha256": "28a862dd99aa2902cea4b0c92c90acde8229049d74156655bb601f15f2de2631",
+      "patches": [
+        {
+          "offset": 5587,
+          "insert": "\tconst userIp = source.getMetadata('MiUserIp');\n\texpect(userIp.tableName).toBe('user_ip');\n\texpect(userIp.indices.some(index => index.isUnique && index.columns.map(column => column.propertyName).join(',') === 'userId,ip')).toBe(true);\n\texpect(source.entityMetadatas).toHaveLength(45);\n",
+          "previous": "\texpect(source.entityMetadatas).toHaveLength(44);\n"
+        }
+      ]
+    },
     "packages/backend-next/test/unit/composition/http-app.test.ts": {
       "previousSha256": "32ec236ef523e7a4d39db6a7b1da8d4206a53963170490ae4a1a63ebc150259c",
       "currentSha256": "a676bc0a427bb75ca9dcea9b1df4390b0cb9ff592c5c7da3579964763d2c46b1",
