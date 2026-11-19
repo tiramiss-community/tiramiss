@@ -4561,6 +4561,60 @@
       "differences": [
         "Reset requires explicit operator binding of disposable PG/Redis host/port/database/db. Primary Redis flush remains first; atomic schema-qualified TRUNCATE ONLY in public/backend_internal preserves migrations/typeorm_metadata instead of upstream unqualified DELETE/retry over all schemas. See compatibility/test-controls/README.md; does not guarantee distributed atomicity or reset other memory caches. Post-commit publication failure emits a fixed diagnostic and retains204; unknown COMMIT outcomes require state inspection before retry."
       ]
+    },
+    "api:admin/emoji/list": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/emoji/admin.ts",
+        "packages/backend-next/src/platform/database/admin-emojis.ts",
+        "packages/backend-next/src/composition/admin-emojis-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/emoji/admin.test.ts",
+        "packages/backend-next/test/integration/admin-emojis.test.ts",
+        "packages/backend-next/test/helpers/admin-emoji-source.ts",
+        "scripts/admin-emojis-contract.test.mjs",
+        "docs/superpowers/compatibility/admin-emojis/README.md"
+      ],
+      "note": "#537: three ordinary HTTP admin emoji reads; current policy/root/admin and delegated scope, case-sensitive legacy limit+1 search, escaped multiword v2 LIKE, host/date/role filters, every pinned sort direction, cursor/page/count and detailed/admin response contracts. Literal pinned callbacks/query/packers over real PG compared with listening next HTTP; explicit source auth facts, not a booted full upstream application. Admin128 + public regression19, full unit5586 PASS with existing optional Page replay skip1, build/typecheck/sync/shipping PASS. Emoji mutations, other service callers and parent #194/#114 remain separate.",
+      "evidenceRevision": "4cd8809b8a9c1f1641d872f4efcea1e22a666430"
+    },
+    "api:admin/emoji/list-remote": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/emoji/admin.ts",
+        "packages/backend-next/src/platform/database/admin-emojis.ts",
+        "packages/backend-next/src/composition/admin-emojis-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/emoji/admin.test.ts",
+        "packages/backend-next/test/integration/admin-emojis.test.ts",
+        "packages/backend-next/test/helpers/admin-emoji-source.ts",
+        "scripts/admin-emojis-contract.test.mjs",
+        "docs/superpowers/compatibility/admin-emojis/README.md"
+      ],
+      "note": "#537: three ordinary HTTP admin emoji reads; current policy/root/admin and delegated scope, case-sensitive legacy limit+1 search, escaped multiword v2 LIKE, host/date/role filters, every pinned sort direction, cursor/page/count and detailed/admin response contracts. Literal pinned callbacks/query/packers over real PG compared with listening next HTTP; explicit source auth facts, not a booted full upstream application. Admin128 + public regression19, full unit5586 PASS with existing optional Page replay skip1, build/typecheck/sync/shipping PASS. Emoji mutations, other service callers and parent #194/#114 remain separate.",
+      "evidenceRevision": "4cd8809b8a9c1f1641d872f4efcea1e22a666430"
+    },
+    "api:v2/admin/emoji/list": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/emoji/admin.ts",
+        "packages/backend-next/src/platform/database/admin-emojis.ts",
+        "packages/backend-next/src/composition/admin-emojis-http.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/emoji/admin.test.ts",
+        "packages/backend-next/test/integration/admin-emojis.test.ts",
+        "packages/backend-next/test/helpers/admin-emoji-source.ts",
+        "scripts/admin-emojis-contract.test.mjs",
+        "docs/superpowers/compatibility/admin-emojis/README.md"
+      ],
+      "note": "#537: three ordinary HTTP admin emoji reads; current policy/root/admin and delegated scope, case-sensitive legacy limit+1 search, escaped multiword v2 LIKE, host/date/role filters, every pinned sort direction, cursor/page/count and detailed/admin response contracts. Literal pinned callbacks/query/packers over real PG compared with listening next HTTP; explicit source auth facts, not a booted full upstream application. Admin128 + public regression19, full unit5586 PASS with existing optional Page replay skip1, build/typecheck/sync/shipping PASS. Emoji mutations, other service callers and parent #194/#114 remain separate.",
+      "evidenceRevision": "4cd8809b8a9c1f1641d872f4efcea1e22a666430"
     }
   }
 }
