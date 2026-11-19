@@ -189,3 +189,8 @@ test.each([
 	expect(value.url).toBe('https://local.test:8443');
 	expect(value.noteMedia).toMatchObject({ mediaProxy: proxy, externalMediaProxyEnabled: enabled });
 });
+
+test.each([false, true, 1, 'loopback', ['127.0.0.1/32', '10.0.0.0/8']])('preserves configured trustProxy: %j', async trustProxy => {
+	const value = await loadConfig({ configFile: await configFrom({ url: 'https://example.test', port: 3000, db: { host: 'localhost', port: 5432, db: 'test', user: 'test' }, redis: { host: 'localhost', port: 6379 }, trustProxy }) });
+	expect(value.trustProxy).toEqual(trustProxy);
+});

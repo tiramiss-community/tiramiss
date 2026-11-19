@@ -4,6 +4,7 @@
  */
 import { randomUUID } from 'node:crypto';
 import { Hono } from 'hono';
+import { recordAuthenticatedApiIp } from './api-ip-log.js';
 import { AccessDenied, AuthenticationFailed, createAccessRequest, requiresCredential } from '../modules/access/public.js';
 import { apiErrorResponse, AUTHENTICATION_FAILED, commonApiError, INTERNAL_ERROR } from './api-error.js';
 import { readApiRequest, registerApiRoute } from './api-request.js';
@@ -45,6 +46,7 @@ export function createApiEndpoints(options: ApiEndpointsOptions): Hono {
 			let credential: AccessCredential | null;
 			try {
 				credential = (await options.authenticate(request.token))?.credential ?? null;
+				recordAuthenticatedApiIp(context, credential?.userId);
 			} catch (error) {
 				if (error instanceof AuthenticationFailed) {
 					return apiErrorResponse(AUTHENTICATION_FAILED);

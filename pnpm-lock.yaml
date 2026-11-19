@@ -801,6 +801,9 @@ importers:
 
   packages/backend-next:
     dependencies:
+      '@fastify/proxy-addr':
+        specifier: 5.1.1
+        version: 5.1.1
       '@fastify/send':
         specifier: 4.1.1
         version: 4.1.1

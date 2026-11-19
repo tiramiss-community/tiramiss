@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Hono } from 'hono';
+import { recordAuthenticatedApiIp } from './api-ip-log.js';
 import { compileInput } from '../modules/access/public.js';
 import { apiErrorResponse, commonApiError, INTERNAL_ERROR } from './api-error.js';
 import { readApiRequest, registerApiRoute } from './api-request.js';
@@ -30,6 +31,7 @@ function createChartsApi(charts: Pick<ReturnType<typeof createNoteCharts>, 'read
 			}
 			try {
 				const credential = await options.authenticate(request.token);
+				recordAuthenticatedApiIp(context, credential?.credential.userId);
 				if (context.req.method === 'GET' && request.input && typeof request.input === 'object') {
 					const input = request.input as Record<string, unknown>;
 					for (const key of ['limit', 'offset']) {

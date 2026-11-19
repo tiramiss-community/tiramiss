@@ -386,6 +386,7 @@
 	"src/models/SystemAccount.ts",
 	"src/models/UsedUsername.ts",
 	"src/models/User.ts",
+	"src/models/UserIp.ts",
 	"src/models/UserKeypair.ts",
 	"src/models/UserList.ts",
 	"src/models/UserListMembership.ts",

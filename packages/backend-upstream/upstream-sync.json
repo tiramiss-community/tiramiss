@@ -42,6 +42,7 @@
 		"src/models/FollowRequest.ts",
 		"src/models/UserNotePining.ts",
 		"src/models/UserMemo.ts",
+		"src/models/UserIp.ts",
 		"src/models/PageLike.ts",
 		"src/models/Announcement.ts",
 		"src/models/AnnouncementRead.ts",

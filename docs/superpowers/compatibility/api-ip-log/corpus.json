@@ -1,0 +1,13 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "cases": [
+    { "id": "disabled", "enabled": false, "calls": [["alice", "1.2.3.4"]] },
+    { "id": "anonymous", "enabled": true, "calls": [[null, "1.2.3.4"]] },
+    { "id": "duplicate", "enabled": true, "calls": [["alice", "1.2.3.4"], ["alice", "1.2.3.4"]] },
+    { "id": "different-ip", "enabled": true, "calls": [["alice", "1.2.3.4"], ["alice", "5.6.7.8"]] },
+    { "id": "different-user", "enabled": true, "calls": [["alice", "1.2.3.4"], ["bob", "1.2.3.4"]] },
+    { "id": "hour-clear", "enabled": true, "calls": [["alice", "1.2.3.4"], ["alice", "1.2.3.4"]], "clearBefore": 1 },
+    { "id": "sync-failure", "enabled": true, "calls": [["alice", "1.2.3.4"], ["alice", "1.2.3.4"]], "failure": "sync" },
+    { "id": "async-failure", "enabled": true, "calls": [["alice", "1.2.3.4"], ["alice", "1.2.3.4"]], "failure": "async" }
+  ]
+}
