@@ -90,3 +90,21 @@ test('stream auth metadata preserves actor receipt without accepting the previou
   assert.throws(() => readForActorEmojiCacheEvidence(path, live, optional), /measured current input drift/);
  });
 });
+
+test('timeline policy additions preserve archived actor bytes and reject missing or altered additions', () => {
+ const path = 'packages/backend-next/src/platform/database/streaming.ts';
+ const current = read(path).toString();
+ const additions = [
+  "import { readStreamingTimelinePolicies } from './streaming-timeline-policies.js';\n",
+  '\t\ttimelinePolicies: (userId: string | null) => readStreamingTimelinePolicies(manager, userId, options.createdAtFromId, Date.now()),\n',
+ ];
+ assert.equal(Object.keys(validateActorEmojiCacheEvidence(undefined, read, () => null)).length, 12);
+ for (const text of [
+  additions.reduce((text, addition) => text.replace(addition, ''), current),
+  ...additions.map(addition => current.replace(addition, '')),
+  current.replace('readStreamingTimelinePolicies(manager, userId,', 'readStreamingTimelinePolicies(manager, null,'),
+ ]) {
+  assert.notEqual(text, current);
+  assert.throws(() => validateActorEmojiCacheEvidence(undefined, file => file === path ? Buffer.from(text) : read(file), () => null), /measured current input drift/);
+ }
+});
