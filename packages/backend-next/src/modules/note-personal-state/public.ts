@@ -60,7 +60,7 @@ export function createNotePersonalState(ports: NotePersonalStatePorts) {
 			}
 			const { noteId } = input(raw);
 			const note = await ports.readNote(noteId);
-			if (note === null || (operation === 'favorites/create' && !isVisibleForViewer(note, { id: actor.userId, host: null }, note.visibility === 'followers' && await ports.isFollowing(actor.userId, note.userId)))) {
+			if (note === null || (operation === 'favorites/create' && !isVisibleForViewer(note, { id: actor.userId, host: null }, false) && !(note.visibility === 'followers' && await ports.isFollowing(actor.userId, note.userId)))) {
 				throw new NotePersonalStateError('NO_SUCH_NOTE', missingIds[operation], 'No such note.');
 			}
 			if (operation === 'favorites/create') {

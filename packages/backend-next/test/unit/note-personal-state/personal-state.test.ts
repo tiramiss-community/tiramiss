@@ -76,3 +76,15 @@ test('creation limits run before current account authorization and deletion neve
 	await expect(app.execute('favorites/delete', access(), {}, 100)).rejects.toMatchObject({ reason: 'YOUR_ACCOUNT_SUSPENDED' });
 	expect(ports.limit).not.toHaveBeenCalled();
 });
+
+test('followers visibility exemptions do not depend on an unrelated following lookup', async () => {
+	for (const exemption of ['author', 'reply', 'mention']) {
+		const { app, access, ports } = setup();
+		const read = ports.readNote;
+		ports.readNote = async id => ({ ...(await read(id))!, visibility: 'followers', ...(exemption === 'author' ? { userId: 'viewer' } : exemption === 'reply' ? { replyUserId: 'viewer' } : { mentions: ['viewer'] }) });
+		ports.isFollowing = async () => {
+ throw Error('following unavailable'); 
+};
+		await expect(app.execute('favorites/create', access(), { noteId: 'target' }, 100)).resolves.toBeUndefined();
+	}
+});
