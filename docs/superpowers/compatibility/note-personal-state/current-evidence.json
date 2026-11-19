@@ -389,5 +389,15 @@
       "passed": 20
     },
     "correction": "7edc3fee13"
+  },
+  "combinedValidatorCorrection": {
+    "parentRevision": "2445101f30d09c3ae825753893a199ff49e0e089",
+    "path": "scripts/note-personal-state-contract.test.mjs",
+    "sha256": "d7abcf7b041652463bee22fa0914d66c42514f4b24358fc78954e024b27da5ba",
+    "reason": "Known independently delivered sibling changes project to this PR exact component before predecessor validation; unrecorded byte drift still rejects. No runtime changes.",
+    "log": "/tmp/481-combined-validator-final.log",
+    "logSha256": "110548714578428ae8d56c69e9b92d781f5bea139abbab11fff0853e2ccc4b8a",
+    "passed": 17,
+    "exitCode": 0
   }
 }

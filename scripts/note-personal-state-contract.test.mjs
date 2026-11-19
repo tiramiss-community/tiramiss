@@ -7,7 +7,7 @@ import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { projectRecordedChanges } from './parallel-inputs.mjs';
+import { projectParallelInput, projectRecordedChanges } from './parallel-inputs.mjs';
 
 const directory = new URL('../docs/superpowers/compatibility/note-personal-state/', import.meta.url);
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -24,10 +24,12 @@ const predecessor = JSON.parse(readFileSync(new URL('compatibility-predecessor.j
 for (const [path, binding] of Object.entries(predecessor.files)) {
 	test(`personal state preserves only the exact measured predecessor: ${path}`, () => {
 		const bytes = readFileSync(new URL('../' + path, import.meta.url));
-		assert.equal(hash(bytes), binding.currentSha256);
+		const component = projectParallelInput(path, bytes, binding.currentSha256);
+		assert.equal(hash(component), binding.currentSha256);
 		const previous = execFileSync('git', ['show', `${predecessor.baseline}:${path}`], { cwd: new URL('../', import.meta.url) });
-		assert.deepEqual(projectRecordedChanges([binding], bytes, binding.previousSha256), previous);
+		assert.deepEqual(projectRecordedChanges([binding], component, binding.previousSha256), previous);
+		assert.deepEqual(projectParallelInput(path, bytes, binding.previousSha256), previous);
 		const drift = Buffer.concat([bytes, Buffer.from('\n')]);
-		assert.deepEqual(projectRecordedChanges([binding], drift, binding.previousSha256), drift);
+		assert.deepEqual(projectParallelInput(path, drift, binding.previousSha256), drift);
 	});
 }
