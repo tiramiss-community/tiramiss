@@ -32,9 +32,10 @@ test('admin emoji source fixtures retain exact pinned source identity', () => {
 
 test('admin emoji measurement binds current product and source inputs', () => {
 	const bytes = read(directory + 'current-evidence.json');
-	assert.equal(sha(bytes), 'afc28d85a25cf5aa98beaaf64c11ad0fcb22f57542fb80d45467102f747f0c99');
+	assert.equal(sha(bytes), 'fcdafda2d44e3098aeb8ed6c11bc0b2f64440f61c31b287fb2a7ca17a181e954');
 	const record = JSON.parse(bytes);
 	assert.equal(record.scope, 'admin-emojis-537');
+	assert.equal(sha(read(record.previousEvidence.path)), record.previousEvidence.sha256);
 	assert.equal(record.upstreamFullServerMeasured, false);
 	for (const [path, expected] of Object.entries(record.inputs)) {
 		assert.equal(sha(projectParallelInput(path, read(path), expected)), expected, path);

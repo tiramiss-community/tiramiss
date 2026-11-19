@@ -3,17 +3,17 @@
   "files": {
     "packages/backend-next/src/composition/http-app.ts": {
       "previousSha256": "f8ee861163ee0c83b3530406af969a644e3794b7a0db7f2d392d79fce7350146",
-      "currentSha256": "623fcfe702bf41aeb51db98cd1788fbacbbf2cff8b651d70bd78c91ed3103613",
+      "currentSha256": "97f62047d4b3a8043b2d8c3d8d7850bc0164f59ce003651c98330006d929eb36",
       "patches": [
         {
-          "offset": 129,
+          "offset": 1841,
           "previous": "",
-          "insert": "';\nimport { createAdminEmojisHttp } from './admin-emojis-http.js"
+          "insert": "import { createAdminEmojisHttp } from './admin-emojis-http.js';\n"
         },
         {
-          "offset": 4118,
+          "offset": 4097,
           "previous": "",
-          "insert": "dminEmojisHttp(resources, config))\n\t\t.route('/', createA"
+          "insert": "\t\t.route('/', createAdminEmojisHttp(resources, config))\n"
         }
       ]
     },
@@ -22,9 +22,9 @@
       "currentSha256": "1156127b957b37d84e1b890f229c9e5abeb825f71026211f557a93a16b1f7dab",
       "patches": [
         {
-          "offset": 3514,
-          "previous": "",
-          "insert": "', '/api/admin/emoji/list', '/api/admin/emoji/list-remote', '/api/v2/admin/emoji/list"
+          "offset": 3456,
+          "previous": "\t\t'/emojis/:emoji', '/emojis/', '/api/emoji', '/api/emojis', '/api/get-avatar-decorations',\n",
+          "insert": "\t\t'/emojis/:emoji', '/emojis/', '/api/emoji', '/api/emojis', '/api/admin/emoji/list', '/api/admin/emoji/list-remote', '/api/v2/admin/emoji/list', '/api/get-avatar-decorations',\n"
         }
       ]
     }

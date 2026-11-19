@@ -8,7 +8,7 @@
     "packages/backend-next/src/modules/emoji/admin.ts": "f4d534ee61038463e1b1913144e971848e531b103cc7426e4bee841d3c5d6c55",
     "packages/backend-next/src/platform/database/admin-emojis.ts": "d33dca82526123397985322d5078f966e7b538d05040e2dc2a13203490d363e7",
     "packages/backend-next/src/composition/admin-emojis-http.ts": "c71331e97823ae159f578bea84aa38c514645ef7b05ae279966db7ad23b99749",
-    "packages/backend-next/src/composition/http-app.ts": "623fcfe702bf41aeb51db98cd1788fbacbbf2cff8b651d70bd78c91ed3103613",
+    "packages/backend-next/src/composition/http-app.ts": "97f62047d4b3a8043b2d8c3d8d7850bc0164f59ce003651c98330006d929eb36",
     "packages/backend-next/test/unit/composition/http-app.test.ts": "1156127b957b37d84e1b890f229c9e5abeb825f71026211f557a93a16b1f7dab",
     "packages/backend-next/test/unit/emoji/admin.test.ts": "a1ab4c3efcbc3dd7d416f24b14b2d6d8dd532ad72a145af9e35f10034c9906cb",
     "packages/backend-next/test/integration/admin-emojis.test.ts": "e77efaa500a49a6da42468fe9cb303077c61f7d98e3724bda39c1d429965b631",
@@ -26,7 +26,7 @@
   "runs": [
     {
       "name": "build",
-      "log": "/tmp/b537-build-final.log",
+      "log": "/tmp/b537-build-import.log",
       "logSha256": "29c5ee0f6b0b20dbb259b99d01276198c3d28190090706394608d4deda6d2c0b",
       "exitCode": 0,
       "passed": null,
@@ -34,7 +34,7 @@
     },
     {
       "name": "typecheck",
-      "log": "/tmp/b537-typecheck-final.log",
+      "log": "/tmp/b537-typecheck-import.log",
       "logSha256": "7f96aaabe6df7a354a3e4d7514375171e219ae2de91268b52d91875e0a026aa4",
       "exitCode": 0,
       "passed": null,
@@ -42,43 +42,40 @@
     },
     {
       "name": "unit",
-      "log": "/tmp/b537-unit.log",
-      "logSha256": "b38120a7dc95581274989c2e84543a8d7d9cf8d9362d2bb2b8463cad4fdc90a0",
+      "log": "/tmp/b537-unit-import.log",
+      "logSha256": "690226ca09796cb6ab543fc811439dc1ef345324839fba3230c1685ca082c9df",
       "exitCode": 0,
       "passed": 5586,
       "skipped": 1
     },
     {
       "name": "integration",
-      "log": "/tmp/b537-integration-final.log",
-      "logSha256": "d82cf2701607ef00fb53434910a83074cd6bdcfce115c161d044b43503fb1965",
+      "log": "/tmp/b537-integration-import.log",
+      "logSha256": "d4636ff0905e8818b49d25639344b81f1452c730b19ed947872ba381d55260db",
       "exitCode": 0,
       "passed": 147,
       "skipped": 0
     },
     {
-      "name": "contracts-nearest",
-      "log": "/tmp/b537-contract-final.log",
-      "logSha256": "7bd28b27b1bede900612aaff76e54d3478302a983c146ae9655b1928d8d8a04d",
-      "exitCode": 0,
-      "passed": 25,
-      "skipped": 0
-    },
-    {
-      "name": "sync",
-      "log": "/tmp/b537-sync.log",
-      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd",
-      "exitCode": 0,
-      "passed": null,
-      "skipped": 0
-    },
-    {
       "name": "shipping",
-      "log": "/tmp/b537-shipping-final.log",
+      "log": "/tmp/b537-shipping-import.log",
       "logSha256": "dca032af345c5b484e865e623621c095dc8b8e83ea61a8e673089a089e8c126e",
       "exitCode": 0,
       "passed": null,
       "skipped": 0
     }
-  ]
+  ],
+  "previousEvidence": {
+    "path": "docs/superpowers/compatibility/admin-emojis/before-import-evidence.json",
+    "sha256": "afc28d85a25cf5aa98beaaf64c11ad0fcb22f57542fb80d45467102f747f0c99",
+    "productRevision": "a7c187b4b4276c26d568e44dbcd857b3025f574c"
+  },
+  "precedingRootRun": {
+    "scope": "prior import location and pre-receipt-guard discovery; separate from current reruns",
+    "log": "/tmp/b537-root.log",
+    "logSha256": "a4bd92a89af6e392a95d95214f2f74236ab2fe65333102768e5464d84f4a476f",
+    "passed": 838,
+    "skipped": 1,
+    "exitCode": 0
+  }
 }

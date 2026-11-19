@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Hono } from 'hono';
-import { createAdminEmojisHttp } from './admin-emojis-http.js';
 import { createAvatarDecorationAdminHttp } from './avatar-decoration-admin-http.js';
 import { createAvatarDecorationsHttp } from './avatar-decorations-http.js';
 import { createHashtagCatalogHttp } from './hashtag-catalog-http.js';
@@ -30,6 +29,7 @@ import { createWebfingerHttp } from './webfinger-http.js';
 import { createFollowCollectionsHttp } from './follow-collections-http.js';
 import { createOutboxHttp } from './outbox-http.js';
 import { createEmojiHttp } from './emoji-http.js';
+import { createAdminEmojisHttp } from './admin-emojis-http.js';
 import { createFeaturedHttp } from './featured-http.js';
 import { createActorHttp } from './actor-http.js';
 import { prepareNoteRoutes, registerNoteRoutes } from './note-routes.js';
