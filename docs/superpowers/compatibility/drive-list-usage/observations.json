@@ -1,0 +1,711 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "database": "isolated PostgreSQL; actual TypeORM QueryBuilder",
+  "corpusSha256": "d6c21d22aa19c7ad70d159d1bf3b63818c07a22cbe4e06a3d4b5b333fa84aff7",
+  "manifest": [
+    {
+      "path": "packages/backend/src/misc/id/aidx.ts",
+      "sha256": "613a33f3247823856f861961a05961a8c50151133669d56b8b6441dd0d5e86f9",
+      "gitBlob": "006673a6d013e372226efcfbddf858316ed1115d"
+    },
+    {
+      "path": "packages/backend/src/core/IdService.ts",
+      "sha256": "237d9410066fb6acfe872e7e617e6f4ce7b0093989e88baad1c29066b69f4f65",
+      "gitBlob": "223a8de678382fda4ec01e771525e120b41f95ae"
+    },
+    {
+      "path": "packages/backend/src/core/QueryService.ts",
+      "sha256": "6eb0324d8f7d96bee6a0317bd77224051135dd49283a7f8b8c258c8ae5ae9357",
+      "gitBlob": "b75fc805bbbbe07891f1fd79428368f9ac41b97b"
+    },
+    {
+      "path": "packages/backend/src/core/entities/DriveFileEntityService.ts",
+      "sha256": "a48a07792b784a3ded4364594d346e2cd2d9a7e0a506b56b082325a8f41ca738",
+      "gitBlob": "1865d494c4ba39d84daa62501469895e7224a3fb"
+    },
+    {
+      "path": "packages/backend/src/core/UtilityService.ts",
+      "sha256": "99f8779e002fc2c0aa2cd203613d31fcc87e7eaeb797ef65aae6c5175b62e331",
+      "gitBlob": "e3ceebccaeb0c9058a919318ef7c4216f8e64649"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/drive.ts",
+      "sha256": "5d778d5bc63238436f0f69e41130d687272c8e3b0b7cc842bb717a43b178017d",
+      "gitBlob": "eb45e29f9e123bed218043a0de1842b9edfd4bf8"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/drive/files.ts",
+      "sha256": "9fb0f5499bee518f4446e14ee61c7718ddb1982eacce77ea7a432ce92c5d8c78",
+      "gitBlob": "303a4d4925280917d46af3c6ebd34ea120007bf5"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/drive/stream.ts",
+      "sha256": "564bb2d32a11d884b7f454699821a4996f427597e67a817ad4e14ccbf1b36273",
+      "gitBlob": "8bf83a965377d76e69eba4c2dbdd79cc9a67f43a"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/drive/folders.ts",
+      "sha256": "921e4c491a0943207f3fe630661cb31b7ed1f730bbcdcdb8e47171ea4564ee9f",
+      "gitBlob": "23b3db60a858b01d6932e3b8e3288c48b1d8cdac"
+    },
+    {
+      "path": "packages/backend/src/server/api/endpoints/admin/drive/files.ts",
+      "sha256": "325282b9feb2bbfd2a9e32e017709f6dcc509a7375fb2eb1c04b444b4800530d",
+      "gitBlob": "59b02482a22255a17102b209aa2aba65ee0a4e31"
+    }
+  ],
+  "doubles": [
+    "packMany/folder.pack return selected IDs only; existing pack comparison covers JSON",
+    "Role policies returns driveCapacityMb=100; current Role assignment tested separately",
+    "AIDX nodeId fixed to 0000 and counter initially zero; date cases avoid timestamp ties",
+    "HTTP common gate is tested on backend-next separately"
+  ],
+  "cases": [
+    {
+      "id": "files-default",
+      "result": [
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "files-limit",
+      "result": [
+        "0000000200000000"
+      ]
+    },
+    {
+      "id": "files-since",
+      "result": [
+        "0000000200000000"
+      ]
+    },
+    {
+      "id": "files-until",
+      "result": [
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "files-both",
+      "result": [
+        "0000000200000000"
+      ]
+    },
+    {
+      "id": "files-since-date",
+      "result": [
+        "0000000200000000"
+      ]
+    },
+    {
+      "id": "files-until-date",
+      "result": [
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "files-both-date",
+      "result": [
+        "0000000200000000"
+      ]
+    },
+    {
+      "id": "files-zero-date",
+      "result": [
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "files-id-precedence",
+      "result": [
+        "0000000200000000"
+      ]
+    },
+    {
+      "id": "files-zero-limit",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "files-huge-limit",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "files-fraction-limit",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "files-null-cursor",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "files-bad-id",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "stream-default",
+      "result": [
+        "0000000300000000",
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "stream-limit",
+      "result": [
+        "0000000300000000"
+      ]
+    },
+    {
+      "id": "stream-since",
+      "result": [
+        "0000000200000000"
+      ]
+    },
+    {
+      "id": "stream-until",
+      "result": [
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "stream-both",
+      "result": [
+        "0000000300000000",
+        "0000000200000000"
+      ]
+    },
+    {
+      "id": "stream-since-date",
+      "result": [
+        "0000000200000000",
+        "0000000300000000"
+      ]
+    },
+    {
+      "id": "stream-until-date",
+      "result": [
+        "0000000300000000",
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "stream-both-date",
+      "result": [
+        "0000000300000000",
+        "0000000200000000"
+      ]
+    },
+    {
+      "id": "stream-zero-date",
+      "result": [
+        "0000000300000000",
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "stream-id-precedence",
+      "result": [
+        "0000000200000000",
+        "0000000300000000"
+      ]
+    },
+    {
+      "id": "stream-zero-limit",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "stream-huge-limit",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "stream-fraction-limit",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "stream-null-cursor",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "stream-bad-id",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "folders-default",
+      "result": [
+        "0000001200000000",
+        "0000001100000000"
+      ]
+    },
+    {
+      "id": "folders-limit",
+      "result": [
+        "0000001200000000"
+      ]
+    },
+    {
+      "id": "folders-since",
+      "result": [
+        "0000001200000000"
+      ]
+    },
+    {
+      "id": "folders-until",
+      "result": [
+        "0000001100000000"
+      ]
+    },
+    {
+      "id": "folders-both",
+      "result": [
+        "0000001200000000",
+        "0000001100000000"
+      ]
+    },
+    {
+      "id": "folders-since-date",
+      "result": [
+        "0000001100000000",
+        "0000001200000000"
+      ]
+    },
+    {
+      "id": "folders-until-date",
+      "result": []
+    },
+    {
+      "id": "folders-both-date",
+      "result": []
+    },
+    {
+      "id": "folders-zero-date",
+      "result": [
+        "0000001200000000",
+        "0000001100000000"
+      ]
+    },
+    {
+      "id": "folders-id-precedence",
+      "result": [
+        "0000001100000000",
+        "0000001200000000"
+      ]
+    },
+    {
+      "id": "folders-zero-limit",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "folders-huge-limit",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "folders-fraction-limit",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "folders-null-cursor",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "folders-bad-id",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "adminFiles-default",
+      "result": [
+        "0000000600000000",
+        "0000000300000000",
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "adminFiles-limit",
+      "result": [
+        "0000000600000000"
+      ]
+    },
+    {
+      "id": "adminFiles-since",
+      "result": [
+        "0000000200000000"
+      ]
+    },
+    {
+      "id": "adminFiles-until",
+      "result": [
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "adminFiles-both",
+      "result": [
+        "0000000600000000",
+        "0000000300000000",
+        "0000000200000000"
+      ]
+    },
+    {
+      "id": "adminFiles-since-date",
+      "result": [
+        "0000000200000000",
+        "0000000300000000",
+        "0000000600000000"
+      ]
+    },
+    {
+      "id": "adminFiles-until-date",
+      "result": [
+        "0000000300000000",
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "adminFiles-both-date",
+      "result": [
+        "0000000600000000",
+        "0000000300000000",
+        "0000000200000000"
+      ]
+    },
+    {
+      "id": "adminFiles-zero-date",
+      "result": [
+        "0000000600000000",
+        "0000000300000000",
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "adminFiles-id-precedence",
+      "result": [
+        "0000000200000000",
+        "0000000300000000",
+        "0000000600000000"
+      ]
+    },
+    {
+      "id": "adminFiles-zero-limit",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "adminFiles-huge-limit",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "adminFiles-fraction-limit",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "adminFiles-null-cursor",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "adminFiles-bad-id",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "files-folder",
+      "result": [
+        "0000000300000000"
+      ]
+    },
+    {
+      "id": "files-missing-folder",
+      "result": []
+    },
+    {
+      "id": "files-null-folder",
+      "result": [
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "folders-folder",
+      "result": [
+        "0000001300000000"
+      ]
+    },
+    {
+      "id": "folders-missing-folder",
+      "result": []
+    },
+    {
+      "id": "folders-null-folder",
+      "result": [
+        "0000001200000000",
+        "0000001100000000"
+      ]
+    },
+    {
+      "id": "files-image",
+      "result": [
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "files-exact",
+      "result": [
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "files-none",
+      "result": []
+    },
+    {
+      "id": "files-digits",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "files-invalid-type",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "files-null-type",
+      "result": [
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "stream-image",
+      "result": [
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "stream-exact",
+      "result": [
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "stream-none",
+      "result": []
+    },
+    {
+      "id": "stream-digits",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "stream-invalid-type",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "stream-null-type",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "adminFiles-image",
+      "result": [
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "adminFiles-exact",
+      "result": [
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "adminFiles-none",
+      "result": []
+    },
+    {
+      "id": "adminFiles-digits",
+      "result": []
+    },
+    {
+      "id": "adminFiles-invalid-type",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "adminFiles-null-type",
+      "result": [
+        "0000000600000000",
+        "0000000300000000",
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "files-sort-+createdAt",
+      "result": [
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "files-sort--createdAt",
+      "result": [
+        "0000000100000000",
+        "0000000200000000"
+      ]
+    },
+    {
+      "id": "files-sort-+name",
+      "result": [
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "files-sort--name",
+      "result": [
+        "0000000100000000",
+        "0000000200000000"
+      ]
+    },
+    {
+      "id": "files-sort-+size",
+      "result": [
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "files-sort--size",
+      "result": [
+        "0000000100000000",
+        "0000000200000000"
+      ]
+    },
+    {
+      "id": "files-sort-None",
+      "result": [
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "files-sort-with-cursor",
+      "result": [
+        "0000000200000000"
+      ]
+    },
+    {
+      "id": "files-invalid-sort",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "adminFiles-combined",
+      "result": [
+        "0000000700000000",
+        "0000000600000000",
+        "0000000500000000",
+        "0000000400000000",
+        "0000000300000000",
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "adminFiles-remote",
+      "result": [
+        "0000000700000000",
+        "0000000500000000",
+        "0000000400000000"
+      ]
+    },
+    {
+      "id": "adminFiles-host",
+      "result": [
+        "0000000500000000",
+        "0000000400000000"
+      ]
+    },
+    {
+      "id": "adminFiles-hostname-case",
+      "result": []
+    },
+    {
+      "id": "adminFiles-host-local-conflict",
+      "result": []
+    },
+    {
+      "id": "adminFiles-user-overrides-origin-host",
+      "result": [
+        "0000000700000000",
+        "0000000500000000",
+        "0000000400000000"
+      ]
+    },
+    {
+      "id": "adminFiles-null-user",
+      "result": [
+        "0000000700000000",
+        "0000000600000000",
+        "0000000500000000",
+        "0000000400000000",
+        "0000000300000000",
+        "0000000200000000",
+        "0000000100000000"
+      ]
+    },
+    {
+      "id": "adminFiles-invalid-origin",
+      "error": "INVALID_PARAM"
+    },
+    {
+      "id": "usage-default",
+      "result": {
+        "capacity": 104857600,
+        "usage": 30
+      }
+    },
+    {
+      "id": "usage-empty",
+      "result": {
+        "capacity": 104857600,
+        "usage": 0
+      }
+    },
+    {
+      "id": "aggregate-103",
+      "result": 30
+    },
+    {
+      "id": "aggregate-104",
+      "result": 0
+    },
+    {
+      "id": "aggregate-105",
+      "result": 40
+    },
+    {
+      "id": "aggregate-106",
+      "result": 70
+    },
+    {
+      "id": "aggregate-107",
+      "result": 40
+    },
+    {
+      "id": "aggregate-108",
+      "result": 0
+    },
+    {
+      "id": "aggregate-109",
+      "result": 90
+    },
+    {
+      "id": "aggregate-110",
+      "result": 110
+    }
+  ]
+}

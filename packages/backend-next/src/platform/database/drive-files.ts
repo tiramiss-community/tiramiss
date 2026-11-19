@@ -12,29 +12,32 @@ import type { EntityManager } from 'typeorm';
 import type { DriveFolderRow, DriveFolderCounts, DriveFolderView } from '../../modules/drive/folders.js';
 import type { DriveFilePorts, DriveStoredFile } from '../../modules/drive/files.js';
 import type { DriveFileMediaOptions } from '../../modules/drive/files-public.js';
+
+// Explicitly project persisted columns: entities never cross the adapter boundary.
+export const driveStoredFile = (file: MiDriveFile): DriveStoredFile => ({
+	id: file.id, userId: file.userId, userHost: file.userHost, folderId: file.folderId, name: file.name, type: file.type, md5: file.md5, size: file.size,
+	isSensitive: file.isSensitive, blurhash: file.blurhash, properties: structuredClone(file.properties), url: file.url, webpublicUrl: file.webpublicUrl,
+	uri: file.uri, isLink: file.isLink, webpublicAccessKey: file.webpublicAccessKey, thumbnailUrl: file.thumbnailUrl, comment: file.comment,
+	maybePorn: file.maybePorn, maybeSensitive: file.maybeSensitive, src: file.src, thumbnailAccessKey: file.thumbnailAccessKey, accessKey: file.accessKey,
+	webpublicType: file.webpublicType, storedInternal: file.storedInternal, requestIp: file.requestIp, requestHeaders: file.requestHeaders,
+});
+
 export function createDriveFileStore(manager: EntityManager, media: DriveFileMediaOptions): DriveFilePorts {
 	const files = manager.getRepository(MiDriveFile);
 	const folders = createDriveFolderStore(manager, media.createdAtFromId);
-	// Explicitly project persisted columns: entities never cross the adapter boundary.
-	const facts = (file: MiDriveFile): DriveStoredFile => ({
-		id: file.id, userId: file.userId, userHost: file.userHost, folderId: file.folderId, name: file.name, type: file.type, md5: file.md5, size: file.size,
-		isSensitive: file.isSensitive, blurhash: file.blurhash, properties: structuredClone(file.properties), url: file.url, webpublicUrl: file.webpublicUrl,
-		uri: file.uri, isLink: file.isLink, webpublicAccessKey: file.webpublicAccessKey, thumbnailUrl: file.thumbnailUrl, comment: file.comment,
-		maybePorn: file.maybePorn, maybeSensitive: file.maybeSensitive, src: file.src, thumbnailAccessKey: file.thumbnailAccessKey, accessKey: file.accessKey,
-		webpublicType: file.webpublicType, storedInternal: file.storedInternal, requestIp: file.requestIp, requestHeaders: file.requestHeaders,
-	});
+
 	return {
 		media, readActor: folders.readActor,
 		async find(query) {
 			if ('id' in query) {
 				const file = await files.findOneBy({ id: query.id });
-				return file ? [facts(file)] : [];
+				return file ? [driveStoredFile(file)] : [];
 			}
 			if ('url' in query) {
 				const file = await files.findOneBy([{ url: query.url }, { webpublicUrl: query.url }, { thumbnailUrl: query.url }]);
-				return file ? [facts(file)] : [];
+				return file ? [driveStoredFile(file)] : [];
 			}
-			return (await files.findBy('name' in query ? { ...query, folderId: query.folderId ?? IsNull() } : query)).map(facts);
+			return (await files.findBy('name' in query ? { ...query, folderId: query.folderId ?? IsNull() } : query)).map(driveStoredFile);
 		},
 		exists: query => files.existsBy(query),
 		async preload(rows, packing, now) {

@@ -1,0 +1,895 @@
+{
+  "upstreamCommit": "8e07cf085adf7009583d234a208e30436f020e26",
+  "rows": [
+    {
+      "id": "0000000100000000",
+      "userId": "alice",
+      "userHost": null,
+      "folderId": null,
+      "name": "a.png",
+      "type": "image/png",
+      "size": 10,
+      "isLink": false
+    },
+    {
+      "id": "0000000200000000",
+      "userId": "alice",
+      "userHost": null,
+      "folderId": null,
+      "name": "c.jpg",
+      "type": "image/jpeg",
+      "size": 30,
+      "isLink": true
+    },
+    {
+      "id": "0000000300000000",
+      "userId": "alice",
+      "userHost": null,
+      "folderId": "0000001100000000",
+      "name": "b.txt",
+      "type": "text/plain",
+      "size": 20,
+      "isLink": false
+    },
+    {
+      "id": "0000000400000000",
+      "userId": "bob",
+      "userHost": "remote.test",
+      "folderId": null,
+      "name": "d.gif",
+      "type": "image/gif",
+      "size": 40,
+      "isLink": false
+    },
+    {
+      "id": "0000000500000000",
+      "userId": "bob",
+      "userHost": "remote.test",
+      "folderId": null,
+      "name": "e.mp4",
+      "type": "video/mp4",
+      "size": 50,
+      "isLink": true
+    },
+    {
+      "id": "0000000600000000",
+      "userId": null,
+      "userHost": null,
+      "folderId": null,
+      "name": "f.txt",
+      "type": "text/plain",
+      "size": 60,
+      "isLink": false
+    },
+    {
+      "id": "0000000700000000",
+      "userId": "bob",
+      "userHost": "xn--r8jz45g.xn--zckzah",
+      "folderId": null,
+      "name": "g.mp4",
+      "type": "video/mp4",
+      "size": 70,
+      "isLink": false
+    }
+  ],
+  "folders": [
+    {
+      "id": "0000001100000000",
+      "userId": "alice",
+      "parentId": null,
+      "name": "first"
+    },
+    {
+      "id": "0000001200000000",
+      "userId": "alice",
+      "parentId": null,
+      "name": "second"
+    },
+    {
+      "id": "0000001300000000",
+      "userId": "alice",
+      "parentId": "0000001100000000",
+      "name": "child"
+    },
+    {
+      "id": "0000001400000000",
+      "userId": "bob",
+      "parentId": null,
+      "name": "other"
+    }
+  ],
+  "cases": [
+    {
+      "id": "files-default",
+      "operation": "files",
+      "input": {}
+    },
+    {
+      "id": "files-limit",
+      "operation": "files",
+      "input": {
+        "limit": 1
+      }
+    },
+    {
+      "id": "files-since",
+      "operation": "files",
+      "input": {
+        "sinceId": "0000000100000000",
+        "limit": 1
+      }
+    },
+    {
+      "id": "files-until",
+      "operation": "files",
+      "input": {
+        "untilId": "0000000300000000"
+      }
+    },
+    {
+      "id": "files-both",
+      "operation": "files",
+      "input": {
+        "sinceId": "0000000100000000",
+        "untilId": "0000000700000000"
+      }
+    },
+    {
+      "id": "files-since-date",
+      "operation": "files",
+      "input": {
+        "sinceDate": 946684800001
+      }
+    },
+    {
+      "id": "files-until-date",
+      "operation": "files",
+      "input": {
+        "untilDate": 946684800003
+      }
+    },
+    {
+      "id": "files-both-date",
+      "operation": "files",
+      "input": {
+        "sinceDate": 946684800001,
+        "untilDate": 946684800007
+      }
+    },
+    {
+      "id": "files-zero-date",
+      "operation": "files",
+      "input": {
+        "sinceDate": 0
+      }
+    },
+    {
+      "id": "files-id-precedence",
+      "operation": "files",
+      "input": {
+        "sinceId": "0000000100000000",
+        "sinceDate": 946684800099,
+        "untilDate": 946684800099
+      }
+    },
+    {
+      "id": "files-zero-limit",
+      "operation": "files",
+      "input": {
+        "limit": 0
+      }
+    },
+    {
+      "id": "files-huge-limit",
+      "operation": "files",
+      "input": {
+        "limit": 101
+      }
+    },
+    {
+      "id": "files-fraction-limit",
+      "operation": "files",
+      "input": {
+        "limit": 1.5
+      }
+    },
+    {
+      "id": "files-null-cursor",
+      "operation": "files",
+      "input": {
+        "sinceId": null
+      }
+    },
+    {
+      "id": "files-bad-id",
+      "operation": "files",
+      "input": {
+        "untilId": "bad-id"
+      }
+    },
+    {
+      "id": "stream-default",
+      "operation": "stream",
+      "input": {}
+    },
+    {
+      "id": "stream-limit",
+      "operation": "stream",
+      "input": {
+        "limit": 1
+      }
+    },
+    {
+      "id": "stream-since",
+      "operation": "stream",
+      "input": {
+        "sinceId": "0000000100000000",
+        "limit": 1
+      }
+    },
+    {
+      "id": "stream-until",
+      "operation": "stream",
+      "input": {
+        "untilId": "0000000300000000"
+      }
+    },
+    {
+      "id": "stream-both",
+      "operation": "stream",
+      "input": {
+        "sinceId": "0000000100000000",
+        "untilId": "0000000700000000"
+      }
+    },
+    {
+      "id": "stream-since-date",
+      "operation": "stream",
+      "input": {
+        "sinceDate": 946684800001
+      }
+    },
+    {
+      "id": "stream-until-date",
+      "operation": "stream",
+      "input": {
+        "untilDate": 946684800003
+      }
+    },
+    {
+      "id": "stream-both-date",
+      "operation": "stream",
+      "input": {
+        "sinceDate": 946684800001,
+        "untilDate": 946684800007
+      }
+    },
+    {
+      "id": "stream-zero-date",
+      "operation": "stream",
+      "input": {
+        "sinceDate": 0
+      }
+    },
+    {
+      "id": "stream-id-precedence",
+      "operation": "stream",
+      "input": {
+        "sinceId": "0000000100000000",
+        "sinceDate": 946684800099,
+        "untilDate": 946684800099
+      }
+    },
+    {
+      "id": "stream-zero-limit",
+      "operation": "stream",
+      "input": {
+        "limit": 0
+      }
+    },
+    {
+      "id": "stream-huge-limit",
+      "operation": "stream",
+      "input": {
+        "limit": 101
+      }
+    },
+    {
+      "id": "stream-fraction-limit",
+      "operation": "stream",
+      "input": {
+        "limit": 1.5
+      }
+    },
+    {
+      "id": "stream-null-cursor",
+      "operation": "stream",
+      "input": {
+        "sinceId": null
+      }
+    },
+    {
+      "id": "stream-bad-id",
+      "operation": "stream",
+      "input": {
+        "untilId": "bad-id"
+      }
+    },
+    {
+      "id": "folders-default",
+      "operation": "folders",
+      "input": {}
+    },
+    {
+      "id": "folders-limit",
+      "operation": "folders",
+      "input": {
+        "limit": 1
+      }
+    },
+    {
+      "id": "folders-since",
+      "operation": "folders",
+      "input": {
+        "sinceId": "0000001100000000",
+        "limit": 1
+      }
+    },
+    {
+      "id": "folders-until",
+      "operation": "folders",
+      "input": {
+        "untilId": "0000001200000000"
+      }
+    },
+    {
+      "id": "folders-both",
+      "operation": "folders",
+      "input": {
+        "sinceId": "0000001000000000",
+        "untilId": "0000001300000000"
+      }
+    },
+    {
+      "id": "folders-since-date",
+      "operation": "folders",
+      "input": {
+        "sinceDate": 946684800001
+      }
+    },
+    {
+      "id": "folders-until-date",
+      "operation": "folders",
+      "input": {
+        "untilDate": 946684800003
+      }
+    },
+    {
+      "id": "folders-both-date",
+      "operation": "folders",
+      "input": {
+        "sinceDate": 946684800001,
+        "untilDate": 946684800007
+      }
+    },
+    {
+      "id": "folders-zero-date",
+      "operation": "folders",
+      "input": {
+        "sinceDate": 0
+      }
+    },
+    {
+      "id": "folders-id-precedence",
+      "operation": "folders",
+      "input": {
+        "sinceId": "0000000100000000",
+        "sinceDate": 946684800099,
+        "untilDate": 946684800099
+      }
+    },
+    {
+      "id": "folders-zero-limit",
+      "operation": "folders",
+      "input": {
+        "limit": 0
+      }
+    },
+    {
+      "id": "folders-huge-limit",
+      "operation": "folders",
+      "input": {
+        "limit": 101
+      }
+    },
+    {
+      "id": "folders-fraction-limit",
+      "operation": "folders",
+      "input": {
+        "limit": 1.5
+      }
+    },
+    {
+      "id": "folders-null-cursor",
+      "operation": "folders",
+      "input": {
+        "sinceId": null
+      }
+    },
+    {
+      "id": "folders-bad-id",
+      "operation": "folders",
+      "input": {
+        "untilId": "bad-id"
+      }
+    },
+    {
+      "id": "adminFiles-default",
+      "operation": "adminFiles",
+      "input": {}
+    },
+    {
+      "id": "adminFiles-limit",
+      "operation": "adminFiles",
+      "input": {
+        "limit": 1
+      }
+    },
+    {
+      "id": "adminFiles-since",
+      "operation": "adminFiles",
+      "input": {
+        "sinceId": "0000000100000000",
+        "limit": 1
+      }
+    },
+    {
+      "id": "adminFiles-until",
+      "operation": "adminFiles",
+      "input": {
+        "untilId": "0000000300000000"
+      }
+    },
+    {
+      "id": "adminFiles-both",
+      "operation": "adminFiles",
+      "input": {
+        "sinceId": "0000000100000000",
+        "untilId": "0000000700000000"
+      }
+    },
+    {
+      "id": "adminFiles-since-date",
+      "operation": "adminFiles",
+      "input": {
+        "sinceDate": 946684800001
+      }
+    },
+    {
+      "id": "adminFiles-until-date",
+      "operation": "adminFiles",
+      "input": {
+        "untilDate": 946684800003
+      }
+    },
+    {
+      "id": "adminFiles-both-date",
+      "operation": "adminFiles",
+      "input": {
+        "sinceDate": 946684800001,
+        "untilDate": 946684800007
+      }
+    },
+    {
+      "id": "adminFiles-zero-date",
+      "operation": "adminFiles",
+      "input": {
+        "sinceDate": 0
+      }
+    },
+    {
+      "id": "adminFiles-id-precedence",
+      "operation": "adminFiles",
+      "input": {
+        "sinceId": "0000000100000000",
+        "sinceDate": 946684800099,
+        "untilDate": 946684800099
+      }
+    },
+    {
+      "id": "adminFiles-zero-limit",
+      "operation": "adminFiles",
+      "input": {
+        "limit": 0
+      }
+    },
+    {
+      "id": "adminFiles-huge-limit",
+      "operation": "adminFiles",
+      "input": {
+        "limit": 101
+      }
+    },
+    {
+      "id": "adminFiles-fraction-limit",
+      "operation": "adminFiles",
+      "input": {
+        "limit": 1.5
+      }
+    },
+    {
+      "id": "adminFiles-null-cursor",
+      "operation": "adminFiles",
+      "input": {
+        "sinceId": null
+      }
+    },
+    {
+      "id": "adminFiles-bad-id",
+      "operation": "adminFiles",
+      "input": {
+        "untilId": "bad-id"
+      }
+    },
+    {
+      "id": "files-folder",
+      "operation": "files",
+      "input": {
+        "folderId": "0000001100000000"
+      }
+    },
+    {
+      "id": "files-missing-folder",
+      "operation": "files",
+      "input": {
+        "folderId": "missing"
+      }
+    },
+    {
+      "id": "files-null-folder",
+      "operation": "files",
+      "input": {
+        "folderId": null
+      }
+    },
+    {
+      "id": "folders-folder",
+      "operation": "folders",
+      "input": {
+        "folderId": "0000001100000000"
+      }
+    },
+    {
+      "id": "folders-missing-folder",
+      "operation": "folders",
+      "input": {
+        "folderId": "missing"
+      }
+    },
+    {
+      "id": "folders-null-folder",
+      "operation": "folders",
+      "input": {
+        "folderId": null
+      }
+    },
+    {
+      "id": "files-image",
+      "operation": "files",
+      "input": {
+        "type": "image/*"
+      }
+    },
+    {
+      "id": "files-exact",
+      "operation": "files",
+      "input": {
+        "type": "image/png"
+      }
+    },
+    {
+      "id": "files-none",
+      "operation": "files",
+      "input": {
+        "type": "audio/*"
+      }
+    },
+    {
+      "id": "files-digits",
+      "operation": "files",
+      "input": {
+        "type": "video/mp4"
+      }
+    },
+    {
+      "id": "files-invalid-type",
+      "operation": "files",
+      "input": {
+        "type": "image/png%"
+      }
+    },
+    {
+      "id": "files-null-type",
+      "operation": "files",
+      "input": {
+        "type": null
+      }
+    },
+    {
+      "id": "stream-image",
+      "operation": "stream",
+      "input": {
+        "type": "image/*"
+      }
+    },
+    {
+      "id": "stream-exact",
+      "operation": "stream",
+      "input": {
+        "type": "image/png"
+      }
+    },
+    {
+      "id": "stream-none",
+      "operation": "stream",
+      "input": {
+        "type": "audio/*"
+      }
+    },
+    {
+      "id": "stream-digits",
+      "operation": "stream",
+      "input": {
+        "type": "video/mp4"
+      }
+    },
+    {
+      "id": "stream-invalid-type",
+      "operation": "stream",
+      "input": {
+        "type": "image/png%"
+      }
+    },
+    {
+      "id": "stream-null-type",
+      "operation": "stream",
+      "input": {
+        "type": null
+      }
+    },
+    {
+      "id": "adminFiles-image",
+      "operation": "adminFiles",
+      "input": {
+        "type": "image/*"
+      }
+    },
+    {
+      "id": "adminFiles-exact",
+      "operation": "adminFiles",
+      "input": {
+        "type": "image/png"
+      }
+    },
+    {
+      "id": "adminFiles-none",
+      "operation": "adminFiles",
+      "input": {
+        "type": "audio/*"
+      }
+    },
+    {
+      "id": "adminFiles-digits",
+      "operation": "adminFiles",
+      "input": {
+        "type": "video/mp4"
+      }
+    },
+    {
+      "id": "adminFiles-invalid-type",
+      "operation": "adminFiles",
+      "input": {
+        "type": "image/png%"
+      }
+    },
+    {
+      "id": "adminFiles-null-type",
+      "operation": "adminFiles",
+      "input": {
+        "type": null
+      }
+    },
+    {
+      "id": "files-sort-+createdAt",
+      "operation": "files",
+      "input": {
+        "sort": "+createdAt"
+      }
+    },
+    {
+      "id": "files-sort--createdAt",
+      "operation": "files",
+      "input": {
+        "sort": "-createdAt"
+      }
+    },
+    {
+      "id": "files-sort-+name",
+      "operation": "files",
+      "input": {
+        "sort": "+name"
+      }
+    },
+    {
+      "id": "files-sort--name",
+      "operation": "files",
+      "input": {
+        "sort": "-name"
+      }
+    },
+    {
+      "id": "files-sort-+size",
+      "operation": "files",
+      "input": {
+        "sort": "+size"
+      }
+    },
+    {
+      "id": "files-sort--size",
+      "operation": "files",
+      "input": {
+        "sort": "-size"
+      }
+    },
+    {
+      "id": "files-sort-None",
+      "operation": "files",
+      "input": {
+        "sort": null
+      }
+    },
+    {
+      "id": "files-sort-with-cursor",
+      "operation": "files",
+      "input": {
+        "sort": "+name",
+        "sinceId": "0000000100000000"
+      }
+    },
+    {
+      "id": "files-invalid-sort",
+      "operation": "files",
+      "input": {
+        "sort": "name"
+      }
+    },
+    {
+      "id": "adminFiles-combined",
+      "operation": "adminFiles",
+      "input": {
+        "origin": "combined"
+      }
+    },
+    {
+      "id": "adminFiles-remote",
+      "operation": "adminFiles",
+      "input": {
+        "origin": "remote"
+      }
+    },
+    {
+      "id": "adminFiles-host",
+      "operation": "adminFiles",
+      "input": {
+        "origin": "remote",
+        "hostname": "remote.test"
+      }
+    },
+    {
+      "id": "adminFiles-hostname-case",
+      "operation": "adminFiles",
+      "input": {
+        "origin": "remote",
+        "hostname": "REMOTE.TEST"
+      }
+    },
+    {
+      "id": "adminFiles-host-local-conflict",
+      "operation": "adminFiles",
+      "input": {
+        "hostname": "remote.test"
+      }
+    },
+    {
+      "id": "adminFiles-user-overrides-origin-host",
+      "operation": "adminFiles",
+      "input": {
+        "userId": "bob",
+        "origin": "local",
+        "hostname": "absent"
+      }
+    },
+    {
+      "id": "adminFiles-null-user",
+      "operation": "adminFiles",
+      "input": {
+        "userId": null,
+        "origin": "combined"
+      }
+    },
+    {
+      "id": "adminFiles-invalid-origin",
+      "operation": "adminFiles",
+      "input": {
+        "origin": "other"
+      }
+    },
+    {
+      "id": "usage-default",
+      "operation": "usage",
+      "input": {}
+    },
+    {
+      "id": "usage-empty",
+      "operation": "usage",
+      "input": {},
+      "actor": "empty"
+    },
+    {
+      "id": "aggregate-103",
+      "operation": "aggregate",
+      "input": {
+        "userId": "alice"
+      }
+    },
+    {
+      "id": "aggregate-104",
+      "operation": "aggregate",
+      "input": {
+        "userId": "empty"
+      }
+    },
+    {
+      "id": "aggregate-105",
+      "operation": "aggregate",
+      "input": {
+        "host": "remote.test"
+      }
+    },
+    {
+      "id": "aggregate-106",
+      "operation": "aggregate",
+      "input": {
+        "host": "例え.テスト"
+      }
+    },
+    {
+      "id": "aggregate-107",
+      "operation": "aggregate",
+      "input": {
+        "host": "REMOTE.TEST"
+      }
+    },
+    {
+      "id": "aggregate-108",
+      "operation": "aggregate",
+      "input": {
+        "host": "absent"
+      }
+    },
+    {
+      "id": "aggregate-109",
+      "operation": "aggregate",
+      "input": {
+        "origin": "local"
+      }
+    },
+    {
+      "id": "aggregate-110",
+      "operation": "aggregate",
+      "input": {
+        "origin": "remote"
+      }
+    }
+  ]
+}
