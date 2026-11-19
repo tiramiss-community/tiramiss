@@ -167,6 +167,22 @@
           "insert": "\t\t\ttrack((async () => run(input))(), input.snapshot.id, input.snapshot.userId, input.kind);\n"
         }
       ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "previousSha256": "32ec236ef523e7a4d39db6a7b1da8d4206a53963170490ae4a1a63ebc150259c",
+      "currentSha256": "e0222b54780c4a9916802297bfd00abf0383fcea45d5d40d984f5a1df76df448",
+      "patches": [
+        {
+          "offset": 4003,
+          "previous": "\t\t'/api/notes/polls/recommendation', '/api/notes', '/api/notes/delete', '/api/notes/show', '/api/notes/create', '/api/test', '/api/reset-db', '/api/test-queue',\n",
+          "insert": "\t\t'/api/notes/polls/recommendation', '/api/notes', '/api/notes/delete', '/api/notes/unrenote', '/api/notes/show', '/api/notes/create', '/api/test', '/api/reset-db', '/api/test-queue',\n"
+        },
+        {
+          "offset": 4192,
+          "previous": "\tfor (const path of ['promo/read', 'notes/translate', 'notes/polls/recommendation', 'admin/roles/show', 'admin/roles/update', 'notes/delete', 'notes/create', 'drive/files/show', 'drive/files/find', 'drive/files/find-by-hash', 'drive/files/check-existence', 'admin/drive/show-file', 'drive/folders/create', 'drive/folders/delete', 'drive/folders/find', 'drive/folders/show', 'drive/folders/update']) {\n",
+          "insert": "\tfor (const path of ['promo/read', 'notes/translate', 'notes/polls/recommendation', 'admin/roles/show', 'admin/roles/update', 'notes/delete', 'notes/unrenote', 'notes/create', 'drive/files/show', 'drive/files/find', 'drive/files/find-by-hash', 'drive/files/check-existence', 'admin/drive/show-file', 'drive/folders/create', 'drive/folders/delete', 'drive/folders/find', 'drive/folders/show', 'drive/folders/update']) {\n"
+        }
+      ]
     }
   }
 }

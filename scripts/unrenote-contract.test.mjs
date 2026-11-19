@@ -12,9 +12,9 @@ const read = path => readFileSync(new URL('../' + path, import.meta.url));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const record = JSON.parse(read('docs/superpowers/compatibility/unrenote/compatibility-predecessor.json'));
 
-test('unrenote projects only its seven exact shared inputs and preserves unknown drift', () => {
+test('unrenote projects only its eight exact shared inputs and preserves unknown drift', () => {
 	assert.equal(record.baseline, 'c25f3ee9790a5bf593bbe001e1c37e33395cd827');
-	assert.equal(Object.keys(record.files).length, 7);
+	assert.equal(Object.keys(record.files).length, 8);
 	for (const [path, binding] of Object.entries(record.files)) {
 		const actual = read(path);
 		assert.equal(sha(projectParallelInput(path, actual, binding.currentSha256)), binding.currentSha256, path);

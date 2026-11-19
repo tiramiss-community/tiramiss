@@ -36,4 +36,4 @@ pnpm --filter backend-next typecheck
 
 ## 過去入力との接続
 
-`compatibility-predecessor.json` は今回変更した共有7ファイルだけについて、base `c25f3ee979` の bytes と本変更の bytes、差分位置を封印する。既存の `scripts/parallel-inputs.mjs` が歴史的検証にだけこの有限差分を戻す。未知の追加変更は投影せず従来の drift 検出へ渡す。過去 receipt の hash・実測件数・本家比較結果は変更しない。`scripts/unrenote-contract.test.mjs` が各入力と未知変更の拒否を確認する。
+`compatibility-predecessor.json` は今回変更した共有8ファイル（ルート登録確認テストを含む）だけについて、base `c25f3ee979` の bytes と本変更の bytes、差分位置を封印する。既存の `scripts/parallel-inputs.mjs` が歴史的検証にだけこの有限差分を戻す。未知の追加変更は投影せず従来の drift 検出へ渡す。過去 receipt の hash・実測件数・本家比較結果は変更しない。`scripts/unrenote-contract.test.mjs` が各入力と未知変更の拒否を確認する。
