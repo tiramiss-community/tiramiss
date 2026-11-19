@@ -1,0 +1,93 @@
+{
+  "baseline": "5fdc1702d2568c2df9dc2f33411fd11ecc35db04",
+  "files": {
+    "packages/backend-next/src/composition/drive-files-http.ts": {
+      "previousSha256": "248befd37051c05b9223adcf093f062695472a82f252bb269e475bdc0c356543",
+      "currentSha256": "d063a69b9ec96b9d6e76b43ee06768635cf77d36714b5d276d01440e6da3a328",
+      "patches": [
+        {
+          "offset": 102,
+          "previous": "",
+          "insert": "\nimport { createDriveListUsage } from '../modules/drive/list-usage.js';\nimport { createDriveListEndpoints } from '../http/drive-list-api.js';\nimport { createDriveListStore } from '../platform/database/drive-list-usage.js';"
+        },
+        {
+          "offset": 1185,
+          "previous": "",
+          "insert": "const lists = createDriveListUsage(createDriveListStore(resources.dataSource.manager, { url: config.url, ...config.noteMedia, createdAtFromId: ids.createdAtFromId }, ids.newId));\n\t"
+        },
+        {
+          "offset": 1492,
+          "previous": "",
+          "insert": "[..."
+        },
+        {
+          "offset": 1535,
+          "previous": "",
+          "insert": "...createDriveListEndpoints(lists)], "
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/drive-files.ts": {
+      "previousSha256": "7c5c54a77ae04fcf15f633f7ecc0eb6c8f662dd11cba09f614abfe19f592f03a",
+      "currentSha256": "7bc5a5696099f1d0d4253e41ff89689a9da09ee3835e3896e219b644f547f40c",
+      "patches": [
+        {
+          "offset": 754,
+          "previous": "",
+          "insert": "\n// Explicitly project persisted columns: entities never cross the adapter boundary.\nexport const driveStoredFile = (file: MiDriveFile): DriveStoredFile => ({\n\tid: file.id, userId: file.userId, userHost: file.userHost, folderId: file.folderId, name: file.name, type: file.type, md5: file.md5, size: file.size,\n\tisSensitive: file.isSensitive, blurhash: file.blurhash, properties: structuredClone(file.properties), url: file.url, webpublicUrl: file.webpublicUrl,\n\turi: file.uri, isLink: file.isLink, webpublicAccessKey: file.webpublicAccessKey, thumbnailUrl: file.thumbnailUrl, comment: file.comment,\n\tmaybePorn: file.maybePorn, maybeSensitive: file.maybeSensitive, src: file.src, thumbnailAccessKey: file.thumbnailAccessKey, accessKey: file.accessKey,\n\twebpublicType: file.webpublicType, storedInternal: file.storedInternal, requestIp: file.requestIp, requestHeaders: file.requestHeaders,\n});\n\n"
+        },
+        {
+          "offset": 1880,
+          "previous": "\t// Explicitly project persisted columns: entities never cross the adapter boundary.\n\tconst facts = (file: MiDriveFile): DriveStoredFile => ({\n\t\tid: file.id, userId: file.userId, userHost: file.userHost, folderId: file.folderId, name: file.name, type: file.type, md5: file.md5, size: file.size,\n\t\tisSensitive: file.isSensitive, blurhash: file.blurhash, properties: structuredClone(file.properties), url: file.url, webpublicUrl: file.webpublicUrl,\n\t\turi: file.uri, isLink: file.isLink, webpublicAccessKey: file.webpublicAccessKey, thumbnailUrl: file.thumbnailUrl, comment: file.comment,\n\t\tmaybePorn: file.maybePorn, maybeSensitive: file.maybeSensitive, src: file.src, thumbnailAccessKey: file.thumbnailAccessKey, accessKey: file.accessKey,\n\t\twebpublicType: file.webpublicType, storedInternal: file.storedInternal, requestIp: file.requestIp, requestHeaders: file.requestHeaders,\n\t});",
+          "insert": ""
+        },
+        {
+          "offset": 2053,
+          "previous": "fac",
+          "insert": "driveS"
+        },
+        {
+          "offset": 2060,
+          "previous": "s",
+          "insert": "oredFile"
+        },
+        {
+          "offset": 2251,
+          "previous": "fac",
+          "insert": "driveS"
+        },
+        {
+          "offset": 2258,
+          "previous": "s",
+          "insert": "oredFile"
+        },
+        {
+          "offset": 2398,
+          "previous": "fac",
+          "insert": "driveS"
+        },
+        {
+          "offset": 2405,
+          "previous": "s",
+          "insert": "oredFile"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "previousSha256": "89d2fc32d1ffbf3c87dc06266d211e84439b6da222c7369b78a3493ab756773d",
+      "currentSha256": "159e25541bf05efff3b4586d32493e6cf7508ba25d08d538f12731f96b127182",
+      "patches": [
+        {
+          "offset": 2930,
+          "previous": "",
+          "insert": "drive', '/api/drive/files', '/api/drive/stream', '/api/drive/folders', '/api/admin/drive/files', '/api/"
+        },
+        {
+          "offset": 4687,
+          "previous": "",
+          "insert": "', 'drive', 'drive/files', 'drive/stream', 'drive/folders', 'admin/drive/files"
+        }
+      ]
+    }
+  }
+}

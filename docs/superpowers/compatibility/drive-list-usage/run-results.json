@@ -1,0 +1,87 @@
+{
+  "implementationRevision": "51cc293afb3a02b23d6feee1a305f1627734aa15",
+  "baseRevision": "5fdc1702d2568c2df9dc2f33411fd11ecc35db04",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "environment": {
+    "node": "24.20.0",
+    "pnpm": "12.9.1",
+    "composeProject": "backend-next-507",
+    "postgresPort": 55507,
+    "redisPort": 56507,
+    "pubsubRedisPort": 56508
+  },
+  "inputs": {
+    "docs/superpowers/compatibility/drive-list-usage/compatibility-predecessor.json": "c360291fde7b625a744c168a361554d727d68d62f5849a2259aebfb040c27fdc",
+    "docs/superpowers/compatibility/drive-list-usage/corpus.json": "d6c21d22aa19c7ad70d159d1bf3b63818c07a22cbe4e06a3d4b5b333fa84aff7",
+    "docs/superpowers/compatibility/drive-list-usage/observations.json": "9b56bdd152b0831f6ebcb1cef1ff12197b26a95d2a19114a2a1fbfc83ee6fbf3",
+    "docs/superpowers/compatibility/drive-list-usage/source-probe.mjs": "1bdf13fa6d923823012e9294679f45c4f42c20a6669906a201dd36f4a54b5f00",
+    "packages/backend-next/src/composition/drive-files-http.ts": "d063a69b9ec96b9d6e76b43ee06768635cf77d36714b5d276d01440e6da3a328",
+    "packages/backend-next/src/http/drive-list-api.ts": "46083dfe2051032b2602c051e77d5fe301f69822d7ae3b6b9ffdd7db1886074b",
+    "packages/backend-next/src/modules/drive/list-usage.ts": "2f7a067ceddf4190efaf0d873fcdc22000422e4dcae42dbc48ea7fe63470f645",
+    "packages/backend-next/src/platform/database/drive-files.ts": "7bc5a5696099f1d0d4253e41ff89689a9da09ee3835e3896e219b644f547f40c",
+    "packages/backend-next/src/platform/database/drive-list-usage.ts": "674d60aeb246bbc83e0322fe702dd56acebfc3c95e937c7c8a1fd74b0f8f5f9e",
+    "packages/backend-next/test/integration/drive-list-source-http.test.ts": "bc1d1ceb09a2309cb2e4b0f49a70eeb504744d25b63e065c7c992d572a7d928d",
+    "packages/backend-next/test/integration/drive-list-usage.test.ts": "4af9a6757c6e604c1be4656e3d319441e1b5c498981528f62447f400a42510ca",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "159e25541bf05efff3b4586d32493e6cf7508ba25d08d538f12731f96b127182",
+    "packages/backend-next/test/unit/drive/list-usage.test.ts": "d9f2b5d29d1ff88a949fca70b7797840b9189218c5f19ccd0e1bb51abca95f66",
+    "scripts/compatibility-inputs/drive-list-usage.json": "e9978a332a517392dded18fa190e0fbaf8ea1216b18dd4b42320835c702bae4d",
+    "scripts/drive-list-usage-contract.test.mjs": "842966e1a7962364f2868b1918e51d581a5f3ad30e87c565c286e870b2040922"
+  },
+  "runs": [
+    {
+      "command": "UPSTREAM_ROOT=<fixed checkout> BACKEND_NEXT_TEST_DB_PORT=55507 node docs/superpowers/compatibility/drive-list-usage/source-probe.mjs --check",
+      "result": "PASS",
+      "cases": 111
+    },
+    {
+      "command": "pnpm --filter backend-next test test/unit/drive/list-usage.test.ts test/unit/drive/files.test.ts test/unit/drive/folders.test.ts test/unit/shared/pagination.test.ts",
+      "result": "PASS",
+      "tests": 104,
+      "files": 4
+    },
+    {
+      "command": "BACKEND_NEXT_TEST_DB_PORT=55507 BACKEND_NEXT_TEST_REDIS_PORT=56507 BACKEND_NEXT_TEST_PUBSUB_REDIS_PORT=56508 pnpm --filter backend-next test:integration test/integration/drive-list-usage.test.ts test/integration/drive-list-source-http.test.ts test/integration/drive-files.test.ts test/integration/drive-folders.test.ts",
+      "result": "PASS",
+      "tests": 199,
+      "files": 4
+    },
+    {
+      "command": "pnpm --filter backend-next test",
+      "result": "PASS",
+      "tests": 5622,
+      "skipped": 1,
+      "files": 172
+    },
+    {
+      "command": "pnpm --filter backend-next... build",
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm --filter backend-next typecheck",
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm --filter backend-upstream sync:check",
+      "result": "PASS"
+    },
+    {
+      "command": "node --test --test-concurrency=2 scripts/drive-list-usage-contract.test.mjs scripts/drive-files-contract.test.mjs scripts/meta-cache-contract.test.mjs",
+      "result": "PASS",
+      "tests": 48
+    },
+    {
+      "command": "node scripts/check-shipping.mjs --base 5fdc1702d2568c2df9dc2f33411fd11ecc35db04",
+      "result": "PASS",
+      "checks": [
+        "lint",
+        "SPDX",
+        "locale safety"
+      ]
+    }
+  ],
+  "limitations": [
+    "Source extracted handlers run with real PostgreSQL; file/folder packing returns IDs and Role capacity is a declared double, no full upstream HTTP server",
+    "Existing migration setup emits pg concurrent-query deprecation warning",
+    "Immutable predecessor records preserve historical evidence; these runs do not renew previous source/runtime receipts"
+  ]
+}
