@@ -25,7 +25,7 @@ function deferred<T>() {
 }
 
 function ports(overrides: Partial<StreamingPorts> = {}): StreamingPorts {
-	return { authenticate: async () => ({ userId: 'me', canReadAccount: true, isSuspended: false }), readFacts: async () => emptyStreamFacts('me'), hidingFollowing: async () => new Set(), repack: async () => null, reaction: async () => undefined, touchActivity: async () => {}, ...overrides };
+	return { timelinePolicies: async () => ({ ltlAvailable: true, gtlAvailable: true }), authenticate: async () => ({ userId: 'me', canReadAccount: true, isSuspended: false }), readFacts: async () => emptyStreamFacts('me'), hidingFollowing: async () => new Set(), repack: async () => null, reaction: async () => undefined, touchActivity: async () => {}, ...overrides };
 }
 
 async function start(port: StreamingPorts, queueStats?: QueueStatsReader) {

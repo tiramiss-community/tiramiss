@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { readStreamingTimelinePolicies } from './streaming-timeline-policies.js';
 import { settleAll } from '../settle-all.js';
 import { MiBlocking, MiChannelFollowing, MiChannelMuting, MiFollowing, MiMuting, MiNote, MiNoteReaction, MiRenoteMuting, MiUser, MiUserProfile } from 'backend-upstream/entities';
 import { emptyStreamFacts } from '../../modules/stream/public.js';
@@ -31,6 +32,7 @@ export function createStreamingReader(manager: EntityManager, redis: Redis, logg
 				tokenPermissions: caller.credential.native ? undefined : [...caller.credential.permissions],
 			};
 		},
+		timelinePolicies: (userId: string | null) => readStreamingTimelinePolicies(manager, userId, options.createdAtFromId, Date.now()),
 		async readFacts(userId: string | null): Promise<StreamFacts> {
 			const facts = emptyStreamFacts(userId);
 			facts.ugcVisibilityForVisitor = (await readMeta(manager)).ugcVisibilityForVisitor;

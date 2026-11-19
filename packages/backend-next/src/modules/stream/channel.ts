@@ -11,6 +11,7 @@ export function object(value: unknown): value is Record<string, unknown> {
 
 export interface StreamPorts {
 	facts(): StreamFacts;
+	timelinePolicies?(): Promise<{ ltlAvailable: boolean; gtlAvailable: boolean }>;
 	hidingFollowing?(): Promise<ReadonlySet<string>>;
 	now(): number;
 	send(value: { type: string; body: unknown }): void;
@@ -37,5 +38,5 @@ export interface StreamChannelDefinition {
 	requireCredential: boolean;
 	kind: string | null;
 	shouldShare: boolean;
-	create(context: { params: Record<string, unknown>; send(type: string, body: unknown): void }): StreamChannel | null;
+	create(context: { params: Record<string, unknown>; send(type: string, body: unknown): void }): StreamChannel | null | Promise<StreamChannel | null>;
 }

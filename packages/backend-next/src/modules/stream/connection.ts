@@ -74,18 +74,26 @@ export function createStreamConnection(ports: StreamPorts, registry: ReadonlyMap
 				const connection = { name: body.channel, instance: {} as StreamChannel };
 				channels.set(id, connection);
 				try {
-					const instance = definition.create({ params: body.params as Record<string, unknown> ?? {}, send: (type, payload) => {
+					const instance = await definition.create({ params: body.params as Record<string, unknown> ?? {}, send: (type, payload) => {
 						if (!disposed && channels.get(id) === connection) {
 							ports.send({ type: 'channel', body: { id, type, body: payload } });
 						}
 					} });
 					if (instance === null) {
-						channels.delete(id);
+						if (channels.get(id) === connection) {
+							channels.delete(id);
+						}
+						return;
+					}
+					if (disposed || channels.get(id) !== connection) {
+						instance.dispose?.();
 						return;
 					}
 					connection.instance = instance;
 				} catch (error) {
-					channels.delete(id);
+					if (channels.get(id) === connection) {
+						channels.delete(id);
+					}
 					throw error;
 				}
 				if (body.pong) {
