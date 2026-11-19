@@ -20,7 +20,7 @@ export function apiIpLogging(record: (userId: string, ip: string) => void, confi
 	const setting = configured ?? defaultTrustedProxies;
 	const trust = typeof setting === 'boolean' ? () => setting
 		: typeof setting === 'number' ? (_address: string, hop: number) => hop < setting
-		: proxyaddr.compile(setting);
+		: proxyaddr.compile(typeof setting === 'string' ? setting.split(',').map(value => value.trim()) : setting);
 	return createMiddleware(async (context, next) => {
 		context.set('recordApiIp', userId => {
 			const incoming: IncomingMessage | undefined = context.env?.incoming;

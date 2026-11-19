@@ -11,7 +11,7 @@ import { AuthenticationFailed, InputInvalid } from '../../../src/modules/access/
 
 const logger = { info() {}, error() {} };
 
-function setup(trustProxy: boolean | number | string[] | undefined = undefined, failure = false) {
+function setup(trustProxy: boolean | number | string | string[] | undefined = undefined, failure = false) {
 	const rows: unknown[] = [];
 	const app = new Hono().use('/api/*', apiIpLogging((userId, ip) => rows.push({ userId, ip }), trustProxy)).route('/', createApiEndpoints({
 		logger,
@@ -72,4 +72,10 @@ test('a failing observer cannot replace the successful API result', async () => 
 
 test('uses pinned upstream trusted-proxy defaults', () => {
 	expect(defaultTrustedProxies).toEqual(observations.trustedProxies);
+});
+
+test('accepts Fastify comma-separated trusted proxy settings', async () => {
+	const s = setup('loopback, 10.0.0.0/8');
+	expect((await s.post('alice')).status).toBe(200);
+	expect(s.rows).toEqual([{ userId: 'alice', ip: '203.0.113.7' }]);
 });

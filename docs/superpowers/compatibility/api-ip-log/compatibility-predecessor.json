@@ -1,0 +1,242 @@
+{
+  "baseRevision": "c25f3ee9790a5bf593bbe001e1c37e33395cd827",
+  "scope": "Only the exact #388 API IP logging additions; prior measured receipts remain historical and unknown bytes remain visible to drift guards.",
+  "files": {
+    "packages/backend-next/package.json": {
+      "previousSha256": "43c4d758c98d154e88307cf78e8c7296cc3ba0204712fc549388acbefa093888",
+      "currentSha256": "42ab117f4d1f31b52253e20a8b776b7a82307d35291af59cd1418a1fec49bdf3",
+      "patches": [
+        {
+          "offset": 1126,
+          "insert": "\t\t\"@fastify/proxy-addr\": \"5.1.1\",\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/composition/http-app.ts": {
+      "previousSha256": "f8ee861163ee0c83b3530406af969a644e3794b7a0db7f2d392d79fce7350146",
+      "currentSha256": "729be79124f944e6d91c6da613842e389cab618378e9713657e033b94262e16a",
+      "patches": [
+        {
+          "offset": 132,
+          "insert": "import { MiUserIp } from 'backend-upstream/entities';\nimport { apiIpLogging } from '../http/api-ip-log.js';\nimport { createApiIpLog } from '../platform/api-ip-log.js';\nimport { createNoteChartsApi, createUsersChartsApi } from '../http/note-charts-api.js';\nimport { createTokenAuthenticator } from '../platform/database/authenticate.js';\nimport { getAvatarImagesPath } from '../http/avatar-images-api.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 768,
+          "insert": "",
+          "previous": "import { createNoteChartsApi, createUsersChartsApi } from '../http/note-charts-api.js';\nimport { createTokenAuthenticator } from '../platform/database/authenticate.js';\n"
+        },
+        {
+          "offset": 835,
+          "insert": "",
+          "previous": "import { getAvatarImagesPath } from '../http/avatar-images-api.js';\n"
+        },
+        {
+          "offset": 2905,
+          "insert": "\t\t.use('/api/*', apiIpLogging((userId, ip) => ipLog.record(userId, ip), config.trustProxy))\n",
+          "previous": ""
+        },
+        {
+          "offset": 4612,
+          "insert": "\t\tawait Promise.all([folders.idle(), pages.idle(), announcements.idle(), avatarDecorationAdmin.idle(), ipLog.close()]);\n",
+          "previous": "\t\tawait Promise.all([folders.idle(), pages.idle(), announcements.idle(), avatarDecorationAdmin.idle()]);\n"
+        },
+        {
+          "offset": 4888,
+          "insert": "\tconst ipLog = createApiIpLog({\n\t\tenabled: async () => (await resources.meta.fetch()).enableIpLogging,\n\t\tinsert: row => resources.dataSource.getRepository(MiUserIp).createQueryBuilder().insert().values(row).orIgnore(true).execute(),\n\t\tnow: () => new Date(),\n\t\tonError: error => resources.logger.error('api.ip-log-failed', { error }),\n\t});\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/config/load-config.ts": {
+      "previousSha256": "d33985f49a65acb6be0d1c1d39dae9adef052af747522178886c6109f8b89aec",
+      "currentSha256": "10769e437a19bfa1a902aa6f9e3d6264d12fd500149a5eff1fee2798b3c5e523",
+      "patches": [
+        {
+          "offset": 8217,
+          "insert": "\t\ttrustProxy: optional(source.trustProxy, value => {\n\t\t\tif (typeof value === 'boolean' || typeof value === 'number') {\n\t\t\t\treturn value;\n\t\t\t}\n\t\t\treturn Array.isArray(value) ? texts(value, 'trustProxy') : text(value, 'trustProxy');\n\t\t}),\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/config/types.ts": {
+      "previousSha256": "68c3b12f2182934b5fd71b99ab37d5f4f27972c6dc4f82eea6bcb9b705378d9a",
+      "currentSha256": "6180341f0d3d3f0e2a5cee0bba7777c10827ec65c0af31106dbc6446e268c62b",
+      "patches": [
+        {
+          "offset": 1484,
+          "insert": "\ttrustProxy?: boolean | number | string | string[];\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/http/api-endpoint.ts": {
+      "previousSha256": "262172fbd09ef769607b079e59f862c2f386098b5720a4835df26514b2b73bc2",
+      "currentSha256": "f3f34ab77b97e193740a2970b3a71b5f4d6977976cf335390d8b6ab8198b4d4c",
+      "patches": [
+        {
+          "offset": 174,
+          "insert": "import { recordAuthenticatedApiIp } from './api-ip-log.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 2067,
+          "insert": "\t\t\t\trecordAuthenticatedApiIp(context, credential?.userId);\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/http/note-api.ts": {
+      "previousSha256": "988ad077e2adf61a475395a3554fb3960d84578095ac26aba955f37612366def",
+      "currentSha256": "5fb9a3d9338a62a9d0de7849b440cbff438f6d61b4e23db6f8cab6ceb0a3cf33",
+      "patches": [
+        {
+          "offset": 132,
+          "insert": "import { recordAuthenticatedApiIp } from './api-ip-log.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 1761,
+          "insert": "\t\t\trecordAuthenticatedApiIp(context, viewerId);\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/http/note-charts-api.ts": {
+      "previousSha256": "6c3024f600c0e91887e4a926b2b61c884c65c1850b4b5272e30d1ee6dd330f80",
+      "currentSha256": "9013c4ab7e60acaf53416ba02f9e686639ffb884021586b9cf5a3c75b461955d",
+      "patches": [
+        {
+          "offset": 132,
+          "insert": "import { recordAuthenticatedApiIp } from './api-ip-log.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 1666,
+          "insert": "\t\t\t\trecordAuthenticatedApiIp(context, credential?.credential.userId);\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/http/note-create-api.ts": {
+      "previousSha256": "01491f754ee698e54cbeddd752b4146971008e0a5e7087f8e471d6dac59b7379",
+      "currentSha256": "a38dd7a905ed6c74cd9111ae154c1a90a2b95bfa328ee0e13c8358be3b0f995b",
+      "patches": [
+        {
+          "offset": 132,
+          "insert": "import { recordAuthenticatedApiIp } from './api-ip-log.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 5378,
+          "insert": "\t\t\trecordAuthenticatedApiIp(context, actor?.userId);\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/http/note-delete-api.ts": {
+      "previousSha256": "5cca7fda373746e7d4483c2b36a8e13258b68fba9fe47099981e0867cc21b5d1",
+      "currentSha256": "07928062445a675814f4d65379641d4ab432fb2c58c8c857dcaed16266f38ec2",
+      "patches": [
+        {
+          "offset": 132,
+          "insert": "import { recordAuthenticatedApiIp } from './api-ip-log.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 2532,
+          "insert": "\t\t\trecordAuthenticatedApiIp(context, actor?.userId);\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/src/http/notes-list-api.ts": {
+      "previousSha256": "a37b796911c90f38ccf13f9520749e6dfd8d176080794ac1cff4ade55380ab0e",
+      "currentSha256": "3c1fe1b08429078eec7fe125a174ec7210018dbbd132de930ed09614366102cc",
+      "patches": [
+        {
+          "offset": 132,
+          "insert": "import { recordAuthenticatedApiIp } from './api-ip-log.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 1724,
+          "insert": "\t\t\trecordAuthenticatedApiIp(context, viewerId);\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "previousSha256": "32ec236ef523e7a4d39db6a7b1da8d4206a53963170490ae4a1a63ebc150259c",
+      "currentSha256": "a676bc0a427bb75ca9dcea9b1df4390b0cb9ff592c5c7da3579964763d2c46b1",
+      "patches": [
+        {
+          "offset": 2289,
+          "insert": "\t\t'/api/*', '/api/charts/users',\n",
+          "previous": "\t\t'/api/charts/users',\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/config.test.ts": {
+      "previousSha256": "9aa7a600d0fecf66f7743eb97916414d50c9d0973b45797a4124a8d722078a9d",
+      "currentSha256": "04627c5c608961a3d21e0730e9b6532b5004b1e758a1777de3bd08bd9a8fd9ae",
+      "patches": [
+        {
+          "offset": 11716,
+          "insert": "\ntest.each([false, true, 1, 'loopback', ['127.0.0.1/32', '10.0.0.0/8']])('preserves configured trustProxy: %j', async trustProxy => {\n\tconst value = await loadConfig({ configFile: await configFrom({ url: 'https://example.test', port: 3000, db: { host: 'localhost', port: 5432, db: 'test', user: 'test' }, redis: { host: 'localhost', port: 6379 }, trustProxy }) });\n\texpect(value.trustProxy).toEqual(trustProxy);\n});\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-upstream/.managed-files.json": {
+      "previousSha256": "40a6f528d0726495a28fddca507dfe8d86b2531e2a977102de79ac9a22f66795",
+      "currentSha256": "60ac1f6288335a1474f34c3bd3668e7321e7d8a720bb086f9fe5732b4992f8c0",
+      "patches": [
+        {
+          "offset": 17805,
+          "insert": "\t\"src/models/UserIp.ts\",\n",
+          "previous": ""
+        }
+      ]
+    },
+    "packages/backend-upstream/exports/entities.ts": {
+      "previousSha256": "420ce3794ec43c7e380f4a5cb0a2f2a667d889d7b2997d7c3a7e8f2a4b436edd",
+      "currentSha256": "7cf3c4da70de7b54414f55e7855269a1eb18dbbbcc33a841cdbf88f68da5ab6b",
+      "patches": [
+        {
+          "offset": 2399,
+          "insert": "import { MiUserIp } from '../src/models/UserIp.js';\n",
+          "previous": ""
+        },
+        {
+          "offset": 2759,
+          "insert": "export { MiWebhook, MiRole, MiRoleAssignment, MiUser, MiMeta, MiModerationLog, MiAccessToken, MiApp, MiDriveFile, MiDriveFolder, MiNote, MiHashtag, MiChannel, MiFollowing, MiRelay, MiPoll, MiPollVote, MiNoteReaction, MiEmoji, MiInstance, MiAvatarDecoration, MiBlocking, MiUserProfile, MiPage, MiUserList, MiSystemAccount, MiUserKeypair, MiUsedUsername, MiMuting, MiRenoteMuting, MiNoteThreadMuting, MiUserListMembership, MiChannelFollowing, MiChannelMuting, MiAntenna, MiUserPublickey, MiFollowRequest, MiUserNotePining, MiUserMemo, MiUserIp, MiPageLike, MiAnnouncement, MiAnnouncementRead, MiPromoNote, MiPromoRead };\nexport const entities = [MiWebhook, MiRole, MiRoleAssignment, MiUser, MiMeta, MiModerationLog, MiAccessToken, MiApp, MiDriveFile, MiDriveFolder, MiNote, MiHashtag, MiChannel, MiFollowing, MiRelay, MiPoll, MiPollVote, MiNoteReaction, MiEmoji, MiInstance, MiAvatarDecoration, MiBlocking, MiUserProfile, MiPage, MiUserList, MiSystemAccount, MiUserKeypair, MiUsedUsername, MiMuting, MiRenoteMuting, MiNoteThreadMuting, MiUserListMembership, MiChannelFollowing, MiChannelMuting, MiAntenna, MiUserPublickey, MiFollowRequest, MiUserNotePining, MiUserMemo, MiUserIp, MiPageLike, MiAnnouncement, MiAnnouncementRead, MiPromoNote, MiPromoRead];\n",
+          "previous": "export { MiWebhook, MiRole, MiRoleAssignment, MiUser, MiMeta, MiModerationLog, MiAccessToken, MiApp, MiDriveFile, MiDriveFolder, MiNote, MiHashtag, MiChannel, MiFollowing, MiRelay, MiPoll, MiPollVote, MiNoteReaction, MiEmoji, MiInstance, MiAvatarDecoration, MiBlocking, MiUserProfile, MiPage, MiUserList, MiSystemAccount, MiUserKeypair, MiUsedUsername, MiMuting, MiRenoteMuting, MiNoteThreadMuting, MiUserListMembership, MiChannelFollowing, MiChannelMuting, MiAntenna, MiUserPublickey, MiFollowRequest, MiUserNotePining, MiUserMemo, MiPageLike, MiAnnouncement, MiAnnouncementRead, MiPromoNote, MiPromoRead };\nexport const entities = [MiWebhook, MiRole, MiRoleAssignment, MiUser, MiMeta, MiModerationLog, MiAccessToken, MiApp, MiDriveFile, MiDriveFolder, MiNote, MiHashtag, MiChannel, MiFollowing, MiRelay, MiPoll, MiPollVote, MiNoteReaction, MiEmoji, MiInstance, MiAvatarDecoration, MiBlocking, MiUserProfile, MiPage, MiUserList, MiSystemAccount, MiUserKeypair, MiUsedUsername, MiMuting, MiRenoteMuting, MiNoteThreadMuting, MiUserListMembership, MiChannelFollowing, MiChannelMuting, MiAntenna, MiUserPublickey, MiFollowRequest, MiUserNotePining, MiUserMemo, MiPageLike, MiAnnouncement, MiAnnouncementRead, MiPromoNote, MiPromoRead];\n"
+        }
+      ]
+    },
+    "packages/backend-upstream/upstream-sync.json": {
+      "previousSha256": "6caa674a2ff9c859e1c30c3bf009da3d32334a630af2378057b9fe8a2821f584",
+      "currentSha256": "dff0e1960a2431e049a6a3f46b86d0e0a9eb419fbe7a5bbb88fd41ec368ffab3",
+      "patches": [
+        {
+          "offset": 1262,
+          "insert": "\t\t\"src/models/UserIp.ts\",\n",
+          "previous": ""
+        }
+      ]
+    },
+    "pnpm-lock.yaml": {
+      "previousSha256": "fbdf4bfbb12f02d0cee063a5636bc1469afd104d35de54235a47dd30af23fd3c",
+      "currentSha256": "00ca1d77ca47b52c37367c69f0eaadbf234ed375e9651615c03d95020d337e07",
+      "patches": [
+        {
+          "offset": 24583,
+          "insert": "      '@fastify/proxy-addr':\n        specifier: 5.1.1\n        version: 5.1.1\n",
+          "previous": ""
+        }
+      ]
+    }
+  }
+}

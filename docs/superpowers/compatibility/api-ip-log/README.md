@@ -19,7 +19,7 @@ HTTP adapter は本家 Fastify と同じ `@fastify/proxy-addr 5.1.1` と固定 c
 2026-11-19、Node 24.20.0 / pnpm 12.9.1、専用 Compose `backend-next-b388`（DB 55388 / Redis 56388）。依存は既存依存を借用し `pnpm_config_verify_deps_before_run=false` で自動 install を無効化した。
 
 - PASS: upstream sync:check / upstream 同期5 tests、backend-next と upstream の build / typecheck。
-- PASS: 近傍単体157 tests / 10 files、実PG/listening HTTP 5 tests（pending schema DDL 0を含む）、source 8入力、root receipt 2 tests。
+- PASS: 近傍単体158 tests / 10 files、実PG/listening HTTP 5 tests（pending schema DDL 0を含む）、source 8入力、root receipt / predecessor 3 tests。
 - PG は既存 query の並行利用に関する deprecation warning を出すが、検証は全件成功。新しい schema/migration は不要、旧 backend API 型生成も対象外。
 
 再実行（repo root、適切な専用 DB/Redis を起動して実行）:
@@ -35,6 +35,8 @@ pnpm --filter backend-next test test/unit/api-ip-log.test.ts test/unit/http test
 BACKEND_NEXT_TEST_DB_PORT=55388 BACKEND_NEXT_TEST_REDIS_PORT=56388 pnpm --filter backend-next test:integration test/integration/api-ip-log.test.ts
 node scripts/check-shipping.mjs --base c25f3ee979
 ```
+
+`compatibility-predecessor.json` と既存の `scripts/compatibility-inputs` 登録は、今回変更した既存16入力だけを正確な基点の bytes へ投影する。過去の測定値を更新せず、未知の追加 bytes は従来の drift guard へ残す。public-emojis の旧実測が保持する api-endpoint 入力にも、このパスだけ既存 projector を適用する。これは旧 runtime の再測定を意味しない。
 
 4対象ID `entity:user_ip` / `meta-setting:enableIpLogging` / `responsibility:api-server-stream-oauth:10` / `timer:src/server/api/ApiCallService.ts:104` の有限成果であり、親 #178 / 全体 #114 を完了扱いにしない。
 
