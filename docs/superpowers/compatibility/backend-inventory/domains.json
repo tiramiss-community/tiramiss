@@ -4640,6 +4640,101 @@
       ],
       "note": "#488: 本人の全Renote（引用を含む）を選び既存削除操作へ接続。固定endpoint/deletion methodと同一PGの4操作・HTTP・保存/counter・副作用開始を比較。新実装の実Redis/AP queue/Meili、非待機応答・DELETE失敗/retry・drainを検証。親#184/#114、notes/create partial、chart#200の残範囲を維持。",
       "evidenceRevision": "54dd3e2ac4ea642bfe56339d8664be2f849b209e"
+    },
+    "api:drive": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/list-usage.ts",
+        "packages/backend-next/src/platform/database/drive-list-usage.ts",
+        "packages/backend-next/src/http/drive-list-api.ts",
+        "packages/backend-next/src/composition/drive-files-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/list-usage.test.ts",
+        "packages/backend-next/test/integration/drive-list-source-http.test.ts",
+        "packages/backend-next/test/integration/drive-list-usage.test.ts",
+        "docs/superpowers/compatibility/drive-list-usage/source-probe.mjs",
+        "docs/superpowers/compatibility/drive-list-usage/observations.json",
+        "docs/superpowers/compatibility/drive-list-usage/README.md"
+      ],
+      "note": "#507: five APIs and user/host/local/remote original-size aggregation; fixed-source actual TypeORM/PostgreSQL111 observations bind to real HTTP/PG. Near104 units and HTTP/PG199 regressions pass, including current Role capacity/expiry, owner/scope/moderator gate, exclusive ID/date boundaries, deletion between pages, isLink exclusion/empty zero, raw self/admin detail and actual DB read failures. Source packing selects IDs only and Role capacity is a declared double; no full upstream server/gate parity. Parent #188/#114 remain unfinished. docs/superpowers/compatibility/drive-list-usage/README.md",
+      "evidenceRevision": "51cc293afb3a02b23d6feee1a305f1627734aa15"
+    },
+    "api:drive/files": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/list-usage.ts",
+        "packages/backend-next/src/platform/database/drive-list-usage.ts",
+        "packages/backend-next/src/http/drive-list-api.ts",
+        "packages/backend-next/src/composition/drive-files-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/list-usage.test.ts",
+        "packages/backend-next/test/integration/drive-list-source-http.test.ts",
+        "packages/backend-next/test/integration/drive-list-usage.test.ts",
+        "docs/superpowers/compatibility/drive-list-usage/source-probe.mjs",
+        "docs/superpowers/compatibility/drive-list-usage/observations.json",
+        "docs/superpowers/compatibility/drive-list-usage/README.md"
+      ],
+      "note": "#507: five APIs and user/host/local/remote original-size aggregation; fixed-source actual TypeORM/PostgreSQL111 observations bind to real HTTP/PG. Near104 units and HTTP/PG199 regressions pass, including current Role capacity/expiry, owner/scope/moderator gate, exclusive ID/date boundaries, deletion between pages, isLink exclusion/empty zero, raw self/admin detail and actual DB read failures. Source packing selects IDs only and Role capacity is a declared double; no full upstream server/gate parity. Parent #188/#114 remain unfinished. docs/superpowers/compatibility/drive-list-usage/README.md",
+      "evidenceRevision": "51cc293afb3a02b23d6feee1a305f1627734aa15"
+    },
+    "api:drive/folders": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/list-usage.ts",
+        "packages/backend-next/src/platform/database/drive-list-usage.ts",
+        "packages/backend-next/src/http/drive-list-api.ts",
+        "packages/backend-next/src/composition/drive-files-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/list-usage.test.ts",
+        "packages/backend-next/test/integration/drive-list-source-http.test.ts",
+        "packages/backend-next/test/integration/drive-list-usage.test.ts",
+        "docs/superpowers/compatibility/drive-list-usage/source-probe.mjs",
+        "docs/superpowers/compatibility/drive-list-usage/observations.json",
+        "docs/superpowers/compatibility/drive-list-usage/README.md"
+      ],
+      "note": "#507: five APIs and user/host/local/remote original-size aggregation; fixed-source actual TypeORM/PostgreSQL111 observations bind to real HTTP/PG. Near104 units and HTTP/PG199 regressions pass, including current Role capacity/expiry, owner/scope/moderator gate, exclusive ID/date boundaries, deletion between pages, isLink exclusion/empty zero, raw self/admin detail and actual DB read failures. Source packing selects IDs only and Role capacity is a declared double; no full upstream server/gate parity. Parent #188/#114 remain unfinished. docs/superpowers/compatibility/drive-list-usage/README.md",
+      "evidenceRevision": "51cc293afb3a02b23d6feee1a305f1627734aa15"
+    },
+    "api:drive/stream": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/list-usage.ts",
+        "packages/backend-next/src/platform/database/drive-list-usage.ts",
+        "packages/backend-next/src/http/drive-list-api.ts",
+        "packages/backend-next/src/composition/drive-files-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/list-usage.test.ts",
+        "packages/backend-next/test/integration/drive-list-source-http.test.ts",
+        "packages/backend-next/test/integration/drive-list-usage.test.ts",
+        "docs/superpowers/compatibility/drive-list-usage/source-probe.mjs",
+        "docs/superpowers/compatibility/drive-list-usage/observations.json",
+        "docs/superpowers/compatibility/drive-list-usage/README.md"
+      ],
+      "note": "#507: five APIs and user/host/local/remote original-size aggregation; fixed-source actual TypeORM/PostgreSQL111 observations bind to real HTTP/PG. Near104 units and HTTP/PG199 regressions pass, including current Role capacity/expiry, owner/scope/moderator gate, exclusive ID/date boundaries, deletion between pages, isLink exclusion/empty zero, raw self/admin detail and actual DB read failures. Source packing selects IDs only and Role capacity is a declared double; no full upstream server/gate parity. Parent #188/#114 remain unfinished. docs/superpowers/compatibility/drive-list-usage/README.md",
+      "evidenceRevision": "51cc293afb3a02b23d6feee1a305f1627734aa15"
+    },
+    "api:admin/drive/files": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/drive/list-usage.ts",
+        "packages/backend-next/src/platform/database/drive-list-usage.ts",
+        "packages/backend-next/src/http/drive-list-api.ts",
+        "packages/backend-next/src/composition/drive-files-http.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/drive/list-usage.test.ts",
+        "packages/backend-next/test/integration/drive-list-source-http.test.ts",
+        "packages/backend-next/test/integration/drive-list-usage.test.ts",
+        "docs/superpowers/compatibility/drive-list-usage/source-probe.mjs",
+        "docs/superpowers/compatibility/drive-list-usage/observations.json",
+        "docs/superpowers/compatibility/drive-list-usage/README.md"
+      ],
+      "note": "#507: five APIs and user/host/local/remote original-size aggregation; fixed-source actual TypeORM/PostgreSQL111 observations bind to real HTTP/PG. Near104 units and HTTP/PG199 regressions pass, including current Role capacity/expiry, owner/scope/moderator gate, exclusive ID/date boundaries, deletion between pages, isLink exclusion/empty zero, raw self/admin detail and actual DB read failures. Source packing selects IDs only and Role capacity is a declared double; no full upstream server/gate parity. Parent #188/#114 remain unfinished. docs/superpowers/compatibility/drive-list-usage/README.md",
+      "evidenceRevision": "51cc293afb3a02b23d6feee1a305f1627734aa15"
     }
   }
 }
