@@ -55,7 +55,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 		'/api/admin/federation/update-instance', '/api/admin/federation/refresh-remote-instance-metadata', '/url', '/.well-known/*', '/.well-known/host-meta', '/.well-known/host-meta.json', '/.well-known/webfinger', '/.well-known/nodeinfo', '/nodeinfo/2.1', '/nodeinfo/2.0',
 		'/users/:id/collections/featured', '/notes/:id', '/users/:id/followers', '/users/:id/following',
 		'/users/:user/outbox', '/users//outbox', '/notes/:note/activity', '/notes//activity',
-		'/emojis/:emoji', '/emojis/', '/api/emoji', '/api/emojis', '/api/get-avatar-decorations',
+		'/emojis/:emoji', '/emojis/', '/api/emoji', '/api/emojis', '/api/admin/emoji/list', '/api/admin/emoji/list-remote', '/api/v2/admin/emoji/list', '/api/get-avatar-decorations',
 		'/api/admin/avatar-decorations/create', '/api/admin/avatar-decorations/update', '/api/admin/avatar-decorations/delete', '/api/admin/avatar-decorations/list',
 		'/manifest.json', '/robots.txt', '/opensearch.xml',
 		'/fluent-emoji/*', '/twemoji/*', '/twemoji-badge/*',

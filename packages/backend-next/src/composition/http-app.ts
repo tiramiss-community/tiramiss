@@ -29,6 +29,7 @@ import { createWebfingerHttp } from './webfinger-http.js';
 import { createFollowCollectionsHttp } from './follow-collections-http.js';
 import { createOutboxHttp } from './outbox-http.js';
 import { createEmojiHttp } from './emoji-http.js';
+import { createAdminEmojisHttp } from './admin-emojis-http.js';
 import { createFeaturedHttp } from './featured-http.js';
 import { createActorHttp } from './actor-http.js';
 import { prepareNoteRoutes, registerNoteRoutes } from './note-routes.js';
@@ -65,6 +66,7 @@ export function createBackendHttpApp(resources: RuntimeResources, config: Runtim
 		.route('/', createOutboxHttp(resources, config))
 		.route('/', createEmojiHttp(resources, config))
 		.route('/', createPublicEmojisHttp(resources))
+		.route('/', createAdminEmojisHttp(resources, config))
 		.route('/', createAvatarDecorationsHttp(resources))
 		.route('/', avatarDecorationAdmin.app)
 		.route('/', createPublicDocumentsHttp(resources, config))

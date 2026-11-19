@@ -1,0 +1,84 @@
+{
+  "scope": "admin-emojis-537",
+  "baseRevision": "c25f3ee979",
+  "upstreamRevision": "8e07cf085adf7009583d234a208e30436f020e26",
+  "upstreamFullServerMeasured": false,
+  "inputCapture": "current bytes after successful scoped runs; not a repository-wide frozen-input claim",
+  "inputs": {
+    "packages/backend-next/src/modules/emoji/admin.ts": "f4d534ee61038463e1b1913144e971848e531b103cc7426e4bee841d3c5d6c55",
+    "packages/backend-next/src/platform/database/admin-emojis.ts": "d33dca82526123397985322d5078f966e7b538d05040e2dc2a13203490d363e7",
+    "packages/backend-next/src/composition/admin-emojis-http.ts": "c71331e97823ae159f578bea84aa38c514645ef7b05ae279966db7ad23b99749",
+    "packages/backend-next/src/composition/http-app.ts": "623fcfe702bf41aeb51db98cd1788fbacbbf2cff8b651d70bd78c91ed3103613",
+    "packages/backend-next/test/unit/composition/http-app.test.ts": "1156127b957b37d84e1b890f229c9e5abeb825f71026211f557a93a16b1f7dab",
+    "packages/backend-next/test/unit/emoji/admin.test.ts": "a1ab4c3efcbc3dd7d416f24b14b2d6d8dd532ad72a145af9e35f10034c9906cb",
+    "packages/backend-next/test/integration/admin-emojis.test.ts": "e77efaa500a49a6da42468fe9cb303077c61f7d98e3724bda39c1d429965b631",
+    "packages/backend-next/test/helpers/admin-emoji-source.ts": "e09f64a09188e3f9f2636dab747255eb62a4dfc3a7b63905964e4ec22c0f1565",
+    "packages/backend-next/test/fixtures/admin-emojis/CustomEmojiService.ts.txt": "5c8412988843ef719210d5e81b4c47eaa19fcd22a2a20bc20a36e0d43568bc68",
+    "packages/backend-next/test/fixtures/admin-emojis/EmojiEntityService.ts.txt": "16c340773963675b5706d984ff1608db44a8d9226199a0da605ea3be0e875392",
+    "packages/backend-next/test/fixtures/admin-emojis/QueryService.ts.txt": "6eb0324d8f7d96bee6a0317bd77224051135dd49283a7f8b8c258c8ae5ae9357",
+    "packages/backend-next/test/fixtures/admin-emojis/UtilityService.ts.txt": "99f8779e002fc2c0aa2cd203613d31fcc87e7eaeb797ef65aae6c5175b62e331",
+    "packages/backend-next/test/fixtures/admin-emojis/access.ts.txt": "4692823e5f9edb979d38e065d0f399af316e712caedce702a38ae5db8fbd8248",
+    "packages/backend-next/test/fixtures/admin-emojis/list.ts.txt": "19a05e3b2d0cf3376259f9fa7a4d2057da4579e0489b970a4db00f3917f11d02",
+    "packages/backend-next/test/fixtures/admin-emojis/manifest.json": "19094c9de14860b32f654130a45670c72c59597bf9f98a20ff80271e65a7bd03",
+    "packages/backend-next/test/fixtures/admin-emojis/remote.ts.txt": "51918ebadfcc71aeee69a3c2dba5f536bd07730b7bd2f345a8c58041bb35cd11",
+    "packages/backend-next/test/fixtures/admin-emojis/v2.ts.txt": "b5dc7a22476946a8e07c3fe666439d96da6570ef8af50b53deb521d13fda0cc0"
+  },
+  "runs": [
+    {
+      "name": "build",
+      "log": "/tmp/b537-build-final.log",
+      "logSha256": "29c5ee0f6b0b20dbb259b99d01276198c3d28190090706394608d4deda6d2c0b",
+      "exitCode": 0,
+      "passed": null,
+      "skipped": 0
+    },
+    {
+      "name": "typecheck",
+      "log": "/tmp/b537-typecheck-final.log",
+      "logSha256": "7f96aaabe6df7a354a3e4d7514375171e219ae2de91268b52d91875e0a026aa4",
+      "exitCode": 0,
+      "passed": null,
+      "skipped": 0
+    },
+    {
+      "name": "unit",
+      "log": "/tmp/b537-unit.log",
+      "logSha256": "b38120a7dc95581274989c2e84543a8d7d9cf8d9362d2bb2b8463cad4fdc90a0",
+      "exitCode": 0,
+      "passed": 5586,
+      "skipped": 1
+    },
+    {
+      "name": "integration",
+      "log": "/tmp/b537-integration-final.log",
+      "logSha256": "d82cf2701607ef00fb53434910a83074cd6bdcfce115c161d044b43503fb1965",
+      "exitCode": 0,
+      "passed": 147,
+      "skipped": 0
+    },
+    {
+      "name": "contracts-nearest",
+      "log": "/tmp/b537-contract-final.log",
+      "logSha256": "7bd28b27b1bede900612aaff76e54d3478302a983c146ae9655b1928d8d8a04d",
+      "exitCode": 0,
+      "passed": 25,
+      "skipped": 0
+    },
+    {
+      "name": "sync",
+      "log": "/tmp/b537-sync.log",
+      "logSha256": "1ee9e0445cafd0cedbd7128f57730aac4c83b7b9a8a6fb97320a009f31d5b8cd",
+      "exitCode": 0,
+      "passed": null,
+      "skipped": 0
+    },
+    {
+      "name": "shipping",
+      "log": "/tmp/b537-shipping-final.log",
+      "logSha256": "dca032af345c5b484e865e623621c095dc8b8e83ea61a8e673089a089e8c126e",
+      "exitCode": 0,
+      "passed": null,
+      "skipped": 0
+    }
+  ]
+}
