@@ -56,6 +56,7 @@ test('composed app retains Role, Actor, Note, optional queue and unknown route b
 		'/users/:id/collections/featured', '/notes/:id', '/users/:id/followers', '/users/:id/following',
 		'/users/:user/outbox', '/users//outbox', '/notes/:note/activity', '/notes//activity',
 		'/emojis/:emoji', '/emojis/', '/api/emoji', '/api/emojis', '/api/get-avatar-decorations',
+		'/api/admin/avatar-decorations/create', '/api/admin/avatar-decorations/update', '/api/admin/avatar-decorations/delete', '/api/admin/avatar-decorations/list',
 		'/manifest.json', '/robots.txt', '/opensearch.xml',
 		'/fluent-emoji/*', '/twemoji/*', '/twemoji-badge/*',
 		'/emoji/*', '/avatar/*', '/identicon/*',

@@ -1,0 +1,95 @@
+{
+  "baseline": "db1f3652fb832889bf2e34575420a6ff61477041",
+  "files": {
+    "packages/backend-next/src/composition/http-app.ts": {
+      "previousSha256": "3c9b9703ba4cd7eac791dc303f23873ccfc71d55c08c1eb8cb26c5dfdffdc3b8",
+      "currentSha256": "18fe36e637f477c07d85b9cf7932f395e20818c52da721fbd5ac894937882a11",
+      "patches": [
+        {
+          "offset": 132,
+          "previous": "",
+          "insert": "import { createAvatarDecorationAdminHttp } from './avatar-decoration-admin-http.js';\n"
+        },
+        {
+          "offset": 2475,
+          "previous": "",
+          "insert": "\tconst avatarDecorationAdmin = createAvatarDecorationAdminHttp(resources, config);\n"
+        },
+        {
+          "offset": 3911,
+          "previous": "",
+          "insert": "\t\t.route('/', avatarDecorationAdmin.app)\n"
+        },
+        {
+          "offset": 4176,
+          "previous": "\t\tawait Promise.all([folders.idle(), pages.idle(), announcements.idle()]);\n",
+          "insert": "\t\tawait Promise.all([folders.idle(), pages.idle(), announcements.idle(), avatarDecorationAdmin.idle()]);\n"
+        }
+      ]
+    },
+    "packages/backend-next/test/unit/composition/http-app.test.ts": {
+      "previousSha256": "a8bbb4467104cb1b4cec26d21a3667785560de24b6084765d98669c2a64bb71b",
+      "currentSha256": "d90af59cf55f5d261417ad37ffd2f0216238d9e26580f2e9669cf35a1b6b4338",
+      "patches": [
+        {
+          "offset": 3489,
+          "previous": "",
+          "insert": "\t\t'/api/admin/avatar-decorations/create', '/api/admin/avatar-decorations/update', '/api/admin/avatar-decorations/delete', '/api/admin/avatar-decorations/list',\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/modules/audit/public.ts": {
+      "previousSha256": "e28e24084c907f1eb33dd416266e08ad1a0e270c1e21ce1b555a0c12423f27ef",
+      "currentSha256": "56a4ff77c4c3d26dff1886089dcd9b31975d4145ae754612807463df12c2e99d",
+      "patches": [
+        {
+          "offset": 872,
+          "previous": "export type ModerationLogType = 'updateRole' | 'updateServerSettings' | 'deleteNote' | 'clearQueue' | 'promoteQueue' | 'pauseQueue' | 'resumeQueue' | 'suspendRemoteInstance' | 'unsuspendRemoteInstance' | 'updateRemoteInstanceNote';\n",
+          "insert": "export type ModerationLogType = 'createAvatarDecoration' | 'updateAvatarDecoration' | 'deleteAvatarDecoration' | 'updateRole' | 'updateServerSettings' | 'deleteNote' | 'clearQueue' | 'promoteQueue' | 'pauseQueue' | 'resumeQueue' | 'suspendRemoteInstance' | 'unsuspendRemoteInstance' | 'updateRemoteInstanceNote';\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/avatar-decoration-cache.ts": {
+      "previousSha256": "7ed70c95e40c88f04cf40c863ad499df154bc464d7b67a59818c2053e405c937",
+      "currentSha256": "52e2ddd86c12ca098054301578dac6f96fe9f9bfe931643d0c1b52edf58fd34f",
+      "patches": [
+        {
+          "offset": 244,
+          "previous": "export function createAvatarDecorationCache(options: {\n\tread(): Promise<AvatarDecoration[]>;\n",
+          "insert": "export function createAvatarDecorationCache<T extends AvatarDecoration>(options: {\n\tread(): Promise<T[]>;\n"
+        },
+        {
+          "offset": 463,
+          "previous": "\tlet cached: { at: number; value: AvatarDecoration[] } | undefined;\n",
+          "insert": "\tlet cached: { at: number; value: T[] } | undefined;\n"
+        },
+        {
+          "offset": 537,
+          "previous": "\tconst pending = new Set<Promise<AvatarDecoration[]>>();\n",
+          "insert": "\tconst pending = new Set<Promise<T[]>>();\n"
+        },
+        {
+          "offset": 792,
+          "previous": "\tasync function getAll(noCache = false): Promise<AvatarDecoration[]> {\n",
+          "insert": "\tasync function getAll(noCache = false): Promise<T[]> {\n"
+        }
+      ]
+    },
+    "packages/backend-next/src/platform/database/avatar-decorations.ts": {
+      "previousSha256": "b5a7fd0affeadfa45837a1d21886329acb488a09e1d2947f9623fd3615e30f59",
+      "currentSha256": "5d80da85b06b6c7f248a984e1c7ef1294033fbf75f852c1561c415dfc9326429",
+      "patches": [
+        {
+          "offset": 213,
+          "previous": "import type { AvatarDecoration } from '../../modules/avatar-decoration/public.js';\n",
+          "insert": "import type { AdminAvatarDecoration } from '../../modules/avatar-decoration/admin.js';\n"
+        },
+        {
+          "offset": 301,
+          "previous": "export function createAvatarDecorationReader(manager: EntityManager): () => Promise<AvatarDecoration[]> {\n",
+          "insert": "export function createAvatarDecorationReader(manager: EntityManager): () => Promise<AdminAvatarDecoration[]> {\n"
+        }
+      ]
+    }
+  }
+}

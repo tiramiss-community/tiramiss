@@ -4164,6 +4164,132 @@
       "note": "#530 limited promo/read slice: fixed-source14, ordinary listening HTTP/PG, viewer-specific storage, duplicate unchanged, current suspension/scope, missing Note, DB failure operation/SQLSTATE/constraint, unique key and CASCADE. R4 build/typecheck, unit5350+existing skip1, HTTP/PG/schema42 and root23 PASS. Literal pinned callback/Getter runs with real PG, not full upstream HTTP/auth. Pinned-users/#297 and parent #530/#193/#114 remain unfinished.",
       "evidenceRevision": "9d2086451d97c05ec0e858abe2be202d912bcd0d"
     },
+    "api:admin/avatar-decorations/create": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/avatar-decoration/admin.ts",
+        "packages/backend-next/src/platform/database/avatar-decoration-admin.ts",
+        "packages/backend-next/src/composition/avatar-decoration-admin-http.ts",
+        "packages/backend-next/src/platform/connect-resources.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-decoration/admin.test.ts",
+        "packages/backend-next/test/integration/avatar-decoration-admin.test.ts",
+        "packages/backend-next/test/helpers/avatar-decoration-source.ts",
+        "docs/superpowers/compatibility/avatar-decorations/admin.md"
+      ],
+      "note": "#541: four ordinary HTTP admin endpoints, effective canManageAvatarDecorations with root/admin bypass, native/delegated scope/suspension, saved defaults/partial update/list order, all three real PG audit logs and actual cross-reader Redis invalidation. Literal pinned service/callback/repository methods and access gate compared with real PostgreSQL or explicit auth facts; not a booted upstream HTTP server. Full units5550 PASS+existing skip1, HTTP/PG/Redis24 PASS, build/typecheck/shipping PASS. User attachment and parent #194/#114/cache producer coverage #582 remain separate.",
+      "evidenceRevision": "9ed5477b61acba3b223f5fd6ea9e88a1cd9b1f1c"
+    },
+    "api:admin/avatar-decorations/update": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/avatar-decoration/admin.ts",
+        "packages/backend-next/src/platform/database/avatar-decoration-admin.ts",
+        "packages/backend-next/src/composition/avatar-decoration-admin-http.ts",
+        "packages/backend-next/src/platform/connect-resources.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-decoration/admin.test.ts",
+        "packages/backend-next/test/integration/avatar-decoration-admin.test.ts",
+        "packages/backend-next/test/helpers/avatar-decoration-source.ts",
+        "docs/superpowers/compatibility/avatar-decorations/admin.md"
+      ],
+      "note": "#541: four ordinary HTTP admin endpoints, effective canManageAvatarDecorations with root/admin bypass, native/delegated scope/suspension, saved defaults/partial update/list order, all three real PG audit logs and actual cross-reader Redis invalidation. Literal pinned service/callback/repository methods and access gate compared with real PostgreSQL or explicit auth facts; not a booted upstream HTTP server. Full units5550 PASS+existing skip1, HTTP/PG/Redis24 PASS, build/typecheck/shipping PASS. User attachment and parent #194/#114/cache producer coverage #582 remain separate.",
+      "evidenceRevision": "9ed5477b61acba3b223f5fd6ea9e88a1cd9b1f1c"
+    },
+    "api:admin/avatar-decorations/delete": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/avatar-decoration/admin.ts",
+        "packages/backend-next/src/platform/database/avatar-decoration-admin.ts",
+        "packages/backend-next/src/composition/avatar-decoration-admin-http.ts",
+        "packages/backend-next/src/platform/connect-resources.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-decoration/admin.test.ts",
+        "packages/backend-next/test/integration/avatar-decoration-admin.test.ts",
+        "packages/backend-next/test/helpers/avatar-decoration-source.ts",
+        "docs/superpowers/compatibility/avatar-decorations/admin.md"
+      ],
+      "note": "#541: four ordinary HTTP admin endpoints, effective canManageAvatarDecorations with root/admin bypass, native/delegated scope/suspension, saved defaults/partial update/list order, all three real PG audit logs and actual cross-reader Redis invalidation. Literal pinned service/callback/repository methods and access gate compared with real PostgreSQL or explicit auth facts; not a booted upstream HTTP server. Full units5550 PASS+existing skip1, HTTP/PG/Redis24 PASS, build/typecheck/shipping PASS. User attachment and parent #194/#114/cache producer coverage #582 remain separate.",
+      "evidenceRevision": "9ed5477b61acba3b223f5fd6ea9e88a1cd9b1f1c"
+    },
+    "api:admin/avatar-decorations/list": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/avatar-decoration/admin.ts",
+        "packages/backend-next/src/platform/database/avatar-decoration-admin.ts",
+        "packages/backend-next/src/composition/avatar-decoration-admin-http.ts",
+        "packages/backend-next/src/platform/connect-resources.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-decoration/admin.test.ts",
+        "packages/backend-next/test/integration/avatar-decoration-admin.test.ts",
+        "packages/backend-next/test/helpers/avatar-decoration-source.ts",
+        "docs/superpowers/compatibility/avatar-decorations/admin.md"
+      ],
+      "note": "#541: four ordinary HTTP admin endpoints, effective canManageAvatarDecorations with root/admin bypass, native/delegated scope/suspension, saved defaults/partial update/list order, all three real PG audit logs and actual cross-reader Redis invalidation. Literal pinned service/callback/repository methods and access gate compared with real PostgreSQL or explicit auth facts; not a booted upstream HTTP server. Full units5550 PASS+existing skip1, HTTP/PG/Redis24 PASS, build/typecheck/shipping PASS. User attachment and parent #194/#114/cache producer coverage #582 remain separate.",
+      "evidenceRevision": "9ed5477b61acba3b223f5fd6ea9e88a1cd9b1f1c"
+    },
+    "moderation-log-type:createAvatarDecoration": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/avatar-decoration/admin.ts",
+        "packages/backend-next/src/platform/database/avatar-decoration-admin.ts",
+        "packages/backend-next/src/composition/avatar-decoration-admin-http.ts",
+        "packages/backend-next/src/platform/connect-resources.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-decoration/admin.test.ts",
+        "packages/backend-next/test/integration/avatar-decoration-admin.test.ts",
+        "packages/backend-next/test/helpers/avatar-decoration-source.ts",
+        "docs/superpowers/compatibility/avatar-decorations/admin.md"
+      ],
+      "note": "#541: four ordinary HTTP admin endpoints, effective canManageAvatarDecorations with root/admin bypass, native/delegated scope/suspension, saved defaults/partial update/list order, all three real PG audit logs and actual cross-reader Redis invalidation. Literal pinned service/callback/repository methods and access gate compared with real PostgreSQL or explicit auth facts; not a booted upstream HTTP server. Full units5550 PASS+existing skip1, HTTP/PG/Redis24 PASS, build/typecheck/shipping PASS. User attachment and parent #194/#114/cache producer coverage #582 remain separate.",
+      "evidenceRevision": "9ed5477b61acba3b223f5fd6ea9e88a1cd9b1f1c"
+    },
+    "moderation-log-type:updateAvatarDecoration": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/avatar-decoration/admin.ts",
+        "packages/backend-next/src/platform/database/avatar-decoration-admin.ts",
+        "packages/backend-next/src/composition/avatar-decoration-admin-http.ts",
+        "packages/backend-next/src/platform/connect-resources.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-decoration/admin.test.ts",
+        "packages/backend-next/test/integration/avatar-decoration-admin.test.ts",
+        "packages/backend-next/test/helpers/avatar-decoration-source.ts",
+        "docs/superpowers/compatibility/avatar-decorations/admin.md"
+      ],
+      "note": "#541: four ordinary HTTP admin endpoints, effective canManageAvatarDecorations with root/admin bypass, native/delegated scope/suspension, saved defaults/partial update/list order, all three real PG audit logs and actual cross-reader Redis invalidation. Literal pinned service/callback/repository methods and access gate compared with real PostgreSQL or explicit auth facts; not a booted upstream HTTP server. Full units5550 PASS+existing skip1, HTTP/PG/Redis24 PASS, build/typecheck/shipping PASS. User attachment and parent #194/#114/cache producer coverage #582 remain separate.",
+      "evidenceRevision": "9ed5477b61acba3b223f5fd6ea9e88a1cd9b1f1c"
+    },
+    "moderation-log-type:deleteAvatarDecoration": {
+      "status": "verified",
+      "implementation": [
+        "packages/backend-next/src/modules/avatar-decoration/admin.ts",
+        "packages/backend-next/src/platform/database/avatar-decoration-admin.ts",
+        "packages/backend-next/src/composition/avatar-decoration-admin-http.ts",
+        "packages/backend-next/src/platform/connect-resources.ts",
+        "packages/backend-next/src/composition/http-app.ts"
+      ],
+      "verification": [
+        "packages/backend-next/test/unit/avatar-decoration/admin.test.ts",
+        "packages/backend-next/test/integration/avatar-decoration-admin.test.ts",
+        "packages/backend-next/test/helpers/avatar-decoration-source.ts",
+        "docs/superpowers/compatibility/avatar-decorations/admin.md"
+      ],
+      "note": "#541: four ordinary HTTP admin endpoints, effective canManageAvatarDecorations with root/admin bypass, native/delegated scope/suspension, saved defaults/partial update/list order, all three real PG audit logs and actual cross-reader Redis invalidation. Literal pinned service/callback/repository methods and access gate compared with real PostgreSQL or explicit auth facts; not a booted upstream HTTP server. Full units5550 PASS+existing skip1, HTTP/PG/Redis24 PASS, build/typecheck/shipping PASS. User attachment and parent #194/#114/cache producer coverage #582 remain separate.",
+      "evidenceRevision": "9ed5477b61acba3b223f5fd6ea9e88a1cd9b1f1c"
+    },
     "api:get-avatar-decorations": {
       "status": "verified",
       "implementation": [

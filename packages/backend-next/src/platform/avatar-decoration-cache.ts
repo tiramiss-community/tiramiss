@@ -5,22 +5,22 @@
 import type { AvatarDecoration } from '../modules/avatar-decoration/public.js';
 import type { InternalEvents } from './internal-events.js';
 
-export function createAvatarDecorationCache(options: {
-	read(): Promise<AvatarDecoration[]>;
+export function createAvatarDecorationCache<T extends AvatarDecoration>(options: {
+	read(): Promise<T[]>;
 	events: Pick<InternalEvents, 'register'>;
 	clock?: () => number;
 }) {
 	const clock = options.clock ?? Date.now;
-	let cached: { at: number; value: AvatarDecoration[] } | undefined;
+	let cached: { at: number; value: T[] } | undefined;
 	let closed = false;
-	const pending = new Set<Promise<AvatarDecoration[]>>();
+	const pending = new Set<Promise<T[]>>();
 	const unregister = options.events.register({ onInternal(event) {
 		if (['avatarDecorationCreated', 'avatarDecorationUpdated', 'avatarDecorationDeleted'].includes(event.type)) {
 			cached = undefined;
 		}
 	} });
 
-	async function getAll(noCache = false): Promise<AvatarDecoration[]> {
+	async function getAll(noCache = false): Promise<T[]> {
 		if (closed) {
 			throw new Error('Avatar decoration cache is closed');
 		}

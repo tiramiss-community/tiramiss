@@ -4,8 +4,8 @@
  */
 import { MiAvatarDecoration } from 'backend-upstream/entities';
 import type { EntityManager } from 'typeorm';
-import type { AvatarDecoration } from '../../modules/avatar-decoration/public.js';
+import type { AdminAvatarDecoration } from '../../modules/avatar-decoration/admin.js';
 
-export function createAvatarDecorationReader(manager: EntityManager): () => Promise<AvatarDecoration[]> {
+export function createAvatarDecorationReader(manager: EntityManager): () => Promise<AdminAvatarDecoration[]> {
 	return () => manager.getRepository(MiAvatarDecoration).find();
 }

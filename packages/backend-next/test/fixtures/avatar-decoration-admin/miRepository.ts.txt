@@ -1,0 +1,5 @@
+export const miRepository = {
+	async insertOne(entity, findOptions?) {
+		return await this.insert(entity).then(x => this.findOneOrFail({ where: x.identifiers[0], ...findOptions }));
+	},
+} satisfies MiRepository<ObjectLiteral>;
